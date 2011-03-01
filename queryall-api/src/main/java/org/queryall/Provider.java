@@ -11,37 +11,37 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
     
     public abstract boolean hasEndpointUrl();
     
-    public abstract URI getProfileIncludeExcludeOrder();
+    public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();
     
-    public abstract void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder);
+    public abstract void setProfileIncludeExcludeOrder(org.openrdf.model.URI profileIncludeExcludeOrder);
     
     public abstract Collection<String> getEndpointUrls();
     
     public abstract void setEndpointUrls(Collection<String> endpointUrls);
     
-    public abstract URI getEndpointMethod();
+    public abstract org.openrdf.model.URI getEndpointMethod();
 
-    public abstract void setEndpointMethod(URI endpointMethod);
+    public abstract void setEndpointMethod(org.openrdf.model.URI endpointMethod);
     
     public abstract boolean getIsDefaultSource();
 
     public abstract void setIsDefaultSource(boolean isDefaultSource);
 
-    public abstract boolean handlesQueryExplicitly(URI queryKey);
+    public abstract boolean handlesQueryExplicitly(org.openrdf.model.URI queryKey);
 
-    public abstract Collection<URI> getNormalisationsNeeded();
+    public abstract Collection<org.openrdf.model.URI> getNormalisationsNeeded();
     
-    public abstract void setNormalisationsNeeded(Collection<URI> rdfNormalisationsNeeded);
+    public abstract void setNormalisationsNeeded(Collection<org.openrdf.model.URI> rdfNormalisationsNeeded);
     
-    public abstract Collection<URI> getIncludedInCustomQueries();
+    public abstract Collection<org.openrdf.model.URI> getIncludedInCustomQueries();
     
-    public abstract void setIncludedInCustomQueries(Collection<URI> includedInCustomQueries);
+    public abstract void setIncludedInCustomQueries(Collection<org.openrdf.model.URI> includedInCustomQueries);
     
-    public abstract Collection<URI> getNamespaces();
+    public abstract Collection<org.openrdf.model.URI> getNamespaces();
     
-    public abstract void setNamespaces(Collection<URI> namespaces);
+    public abstract void setNamespaces(Collection<org.openrdf.model.URI> namespaces);
     
-    public abstract boolean containsNamespaceUri(URI namespaceKey);
+    public abstract boolean containsNamespaceUri(org.openrdf.model.URI namespaceKey);
     
     public abstract String getSparqlGraphUri();
 
@@ -51,9 +51,9 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
 
     public abstract void setUseSparqlGraph(boolean useSparqlGraph);
 
-    public abstract URI getRedirectOrProxy();
+    public abstract org.openrdf.model.URI getRedirectOrProxy();
 
-    public abstract void setRedirectOrProxy(URI redirectOrProxy);
+    public abstract void setRedirectOrProxy(org.openrdf.model.URI redirectOrProxy);
     
     public abstract String getTitle();
 

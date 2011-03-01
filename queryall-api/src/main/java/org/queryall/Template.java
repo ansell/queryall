@@ -18,9 +18,9 @@ public abstract class Template implements BaseQueryAllInterface, Comparable<Temp
     
     public abstract void setMatchRegex(String matchRegex);
     
-    public abstract Collection<URI> getReferencedTemplates();
+    public abstract Collection<org.openrdf.model.URI> getReferencedTemplates();
     
-    public abstract void setReferencedTemplates(Collection<URI> referencedTemplates);
+    public abstract void setReferencedTemplates(Collection<org.openrdf.model.URI> referencedTemplates);
     
     public abstract boolean isNativeFunction();
     

@@ -7,21 +7,21 @@ import org.openrdf.model.URI;
 
 public abstract class NormalisationRule implements BaseQueryAllInterface, Comparable<NormalisationRule>
 {
-    public abstract URI getProfileIncludeExcludeOrder();
+    public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();
     
-    public abstract void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder);
+    public abstract void setProfileIncludeExcludeOrder(org.openrdf.model.URI profileIncludeExcludeOrder);
 
     public abstract int getOrder();
     
     public abstract void setOrder(int order);
 
-    protected abstract void setValidStages(Collection<URI> validStages);
+    protected abstract void setValidStages(Collection<org.openrdf.model.URI> validStages);
     
-    public abstract Collection<URI> getValidStages();
+    public abstract Collection<org.openrdf.model.URI> getValidStages();
     
     public abstract String getDescription();
     
-    public abstract Object normaliseByStage(URI stage, Object input);
+    public abstract Object normaliseByStage(org.openrdf.model.URI stage, Object input);
     
     public abstract Object stageQueryVariables(Object input);
         

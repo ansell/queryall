@@ -13,9 +13,9 @@ public abstract class Project implements BaseQueryAllInterface, Comparable<Proje
 
     public abstract void setDescription(String description);
 
-    public abstract URI getAuthority();
+    public abstract org.openrdf.model.URI getAuthority();
 
-    public abstract void setAuthority(URI authority);
+    public abstract void setAuthority(org.openrdf.model.URI authority);
 
     
 }

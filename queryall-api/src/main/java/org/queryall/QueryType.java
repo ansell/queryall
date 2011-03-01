@@ -25,9 +25,9 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract List<String> matchesForQueryString(String queryString);
     
-    public abstract URI getProfileIncludeExcludeOrder();
+    public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();
     
-    public abstract void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder);
+    public abstract void setProfileIncludeExcludeOrder(org.openrdf.model.URI profileIncludeExcludeOrder);
     
     public abstract String getTemplateString();
     
@@ -63,21 +63,21 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract boolean getIsPageable();
 
-    public abstract Collection<URI> getSemanticallyLinkedQueryTypes();
+    public abstract Collection<org.openrdf.model.URI> getSemanticallyLinkedQueryTypes();
     
-    public abstract void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedQueryTypes);
+    public abstract void setSemanticallyLinkedQueryTypes(Collection<org.openrdf.model.URI> semanticallyLinkedQueryTypes);
     
-    public abstract Collection<URI> getNamespacesToHandle();
+    public abstract Collection<org.openrdf.model.URI> getNamespacesToHandle();
     
-    public abstract void setNamespacesToHandle(Collection<URI> namespacesToHandle);
+    public abstract void setNamespacesToHandle(Collection<org.openrdf.model.URI> namespacesToHandle);
     
-    public abstract URI getNamespaceMatchMethod();
+    public abstract org.openrdf.model.URI getNamespaceMatchMethod();
     
-    public abstract void setNamespaceMatchMethod(URI namespaceMatchMethod);
+    public abstract void setNamespaceMatchMethod(org.openrdf.model.URI namespaceMatchMethod);
     
-    public abstract boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
+    public abstract boolean handlesNamespaceUris(Collection<Collection<org.openrdf.model.URI>> namespacesToCheck);
     
-    public abstract boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
+    public abstract boolean handlesNamespacesSpecifically(Collection<Collection<org.openrdf.model.URI>> namespacesToCheck);
 
     public abstract void setPublicIdentifierIndexes(int[] publicIdentifierIndexes);
 
@@ -87,17 +87,17 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract int[] getNamespaceInputIndexes();
 
-    public abstract Collection<URI> getIncludedQueryTemplates();
+    public abstract Collection<org.openrdf.model.URI> getIncludedQueryTemplates();
     
-    public abstract void setIncludedQueryTemplates(Collection<URI> includedQueryTemplates);
+    public abstract void setIncludedQueryTemplates(Collection<org.openrdf.model.URI> includedQueryTemplates);
     
-    public abstract Collection<URI> getIncludedQueryParameters();
+    public abstract Collection<org.openrdf.model.URI> getIncludedQueryParameters();
     
-    public abstract void setIncludedQueryParameters(Collection<URI> includedQueryParameters);
+    public abstract void setIncludedQueryParameters(Collection<org.openrdf.model.URI> includedQueryParameters);
     
-    public abstract Collection<URI> getIncludedStaticOutputTemplates();
+    public abstract Collection<org.openrdf.model.URI> getIncludedStaticOutputTemplates();
     
-    public abstract void setIncludedStaticOutputTemplates(Collection<URI> includedStaticOutputTemplates);
+    public abstract void setIncludedStaticOutputTemplates(Collection<org.openrdf.model.URI> includedStaticOutputTemplates);
     
     
     
