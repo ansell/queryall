@@ -1,7 +1,6 @@
 
 package org.queryall.helpers;
 
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +23,7 @@ public class SparqlQueryCreator
             .isTraceEnabled();
     private static final boolean _DEBUG = SparqlQueryCreator.log
             .isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = SparqlQueryCreator.log.isInfoEnabled();
     
     // takes a query and a dictionary of attributes which may or may not be

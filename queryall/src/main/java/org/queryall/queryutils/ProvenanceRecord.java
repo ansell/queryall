@@ -3,7 +3,6 @@ package org.queryall.queryutils;
 import info.aduna.iteration.Iterations;
 
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.model.Statement;
@@ -27,14 +26,10 @@ import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.List;
 import java.util.Date;
 
 import org.queryall.*;
@@ -48,6 +43,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     private static final Logger log = Logger.getLogger(ProvenanceRecord.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE;
@@ -183,8 +179,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.successfulResults;
         
-        Collection<String> currentNormalisedResultStrings = new HashSet<String>();
-        
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;
         try
@@ -283,10 +277,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         Collection<Statement> tempUnrecognisedStatements = new HashSet<Statement>();
         
-        ValueFactory f = new MemValueFactory();
-        
-        URI provenanceInstanceUri = f.createURI(keyToUse);
-        
         for(Statement nextStatement : inputStatements)
         {
             if(_DEBUG)
@@ -350,7 +340,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         }
     }
     
-    @Override
+
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -411,17 +401,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -465,17 +444,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -485,7 +453,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return false;
     }
     
-    @Override
+
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -541,11 +509,12 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return false;
     }
     
-    @Override
+
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "provenancerecord_";
         
         // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+Utilities.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
@@ -555,7 +524,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return sb.toString();
     }
     
-    @Override
+
     public String toHtml()
     {
         return "<span>key:</span>"+Utilities.xmlEncodeString(getKey().stringValue());
@@ -564,7 +533,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     /**
      * @return the key
      */
-    @Override
+
     public URI getKey()
     {
         return key;
@@ -573,7 +542,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     /**
      * @param key the key to set
      */
-    @Override
+
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -586,7 +555,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
+
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -595,7 +564,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
+
     public String getElementType()
     {
         return provenanceTypeUri.stringValue();

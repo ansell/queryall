@@ -3,7 +3,6 @@ package org.queryall.impl;
 
 import java.util.HashSet;
 import java.util.Collection;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
@@ -21,9 +20,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
-import org.queryall.NormalisationRule;
 import org.queryall.RuleTest;
 import org.queryall.helpers.*;
 
@@ -35,11 +32,10 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             .isTraceEnabled();
     private static final boolean _DEBUG = SparqlNormalisationRule.log
             .isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = SparqlNormalisationRule.log
             .isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_RDFRULE_NAMESPACE;
-    
+        
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     // public String key;
@@ -106,12 +102,6 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         super(inputStatements, keyToUse, modelVersion);
         
         boolean isValid = false;
-        
-        final Collection<Statement> tempUnrecognisedStatements = new HashSet<Statement>();
-        
-        final ValueFactory f = new MemValueFactory();
-        
-        Collection<String> tempRelatedNamespaces = new HashSet<String>();
         
         for(final Statement nextStatement : inputStatements)
         {
@@ -262,18 +252,6 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             SparqlNormalisationRule.log.error("RepositoryException: "
                     + re.getMessage());
         }
-        catch (final OpenRDFException ordfe)
-        {
-            SparqlNormalisationRule.log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -378,11 +356,6 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         {
             log.error("SparqlNormalisationRule: RepositoryException exception adding statements", rex);
         }
-        catch(OpenRDFException ex)
-        {
-            log.error("SparqlNormalisationRule: OpenRDFException exception adding statements", ex);
-        }
-        
         
         return myRepository;
     }
@@ -438,10 +411,6 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         {
             log.error("SparqlNormalisationRule: RepositoryException exception adding statements", rex);
         }
-        catch(OpenRDFException ex)
-        {
-            log.error("SparqlNormalisationRule: OpenRDFException exception adding statements", ex);
-        }
         
         return myResultRepository;
     }
@@ -482,6 +451,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "rdfrule_";
         
         return sb.toString();
@@ -542,15 +512,6 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             
             SparqlNormalisationRule.log.error("RepositoryException: "
                     + re.getMessage());
-        }
-        catch (final OpenRDFException ordfe)
-        {
-            SparqlNormalisationRule.log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            con.rollback();
-            
-            throw ordfe;
         }
         finally
         {

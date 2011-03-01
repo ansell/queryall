@@ -6,6 +6,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Statement;
 import java.util.Collection;
 
+@SuppressWarnings("unused")
 public interface BaseQueryAllInterface
 {
     /**

@@ -7,6 +7,7 @@ import org.openrdf.model.URI;
 
 public class QueryDebug
 {
+    @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger(QueryDebug.class.getName());
 	
 	public long totalTimeMilliseconds = 0;

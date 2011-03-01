@@ -1,6 +1,5 @@
 package org.queryall;
 
-import org.openrdf.model.URI;
 import java.util.Collection;
 
 public abstract class Profile implements BaseQueryAllInterface, Comparable<Profile>

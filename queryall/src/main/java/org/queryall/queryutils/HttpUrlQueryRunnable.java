@@ -4,14 +4,15 @@ import org.apache.log4j.Logger;
 import java.util.Date;
 
 import org.queryall.helpers.Settings;
-import org.queryall.Provider;
 import org.queryall.impl.ProviderImpl;
 
 public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thread
 {
     private static final Logger log = Logger.getLogger(HttpUrlQueryRunnable.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
+	private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     public String httpOperation = "GET";

@@ -1,42 +1,19 @@
 
-package org.bio2rdf;
+package org.queryall.helpers;
 
-import java.net.URLEncoder;
-import java.text.CharacterIterator;
-import java.text.SimpleDateFormat;
-import java.text.StringCharacterIterator;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Random;
-import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.BooleanLiteralImpl;
-import org.openrdf.model.impl.IntegerLiteralImpl;
-import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.Rio;
-import org.openrdf.rio.ntriples.NTriplesUtil;
-import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.BooleanMemLiteral;
-import org.openrdf.sail.memory.model.IntegerMemLiteral;
 
 /**
  * A utility class that is used by multiple different Bio2RDF classes
@@ -47,8 +24,10 @@ public class VoidUtility
 {
     private static final Logger log = Logger.getLogger(VoidUtility.class
             .getName());
+    @SuppressWarnings("unused")
     private static final boolean _TRACE = VoidUtility.log.isTraceEnabled();
     private static final boolean _DEBUG = VoidUtility.log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = VoidUtility.log.isInfoEnabled();
     private Map<String,Collection<String>> queryUriToVoidSparqlConstructQueries;
     

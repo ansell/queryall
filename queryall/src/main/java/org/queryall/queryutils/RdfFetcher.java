@@ -1,21 +1,12 @@
 package org.queryall.queryutils;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.net.URLEncoder;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
-import java.util.List;
-import java.util.Hashtable;
 
 import org.queryall.helpers.*;
 import org.queryall.blacklist.*;

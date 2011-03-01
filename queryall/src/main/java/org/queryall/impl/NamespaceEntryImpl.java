@@ -11,10 +11,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Collection;
@@ -31,6 +28,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     private static final Logger log = Logger.getLogger(NamespaceEntry.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
@@ -94,10 +92,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
         boolean resultIsValid = false;
         
         Collection<String> tempAlternativePrefixes = new HashSet<String>();
-        
-        ValueFactory f = new MemValueFactory();
-        
-        URI namespaceInstanceUri = keyToUse;
         
         for(Statement nextStatement : inputStatements)
         {
@@ -223,17 +217,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -243,7 +226,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
         return false;
     }
     
-    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -345,17 +327,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -365,7 +336,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
         return false;
     }
     
-    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -378,7 +348,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
         return sb.toString();
     }
     
-    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -392,7 +361,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
         return sb.toString();
     }
     
-    @Override
     public String toHtml()
     {
         return "";
@@ -401,7 +369,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
     /**
      * @return the key
      */
-    @Override
     public URI getKey()
     {
         return key;
@@ -410,7 +377,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
     /**
      * @param key the key to set
      */
-    @Override
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -423,7 +389,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -432,7 +397,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
     public String getElementType()
     {
         return namespaceTypeUri.stringValue();
@@ -460,8 +424,10 @@ public class NamespaceEntryImpl extends NamespaceEntry
     
     public int compareTo(NamespaceEntry otherNamespace)
     {
+        @SuppressWarnings("unused")
         final int BEFORE = -1;
         final int EQUAL = 0;
+        @SuppressWarnings("unused")
         final int AFTER = 1;
     
         if ( this == otherNamespace ) 

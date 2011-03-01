@@ -2,7 +2,6 @@ package org.queryall;
 
 import org.queryall.BaseQueryAllInterface;
 import java.util.Collection;
-import org.openrdf.model.URI;
 
 public abstract class Template implements BaseQueryAllInterface, Comparable<Template>
 {

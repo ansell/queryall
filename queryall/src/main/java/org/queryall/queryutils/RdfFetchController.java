@@ -7,9 +7,7 @@ import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
 
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.URI;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -104,8 +102,6 @@ public class RdfFetchController
             {
                 log.debug("RdfFetchController.initialise: found "+allCustomQueries.size()+" matching queries");
             }
-            
-            ValueFactory f = new MemValueFactory();
             
             // TODO: should we do classification in the results based on the QueryType that generated the particular subset of QueryBundles to make it easier to distinguish them
             for( QueryType nextQueryType : allCustomQueries )

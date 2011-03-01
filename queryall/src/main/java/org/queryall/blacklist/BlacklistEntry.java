@@ -8,7 +8,8 @@ import org.queryall.queryutils.RdfFetcherQueryRunnable;
 
 public class BlacklistEntry
 {
-    private static final Logger log = Logger.getLogger(BlacklistEntry.class.getName());
+    @SuppressWarnings("unused")
+	private static final Logger log = Logger.getLogger(BlacklistEntry.class.getName());
     
     public int numberOfFailures = 0;
     public String endpointUrl = "";

@@ -1,7 +1,6 @@
 package org.queryall;
 
 import org.queryall.BaseQueryAllInterface;
-import org.openrdf.model.URI;
 
 public abstract class Project implements BaseQueryAllInterface, Comparable<Project>
 {

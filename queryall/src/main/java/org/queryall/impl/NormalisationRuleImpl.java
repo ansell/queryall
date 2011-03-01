@@ -3,7 +3,6 @@ package org.queryall.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Collection;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.log4j.Logger;
 
@@ -20,13 +19,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import org.queryall.NormalisationRule;
-import org.queryall.NamespaceEntry;
-import org.queryall.Profile;
-import org.queryall.Project;
-import org.queryall.RuleTest;
 
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.Utilities;
@@ -137,11 +131,8 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     public NormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
             throws OpenRDFException
     {
+        @SuppressWarnings("unused")
         boolean isValid = false;
-        
-        final ValueFactory f = new MemValueFactory();
-        
-        // final URI providerInstanceUri = f.createURI(keyToUse);
         
         final Collection<URI> tempRelatedNamespaces = new HashSet<URI>();
         final Collection<URI> tempStages = new HashSet<URI>();
@@ -377,15 +368,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
             log.error("RepositoryException: "
                     + re.getMessage());
         }
-        catch (final OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            con.rollback();
-            
-            throw ordfe;
-        }
         finally
         {
             con.close();
@@ -472,18 +454,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
             log.error("RepositoryException: "
                     + re.getMessage());
         }
-        catch (final OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -498,7 +468,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the key
      */
-    @Override
     public URI getKey()
     {
         return key;
@@ -507,7 +476,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @param key the key to set
      */
-    @Override
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -517,10 +485,10 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     {
         this.key = nextKey;
     }    
+
     /**
      * @return the validStages
      */
-    @Override
     public Collection<URI> getValidStages()
     {
         return validStages;
@@ -529,7 +497,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @param validStages the validStages to set
      */
-    @Override
     protected void setValidStages(Collection<URI> nextValidStages)
     {
         this.validStages = nextValidStages;
@@ -539,7 +506,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -548,7 +514,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
     public String getElementType()
     {
         return normalisationRuleTypeUri.stringValue();

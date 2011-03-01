@@ -3,8 +3,6 @@ package org.queryall;
 
 import java.util.Collection;
 
-import org.openrdf.model.URI;
-
 public abstract class NormalisationRule implements BaseQueryAllInterface, Comparable<NormalisationRule>
 {
     public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();

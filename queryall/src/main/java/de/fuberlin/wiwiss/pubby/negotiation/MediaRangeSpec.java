@@ -12,8 +12,10 @@ import org.apache.log4j.Logger;
 public class MediaRangeSpec {
 	
     private static final Logger log = Logger.getLogger(MediaRangeSpec.class.getName());
+    @SuppressWarnings("unused")
 	private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
 	
 	private final static Pattern tokenPattern;
@@ -117,8 +119,8 @@ public class MediaRangeSpec {
 	
 	private final String type;
 	private final String subtype;
-	private final List parameterNames;
-	private final List parameterValues;
+	private final List<String> parameterNames;
+	private final List<String> parameterValues;
 	private final String mediaType;
 	private final double quality;
 
@@ -166,7 +168,7 @@ public class MediaRangeSpec {
 		return mediaType;
 	}
 	
-	public List getParameterNames() {
+	public List<String> getParameterNames() {
 		return parameterNames;
 	}
 	

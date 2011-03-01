@@ -1,7 +1,6 @@
 package org.queryall;
 
 import java.util.Collection;
-import org.openrdf.model.URI;
 
 public abstract class Provider implements BaseQueryAllInterface, Comparable<Provider>
 {

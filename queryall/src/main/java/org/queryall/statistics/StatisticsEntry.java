@@ -13,7 +13,6 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.repository.Repository;
@@ -35,8 +34,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
 {
     private static final Logger log = Logger.getLogger(StatisticsEntry.class
             .getName());
+    @SuppressWarnings("unused")
     private static final boolean _TRACE = StatisticsEntry.log.isTraceEnabled();
     private static final boolean _DEBUG = StatisticsEntry.log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = StatisticsEntry.log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_STATISTICS_NAMESPACE;
@@ -52,7 +53,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /**
      * @return the key
      */
-    @Override
+
     public URI getKey()
     {
         return key;
@@ -61,7 +62,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /**
      * @param key the key to set
      */
-    @Override
+
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -75,7 +76,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
+
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -84,7 +85,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
+
     public String getElementType()
     {
         return statisticsTypeUri.stringValue();
@@ -722,17 +723,6 @@ public class StatisticsEntry implements BaseQueryAllInterface
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -1063,7 +1053,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
         return result;
     }
     
-    @Override
+
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         // String nTriplesInsertString = "";
@@ -1282,18 +1272,6 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             return false;
         }
-        catch (final OpenRDFException ordfe)
-        {
-            StatisticsEntry.log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            if(connection != null)
-            {
-                connection.rollback();
-            }
-            
-            throw ordfe;
-        }
         finally
         {
             if(connection != null)
@@ -1308,7 +1286,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-    @Override
+
     public int hashCode()
     {
         final int prime = 31;
@@ -1359,7 +1337,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    @Override
+
     public boolean equals(Object obj)
     {
         if(this == obj)
@@ -1548,21 +1526,23 @@ public class StatisticsEntry implements BaseQueryAllInterface
         return true;
     }
     
-    @Override
+
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "statistics_";
         
         return sb.toString();
     }
     
-    @Override
+
     public String toHtml()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "statistics_";
         
         return sb.toString();

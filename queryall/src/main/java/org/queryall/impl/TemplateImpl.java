@@ -1,7 +1,6 @@
 package org.queryall.impl;
 
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -11,18 +10,11 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.openrdf.sail.memory.MemoryStore;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import org.queryall.Template;
 import org.queryall.helpers.*;
@@ -34,7 +26,8 @@ public class TemplateImpl extends Template
     private static final Logger log = Logger.getLogger(Template.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
-    private static final boolean _INFO = log.isInfoEnabled();
+    @SuppressWarnings("unused")
+	private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE;
     
@@ -130,10 +123,6 @@ public class TemplateImpl extends Template
         
         boolean resultIsValid = false;
         
-        ValueFactory f = new MemValueFactory();
-        
-        URI templateInstanceUri = keyToUse;
-        
         for(Statement nextStatement : inputStatements)
         {
             if(_DEBUG)
@@ -177,7 +166,7 @@ public class TemplateImpl extends Template
         }
     }
     
-    @Override
+
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -259,17 +248,6 @@ public class TemplateImpl extends Template
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -318,17 +296,6 @@ public class TemplateImpl extends Template
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -338,21 +305,23 @@ public class TemplateImpl extends Template
         return false;
     }
     
-    @Override
+
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "template_";
         
         return sb.toString();
     }
     
-    @Override
+
     public String toHtml()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "template_";
         
         return sb.toString();
@@ -361,7 +330,7 @@ public class TemplateImpl extends Template
     /**
      * @return the key
      */
-    @Override
+
     public URI getKey()
     {
         return key;
@@ -370,7 +339,7 @@ public class TemplateImpl extends Template
     /**
      * @param key the key to set
      */
-    @Override
+
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -383,7 +352,7 @@ public class TemplateImpl extends Template
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
+
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -392,7 +361,7 @@ public class TemplateImpl extends Template
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
+
     public String getElementType()
     {
         return templateTypeUri.stringValue();
@@ -473,8 +442,10 @@ public class TemplateImpl extends Template
 
     public int compareTo(Template otherTemplate)
     {
+        @SuppressWarnings("unused")
         final int BEFORE = -1;
         final int EQUAL = 0;
+        @SuppressWarnings("unused")
         final int AFTER = 1;
     
         if ( this == otherTemplate ) 

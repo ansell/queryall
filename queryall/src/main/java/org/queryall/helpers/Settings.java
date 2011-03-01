@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.List;
@@ -499,9 +498,7 @@ public class Settings extends HttpServlet
     
     public static Map<URI, QueryType> getCustomQueries(Repository myRepository)
     {
-        final ValueFactory f = new MemValueFactory();
         final Hashtable<URI, QueryType> results = new Hashtable<URI, QueryType>();
-        // final Hashtable<String, NamespaceEntry> tempNamespaceEntries = new Hashtable<String, NamespaceEntry>();
         final long start = System.currentTimeMillis();
         if(Settings._DEBUG)
         {
@@ -746,7 +743,6 @@ public class Settings extends HttpServlet
             return Settings.cachedTemplates;
         }
 
-        final ValueFactory f = new MemValueFactory();
         final Hashtable<URI, Template> results = new Hashtable<URI, Template>();
         
         final long start = System.currentTimeMillis();
@@ -1155,7 +1151,6 @@ public class Settings extends HttpServlet
     
     public static Map<URI, Provider> getProviders(Repository myRepository)
     {
-        final ValueFactory f = new MemValueFactory();
         final Hashtable<URI, Provider> results = new Hashtable<URI, Provider>();
 
         if(Settings._DEBUG)
@@ -1247,7 +1242,7 @@ public class Settings extends HttpServlet
         {
             return Settings.cachedNormalisationRules;
         }
-        final ValueFactory f = new MemValueFactory();
+
         if(Settings._DEBUG)
         {
             Settings.log
@@ -1298,17 +1293,7 @@ public class Settings extends HttpServlet
                                     .addAll(statements, new HashSet<Statement>());
                             final RegexNormalisationRule nextRdfRuleConfiguration = 
                                         new RegexNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
-                            if(nextRdfRuleConfiguration != null)
-                            {
-                                results.put((URI)valueOfRdfRuleUri,
-                                        nextRdfRuleConfiguration);
-                            }
-                            else
-                            {
-                                Settings.log
-                                        .error("Settings: was not able to create a rdf rule configuration with URI valueOfRdfRuleUri="
-                                                + valueOfRdfRuleUri.toString());
-                            }
+                            results.put((URI)valueOfRdfRuleUri, nextRdfRuleConfiguration);
                         }
                     }
                     finally
@@ -1361,17 +1346,8 @@ public class Settings extends HttpServlet
                                     .addAll(statements, new HashSet<Statement>());
                             final SparqlNormalisationRule nextRdfRuleConfiguration = 
                                         new SparqlNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
-                            if(nextRdfRuleConfiguration != null)
-                            {
-                                results.put((URI)valueOfRdfRuleUri,
-                                        nextRdfRuleConfiguration);
-                            }
-                            else
-                            {
-                                Settings.log
-                                        .error("Settings: was not able to create a rdf rule configuration with URI valueOfRdfRuleUri="
-                                                + valueOfRdfRuleUri.toString());
-                            }
+                            results.put((URI)valueOfRdfRuleUri,
+                                    nextRdfRuleConfiguration);
                         }
                     }
                     finally
@@ -1520,15 +1496,14 @@ public class Settings extends HttpServlet
     
     public static List<Profile> getAndSortProfileList(Collection<URI> nextProfileUriList, int nextSortOrder)
     {
-        // log.error("Settings.getAndSortProfileList: entering");
         final Map<URI, Profile> allProfiles = Settings.getAllProfiles();
-        // log.error("Settings.getAndSortProfileList: finished getAllProfiles");
-        // final List<Profile> temporaryList = new ArrayList<Profile>(nextProfileUriList.size());
-        final List<Profile> results = new ArrayList<Profile>(nextProfileUriList.size());
+        final List<Profile> results = new ArrayList<Profile>();
         if(nextProfileUriList == null)
         {
-            Settings.log
+        	Settings.log
                     .error("Settings.getAndSortProfileList: nextProfileUriList was null!");
+
+        	throw new RuntimeException("Settings.getAndSortProfileList: nextProfileUriList was null!");
         }
         else
         {
@@ -1709,7 +1684,7 @@ public class Settings extends HttpServlet
         {
             // HACK
             // this function initialised the namespace prefix to URI cache
-            final Map<URI, NamespaceEntry> allNamespaces = Settings.getAllNamespaceEntries();
+            Settings.getAllNamespaceEntries();
         }
         
         results = Settings.cachedNamespacePrefixToUriEntries.get(namespacePrefix);
@@ -2090,11 +2065,10 @@ public class Settings extends HttpServlet
         Repository tempConfigurationRepository = null;
         Repository finalConfigurationRepository = null;
         Repository nextBaseConfigurationRepository = getBaseConfigurationRdf();
-
-        RepositoryConnection finalRepositoryConnection = null;
-        
         boolean backupNeeded = false;
         boolean backupFailed = false;
+
+        RepositoryConnection finalRepositoryConnection = null;
         
         try
         {
@@ -2531,14 +2505,14 @@ public class Settings extends HttpServlet
                     "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
         }
         
-        if(tempConfigurationRepository != null)
+        if(tempConfigurationRepository == null)
         {
-            Settings.currentBaseConfigurationRepository = tempConfigurationRepository;
+            throw new RuntimeException(
+            "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository");
         }
         else
         {
-            throw new RuntimeException(
-                    "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository");
+            Settings.currentBaseConfigurationRepository = tempConfigurationRepository;
         }
 
         if(Settings._INFO)
@@ -2880,14 +2854,14 @@ public class Settings extends HttpServlet
             }
         } // end if(backupNeeded)
         
-        if(tempConfigurationRepository != null)
+        if(tempConfigurationRepository == null)
         {
-            Settings.currentConfigurationRepository = tempConfigurationRepository;
+            throw new RuntimeException(
+            "Settings: failed to initialise the configuration repository");
         }
         else
         {
-            throw new RuntimeException(
-                    "Settings: failed to initialise the configuration repository");
+            Settings.currentConfigurationRepository = tempConfigurationRepository;
         }
 
         if(Settings._INFO)

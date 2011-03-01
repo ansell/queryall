@@ -11,13 +11,9 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.memory.model.MemValueFactory;
 
-import java.util.List;
 import java.util.HashSet;
 import java.util.Collection;
 
@@ -31,6 +27,7 @@ public class ProjectImpl extends Project
     private static final Logger log = Logger.getLogger(Project.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_PROJECT_NAMESPACE;
@@ -80,10 +77,6 @@ public class ProjectImpl extends Project
         Project result = new ProjectImpl();
         
         boolean resultIsValid = false;
-        
-        ValueFactory f = new MemValueFactory();
-        
-        URI projectInstanceUri = keyToUse;
         
         for(Statement nextStatement : inputStatements)
         {
@@ -173,17 +166,6 @@ public class ProjectImpl extends Project
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -193,7 +175,7 @@ public class ProjectImpl extends Project
         return false;
     }
     
-    @Override
+
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -264,17 +246,6 @@ public class ProjectImpl extends Project
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -284,7 +255,7 @@ public class ProjectImpl extends Project
         return false;
     }
     
-    @Override
+
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -297,11 +268,12 @@ public class ProjectImpl extends Project
         return sb.toString();
     }
     
-    @Override
+
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "project_";
         
         // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+Utilities.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
@@ -311,7 +283,7 @@ public class ProjectImpl extends Project
         return sb.toString();
     }
     
-    @Override
+
     public String toHtml()
     {
         return "";
@@ -320,7 +292,7 @@ public class ProjectImpl extends Project
     /**
      * @return the key
      */
-    @Override
+
     public URI getKey()
     {
         return key;
@@ -329,7 +301,7 @@ public class ProjectImpl extends Project
     /**
      * @param key the key to set
      */
-    @Override
+
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -342,7 +314,7 @@ public class ProjectImpl extends Project
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
+
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -351,7 +323,7 @@ public class ProjectImpl extends Project
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
+
     public String getElementType()
     {
         return projectTypeUri.stringValue();
@@ -409,8 +381,10 @@ public class ProjectImpl extends Project
 
     public int compareTo(Project otherProject)
     {
+        @SuppressWarnings("unused")
         final int BEFORE = -1;
         final int EQUAL = 0;
+        @SuppressWarnings("unused")
         final int AFTER = 1;
     
         if ( this == otherProject ) 

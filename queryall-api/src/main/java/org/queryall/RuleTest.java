@@ -2,8 +2,6 @@ package org.queryall;
 
 import java.util.Collection;
 
-import org.openrdf.model.URI;
-
 public abstract class RuleTest implements BaseQueryAllInterface, Comparable<RuleTest>
 {
     public abstract Collection<org.openrdf.model.URI> getRuleUris();

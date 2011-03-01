@@ -9,15 +9,12 @@ import java.security.NoSuchAlgorithmException;
 import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
 import java.text.StringCharacterIterator;
-import java.text.ParseException;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
@@ -49,8 +46,6 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemResource;
-import org.openrdf.sail.memory.model.MemStatement;
 import org.openrdf.sail.memory.model.BooleanMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.openrdf.sail.memory.model.CalendarMemLiteral;
@@ -499,11 +494,6 @@ public class Utilities
         
         try
         {
-            
-            final ValueFactory f = nextRepository.getValueFactory();
-            
-            // Utilities.log.error("Utilities.getValuesFromRepositoryByPredicateUrisAndSubject: subjectUri="+subjectUri.stringValue());                   
-
             for(final URI nextInputPredicateUri : predicateUris)
             {
                 try
@@ -627,9 +617,6 @@ public class Utilities
         
         try
         {
-            
-            final ValueFactory f = nextRepository.getValueFactory();
-            
             for(final URI nextInputPredicateUri : predicateUris)
             {
                 try
@@ -1543,19 +1530,16 @@ public class Utilities
         
         StringBuilder buffer = nextQueryString;
         
-        boolean found = false;
-        
         while(matcher.find())
         {
             // Only do these if a match was found
             buffer = new StringBuilder(nextQueryString);
-            String replaceString = replaceStringBuilder.toString();
             
             for(int i = 0; i < matcher.groupCount(); i++)
             {
-                if(_INFO)
+                if(_DEBUG)
                 {
-                    log.info("Utilities.replaceMatchesForRegexOnString: nextRegex="+nextRegex+" Found the text \""+matcher.group(i+1)+"\" starting at " +
+                    log.debug("Utilities.replaceMatchesForRegexOnString: nextRegex="+nextRegex+" Found the text \""+matcher.group(i+1)+"\" starting at " +
                               "index="+matcher.start(i+1)+" and ending at index="+matcher.end(i+1)+".");
                 }
                 
@@ -2088,6 +2072,7 @@ public class Utilities
     
     // from http://java.sun.com/developer/technicalArticles/ThirdParty/WebCrawler/WebCrawler.java
     // License at http://developers.sun.com/license/berkeley_license.html
+    @SuppressWarnings("unused")
     public boolean robotSafe(URL url) 
     {
         final String DISALLOW = "Disallow:";
@@ -2297,8 +2282,6 @@ public class Utilities
         }
         
         Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.successfulResults;
-        
-        Collection<String> currentNormalisedResultStrings = new HashSet<String>();
         
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;

@@ -1,9 +1,7 @@
 package org.queryall.queryutils;
 
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.OWL;
-import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Literal;
 import org.openrdf.model.ValueFactory;
@@ -11,16 +9,11 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.openrdf.sail.memory.MemoryStore;
 
-import java.util.List;
 import java.util.LinkedList;
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.queryall.NormalisationRule;
@@ -35,7 +28,9 @@ import org.apache.log4j.Logger;
 public class QueryBundle 
 {
     private static final Logger log = Logger.getLogger(QueryBundle.class.getName());
+    @SuppressWarnings("unused")
 	private static final boolean _TRACE = log.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _DEBUG = log.isDebugEnabled();
     private static final boolean _INFO = log.isInfoEnabled();
 	
@@ -132,17 +127,6 @@ public class QueryBundle
                 con.rollback();
                 
             log.error("RepositoryException: "+re.getMessage());
-        }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
         }
         finally
         {

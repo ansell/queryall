@@ -1,7 +1,6 @@
 package org.queryall.impl;
 
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -11,14 +10,11 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.HashSet;
 
 import org.queryall.RuleTest;
@@ -30,7 +26,9 @@ public class RuleTestImpl extends RuleTest
 {
     private static final Logger log = Logger.getLogger( RuleTest.class.getName() );
     private static final boolean _TRACE = log.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_RULETEST_NAMESPACE;
@@ -113,16 +111,6 @@ public class RuleTestImpl extends RuleTest
                 
             log.error( "RepositoryException: "+re.getMessage() );
         }
-        catch ( OpenRDFException ordfe )
-        {
-            log.error( ordfe );
-            
-            // Something went wrong during the transaction, so we roll it back
-            if( con != null )
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if( con != null )
@@ -138,10 +126,6 @@ public class RuleTestImpl extends RuleTest
         RuleTest result = new RuleTestImpl();
         
         boolean resultIsValid = false;
-        
-        ValueFactory f = new MemValueFactory();
-        
-        URI ruleTestInstanceUri = keyToUse;
         
         Collection<URI> tempTestUris = new HashSet<URI>();
         Collection<URI> tempStages = new HashSet<URI>();
@@ -200,7 +184,7 @@ public class RuleTestImpl extends RuleTest
         }
     }
     
-    @Override
+
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -255,15 +239,6 @@ public class RuleTestImpl extends RuleTest
             
             log.error( "RepositoryException: "+re.getMessage() );
         }
-        catch ( OpenRDFException ordfe )
-        {
-            log.error( ordfe );
-            
-            // Something went wrong during the transaction, so we roll it back
-            con.rollback();
-            
-            throw ordfe;
-        }
         finally
         {
             con.close();
@@ -272,7 +247,7 @@ public class RuleTestImpl extends RuleTest
         return false;
     }
     
-    @Override
+
     public String toString()
     {
         String result = "\n";
@@ -285,17 +260,18 @@ public class RuleTestImpl extends RuleTest
         return result;
     }
     
-    @Override
+
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "ruletest_";
         
         return sb.toString();
     }
     
-    @Override
+
     public String toHtml()
     {
         StringBuilder sb = new StringBuilder();
@@ -313,7 +289,7 @@ public class RuleTestImpl extends RuleTest
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-    @Override
+
     public int hashCode()
     {
         final int prime = 31;
@@ -334,7 +310,7 @@ public class RuleTestImpl extends RuleTest
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    @Override
+
     public boolean equals(Object obj)
     {
         if(this == obj)
@@ -411,7 +387,7 @@ public class RuleTestImpl extends RuleTest
     /**
      * @return the key
      */
-    @Override
+
     public URI getKey()
     {
         return key;
@@ -420,7 +396,7 @@ public class RuleTestImpl extends RuleTest
     /**
      * @param key the key to set
      */
-    @Override
+
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -433,7 +409,7 @@ public class RuleTestImpl extends RuleTest
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
+
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -442,7 +418,7 @@ public class RuleTestImpl extends RuleTest
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
+
     public String getElementType()
     {
         return ruletestTypeUri.stringValue();
@@ -580,8 +556,10 @@ public class RuleTestImpl extends RuleTest
 
     public int compareTo(RuleTest otherRuleTest)
     {
+        @SuppressWarnings("unused")
         final int BEFORE = -1;
         final int EQUAL = 0;
+        @SuppressWarnings("unused")
         final int AFTER = 1;
     
         if ( this == otherRuleTest ) 

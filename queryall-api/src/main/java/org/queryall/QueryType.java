@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import org.openrdf.model.URI;
-
-
 public abstract class QueryType implements BaseQueryAllInterface, Comparable<QueryType>
 {
     public abstract String getInputRegex();

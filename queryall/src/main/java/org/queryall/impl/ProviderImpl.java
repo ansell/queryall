@@ -11,15 +11,11 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.openrdf.sail.memory.MemoryStore;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.Utilities;
@@ -32,6 +28,7 @@ public class ProviderImpl extends Provider
     private static final Logger log = Logger.getLogger(Provider.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_PROVIDER_NAMESPACE;
@@ -158,17 +155,6 @@ public class ProviderImpl extends Provider
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -225,8 +211,6 @@ public class ProviderImpl extends Provider
         
         
         ValueFactory f = new MemValueFactory();
-        
-        URI providerInstanceUri = keyToUse;
         
         for(Statement nextStatement : inputStatements)
         {
@@ -468,15 +452,6 @@ public class ProviderImpl extends Provider
             
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error("Provider: OpenRDFException..", ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            con.rollback();
-            
-            throw ordfe;
-        }
         catch(Exception ex)
         {
             log.error("Provider: Exception.. keyToUse="+keyToUse, ex);
@@ -498,8 +473,10 @@ public class ProviderImpl extends Provider
     
     public int compareTo(Provider otherProvider)
     {
+        @SuppressWarnings("unused")
         final int BEFORE = -1;
         final int EQUAL = 0;
+        @SuppressWarnings("unused")
         final int AFTER = 1;
     
         if ( this == otherProvider ) 
@@ -570,17 +547,18 @@ public class ProviderImpl extends Provider
         return result;
     }
     
-    @Override
+
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "provider_";
         
         return sb.toString();
     }
     
-    @Override
+
     public String toHtml()
     {
         String result = "";
@@ -656,7 +634,7 @@ public class ProviderImpl extends Provider
     /**
      * @return the key
      */
-    @Override
+
     public URI getKey()
     {
         return key;
@@ -665,7 +643,7 @@ public class ProviderImpl extends Provider
     /**
      * @param key the key to set
      */
-    @Override
+
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -678,7 +656,7 @@ public class ProviderImpl extends Provider
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
+
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -687,7 +665,7 @@ public class ProviderImpl extends Provider
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
+
     public String getElementType()
     {
         return providerTypeUri.stringValue();

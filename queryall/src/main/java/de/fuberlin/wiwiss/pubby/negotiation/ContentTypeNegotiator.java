@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 public class ContentTypeNegotiator {
 	
     private static final Logger log = Logger.getLogger(ContentTypeNegotiator.class.getName());
+	@SuppressWarnings("unused")
 	private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
     private static final boolean _INFO = log.isInfoEnabled();
@@ -155,9 +156,9 @@ public class ContentTypeNegotiator {
 					evaluateDefaultVariant(variant.getMediaType());
 				}
 				evaluateVariant(variant.getMediaType());
-				Iterator aliasIt = variant.getAliases().iterator();
+				Iterator<MediaRangeSpec> aliasIt = variant.getAliases().iterator();
 				while (aliasIt.hasNext()) {
-					MediaRangeSpec alias = (MediaRangeSpec) aliasIt.next();
+					MediaRangeSpec alias = aliasIt.next();
 					evaluateVariantAlias(alias, variant.getMediaType());
 				}
 			}
@@ -196,6 +197,7 @@ public class ContentTypeNegotiator {
 			this.original = original;
 			this.replacement = replacement;
 		}
+		@SuppressWarnings("unused")
 		boolean matches(String acceptHeader) {
 			return matches(acceptHeader, null);
 		}

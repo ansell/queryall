@@ -19,10 +19,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
-import org.queryall.NormalisationRule;
-import org.queryall.RuleTest;
 import org.queryall.helpers.*;
 
 public class RegexNormalisationRule extends NormalisationRuleImpl
@@ -33,13 +30,14 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             .isTraceEnabled();
     private static final boolean _DEBUG = RegexNormalisationRule.log
             .isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRule.log
             .isInfoEnabled();
     
-    public String inputMatchRegex = "";
-    public String inputReplaceRegex = "";
-    public String outputMatchRegex = "";
-    public String outputReplaceRegex = "";
+    private String inputMatchRegex = "";
+    private String inputReplaceRegex = "";
+    private String outputMatchRegex = "";
+    private String outputReplaceRegex = "";
 
     public static URI regexruleTypeUri;
     public static URI rdfruleInputMatchRegex;
@@ -83,16 +81,9 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     {
         super(inputStatements, keyToUse, modelVersion);
         
+        @SuppressWarnings("unused")
         boolean isValid = false;
-        
-        final Collection<Statement> tempUnrecognisedStatements = new HashSet<Statement>();
-        
-        final ValueFactory f = new MemValueFactory();
-        
-        // final URI providerInstanceUri = f.createURI(keyToUse);
-        
-        // Collection<String> tempRelatedNamespaces = new HashSet<String>();
-        
+
         for(final Statement nextStatement : inputStatements)
         {
             if(RegexNormalisationRule._TRACE)
@@ -121,26 +112,26 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             else if(nextStatement.getPredicate().equals(
                     RegexNormalisationRule.rdfruleInputMatchRegex))
             {
-                this.inputMatchRegex = nextStatement.getObject()
-                        .stringValue();
+                this.setInputMatchRegex(nextStatement.getObject()
+                        .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
                     RegexNormalisationRule.rdfruleInputReplaceRegex))
             {
-                this.inputReplaceRegex = nextStatement.getObject()
-                        .stringValue();
+                this.setInputReplaceRegex(nextStatement.getObject()
+                        .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
                     RegexNormalisationRule.rdfruleOutputMatchRegex))
             {
-                this.outputMatchRegex = nextStatement.getObject()
-                        .stringValue();
+                this.setOutputMatchRegex(nextStatement.getObject()
+                        .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
                     RegexNormalisationRule.rdfruleOutputReplaceRegex))
             {
-                this.outputReplaceRegex = nextStatement.getObject()
-                        .stringValue();
+                this.setOutputReplaceRegex(nextStatement.getObject()
+                        .stringValue());
             }
             else
             {
@@ -286,18 +277,6 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             RegexNormalisationRule.log.error("RepositoryException: "
                     + re.getMessage());
         }
-        catch (final OpenRDFException ordfe)
-        {
-            RegexNormalisationRule.log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -311,14 +290,14 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     
     public String applyInputRuleToString(String inputText)
     {
-        return this.applyRegex(inputText, this.inputMatchRegex,
-                this.inputReplaceRegex);
+        return this.applyRegex(inputText, this.getInputMatchRegex(),
+                this.getInputReplaceRegex());
     }
     
     public String applyOutputRuleToString(String inputText)
     {
-        return this.applyRegex(inputText, this.outputMatchRegex,
-                this.outputReplaceRegex);
+        return this.applyRegex(inputText, this.getOutputMatchRegex(),
+                this.getOutputReplaceRegex());
     }
     
     private String applyRegex(String inputText, String matchRegex,
@@ -439,18 +418,18 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     // is not considered useful here
     public boolean hasInputRule()
     {
-        return (this.inputMatchRegex != null)
-                && (this.inputReplaceRegex != null)
-                && !this.inputMatchRegex.trim().equals("");
+        return (this.getInputMatchRegex() != null)
+                && (this.getInputReplaceRegex() != null)
+                && !this.getInputMatchRegex().trim().equals("");
     }
     
     // NOTE: it is quite okay to have an empty replace regex, but an empty match
     // is not considered useful here
     public boolean hasOutputRule()
     {
-        return (this.outputMatchRegex != null)
-                && (this.outputReplaceRegex != null)
-                && !this.outputMatchRegex.trim().equals("");
+        return (this.getOutputMatchRegex() != null)
+                && (this.getOutputReplaceRegex() != null)
+                && !this.getOutputMatchRegex().trim().equals("");
     }
     
     
@@ -466,14 +445,14 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
         result += "<div class=\"order\">Order: "
                 + Utilities.xmlEncodeString(this.getOrder() + "") + "</div>\n";
         result += "<div class=\"inputmatchregex\">Input Match Regex: "
-                + Utilities.xmlEncodeString(this.inputMatchRegex) + "</div>\n";
+                + Utilities.xmlEncodeString(this.getInputMatchRegex()) + "</div>\n";
         result += "<div class=\"inputreplaceregex\">Input Replace Regex: "
-                + Utilities.xmlEncodeString(this.inputReplaceRegex)
+                + Utilities.xmlEncodeString(this.getInputReplaceRegex())
                 + "</div>\n";
         result += "<div class=\"outputmatchregex\">Output Match Regex: "
-                + Utilities.xmlEncodeString(this.outputMatchRegex) + "</div>\n";
+                + Utilities.xmlEncodeString(this.getOutputMatchRegex()) + "</div>\n";
         result += "<div class=\"outputreplaceregex\">Output Replace Regex: "
-                + Utilities.xmlEncodeString(this.outputReplaceRegex)
+                + Utilities.xmlEncodeString(this.getOutputReplaceRegex())
                 + "</div>\n";
         
         return result;
@@ -484,6 +463,7 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "rdfrule_";
         
         return sb.toString();
@@ -509,13 +489,13 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             
             final URI keyUri = keyToUse;
             final Literal inputMatchRegexLiteral = f
-                    .createLiteral(this.inputMatchRegex);
+                    .createLiteral(this.getInputMatchRegex());
             final Literal inputReplaceRegexLiteral = f
-                    .createLiteral(this.inputReplaceRegex);
+                    .createLiteral(this.getInputReplaceRegex());
             final Literal outputMatchRegexLiteral = f
-                    .createLiteral(this.outputMatchRegex);
+                    .createLiteral(this.getOutputMatchRegex());
             final Literal outputReplaceRegexLiteral = f
-                    .createLiteral(this.outputReplaceRegex);
+                    .createLiteral(this.getOutputReplaceRegex());
             // final Literal descriptionLiteral = f
                     // .createLiteral(this.description);
             // final Literal orderLiteral = f.createLiteral(this.order);
@@ -592,15 +572,6 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             RegexNormalisationRule.log.error("RepositoryException: "
                     + re.getMessage());
         }
-        catch (final OpenRDFException ordfe)
-        {
-            RegexNormalisationRule.log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            con.rollback();
-            
-            throw ordfe;
-        }
         finally
         {
             con.close();
@@ -616,10 +587,10 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
         
         result += "key=" + this.getKey() + "\n";
         result += "order=" + this.getOrder()+ "\n";
-        result += "inputMatchRegex=" + this.inputMatchRegex + "\n";
-        result += "inputReplaceRegex=" + this.inputReplaceRegex + "\n";
-        result += "outputMatchRegex=" + this.outputMatchRegex + "\n";
-        result += "outputReplaceRegex=" + this.outputReplaceRegex + "\n";
+        result += "inputMatchRegex=" + this.getInputMatchRegex() + "\n";
+        result += "inputReplaceRegex=" + this.getInputReplaceRegex() + "\n";
+        result += "outputMatchRegex=" + this.getOutputMatchRegex() + "\n";
+        result += "outputReplaceRegex=" + this.getOutputReplaceRegex() + "\n";
         result += "description=" + this.getDescription()+ "\n";
         
         return result;
@@ -633,4 +604,60 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     {
         return regexruleTypeUri.stringValue();
     }
+
+	/**
+	 * @param inputMatchRegex the inputMatchRegex to set
+	 */
+	public void setInputMatchRegex(String inputMatchRegex) {
+		this.inputMatchRegex = inputMatchRegex;
+	}
+
+	/**
+	 * @return the inputMatchRegex
+	 */
+	public String getInputMatchRegex() {
+		return inputMatchRegex;
+	}
+
+	/**
+	 * @param inputReplaceRegex the inputReplaceRegex to set
+	 */
+	public void setInputReplaceRegex(String inputReplaceRegex) {
+		this.inputReplaceRegex = inputReplaceRegex;
+	}
+
+	/**
+	 * @return the inputReplaceRegex
+	 */
+	public String getInputReplaceRegex() {
+		return inputReplaceRegex;
+	}
+
+	/**
+	 * @param outputMatchRegex the outputMatchRegex to set
+	 */
+	public void setOutputMatchRegex(String outputMatchRegex) {
+		this.outputMatchRegex = outputMatchRegex;
+	}
+
+	/**
+	 * @return the outputMatchRegex
+	 */
+	public String getOutputMatchRegex() {
+		return outputMatchRegex;
+	}
+
+	/**
+	 * @param outputReplaceRegex the outputReplaceRegex to set
+	 */
+	public void setOutputReplaceRegex(String outputReplaceRegex) {
+		this.outputReplaceRegex = outputReplaceRegex;
+	}
+
+	/**
+	 * @return the outputReplaceRegex
+	 */
+	public String getOutputReplaceRegex() {
+		return outputReplaceRegex;
+	}
 }

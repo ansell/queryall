@@ -10,26 +10,20 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.Rio;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.Collection;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +40,7 @@ public class QueryTypeImpl extends QueryType
     private static final Logger log = Logger.getLogger(QueryType.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_QUERY_NAMESPACE;
@@ -109,6 +104,7 @@ public class QueryTypeImpl extends QueryType
     private String standardUriTemplateString = "";
     private String outputRdfXmlString = "";
     
+    @SuppressWarnings("unused")
     private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
     
     public static URI queryTypeUri;
@@ -280,7 +276,8 @@ public class QueryTypeImpl extends QueryType
     
     // keyToUse is the URI of the next instance that can be found in myRepository
     // returns null if the URI is not in the repository or the information is not enough to create a minimal query configuration
-    public static QueryType fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    @SuppressWarnings("unused")
+	public static QueryType fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         QueryType result = new QueryTypeImpl();
         
@@ -512,7 +509,6 @@ public class QueryTypeImpl extends QueryType
         }
     }
     
-    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -713,17 +709,6 @@ public class QueryTypeImpl extends QueryType
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -806,17 +791,6 @@ public class QueryTypeImpl extends QueryType
                 
             log.error("RepositoryException: "+re.getMessage());
         }
-        catch (OpenRDFException ordfe)
-        {
-            log.error(ordfe);
-            
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-                con.rollback();
-                
-            throw ordfe;
-        }
         finally
         {
             if(con != null)
@@ -826,7 +800,6 @@ public class QueryTypeImpl extends QueryType
         return false;
     }
     
-    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -873,7 +846,6 @@ public class QueryTypeImpl extends QueryType
         return sb.toString();
     }
     
-    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -1102,11 +1074,11 @@ public class QueryTypeImpl extends QueryType
         }
     }
     
-    @Override
     public String toHtml()
     {
         StringBuilder sb = new StringBuilder();
         
+        @SuppressWarnings("unused")
         String prefix = "query_";
         
         sb.append("<span>key:</span>"+Utilities.xmlEncodeString(getKey().stringValue()));
@@ -1119,7 +1091,6 @@ public class QueryTypeImpl extends QueryType
     /**
      * @return the key
      */
-    @Override
     public URI getKey()
     {
         return key;
@@ -1128,7 +1099,6 @@ public class QueryTypeImpl extends QueryType
     /**
      * @param key the key to set
      */
-    @Override
     public void setKey(String nextKey)
     {
         this.setKey(Utilities.createURI(nextKey));
@@ -1141,7 +1111,6 @@ public class QueryTypeImpl extends QueryType
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
@@ -1150,7 +1119,6 @@ public class QueryTypeImpl extends QueryType
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    @Override
     public String getElementType()
     {
         return queryTypeUri.stringValue();
@@ -1188,8 +1156,10 @@ public class QueryTypeImpl extends QueryType
     
     public int compareTo(QueryType otherQueryType)
     {
+        @SuppressWarnings("unused")
         final int BEFORE = -1;
         final int EQUAL = 0;
+        @SuppressWarnings("unused")
         final int AFTER = 1;
     
         if ( this == otherQueryType ) 
@@ -1336,7 +1306,7 @@ public class QueryTypeImpl extends QueryType
         return outputRdfXmlString;
     }
 
-    public void setOutputRdfXmlString(String outputrdfxmlString)
+    public void setOutputRdfXmlString(String outputRdfXmlString)
     {
         this.outputRdfXmlString = outputRdfXmlString;
     }
@@ -1376,7 +1346,7 @@ public class QueryTypeImpl extends QueryType
         return inRobotsTxt;
     }
     
-    public void setInRobotsTxt(boolean InRobotsTxt)
+    public void setInRobotsTxt(boolean inRobotsTxt)
     {
         this.inRobotsTxt = inRobotsTxt;
     }
