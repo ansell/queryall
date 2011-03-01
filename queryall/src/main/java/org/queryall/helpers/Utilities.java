@@ -2195,7 +2195,7 @@ public class Utilities
         
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
-        dummyProvider.setEndpointMethod(ProviderImpl.providerHttpPostSparql);
+        dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpPostSparql());
         dummyProvider.setKey(Settings.getDefaultHostAddress()+Settings.DEFAULT_RDF_PROVIDER_NAMESPACE+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
@@ -2246,7 +2246,7 @@ public class Utilities
         // }
         
         dummyProvider.setEndpointUrls(endpointUrls);
-        dummyProvider.setEndpointMethod(ProviderImpl.providerHttpGetUrl);
+        dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpGetUrl());
         dummyProvider.setKey(hostToUse+Settings.DEFAULT_RDF_PROVIDER_NAMESPACE+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         

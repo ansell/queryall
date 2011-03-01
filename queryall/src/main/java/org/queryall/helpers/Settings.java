@@ -57,9 +57,7 @@ public class Settings extends HttpServlet
     private static final boolean _TRACE = Settings.log.isTraceEnabled();
     private static final boolean _DEBUG = Settings.log.isDebugEnabled();
     private static final boolean _INFO = Settings.log.isInfoEnabled();
-    // These are kept here to ensure good logging performance as jsp pages would
-    // have to load this everytime
-    
+
     // This matches the org/queryall/queryall.properties file where
     // the generally static API specific section of the configuration settings are stored
     private static final String BASE_CONFIG_BUNDLE_NAME = "org.queryall.queryall";
@@ -1260,7 +1258,7 @@ public class Settings extends HttpServlet
             
             // Import Regular Expression Normalisation Rules first
 
-            final String regexRuleTypeUri = RegexNormalisationRule.regexruleTypeUri.stringValue();
+            final String regexRuleTypeUri = RegexNormalisationRule.getRegexRuleTypeUri().stringValue();
 
             try
             {
@@ -1313,7 +1311,7 @@ public class Settings extends HttpServlet
             }
 
             // Then do the same thing for SPARQL Normalisation Rules
-            final String sparqlruleTypeUri = SparqlNormalisationRule.sparqlruleTypeUri.stringValue();
+            final String sparqlruleTypeUri = SparqlNormalisationRule.getSparqlRuleTypeUri().stringValue();
 
             try
             {
@@ -1528,44 +1526,10 @@ public class Settings extends HttpServlet
         if(nextSortOrder == Settings.LOWEST_ORDER_FIRST)
         {
             Collections.sort(results);
-            // final int resultLength = temporaryList.size();
-            // for(int i = 0; i < resultLength; i++)
-            // {
-                // int currentLowestOrder = -1;
-                // int currentLowestIndex = -1;
-                // for(int j = 0; j < temporaryList.size(); j++)
-                // {
-                    // if((currentLowestOrder == -1)
-                            // || (currentLowestOrder > temporaryList.get(j).order))
-                    // {
-                        // currentLowestOrder = temporaryList.get(j).order;
-                        // currentLowestIndex = j;
-                    // }
-                // }
-                // results.add(temporaryList.get(currentLowestIndex));
-                // temporaryList.remove(currentLowestIndex);
-            // }
         }
         else if(nextSortOrder == Settings.HIGHEST_ORDER_FIRST)
         {
             Collections.sort(results, Collections.reverseOrder());
-            // final int resultLength = temporaryList.size();
-            // for(int i = 0; i < resultLength; i++)
-            // {
-                // int currentHighestOrder = -1;
-                // int currentHighestIndex = -1;
-                // for(int j = 0; j < temporaryList.size(); j++)
-                // {
-                    // if((currentHighestOrder == -1)
-                            // || (currentHighestOrder < temporaryList.get(j).order))
-                    // {
-                        // currentHighestOrder = temporaryList.get(j).order;
-                        // currentHighestIndex = j;
-                    // }
-                // }
-                // results.add(temporaryList.get(currentHighestIndex));
-                // temporaryList.remove(currentHighestIndex);
-            // }
         }
         else
         {
@@ -2146,59 +2110,6 @@ public class Settings extends HttpServlet
                         {
                             Settings.log.info("Settings.getWebAppConfigurationRdf: finished getting configuration from URL: url="+ url.toString()+" myRepositoryConnection.size()="+myRepositoryConnection.size());
                         }
-                        
-                        // RdfFetcherQueryRunnable nextThread = new RdfFetcherUriQueryRunnable( nextLocation,
-                                     // configMIMEFormat,
-                                     // "",
-                                     // "",
-                                     // configMIMEFormat,
-                                     // new QueryBundle() );
-                        // 
-                        // nextThread.start();
-                        // 
-                        // long counter = 0L;
-                        // 
-                        // while(nextThread.notExecuted() && counter < 200000L)
-                        // {
-                            // Thread.sleep(1000L);
-                            // if(_DEBUG)
-                                // log.debug("Settings: sleeping waiting for configuration to be fetched counter="+counter);
-                            // counter += 1000L;
-                        // }
-                        // 
-                        // if(counter >= 200000L && nextThread.notExecuted())
-                        // {
-                            // backupNeeded = true;
-                            // log.error("Settings: could not fetch the configuration within a reasonable time. Temporarily resorting to backup configuration");
-                        // }
-                        // else
-                        // {
-                            // try
-                            // {
-                                // nextThread.join();
-                            // }
-                            // catch( InterruptedException ie )
-                            // {
-                                // log.error( "Settings.getWebAppConfigurationRdf: caught interrupted exception message="+ie.getMessage() );
-                                // throw ie;
-                            // }
-                            // 
-                            // if(nextThread.wasSuccessful)
-                            // {
-                                // myRepositoryConnection.add(new java.io.StringReader(nextThread.rawResult), url.toString(), RDFFormat.forMIMEType(configMIMEFormat));
-                                // 
-                                // if(Settings._INFO)
-                                // {
-                                    // Settings.log.info("Settings.getWebAppConfigurationRdf: finished getting configuration from URL: nextLocation="+ nextLocation);
-                                // }
-                            // }
-                            // else
-                            // {
-                                // Settings.log.error("Settings.getWebAppConfigurationRdf: error getting configuration from URL: nextLocation="+ nextLocation+" nextThread.lastException="+nextThread.lastException);
-                                // 
-                                // backupNeeded = true;
-                            // }
-                        // }
                     }
                     else
                     {
@@ -2399,46 +2310,6 @@ public class Settings extends HttpServlet
                         {
                             Settings.log.info("Settings.getBaseConfigurationRdf: finished getting configuration from URL: url="+ url.toString());
                         }
-                        // if(Settings._INFO)
-                        // {
-                            // Settings.log.info("Settings.getBaseConfigurationRdf: getting configuration from URL: nextLocation="+ nextLocation);
-                        // }
-                        // final URL url = new URL(nextLocation);
-                        // 
-                        // RdfFetcherQueryRunnable nextThread = new RdfFetcherUriQueryRunnable( nextLocation,
-                                     // configMIMEFormat,
-                                     // "",
-                                     // "",
-                                     // configMIMEFormat,
-                                     // new QueryBundle() );
-                        // 
-                        // nextThread.start();
-                        // 
-                        // try
-                        // {
-                            // nextThread.join();
-                        // }
-                        // catch( InterruptedException ie )
-                        // {
-                            // log.error( "Settings.getBaseConfigurationRdf: caught interrupted exception message="+ie.getMessage() );
-                            // throw ie;
-                        // }
-                        // 
-                        // if(nextThread.wasSuccessful)
-                        // {
-                            // myRepositoryConnection.add(new java.io.StringReader(nextThread.rawResult), url.toString(),
-                                    // RDFFormat.forMIMEType(configMIMEFormat));
-                            // if(Settings._INFO)
-                            // {
-                                // Settings.log.info("Settings.getBaseConfigurationRdf: finished getting configuration from URL: nextLocation="+ nextLocation);
-                            // }
-                        // }
-                        // else
-                        // {
-                            // Settings.log.error("Settings.getBaseConfigurationRdf: error getting configuration from URL: nextLocation="+ nextLocation+" nextThread.lastException="+nextThread.lastException);
-                            // 
-                            // backupNeeded = true;
-                        // }
                     }
                     else
                     {
@@ -2612,46 +2483,6 @@ public class Settings extends HttpServlet
                         {
                             Settings.log.info("Settings.getServerConfigurationRdf: finished getting configuration from URL: url="+ url.toString());
                         }
-                        // if(Settings._INFO)
-                        // {
-                            // Settings.log.info("Settings: getting configuration from URL: nextLocation="+ nextLocation);
-                        // }
-                        // final URL url = new URL(nextLocation);
-                        // 
-                        // RdfFetcherQueryRunnable nextThread = new RdfFetcherUriQueryRunnable( nextLocation,
-                                     // configMIMEFormat,
-                                     // "",
-                                     // "",
-                                     // configMIMEFormat,
-                                     // new QueryBundle() );
-                        // 
-                        // nextThread.start();
-                        // 
-                        // try
-                        // {
-                            // nextThread.join();
-                        // }
-                        // catch( InterruptedException ie )
-                        // {
-                            // log.error( "RdfFetchController.fetchRdfForQuery: caught interrupted exception message="+ie.getMessage() );
-                            // throw ie;
-                        // }
-                        // 
-                        // if(nextThread.wasSuccessful)
-                        // {
-                            // myRepositoryConnection.add(new java.io.StringReader(nextThread.rawResult), url.toString(),
-                                    // RDFFormat.forMIMEType(configMIMEFormat));
-                            // if(Settings._INFO)
-                            // {
-                                // Settings.log.info("Settings: finished getting configuration from URL: nextLocation="+ nextLocation);
-                            // }
-                        // }
-                        // else
-                        // {
-                            // Settings.log.error("Settings: error getting configuration from URL: nextLocation="+ nextLocation+" nextThread.lastException="+nextThread.lastException);
-                            // 
-                            // backupNeeded = true;
-                        // }
                     }
                     else
                     {
@@ -2853,7 +2684,7 @@ public class Settings extends HttpServlet
                         "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException");
             }
         } // end if(backupNeeded)
-        
+                
         if(tempConfigurationRepository == null)
         {
             throw new RuntimeException(
@@ -3483,11 +3314,11 @@ public class Settings extends HttpServlet
             
             String nextInputTestResult = nextTestInputString;
             
-            if(nextRuleTest.getStages().contains(NormalisationRuleImpl.rdfruleStageQueryVariables))
+            if(nextRuleTest.getStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
             {
                 for(final NormalisationRule nextRule : Settings.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.LOWEST_ORDER_FIRST))
                 {
-                    nextInputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.rdfruleStageQueryVariables, nextTestInputString);
+                    nextInputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageQueryVariables(), nextTestInputString);
                 }
                 
                 if(nextInputTestResult.equals(nextTestOutputString))
@@ -3521,13 +3352,13 @@ public class Settings extends HttpServlet
                 }
             }
             
-            if(nextRuleTest.getStages().contains(NormalisationRuleImpl.rdfruleStageBeforeResultsImport))
+            if(nextRuleTest.getStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()))
             {
                 String nextOutputTestResult = nextTestInputString;
                 
                 for(final NormalisationRule nextRule : Settings.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.HIGHEST_ORDER_FIRST))
                 {
-                    nextOutputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.rdfruleStageBeforeResultsImport, nextTestInputString);
+                    nextOutputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(), nextTestInputString);
                     
                     if(nextOutputTestResult.equals(nextTestInputString))
                     {

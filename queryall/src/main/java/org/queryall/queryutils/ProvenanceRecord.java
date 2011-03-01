@@ -55,7 +55,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     public String elementKey = "";
     public String hasAuthorOpenID = "";
     public Date recordDate = null;
-    private URI curationStatus = ProjectImpl.projectNotCuratedUri;
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
     public static URI provenanceTypeUri;
     public static URI provenanceElementTypeUri;

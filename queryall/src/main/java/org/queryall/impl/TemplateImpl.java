@@ -49,7 +49,7 @@ public class TemplateImpl extends Template
     private boolean isNativeFunction = false;
     // if isNativeFunction is true, then the following will contain the URI matching the implemented function
     private String nativeFunctionUri = "";
-    private URI curationStatus = ProjectImpl.projectNotCuratedUri;
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
     // each of the following templates must be applied to this template before returning, additionally, 
     // any parameters that are not declared here which are found in the contextual parameter list must also be included
@@ -70,21 +70,21 @@ public class TemplateImpl extends Template
     
     private int order = 100;
     
-    public static URI templateTypeUri = null;
+    private static URI templateTypeUri = null;
     
-    public static URI templateContentTypeSparqlQuery = null;
-    public static URI templateContentTypeSparqlResultsXml = null;
-    public static URI templateContentTypeSparqlResultsJson = null;
-    public static URI templateContentTypeRdfXml = null;
-    public static URI templateContentTypeN3 = null;
-    public static URI templateContentTypePlainText = null;
-    public static URI templateContentType = null;
-    public static URI templateReferencedTemplate = null;
-    public static URI templateMatchRegex = null;
-    public static URI templateIsNativeFunction = null;
-    public static URI templateNativeFunctionUri = null;
-    public static URI templateTemplateString = null;
-    public static URI templateOrder = null;
+    private static URI templateContentTypeSparqlQuery = null;
+    private static URI templateContentTypeSparqlResultsXml = null;
+    private static URI templateContentTypeSparqlResultsJson = null;
+    private static URI templateContentTypeRdfXml = null;
+    private static URI templateContentTypeN3 = null;
+    private static URI templateContentTypePlainText = null;
+    private static URI templateContentType = null;
+    private static URI templateReferencedTemplate = null;
+    private static URI templateMatchRegex = null;
+    private static URI templateIsNativeFunction = null;
+    private static URI templateNativeFunctionUri = null;
+    private static URI templateTemplateString = null;
+    private static URI templateOrder = null;
     
     public static String templateNamespace;
     
@@ -96,22 +96,22 @@ public class TemplateImpl extends Template
                          +Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE
                          +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
                          
-        templateTypeUri = f.createURI(templateNamespace+"Template");
-        templateContentTypeSparqlQuery = f.createURI(templateNamespace+"ContentTypeSparqlQuery");
-        templateContentTypeSparqlResultsXml = f.createURI(templateNamespace+"ContentTypeSparqlResultsXml");
-        templateContentTypeSparqlResultsJson = f.createURI(templateNamespace+"ContentTypeSparqlResultsJson");
-        templateContentTypeRdfXml = f.createURI(templateNamespace+"ContentTypeRdfXml");
-        templateContentTypeN3 = f.createURI(templateNamespace+"ContentTypeN3");
-        templateContentTypePlainText = f.createURI(templateNamespace+"ContentTypePlainText");
-        templateContentType = f.createURI(templateNamespace+"contentType");
-        templateReferencedTemplate = f.createURI(templateNamespace+"referencedTemplate");
+        setTemplateTypeUri(f.createURI(templateNamespace+"Template"));
+        setTemplateContentTypeSparqlQuery(f.createURI(templateNamespace+"ContentTypeSparqlQuery"));
+        setTemplateContentTypeSparqlResultsXml(f.createURI(templateNamespace+"ContentTypeSparqlResultsXml"));
+        setTemplateContentTypeSparqlResultsJson(f.createURI(templateNamespace+"ContentTypeSparqlResultsJson"));
+        setTemplateContentTypeRdfXml(f.createURI(templateNamespace+"ContentTypeRdfXml"));
+        setTemplateContentTypeN3(f.createURI(templateNamespace+"ContentTypeN3"));
+        setTemplateContentTypePlainText(f.createURI(templateNamespace+"ContentTypePlainText"));
+        setTemplateContentType(f.createURI(templateNamespace+"contentType"));
+        setTemplateReferencedTemplate(f.createURI(templateNamespace+"referencedTemplate"));
         
-        templateMatchRegex = f.createURI(templateNamespace+"matchRegex");
-        templateIsNativeFunction = f.createURI(templateNamespace+"isNativeFunction");
-        templateNativeFunctionUri = f.createURI(templateNamespace+"nativeFunctionUri");
-        templateTemplateString = f.createURI(templateNamespace+"templateString");
-        templateContentType = f.createURI(templateNamespace+"contentType");
-        templateOrder = f.createURI(templateNamespace+"order");
+        setTemplateMatchRegex(f.createURI(templateNamespace+"matchRegex"));
+        setTemplateIsNativeFunction(f.createURI(templateNamespace+"isNativeFunction"));
+        setTemplateNativeFunctionUri(f.createURI(templateNamespace+"nativeFunctionUri"));
+        setTemplateTemplateString(f.createURI(templateNamespace+"templateString"));
+        setTemplateContentType(f.createURI(templateNamespace+"contentType"));
+        setTemplateOrder(f.createURI(templateNamespace+"order"));
     }
     
     
@@ -130,7 +130,7 @@ public class TemplateImpl extends Template
                 log.debug("Template: nextStatement: "+nextStatement.toString());
             }
             
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(templateTypeUri))
+            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(getTemplateTypeUri()))
             {
                 if(_TRACE)
                 {
@@ -140,7 +140,7 @@ public class TemplateImpl extends Template
                 resultIsValid = true;
                 result.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.projectCurationStatusUri))
+            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -195,7 +195,7 @@ public class TemplateImpl extends Template
             
             if(curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.projectNotCuratedUri;
+                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
             }
             else
             {
@@ -204,25 +204,25 @@ public class TemplateImpl extends Template
             
             con.setAutoCommit(false);
             
-            con.add(templateInstanceUri, RDF.TYPE, templateTypeUri, templateInstanceUri);
-            con.add(templateInstanceUri, ProjectImpl.projectCurationStatusUri, curationStatusLiteral, templateInstanceUri);
-            con.add(templateInstanceUri, templateMatchRegex, matchRegexLiteral, templateInstanceUri);
-            con.add(templateInstanceUri, templateIsNativeFunction, isNativeFunctionLiteral, templateInstanceUri);
+            con.add(templateInstanceUri, RDF.TYPE, getTemplateTypeUri(), templateInstanceUri);
+            con.add(templateInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, templateInstanceUri);
+            con.add(templateInstanceUri, getTemplateMatchRegex(), matchRegexLiteral, templateInstanceUri);
+            con.add(templateInstanceUri, getTemplateIsNativeFunction(), isNativeFunctionLiteral, templateInstanceUri);
             
             if(nativeFunctionUri!= null && !nativeFunctionUri.trim().equals(""))
             {
-                con.add(templateInstanceUri, templateNativeFunctionUri, nativeFunctionUriLiteral, templateInstanceUri);
+                con.add(templateInstanceUri, getTemplateNativeFunctionUri(), nativeFunctionUriLiteral, templateInstanceUri);
             }
             
-            con.add(templateInstanceUri, templateTemplateString, templateStringLiteral, templateInstanceUri);
-            con.add(templateInstanceUri, templateContentType, contentTypeLiteral, templateInstanceUri);
-            con.add(templateInstanceUri, templateOrder, orderLiteral, templateInstanceUri);
+            con.add(templateInstanceUri, getTemplateTemplateString(), templateStringLiteral, templateInstanceUri);
+            con.add(templateInstanceUri, getTemplateContentType(), contentTypeLiteral, templateInstanceUri);
+            con.add(templateInstanceUri, getTemplateOrder(), orderLiteral, templateInstanceUri);
             
             if(referencedTemplates != null)
             {
                 for(URI nextReferencedTemplate : referencedTemplates)
                 {
-                    con.add(templateInstanceUri, templateReferencedTemplate, nextReferencedTemplate, templateInstanceUri);
+                    con.add(templateInstanceUri, getTemplateReferencedTemplate(), nextReferencedTemplate, templateInstanceUri);
                 }
             }
             
@@ -270,17 +270,17 @@ public class TemplateImpl extends Template
             
             con.setAutoCommit(false);
             
-            con.add(templateTypeUri, RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(templateContentTypeSparqlQuery, dcFormatUri, f.createLiteral("application/sparql-query"), contextKeyUri);
-            con.add(templateContentTypeSparqlResultsXml, dcFormatUri, f.createLiteral("application/sparql-results+xml"), contextKeyUri);
-            con.add(templateContentTypeSparqlResultsJson, dcFormatUri, f.createLiteral("application/sparql-results+json"), contextKeyUri);
-            con.add(templateContentTypeRdfXml, dcFormatUri, f.createLiteral("application/rdf+xml"), contextKeyUri);
-            con.add(templateContentTypeN3, dcFormatUri, f.createLiteral("text/rdf+n3"), contextKeyUri);
-            con.add(templateContentTypePlainText, dcFormatUri, f.createLiteral("text/plain"), contextKeyUri);
+            con.add(getTemplateTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(getTemplateContentTypeSparqlQuery(), dcFormatUri, f.createLiteral("application/sparql-query"), contextKeyUri);
+            con.add(getTemplateContentTypeSparqlResultsXml(), dcFormatUri, f.createLiteral("application/sparql-results+xml"), contextKeyUri);
+            con.add(getTemplateContentTypeSparqlResultsJson(), dcFormatUri, f.createLiteral("application/sparql-results+json"), contextKeyUri);
+            con.add(getTemplateContentTypeRdfXml(), dcFormatUri, f.createLiteral("application/rdf+xml"), contextKeyUri);
+            con.add(getTemplateContentTypeN3(), dcFormatUri, f.createLiteral("text/rdf+n3"), contextKeyUri);
+            con.add(getTemplateContentTypePlainText(), dcFormatUri, f.createLiteral("text/plain"), contextKeyUri);
             
-            con.add(templateContentType, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getTemplateContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             
-            con.add(templateReferencedTemplate, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getTemplateReferencedTemplate(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -364,7 +364,7 @@ public class TemplateImpl extends Template
 
     public String getElementType()
     {
-        return templateTypeUri.stringValue();
+        return getTemplateTypeUri().stringValue();
     }
     
     public String getTemplateString()
@@ -453,6 +453,238 @@ public class TemplateImpl extends Template
 
         return this.getKey().stringValue().compareTo(otherTemplate.getKey().stringValue());
     }
+
+
+	/**
+	 * @param templateTypeUri the templateTypeUri to set
+	 */
+	public static void setTemplateTypeUri(URI templateTypeUri) {
+		TemplateImpl.templateTypeUri = templateTypeUri;
+	}
+
+
+	/**
+	 * @return the templateTypeUri
+	 */
+	public static URI getTemplateTypeUri() {
+		return templateTypeUri;
+	}
+
+
+	/**
+	 * @param templateContentTypeSparqlQuery the templateContentTypeSparqlQuery to set
+	 */
+	public static void setTemplateContentTypeSparqlQuery(
+			URI templateContentTypeSparqlQuery) {
+		TemplateImpl.templateContentTypeSparqlQuery = templateContentTypeSparqlQuery;
+	}
+
+
+	/**
+	 * @return the templateContentTypeSparqlQuery
+	 */
+	public static URI getTemplateContentTypeSparqlQuery() {
+		return templateContentTypeSparqlQuery;
+	}
+
+
+	/**
+	 * @param templateContentTypeSparqlResultsXml the templateContentTypeSparqlResultsXml to set
+	 */
+	public static void setTemplateContentTypeSparqlResultsXml(
+			URI templateContentTypeSparqlResultsXml) {
+		TemplateImpl.templateContentTypeSparqlResultsXml = templateContentTypeSparqlResultsXml;
+	}
+
+
+	/**
+	 * @return the templateContentTypeSparqlResultsXml
+	 */
+	public static URI getTemplateContentTypeSparqlResultsXml() {
+		return templateContentTypeSparqlResultsXml;
+	}
+
+
+	/**
+	 * @param templateContentTypeSparqlResultsJson the templateContentTypeSparqlResultsJson to set
+	 */
+	public static void setTemplateContentTypeSparqlResultsJson(
+			URI templateContentTypeSparqlResultsJson) {
+		TemplateImpl.templateContentTypeSparqlResultsJson = templateContentTypeSparqlResultsJson;
+	}
+
+
+	/**
+	 * @return the templateContentTypeSparqlResultsJson
+	 */
+	public static URI getTemplateContentTypeSparqlResultsJson() {
+		return templateContentTypeSparqlResultsJson;
+	}
+
+
+	/**
+	 * @param templateContentTypeRdfXml the templateContentTypeRdfXml to set
+	 */
+	public static void setTemplateContentTypeRdfXml(
+			URI templateContentTypeRdfXml) {
+		TemplateImpl.templateContentTypeRdfXml = templateContentTypeRdfXml;
+	}
+
+
+	/**
+	 * @return the templateContentTypeRdfXml
+	 */
+	public static URI getTemplateContentTypeRdfXml() {
+		return templateContentTypeRdfXml;
+	}
+
+
+	/**
+	 * @param templateContentTypeN3 the templateContentTypeN3 to set
+	 */
+	public static void setTemplateContentTypeN3(URI templateContentTypeN3) {
+		TemplateImpl.templateContentTypeN3 = templateContentTypeN3;
+	}
+
+
+	/**
+	 * @return the templateContentTypeN3
+	 */
+	public static URI getTemplateContentTypeN3() {
+		return templateContentTypeN3;
+	}
+
+
+	/**
+	 * @param templateContentTypePlainText the templateContentTypePlainText to set
+	 */
+	public static void setTemplateContentTypePlainText(
+			URI templateContentTypePlainText) {
+		TemplateImpl.templateContentTypePlainText = templateContentTypePlainText;
+	}
+
+
+	/**
+	 * @return the templateContentTypePlainText
+	 */
+	public static URI getTemplateContentTypePlainText() {
+		return templateContentTypePlainText;
+	}
+
+
+	/**
+	 * @param templateContentType the templateContentType to set
+	 */
+	public static void setTemplateContentType(URI templateContentType) {
+		TemplateImpl.templateContentType = templateContentType;
+	}
+
+
+	/**
+	 * @return the templateContentType
+	 */
+	public static URI getTemplateContentType() {
+		return templateContentType;
+	}
+
+
+	/**
+	 * @param templateReferencedTemplate the templateReferencedTemplate to set
+	 */
+	public static void setTemplateReferencedTemplate(
+			URI templateReferencedTemplate) {
+		TemplateImpl.templateReferencedTemplate = templateReferencedTemplate;
+	}
+
+
+	/**
+	 * @return the templateReferencedTemplate
+	 */
+	public static URI getTemplateReferencedTemplate() {
+		return templateReferencedTemplate;
+	}
+
+
+	/**
+	 * @param templateMatchRegex the templateMatchRegex to set
+	 */
+	public static void setTemplateMatchRegex(URI templateMatchRegex) {
+		TemplateImpl.templateMatchRegex = templateMatchRegex;
+	}
+
+
+	/**
+	 * @return the templateMatchRegex
+	 */
+	public static URI getTemplateMatchRegex() {
+		return templateMatchRegex;
+	}
+
+
+	/**
+	 * @param templateIsNativeFunction the templateIsNativeFunction to set
+	 */
+	public static void setTemplateIsNativeFunction(
+			URI templateIsNativeFunction) {
+		TemplateImpl.templateIsNativeFunction = templateIsNativeFunction;
+	}
+
+
+	/**
+	 * @return the templateIsNativeFunction
+	 */
+	public static URI getTemplateIsNativeFunction() {
+		return templateIsNativeFunction;
+	}
+
+
+	/**
+	 * @param templateNativeFunctionUri the templateNativeFunctionUri to set
+	 */
+	public static void setTemplateNativeFunctionUri(
+			URI templateNativeFunctionUri) {
+		TemplateImpl.templateNativeFunctionUri = templateNativeFunctionUri;
+	}
+
+
+	/**
+	 * @return the templateNativeFunctionUri
+	 */
+	public static URI getTemplateNativeFunctionUri() {
+		return templateNativeFunctionUri;
+	}
+
+
+	/**
+	 * @param templateTemplateString the templateTemplateString to set
+	 */
+	public static void setTemplateTemplateString(URI templateTemplateString) {
+		TemplateImpl.templateTemplateString = templateTemplateString;
+	}
+
+
+	/**
+	 * @return the templateTemplateString
+	 */
+	public static URI getTemplateTemplateString() {
+		return templateTemplateString;
+	}
+
+
+	/**
+	 * @param templateOrder the templateOrder to set
+	 */
+	public static void setTemplateOrder(URI templateOrder) {
+		TemplateImpl.templateOrder = templateOrder;
+	}
+
+
+	/**
+	 * @return the templateOrder
+	 */
+	public static URI getTemplateOrder() {
+		return templateOrder;
+	}
 
 
 }

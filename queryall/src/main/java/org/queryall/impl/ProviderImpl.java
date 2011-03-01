@@ -33,51 +33,51 @@ public class ProviderImpl extends Provider
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_PROVIDER_NAMESPACE;
     
-    public Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
-    public URI key;
+    private URI key = null;
     
-    public String title = "";
-    public URI curationStatus = ProjectImpl.projectNotCuratedUri;
-    public Collection<String> endpointUrls = new HashSet<String>();
+    private String title = "";
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private Collection<String> endpointUrls = new HashSet<String>();
     // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue() and Provider.providerNoCommunication.stringValue()
-    public URI endpointMethod = ProviderImpl.providerNoCommunication;
-    public Collection<URI> namespaces = new HashSet<URI>();
-    public Collection<URI> includedInCustomQueries = new HashSet<URI>();
-    public Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
-    public boolean useSparqlGraph = false;
-    public String sparqlGraphUri = "";
-    public URI redirectOrProxy = ProviderImpl.providerRedirect;
-    public boolean isDefaultSourceVar = false;
-    public URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
+    private Collection<URI> namespaces = new HashSet<URI>();
+    private Collection<URI> includedInCustomQueries = new HashSet<URI>();
+    private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
+    private boolean useSparqlGraph = false;
+    private String sparqlGraphUri = "";
+    private URI redirectOrProxy = ProviderImpl.getProviderRedirect();
+    private boolean isDefaultSourceVar = false;
+    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     
     // Use these to include information based on whether or not the provider was actually used to provide information for particular user queries
-    public Collection<String> providerQueryInclusions = new HashSet<String>();
-    public boolean onlyIncludeProviderQueryIfInformationReturned = true;
+//    public Collection<String> providerQueryInclusions = new HashSet<String>();
+//    public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
-    public String acceptHeaderString = "";
+    private String acceptHeaderString = "";
     
-    public static URI providerTypeUri;
-    public static URI providerTitle;
-    public static URI providerResolutionStrategy;
-    public static URI providerHandledNamespace;
-    public static URI providerResolutionMethod;
-    public static URI providerEndpointUrl;
-    public static URI providerRequiresSparqlGraphURI;
-    public static URI providerGraphUri;
-    public static URI providerIncludedInQuery;
-    public static URI providerIsDefaultSource;
-    public static URI providerNeedsRdfNormalisation;
-    public static URI providerRedirect;
-    public static URI providerProxy;
-    public static URI providerHttpPostSparql;
-    public static URI providerHttpGetUrl;
-    public static URI providerNoCommunication;
-    public static URI providerHttpPostUrl;
-    public static URI providerAcceptHeader;
+    private static URI providerTypeUri;
+    private static URI providerTitle;
+    private static URI providerResolutionStrategy;
+    private static URI providerHandledNamespace;
+    private static URI providerResolutionMethod;
+    private static URI providerEndpointUrl;
+    private static URI providerRequiresSparqlGraphURI;
+    private static URI providerGraphUri;
+    private static URI providerIncludedInQuery;
+    private static URI providerIsDefaultSource;
+    private static URI providerNeedsRdfNormalisation;
+    private static URI providerRedirect;
+    private static URI providerProxy;
+    private static URI providerHttpPostSparql;
+    private static URI providerHttpGetUrl;
+    private static URI providerNoCommunication;
+    private static URI providerHttpPostUrl;
+    private static URI providerAcceptHeader;
     
     public static String providerNamespace;
-    public static String profileNamespace;
+//    public static String profileNamespace;
     
     static
     {
@@ -87,29 +87,29 @@ public class ProviderImpl extends Provider
                             +Settings.DEFAULT_RDF_PROVIDER_NAMESPACE
                             +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
                             
-        profileNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                           +Settings.DEFAULT_RDF_PROFILE_NAMESPACE
-                           +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+//        profileNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
+//                           +Settings.DEFAULT_RDF_PROFILE_NAMESPACE
+//                           +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
                            
-        providerTypeUri = f.createURI(providerNamespace+"Provider");
+        setProviderTypeUri(f.createURI(providerNamespace+"Provider"));
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
-        providerTitle = f.createURI(providerNamespace+"Title");
-        providerResolutionStrategy = f.createURI(providerNamespace+"resolutionStrategy");
-        providerHandledNamespace = f.createURI(providerNamespace+"handlesNamespace");
-        providerResolutionMethod = f.createURI(providerNamespace+"resolutionMethod");
-        providerEndpointUrl = f.createURI(providerNamespace+"endpointUrl");
-        providerRequiresSparqlGraphURI = f.createURI(providerNamespace+"requiresGraphUri");
-        providerGraphUri = f.createURI(providerNamespace+"graphUri");
-        providerIncludedInQuery = f.createURI(providerNamespace+"includedInQuery");
-        providerIsDefaultSource = f.createURI(providerNamespace+"isDefaultSource");
-        providerNeedsRdfNormalisation = f.createURI(providerNamespace+"needsRdfNormalisation");
-        providerAcceptHeader = f.createURI(providerNamespace+"acceptHeader");
-        providerRedirect = f.createURI(providerNamespace+"redirect");
-        providerProxy = f.createURI(providerNamespace+"proxy");
-        providerHttpPostSparql = f.createURI(providerNamespace+"httppostsparql");
-        providerHttpGetUrl = f.createURI(providerNamespace+"httpgeturl");
-        providerNoCommunication = f.createURI(providerNamespace+"nocommunication");
-        providerHttpPostUrl = f.createURI(providerNamespace+"httpposturl");
+        setProviderTitle(f.createURI(providerNamespace+"Title"));
+        setProviderResolutionStrategy(f.createURI(providerNamespace+"resolutionStrategy"));
+        setProviderHandledNamespace(f.createURI(providerNamespace+"handlesNamespace"));
+        setProviderResolutionMethod(f.createURI(providerNamespace+"resolutionMethod"));
+        setProviderEndpointUrl(f.createURI(providerNamespace+"endpointUrl"));
+        setProviderRequiresSparqlGraphURI(f.createURI(providerNamespace+"requiresGraphUri"));
+        setProviderGraphUri(f.createURI(providerNamespace+"graphUri"));
+        setProviderIncludedInQuery(f.createURI(providerNamespace+"includedInQuery"));
+        setProviderIsDefaultSource(f.createURI(providerNamespace+"isDefaultSource"));
+        setProviderNeedsRdfNormalisation(f.createURI(providerNamespace+"needsRdfNormalisation"));
+        setProviderAcceptHeader(f.createURI(providerNamespace+"acceptHeader"));
+        setProviderRedirect(f.createURI(providerNamespace+"redirect"));
+        setProviderProxy(f.createURI(providerNamespace+"proxy"));
+        setProviderHttpPostSparql(f.createURI(providerNamespace+"httppostsparql"));
+        setProviderHttpGetUrl(f.createURI(providerNamespace+"httpgeturl"));
+        setProviderNoCommunication(f.createURI(providerNamespace+"nocommunication"));
+        setProviderHttpPostUrl(f.createURI(providerNamespace+"httpposturl"));
     }
     
     public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
@@ -123,23 +123,23 @@ public class ProviderImpl extends Provider
             URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(providerTypeUri, RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             if(modelVersion == 1)
             {
-                con.add(providerTitle, RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
             }
-            con.add(providerResolutionStrategy, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(providerHandledNamespace, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(providerResolutionMethod, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(providerEndpointUrl, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(providerRequiresSparqlGraphURI, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(providerGraphUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(providerIncludedInQuery, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(providerIsDefaultSource, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(providerAcceptHeader, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(providerNeedsRdfNormalisation, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(providerRedirect, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(providerProxy, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderRedirect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderProxy(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -219,7 +219,7 @@ public class ProviderImpl extends Provider
                 log.trace("Provider: nextStatement: "+nextStatement.toString());
             }
             
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(providerTypeUri))
+            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(getProviderTypeUri()))
             {
                 if(_TRACE)
                 {
@@ -229,51 +229,51 @@ public class ProviderImpl extends Provider
                 resultIsValid = true;
                 result.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.projectCurationStatusUri))
+            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(providerTitle) || nextStatement.getPredicate().equals(f.createURI(Settings.DC_NAMESPACE+"title")))
+            else if(nextStatement.getPredicate().equals(getProviderTitle()) || nextStatement.getPredicate().equals(f.createURI(Settings.DC_NAMESPACE+"title")))
             {
                 result.setTitle(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(providerAcceptHeader))
+            else if(nextStatement.getPredicate().equals(getProviderAcceptHeader()))
             {
                 result.setAcceptHeaderString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(providerResolutionStrategy))
+            else if(nextStatement.getPredicate().equals(getProviderResolutionStrategy()))
             {
                 result.setRedirectOrProxy((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(providerHandledNamespace))
+            else if(nextStatement.getPredicate().equals(getProviderHandledNamespace()))
             {
                 tempNamespaces.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(providerResolutionMethod))
+            else if(nextStatement.getPredicate().equals(getProviderResolutionMethod()))
             {
                 result.setEndpointMethod((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(providerEndpointUrl))
+            else if(nextStatement.getPredicate().equals(getProviderEndpointUrl()))
             {
                 tempEndpointUrls.add(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(providerRequiresSparqlGraphURI))
+            else if(nextStatement.getPredicate().equals(getProviderRequiresSparqlGraphURI()))
             {
                 result.setUseSparqlGraph(Utilities.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(providerGraphUri))
+            else if(nextStatement.getPredicate().equals(getProviderGraphUri()))
             {
                 result.setSparqlGraphUri(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(providerIncludedInQuery))
+            else if(nextStatement.getPredicate().equals(getProviderIncludedInQuery()))
             {
                 tempIncludedInCustomQueries.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(providerIsDefaultSource))
+            else if(nextStatement.getPredicate().equals(getProviderIsDefaultSource()))
             {
                 result.setIsDefaultSource(Utilities.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(providerNeedsRdfNormalisation))
+            else if(nextStatement.getPredicate().equals(getProviderNeedsRdfNormalisation()))
             {
                 tempRdfNormalisationsNeeded.add((URI)nextStatement.getObject());
             }
@@ -325,106 +325,106 @@ public class ProviderImpl extends Provider
             
             Literal titleLiteral;
             
-            if(title == null)
+            if(getTitle() == null)
             {
                 titleLiteral = f.createLiteral("");
             }
             else
             {
-                titleLiteral = f.createLiteral(title);
+                titleLiteral = f.createLiteral(getTitle());
             }
             
-            URI redirectOrProxyLiteral = redirectOrProxy;
-            URI endpointMethodLiteral = endpointMethod;
-            Literal useSparqlGraphLiteral = f.createLiteral(useSparqlGraph);
-            Literal sparqlGraphUriLiteral = f.createLiteral(sparqlGraphUri);
-            Literal isDefaultSourceLiteral = f.createLiteral(isDefaultSourceVar);
+            URI redirectOrProxyLiteral = getRedirectOrProxy();
+            URI endpointMethodLiteral = getEndpointMethod();
+            Literal useSparqlGraphLiteral = f.createLiteral(getUseSparqlGraph());
+            Literal sparqlGraphUriLiteral = f.createLiteral(getSparqlGraphUri());
+            Literal isDefaultSourceLiteral = f.createLiteral(getIsDefaultSourceVar());
             
             // backwards compatibility check, and use default if nothing was previously specified
             // NOTE: we assume empty accept header is non-intentional as it doesn't have a non-trivial purpose
             Literal acceptHeaderLiteral = null;
             
-            if(acceptHeaderString == null || acceptHeaderString.trim().equals(""))
+            if(getAcceptHeaderString() == null || getAcceptHeaderString().trim().equals(""))
             {
                 acceptHeaderLiteral = f.createLiteral(Settings.getStringPropertyFromConfig("defaultAcceptHeader"));
             }
             else
             {
-                acceptHeaderLiteral = f.createLiteral(acceptHeaderString);
+                acceptHeaderLiteral = f.createLiteral(getAcceptHeaderString());
             }
             
             URI curationStatusLiteral = null;
             
-            if(curationStatus == null)
-                curationStatusLiteral = ProjectImpl.projectNotCuratedUri;
+            if(getCurationStatus() == null)
+                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
             else
-                curationStatusLiteral = curationStatus;
+                curationStatusLiteral = getCurationStatus();
                 
                 
-            URI profileIncludeExcludeOrderLiteral = profileIncludeExcludeOrder;
+            URI profileIncludeExcludeOrderLiteral = getProfileIncludeExcludeOrder();
             
             con.setAutoCommit(false);
             
-            con.add(providerInstanceUri, RDF.TYPE, providerTypeUri, providerInstanceUri);
+            con.add(providerInstanceUri, RDF.TYPE, getProviderTypeUri(), providerInstanceUri);
             
-            con.add(providerInstanceUri, ProjectImpl.projectCurationStatusUri, curationStatusLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, providerInstanceUri);
             
             con.add(providerInstanceUri, Settings.DC_TITLE, titleLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, providerResolutionStrategy, redirectOrProxyLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, getProviderResolutionStrategy(), redirectOrProxyLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, providerResolutionMethod, endpointMethodLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, getProviderResolutionMethod(), endpointMethodLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, providerRequiresSparqlGraphURI, useSparqlGraphLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, providerGraphUri, sparqlGraphUriLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, getProviderGraphUri(), sparqlGraphUriLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, providerIsDefaultSource, isDefaultSourceLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, getProviderIsDefaultSource(), isDefaultSourceLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, providerAcceptHeader, acceptHeaderLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, getProviderAcceptHeader(), acceptHeaderLiteral, providerInstanceUri);
             
             con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral, providerInstanceUri);
             
-            if(endpointUrls != null)
+            if(getEndpointUrls() != null)
             {
-                for(String nextEndpointUrl : endpointUrls)
+                for(String nextEndpointUrl : getEndpointUrls())
                 {
                     if(nextEndpointUrl != null)
                     {
-                        con.add(providerInstanceUri, providerEndpointUrl, f.createLiteral(nextEndpointUrl), providerInstanceUri);
+                        con.add(providerInstanceUri, getProviderEndpointUrl(), f.createLiteral(nextEndpointUrl), providerInstanceUri);
                     }
                 }
             }
             
-            if(namespaces != null)
+            if(getNamespaces() != null)
             {
-                for(URI nextNamespace : namespaces)
+                for(URI nextNamespace : getNamespaces())
                 {
                     if(nextNamespace != null)
                     {
-                        con.add(providerInstanceUri, providerHandledNamespace, nextNamespace, providerInstanceUri);
+                        con.add(providerInstanceUri, getProviderHandledNamespace(), nextNamespace, providerInstanceUri);
                     }
                 }
             }
             
-            if(includedInCustomQueries != null)
+            if(getIncludedInCustomQueries() != null)
             {
-                for(URI nextIncludedInCustomQuery : includedInCustomQueries)
+                for(URI nextIncludedInCustomQuery : getIncludedInCustomQueries())
                 {
                     if(nextIncludedInCustomQuery != null)
                     {
-                        con.add(providerInstanceUri, providerIncludedInQuery, nextIncludedInCustomQuery, providerInstanceUri);
+                        con.add(providerInstanceUri, getProviderIncludedInQuery(), nextIncludedInCustomQuery, providerInstanceUri);
                     }
                 }
             }
             
-            if(rdfNormalisationsNeeded != null)
+            if(getRdfNormalisationsNeeded() != null)
             {
-                for(URI nextRdfNormalisationNeeded : rdfNormalisationsNeeded)
+                for(URI nextRdfNormalisationNeeded : getRdfNormalisationsNeeded())
                 {
                     if(nextRdfNormalisationNeeded != null)
                     {
-                        con.add(providerInstanceUri, providerNeedsRdfNormalisation, nextRdfNormalisationNeeded, providerInstanceUri);
+                        con.add(providerInstanceUri, getProviderNeedsRdfNormalisation(), nextRdfNormalisationNeeded, providerInstanceUri);
                     }
                 }
             }
@@ -487,9 +487,9 @@ public class ProviderImpl extends Provider
 
     public boolean containsNamespaceUri(URI newNamespaceUri)
     {
-        if(this.namespaces != null)
+        if(this.getNamespaces() != null)
         {
-            return this.namespaces.contains(newNamespaceUri);
+            return this.getNamespaces().contains(newNamespaceUri);
             // for(String nextNamespace : this.namespaces)
             // {
                 // if(nextNamespace.equals(newNamespaceUri))
@@ -504,12 +504,12 @@ public class ProviderImpl extends Provider
     
     public boolean isHttpPostSparql()
     {
-        return this.endpointMethod.equals(ProviderImpl.providerHttpPostSparql);
+        return this.getEndpointMethod().equals(ProviderImpl.getProviderHttpPostSparql());
     }
     
     public boolean isHttpGetUrl()
     {
-        return this.endpointMethod.equals(ProviderImpl.providerHttpGetUrl);
+        return this.getEndpointMethod().equals(ProviderImpl.getProviderHttpGetUrl());
     }
     
     public boolean hasEndpointUrl()
@@ -519,30 +519,30 @@ public class ProviderImpl extends Provider
     
     public boolean needsRedirect()
     {
-        return redirectOrProxy.equals(ProviderImpl.providerRedirect.stringValue());
+        return getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect().stringValue());
     }
     
     public boolean needsProxy()
     {
-        return redirectOrProxy.equals(ProviderImpl.providerProxy.stringValue());
+        return getRedirectOrProxy().equals(ProviderImpl.getProviderProxy().stringValue());
     }
     
     public String toString()
     {
         String result = "\n";
         
-        result += "key="+key+"\n";
-        result += "endpointUrls="+endpointUrls + "\n";
-        result += "endpointMethod="+endpointMethod + "\n";
-        result += "namespaces="+namespaces + "\n";
-        result += "includedInCustomQueries="+includedInCustomQueries + "\n";
-        result += "useSparqlGraph="+useSparqlGraph + "\n";
-        result += "sparqlGraphUri="+sparqlGraphUri + "\n";
-        result += "redirectOrProxy="+redirectOrProxy + "\n";
-        result += "isDefaultSource="+isDefaultSourceVar + "\n";
-        result += "needsUriNormalisation="+rdfNormalisationsNeeded + "\n";
-        result += "profileIncludeExcludeOrder="+profileIncludeExcludeOrder + "\n";
-        result += "acceptHeaderString="+acceptHeaderString + "\n";
+        result += "key="+getKey()+"\n";
+        result += "endpointUrls="+getEndpointUrls() + "\n";
+        result += "endpointMethod="+getEndpointMethod() + "\n";
+        result += "namespaces="+getNamespaces() + "\n";
+        result += "includedInCustomQueries="+getIncludedInCustomQueries() + "\n";
+        result += "useSparqlGraph="+getUseSparqlGraph() + "\n";
+        result += "sparqlGraphUri="+getSparqlGraphUri() + "\n";
+        result += "redirectOrProxy="+getRedirectOrProxy() + "\n";
+        result += "isDefaultSource="+getIsDefaultSourceVar() + "\n";
+        result += "needsUriNormalisation="+getRdfNormalisationsNeeded() + "\n";
+        result += "profileIncludeExcludeOrder="+getProfileIncludeExcludeOrder() + "\n";
+        result += "acceptHeaderString="+getAcceptHeaderString() + "\n";
         
         return result;
     }
@@ -563,29 +563,29 @@ public class ProviderImpl extends Provider
     {
         String result = "";
         
-        if(endpointUrls != null)
+        if(getEndpointUrls() != null)
         {
-            result += "<div class=\"endpointurl\">Endpoint URL's: "+Utilities.xmlEncodeString(endpointUrls.toString()) + "</div>\n";
+            result += "<div class=\"endpointurl\">Endpoint URL's: "+Utilities.xmlEncodeString(getEndpointUrls().toString()) + "</div>\n";
         }
         else
         {
             result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
         }
         
-        result += "<div class=\"endpointmethod\">Retrieval Method: "+Utilities.xmlEncodeString(endpointMethod.stringValue()) + "</div>\n";
+        result += "<div class=\"endpointmethod\">Retrieval Method: "+Utilities.xmlEncodeString(getEndpointMethod().stringValue()) + "</div>\n";
         
-        if(namespaces != null)
+        if(getNamespaces() != null)
         {
-            result += "<div class=\"namespaces\">Namespaces: "+Utilities.xmlEncodeString(namespaces.toString()) + "</div>\n";
+            result += "<div class=\"namespaces\">Namespaces: "+Utilities.xmlEncodeString(getNamespaces().toString()) + "</div>\n";
         }
         else
         {
             result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
         }
         
-        if(includedInCustomQueries != null)
+        if(getIncludedInCustomQueries() != null)
         {
-            result += "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "+Utilities.xmlEncodeString(includedInCustomQueries.toString()) + "</div>\n";
+            result += "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "+Utilities.xmlEncodeString(getIncludedInCustomQueries().toString()) + "</div>\n";
         }
         else
         {
@@ -594,7 +594,7 @@ public class ProviderImpl extends Provider
         
         if(getUseSparqlGraph())
         {
-            result += "<div class=\"useSparqlGraph\">Uses a SPARQL graph URI with URI: "+Utilities.xmlEncodeString(sparqlGraphUri) + "</div>\n";
+            result += "<div class=\"useSparqlGraph\">Uses a SPARQL graph URI with URI: "+Utilities.xmlEncodeString(getSparqlGraphUri()) + "</div>\n";
         }
         else
         {
@@ -619,9 +619,9 @@ public class ProviderImpl extends Provider
             result += "<div class=\"redirectOrProxy\">This provider will not be used on all namespaces for the configured queries</div>\n";
         }
         
-        if(rdfNormalisationsNeeded != null)
+        if(getRdfNormalisationsNeeded() != null)
         {
-            result += "<div class=\"includedInCustomQueries\">This provider requires the following normalisations to match the normalised URI formats: "+Utilities.xmlEncodeString(rdfNormalisationsNeeded.toString()) + "</div>\n";
+            result += "<div class=\"includedInCustomQueries\">This provider requires the following normalisations to match the normalised URI formats: "+Utilities.xmlEncodeString(getRdfNormalisationsNeeded().toString()) + "</div>\n";
         }
         else
         {
@@ -668,14 +668,14 @@ public class ProviderImpl extends Provider
 
     public String getElementType()
     {
-        return providerTypeUri.stringValue();
+        return getProviderTypeUri().stringValue();
     }
     
     public boolean handlesQueryExplicitly(URI queryKey)
     {
-        if(this.includedInCustomQueries != null)
+        if(this.getIncludedInCustomQueries() != null)
         {
-            return this.includedInCustomQueries.contains(queryKey);
+            return this.getIncludedInCustomQueries().contains(queryKey);
             // for(String nextCustomQueryType : this.includedInCustomQueries)
             // {
                 // if(nextCustomQueryType.equals(queryKey))
@@ -694,28 +694,28 @@ public class ProviderImpl extends Provider
     
     public static URI getProviderHttpPostSparqlUri()
     {
-        return providerHttpPostSparql;
+        return getProviderHttpPostSparql();
     }
     
     public static URI getProviderHttpPostUrlUri()
     {
-        return providerHttpPostUrl;
+        return getProviderHttpPostUrl();
     }
     
     
     public static URI getProviderHttpGetUrlUri()
     {
-        return providerHttpGetUrl;
+        return getProviderHttpGetUrl();
     }
     
     public boolean getIsDefaultSource()
     {
-        return isDefaultSourceVar;
+        return getIsDefaultSourceVar();
     }
 
     public void setIsDefaultSource(boolean isDefaultSourceVar)
     {
-        this.isDefaultSourceVar = isDefaultSourceVar;
+        this.setIsDefaultSourceVar(isDefaultSourceVar);
     }
 
     public boolean getUseSparqlGraph()
@@ -740,12 +740,12 @@ public class ProviderImpl extends Provider
     
     public Collection<URI> getNormalisationsNeeded()
     {
-        return rdfNormalisationsNeeded;
+        return getRdfNormalisationsNeeded();
     }
     
     public void setNormalisationsNeeded(Collection<URI> rdfNormalisationsNeeded)
     {
-        this.rdfNormalisationsNeeded = rdfNormalisationsNeeded;
+        this.setRdfNormalisationsNeeded(rdfNormalisationsNeeded);
     }
 
     public Collection<URI> getIncludedInCustomQueries()
@@ -838,5 +838,293 @@ public class ProviderImpl extends Provider
     {
         return unrecognisedStatements;
     }
+
+	/**
+	 * @param providerNoCommunication the providerNoCommunication to set
+	 */
+	public static void setProviderNoCommunication(
+			URI providerNoCommunication) {
+		ProviderImpl.providerNoCommunication = providerNoCommunication;
+	}
+
+	/**
+	 * @return the providerNoCommunication
+	 */
+	public static URI getProviderNoCommunication() {
+		return providerNoCommunication;
+	}
+
+	/**
+	 * @param rdfNormalisationsNeeded the rdfNormalisationsNeeded to set
+	 */
+	public void setRdfNormalisationsNeeded(Collection<URI> rdfNormalisationsNeeded) {
+		this.rdfNormalisationsNeeded = rdfNormalisationsNeeded;
+	}
+
+	/**
+	 * @return the rdfNormalisationsNeeded
+	 */
+	public Collection<URI> getRdfNormalisationsNeeded() {
+		return rdfNormalisationsNeeded;
+	}
+
+	/**
+	 * @param providerRedirect the providerRedirect to set
+	 */
+	public static void setProviderRedirect(URI providerRedirect) {
+		ProviderImpl.providerRedirect = providerRedirect;
+	}
+
+	/**
+	 * @return the providerRedirect
+	 */
+	public static URI getProviderRedirect() {
+		return providerRedirect;
+	}
+
+	/**
+	 * @param isDefaultSourceVar the isDefaultSourceVar to set
+	 */
+	public void setIsDefaultSourceVar(boolean isDefaultSourceVar) {
+		this.isDefaultSourceVar = isDefaultSourceVar;
+	}
+
+	/**
+	 * @return the isDefaultSourceVar
+	 */
+	public boolean getIsDefaultSourceVar() {
+		return isDefaultSourceVar;
+	}
+
+	/**
+	 * @param providerTypeUri the providerTypeUri to set
+	 */
+	public static void setProviderTypeUri(URI providerTypeUri) {
+		ProviderImpl.providerTypeUri = providerTypeUri;
+	}
+
+	/**
+	 * @return the providerTypeUri
+	 */
+	public static URI getProviderTypeUri() {
+		return providerTypeUri;
+	}
+
+	/**
+	 * @param providerTitle the providerTitle to set
+	 */
+	public static void setProviderTitle(URI providerTitle) {
+		ProviderImpl.providerTitle = providerTitle;
+	}
+
+	/**
+	 * @return the providerTitle
+	 */
+	public static URI getProviderTitle() {
+		return providerTitle;
+	}
+
+	/**
+	 * @param providerResolutionStrategy the providerResolutionStrategy to set
+	 */
+	public static void setProviderResolutionStrategy(
+			URI providerResolutionStrategy) {
+		ProviderImpl.providerResolutionStrategy = providerResolutionStrategy;
+	}
+
+	/**
+	 * @return the providerResolutionStrategy
+	 */
+	public static URI getProviderResolutionStrategy() {
+		return providerResolutionStrategy;
+	}
+
+	/**
+	 * @param providerHandledNamespace the providerHandledNamespace to set
+	 */
+	public static void setProviderHandledNamespace(
+			URI providerHandledNamespace) {
+		ProviderImpl.providerHandledNamespace = providerHandledNamespace;
+	}
+
+	/**
+	 * @return the providerHandledNamespace
+	 */
+	public static URI getProviderHandledNamespace() {
+		return providerHandledNamespace;
+	}
+
+	/**
+	 * @param providerResolutionMethod the providerResolutionMethod to set
+	 */
+	public static void setProviderResolutionMethod(
+			URI providerResolutionMethod) {
+		ProviderImpl.providerResolutionMethod = providerResolutionMethod;
+	}
+
+	/**
+	 * @return the providerResolutionMethod
+	 */
+	public static URI getProviderResolutionMethod() {
+		return providerResolutionMethod;
+	}
+
+	/**
+	 * @param providerEndpointUrl the providerEndpointUrl to set
+	 */
+	public static void setProviderEndpointUrl(URI providerEndpointUrl) {
+		ProviderImpl.providerEndpointUrl = providerEndpointUrl;
+	}
+
+	/**
+	 * @return the providerEndpointUrl
+	 */
+	public static URI getProviderEndpointUrl() {
+		return providerEndpointUrl;
+	}
+
+	/**
+	 * @param providerRequiresSparqlGraphURI the providerRequiresSparqlGraphURI to set
+	 */
+	public static void setProviderRequiresSparqlGraphURI(
+			URI providerRequiresSparqlGraphURI) {
+		ProviderImpl.providerRequiresSparqlGraphURI = providerRequiresSparqlGraphURI;
+	}
+
+	/**
+	 * @return the providerRequiresSparqlGraphURI
+	 */
+	public static URI getProviderRequiresSparqlGraphURI() {
+		return providerRequiresSparqlGraphURI;
+	}
+
+	/**
+	 * @param providerGraphUri the providerGraphUri to set
+	 */
+	public static void setProviderGraphUri(URI providerGraphUri) {
+		ProviderImpl.providerGraphUri = providerGraphUri;
+	}
+
+	/**
+	 * @return the providerGraphUri
+	 */
+	public static URI getProviderGraphUri() {
+		return providerGraphUri;
+	}
+
+	/**
+	 * @param providerIncludedInQuery the providerIncludedInQuery to set
+	 */
+	public static void setProviderIncludedInQuery(
+			URI providerIncludedInQuery) {
+		ProviderImpl.providerIncludedInQuery = providerIncludedInQuery;
+	}
+
+	/**
+	 * @return the providerIncludedInQuery
+	 */
+	public static URI getProviderIncludedInQuery() {
+		return providerIncludedInQuery;
+	}
+
+	/**
+	 * @param providerIsDefaultSource the providerIsDefaultSource to set
+	 */
+	public static void setProviderIsDefaultSource(
+			URI providerIsDefaultSource) {
+		ProviderImpl.providerIsDefaultSource = providerIsDefaultSource;
+	}
+
+	/**
+	 * @return the providerIsDefaultSource
+	 */
+	public static URI getProviderIsDefaultSource() {
+		return providerIsDefaultSource;
+	}
+
+	/**
+	 * @param providerNeedsRdfNormalisation the providerNeedsRdfNormalisation to set
+	 */
+	public static void setProviderNeedsRdfNormalisation(
+			URI providerNeedsRdfNormalisation) {
+		ProviderImpl.providerNeedsRdfNormalisation = providerNeedsRdfNormalisation;
+	}
+
+	/**
+	 * @return the providerNeedsRdfNormalisation
+	 */
+	public static URI getProviderNeedsRdfNormalisation() {
+		return providerNeedsRdfNormalisation;
+	}
+
+	/**
+	 * @param providerProxy the providerProxy to set
+	 */
+	public static void setProviderProxy(URI providerProxy) {
+		ProviderImpl.providerProxy = providerProxy;
+	}
+
+	/**
+	 * @return the providerProxy
+	 */
+	public static URI getProviderProxy() {
+		return providerProxy;
+	}
+
+	/**
+	 * @param providerHttpPostSparql the providerHttpPostSparql to set
+	 */
+	public static void setProviderHttpPostSparql(URI providerHttpPostSparql) {
+		ProviderImpl.providerHttpPostSparql = providerHttpPostSparql;
+	}
+
+	/**
+	 * @return the providerHttpPostSparql
+	 */
+	public static URI getProviderHttpPostSparql() {
+		return providerHttpPostSparql;
+	}
+
+	/**
+	 * @param providerHttpGetUrl the providerHttpGetUrl to set
+	 */
+	public static void setProviderHttpGetUrl(URI providerHttpGetUrl) {
+		ProviderImpl.providerHttpGetUrl = providerHttpGetUrl;
+	}
+
+	/**
+	 * @return the providerHttpGetUrl
+	 */
+	public static URI getProviderHttpGetUrl() {
+		return providerHttpGetUrl;
+	}
+
+	/**
+	 * @param providerHttpPostUrl the providerHttpPostUrl to set
+	 */
+	public static void setProviderHttpPostUrl(URI providerHttpPostUrl) {
+		ProviderImpl.providerHttpPostUrl = providerHttpPostUrl;
+	}
+
+	/**
+	 * @return the providerHttpPostUrl
+	 */
+	public static URI getProviderHttpPostUrl() {
+		return providerHttpPostUrl;
+	}
+
+	/**
+	 * @param providerAcceptHeader the providerAcceptHeader to set
+	 */
+	public static void setProviderAcceptHeader(URI providerAcceptHeader) {
+		ProviderImpl.providerAcceptHeader = providerAcceptHeader;
+	}
+
+	/**
+	 * @return the providerAcceptHeader
+	 */
+	public static URI getProviderAcceptHeader() {
+		return providerAcceptHeader;
+	}
 
 }

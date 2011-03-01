@@ -39,11 +39,11 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     private String outputMatchRegex = "";
     private String outputReplaceRegex = "";
 
-    public static URI regexruleTypeUri;
-    public static URI rdfruleInputMatchRegex;
-    public static URI rdfruleInputReplaceRegex;
-    public static URI rdfruleOutputMatchRegex;
-    public static URI rdfruleOutputReplaceRegex;
+    private static URI regexruleTypeUri;
+    private static URI regexruleInputMatchRegex;
+    private static URI regexruleInputReplaceRegex;
+    private static URI regexruleOutputMatchRegex;
+    private static URI regexruleOutputReplaceRegex;
     
     static
     {
@@ -54,19 +54,19 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             myStaticRepository.initialize();
             final ValueFactory f = myStaticRepository.getValueFactory();
             
-            RegexNormalisationRule.regexruleTypeUri = f.createURI(RegexNormalisationRule.rdfruleNamespace + "RegexNormalisationRule");
-            RegexNormalisationRule.rdfruleInputMatchRegex = f
+            RegexNormalisationRule.setRegexRuleTypeUri(f.createURI(RegexNormalisationRule.rdfruleNamespace + "RegexNormalisationRule"));
+            RegexNormalisationRule.setRegexRuleInputMatchRegex(f
                     .createURI(RegexNormalisationRule.rdfruleNamespace
-                            + "inputMatchRegex");
-            RegexNormalisationRule.rdfruleInputReplaceRegex = f
+                            + "inputMatchRegex"));
+            RegexNormalisationRule.setRegexRuleInputReplaceRegex(f
                     .createURI(RegexNormalisationRule.rdfruleNamespace
-                            + "inputReplaceRegex");
-            RegexNormalisationRule.rdfruleOutputMatchRegex = f
+                            + "inputReplaceRegex"));
+            RegexNormalisationRule.setRegexRuleOutputMatchRegex(f
                     .createURI(RegexNormalisationRule.rdfruleNamespace
-                            + "outputMatchRegex");
-            RegexNormalisationRule.rdfruleOutputReplaceRegex = f
+                            + "outputMatchRegex"));
+            RegexNormalisationRule.setRegexRuleOutputReplaceRegex(f
                     .createURI(RegexNormalisationRule.rdfruleNamespace
-                            + "outputReplaceRegex");
+                            + "outputReplaceRegex"));
         }
         catch (final RepositoryException re)
         {
@@ -95,8 +95,8 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && ( nextStatement.getObject().equals(
-                            RegexNormalisationRule.regexruleTypeUri) || nextStatement.getObject().equals(
-                            RegexNormalisationRule.regexruleTypeUri) )
+                            RegexNormalisationRule.getRegexRuleTypeUri()) || nextStatement.getObject().equals(
+                            RegexNormalisationRule.getRegexRuleTypeUri()) )
               )
             {
                 if(RegexNormalisationRule._TRACE)
@@ -110,25 +110,25 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
-                    RegexNormalisationRule.rdfruleInputMatchRegex))
+                    RegexNormalisationRule.getRegexRuleInputMatchRegex()))
             {
                 this.setInputMatchRegex(nextStatement.getObject()
                         .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
-                    RegexNormalisationRule.rdfruleInputReplaceRegex))
+                    RegexNormalisationRule.getRegexRuleInputReplaceRegex()))
             {
                 this.setInputReplaceRegex(nextStatement.getObject()
                         .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
-                    RegexNormalisationRule.rdfruleOutputMatchRegex))
+                    RegexNormalisationRule.getRegexRuleOutputMatchRegex()))
             {
                 this.setOutputMatchRegex(nextStatement.getObject()
                         .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
-                    RegexNormalisationRule.rdfruleOutputReplaceRegex))
+                    RegexNormalisationRule.getRegexRuleOutputReplaceRegex()))
             {
                 this.setOutputReplaceRegex(nextStatement.getObject()
                         .stringValue());
@@ -140,10 +140,10 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
         }
         
         Collection<URI> tempValidStages = new HashSet<URI>();
-        tempValidStages.add(rdfruleStageQueryVariables);
-        tempValidStages.add(rdfruleStageAfterQueryCreation);
-        tempValidStages.add(rdfruleStageBeforeResultsImport);
-        tempValidStages.add(rdfruleStageAfterResultsToDocument);
+        tempValidStages.add(getRdfruleStageQueryVariables());
+        tempValidStages.add(getRdfruleStageAfterQueryCreation());
+        tempValidStages.add(getRdfruleStageBeforeResultsImport());
+        tempValidStages.add(getRdfruleStageAfterResultsToDocument());
 
         this.setValidStages(tempValidStages);
         
@@ -181,62 +181,62 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             final URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(RegexNormalisationRule.regexruleTypeUri, RDF.TYPE, OWL.CLASS,
+            con.add(RegexNormalisationRule.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS,
                     contextKeyUri);
             
-            con.add(RegexNormalisationRule.regexruleTypeUri, RDFS.LABEL, 
+            con.add(RegexNormalisationRule.getRegexRuleTypeUri(), RDFS.LABEL, 
                 f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
                     contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleInputMatchRegex, RDF.TYPE,
+            con.add(RegexNormalisationRule.getRegexRuleInputMatchRegex(), RDF.TYPE,
                     OWL.DATATYPEPROPERTY, contextKeyUri);
             
-            con.add(RegexNormalisationRule.rdfruleInputMatchRegex, RDFS.RANGE,
+            con.add(RegexNormalisationRule.getRegexRuleInputMatchRegex(), RDFS.RANGE,
                     RDFS.LITERAL, contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleInputMatchRegex, RDFS.DOMAIN,
-                    RegexNormalisationRule.regexruleTypeUri, contextKeyUri);
+            con.add(RegexNormalisationRule.getRegexRuleInputMatchRegex(), RDFS.DOMAIN,
+                    RegexNormalisationRule.getRegexRuleTypeUri(), contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleInputMatchRegex, RDFS.LABEL, 
+            con.add(RegexNormalisationRule.getRegexRuleInputMatchRegex(), RDFS.LABEL, 
                 f.createLiteral("The input regular expression that is used to identify whether the denormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."),
                     contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleInputReplaceRegex, RDF.TYPE,
+            con.add(RegexNormalisationRule.getRegexRuleInputReplaceRegex(), RDF.TYPE,
                     OWL.DATATYPEPROPERTY, contextKeyUri);
             
-            con.add(RegexNormalisationRule.rdfruleInputReplaceRegex, RDFS.RANGE,
+            con.add(RegexNormalisationRule.getRegexRuleInputReplaceRegex(), RDFS.RANGE,
                     RDFS.LITERAL, contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleInputReplaceRegex, RDFS.DOMAIN,
-                    RegexNormalisationRule.regexruleTypeUri, contextKeyUri);
+            con.add(RegexNormalisationRule.getRegexRuleInputReplaceRegex(), RDFS.DOMAIN,
+                    RegexNormalisationRule.getRegexRuleTypeUri(), contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleInputReplaceRegex, RDFS.LABEL, 
+            con.add(RegexNormalisationRule.getRegexRuleInputReplaceRegex(), RDFS.LABEL, 
                 f.createLiteral("The pattern that is used together with the input match regular expression to define what the denormalised data should be."),
                     contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleOutputMatchRegex, RDF.TYPE,
+            con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDF.TYPE,
                     OWL.OBJECTPROPERTY, contextKeyUri);
             
-            con.add(RegexNormalisationRule.rdfruleOutputMatchRegex, RDFS.RANGE,
+            con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDFS.RANGE,
                     RDFS.RESOURCE, contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleOutputMatchRegex, RDFS.DOMAIN,
-                    RegexNormalisationRule.regexruleTypeUri, contextKeyUri);
+            con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDFS.DOMAIN,
+                    RegexNormalisationRule.getRegexRuleTypeUri(), contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleOutputMatchRegex, RDFS.LABEL, 
+            con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDFS.LABEL, 
                 f.createLiteral("The output regular expression that is used to identify whether the renormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."),
                     contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleOutputReplaceRegex, RDF.TYPE,
+            con.add(RegexNormalisationRule.getRegexRuleOutputReplaceRegex(), RDF.TYPE,
                     OWL.DATATYPEPROPERTY, contextKeyUri);
             
-            con.add(RegexNormalisationRule.rdfruleOutputReplaceRegex, RDFS.RANGE,
+            con.add(RegexNormalisationRule.getRegexRuleOutputReplaceRegex(), RDFS.RANGE,
                     RDFS.LITERAL, contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleOutputReplaceRegex, RDFS.DOMAIN,
-                    RegexNormalisationRule.regexruleTypeUri, contextKeyUri);
+            con.add(RegexNormalisationRule.getRegexRuleOutputReplaceRegex(), RDFS.DOMAIN,
+                    RegexNormalisationRule.getRegexRuleTypeUri(), contextKeyUri);
 
-            con.add(RegexNormalisationRule.rdfruleOutputReplaceRegex, RDFS.LABEL, 
+            con.add(RegexNormalisationRule.getRegexRuleOutputReplaceRegex(), RDFS.LABEL, 
                 f.createLiteral("The pattern that is used together with the output match regular expression to define what the normalised data should be."),
                     contextKeyUri);
 
@@ -381,12 +381,12 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     
     public Object stageQueryVariables(Object input)
     {
-        return stages.contains(rdfruleStageQueryVariables) ? this.applyInputRuleToString((String)input) : input ;
+        return stages.contains(getRdfruleStageQueryVariables()) ? this.applyInputRuleToString((String)input) : input ;
     }
     
     public Object stageAfterQueryCreation(Object input)
     {
-        return stages.contains(rdfruleStageAfterQueryCreation) ? this.applyInputRuleToString((String)input) : input ;
+        return stages.contains(getRdfruleStageAfterQueryCreation()) ? this.applyInputRuleToString((String)input) : input ;
     }
 
     public Object stageAfterQueryParsing(Object input)
@@ -396,7 +396,7 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
 
     public Object stageBeforeResultsImport(Object input)
     {
-        return stages.contains(rdfruleStageBeforeResultsImport) ? this.applyOutputRuleToString((String)input) : input ;
+        return stages.contains(getRdfruleStageBeforeResultsImport()) ? this.applyOutputRuleToString((String)input) : input ;
     }
 
     public Object stageAfterResultsImport(Object input)
@@ -411,7 +411,7 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
 
     public Object stageAfterResultsToDocument(Object input)
     {
-        return stages.contains(rdfruleStageAfterResultsToDocument) ? this.applyOutputRuleToString((String)input) : input ;
+        return stages.contains(getRdfruleStageAfterResultsToDocument()) ? this.applyOutputRuleToString((String)input) : input ;
     }
 
     // NOTE: it is quite okay to have an empty replace regex, but an empty match
@@ -516,17 +516,17 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, RegexNormalisationRule.regexruleTypeUri,
+            con.add(keyUri, RDF.TYPE, RegexNormalisationRule.getRegexRuleTypeUri(),
                     keyUri);
             // con.add(keyUri, ProjectImpl.projectCurationStatusUri,
                     // curationStatusLiteral, keyUri);
-            con.add(keyUri, RegexNormalisationRule.rdfruleInputMatchRegex,
+            con.add(keyUri, RegexNormalisationRule.getRegexRuleInputMatchRegex(),
                     inputMatchRegexLiteral, keyUri);
-            con.add(keyUri, RegexNormalisationRule.rdfruleInputReplaceRegex,
+            con.add(keyUri, RegexNormalisationRule.getRegexRuleInputReplaceRegex(),
                     inputReplaceRegexLiteral, keyUri);
-            con.add(keyUri, RegexNormalisationRule.rdfruleOutputMatchRegex,
+            con.add(keyUri, RegexNormalisationRule.getRegexRuleOutputMatchRegex(),
                     outputMatchRegexLiteral, keyUri);
-            con.add(keyUri, RegexNormalisationRule.rdfruleOutputReplaceRegex,
+            con.add(keyUri, RegexNormalisationRule.getRegexRuleOutputReplaceRegex(),
                     outputReplaceRegexLiteral, keyUri);
             // if(modelVersion == 1)
             // {
@@ -602,7 +602,7 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
     @Override
     public String getElementType()
     {
-        return regexruleTypeUri.stringValue();
+        return getRegexRuleTypeUri().stringValue();
     }
 
 	/**
@@ -659,5 +659,79 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
 	 */
 	public String getOutputReplaceRegex() {
 		return outputReplaceRegex;
+	}
+
+	/**
+	 * @param regexruleTypeUri the regexruleTypeUri to set
+	 */
+	public static void setRegexRuleTypeUri(URI regexruleTypeUri) {
+		RegexNormalisationRule.regexruleTypeUri = regexruleTypeUri;
+	}
+
+	/**
+	 * @return the regexruleTypeUri
+	 */
+	public static URI getRegexRuleTypeUri() {
+		return regexruleTypeUri;
+	}
+
+	/**
+	 * @param rdfruleInputMatchRegex the rdfruleInputMatchRegex to set
+	 */
+	public static void setRegexRuleInputMatchRegex(
+			URI rdfruleInputMatchRegex) {
+		RegexNormalisationRule.regexruleInputMatchRegex = rdfruleInputMatchRegex;
+	}
+
+	/**
+	 * @return the rdfruleInputMatchRegex
+	 */
+	public static URI getRegexRuleInputMatchRegex() {
+		return regexruleInputMatchRegex;
+	}
+
+	/**
+	 * @param rdfruleInputReplaceRegex the rdfruleInputReplaceRegex to set
+	 */
+	public static void setRegexRuleInputReplaceRegex(
+			URI rdfruleInputReplaceRegex) {
+		RegexNormalisationRule.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
+	}
+
+	/**
+	 * @return the rdfruleInputReplaceRegex
+	 */
+	public static URI getRegexRuleInputReplaceRegex() {
+		return regexruleInputReplaceRegex;
+	}
+
+	/**
+	 * @param rdfruleOutputMatchRegex the rdfruleOutputMatchRegex to set
+	 */
+	public static void setRegexRuleOutputMatchRegex(
+			URI rdfruleOutputMatchRegex) {
+		RegexNormalisationRule.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
+	}
+
+	/**
+	 * @return the rdfruleOutputMatchRegex
+	 */
+	public static URI getRegexRuleOutputMatchRegex() {
+		return regexruleOutputMatchRegex;
+	}
+
+	/**
+	 * @param rdfruleOutputReplaceRegex the rdfruleOutputReplaceRegex to set
+	 */
+	public static void setRegexRuleOutputReplaceRegex(
+			URI rdfruleOutputReplaceRegex) {
+		RegexNormalisationRule.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
+	}
+
+	/**
+	 * @return the rdfruleOutputReplaceRegex
+	 */
+	public static URI getRegexRuleOutputReplaceRegex() {
+		return regexruleOutputReplaceRegex;
 	}
 }

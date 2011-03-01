@@ -351,7 +351,7 @@ public class RdfFetchController
                             } // end if(!BlacklistController.isUrlBlacklisted(nextEndpoint))
                         } // end for(String nextEndpoint : nextProvider.endpointUrls)
                     } // end if(nextProvider.hasEndpointUrl())
-                    else if( nextProvider.getEndpointMethod().equals( ProviderImpl.providerNoCommunication ) )
+                    else if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
                     {
                         Map<String, String> attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, "", realHostName, pageOffset );
                         
@@ -419,7 +419,7 @@ public class RdfFetchController
             
             boolean addToFetchQueue = false;
             
-            if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.providerHttpPostSparql ) )
+            if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.getProviderHttpPostSparql() ) )
             {
                 nextThread = new RdfFetcherSparqlQueryRunnable( nextEndpoint,
                              nextBundle.originalProvider.getSparqlGraphUri(),
@@ -437,7 +437,7 @@ public class RdfFetchController
                     log.trace("RdfFetchController.initialise: created HTTP POST SPARQL query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.originalProvider.getKey());
                 }
             }
-            else if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.providerHttpGetUrl ) )
+            else if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.getProviderHttpGetUrl() ) )
             {
                 nextThread = new RdfFetcherUriQueryRunnable( nextEndpoint,
                              returnFileFormat,
@@ -453,7 +453,7 @@ public class RdfFetchController
                     log.trace("RdfFetchController.initialise: created HTTP GET query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.originalProvider.getKey());
                 }
             }
-            else if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.providerNoCommunication ) )
+            else if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
             {
                 if(_TRACE)
                 {
@@ -584,7 +584,7 @@ public class RdfFetchController
                 String nextResult = nextThread.rawResult;
                 
                 String convertedResult = (String)SparqlQueryCreator.normaliseByStage(
-                    NormalisationRuleImpl.rdfruleStageBeforeResultsImport,
+                    NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(),
                     nextResult, 
                     Settings.getSortedRulesForProvider( 
                         nextThread.originalQueryBundle.getProvider(), 

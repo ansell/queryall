@@ -46,7 +46,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     
     public Date currentDate = null;
     
-    private URI curationStatus = ProjectImpl.projectNotCuratedUri;
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     

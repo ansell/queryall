@@ -22,6 +22,12 @@ import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * An implementation of the RuleTest class
+ * 
+ * @author peter
+ *
+ */
 public class RuleTestImpl extends RuleTest
 {
     private static final Logger log = Logger.getLogger( RuleTest.class.getName() );
@@ -35,12 +41,12 @@ public class RuleTestImpl extends RuleTest
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
-    private URI key;
+    private URI key = null;
     private Collection<URI> rdfRuleUris = new HashSet<URI>();
     private Collection<URI> stages = new HashSet<URI>();
     private String testInputString = "";
     private String testOutputString = "";
-    private URI curationStatus = ProjectImpl.projectNotCuratedUri;
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     
     
@@ -140,7 +146,7 @@ public class RuleTestImpl extends RuleTest
                 resultIsValid = true;
                 result.setKey(keyToUse);
             }
-            else if( nextStatement.getPredicate().equals( ProjectImpl.projectCurationStatusUri ) )
+            else if( nextStatement.getPredicate().equals( ProjectImpl.getProjectCurationStatusUri() ) )
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -200,14 +206,14 @@ public class RuleTestImpl extends RuleTest
             URI curationStatusLiteral = null;
             
             if( curationStatus == null )
-                curationStatusLiteral = ProjectImpl.projectNotCuratedUri;
+                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
             else
                 curationStatusLiteral = curationStatus;
                 
             con.setAutoCommit( false );
             
             con.add( keyUri, RDF.TYPE, ruletestTypeUri, keyUri );
-            con.add( keyUri, ProjectImpl.projectCurationStatusUri, curationStatusLiteral, keyUri );
+            con.add( keyUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyUri );
             con.add( keyUri, ruletestInputTestString, testInputStringLiteral, keyUri );
             con.add( keyUri, ruletestOutputTestString, testOutputStringLiteral, keyUri );
             

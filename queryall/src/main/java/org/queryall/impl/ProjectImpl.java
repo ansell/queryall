@@ -32,23 +32,23 @@ public class ProjectImpl extends Project
     
     private static final String defaultNamespace = Settings.DEFAULT_RDF_PROJECT_NAMESPACE;
     
-    public Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
-    private URI key;
-    public URI authority = null;
-    public String title = "";
-    public String description = "";
-    public URI curationStatus;
+    private URI key = null;
+    private URI authority = null;
+    private String title = "";
+    private String description = "";
+    private URI curationStatus = null;
     
-    public static URI projectTypeUri;
-    public static URI projectAuthority;
-    public static URI projectTitle;
-    public static URI projectDescription;
+    private static URI projectTypeUri;
+    private static URI projectAuthority;
+    private static URI projectTitle;
+    private static URI projectDescription;
     
-    public static URI projectCurationStatusUri;
-    public static URI projectAdminCuratedUri;
-    public static URI projectUserCuratedUri;
-    public static URI projectNotCuratedUri;
+    private static URI projectCurationStatusUri;
+    private static URI projectAdminCuratedUri;
+    private static URI projectUserCuratedUri;
+    private static URI projectNotCuratedUri;
     public static String projectNamespace;
     
     static
@@ -58,15 +58,15 @@ public class ProjectImpl extends Project
         projectNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX + Settings.DEFAULT_RDF_PROJECT_NAMESPACE + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
         
         
-        projectTypeUri = f.createURI(projectNamespace+"Project");
-        projectAuthority = f.createURI(projectNamespace+"authority");
-        projectTitle = f.createURI(projectNamespace+"title");
-        projectDescription = f.createURI(projectNamespace+"description");
+        setProjectTypeUri(f.createURI(projectNamespace+"Project"));
+        setProjectAuthority(f.createURI(projectNamespace+"authority"));
+        setProjectTitle(f.createURI(projectNamespace+"title"));
+        setProjectDescription(f.createURI(projectNamespace+"description"));
         
-        projectCurationStatusUri = f.createURI(projectNamespace+"hasCurationStatus");
-        projectAdminCuratedUri = f.createURI(projectNamespace+"adminCurated");
-        projectUserCuratedUri = f.createURI(projectNamespace+"userCurated");
-        projectNotCuratedUri = f.createURI(projectNamespace+"notCurated");
+        setProjectCurationStatusUri(f.createURI(projectNamespace+"hasCurationStatus"));
+        setProjectAdminCuratedUri(f.createURI(projectNamespace+"adminCurated"));
+        setProjectUserCuratedUri(f.createURI(projectNamespace+"userCurated"));
+        setProjectNotCuratedUri(f.createURI(projectNamespace+"notCurated"));
         
     }
     
@@ -85,7 +85,7 @@ public class ProjectImpl extends Project
                 log.debug("Project: nextStatement: "+nextStatement.toString());
             }
             
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(projectTypeUri))
+            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(getProjectTypeUri()))
             {
                 if(_TRACE)
                 {
@@ -95,16 +95,16 @@ public class ProjectImpl extends Project
                 resultIsValid = true;
                 result.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(projectAuthority))
+            else if(nextStatement.getPredicate().equals(getProjectAuthority()))
             {
                 result.setAuthority((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(projectTitle) || nextStatement.getPredicate().equals(Settings.DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getProjectTitle()) || nextStatement.getPredicate().equals(Settings.DC_TITLE))
             {
                 if(result.getTitle().equals(""))
                     result.setTitle(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(projectDescription))
+            else if(nextStatement.getPredicate().equals(getProjectDescription()))
             {
                 result.setDescription(nextStatement.getObject().stringValue());
             }
@@ -140,17 +140,17 @@ public class ProjectImpl extends Project
             URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(projectTypeUri, RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(projectTitle, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(projectTitle, RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
-            con.add(projectTitle, RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#label"), contextKeyUri);
-            con.add(projectAuthority, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(projectDescription, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(projectDescription, RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#comment"), contextKeyUri);
-            con.add(projectCurationStatusUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(projectAdminCuratedUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(projectUserCuratedUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(projectNotCuratedUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(getProjectTitle(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#label"), contextKeyUri);
+            con.add(getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectDescription(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProjectDescription(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#comment"), contextKeyUri);
+            con.add(getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -194,15 +194,15 @@ public class ProjectImpl extends Project
             
             projectInstanceUri = keyToUse;
             
-            Literal titleLiteral = f.createLiteral(title);
+            Literal titleLiteral = f.createLiteral(getTitle());
             URI authorityLiteral = null;
             
-            if(authority == null)
+            if(getAuthority() == null)
                 authorityLiteral = f.createURI(Settings.getDefaultHostAddress());
             else
-                authorityLiteral = authority;
+                authorityLiteral = getAuthority();
                 
-            Literal descriptionLiteral = f.createLiteral(description);
+            Literal descriptionLiteral = f.createLiteral(getDescription());
             
             if(_TRACE)
             {
@@ -211,17 +211,17 @@ public class ProjectImpl extends Project
             
             con.setAutoCommit(false);
             
-            con.add(projectInstanceUri, RDF.TYPE, projectTypeUri, projectInstanceUri);
-            con.add(projectInstanceUri, projectAuthority, authorityLiteral, projectInstanceUri);
+            con.add(projectInstanceUri, RDF.TYPE, getProjectTypeUri(), projectInstanceUri);
+            con.add(projectInstanceUri, getProjectAuthority(), authorityLiteral, projectInstanceUri);
             if(modelVersion == 1)
             {
-                con.add(projectInstanceUri, projectTitle, titleLiteral, projectInstanceUri);
+                con.add(projectInstanceUri, getProjectTitle(), titleLiteral, projectInstanceUri);
             }
             else
             {
                 con.add(projectInstanceUri, Settings.DC_TITLE, titleLiteral, projectInstanceUri);
             }
-            con.add(projectInstanceUri, projectDescription, descriptionLiteral, projectInstanceUri);
+            con.add(projectInstanceUri, getProjectDescription(), descriptionLiteral, projectInstanceUri);
             
             if(unrecognisedStatements != null)
             {
@@ -261,9 +261,9 @@ public class ProjectImpl extends Project
         StringBuilder sb = new StringBuilder();
         
         sb.append("key=" + key + "\n");
-        sb.append("authority=" + authority + "\n");
-        sb.append("title=" + title + "\n");
-        sb.append("description=" + description + "\n");
+        sb.append("authority=" + getAuthority() + "\n");
+        sb.append("title=" + getTitle() + "\n");
+        sb.append("description=" + getDescription() + "\n");
         
         return sb.toString();
     }
@@ -326,7 +326,7 @@ public class ProjectImpl extends Project
 
     public String getElementType()
     {
-        return projectTypeUri.stringValue();
+        return getProjectTypeUri().stringValue();
     }
     
     public void setCurationStatus(URI curationStatus)
@@ -392,5 +392,118 @@ public class ProjectImpl extends Project
 
         return this.getKey().stringValue().compareTo(otherProject.getKey().stringValue());
     }
+
+	/**
+	 * @param projectNotCuratedUri the projectNotCuratedUri to set
+	 */
+	public static void setProjectNotCuratedUri(URI projectNotCuratedUri) {
+		ProjectImpl.projectNotCuratedUri = projectNotCuratedUri;
+	}
+
+	/**
+	 * @return the projectNotCuratedUri
+	 */
+	public static URI getProjectNotCuratedUri() {
+		return projectNotCuratedUri;
+	}
+
+	/**
+	 * @param projectTypeUri the projectTypeUri to set
+	 */
+	public static void setProjectTypeUri(URI projectTypeUri) {
+		ProjectImpl.projectTypeUri = projectTypeUri;
+	}
+
+	/**
+	 * @return the projectTypeUri
+	 */
+	public static URI getProjectTypeUri() {
+		return projectTypeUri;
+	}
+
+	/**
+	 * @param projectAuthority the projectAuthority to set
+	 */
+	public static void setProjectAuthority(URI projectAuthority) {
+		ProjectImpl.projectAuthority = projectAuthority;
+	}
+
+	/**
+	 * @return the projectAuthority
+	 */
+	public static URI getProjectAuthority() {
+		return projectAuthority;
+	}
+
+	/**
+	 * @param projectTitle the projectTitle to set
+	 */
+	public static void setProjectTitle(URI projectTitle) {
+		ProjectImpl.projectTitle = projectTitle;
+	}
+
+	/**
+	 * @return the projectTitle
+	 */
+	public static URI getProjectTitle() {
+		return projectTitle;
+	}
+
+	/**
+	 * @param projectDescription the projectDescription to set
+	 */
+	public static void setProjectDescription(URI projectDescription) {
+		ProjectImpl.projectDescription = projectDescription;
+	}
+
+	/**
+	 * @return the projectDescription
+	 */
+	public static URI getProjectDescription() {
+		return projectDescription;
+	}
+
+	/**
+	 * @param projectCurationStatusUri the projectCurationStatusUri to set
+	 */
+	public static void setProjectCurationStatusUri(
+			URI projectCurationStatusUri) {
+		ProjectImpl.projectCurationStatusUri = projectCurationStatusUri;
+	}
+
+	/**
+	 * @return the projectCurationStatusUri
+	 */
+	public static URI getProjectCurationStatusUri() {
+		return projectCurationStatusUri;
+	}
+
+	/**
+	 * @param projectAdminCuratedUri the projectAdminCuratedUri to set
+	 */
+	public static void setProjectAdminCuratedUri(URI projectAdminCuratedUri) {
+		ProjectImpl.projectAdminCuratedUri = projectAdminCuratedUri;
+	}
+
+	/**
+	 * @return the projectAdminCuratedUri
+	 */
+	public static URI getProjectAdminCuratedUri() {
+		return projectAdminCuratedUri;
+	}
+
+	/**
+	 * @param projectUserCuratedUri the projectUserCuratedUri to set
+	 */
+	public static void setProjectUserCuratedUri(URI projectUserCuratedUri) {
+		ProjectImpl.projectUserCuratedUri = projectUserCuratedUri;
+	}
+
+	/**
+	 * @return the projectUserCuratedUri
+	 */
+	public static URI getProjectUserCuratedUri() {
+		return projectUserCuratedUri;
+	}
     
 }
