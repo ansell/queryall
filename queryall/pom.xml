@@ -9,16 +9,81 @@
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
+      <groupId>org.queryall</groupId>
+      <artifactId>queryall-api</artifactId>
+      <version>0.9.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>org.openrdf.sesame</groupId>
+    	<artifactId>log4j</artifactId>
+    	<groupId>log4j</groupId>
+    	<version>1.2.16</version>
+    </dependency>
+    <dependency>
     	<artifactId>sesame-model</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
     	<version>2.3.2</version>
-    	<scope>compile</scope>
-    	<type>jar</type></dependency>
+    </dependency>
+    <dependency>
+    	<artifactId>sesame-repository-sail</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
+    	<version>2.3.2</version>
+    </dependency>
+    <dependency>
+    	<artifactId>sesame-rio-ntriples</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
+    	<version>2.3.2</version>
+    </dependency>
+    <dependency>
+    	<artifactId>sesame-rio-rdfxml</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
+    	<version>2.3.2</version>
+    </dependency>
+    <dependency>
+    	<artifactId>sesame-rio-n3</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
+    	<version>2.3.2</version>
+    </dependency>
+    <dependency>
+    	<artifactId>sesame-sail-memory</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
+    	<version>2.3.2</version>
+    </dependency>
+    <dependency>
+    	<artifactId>sesame-queryparser-sparql</artifactId>
+    	<groupId>org.openrdf.sesame</groupId>
+    	<type>jar</type>
+    	<version>2.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+  <build>
+  	<plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
