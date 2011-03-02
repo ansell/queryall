@@ -46,7 +46,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProvenance();
     
     public Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -69,9 +69,9 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         ValueFactory f = new MemValueFactory();
         
-        provenanceNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                         +Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE
-                         +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        provenanceNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                         +Settings.getSettings().getNamespaceForProvenance()
+                         +Settings.getSettings().getOntologyTermUriSuffix();
         
         provenanceTypeUri = f.createURI(provenanceNamespace+"ProvenanceRecord");
         provenanceHasAuthorOpenIDUri = f.createURI(provenanceNamespace+"hasAuthorOpenID");
@@ -200,16 +200,16 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                             continue;
                         }
                         else
                         {
-                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                         }
                     }
                     else if(log.isDebugEnabled())
@@ -219,7 +219,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                     
                     if(nextResult.normalisedResult.length() > 0)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getDefaultHostAddress()+"provenancebykey/"+Utilities.percentEncode(nextElementKey), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress()+"provenancebykey/"+Utilities.percentEncode(nextElementKey), nextReaderFormat);
                     }
                 }
                 catch(org.openrdf.rio.RDFParseException rdfpe)

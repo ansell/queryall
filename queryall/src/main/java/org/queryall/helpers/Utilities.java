@@ -1607,25 +1607,25 @@ public class Utilities
     
     public static boolean isPlainNamespaceAndIdentifier(String queryString)
     {
-        return Settings.getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
+        return Settings.getSettings().getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
     }
     
     
     public static boolean isPlainNamespace(String queryString)
     {
-        return Settings.getPlainNamespacePattern().matcher(queryString).find();
+        return Settings.getSettings().getPlainNamespacePattern().matcher(queryString).find();
     }
     
     public static List<String> getNamespaceAndIdentifier(String nsAndId)
     {
-        return matchesForRegexOnString(Settings.getPlainNamespaceAndIdentifierPattern(), Settings.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex"), nsAndId);
+        return matchesForRegexOnString(Settings.getSettings().getPlainNamespaceAndIdentifierPattern(), Settings.getSettings().getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex"), nsAndId);
     }
     
     public static List<String> getNamespaceAndIdentifierFromUri(String nextUri)
     {
-        if(nextUri.startsWith(Settings.getDefaultHostAddress()))
+        if(nextUri.startsWith(Settings.getSettings().getDefaultHostAddress()))
         {
-            return getNamespaceAndIdentifier(nextUri.substring(Settings.getDefaultHostAddress().length()));
+            return getNamespaceAndIdentifier(nextUri.substring(Settings.getSettings().getDefaultHostAddress().length()));
         }
         
         return null;
@@ -1646,7 +1646,8 @@ public class Utilities
         final Repository myRepository = new SailRepository(new MemoryStore());
         myRepository.initialize();
         
-        final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.CONFIG_API_VERSION);
+        // FIXME: fix this reliance on the Settings class
+        final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.getSettings().CONFIG_API_VERSION);
         
         if(!rdfOkay && isInsert)
         {
@@ -1808,7 +1809,7 @@ public class Utilities
         
         int counter = 0;
         
-        for(String nextTitleUri : Settings.getStringCollectionPropertiesFromConfig("titleProperties"))
+        for(String nextTitleUri : Settings.getSettings().getStringCollectionPropertiesFromConfig("titleProperties"))
         {
             result.append(" ?s <"+nextTitleUri+"> ?o"+counter+" . ");
             
@@ -1826,7 +1827,7 @@ public class Utilities
         
         counter = 0;
         
-        for(String nextTitleUri : Settings.getStringCollectionPropertiesFromConfig("titleProperties"))
+        for(String nextTitleUri : Settings.getSettings().getStringCollectionPropertiesFromConfig("titleProperties"))
         {
             result.append("OPTIONAL{ ?s <"+nextTitleUri+"> ?o"+counter+" . }");
             
@@ -1941,16 +1942,16 @@ public class Utilities
             
             if(nextReaderFormat == null)
             {
-                nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                 
                 if(nextReaderFormat == null)
                 {
-                    log.error("Utilities: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                    log.error("Utilities: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                     //throw new RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
                 else if(nextResult.wasSuccessful)
                 {
-                    log.warn("Utilities: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                    log.warn("Utilities: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                 }
             }
             else if(_DEBUG)
@@ -1970,7 +1971,7 @@ public class Utilities
             
             if(nextReaderFormat != null && nextResult.normalisedResult.length() > 0)
             {
-                myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getDefaultHostAddress(), nextReaderFormat);
+                myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
                 
                 myRepositoryConnection.commit();
             }
@@ -2196,7 +2197,7 @@ public class Utilities
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
         dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpPostSparql());
-        dummyProvider.setKey(Settings.getDefaultHostAddress()+Settings.DEFAULT_RDF_PROVIDER_NAMESPACE+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(nextQueryKey.stringValue()));
+        dummyProvider.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator")+Utilities.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.originalProvider = dummyProvider;
@@ -2204,7 +2205,7 @@ public class Utilities
         
         QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(Settings.getDefaultHostAddress()+Settings.DEFAULT_RDF_QUERY_NAMESPACE+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(nextQueryKey.stringValue()));
+        dummyQuery.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator")+Utilities.percentEncode(nextQueryKey.stringValue()));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -2227,16 +2228,16 @@ public class Utilities
         
         Collection<String> endpointUrls = new HashSet<String>();
         
-        // if(nextQueryKey.startsWith(Settings.getDefaultHostAddress()))
+        // if(nextQueryKey.startsWith(Settings.getSettings().getDefaultHostAddress()))
         // {
-            String namespaceAndIdentifier = nextQueryKey.stringValue().substring(Settings.getDefaultHostAddress().length());
+            String namespaceAndIdentifier = nextQueryKey.stringValue().substring(Settings.getSettings().getDefaultHostAddress().length());
             
             List<String> nsAndIdList = Utilities.getNamespaceAndIdentifier(namespaceAndIdentifier);
             
             if(nsAndIdList.size() == 2)
             {
-                endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(nsAndIdList.get(1)));
-                nextQueryBundle.queryEndpoint = hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(nsAndIdList.get(1));
+                endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+Utilities.percentEncode(nsAndIdList.get(1)));
+                nextQueryBundle.queryEndpoint = hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+Utilities.percentEncode(nsAndIdList.get(1));
             }
         // }
         // else
@@ -2247,14 +2248,14 @@ public class Utilities
         
         dummyProvider.setEndpointUrls(endpointUrls);
         dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpGetUrl());
-        dummyProvider.setKey(hostToUse+Settings.DEFAULT_RDF_PROVIDER_NAMESPACE+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(namespaceAndIdentifier));
+        dummyProvider.setKey(hostToUse+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator")+Utilities.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setProvider(dummyProvider);
         
         QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(hostToUse+Settings.DEFAULT_RDF_QUERY_NAMESPACE+Settings.getStringPropertyFromConfig("separator")+Utilities.percentEncode(namespaceAndIdentifier));
+        dummyQuery.setKey(hostToUse+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator")+Utilities.percentEncode(namespaceAndIdentifier));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -2304,16 +2305,16 @@ public class Utilities
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("QueryType.fetchQueryTypeByKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.error("QueryType.fetchQueryTypeByKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                             continue;
                         }
                         else
                         {
-                            log.warn("QueryType.fetchQueryTypeByKey: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.warn("QueryType.fetchQueryTypeByKey: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                         }
                     }
                     else if(log.isDebugEnabled())
@@ -2323,7 +2324,7 @@ public class Utilities
                     
                     if(nextResult.normalisedResult.length() > 0)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getDefaultHostAddress(), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
                     }
                 }
                 catch(org.openrdf.rio.RDFParseException rdfpe)

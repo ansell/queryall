@@ -43,7 +43,7 @@ public class QueryTypeImpl extends QueryType
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_QUERY_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForQueryType();
     
     // this is a temporary flag used to enable a smooth transition 
     // from hard-coded templates to generic extensible templates in the future
@@ -158,9 +158,9 @@ public class QueryTypeImpl extends QueryType
     {
         ValueFactory f = new MemValueFactory();
         
-        queryNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                         +Settings.DEFAULT_RDF_QUERY_NAMESPACE
-                         +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        queryNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                         +Settings.getSettings().getNamespaceForQueryType()
+                         +Settings.getSettings().getOntologyTermUriSuffix();
                          
         setQueryTypeUri(f.createURI(queryNamespace+"Query"));
         setQueryTitle(f.createURI(queryNamespace+"title"));
@@ -324,7 +324,7 @@ public class QueryTypeImpl extends QueryType
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getQueryTitle()) || nextStatement.getPredicate().equals(Settings.DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getQueryTitle()) || nextStatement.getPredicate().equals(Settings.getSettings().DC_TITLE))
             {
                 result.setTitle(nextStatement.getObject().stringValue());
             }
@@ -360,86 +360,86 @@ public class QueryTypeImpl extends QueryType
             {
                 result.setInputRegex(nextStatement.getObject().stringValue());
             }
-            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
-            {
-                Template tempTemplate = Settings.createNewTemplateByKey(nextStatement.getObject().stringValue()+"_outputtemplate_0", TemplateImpl.getTemplateContentTypeRdfXml().stringValue());
-                
-                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
-                
-                if(existingTemplate == null)
-                {
-                    Settings.addTemplate(tempTemplate, false);
-                }
-                // else
-                // {
-                    // log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-                // }
-                
-                tempIncludedStaticOutputTemplates.add(tempTemplate.getKey());
-                
-                includecounter++;
-            }
-            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryTemplateString))
-            {
-                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_querytemplate_"+templatecounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypeSparqlQuery().stringValue());
-                
-                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
-                
-                if(existingTemplate == null)
-                {
-                    if(!Settings.addTemplate(tempTemplate, false))
-                    {
-                        log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-                    }
-                }
-                else
-                {
-                    log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-                }
-                
-                tempIncludedQueryTemplates.add(tempTemplate.getKey());
-                
-                templatecounter++;
-            }
-            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
-            {
-                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_outputtemplate_"+outputcounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypeRdfXml().stringValue());
-                
-                if(!Settings.addTemplate(tempTemplate, true))
-                {
-                    log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-                }
-                
-                // The previous semantics was that these templates were not recognised unless they were included from somewhere, so not adding here or it will break that semantics
-                // tempIncludedStaticOutputTemplates.add(tempTemplate.getKey());
-                
-                outputcounter++;
-            }
-            else if(USING_TEMPLATES && 
-                    (nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString) 
-                  || nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
-                 )
-            {
-                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_parametertemplate_"+parametercounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypePlainText().stringValue());
-                
-                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
-                
-                if(existingTemplate == null)
-                {
-                    if(!Settings.addTemplate(tempTemplate, false))
-                    {
-                        log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-                    }
-                }
-                else
-                {
-                    log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-                }
-                
-                tempIncludedQueryParameters.add(tempTemplate.getKey());
-                
-                parametercounter++;
-            }
+//            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
+//            {
+//                Template tempTemplate = Settings.createNewTemplateByKey(nextStatement.getObject().stringValue()+"_outputtemplate_0", TemplateImpl.getTemplateContentTypeRdfXml().stringValue());
+//                
+//                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
+//                
+//                if(existingTemplate == null)
+//                {
+//                    Settings.addTemplate(tempTemplate, false);
+//                }
+//                // else
+//                // {
+//                    // log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
+//                // }
+//                
+//                tempIncludedStaticOutputTemplates.add(tempTemplate.getKey());
+//                
+//                includecounter++;
+//            }
+//            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryTemplateString))
+//            {
+//                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_querytemplate_"+templatecounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypeSparqlQuery().stringValue());
+//                
+//                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
+//                
+//                if(existingTemplate == null)
+//                {
+//                    if(!Settings.addTemplate(tempTemplate, false))
+//                    {
+//                        log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
+//                    }
+//                }
+//                else
+//                {
+//                    log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
+//                }
+//                
+//                tempIncludedQueryTemplates.add(tempTemplate.getKey());
+//                
+//                templatecounter++;
+//            }
+//            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
+//            {
+//                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_outputtemplate_"+outputcounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypeRdfXml().stringValue());
+//                
+//                if(!Settings.addTemplate(tempTemplate, true))
+//                {
+//                    log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
+//                }
+//                
+//                // The previous semantics was that these templates were not recognised unless they were included from somewhere, so not adding here or it will break that semantics
+//                // tempIncludedStaticOutputTemplates.add(tempTemplate.getKey());
+//                
+//                outputcounter++;
+//            }
+//            else if(USING_TEMPLATES && 
+//                    (nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString) 
+//                  || nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
+//                 )
+//            {
+//                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_parametertemplate_"+parametercounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypePlainText().stringValue());
+//                
+//                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
+//                
+//                if(existingTemplate == null)
+//                {
+//                    if(!Settings.addTemplate(tempTemplate, false))
+//                    {
+//                        log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
+//                    }
+//                }
+//                else
+//                {
+//                    log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
+//                }
+//                
+//                tempIncludedQueryParameters.add(tempTemplate.getKey());
+//                
+//                parametercounter++;
+//            }
             else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
             {
                 tempsemanticallyLinkedCustomQueries.add((URI)nextStatement.getObject());
@@ -575,7 +575,7 @@ public class QueryTypeImpl extends QueryType
             }
             else
             {
-                con.add(queryInstanceUri, Settings.DC_TITLE, titleLiteral, queryInstanceUri);
+                con.add(queryInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, queryInstanceUri);
             }
             
             con.add(queryInstanceUri, getQueryHandleAllNamespaces(), handleAllNamespacesLiteral, queryInstanceUri);

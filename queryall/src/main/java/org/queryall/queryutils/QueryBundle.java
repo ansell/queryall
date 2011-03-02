@@ -65,9 +65,9 @@ public class QueryBundle
     {
         ValueFactory f = new MemValueFactory();
         
-        queryBundleNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-			+Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE
-			+Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        queryBundleNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+			+Settings.getSettings().getNamespaceForQueryBundle()
+			+Settings.getSettings().getOntologyTermUriSuffix();
 		
         queryBundleTypeUri = f.createURI(queryBundleNamespace+"QueryBundle");
         queryLiteralUri = f.createURI(queryBundleNamespace+"hasQueryLiteral");
@@ -199,9 +199,9 @@ public class QueryBundle
 		
 		try
 		{
-			String keyPrefix = Settings.getDefaultHostAddress()
-				+ Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE
-				+ Settings.getStringPropertyFromConfig("separator");
+			String keyPrefix = Settings.getSettings().getDefaultHostAddress()
+				+ Settings.getSettings().getNamespaceForQueryBundle()
+				+ Settings.getSettings().getStringPropertyFromConfig("separator");
 			
 			// create some resources and literals to make statements out of
 			URI queryBundleInstanceUri = f.createURI(keyPrefix + keyToUse);
@@ -263,7 +263,7 @@ public class QueryBundle
 			
 			originalProvider.toRdf(myRepository, originalProvider.getKey(), modelVersion);
 			
-			for(NormalisationRule nextRelevantRdfRule : Settings.getNormalisationRulesForUris(originalProvider.getNormalisationsNeeded(), Settings.LOWEST_ORDER_FIRST))
+			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(originalProvider.getNormalisationsNeeded(), Settings.LOWEST_ORDER_FIRST))
 			{
 				nextRelevantRdfRule.toRdf(myRepository, nextRelevantRdfRule.getKey(), modelVersion);
 			}

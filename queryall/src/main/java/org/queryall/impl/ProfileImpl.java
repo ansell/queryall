@@ -30,7 +30,7 @@ public class ProfileImpl extends Profile
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_PROFILE_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProfile();
     
     public static final int SPECIFIC_INCLUDE = 1;
     public static final int SPECIFIC_EXCLUDE = 2;
@@ -87,9 +87,9 @@ public class ProfileImpl extends Profile
     {
         ValueFactory f = new MemValueFactory();
         
-        profileNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                           +Settings.DEFAULT_RDF_PROFILE_NAMESPACE
-                           +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        profileNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                           +Settings.getSettings().getNamespaceForProfile()
+                           +Settings.getSettings().getOntologyTermUriSuffix();
                            
         setProfileTypeUri(f.createURI(profileNamespace+"Profile"));
         setProfileTitle(f.createURI(profileNamespace+"Title"));
@@ -226,7 +226,7 @@ public class ProfileImpl extends Profile
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getProfileTitle()) || nextStatement.getPredicate().equals(Settings.DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getProfileTitle()) || nextStatement.getPredicate().equals(Settings.getSettings().DC_TITLE))
             {
                 result.setTitle(nextStatement.getObject().stringValue());
             }
@@ -361,7 +361,7 @@ public class ProfileImpl extends Profile
             }
             else
             {
-                con.add(profileInstanceUri, Settings.DC_TITLE, titleLiteral, profileInstanceUri);
+                con.add(profileInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, profileInstanceUri);
             }
             
             // log.info("About to add to the repository 3");

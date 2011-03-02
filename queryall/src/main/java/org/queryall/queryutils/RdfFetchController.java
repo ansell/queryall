@@ -96,7 +96,7 @@ public class RdfFetchController
             queryBundles = new HashSet<QueryBundle>( 20 );
             
             // TODO: figure out how to also get back the NamespaceEntry objects that matched so we can log this information with the statistics for this query
-            Collection<QueryType> allCustomQueries = Settings.getCustomQueriesMatchingQueryString( queryString, sortedIncludedProfiles );
+            Collection<QueryType> allCustomQueries = Settings.getSettings().getCustomQueriesMatchingQueryString( queryString, sortedIncludedProfiles );
             
             if( _DEBUG )
             {
@@ -121,7 +121,7 @@ public class RdfFetchController
                 if( !nextQueryType.getIsNamespaceSpecific() )
                 {
                     // if we aren't specific to namespace we simply find all providers for this type of custom query
-                    Collection<Provider> allProviders = Settings.getProvidersForQueryType( nextQueryType.getKey() );
+                    Collection<Provider> allProviders = Settings.getSettings().getProvidersForQueryType( nextQueryType.getKey() );
                     
                     for( Provider nextAllProvider : allProviders )
                     {
@@ -157,7 +157,7 @@ public class RdfFetchController
                         {
                             String nextTitle = queryStringMatches.get( nextNamespaceInputIndex-1 );
                             
-                            Collection<URI> nextUriFromTitleNamespaceList = Settings.getNamespaceUrisForTitle( nextTitle );
+                            Collection<URI> nextUriFromTitleNamespaceList = Settings.getSettings().getNamespaceUrisForTitle( nextTitle );
                             
                             if( nextUriFromTitleNamespaceList != null )
                             {
@@ -189,7 +189,7 @@ public class RdfFetchController
                             log.debug( "RdfFetchController.initialise: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
                         }
                         
-                        Collection<Provider> namespaceSpecificProviders = Settings.getProvidersForQueryTypeForNamespaceUris( nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
+                        Collection<Provider> namespaceSpecificProviders = Settings.getSettings().getProvidersForQueryTypeForNamespaceUris( nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
                         
                         for( Provider nextNamespaceSpecificProvider : namespaceSpecificProviders )
                         {
@@ -218,7 +218,7 @@ public class RdfFetchController
                         log.debug( "RdfFetchController.initialise: including defaults for nextQueryType.title="+nextQueryType.getTitle()+" nextQueryType.getKey()="+nextQueryType.getKey() );
                     }
                     
-                    Collection<Provider> defaultProviders = Settings.getDefaultProviders(nextQueryType.getKey());
+                    Collection<Provider> defaultProviders = Settings.getSettings().getDefaultProviders(nextQueryType.getKey());
                     
                     Collection<Provider> usefulDefaultProviders = new HashSet<Provider>();
                     
@@ -295,7 +295,7 @@ public class RdfFetchController
                         {
                             String replacedEndpoint = nextEndpoint
                                                 .replace( "${realHostName}",realHostName )
-                                                .replace( "${defaultSeparator}",Settings.getStringPropertyFromConfig("separator") )
+                                                .replace( "${defaultSeparator}",Settings.getSettings().getStringPropertyFromConfig("separator") )
                                                 .replace( "${offset}",pageOffset+"" );
                             
                             // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements before using it in the attribute list
@@ -316,7 +316,7 @@ public class RdfFetchController
                                 for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
                                 {
                                     // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                                    Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getCustomQueriesByUri( nextCustomInclude );
+                                    Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getSettings().getCustomQueriesByUri( nextCustomInclude );
                                     
                                     if( allCustomRdfXmlIncludeTypes.size()  == 0 )
                                     {
@@ -344,7 +344,7 @@ public class RdfFetchController
                                 queryBundles.add( nextProviderQueryBundle );
                                 
                                 // go to next provider if we are not told to use all of the providers possible
-                                if( !Settings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"))
+                                if( !Settings.getSettings().getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"))
                                 {
                                     break;
                                 }
@@ -360,7 +360,7 @@ public class RdfFetchController
                         for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
                         {
                             // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                            Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getCustomQueriesByUri( nextCustomInclude );
+                            Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getSettings().getCustomQueriesByUri( nextCustomInclude );
                             
                             for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
                             {
@@ -427,7 +427,7 @@ public class RdfFetchController
                              nextQuery,
                              "off",
                              nextBundle.originalProvider.getAcceptHeaderString(),
-                             Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"),
+                             Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"),
                              nextBundle );
                              
                 addToFetchQueue = true;
@@ -586,7 +586,7 @@ public class RdfFetchController
                 String convertedResult = (String)SparqlQueryCreator.normaliseByStage(
                     NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(),
                     nextResult, 
-                    Settings.getSortedRulesForProvider( 
+                    Settings.getSettings().getSortedRulesForProvider( 
                         nextThread.originalQueryBundle.getProvider(), 
                         Settings.HIGHEST_ORDER_FIRST ), 
                     sortedIncludedProfiles );

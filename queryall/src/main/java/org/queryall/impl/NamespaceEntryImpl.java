@@ -31,7 +31,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForNamespaceEntry();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -44,7 +44,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     private String description = "";
     private String identifierRegex = "";
     private String uriTemplate = "";
-    private String separator = Settings.getStringPropertyFromConfig("separator");
+    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator");
     
     // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes
@@ -67,9 +67,9 @@ public class NamespaceEntryImpl extends NamespaceEntry
     {
         ValueFactory f = new MemValueFactory();
         
-        namespaceNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                             +Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE
-                             +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        namespaceNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                             +Settings.getSettings().getNamespaceForNamespaceEntry()
+                             +Settings.getSettings().getOntologyTermUriSuffix();
                              
         setNamespaceTypeUri(f.createURI(namespaceNamespace+"Namespace"));
         setNamespaceAuthority(f.createURI(namespaceNamespace+"authority"));
@@ -418,7 +418,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
             URI authorityLiteral = null;
             
             if(getAuthority() == null || getAuthority().trim().equals(""))
-                authorityLiteral = f.createURI(Settings.getDefaultHostAddress());
+                authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
             else
                 authorityLiteral = f.createURI(getAuthority());
                 

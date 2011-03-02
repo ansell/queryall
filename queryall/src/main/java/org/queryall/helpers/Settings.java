@@ -3,6 +3,7 @@ package org.queryall.helpers;
 import info.aduna.iteration.Iterations;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +17,6 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import javax.servlet.*;
-import javax.servlet.http.*;
 
 import org.apache.log4j.Logger;
 
@@ -50,7 +50,11 @@ import org.queryall.queryutils.*;
  * @author Peter Ansell (p_ansell@yahoo.com)
  * @version $Id: Settings.java 975 2011-02-23 00:59:00Z p_ansell $
  */
-public class Settings extends HttpServlet
+/**
+ * @author peter
+ *
+ */
+public class Settings
 {
     private static final Logger log = Logger
             .getLogger(Settings.class.getName());
@@ -60,8 +64,8 @@ public class Settings extends HttpServlet
 
     // This matches the org/queryall/queryall.properties file where
     // the generally static API specific section of the configuration settings are stored
-    private static final String BASE_CONFIG_BUNDLE_NAME = "org.queryall.queryall";
-
+    private static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
+    
     public static final String CURRENT = "current";
     public static final String URL_ENCODED = "urlEncoded";
     public static final String PLUS_URL_ENCODED = "plusUrlEncoded";
@@ -106,120 +110,144 @@ public class Settings extends HttpServlet
     public static final String STATISTICS_ITEM_STDEVERRORLATENCY = "stdeverrorlatency";
 
     public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
-    public static URI DC_TITLE = null;
+    public URI DC_TITLE = null;
     
     // These properties are pulled out of the queryall.properties file
-    public static final String DEFAULT_ONTOLOGYTERMURI_PREFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX");
-    public static final String DEFAULT_ONTOLOGYTERMURI_SUFFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX");
+    private String DEFAULT_ONTOLOGYTERMURI_PREFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX", "http://purl.org/queryall/");
+    private String DEFAULT_ONTOLOGYTERMURI_SUFFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX", ":");
 
-    public static final String DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE");
-    public static final String DEFAULT_RDF_PROJECT_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROJECT_NAMESPACE");
-    public static final String DEFAULT_RDF_PROVIDER_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROVIDER_NAMESPACE");
-    public static final String DEFAULT_RDF_TEMPLATE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE");
-    public static final String DEFAULT_RDF_QUERY_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_QUERY_NAMESPACE");
-    public static final String DEFAULT_RDF_QUERYBUNDLE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE");
-    public static final String DEFAULT_RDF_RDFRULE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_RDFRULE_NAMESPACE");
-    public static final String DEFAULT_RDF_RULETEST_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_RULETEST_NAMESPACE");
-    public static final String DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE");
-    public static final String DEFAULT_RDF_PROFILE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROFILE_NAMESPACE");
-    public static final String DEFAULT_RDF_PROVENANCE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE");
-    public static final String DEFAULT_RDF_STATISTICS_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_STATISTICS_NAMESPACE");
+    private String DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE", "webapp_configuration");
+    private String DEFAULT_RDF_PROJECT_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROJECT_NAMESPACE", "project");
+    private String DEFAULT_RDF_PROVIDER_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROVIDER_NAMESPACE", "provider");
+    private String DEFAULT_RDF_TEMPLATE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE", "template");
+    private String DEFAULT_RDF_QUERY_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_QUERY_NAMESPACE", "query");
+    private String DEFAULT_RDF_QUERYBUNDLE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE", "querybundle");
+    private String DEFAULT_RDF_RDFRULE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_RDFRULE_NAMESPACE", "rdfrule");
+    private String DEFAULT_RDF_RULETEST_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_RULETEST_NAMESPACE", "ruletest");
+    private String DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE", "ns");
+    private String DEFAULT_RDF_PROFILE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROFILE_NAMESPACE", "profile");
+    private String DEFAULT_RDF_PROVENANCE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE", "provenance");
+    private String DEFAULT_RDF_STATISTICS_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_STATISTICS_NAMESPACE", "statistics");
             
-    public static final String AUTOGENERATED_QUERY_PREFIX = Settings.getString("Settings.AUTOGENERATED_QUERY_PREFIX");
-    public static final String AUTOGENERATED_QUERY_SUFFIX = Settings.getString("Settings.AUTOGENERATED_QUERY_SUFFIX");
-    public static final String AUTOGENERATED_PROVIDER_PREFIX = Settings.getString("Settings.AUTOGENERATED_PROVIDER_PREFIX");
-    public static final String AUTOGENERATED_PROVIDER_SUFFIX = Settings.getString("Settings.AUTOGENERATED_PROVIDER_SUFFIX");
+    private String AUTOGENERATED_QUERY_PREFIX = Settings.getString("Settings.AUTOGENERATED_QUERY_PREFIX", "autogen-");
+    private String AUTOGENERATED_QUERY_SUFFIX = Settings.getString("Settings.AUTOGENERATED_QUERY_SUFFIX", "");
+    private String AUTOGENERATED_PROVIDER_PREFIX = Settings.getString("Settings.AUTOGENERATED_PROVIDER_PREFIX", "autogen-");
+    private String AUTOGENERATED_PROVIDER_SUFFIX = Settings.getString("Settings.AUTOGENERATED_PROVIDER_SUFFIX", "");
     
-    // these values are initialised dynamically for the lifetime of the servlet
-    public static String VERSION = null;
-    public static String SUBVERSION_INFO = null;
-    public static int CONFIG_API_VERSION = -1;
+    // these values are initialised dynamically for the lifetime of the class
+    public String VERSION = null;
+    public String SUBVERSION_INFO = null;
+    public int CONFIG_API_VERSION = -1;
 
-    public static Collection<String> BASE_CONFIG_FILES = null;
+    public Collection<String> BASE_CONFIG_FILES = null;
     public static String BASE_CONFIG_URI = null;
-    public static String BASE_CONFIG_MIME_FORMAT = null;
+    public String BASE_CONFIG_MIME_FORMAT = null;
     
-    private static Repository currentConfigurationRepository = null;
-    private static Repository currentBaseConfigurationRepository = null;
-    private static Repository currentWebAppConfigurationRepository = null;
-    private static Map<URI, Provider> cachedProviders = null;
-    private static Map<URI, NormalisationRule> cachedNormalisationRules = null;
-    private static Map<URI, RuleTest> cachedRuleTests = null;
-    private static Map<URI, QueryType> cachedCustomQueries = null;
-    private static Map<URI, Template> cachedTemplates = null;
-    private static Map<URI, Profile> cachedProfiles = null;
-    private static Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
-    private static Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
-    private static Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>();
-    public static Collection<String> WEBAPP_CONFIG_URI_LIST = new HashSet<String>();
-    public static Collection<String> CONFIG_LOCATION_LIST = new HashSet<String>();
-    // public static Collection<String> BACKUP_CONFIG_LOCATION_LIST = new HashSet<String>();
+    private Repository currentConfigurationRepository = null;
+    private Repository currentBaseConfigurationRepository = null;
+    private Repository currentWebAppConfigurationRepository = null;
+    private Map<URI, Provider> cachedProviders = null;
+    private Map<URI, NormalisationRule> cachedNormalisationRules = null;
+    private Map<URI, RuleTest> cachedRuleTests = null;
+    private Map<URI, QueryType> cachedCustomQueries = null;
+    private Map<URI, Template> cachedTemplates = null;
+    private Map<URI, Profile> cachedProfiles = null;
+    private Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
+    private Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
+    private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>();
+    public Collection<String> WEBAPP_CONFIG_URI_LIST = new HashSet<String>();
+    public Collection<String> CONFIG_LOCATION_LIST = new HashSet<String>();
+    // public Collection<String> BACKUP_CONFIG_LOCATION_LIST = new HashSet<String>();
 
-    private static ServletConfig servletConfig = null;
+    private long initialisedTimestamp = System.currentTimeMillis();
     
-    private static long initialisedTimestamp = System.currentTimeMillis();
+    private static Settings settingsSingleton = null;
     
-    // No instantiation/encapsulation allowed or possible for this class    
-    // private Settings()
-    // {
-    // }
+    public Settings()
+    {
+    	
+    }
     
-    static
+    public Settings(String baseConfigLocation)
     {
         ValueFactory f = new MemValueFactory();
         
         DC_TITLE = f.createURI(DC_NAMESPACE+"title");
         
-    }
-    
-    public void init() throws ServletException
-    {
-        Settings.setServletConfig(getServletConfig());
-    }    
-    
-    public static synchronized void setServletConfig(ServletConfig newServletConfig)
-    {
-        log.info("Settings: newServletConfig="+newServletConfig);
+        InputStream baseConfig = this.getClass().getResourceAsStream(baseConfigLocation);
         
-        servletConfig = newServletConfig;
-
-        VERSION = servletConfig.getServletContext().getInitParameter("VERSION");
-
-        SUBVERSION_INFO = servletConfig.getServletContext().getInitParameter("SUBVERSION_INFO");
-
-        log.info("Settings: VERSION="+VERSION);
-
-        CONFIG_API_VERSION = Integer.parseInt(servletConfig.getServletContext().getInitParameter("CONFIG_API_VERSION"));
-
-        String newBaseConfigFilesString = servletConfig.getServletContext().getInitParameter("BASE_CONFIG_FILES");
-        String newBaseConfigUri = servletConfig.getServletContext().getInitParameter("BASE_CONFIG_URI");
-        String newBaseConfigMimeFormat = servletConfig.getServletContext().getInitParameter("BASE_CONFIG_MIME_FORMAT");
-
-        Collection<String> newBaseConfigFiles = new LinkedList<String>();
-        
-        if(newBaseConfigFilesString == null)
+        if(baseConfig == null)
         {
-            log.fatal("Settings: null init parameter named BASE_CONFIG_FILES newBaseConfigFilesString="+newBaseConfigFilesString);
-            return;
+        	log.error("Settings.init: baseConfig was null");
         }
-        
-        for(String nextSplit : newBaseConfigFilesString.split(","))
+        else
         {
-            if(nextSplit != null && !nextSplit.equals(""))
-            {
-                newBaseConfigFiles.add(nextSplit);
-            }
-        }
-        
-        if(BASE_CONFIG_FILES == null && BASE_CONFIG_URI == null && BASE_CONFIG_MIME_FORMAT == null)
-        {
-            BASE_CONFIG_FILES = newBaseConfigFiles;
-            BASE_CONFIG_URI = newBaseConfigUri;
-            BASE_CONFIG_MIME_FORMAT = newBaseConfigMimeFormat;
+        	log.error("Settings.init: baseConfig was not null");
         }
     }
     
-    public static synchronized boolean configRefreshCheck(boolean tryToForceRefresh)
+    
+    /**
+     * Checks for the base config location first in the system vm properties, 
+     * then in the localisation properties file, by default, "queryall.properties",
+     * 
+     * @return The location of the base configuration file, defaults to "queryallBaseConfig.n3"
+     */
+    private static String getBaseConfigLocation()
+    {
+    	return getSystemOrPropertyString("queryallBaseConfigLocation", "queryallBaseConfig.n3");
+    }
+    
+    /**
+     * 
+     * @return The mime format of the base config file, defaults to "text/rdf+n3"
+     */
+    private static String getBaseConfigMimeFormat()
+    {
+    	return getSystemOrPropertyString("queryallBaseConfigMimeFormat", "text/rdf+n3");
+    }
+    
+    /**
+     * 
+     * @return The URI of the configuration object in the base config file, defaults to "http://purl.org/queryall/webapp_configuration:theBaseConfig"
+     */
+    private static String getBaseConfigUri()
+    {
+    	return getSystemOrPropertyString("queryallBaseConfigUri", "http://purl.org/queryall/webapp_configuration:theBaseConfig");
+    }
+    
+    /**
+     * Checks for the key first in the system vm properties, 
+     * then in the localisation properties file, by default, "queryall.properties",
+     * then uses the defaultValue if the location is still unknown
+     * 
+     * @param key The key to check for first in system vm properties and then in the localisation properties file
+     * @param defaultValue The value to return if the key does not match any configured value
+     * @return the string matching the key
+     */
+    private static String getSystemOrPropertyString(String key, String defaultValue)
+    {
+        String result = System.getProperty(key);
+        
+        if(result == null || result.equals(""))
+        {
+        	result = Settings.getString(key, defaultValue);
+        }
+
+        return result;
+    }
+    
+    public static Settings getSettings()
+    {
+    	if(settingsSingleton == null)
+    	{
+            settingsSingleton = new Settings(getBaseConfigLocation());
+    	}
+    	
+		return settingsSingleton;
+    }
+    
+    public synchronized boolean configRefreshCheck(boolean tryToForceRefresh)
     {
         final long currentTimestamp = System.currentTimeMillis();
         
@@ -227,22 +255,22 @@ public class Settings extends HttpServlet
         {
             Settings.log
                     .debug("Settings.configRefreshCheck: before check Settings.PERIODIC_CONFIGURATION_REFRESH="
-                            + Settings.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh")
+                            + this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh")
                             + " Settings.PERIODIC_REFRESH_MILLISECONDS="
-                            + Settings.getLongPropertyFromConfig("periodicConfigurationMilliseconds")
+                            + this.getLongPropertyFromConfig("periodicConfigurationMilliseconds")
                             + " currentTimestamp - initialisedTimestamp="
-                            + (currentTimestamp - Settings.initialisedTimestamp)
+                            + (currentTimestamp - this.initialisedTimestamp)
                             + " ");
         }
-        if(tryToForceRefresh && !Settings.isManualRefreshAllowed())
+        if(tryToForceRefresh && !this.isManualRefreshAllowed())
         {
             Settings.log
                     .error("Settings.configRefreshCheck: attempted to force refresh outside of manual refresh time and ability guidelines");
             return false;
         }
         
-        boolean enablePeriodicConfigurationRefresh = Settings.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh");
-        long periodicConfigurationMilliseconds = Settings.getLongPropertyFromConfig("periodicConfigurationMilliseconds");
+        boolean enablePeriodicConfigurationRefresh = this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh");
+        long periodicConfigurationMilliseconds = this.getLongPropertyFromConfig("periodicConfigurationMilliseconds");
         
         if(Settings._DEBUG)
         {
@@ -253,7 +281,7 @@ public class Settings extends HttpServlet
         }
     
         if(tryToForceRefresh
-                || (enablePeriodicConfigurationRefresh && ((currentTimestamp - Settings.initialisedTimestamp) > periodicConfigurationMilliseconds)))
+                || (enablePeriodicConfigurationRefresh && ((currentTimestamp - this.initialisedTimestamp) > periodicConfigurationMilliseconds)))
         {
             Repository previousConfiguration = null;
             Repository previousWebappConfiguration = null;
@@ -264,23 +292,23 @@ public class Settings extends HttpServlet
                     Settings.log
                             .info("Settings.configRefreshCheck: refresh required... starting process");
                 }
-                if(Settings.currentWebAppConfigurationRepository != null)
+                if(this.currentWebAppConfigurationRepository != null)
                 {
-                    synchronized(Settings.currentWebAppConfigurationRepository)
+                    synchronized(this.currentWebAppConfigurationRepository)
                     {
-                        previousWebappConfiguration = Settings.currentWebAppConfigurationRepository;
+                        previousWebappConfiguration = this.currentWebAppConfigurationRepository;
                         if(Settings._DEBUG)
                         {
                             Settings.log
                                     .debug("Settings.configRefreshCheck: refresh required... currentWebappConfigurationRepository about to be set to null");
                         }
-                        Settings.currentWebAppConfigurationRepository = null;
+                        this.currentWebAppConfigurationRepository = null;
                     }
                 }
                 
-                Settings.getWebAppConfigurationRdf();
+                this.getWebAppConfigurationRdf();
                 
-                if(Settings.currentWebAppConfigurationRepository == null)
+                if(this.currentWebAppConfigurationRepository == null)
                 {
                     currentWebAppConfigurationRepository = previousWebappConfiguration;
                     
@@ -289,23 +317,23 @@ public class Settings extends HttpServlet
 
                     // reset the timestamp so that we don't try too often
                     // TODO: improve functionality for specifying retry time if failures occur
-                    // Settings.initialisedTimestamp = System.currentTimeMillis();
+                    // this.initialisedTimestamp = System.currentTimeMillis();
                     
                     // return false;
                 }
 
                 
-                if(Settings.currentConfigurationRepository != null)
+                if(this.currentConfigurationRepository != null)
                 {
-                    synchronized(Settings.currentConfigurationRepository)
+                    synchronized(this.currentConfigurationRepository)
                     {
-                        previousConfiguration = Settings.currentConfigurationRepository;
+                        previousConfiguration = this.currentConfigurationRepository;
                         if(Settings._DEBUG)
                         {
                             Settings.log
                                     .debug("Settings.configRefreshCheck: refresh required... currentConfigurationRepository about to be set to null");
                         }
-                        Settings.currentConfigurationRepository = null;
+                        this.currentConfigurationRepository = null;
                     }
                 }
                 if(Settings._INFO)
@@ -313,9 +341,9 @@ public class Settings extends HttpServlet
                     Settings.log
                             .info("Settings.configRefreshCheck: refresh required... getServerConfigurationRdf about to be called");
                 }
-                Settings.getServerConfigurationRdf();
+                this.getServerConfigurationRdf();
                 
-                if(Settings.currentConfigurationRepository == null)
+                if(this.currentConfigurationRepository == null)
                 {
                     currentConfigurationRepository = previousConfiguration;
                     
@@ -324,7 +352,7 @@ public class Settings extends HttpServlet
 
                     // reset the timestamp so that we don't try too often
                     // TODO: improve functionality for specifying retry time if failures occur
-                    Settings.initialisedTimestamp = System.currentTimeMillis();
+                    this.initialisedTimestamp = System.currentTimeMillis();
                     
                     return false;
                 }
@@ -334,61 +362,61 @@ public class Settings extends HttpServlet
                     Settings.log
                             .trace("Settings.configRefreshCheck: refresh required... currentConfigurationRepository refreshed");
                 }
-                if(Settings.cachedProviders != null)
+                if(this.cachedProviders != null)
                 {
-                    synchronized(Settings.cachedProviders)
+                    synchronized(this.cachedProviders)
                     {
-                        Settings.cachedProviders = null;
+                        this.cachedProviders = null;
                     }
                 }
-                Settings.getAllProviders();
+                this.getAllProviders();
                 if(Settings._TRACE)
                 {
                     Settings.log
                             .trace("Settings.configRefreshCheck: refresh required... cachedProviders refreshed");
                 }
-                if(Settings.cachedCustomQueries != null)
+                if(this.cachedCustomQueries != null)
                 {
-                    synchronized(Settings.cachedCustomQueries)
+                    synchronized(this.cachedCustomQueries)
                     {
-                        Settings.cachedCustomQueries = null;
+                        this.cachedCustomQueries = null;
                     }
                 }
-                Settings.getAllCustomQueries();
+                this.getAllCustomQueries();
                 if(Settings._TRACE)
                 {
                     Settings.log
                             .trace("Settings.configRefreshCheck: refresh required... cachedCustomQueries refreshed");
                 }
-                if(Settings.cachedNamespaceEntries != null)
+                if(this.cachedNamespaceEntries != null)
                 {
-                    synchronized(Settings.cachedNamespaceEntries)
+                    synchronized(this.cachedNamespaceEntries)
                     {
-                        Settings.cachedNamespaceEntries = null;
+                        this.cachedNamespaceEntries = null;
                     }
                 }
-                if(Settings.cachedNamespacePrefixToUriEntries != null)
+                if(this.cachedNamespacePrefixToUriEntries != null)
                 {
-                    synchronized(Settings.cachedNamespacePrefixToUriEntries)
+                    synchronized(this.cachedNamespacePrefixToUriEntries)
                     {
-                        Settings.cachedNamespacePrefixToUriEntries = null;
+                        this.cachedNamespacePrefixToUriEntries = null;
                     }
                 }
-                Settings.getAllNamespaceEntries();
+                this.getAllNamespaceEntries();
                 if(Settings._TRACE)
                 {
                     Settings.log
                             .trace("Settings.configRefreshCheck: refresh required... cachedNamespaceEntries and cachedNamespacePrefixToUriEntries refreshed");
                 }
                 
-                if(Settings.cachedProfiles != null)
+                if(this.cachedProfiles != null)
                 {
-                    synchronized(Settings.cachedProfiles)
+                    synchronized(this.cachedProfiles)
                     {
-                        Settings.cachedProfiles = null;
+                        this.cachedProfiles = null;
                     }
                 }
-                Settings.getAllProfiles();
+                this.getAllProfiles();
                 
                 if(Settings._TRACE)
                 {
@@ -396,28 +424,28 @@ public class Settings extends HttpServlet
                             .trace("Settings.configRefreshCheck: refresh required... cachedProfiles refreshed");
                 }
                 
-                if(Settings.cachedNormalisationRules != null)
+                if(this.cachedNormalisationRules != null)
                 {
-                    synchronized(Settings.cachedNormalisationRules)
+                    synchronized(this.cachedNormalisationRules)
                     {
-                        Settings.cachedNormalisationRules = null;
+                        this.cachedNormalisationRules = null;
                     }
                 }
-                Settings.getAllNormalisationRules();
+                this.getAllNormalisationRules();
                 if(Settings._TRACE)
                 {
                     Settings.log
                             .trace("Settings.configRefreshCheck: refresh required... cachedNormalisationRules refreshed");
                 }
-                if(Settings.cachedRuleTests != null)
+                if(this.cachedRuleTests != null)
                 {
-                    synchronized(Settings.cachedRuleTests)
+                    synchronized(this.cachedRuleTests)
                     {
-                        Settings.cachedRuleTests = null;
+                        this.cachedRuleTests = null;
                     }
                 }
                 
-                Settings.getAllRuleTests();
+                this.getAllRuleTests();
                 
                 if(Settings._TRACE)
                 {
@@ -425,14 +453,14 @@ public class Settings extends HttpServlet
                             .trace("Settings.configRefreshCheck: refresh required... cachedRuleTests refreshed");
                 }
                 
-                if(Settings.cachedTemplates != null)
+                if(this.cachedTemplates != null)
                 {
-                    synchronized(Settings.cachedTemplates)
+                    synchronized(this.cachedTemplates)
                     {
-                        Settings.cachedTemplates = null;
+                        this.cachedTemplates = null;
                     }
                 }
-                Settings.getAllTemplates();
+                this.getAllTemplates();
                 
                 if(Settings._TRACE)
                 {
@@ -440,7 +468,7 @@ public class Settings extends HttpServlet
                             .trace("Settings.configRefreshCheck: refresh required... cachedTemplates refreshed");
                 }
                 
-                Settings.initialisedTimestamp = System.currentTimeMillis();
+                this.initialisedTimestamp = System.currentTimeMillis();
 
                 if(Settings._INFO)
                 {
@@ -453,7 +481,7 @@ public class Settings extends HttpServlet
             catch(java.lang.InterruptedException ie)
             {
                 Settings.log.fatal("Settings.configRefreshCheck: failed due to java.lang.InterruptedException");
-                Settings.currentConfigurationRepository = previousConfiguration;
+                this.currentConfigurationRepository = previousConfiguration;
                 return false;
             }
         }
@@ -464,16 +492,16 @@ public class Settings extends HttpServlet
         return false;
     }
     
-    public static synchronized Map<URI, QueryType> getAllCustomQueries()
+    public synchronized Map<URI, QueryType> getAllCustomQueries()
     {
-        if(Settings.cachedCustomQueries != null)
+        if(this.cachedCustomQueries != null)
         {
-            return Settings.cachedCustomQueries;
+            return this.cachedCustomQueries;
         }
         
         try
         {
-            final Repository myRepository = Settings.getServerConfigurationRdf();
+            final Repository myRepository = getServerConfigurationRdf();
             
             Map<URI, QueryType> results = getCustomQueries(myRepository);
             
@@ -482,7 +510,7 @@ public class Settings extends HttpServlet
                 log.info("Settings.getAllCustomQueries: found "+results.size()+" queries");
             }
             
-            Settings.cachedCustomQueries = results;
+            this.cachedCustomQueries = results;
             
             return results;
         }
@@ -494,7 +522,7 @@ public class Settings extends HttpServlet
         }
     }
     
-    public static Map<URI, QueryType> getCustomQueries(Repository myRepository)
+    public Map<URI, QueryType> getCustomQueries(Repository myRepository)
     {
         final Hashtable<URI, QueryType> results = new Hashtable<URI, QueryType>();
         final long start = System.currentTimeMillis();
@@ -504,9 +532,9 @@ public class Settings extends HttpServlet
                     .debug("Settings.getCustomQueries: started parsing custom queries");
         }
         // TODO: make the Query suffix configurable
-        final String queryOntologyTypeUri = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                + Settings.DEFAULT_RDF_QUERY_NAMESPACE
-                + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX + "Query";
+        final String queryOntologyTypeUri = this.getOntologyTermUriPrefix()
+                + this.getNamespaceForQueryType()
+                + this.getOntologyTermUriSuffix() + "Query";
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
@@ -541,7 +569,7 @@ public class Settings extends HttpServlet
                                 .getStatements((URI) valueOfQueryUri,
                                         (URI) null, (Value) null, true);
                         final Collection<Statement> nextStatementList = Iterations.addAll(statements, new HashSet<Statement>());
-                        final QueryType nextQueryConfiguration = QueryTypeImpl.fromRdf(nextStatementList, (URI)valueOfQueryUri, Settings.CONFIG_API_VERSION);
+                        final QueryType nextQueryConfiguration = QueryTypeImpl.fromRdf(nextStatementList, (URI)valueOfQueryUri, this.CONFIG_API_VERSION);
                         if(nextQueryConfiguration != null)
                         {
                             results.put((URI)valueOfQueryUri,
@@ -585,7 +613,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static synchronized boolean addTemplate(Template nextTemplate, boolean overwritePrevious)
+    public synchronized boolean addTemplate(Template nextTemplate, boolean overwritePrevious)
     {
         Template existingTemplate = getTemplate(nextTemplate.getKey());
         
@@ -604,11 +632,11 @@ public class Settings extends HttpServlet
         }
     }
     
-    public static Template getTemplate(URI nextKey)
+    public Template getTemplate(URI nextKey)
     {
         Template result = null;
         
-        Map<URI, Template> allTemplates = Settings.getAllTemplates();
+        Map<URI, Template> allTemplates = this.getAllTemplates();
         
         if(allTemplates.containsKey(nextKey))
         {
@@ -618,7 +646,7 @@ public class Settings extends HttpServlet
         return result;
     }
     
-    public static synchronized Template createNewTemplateByString(String templateKey, String templateString, String contentType)
+    public synchronized Template createNewTemplateByString(String templateKey, String templateString, String contentType)
     {
         Template result = new TemplateImpl();
         
@@ -634,7 +662,7 @@ public class Settings extends HttpServlet
     // The pattern order does not need to be universally applicable, 
     // as templates can be explicitly chained using the referencedTemplates method for one to one correspondence if needed
     // TODO: make a non-recursive implementation to keep memory footprint low
-    public static void matchTemplatesToPatternsForQuery(
+    public void matchTemplatesToPatternsForQuery(
         List<Template> allTemplates, 
         List<Template> constantParameters, 
         StringBuilder queryString)
@@ -705,7 +733,7 @@ public class Settings extends HttpServlet
             }
             
             // result = matchTemplatesToPatternsForQuery(nextCalledTemplates, constantParameters, result);
-            Settings.matchTemplatesToPatternsForQuery(nextCalledTemplates, constantParameters, result);
+            this.matchTemplatesToPatternsForQuery(nextCalledTemplates, constantParameters, result);
             
             if(_DEBUG)
             {
@@ -724,7 +752,7 @@ public class Settings extends HttpServlet
         // return result;
     }
     
-    public static synchronized Template createNewTemplateByKey(String templateKey, String contentType)
+    public synchronized Template createNewTemplateByKey(String templateKey, String contentType)
     {
         Template result = new TemplateImpl();
         
@@ -734,11 +762,11 @@ public class Settings extends HttpServlet
         return result;
     }
     
-    public static synchronized Map<URI, Template> getAllTemplates()
+    public synchronized Map<URI, Template> getAllTemplates()
     {
-        if(Settings.cachedTemplates != null)
+        if(this.cachedTemplates != null)
         {
-            return Settings.cachedTemplates;
+            return this.cachedTemplates;
         }
 
         final Hashtable<URI, Template> results = new Hashtable<URI, Template>();
@@ -751,11 +779,11 @@ public class Settings extends HttpServlet
         }
         try
         {
-            final Repository myRepository = Settings.getServerConfigurationRdf();
+            final Repository myRepository = this.getServerConfigurationRdf();
             
-            final String templateOntologyTypeUri = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                    + Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE
-                    + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX + "Template";
+            final String templateOntologyTypeUri = this.getOntologyTermUriPrefix()
+                    + this.getNamespaceForTemplate()
+                    + this.getOntologyTermUriSuffix() + "Template";
             try
             {
                 final RepositoryConnection con = myRepository.getConnection();
@@ -785,7 +813,7 @@ public class Settings extends HttpServlet
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final Template nextTemplate = TemplateImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfTemplateUri, Settings.CONFIG_API_VERSION);
+                                    .fromRdf(nextStatementList, (URI)valueOfTemplateUri, this.CONFIG_API_VERSION);
                             if(nextTemplate != null)
                             {
                                 results.put((URI)valueOfTemplateUri,
@@ -829,15 +857,15 @@ public class Settings extends HttpServlet
         {
             Settings.log.debug("Settings.getAllTemplates: finished parsing templates");
         }
-        Settings.cachedTemplates = results;
-        return Settings.cachedTemplates;
+        this.cachedTemplates = results;
+        return this.cachedTemplates;
     }
     
-    public static synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
+    public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
-        if(Settings.cachedNamespaceEntries != null)
+        if(this.cachedNamespaceEntries != null)
         {
-            return Settings.cachedNamespaceEntries;
+            return this.cachedNamespaceEntries;
         }
         
         final Map<String, Collection<URI>> tempNamespacePrefixToUriEntries = new Hashtable<String, Collection<URI>>();
@@ -905,8 +933,8 @@ public class Settings extends HttpServlet
                 }
             }
             
-            Settings.cachedNamespacePrefixToUriEntries = tempNamespacePrefixToUriEntries;
-            Settings.cachedNamespaceEntries = results;
+            this.cachedNamespacePrefixToUriEntries = tempNamespacePrefixToUriEntries;
+            this.cachedNamespaceEntries = results;
             
             return results;
         }
@@ -918,7 +946,7 @@ public class Settings extends HttpServlet
         }
     }
     
-    public static synchronized Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
+    public synchronized Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
     {
         final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
         if(Settings._DEBUG)
@@ -960,7 +988,7 @@ public class Settings extends HttpServlet
                                 .addAll(statements, new HashSet<Statement>());
                         final NamespaceEntry nextNamespaceEntryConfiguration = NamespaceEntryImpl
                                 .fromRdf(nextStatementList,
-                                        (URI)valueOfNamespaceEntryUri, Settings.CONFIG_API_VERSION);
+                                        (URI)valueOfNamespaceEntryUri, this.CONFIG_API_VERSION);
                         if(nextNamespaceEntryConfiguration != null)
                         {
                             results.put((URI)valueOfNamespaceEntryUri,
@@ -1007,11 +1035,11 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static synchronized Map<URI, Profile> getAllProfiles()
+    public synchronized Map<URI, Profile> getAllProfiles()
     {
-        if(Settings.cachedProfiles != null)
+        if(this.cachedProfiles != null)
         {
-            return Settings.cachedProfiles;
+            return this.cachedProfiles;
         }
         final Map<URI, Profile> results = new Hashtable<URI, Profile>();
         if(Settings._DEBUG)
@@ -1023,8 +1051,7 @@ public class Settings extends HttpServlet
 
         try
         {
-            final Repository myRepository = Settings
-                    .getServerConfigurationRdf();
+            final Repository myRepository = this.getServerConfigurationRdf();
             final String profileOntologyTypeUri = new ProfileImpl().getElementType();
 
             try
@@ -1056,7 +1083,7 @@ public class Settings extends HttpServlet
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final Profile nextProfile = ProfileImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfProfileUri, Settings.CONFIG_API_VERSION);
+                                    .fromRdf(nextStatementList, (URI)valueOfProfileUri, this.CONFIG_API_VERSION);
                             if(nextProfile != null)
                             {
                                 results.put((URI)valueOfProfileUri,
@@ -1102,34 +1129,34 @@ public class Settings extends HttpServlet
                     .debug("Settings.getAllProfiles: finished parsing profiles");
         }
         
-        Settings.cachedProfiles = results;
+        this.cachedProfiles = results;
         
         if(_INFO)
         {
             log.info("Settings.getAllProfiles: found "+results.size()+" profiles");
         }
         
-        return Settings.cachedProfiles;
+        return this.cachedProfiles;
     }
     
-    public static synchronized Map<URI, Provider> getAllProviders()
+    public synchronized Map<URI, Provider> getAllProviders()
     {
-        if(Settings.cachedProviders != null)
+        if(this.cachedProviders != null)
         {
-            return Settings.cachedProviders;
+            return this.cachedProviders;
         }
         
         Map<URI, Provider> results = null;
         
         try
         {
-            final Repository myRepository = Settings.getServerConfigurationRdf();
+            final Repository myRepository = this.getServerConfigurationRdf();
             
             results = getProviders(myRepository);
             
             if(results != null)
             {
-                Settings.cachedProviders = results;
+                this.cachedProviders = results;
             }
         }
         catch(java.lang.InterruptedException ie)
@@ -1147,7 +1174,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Map<URI, Provider> getProviders(Repository myRepository)
+    public Map<URI, Provider> getProviders(Repository myRepository)
     {
         final Hashtable<URI, Provider> results = new Hashtable<URI, Provider>();
 
@@ -1158,9 +1185,9 @@ public class Settings extends HttpServlet
         }
         final long start = System.currentTimeMillis();
 
-        final String providerOntologyTypeUri = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                + Settings.DEFAULT_RDF_PROVIDER_NAMESPACE
-                + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX + "Provider";
+        final String providerOntologyTypeUri = this.getOntologyTermUriPrefix()
+                + this.getNamespaceForProvider()
+                + this.getOntologyTermUriSuffix() + "Provider";
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
@@ -1190,7 +1217,7 @@ public class Settings extends HttpServlet
                         final Collection<Statement> nextStatementList = Iterations
                                 .addAll(statements, new HashSet<Statement>());
                         final Provider nextProvider = ProviderImpl
-                                .fromRdf(nextStatementList, (URI)valueOfProviderUri, Settings.CONFIG_API_VERSION);
+                                .fromRdf(nextStatementList, (URI)valueOfProviderUri, this.CONFIG_API_VERSION);
                         if(nextProvider != null)
                         {
                             results.put((URI)valueOfProviderUri,
@@ -1234,11 +1261,11 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static synchronized Map<URI, NormalisationRule> getAllNormalisationRules()
+    public synchronized Map<URI, NormalisationRule> getAllNormalisationRules()
     {
-        if(Settings.cachedNormalisationRules != null)
+        if(this.cachedNormalisationRules != null)
         {
-            return Settings.cachedNormalisationRules;
+            return this.cachedNormalisationRules;
         }
 
         if(Settings._DEBUG)
@@ -1252,7 +1279,7 @@ public class Settings extends HttpServlet
         final Hashtable<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
         try
         {
-            final Repository configRepository = Settings.getServerConfigurationRdf();
+            final Repository configRepository = this.getServerConfigurationRdf();
             
             // TODO: use reflection and dynamic loading of rules classes to make this process generic and static to future additions
             
@@ -1290,7 +1317,7 @@ public class Settings extends HttpServlet
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final RegexNormalisationRule nextRdfRuleConfiguration = 
-                                        new RegexNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
+                                        new RegexNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, this.CONFIG_API_VERSION);
                             results.put((URI)valueOfRdfRuleUri, nextRdfRuleConfiguration);
                         }
                     }
@@ -1343,7 +1370,7 @@ public class Settings extends HttpServlet
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final SparqlNormalisationRule nextRdfRuleConfiguration = 
-                                        new SparqlNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
+                                        new SparqlNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, this.CONFIG_API_VERSION);
                             results.put((URI)valueOfRdfRuleUri,
                                     nextRdfRuleConfiguration);
                         }
@@ -1379,7 +1406,7 @@ public class Settings extends HttpServlet
             Settings.log
                     .debug("Settings.getAllNormalisationRules: finished parsing normalisation rules");
         }
-        Settings.cachedNormalisationRules = results;
+        this.cachedNormalisationRules = results;
 
         if(_INFO)
         {
@@ -1387,14 +1414,14 @@ public class Settings extends HttpServlet
         }
         
 
-        return Settings.cachedNormalisationRules;
+        return this.cachedNormalisationRules;
     }
     
-    public static synchronized Map<URI, RuleTest> getAllRuleTests()
+    public synchronized Map<URI, RuleTest> getAllRuleTests()
     {
-        if(Settings.cachedRuleTests != null)
+        if(this.cachedRuleTests != null)
         {
-            return Settings.cachedRuleTests;
+            return this.cachedRuleTests;
         }
         final Hashtable<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
         if(Settings._DEBUG)
@@ -1405,8 +1432,7 @@ public class Settings extends HttpServlet
         final long start = System.currentTimeMillis();
         try
         {
-            final Repository configRepository = Settings
-                    .getServerConfigurationRdf();
+            final Repository configRepository = this.getServerConfigurationRdf();
             final String ruleTestOntologyTypeUri = new RuleTestImpl().getElementType();
             try
             {
@@ -1437,7 +1463,7 @@ public class Settings extends HttpServlet
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final RuleTest nextRuleTestConfiguration = RuleTestImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfRuleTestUri, Settings.CONFIG_API_VERSION);
+                                    .fromRdf(nextStatementList, (URI)valueOfRuleTestUri, this.CONFIG_API_VERSION);
                             if(nextRuleTestConfiguration != null)
                             {
                                 results.put((URI)valueOfRuleTestUri,
@@ -1482,19 +1508,19 @@ public class Settings extends HttpServlet
             Settings.log
                     .debug("Settings.getAllRuleTests: finished getting rdf rule tests");
         }
-        Settings.cachedRuleTests = results;
+        this.cachedRuleTests = results;
 
         if(_INFO)
         {
             log.info("Settings.getAllRuleTests: found "+results.size()+" rule tests");
         }
         
-        return Settings.cachedRuleTests;
+        return this.cachedRuleTests;
     }
     
-    public static List<Profile> getAndSortProfileList(Collection<URI> nextProfileUriList, int nextSortOrder)
+    public List<Profile> getAndSortProfileList(Collection<URI> nextProfileUriList, int nextSortOrder)
     {
-        final Map<URI, Profile> allProfiles = Settings.getAllProfiles();
+        final Map<URI, Profile> allProfiles = this.getAllProfiles();
         final List<Profile> results = new ArrayList<Profile>();
         if(nextProfileUriList == null)
         {
@@ -1540,11 +1566,10 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<QueryType> getCustomQueriesByUri(URI queryTypeUri)
+    public Collection<QueryType> getCustomQueriesByUri(URI queryTypeUri)
     {
         final Collection<QueryType> results = new HashSet<QueryType>();
-        for(final QueryType nextQueryType : Settings
-                .getAllCustomQueries().values())
+        for(final QueryType nextQueryType : this.getAllCustomQueries().values())
         {
             if(nextQueryType.getKey().equals(queryTypeUri))
             {
@@ -1556,18 +1581,18 @@ public class Settings extends HttpServlet
     
     // FIXME: This will only return anything if at least one group appears in the
     // relevant regular expression!!
-    public static Collection<QueryType> getCustomQueriesMatchingQueryString(String queryString, List<Profile> profileList)
+    public Collection<QueryType> getCustomQueriesMatchingQueryString(String queryString, List<Profile> profileList)
     {
-        log.debug("Settings.getCustomQueriesMatchingQueryString: profileList.size()="+profileList.size());
+        log.debug("this.getCustomQueriesMatchingQueryString: profileList.size()="+profileList.size());
         
         for(Profile nextProfile : profileList)
         {
-            log.trace("Settings.getCustomQueriesMatchingQueryString: nextProfile.getKey()="+nextProfile.getKey().stringValue());
+            log.trace("this.getCustomQueriesMatchingQueryString: nextProfile.getKey()="+nextProfile.getKey().stringValue());
         }
         
         final Collection<QueryType> results = new HashSet<QueryType>();
         
-        for(QueryType nextQuery : Settings.getAllCustomQueries().values())
+        for(QueryType nextQuery : this.getAllCustomQueries().values())
         {
             // FIXME: allow for queries with no matching groups
             // Currently queries with no matching groups will fail this step and not be considered valid
@@ -1576,7 +1601,7 @@ public class Settings extends HttpServlet
                 if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.getCustomQueriesMatchingQueryString: tentative, pre-profile-check match for"
+                            .trace("this.getCustomQueriesMatchingQueryString: tentative, pre-profile-check match for"
                                     + " nextQuery.getKey()="
                                     + nextQuery.getKey().stringValue()
                                     + " queryString="
@@ -1588,7 +1613,7 @@ public class Settings extends HttpServlet
                     if(Settings._DEBUG)
                     {
                         Settings.log
-                                .debug("Settings.getCustomQueriesMatchingQueryString: profileList suitable for"
+                                .debug("this.getCustomQueriesMatchingQueryString: profileList suitable for"
                                         + " nextQuery.getKey()="
                                         + nextQuery.getKey().stringValue()
                                         + " queryString="
@@ -1599,7 +1624,7 @@ public class Settings extends HttpServlet
                 else if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.getCustomQueriesMatchingQueryString: profileList not suitable for"
+                            .trace("this.getCustomQueriesMatchingQueryString: profileList not suitable for"
                                     + " nextQuery.getKey()="
                                     + nextQuery.getKey().stringValue()
                                     + " queryString="
@@ -1610,11 +1635,11 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<Provider> getDefaultProviders(URI queryKey)
+    public Collection<Provider> getDefaultProviders(URI queryKey)
     {
         final Collection<Provider> results = new HashSet<Provider>();
         
-        for(final Provider nextProvider : Settings.getAllProviders().values())
+        for(final Provider nextProvider : this.getAllProviders().values())
         {
             if(nextProvider.getIsDefaultSource()
                     && nextProvider.handlesQueryExplicitly(queryKey))
@@ -1626,9 +1651,9 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static NamespaceEntry getNamespaceEntryByUri(URI namespaceEntryUri)
+    public NamespaceEntry getNamespaceEntryByUri(URI namespaceEntryUri)
     {
-        final Map<URI, NamespaceEntry> allNamespaces = Settings.getAllNamespaceEntries();
+        final Map<URI, NamespaceEntry> allNamespaces = this.getAllNamespaceEntries();
         
         if(allNamespaces.containsKey(namespaceEntryUri))
         {
@@ -1640,22 +1665,21 @@ public class Settings extends HttpServlet
         }
     }
     
-    public static Collection<URI> getNamespaceUrisForTitle(String namespacePrefix)
+    public Collection<URI> getNamespaceUrisForTitle(String namespacePrefix)
     {
         Collection<URI> results = new HashSet<URI>();
         
-        if(Settings.cachedNamespacePrefixToUriEntries == null)
+        if(this.cachedNamespacePrefixToUriEntries == null)
         {
-            // HACK
-            // this function initialised the namespace prefix to URI cache
-            Settings.getAllNamespaceEntries();
+            // this function initialises the namespace prefix to URI cache
+            this.getAllNamespaceEntries();
         }
         
-        results = Settings.cachedNamespacePrefixToUriEntries.get(namespacePrefix);
+        results = this.cachedNamespacePrefixToUriEntries.get(namespacePrefix);
         return results;
     }
     
-    public static List<NormalisationRule> getSortedRulesForProviders(Collection<Provider> Providers, int sortOrder)
+    public List<NormalisationRule> getSortedRulesForProviders(Collection<Provider> Providers, int sortOrder)
     {
         List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         
@@ -1676,7 +1700,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static List<NormalisationRule> getSortedRulesForProvider(
+    public List<NormalisationRule> getSortedRulesForProvider(
             Provider nextProvider, int sortOrder)
     {
         if(nextProvider.getNormalisationsNeeded().size() == 0)
@@ -1685,18 +1709,18 @@ public class Settings extends HttpServlet
         }
         else
         {
-            return Settings.getNormalisationRulesForUris(
+            return this.getNormalisationRulesForUris(
                     nextProvider.getNormalisationsNeeded(),
                     sortOrder);
         }
     }
     
-    public static List<NormalisationRule> getNormalisationRulesForUris(
+    public List<NormalisationRule> getNormalisationRulesForUris(
             Collection<URI> rdfNormalisationsNeeded, int sortOrder)
     {
         final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         // final List<NormalisationRule> intermediateResults = new ArrayList<NormalisationRule>();
-        final Map<URI, NormalisationRule> allNormalisationRules = Settings.getAllNormalisationRules();
+        final Map<URI, NormalisationRule> allNormalisationRules = this.getAllNormalisationRules();
         
         for(final URI nextProviderNormalisationRule : rdfNormalisationsNeeded)
         {
@@ -1810,10 +1834,10 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<Provider> getProvidersForQueryType(
+    public Collection<Provider> getProvidersForQueryType(
             URI customService)
     {
-        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(customService, Settings.getAllProviders().values());
+        final Collection<Provider> results = this.getProvidersForQueryTypeFromList(customService, this.getAllProviders().values());
         
         if(Settings._DEBUG)
         {
@@ -1833,7 +1857,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<Provider> getProvidersForQueryTypeForNamespaceUris(
+    public Collection<Provider> getProvidersForQueryTypeForNamespaceUris(
             URI customService, Collection<Collection<URI>> namespaceUris,
             URI namespaceMatchMethod)
     {
@@ -1848,7 +1872,7 @@ public class Settings extends HttpServlet
                             + namespaceUris);
         }
         
-        final Collection<Provider> namespaceProviders = Settings.getProvidersForNamespaceUris(namespaceUris, namespaceMatchMethod);
+        final Collection<Provider> namespaceProviders = this.getProvidersForNamespaceUris(namespaceUris, namespaceMatchMethod);
         
         if(Settings._TRACE)
         {
@@ -1859,7 +1883,7 @@ public class Settings extends HttpServlet
                             + namespaceProviders);
         }
         
-        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(customService, namespaceProviders);
+        final Collection<Provider> results = this.getProvidersForQueryTypeFromList(customService, namespaceProviders);
         
         if(Settings._TRACE)
         {
@@ -1870,7 +1894,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<Provider> getProvidersForQueryTypeFromList(
+    public Collection<Provider> getProvidersForQueryTypeFromList(
             URI customService, Collection<Provider> knownProviders)
     {
         final Collection<Provider> results = new HashSet<Provider>();
@@ -1884,7 +1908,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<Provider> getProvidersFornamespacePreferredPrefixs(
+    public Collection<Provider> getProvidersFornamespacePreferredPrefixs(
             Collection<String> namespacePreferredPrefixs, URI namespaceMatchMethod)
     {
         if((namespacePreferredPrefixs == null)
@@ -1902,13 +1926,13 @@ public class Settings extends HttpServlet
         
         for(final String nextnamespacePreferredPrefix : namespacePreferredPrefixs)
         {
-            allNamespaceUris.add(Settings.getNamespaceUrisForTitle(nextnamespacePreferredPrefix));
+            allNamespaceUris.add(this.getNamespaceUrisForTitle(nextnamespacePreferredPrefix));
         }
         
-        return Settings.getProvidersForNamespaceUris(allNamespaceUris, namespaceMatchMethod);
+        return this.getProvidersForNamespaceUris(allNamespaceUris, namespaceMatchMethod);
     }
     
-    public static Collection<Provider> getProvidersForNamespaceUris(
+    public Collection<Provider> getProvidersForNamespaceUris(
             Collection<Collection<URI>> namespaceUris, URI namespaceMatchMethod)
     {
         if((namespaceUris == null) || (namespaceUris.size() == 0))
@@ -1927,10 +1951,10 @@ public class Settings extends HttpServlet
                             + namespaceUris);
         }
         final Collection<Provider> results = new HashSet<Provider>();
-        // final Hashtable<String, Provider> nextAllProviders = Settings.getAllProviders();
+        // final Hashtable<String, Provider> nextAllProviders = this.getAllProviders();
         // final Collection<Provider> providerCollection = nextAllProviders
                 // .values();
-        for(final Provider nextProvider : Settings.getAllProviders().values())
+        for(final Provider nextProvider : this.getAllProviders().values())
         {
             boolean anyFound = false;
             boolean allFound = true;
@@ -1997,13 +2021,13 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<RuleTest> getRuleTestsForNormalisationRuleUri(
+    public Collection<RuleTest> getRuleTestsForNormalisationRuleUri(
             URI normalisationRuleUri)
     {
         final Collection<RuleTest> results = new HashSet<RuleTest>();
-        //final Hashtable<String, RuleTest> allRdfRules = Settings.getAllRuleTests();
+        //final Hashtable<String, RuleTest> allRdfRules = this.getAllRuleTests();
         
-        for(final RuleTest nextRuleTest : Settings.getAllRuleTests().values())
+        for(final RuleTest nextRuleTest : this.getAllRuleTests().values())
         {
             if(nextRuleTest.getRuleUris().contains(normalisationRuleUri))
             {
@@ -2013,19 +2037,19 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    private static synchronized Repository getWebAppConfigurationRdf() throws java.lang.InterruptedException
+    private synchronized Repository getWebAppConfigurationRdf() throws java.lang.InterruptedException
     {
-        if(Settings.currentWebAppConfigurationRepository != null)
+        if(this.currentWebAppConfigurationRepository != null)
         {
-            return Settings.currentWebAppConfigurationRepository;
+            return this.currentWebAppConfigurationRepository;
         }
         
         if(_DEBUG)
             Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
         
         final long start = System.currentTimeMillis();
-        final String configMIMEFormat = Settings.BASE_CONFIG_MIME_FORMAT;
-        final String baseURI = Settings.BASE_CONFIG_URI;
+        final String configMIMEFormat = Settings.getBaseConfigMimeFormat();
+        final String baseURI = Settings.getBaseConfigUri();
         Repository tempConfigurationRepository = null;
         Repository finalConfigurationRepository = null;
         Repository nextBaseConfigurationRepository = getBaseConfigurationRdf();
@@ -2091,7 +2115,7 @@ public class Settings extends HttpServlet
                         // configFile = new
                         // File(getServletContext().getRealPath("/") +
                         // "/WEB-INF/" + configUrl);
-                        nextUrlFile = new File(getWebInfPath()+nextLocation);
+                        nextUrlFile = new File(nextLocation);
                     }
                     
                     if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
@@ -2201,7 +2225,7 @@ public class Settings extends HttpServlet
         
         if(finalConfigurationRepository != null)
         {
-            Settings.currentWebAppConfigurationRepository = finalConfigurationRepository;
+            this.currentWebAppConfigurationRepository = finalConfigurationRepository;
         }
         else
         {
@@ -2227,7 +2251,7 @@ public class Settings extends HttpServlet
         {
             try
             {
-                Settings.log.info("Settings.getWebAppConfigurationRdf: found "+Settings.currentWebAppConfigurationRepository.getConnection().size()+" statements in webapp configuration");
+                Settings.log.info("Settings.getWebAppConfigurationRdf: found "+this.currentWebAppConfigurationRepository.getConnection().size()+" statements in webapp configuration");
             }
             catch(RepositoryException rex)
             {
@@ -2235,14 +2259,14 @@ public class Settings extends HttpServlet
             }
         }
         
-        return Settings.currentWebAppConfigurationRepository;
+        return this.currentWebAppConfigurationRepository;
     }    
     
-    private static synchronized Repository getBaseConfigurationRdf() throws java.lang.InterruptedException
+    private synchronized Repository getBaseConfigurationRdf() throws java.lang.InterruptedException
     {
-        if(Settings.currentBaseConfigurationRepository != null)
+        if(this.currentBaseConfigurationRepository != null)
         {
-            return Settings.currentBaseConfigurationRepository;
+            return this.currentBaseConfigurationRepository;
         }
         
         if(_DEBUG)
@@ -2251,8 +2275,8 @@ public class Settings extends HttpServlet
         }
         
         final long start = System.currentTimeMillis();
-        final String configMIMEFormat = Settings.BASE_CONFIG_MIME_FORMAT;
-        final String baseURI = Settings.BASE_CONFIG_URI;
+        final String configMIMEFormat = Settings.getBaseConfigMimeFormat();
+        final String baseURI = Settings.getBaseConfigUri();
         Repository tempConfigurationRepository = null;
         boolean backupNeeded = false;
         boolean backupFailed = false;
@@ -2269,100 +2293,57 @@ public class Settings extends HttpServlet
             
             // Settings.log.error("Settings.getBaseConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
 
-            for(final String nextLocation : BASE_CONFIG_FILES)
+            final RepositoryConnection myRepositoryConnection = tempConfigurationRepository
+                    .getConnection();
+            
+            String nextLocation = getBaseConfigLocation();
+            
+            try
             {
-                if(nextLocation.equals(""))
-                    continue;
+                if(Settings._INFO)
+                {
+                    Settings.log
+                            .info("Settings.getBaseConfigurationRdf: getting configuration from file: nextLocation="
+                                    + nextLocation);
+                }
                 
-                if(_INFO)
-                {
-                    Settings.log.info("Settings.getBaseConfigurationRdf: nextLocation="+nextLocation);
-                }
-                // TODO: negotiate between local and non-local addresses better
-                // than this
-                final RepositoryConnection myRepositoryConnection = tempConfigurationRepository
-                        .getConnection();
-                try
-                {
-                    File nextUrlFile = new File(nextLocation);
-                    if(!nextUrlFile.isAbsolute())
-                    {
-                        // only let people utilise the WEB-INF directory if they
-                        // give a relative URL
-                        // configFile = new
-                        // File(getServletContext().getRealPath("/") +
-                        // "/WEB-INF/" + configUrl);
-                        nextUrlFile = new File(getWebInfPath()+nextLocation);
-                    }
-                    
-                    if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
-                    {
-                        final URL url = new URL(nextLocation);
-                        
-                        if(Settings._INFO)
-                        {
-                            Settings.log.info("Settings.getBaseConfigurationRdf: getting configuration from URL: nextLocation="+ nextLocation+" url="+url.toString());
-                        }
-                        
-                        myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-
-                        if(Settings._INFO)
-                        {
-                            Settings.log.info("Settings.getBaseConfigurationRdf: finished getting configuration from URL: url="+ url.toString());
-                        }
-                    }
-                    else
-                    {
-                        if(Settings._INFO)
-                        {
-                            Settings.log
-                                    .info("Settings.getBaseConfigurationRdf: getting configuration from file: nextLocation="
-                                            + nextLocation
-                                            + " nextUrlFile="
-                                            + nextUrlFile);
-                        }
-                        
-                        myRepositoryConnection.add(nextUrlFile, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                        if(Settings._INFO)
-                        {
-                            Settings.log
-                                    .info("Settings.getBaseConfigurationRdf: finished getting configuration from file: nextLocation="
-                                            + nextLocation
-                                            + " nextUrlFile="
-                                            + nextUrlFile);
-                        }
-                    }
-                }
-                catch (final RDFParseException rdfpe)
+                myRepositoryConnection.add(getClass().getResourceAsStream(nextLocation), baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                if(Settings._INFO)
                 {
                     Settings.log
-                            .fatal(
-                                    "Settings.getBaseConfigurationRdf: failed to get the configuration repository. Caught RDFParseException. nextLocation="+nextLocation,
-                                    rdfpe);
-                    throw new RuntimeException(
-                            "Settings.getBaseConfigurationRdf: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="+nextLocation);
+                            .info("Settings.getBaseConfigurationRdf: finished getting configuration from file: nextLocation="
+                                    + nextLocation);
                 }
-                catch (final OpenRDFException ordfe)
+            }
+            catch (final RDFParseException rdfpe)
+            {
+                Settings.log
+                        .fatal(
+                                "Settings.getBaseConfigurationRdf: failed to get the configuration repository. Caught RDFParseException. nextLocation="+nextLocation,
+                                rdfpe);
+                throw new RuntimeException(
+                        "Settings.getBaseConfigurationRdf: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="+nextLocation);
+            }
+            catch (final OpenRDFException ordfe)
+            {
+                Settings.log
+                        .fatal(
+                                "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="+nextLocation,
+                                ordfe);
+                throw new RuntimeException(
+                        "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="+nextLocation);
+            }
+            catch (final java.io.IOException ioe)
+            {
+                Settings.log.error("Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught java.io.IOException. nextLocation="+nextLocation, ioe);
+                // throw new RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
+                backupNeeded = true;
+            }
+            finally
+            {
+                if(myRepositoryConnection != null)
                 {
-                    Settings.log
-                            .fatal(
-                                    "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="+nextLocation,
-                                    ordfe);
-                    throw new RuntimeException(
-                            "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="+nextLocation);
-                }
-                catch (final java.io.IOException ioe)
-                {
-                    Settings.log.error("Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught java.io.IOException. nextLocation="+nextLocation, ioe);
-                    // throw new RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
-                    backupNeeded = true;
-                }
-                finally
-                {
-                    if(myRepositoryConnection != null)
-                    {
-                        myRepositoryConnection.close();
-                    }
+                    myRepositoryConnection.close();
                 }
             }
         }
@@ -2383,7 +2364,7 @@ public class Settings extends HttpServlet
         }
         else
         {
-            Settings.currentBaseConfigurationRepository = tempConfigurationRepository;
+            this.currentBaseConfigurationRepository = tempConfigurationRepository;
         }
 
         if(Settings._INFO)
@@ -2404,7 +2385,7 @@ public class Settings extends HttpServlet
         {
             try
             {
-                Settings.log.info("Settings.getBaseConfigurationRdf: found "+Settings.currentBaseConfigurationRepository.getConnection().size()+" statements in base configuration");
+                Settings.log.info("Settings.getBaseConfigurationRdf: found "+this.currentBaseConfigurationRepository.getConnection().size()+" statements in base configuration");
             }
             catch(RepositoryException rex)
             {
@@ -2416,7 +2397,7 @@ public class Settings extends HttpServlet
         {
             try
             {
-                for(Statement nextStatement : Utilities.getAllStatementsFromRepository(Settings.currentBaseConfigurationRepository))
+                for(Statement nextStatement : Utilities.getAllStatementsFromRepository(this.currentBaseConfigurationRepository))
                 {
                     Settings.log.trace(nextStatement.toString());
                 }
@@ -2427,18 +2408,18 @@ public class Settings extends HttpServlet
             }
         }
         
-        return Settings.currentBaseConfigurationRepository;
+        return this.currentBaseConfigurationRepository;
     }
 
-    private static synchronized Repository getServerConfigurationRdf() throws java.lang.InterruptedException
+    private synchronized Repository getServerConfigurationRdf() throws java.lang.InterruptedException
     {
-        if(Settings.currentConfigurationRepository != null)
+        if(this.currentConfigurationRepository != null)
         {
-            return Settings.currentConfigurationRepository;
+            return this.currentConfigurationRepository;
         }
         final long start = System.currentTimeMillis();
-        final String configMIMEFormat = Settings.BASE_CONFIG_MIME_FORMAT;
-        final String baseURI = Settings.getDefaultHostAddress();
+        final String configMIMEFormat = Settings.getBaseConfigMimeFormat();
+        final String baseURI = this.getDefaultHostAddress();
         Repository tempConfigurationRepository = null;
         boolean backupNeeded = false;
         boolean backupFailed = false;
@@ -2448,7 +2429,7 @@ public class Settings extends HttpServlet
             tempConfigurationRepository = new SailRepository(new MemoryStore());
             tempConfigurationRepository.initialize();
             
-            for(final String nextLocation : Settings.getStringCollectionPropertiesFromConfig("queryConfigLocations"))
+            for(final String nextLocation : this.getStringCollectionPropertiesFromConfig("queryConfigLocations"))
             {
                 // TODO: negotiate between local and non-local addresses better
                 // than this
@@ -2456,17 +2437,6 @@ public class Settings extends HttpServlet
                         .getConnection();
                 try
                 {
-                    File nextUrlFile = new File(nextLocation);
-                    if(!nextUrlFile.isAbsolute())
-                    {
-                        // only let people utilise the WEB-INF directory if they
-                        // give a relative URL
-                        // configFile = new
-                        // File(getServletContext().getRealPath("/") +
-                        // "/WEB-INF/" + configUrl);
-                        nextUrlFile = new File(Settings.getWebInfPath()+nextLocation);
-                    }
-                    
                     if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
                     {
                         //final URL url = new URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
@@ -2490,18 +2460,14 @@ public class Settings extends HttpServlet
                         {
                             Settings.log
                                     .info("Settings: getting configuration from file: nextLocation="
-                                            + nextLocation
-                                            + " nextUrlFile="
-                                            + nextUrlFile);
+                                            + nextLocation);
                         }
-                        myRepositoryConnection.add(nextUrlFile, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                        myRepositoryConnection.add(this.getClass().getResourceAsStream(nextLocation), baseURI, RDFFormat.forMIMEType(configMIMEFormat));
                         if(Settings._INFO)
                         {
                             Settings.log
                                     .info("Settings: finished getting configuration from file: nextLocation="
-                                            + nextLocation
-                                            + " nextUrlFile="
-                                            + nextUrlFile);
+                                            + nextLocation);
                         }
                     }
                 }
@@ -2556,7 +2522,7 @@ public class Settings extends HttpServlet
                 tempConfigurationRepository = new SailRepository(new MemoryStore());
                 tempConfigurationRepository.initialize();
                 
-                for(final String nextLocation : Settings.getStringCollectionPropertiesFromConfig("backupQueryConfigLocations"))
+                for(final String nextLocation : this.getStringCollectionPropertiesFromConfig("backupQueryConfigLocations"))
                 {
                     // TODO: negotiate between local and non-local addresses better
                     // than this
@@ -2572,7 +2538,7 @@ public class Settings extends HttpServlet
                             // configFile = new
                             // File(getServletContext().getRealPath("/") +
                             // "/WEB-INF/" + configUrl);
-                            nextUrlFile = new File(getWebInfPath() +nextLocation);
+                            nextUrlFile = new File(nextLocation);
                         }
                         
                         if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
@@ -2692,7 +2658,7 @@ public class Settings extends HttpServlet
         }
         else
         {
-            Settings.currentConfigurationRepository = tempConfigurationRepository;
+            this.currentConfigurationRepository = tempConfigurationRepository;
         }
 
         if(Settings._INFO)
@@ -2712,7 +2678,7 @@ public class Settings extends HttpServlet
         {
             try
             {
-                Settings.log.info("Settings: found "+Settings.currentConfigurationRepository.getConnection().size()+" statements in model configuration");
+                Settings.log.info("Settings: found "+this.currentConfigurationRepository.getConnection().size()+" statements in model configuration");
             }
             catch(RepositoryException rex)
             {
@@ -2720,29 +2686,36 @@ public class Settings extends HttpServlet
             }
         }
         
-        return Settings.currentConfigurationRepository;
+        return this.currentConfigurationRepository;
     }
     
-    public static String getString(String key)
+    public static String getString(String key, String defaultValue)
     {
         String result = null;
         try
         {
-            result = ResourceBundle.getBundle(Settings.BASE_CONFIG_BUNDLE_NAME)
-                    .getString(key);
+            result = ResourceBundle.getBundle(Settings.DEFAULT_PROPERTIES_BUNDLE_NAME).getString(key);
         }
         catch (final Exception ex)
         {
             Settings.log.error(ex, ex);
         }
+        
+        if(result == null)
+        {
+        	Settings.log.error("Settings.getString: result was null key="+key+" defaultValue="+defaultValue);
+
+        	return defaultValue;
+        }
+        
         return result;
     }
     
-    public static boolean isManualRefreshAllowed()
+    public boolean isManualRefreshAllowed()
     {
-        boolean manualRefresh = Settings.getBooleanPropertyFromConfig("enableManualConfigurationRefresh");
-        long timestampDiff = (System.currentTimeMillis() - Settings.initialisedTimestamp);
-        long manualRefreshMinimum = Settings.getLongPropertyFromConfig("manualConfigurationMinimumMilliseconds");
+        boolean manualRefresh = this.getBooleanPropertyFromConfig("enableManualConfigurationRefresh");
+        long timestampDiff = (System.currentTimeMillis() - this.initialisedTimestamp);
+        long manualRefreshMinimum = this.getLongPropertyFromConfig("manualConfigurationMinimumMilliseconds");
         
         if(_DEBUG)
         {
@@ -2777,10 +2750,10 @@ public class Settings extends HttpServlet
                                     + providerUri
                                     + " profile="
                                     + nextProfile.getKey().stringValue());
-                    // log.debug("Settings: Settings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions")="+Settings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"));
+                    // log.debug("Settings: this.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions")="+this.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"));
                 }
                 
-                if(Settings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"))
+                if(Settings.getSettings().getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"))
                 {
                     if(Settings._DEBUG)
                     {
@@ -2827,7 +2800,7 @@ public class Settings extends HttpServlet
             }
         }
         
-        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders"));
+        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && Settings.getSettings().getBooleanPropertyFromConfig("includeNonProfileMatchedProviders"));
         
         if(Settings._DEBUG)
         {
@@ -2853,16 +2826,16 @@ public class Settings extends HttpServlet
                 if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.isQueryUsedWithProfileList: found implicit include for queryUri="
+                            .trace("this.isQueryUsedWithProfileList: found implicit include for queryUri="
                                     + queryUri + " profile=" + nextProfile.getKey().stringValue());
-                    // log.debug("Settings: Settings.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions")="+Settings.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"));
+                    // log.debug("Settings: this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions")="+this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"));
                 }
-                if(Settings.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"))
+                if(Settings.getSettings().getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"))
                 {
                     if(Settings._TRACE)
                     {
                         Settings.log
-                                .trace("Settings.isQueryUsedWithProfileList: returning implicit include true for queryUri="
+                                .trace("this.isQueryUsedWithProfileList: returning implicit include true for queryUri="
                                         + queryUri
                                         + " profile="
                                         + nextProfile.getKey().stringValue());
@@ -2872,7 +2845,7 @@ public class Settings extends HttpServlet
                 else if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.isQueryUsedWithProfileList: implicit include not recognised for queryUri="
+                            .trace("this.isQueryUsedWithProfileList: implicit include not recognised for queryUri="
                                     + queryUri + " profile=" + nextProfile.getKey().stringValue());
                 }
             }
@@ -2881,7 +2854,7 @@ public class Settings extends HttpServlet
                 if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.isQueryUsedWithProfileList: returning specific true for queryUri="
+                            .trace("this.isQueryUsedWithProfileList: returning specific true for queryUri="
                                     + queryUri + " profile=" + nextProfile.getKey().stringValue());
                 }
                 return true;
@@ -2891,20 +2864,20 @@ public class Settings extends HttpServlet
                 if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.isQueryUsedWithProfileList: returning specific false for queryUri="
+                            .trace("this.isQueryUsedWithProfileList: returning specific false for queryUri="
                                     + queryUri + " profile=" + nextProfile.getKey().stringValue());
                 }
                 return false;
             }
         }
         
-        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries"));
+        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && Settings.getSettings().getBooleanPropertyFromConfig("includeNonProfileMatchedQueries"));
         
         if(Settings._DEBUG)
         {
-            // log.debug("Settings: Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries")="+Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries"));
+            // log.debug("Settings: this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries")="+this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries"));
             Settings.log
-                    .debug("Settings.isQueryUsedWithProfileList: returning with no specific or implicit matches found returnValue="
+                    .debug("this.isQueryUsedWithProfileList: returning with no specific or implicit matches found returnValue="
                             + returnValue
                             + " for queryUri=" + queryUri);
         }
@@ -2918,8 +2891,7 @@ public class Settings extends HttpServlet
     {
         for(final Profile nextProfile : nextSortedProfileList)
         {
-            final int trueResult = nextProfile.usedWithRdfRule(rdfRuleUri,
-                    profileIncludeExcludeOrder);
+            final int trueResult = nextProfile.usedWithRdfRule(rdfRuleUri, profileIncludeExcludeOrder);
             if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
             {
                 if(Settings._TRACE)
@@ -2929,9 +2901,9 @@ public class Settings extends HttpServlet
                                     + rdfRuleUri
                                     + " profile="
                                     + nextProfile.getKey().stringValue());
-                    // log.debug("Settings: Settings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions")="+Settings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions"));
+                    // log.debug("Settings: this.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions")="+this.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions"));
                 }
-                if(Settings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions"))
+                if(Settings.getSettings().getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions"))
                 {
                     if(Settings._TRACE)
                     {
@@ -2978,11 +2950,11 @@ public class Settings extends HttpServlet
             }
         }
         
-        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && Settings.getSettings().getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
         
         if(Settings._DEBUG)
         {
-            // log.debug("Settings: Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules")="+Settings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+            // log.debug("Settings: this.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules")="+this.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
             Settings.log
                     .debug("Settings.isRdfRuleUsedWithProfileList: returning no specific or implicit matches found returnValue="
                             + returnValue
@@ -2992,7 +2964,7 @@ public class Settings extends HttpServlet
         return returnValue;
     }
     
-    public static Collection<String> getStringCollectionPropertiesFromConfig(String key)
+    public Collection<String> getStringCollectionPropertiesFromConfig(String key)
     {
         Collection<String> results = new HashSet<String>();
         
@@ -3006,7 +2978,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    public static Collection<URI> getURICollectionPropertiesFromConfig(String key)
+    public Collection<URI> getURICollectionPropertiesFromConfig(String key)
     {
         Collection<URI> results = new HashSet<URI>();
         
@@ -3025,7 +2997,7 @@ public class Settings extends HttpServlet
         return results;
     }
 
-    public static Collection<Statement> getStatementPropertiesFromConfig(String key)
+    public Collection<Statement> getStatementPropertiesFromConfig(String key)
     {
         Collection<Statement> results = new HashSet<Statement>();
         
@@ -3036,7 +3008,7 @@ public class Settings extends HttpServlet
             final ValueFactory f = webappConfig.getValueFactory();
 
             // TODO: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
-            URI propertyUri = f.createURI(Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX + Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX + key);
+            URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix() + key);
             
             for(String nextConfigUri : WEBAPP_CONFIG_URI_LIST)
             {
@@ -3056,7 +3028,7 @@ public class Settings extends HttpServlet
         return results;
     }
 
-    private static Collection<Statement> getStatementCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri, Repository nextRepository)
+    private Collection<Statement> getStatementCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri, Repository nextRepository)
     {
         try
         {
@@ -3072,7 +3044,7 @@ public class Settings extends HttpServlet
 
 
     
-    public static Collection<Value> getValueCollectionPropertiesFromConfig(String key)
+    public Collection<Value> getValueCollectionPropertiesFromConfig(String key)
     {
         Collection<Value> results = new HashSet<Value>();
         
@@ -3082,28 +3054,28 @@ public class Settings extends HttpServlet
             
             final ValueFactory f = webappConfig.getValueFactory();
 
-            // TODO: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
-            URI propertyUri = f.createURI(Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX + Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX + key);
+            // XXX: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
+            URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix() + key);
             
             for(String nextConfigUri : WEBAPP_CONFIG_URI_LIST)
             {
                 URI configUri = f.createURI(nextConfigUri);
                 
                 if(_TRACE)
-                    Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+                    Settings.log.trace("this.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
                 results.addAll(getValueCollectionPropertiesFromConfig(configUri, propertyUri));
             }
         }
         catch(Exception ex)
         {
-            Settings.log.error("Settings.getValueCollectionPropertiesFromConfig: error", ex);
+            Settings.log.error("this.getValueCollectionPropertiesFromConfig: error", ex);
         }
         
         return results;
     }
 
-    public static String getStringPropertyFromConfig(String key)
+    public String getStringPropertyFromConfig(String key)
     {
         Collection<String> values = getStringCollectionPropertiesFromConfig(key);
         
@@ -3121,14 +3093,14 @@ public class Settings extends HttpServlet
         return "";
     }
 
-    public static boolean getBooleanPropertyFromConfig(String key)
+    public boolean getBooleanPropertyFromConfig(String key)
     {
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
+            throw new RuntimeException("this.getBooleanPropertyFromConfig: Did not find a unique result for key="+key);
         }
 
         for(Value nextValue : values)
@@ -3139,14 +3111,14 @@ public class Settings extends HttpServlet
         return false;
     }
 
-    public static long getLongPropertyFromConfig(String key)
+    public long getLongPropertyFromConfig(String key)
     {
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("Settings.getLongPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
+            throw new RuntimeException("this.getLongPropertyFromConfig: Did not find a unique result for key="+key);
         }
 
         for(Value nextValue : values)
@@ -3157,14 +3129,14 @@ public class Settings extends HttpServlet
         return 0L;
     }
         
-    public static int getIntPropertyFromConfig(String key)
+    public int getIntPropertyFromConfig(String key)
     {
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("Settings.getIntPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
+            throw new RuntimeException("this.getIntPropertyFromConfig: Did not find a unique result for key="+key);
         }
 
         for(Value nextValue : values)
@@ -3175,14 +3147,14 @@ public class Settings extends HttpServlet
         return 0;
     }
         
-    public static float getFloatPropertyFromConfig(String key)
+    public float getFloatPropertyFromConfig(String key)
     {
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("Settings.getFloatPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
+            throw new RuntimeException("this.getFloatPropertyFromConfig: Did not find a unique result for key="+key);
         }
 
         for(Value nextValue : values)
@@ -3193,7 +3165,7 @@ public class Settings extends HttpServlet
         return 0.0f;
     }
         
-    private static Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri)
+    private Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri)
     {
         Collection<Value> cachedResults = getConfigKeyCached(subjectUri, propertyUri);
         Collection<Value> results = new HashSet<Value>();
@@ -3222,7 +3194,7 @@ public class Settings extends HttpServlet
         return results;
     }
     
-    private static Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri, Repository nextRepository)
+    private Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri, Repository nextRepository)
     {
         Collection<Value> results = new HashSet<Value>();
         
@@ -3233,13 +3205,13 @@ public class Settings extends HttpServlet
         }
         catch(Exception ex)
         {
-            Settings.log.error("Settings.getValueCollectionPropertiesFromConfig: error", ex);
+            Settings.log.error("this.getValueCollectionPropertiesFromConfig: error", ex);
         }
         
         return results;
     }
 
-    private static Collection<Value> getConfigKeyCached(URI subjectKey, URI propertyKey)
+    private Collection<Value> getConfigKeyCached(URI subjectKey, URI propertyKey)
     {
         if(cachedWebAppConfigSearches.containsKey(subjectKey))
         {
@@ -3268,7 +3240,7 @@ public class Settings extends HttpServlet
         return null;
     }
     
-    private static void doConfigKeyCache(URI subjectKey, URI propertyKey, Collection<Value> newObject)
+    private void doConfigKeyCache(URI subjectKey, URI propertyKey, Collection<Value> newObject)
     {
         if(newObject == null)
         {
@@ -3301,7 +3273,7 @@ public class Settings extends HttpServlet
         }
     }
 
-    public static boolean runRuleTests(Collection<RuleTest> myRuleTests)
+    public boolean runRuleTests(Collection<RuleTest> myRuleTests)
     {
         boolean allPassed = true;
         
@@ -3316,7 +3288,7 @@ public class Settings extends HttpServlet
             
             if(nextRuleTest.getStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
             {
-                for(final NormalisationRule nextRule : Settings.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.LOWEST_ORDER_FIRST))
+                for(final NormalisationRule nextRule : this.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.LOWEST_ORDER_FIRST))
                 {
                     nextInputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageQueryVariables(), nextTestInputString);
                 }
@@ -3356,7 +3328,7 @@ public class Settings extends HttpServlet
             {
                 String nextOutputTestResult = nextTestInputString;
                 
-                for(final NormalisationRule nextRule : Settings.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.HIGHEST_ORDER_FIRST))
+                for(final NormalisationRule nextRule : this.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.HIGHEST_ORDER_FIRST))
                 {
                     nextOutputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(), nextTestInputString);
                     
@@ -3399,28 +3371,288 @@ public class Settings extends HttpServlet
     }
 
     
-    public static String getDefaultHostAddress()
+    public String getDefaultHostAddress()
     {
-        return Settings.getStringPropertyFromConfig("uriPrefix")+Settings.getStringPropertyFromConfig("hostName")+Settings.getStringPropertyFromConfig("uriSuffix");
+        return this.getStringPropertyFromConfig("uriPrefix")+this.getStringPropertyFromConfig("hostName")+this.getStringPropertyFromConfig("uriSuffix");
     }
 
-    public static Pattern getPlainNamespaceAndIdentifierPattern()
+    public Pattern getPlainNamespaceAndIdentifierPattern()
     {
-        return Pattern.compile(Settings.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex"));
+        return Pattern.compile(this.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex"));
     }
 
-    public static Pattern getPlainNamespacePattern()
+    public Pattern getPlainNamespacePattern()
     {
-        return Pattern.compile(Settings.getStringPropertyFromConfig("plainNamespaceRegex"));
+        return Pattern.compile(this.getStringPropertyFromConfig("plainNamespaceRegex"));
     }
     
-    public static Pattern getTagPattern()
+    public Pattern getTagPattern()
     {
-        return Pattern.compile(Settings.getStringPropertyFromConfig("tagPatternRegex"));
+        return Pattern.compile(this.getStringPropertyFromConfig("tagPatternRegex"));
     }
+
+	/**
+	 * @param dEFAULT_ONTOLOGYTERMURI_PREFIX the dEFAULT_ONTOLOGYTERMURI_PREFIX to set
+	 */
+	public void setOntologyTermUriPrefix(String dEFAULT_ONTOLOGYTERMURI_PREFIX) {
+		DEFAULT_ONTOLOGYTERMURI_PREFIX = dEFAULT_ONTOLOGYTERMURI_PREFIX;
+	}
+
+	/**
+	 * @return the dEFAULT_ONTOLOGYTERMURI_PREFIX
+	 */
+	public String getOntologyTermUriPrefix() {
+		return DEFAULT_ONTOLOGYTERMURI_PREFIX;
+	}
+
+	/**
+	 * @param dEFAULT_ONTOLOGYTERMURI_SUFFIX the dEFAULT_ONTOLOGYTERMURI_SUFFIX to set
+	 */
+	public void setOntologyTermUriSuffix(String dEFAULT_ONTOLOGYTERMURI_SUFFIX) {
+		DEFAULT_ONTOLOGYTERMURI_SUFFIX = dEFAULT_ONTOLOGYTERMURI_SUFFIX;
+	}
+
+	/**
+	 * @return the dEFAULT_ONTOLOGYTERMURI_SUFFIX
+	 */
+	public String getOntologyTermUriSuffix() {
+		return DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE the dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE to set
+	 */
+	public void setNamespaceForWebappConfiguration(
+			String dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE) {
+		DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE = dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE
+	 */
+	public String getNamespaceForWebappConfiguration() {
+		return DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_PROJECT_NAMESPACE the dEFAULT_RDF_PROJECT_NAMESPACE to set
+	 */
+	public void setNamespaceForProject(String dEFAULT_RDF_PROJECT_NAMESPACE) {
+		DEFAULT_RDF_PROJECT_NAMESPACE = dEFAULT_RDF_PROJECT_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_PROJECT_NAMESPACE
+	 */
+	public String getNamespaceForProject() {
+		return DEFAULT_RDF_PROJECT_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_PROVIDER_NAMESPACE the dEFAULT_RDF_PROVIDER_NAMESPACE to set
+	 */
+	public void setNamespaceForProvider(String dEFAULT_RDF_PROVIDER_NAMESPACE) {
+		DEFAULT_RDF_PROVIDER_NAMESPACE = dEFAULT_RDF_PROVIDER_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_PROVIDER_NAMESPACE
+	 */
+	public String getNamespaceForProvider() {
+		return DEFAULT_RDF_PROVIDER_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_TEMPLATE_NAMESPACE the dEFAULT_RDF_TEMPLATE_NAMESPACE to set
+	 */
+	public void setNamespaceForTemplate(String dEFAULT_RDF_TEMPLATE_NAMESPACE) {
+		DEFAULT_RDF_TEMPLATE_NAMESPACE = dEFAULT_RDF_TEMPLATE_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_TEMPLATE_NAMESPACE
+	 */
+	public String getNamespaceForTemplate() {
+		return DEFAULT_RDF_TEMPLATE_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_QUERY_NAMESPACE the dEFAULT_RDF_QUERY_NAMESPACE to set
+	 */
+	public void setNamespaceForQueryType(String dEFAULT_RDF_QUERY_NAMESPACE) {
+		DEFAULT_RDF_QUERY_NAMESPACE = dEFAULT_RDF_QUERY_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_QUERY_NAMESPACE
+	 */
+	public String getNamespaceForQueryType() {
+		return DEFAULT_RDF_QUERY_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_QUERYBUNDLE_NAMESPACE the dEFAULT_RDF_QUERYBUNDLE_NAMESPACE to set
+	 */
+	public void setNamespaceForQueryBundle(
+			String dEFAULT_RDF_QUERYBUNDLE_NAMESPACE) {
+		DEFAULT_RDF_QUERYBUNDLE_NAMESPACE = dEFAULT_RDF_QUERYBUNDLE_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_QUERYBUNDLE_NAMESPACE
+	 */
+	public String getNamespaceForQueryBundle() {
+		return DEFAULT_RDF_QUERYBUNDLE_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_RDFRULE_NAMESPACE the dEFAULT_RDF_RDFRULE_NAMESPACE to set
+	 */
+	public void setNamespaceForNormalisationRule(
+			String dEFAULT_RDF_RDFRULE_NAMESPACE) {
+		DEFAULT_RDF_RDFRULE_NAMESPACE = dEFAULT_RDF_RDFRULE_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_RDFRULE_NAMESPACE
+	 */
+	public String getNamespaceForNormalisationRule() {
+		return DEFAULT_RDF_RDFRULE_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_RULETEST_NAMESPACE the dEFAULT_RDF_RULETEST_NAMESPACE to set
+	 */
+	public void setNamespaceForRuleTest(String dEFAULT_RDF_RULETEST_NAMESPACE) {
+		DEFAULT_RDF_RULETEST_NAMESPACE = dEFAULT_RDF_RULETEST_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_RULETEST_NAMESPACE
+	 */
+	public String getNamespaceForRuleTest() {
+		return DEFAULT_RDF_RULETEST_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE the dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE to set
+	 */
+	public void setNamespaceForNamespaceEntry(
+			String dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE) {
+		DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE = dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE
+	 */
+	public String getNamespaceForNamespaceEntry() {
+		return DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_PROFILE_NAMESPACE the dEFAULT_RDF_PROFILE_NAMESPACE to set
+	 */
+	public void setNamespaceForProfile(String dEFAULT_RDF_PROFILE_NAMESPACE) {
+		DEFAULT_RDF_PROFILE_NAMESPACE = dEFAULT_RDF_PROFILE_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_PROFILE_NAMESPACE
+	 */
+	public String getNamespaceForProfile() {
+		return DEFAULT_RDF_PROFILE_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_PROVENANCE_NAMESPACE the dEFAULT_RDF_PROVENANCE_NAMESPACE to set
+	 */
+	public void setNamespaceForProvenance(
+			String dEFAULT_RDF_PROVENANCE_NAMESPACE) {
+		DEFAULT_RDF_PROVENANCE_NAMESPACE = dEFAULT_RDF_PROVENANCE_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_PROVENANCE_NAMESPACE
+	 */
+	public String getNamespaceForProvenance() {
+		return DEFAULT_RDF_PROVENANCE_NAMESPACE;
+	}
+
+	/**
+	 * @param dEFAULT_RDF_STATISTICS_NAMESPACE the dEFAULT_RDF_STATISTICS_NAMESPACE to set
+	 */
+	public void setNamespaceForStatistics(
+			String dEFAULT_RDF_STATISTICS_NAMESPACE) {
+		DEFAULT_RDF_STATISTICS_NAMESPACE = dEFAULT_RDF_STATISTICS_NAMESPACE;
+	}
+
+	/**
+	 * @return the dEFAULT_RDF_STATISTICS_NAMESPACE
+	 */
+	public String getNamespaceForStatistics() {
+		return DEFAULT_RDF_STATISTICS_NAMESPACE;
+	}
+
+	/**
+	 * @param aUTOGENERATED_QUERY_PREFIX the aUTOGENERATED_QUERY_PREFIX to set
+	 */
+	public void setAutogeneratedQueryPrefix(String aUTOGENERATED_QUERY_PREFIX) {
+		AUTOGENERATED_QUERY_PREFIX = aUTOGENERATED_QUERY_PREFIX;
+	}
+
+	/**
+	 * @return the aUTOGENERATED_QUERY_PREFIX
+	 */
+	public String getAutogeneratedQueryPrefix() {
+		return AUTOGENERATED_QUERY_PREFIX;
+	}
+
+	/**
+	 * @param aUTOGENERATED_QUERY_SUFFIX the aUTOGENERATED_QUERY_SUFFIX to set
+	 */
+	public void setAutogeneratedQuerySuffix(String aUTOGENERATED_QUERY_SUFFIX) {
+		AUTOGENERATED_QUERY_SUFFIX = aUTOGENERATED_QUERY_SUFFIX;
+	}
+
+	/**
+	 * @return the aUTOGENERATED_QUERY_SUFFIX
+	 */
+	public String getAutogeneratedQuerySuffix() {
+		return AUTOGENERATED_QUERY_SUFFIX;
+	}
+
+	/**
+	 * @param aUTOGENERATED_PROVIDER_PREFIX the aUTOGENERATED_PROVIDER_PREFIX to set
+	 */
+	public void setAutogeneratedProviderPrefix(
+			String aUTOGENERATED_PROVIDER_PREFIX) {
+		AUTOGENERATED_PROVIDER_PREFIX = aUTOGENERATED_PROVIDER_PREFIX;
+	}
+
+	/**
+	 * @return the aUTOGENERATED_PROVIDER_PREFIX
+	 */
+	public String getAutogeneratedProviderPrefix() {
+		return AUTOGENERATED_PROVIDER_PREFIX;
+	}
+
+	/**
+	 * @param aUTOGENERATED_PROVIDER_SUFFIX the aUTOGENERATED_PROVIDER_SUFFIX to set
+	 */
+	public void setAutogeneratedProviderSuffix(
+			String aUTOGENERATED_PROVIDER_SUFFIX) {
+		AUTOGENERATED_PROVIDER_SUFFIX = aUTOGENERATED_PROVIDER_SUFFIX;
+	}
+
+	/**
+	 * @return the aUTOGENERATED_PROVIDER_SUFFIX
+	 */
+	public String getAutogeneratedProviderSuffix() {
+		return AUTOGENERATED_PROVIDER_SUFFIX;
+	}
     
-    public static String getWebInfPath()
-    {
-        return servletConfig.getServletContext().getRealPath("/")+"WEB-INF/";
-    }
+//    public String getWebInfPath()
+//    {
+//        return servletConfig.getServletContext().getRealPath("/")+"WEB-INF/";
+//    }
 }

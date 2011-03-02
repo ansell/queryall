@@ -33,7 +33,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     protected static final boolean _DEBUG = log.isDebugEnabled();
     protected static final boolean _INFO = log.isInfoEnabled();
 
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_RDFRULE_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForNormalisationRule();
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -71,9 +71,9 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     
     static
     {
-        NormalisationRuleImpl.rdfruleNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                + Settings.DEFAULT_RDF_RDFRULE_NAMESPACE
-                + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        NormalisationRuleImpl.rdfruleNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                + Settings.getSettings().getNamespaceForNormalisationRule()
+                + Settings.getSettings().getOntologyTermUriSuffix();
         try
         {
             final Repository myStaticRepository = new SailRepository(

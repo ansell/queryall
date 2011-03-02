@@ -40,7 +40,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @SuppressWarnings("unused")
     private static final boolean _INFO = StatisticsEntry.log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_STATISTICS_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForStatistics();
     
     public static final int IMPLEMENTED_STATISTICS_VERSION = 1;
     
@@ -742,9 +742,9 @@ public class StatisticsEntry implements BaseQueryAllInterface
     
     static
     {
-        StatisticsEntry.statisticsNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                + Settings.DEFAULT_RDF_STATISTICS_NAMESPACE
-                + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        StatisticsEntry.statisticsNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                + Settings.getSettings().getNamespaceForStatistics()
+                + Settings.getSettings().getOntologyTermUriSuffix();
         
         try
         {
@@ -923,7 +923,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public HttpUrlQueryRunnable generateThread(int modelVersion) throws OpenRDFException
     {
-        if(Settings.getStringPropertyFromConfig("statisticsServerMethod")
+        if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod")
                 .equals(ProviderImpl.getProviderHttpPostSparqlUri()
                         .stringValue()))
         {
@@ -946,10 +946,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
             
-            if(Settings.getBooleanPropertyFromConfig("statisticsServerUseGraphUri"))
+            if(Settings.getSettings().getBooleanPropertyFromConfig("statisticsServerUseGraphUri"))
             {
                 sparqlInsertQuery += " INTO GRAPH <"
-                        + Settings.getStringPropertyFromConfig("statisticsServerGraphUri") + "> ";
+                        + Settings.getSettings().getStringPropertyFromConfig("statisticsServerGraphUri") + "> ";
             }
             
             sparqlInsertQuery += " { " + insertTriplesContent + " } ";
@@ -961,11 +961,11 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(
-                    Settings.getStringPropertyFromConfig("statisticsServerMethod"),
-                    Settings.getStringPropertyFromConfig("statisticsServerUrl"), sparqlInsertQuery,
-                    "*/*", Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod"),
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl"), sparqlInsertQuery,
+                    "*/*", Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
         }
-        else if(Settings.getStringPropertyFromConfig("statisticsServerMethod")
+        else if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod")
                 .equals(ProviderImpl.getProviderHttpPostUrlUri().stringValue()))
         {
             final String postInformation = this.toPostArray();
@@ -977,15 +977,15 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(
-                    Settings.getStringPropertyFromConfig("statisticsServerMethod"),
-                    Settings.getStringPropertyFromConfig("statisticsServerUrl"), postInformation, "*/*",
-                    Settings.getStringPropertyFromConfig("assumedRequestContentType"));
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod"),
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl"), postInformation, "*/*",
+                    Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
         }
         else
         {
             throw new RuntimeException(
                     "StatisticsEntry.generateThread: Unknown Settings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
-                            + Settings.getStringPropertyFromConfig("statisticsServerMethod"));
+                            + Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod"));
         }
     }
     

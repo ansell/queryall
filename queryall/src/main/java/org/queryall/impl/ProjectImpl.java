@@ -30,7 +30,7 @@ public class ProjectImpl extends Project
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_PROJECT_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProject();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -55,7 +55,7 @@ public class ProjectImpl extends Project
     {
         ValueFactory f = new MemValueFactory();
         
-        projectNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX + Settings.DEFAULT_RDF_PROJECT_NAMESPACE + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        projectNamespace = Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForProject() + Settings.getSettings().getOntologyTermUriSuffix();
         
         
         setProjectTypeUri(f.createURI(projectNamespace+"Project"));
@@ -99,7 +99,7 @@ public class ProjectImpl extends Project
             {
                 result.setAuthority((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getProjectTitle()) || nextStatement.getPredicate().equals(Settings.DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getProjectTitle()) || nextStatement.getPredicate().equals(Settings.getSettings().DC_TITLE))
             {
                 if(result.getTitle().equals(""))
                     result.setTitle(nextStatement.getObject().stringValue());
@@ -198,7 +198,7 @@ public class ProjectImpl extends Project
             URI authorityLiteral = null;
             
             if(getAuthority() == null)
-                authorityLiteral = f.createURI(Settings.getDefaultHostAddress());
+                authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
             else
                 authorityLiteral = getAuthority();
                 
@@ -219,7 +219,7 @@ public class ProjectImpl extends Project
             }
             else
             {
-                con.add(projectInstanceUri, Settings.DC_TITLE, titleLiteral, projectInstanceUri);
+                con.add(projectInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, projectInstanceUri);
             }
             con.add(projectInstanceUri, getProjectDescription(), descriptionLiteral, projectInstanceUri);
             

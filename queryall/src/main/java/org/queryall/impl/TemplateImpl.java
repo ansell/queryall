@@ -29,7 +29,7 @@ public class TemplateImpl extends Template
     @SuppressWarnings("unused")
 	private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForTemplate();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -92,9 +92,9 @@ public class TemplateImpl extends Template
     {
         ValueFactory f = new MemValueFactory();
         
-        templateNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                         +Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE
-                         +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        templateNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                         +Settings.getSettings().getNamespaceForTemplate()
+                         +Settings.getSettings().getOntologyTermUriSuffix();
                          
         setTemplateTypeUri(f.createURI(templateNamespace+"Template"));
         setTemplateContentTypeSparqlQuery(f.createURI(templateNamespace+"ContentTypeSparqlQuery"));

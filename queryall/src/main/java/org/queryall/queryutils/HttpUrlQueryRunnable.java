@@ -15,11 +15,13 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
+    private Settings localSettings = Settings.getSettings();
+    
     public String httpOperation = "GET";
     // public String url = "";
     // public String postInformation = "";
     // public String acceptHeader = "";
-    public int maxRowsParameter = Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
+    public int maxRowsParameter = localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
     // public String format = "";
     
     // public String rawResult = "";

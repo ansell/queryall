@@ -7,7 +7,7 @@ import org.queryall.helpers.*;
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
 	public String graphUri = "";
-	public int maxRowsParameter = Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
+	public int maxRowsParameter = Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
     
 	public RdfFetcherSparqlQueryRunnable
 	(

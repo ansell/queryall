@@ -31,7 +31,7 @@ public class ProviderImpl extends Provider
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_PROVIDER_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProvider();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -83,9 +83,9 @@ public class ProviderImpl extends Provider
     {
         ValueFactory f = new MemValueFactory();
         
-        providerNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                            +Settings.DEFAULT_RDF_PROVIDER_NAMESPACE
-                            +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        providerNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                            +Settings.getSettings().getNamespaceForProvider()
+                            +Settings.getSettings().getOntologyTermUriSuffix();
                             
 //        profileNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
 //                           +Settings.DEFAULT_RDF_PROFILE_NAMESPACE
@@ -177,7 +177,7 @@ public class ProviderImpl extends Provider
         }
         else
         {
-            return Settings.getStringPropertyFromConfig("defaultAcceptHeader");
+            return Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader");
         }
     }
     
@@ -346,7 +346,7 @@ public class ProviderImpl extends Provider
             
             if(getAcceptHeaderString() == null || getAcceptHeaderString().trim().equals(""))
             {
-                acceptHeaderLiteral = f.createLiteral(Settings.getStringPropertyFromConfig("defaultAcceptHeader"));
+                acceptHeaderLiteral = f.createLiteral(Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader"));
             }
             else
             {
@@ -369,7 +369,7 @@ public class ProviderImpl extends Provider
             
             con.add(providerInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, Settings.DC_TITLE, titleLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, providerInstanceUri);
             
             con.add(providerInstanceUri, getProviderResolutionStrategy(), redirectOrProxyLiteral, providerInstanceUri);
             

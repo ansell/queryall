@@ -186,10 +186,10 @@ public class SparqlQueryCreator
         }
         
         replacedString = replacedString.replace("${limit}", "LIMIT "
-                + Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"));
+                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"));
         
         normalisedQueryUri = normalisedQueryUri.replace("${limit}", "limit/"
-                + Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"));
+                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"));
         
         if(attributeList.containsKey("offset"))
         {
@@ -209,7 +209,7 @@ public class SparqlQueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset = (pageOffset - 1)
-                        * Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
+                        * Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
                 
                 replacedString = replacedString.replace("${sparqlOffset}",
                         "OFFSET " + actualPageOffset);
@@ -771,7 +771,7 @@ public class SparqlQueryCreator
         }
         
         final Collection<NormalisationRule> normalisationsNeeded = Settings
-                .getNormalisationRulesForUris(normalisationUrisNeeded,
+                .getSettings().getNormalisationRulesForUris(normalisationUrisNeeded,
                         Settings.LOWEST_ORDER_FIRST);
         
         String endpointSpecificUri = normalisedStandardUri;
@@ -1138,9 +1138,9 @@ public class SparqlQueryCreator
         
         final Map<String, String> attributeList = new Hashtable<String, String>();
         
-        attributeList.put("defaultHostName", Settings.getStringPropertyFromConfig("hostName"));
-        attributeList.put("defaultHostAddress", Settings.getDefaultHostAddress());
-        attributeList.put("defaultSeparator", Settings.getStringPropertyFromConfig("separator"));
+        attributeList.put("defaultHostName", Settings.getSettings().getStringPropertyFromConfig("hostName"));
+        attributeList.put("defaultHostAddress", Settings.getSettings().getDefaultHostAddress());
+        attributeList.put("defaultSeparator", Settings.getSettings().getStringPropertyFromConfig("separator"));
         attributeList.put("realHostName", realHostName);
         attributeList.put("queryString", queryString);
         attributeList.put("graphUri", nextProvider.getSparqlGraphUri());
@@ -1159,11 +1159,11 @@ public class SparqlQueryCreator
         attributeList.put("endpointUrl", nextEndpoint);
         
         attributeList.put("urlEncoded_defaultHostName", Utilities
-                .percentEncode(Settings.getStringPropertyFromConfig("hostName")));
+                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName")));
         attributeList.put("urlEncoded_defaultHostAddress", Utilities
-                .percentEncode(Settings.getDefaultHostAddress()));
+                .percentEncode(Settings.getSettings().getDefaultHostAddress()));
         attributeList.put("urlEncoded_defaultSeparator", Utilities
-                .percentEncode(Settings.getStringPropertyFromConfig("separator")));
+                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator")));
         attributeList.put("urlEncoded_graphUri", Utilities
                 .percentEncode(nextProvider.getSparqlGraphUri()));
         attributeList.put("urlEncoded_endpointUrl", Utilities
@@ -1174,11 +1174,11 @@ public class SparqlQueryCreator
                 .percentEncode(queryString));
         
         attributeList.put("xmlEncoded_defaultHostName", Utilities
-                .xmlEncodeString(Settings.getStringPropertyFromConfig("hostName")));
+                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("hostName")));
         attributeList.put("xmlEncoded_defaultHostAddress", Utilities
-                .xmlEncodeString("http://" + Settings.getStringPropertyFromConfig("hostName") + "/"));
+                .xmlEncodeString("http://" + Settings.getSettings().getStringPropertyFromConfig("hostName") + "/"));
         attributeList.put("xmlEncoded_defaultSeparator", Utilities
-                .xmlEncodeString(Settings.getStringPropertyFromConfig("separator")));
+                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator")));
         attributeList.put("xmlEncoded_graphUri", Utilities
                 .xmlEncodeString(nextProvider.getSparqlGraphUri()));
         attributeList.put("xmlEncoded_endpointUrl", Utilities
@@ -1190,13 +1190,13 @@ public class SparqlQueryCreator
         
         attributeList.put("xmlEncoded_urlEncoded_defaultHostName", Utilities
                 .xmlEncodeString(Utilities
-                        .percentEncode(Settings.getStringPropertyFromConfig("hostName"))));
+                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName"))));
         attributeList.put("xmlEncoded_urlEncoded_defaultHostAddress", Utilities
                 .xmlEncodeString(Utilities.percentEncode("http://"
-                        + Settings.getStringPropertyFromConfig("hostName") + "/")));
+                        + Settings.getSettings().getStringPropertyFromConfig("hostName") + "/")));
         attributeList.put("xmlEncoded_urlEncoded_defaultSeparator", Utilities
                 .xmlEncodeString(Utilities
-                        .percentEncode(Settings.getStringPropertyFromConfig("separator"))));
+                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator"))));
         attributeList.put("xmlEncoded_urlEncoded_graphUri", Utilities
                 .xmlEncodeString(Utilities
                         .percentEncode(nextProvider.getSparqlGraphUri())));
@@ -1538,7 +1538,7 @@ public class SparqlQueryCreator
         // go through the rules
         for(final NormalisationRule nextRule : normalisationRules)
         {
-            // TODO: eliminate the reliance on the Settings class here
+            // TODO: eliminate the reliance on the Settings class here by moving the method to a utilities class
             if(Settings.isRdfRuleUsedWithProfileList(nextRule.getKey(),
                     nextRule.getProfileIncludeExcludeOrder(), includedProfiles))
             {
@@ -1614,7 +1614,7 @@ public class SparqlQueryCreator
     public static String replaceTags(String inputString,
             Map<String, String> tags)
     {
-        final Matcher m = Settings.getTagPattern().matcher(inputString);
+        final Matcher m = Settings.getSettings().getTagPattern().matcher(inputString);
         boolean result = m.find();
         
         if(result)

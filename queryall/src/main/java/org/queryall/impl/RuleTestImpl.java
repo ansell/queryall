@@ -37,7 +37,7 @@ public class RuleTestImpl extends RuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.DEFAULT_RDF_RULETEST_NAMESPACE;
+    private static final String defaultNamespace = Settings.getSettings().getNamespaceForRuleTest();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -60,9 +60,9 @@ public class RuleTestImpl extends RuleTest
     
     static
     {
-        ruletestNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                            +Settings.DEFAULT_RDF_RULETEST_NAMESPACE
-                            +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        ruletestNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                            +Settings.getSettings().getNamespaceForRuleTest()
+                            +Settings.getSettings().getOntologyTermUriSuffix();
                             
         try
         {
