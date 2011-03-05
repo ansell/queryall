@@ -289,7 +289,7 @@ public class RdfFetchController
                     {
                         Map<String, String> attributeList = null;
                         
-                        Collection<String> nextEndpointUrls = Utilities.randomiseListLayout(nextProvider.getEndpointUrls());
+                        Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextProvider.getEndpointUrls());
                         
                         for( String nextEndpoint : nextEndpointUrls )
                         {

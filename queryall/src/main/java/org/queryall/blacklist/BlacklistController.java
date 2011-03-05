@@ -17,8 +17,8 @@ import org.queryall.queryutils.RdfFetcherQueryRunnable;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.queryutils.QueryDebug;
 import org.queryall.statistics.StatisticsEntry;
+import org.queryall.helpers.ListUtils;
 import org.queryall.helpers.Settings;
-import org.queryall.helpers.Utilities;
 import org.queryall.QueryType;
 
 public class BlacklistController
@@ -769,7 +769,7 @@ public class BlacklistController
         }
         
         // try to avoid always returning the same alternative by randomising here
-        urlList = Utilities.randomiseListLayout(urlList);
+        urlList = ListUtils.randomiseListLayout(urlList);
         
         for(String nextEndpoint : urlList)
         {

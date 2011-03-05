@@ -330,7 +330,7 @@ public class QueryTypeImpl extends QueryType
             }
             else if(nextStatement.getPredicate().equals(getQueryHandleAllNamespaces()))
             {
-                result.setHandleAllNamespaces(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setHandleAllNamespaces(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceToHandle()))
             {
@@ -338,11 +338,11 @@ public class QueryTypeImpl extends QueryType
             }
             else if(nextStatement.getPredicate().equals(getQueryPublicIdentifierIndex()))
             {
-                tempPublicIdentifierIndexes.add(Utilities.getIntegerFromValue(nextStatement.getObject()));
+                tempPublicIdentifierIndexes.add(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceInputIndex()))
             {
-                tempNamespaceInputIndexes.add(Utilities.getIntegerFromValue(nextStatement.getObject()));
+                tempNamespaceInputIndexes.add(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceMatchMethod()))
             {
@@ -350,11 +350,11 @@ public class QueryTypeImpl extends QueryType
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceSpecific()))
             {
-                result.setIsNamespaceSpecific(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setIsNamespaceSpecific(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryIncludeDefaults()))
             {
-                result.setIncludeDefaults(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setIncludeDefaults(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryInputRegex()))
             {
@@ -462,11 +462,11 @@ public class QueryTypeImpl extends QueryType
             }
             else if(nextStatement.getPredicate().equals(getQueryInRobotsTxt()))
             {
-                result.setInRobotsTxt(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setInRobotsTxt(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryIsPageable()))
             {
-                result.setIsPageable(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setIsPageable(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
             {
@@ -479,8 +479,8 @@ public class QueryTypeImpl extends QueryType
         }
         
         result.setNamespacesToHandle(tempNamespacesToHandle);
-        result.setPublicIdentifierIndexes(Utilities.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes.toArray(new Integer[0])));
-        result.setNamespaceInputIndexes(Utilities.getIntArrayFromArrayInteger(tempNamespaceInputIndexes.toArray(new Integer[0])));
+        result.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes.toArray(new Integer[0])));
+        result.setNamespaceInputIndexes(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes.toArray(new Integer[0])));
         
         if(USING_TEMPLATES)
         {
@@ -821,7 +821,7 @@ public class QueryTypeImpl extends QueryType
         // {
             // sb.append("semanticallyLinkedCustomQueries=");
             // 
-            // Utilities.joinStringCollectionHelper(semanticallyLinkedCustomQueries, ", ", sb);
+            // RdfUtils.joinStringCollectionHelper(semanticallyLinkedCustomQueries, ", ", sb);
             // 
             // sb.append("\n");
         // }
@@ -838,7 +838,7 @@ public class QueryTypeImpl extends QueryType
         // {
             // sb.append("namespacesToHandle=");
             // 
-            // Utilities.joinStringCollectionHelper(namespacesToHandle, ", ", sb);
+            // RdfUtils.joinStringCollectionHelper(namespacesToHandle, ", ", sb);
             // 
             // sb.append("\n");
         // }
@@ -854,17 +854,17 @@ public class QueryTypeImpl extends QueryType
         
         if(getKey() != null)
         {
-            sb.append("<div class=\""+prefix+"key_div\"><input type=\"hidden\" name=\"key\" value=\""+Utilities.xmlEncodeString(getKey().stringValue())+"\" /></div>\n");
+            sb.append("<div class=\""+prefix+"key_div\"><input type=\"hidden\" name=\"key\" value=\""+StringUtils.xmlEncodeString(getKey().stringValue())+"\" /></div>\n");
         }
         
-        sb.append("<div class=\""+prefix+"title_div\"><span class=\""+prefix+"title_span\">Title:</span><input type=\"text\" name=\""+prefix+"title\" value=\""+Utilities.xmlEncodeString(title)+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"title_div\"><span class=\""+prefix+"title_span\">Title:</span><input type=\"text\" name=\""+prefix+"title\" value=\""+StringUtils.xmlEncodeString(title)+"\" /></div>\n");
         
-        sb.append("<div class=\""+prefix+"templateString_div\"><span class=\""+prefix+"templateString_span\">Query Template:</span><input type=\"text\" name=\""+prefix+"templateString\" value=\""+Utilities.xmlEncodeString(templateString)+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"standardUriTemplateString_div\"><span class=\""+prefix+"standardUriTemplateString_span\">Standard URI Template:</span><input type=\"text\" name=\""+prefix+"standardUriTemplateString\" value=\""+Utilities.xmlEncodeString(standardUriTemplateString)+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"queryUriTemplateString_div\"><span class=\""+prefix+"queryUriTemplateString_span\">Query URI Template:</span><input type=\"text\" name=\""+prefix+"queryUriTemplateString\" value=\""+Utilities.xmlEncodeString(queryUriTemplateString)+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"outputRdfXmlString_div\"><span class=\""+prefix+"outputRdfXmlString_span\">Static output RDF/XML Template:</span><input type=\"text\" name=\""+prefix+"outputRdfXmlString\" value=\""+Utilities.xmlEncodeString(outputRdfXmlString)+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"templateString_div\"><span class=\""+prefix+"templateString_span\">Query Template:</span><input type=\"text\" name=\""+prefix+"templateString\" value=\""+StringUtils.xmlEncodeString(templateString)+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"standardUriTemplateString_div\"><span class=\""+prefix+"standardUriTemplateString_span\">Standard URI Template:</span><input type=\"text\" name=\""+prefix+"standardUriTemplateString\" value=\""+StringUtils.xmlEncodeString(standardUriTemplateString)+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"queryUriTemplateString_div\"><span class=\""+prefix+"queryUriTemplateString_span\">Query URI Template:</span><input type=\"text\" name=\""+prefix+"queryUriTemplateString\" value=\""+StringUtils.xmlEncodeString(queryUriTemplateString)+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"outputRdfXmlString_div\"><span class=\""+prefix+"outputRdfXmlString_span\">Static output RDF/XML Template:</span><input type=\"text\" name=\""+prefix+"outputRdfXmlString\" value=\""+StringUtils.xmlEncodeString(outputRdfXmlString)+"\" /></div>\n");
         
-        sb.append("<div class=\""+prefix+"inputRegex_div\"><span class=\""+prefix+"inputRegex_span\">Input Regular Expression:</span><input type=\"text\" name=\""+prefix+"inputRegex\" value=\""+Utilities.xmlEncodeString(inputRegex)+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"inputRegex_div\"><span class=\""+prefix+"inputRegex_span\">Input Regular Expression:</span><input type=\"text\" name=\""+prefix+"inputRegex\" value=\""+StringUtils.xmlEncodeString(inputRegex)+"\" /></div>\n");
         
         sb.append("<div class=\""+prefix+"isNamespaceSpecific_div\"><span class=\""+prefix+"isNamespaceSpecific_span\">Is Namespace Specific:</span><input type=\"checkbox\" name=\""+prefix+"isNamespaceSpecific\" value=\"isNamespaceSpecific\" ");
         
@@ -926,7 +926,7 @@ public class QueryTypeImpl extends QueryType
     
     public List<String> matchesForQueryString(String nextQueryString)
     {
-        return Utilities.matchesForRegexOnString(getInputRegexPattern(), this.inputRegex, nextQueryString);
+        return StringUtils.matchesForRegexOnString(getInputRegexPattern(), this.inputRegex, nextQueryString);
     }
     
     public boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck)
@@ -1081,9 +1081,9 @@ public class QueryTypeImpl extends QueryType
         @SuppressWarnings("unused")
         String prefix = "query_";
         
-        sb.append("<span>key:</span>"+Utilities.xmlEncodeString(getKey().stringValue()));
+        sb.append("<span>key:</span>"+StringUtils.xmlEncodeString(getKey().stringValue()));
         
-        sb.append(Utilities.xmlEncodeString(this.toString()));
+        sb.append(StringUtils.xmlEncodeString(this.toString()));
         
         return sb.toString();
     }
@@ -1101,7 +1101,7 @@ public class QueryTypeImpl extends QueryType
      */
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

@@ -48,16 +48,16 @@ public class RdfFetcher
         // NOTE: We use POST instead of GET so there is never a chance
         // that the URI will exceed the maximum supported length for a
         // particular HTTP server or intermediate proxy
-        String postQuery = "format="+Utilities.percentEncode(format)+"&";
+        String postQuery = "format="+StringUtils.percentEncode(format)+"&";
         
         if(Settings.getSettings().getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter"))
             postQuery += "maxrows="+maxRowsParameter+"&";
         
         postQuery += "formatting=Raw&";
         postQuery += "softlimit=50&";
-        postQuery += "debug="+Utilities.percentEncode(debug)+"&";
-        postQuery += "default-graph-uri="+Utilities.percentEncode(defaultGraphUri)+"&";
-        postQuery += "query="+Utilities.percentEncode(query);
+        postQuery += "debug="+StringUtils.percentEncode(debug)+"&";
+        postQuery += "default-graph-uri="+StringUtils.percentEncode(defaultGraphUri)+"&";
+        postQuery += "query="+StringUtils.percentEncode(query);
         
         if(_TRACE)
         {

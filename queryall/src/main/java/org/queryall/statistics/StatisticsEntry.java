@@ -26,7 +26,8 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.BaseQueryAllInterface;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.helpers.Settings;
-import org.queryall.helpers.Utilities;
+import org.queryall.helpers.StringUtils;
+import org.queryall.helpers.RdfUtils;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.ProjectImpl;
 
@@ -65,7 +66,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)
@@ -938,7 +939,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             final StringWriter insertTriples = new StringWriter();
             
-            Utilities.toWriter(myRepository, insertTriples, writerFormat);
+            RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
             
             final String insertTriplesContent = insertTriples.toString();
             
@@ -996,60 +997,60 @@ public class StatisticsEntry implements BaseQueryAllInterface
     {
         String result = "";
         
-        result += "key=" + Utilities.percentEncode(this.getKey().stringValue()) + "&";
+        result += "key=" + StringUtils.percentEncode(this.getKey().stringValue()) + "&";
         result += "profileUris="
-                + Utilities.percentEncode(Utilities.joinStringCollection(
+                + StringUtils.percentEncode(StringUtils.joinStringCollection(
                         this.profileUris, ",")) + "&";
         result += "successfulproviderUris="
-                + Utilities.percentEncode(Utilities.joinStringCollection(
+                + StringUtils.percentEncode(StringUtils.joinStringCollection(
                         this.successfulproviderUris, ",")) + "&";
         result += "errorproviderUris="
-                + Utilities.percentEncode(Utilities.joinStringCollection(
+                + StringUtils.percentEncode(StringUtils.joinStringCollection(
                         this.errorproviderUris, ",")) + "&";
         result += "configLocations="
-                + Utilities.percentEncode(Utilities.joinStringCollection(
+                + StringUtils.percentEncode(StringUtils.joinStringCollection(
                         this.configLocations, ",")) + "&";
         result += "querytypeUris="
-                + Utilities.percentEncode(Utilities.joinStringCollection(
+                + StringUtils.percentEncode(StringUtils.joinStringCollection(
                         this.querytypeUris, ",")) + "&";
         result += "namespaceUris="
-                + Utilities.percentEncode(Utilities.joinStringCollection(
+                + StringUtils.percentEncode(StringUtils.joinStringCollection(
                         this.namespaceUris, ",")) + "&";
         result += "configVersion="
-                + Utilities.percentEncode(this.configVersion) + "&";
+                + StringUtils.percentEncode(this.configVersion) + "&";
         result += "readtimeout="
-                + Utilities.percentEncode(this.readtimeout + "") + "&";
+                + StringUtils.percentEncode(this.readtimeout + "") + "&";
         result += "connecttimeout="
-                + Utilities.percentEncode(this.connecttimeout + "") + "&";
+                + StringUtils.percentEncode(this.connecttimeout + "") + "&";
         result += "userHostAddress="
-                + Utilities.percentEncode(this.userHostAddress) + "&";
-        result += "userAgent=" + Utilities.percentEncode(this.userAgent) + "&";
-        result += "realHostName=" + Utilities.percentEncode(this.realHostName)
+                + StringUtils.percentEncode(this.userHostAddress) + "&";
+        result += "userAgent=" + StringUtils.percentEncode(this.userAgent) + "&";
+        result += "realHostName=" + StringUtils.percentEncode(this.realHostName)
                 + "&";
-        result += "queryString=" + Utilities.percentEncode(this.queryString)
+        result += "queryString=" + StringUtils.percentEncode(this.queryString)
                 + "&";
         result += "responseTime="
-                + Utilities.percentEncode(this.responseTime + "") + "&";
-        result += "sumLatency=" + Utilities.percentEncode(this.sumLatency + "")
+                + StringUtils.percentEncode(this.responseTime + "") + "&";
+        result += "sumLatency=" + StringUtils.percentEncode(this.sumLatency + "")
                 + "&";
-        result += "sumQueries=" + Utilities.percentEncode(this.sumQueries + "")
+        result += "sumQueries=" + StringUtils.percentEncode(this.sumQueries + "")
                 + "&";
         result += "stdevlatency="
-                + Utilities.percentEncode(this.stdevlatency + "") + "&";
-        result += "sumerrors=" + Utilities.percentEncode(this.sumerrors + "")
+                + StringUtils.percentEncode(this.stdevlatency + "") + "&";
+        result += "sumerrors=" + StringUtils.percentEncode(this.sumerrors + "")
                 + "&";
         result += "sumerrorlatency="
-                + Utilities.percentEncode(this.sumerrorlatency + "") + "&";
+                + StringUtils.percentEncode(this.sumerrorlatency + "") + "&";
         result += "stdeverrorlatency="
-                + Utilities.percentEncode(this.stdeverrorlatency + "") + "&";
+                + StringUtils.percentEncode(this.stdeverrorlatency + "") + "&";
         result += "lastServerRestart="
-                + Utilities.percentEncode(this.lastServerRestart + "") + "&";
+                + StringUtils.percentEncode(this.lastServerRestart + "") + "&";
         result += "serverSoftwareVersion="
-                + Utilities.percentEncode(this.serverSoftwareVersion + "") + "&";
+                + StringUtils.percentEncode(this.serverSoftwareVersion + "") + "&";
         result += "acceptHeader="
-                + Utilities.percentEncode(this.acceptHeader + "") + "&";
+                + StringUtils.percentEncode(this.acceptHeader + "") + "&";
         result += "requestedContentType="
-                + Utilities.percentEncode(this.requestedContentType + "") + "&";
+                + StringUtils.percentEncode(this.requestedContentType + "") + "&";
         return result;
     }
     
@@ -1082,7 +1083,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
                 currentDate = new Date();
             }
             
-            final String currentDateString = Utilities.ISO8601UTC().format(currentDate);
+            final String currentDateString = RdfUtils.ISO8601UTC().format(currentDate);
             
             final Literal currentDateLiteral = f.createLiteral(currentDateString, XMLSchema.DATETIME);
             

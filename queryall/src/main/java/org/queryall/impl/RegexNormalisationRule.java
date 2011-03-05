@@ -439,20 +439,20 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
         String result = "";
         
         result += "<div class=\"rulekey\">Rule Key: "
-                + Utilities.xmlEncodeString(this.getKey().stringValue()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getKey().stringValue()) + "</div>\n";
         result += "<div class=\"description\">Description: "
-                + Utilities.xmlEncodeString(this.getDescription()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getDescription()) + "</div>\n";
         result += "<div class=\"order\">Order: "
-                + Utilities.xmlEncodeString(this.getOrder() + "") + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getOrder() + "") + "</div>\n";
         result += "<div class=\"inputmatchregex\">Input Match Regex: "
-                + Utilities.xmlEncodeString(this.getInputMatchRegex()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getInputMatchRegex()) + "</div>\n";
         result += "<div class=\"inputreplaceregex\">Input Replace Regex: "
-                + Utilities.xmlEncodeString(this.getInputReplaceRegex())
+                + StringUtils.xmlEncodeString(this.getInputReplaceRegex())
                 + "</div>\n";
         result += "<div class=\"outputmatchregex\">Output Match Regex: "
-                + Utilities.xmlEncodeString(this.getOutputMatchRegex()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getOutputMatchRegex()) + "</div>\n";
         result += "<div class=\"outputreplaceregex\">Output Replace Regex: "
-                + Utilities.xmlEncodeString(this.getOutputReplaceRegex())
+                + StringUtils.xmlEncodeString(this.getOutputReplaceRegex())
                 + "</div>\n";
         
         return result;

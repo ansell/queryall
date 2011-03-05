@@ -144,7 +144,7 @@ public class VoidUtility
             {
                 // if(true)
                 // {
-                    // List<Statement> allStatements = Utilities.getAllStatementsFromRepository(nextRepository);
+                    // List<Statement> allStatements = RdfUtils.getAllStatementsFromRepository(nextRepository);
                     // 
                     // VoidUtility.log.debug("VoidUtility.parseFromVoidRepository: allStatements.size()="+allStatements.size());
                     // 

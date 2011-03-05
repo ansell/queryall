@@ -276,9 +276,9 @@ public class ProjectImpl extends Project
         @SuppressWarnings("unused")
         String prefix = "project_";
         
-        // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+Utilities.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
-        // sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+Utilities.xmlEncodeString(description)+"\" /></div>\n");
-        // sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+Utilities.xmlEncodeString(identifierRegex)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+RdfUtils.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+RdfUtils.xmlEncodeString(description)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+RdfUtils.xmlEncodeString(identifierRegex)+"\" /></div>\n");
         
         return sb.toString();
     }
@@ -304,7 +304,7 @@ public class ProjectImpl extends Project
 
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

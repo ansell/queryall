@@ -18,7 +18,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.queryall.helpers.Settings;
-import org.queryall.helpers.Utilities;
+import org.queryall.helpers.StringUtils;
+import org.queryall.helpers.RdfUtils;
 import org.queryall.*;
 
 import org.apache.log4j.Logger;
@@ -259,7 +260,7 @@ public class ProviderImpl extends Provider
             }
             else if(nextStatement.getPredicate().equals(getProviderRequiresSparqlGraphURI()))
             {
-                result.setUseSparqlGraph(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setUseSparqlGraph(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProviderGraphUri()))
             {
@@ -271,7 +272,7 @@ public class ProviderImpl extends Provider
             }
             else if(nextStatement.getPredicate().equals(getProviderIsDefaultSource()))
             {
-                result.setIsDefaultSource(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setIsDefaultSource(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProviderNeedsRdfNormalisation()))
             {
@@ -565,18 +566,18 @@ public class ProviderImpl extends Provider
         
         if(getEndpointUrls() != null)
         {
-            result += "<div class=\"endpointurl\">Endpoint URL's: "+Utilities.xmlEncodeString(getEndpointUrls().toString()) + "</div>\n";
+            result += "<div class=\"endpointurl\">Endpoint URL's: "+StringUtils.xmlEncodeString(getEndpointUrls().toString()) + "</div>\n";
         }
         else
         {
             result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
         }
         
-        result += "<div class=\"endpointmethod\">Retrieval Method: "+Utilities.xmlEncodeString(getEndpointMethod().stringValue()) + "</div>\n";
+        result += "<div class=\"endpointmethod\">Retrieval Method: "+StringUtils.xmlEncodeString(getEndpointMethod().stringValue()) + "</div>\n";
         
         if(getNamespaces() != null)
         {
-            result += "<div class=\"namespaces\">Namespaces: "+Utilities.xmlEncodeString(getNamespaces().toString()) + "</div>\n";
+            result += "<div class=\"namespaces\">Namespaces: "+StringUtils.xmlEncodeString(getNamespaces().toString()) + "</div>\n";
         }
         else
         {
@@ -585,7 +586,7 @@ public class ProviderImpl extends Provider
         
         if(getIncludedInCustomQueries() != null)
         {
-            result += "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "+Utilities.xmlEncodeString(getIncludedInCustomQueries().toString()) + "</div>\n";
+            result += "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "+StringUtils.xmlEncodeString(getIncludedInCustomQueries().toString()) + "</div>\n";
         }
         else
         {
@@ -594,7 +595,7 @@ public class ProviderImpl extends Provider
         
         if(getUseSparqlGraph())
         {
-            result += "<div class=\"useSparqlGraph\">Uses a SPARQL graph URI with URI: "+Utilities.xmlEncodeString(getSparqlGraphUri()) + "</div>\n";
+            result += "<div class=\"useSparqlGraph\">Uses a SPARQL graph URI with URI: "+StringUtils.xmlEncodeString(getSparqlGraphUri()) + "</div>\n";
         }
         else
         {
@@ -621,7 +622,7 @@ public class ProviderImpl extends Provider
         
         if(getRdfNormalisationsNeeded() != null)
         {
-            result += "<div class=\"includedInCustomQueries\">This provider requires the following normalisations to match the normalised URI formats: "+Utilities.xmlEncodeString(getRdfNormalisationsNeeded().toString()) + "</div>\n";
+            result += "<div class=\"includedInCustomQueries\">This provider requires the following normalisations to match the normalised URI formats: "+StringUtils.xmlEncodeString(getRdfNormalisationsNeeded().toString()) + "</div>\n";
         }
         else
         {
@@ -646,7 +647,7 @@ public class ProviderImpl extends Provider
 
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

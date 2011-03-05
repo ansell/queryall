@@ -18,7 +18,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.queryall.NamespaceEntry;
-import org.queryall.helpers.Utilities;
+import org.queryall.helpers.StringUtils;
+import org.queryall.helpers.RdfUtils;
 import org.queryall.helpers.Settings;
 
 import org.apache.log4j.Logger;
@@ -151,7 +152,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
             }
             else if(nextStatement.getPredicate().equals(getNamespaceConvertQueriesToPreferredPrefix()))
             {
-                result.setConvertQueriesToPreferredPrefix(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setConvertQueriesToPreferredPrefix(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else
             {
@@ -353,7 +354,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
      */
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
     
     public void setKey(URI nextKey)
@@ -387,9 +388,9 @@ public class NamespaceEntryImpl extends NamespaceEntry
         
         String prefix = "namespace_";
         
-        sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+Utilities.xmlEncodeString(getPreferredPrefix())+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+Utilities.xmlEncodeString(getDescription())+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+Utilities.xmlEncodeString(getIdentifierRegex())+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+StringUtils.xmlEncodeString(getPreferredPrefix())+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+StringUtils.xmlEncodeString(getDescription())+"\" /></div>\n");
+        sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+StringUtils.xmlEncodeString(getIdentifierRegex())+"\" /></div>\n");
         
         return sb.toString();
     }    

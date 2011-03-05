@@ -342,7 +342,7 @@ public class TemplateImpl extends Template
 
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

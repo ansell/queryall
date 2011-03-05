@@ -232,7 +232,7 @@ public class ProfileImpl extends Profile
             }
             else if(nextStatement.getPredicate().equals(getProfileOrderUri()))
             {
-                result.setOrder(Utilities.getIntegerFromValue(nextStatement.getObject()));
+                result.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProfileAdministratorUri()))
             {
@@ -244,15 +244,15 @@ public class ProfileImpl extends Profile
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitQueryInclusionsUri()))
             {
-                result.setAllowImplicitQueryInclusions(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setAllowImplicitQueryInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitProviderInclusionsUri()))
             {
-                result.setAllowImplicitProviderInclusions(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setAllowImplicitProviderInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitRdfRuleInclusionsUri()))
             {
-                result.setAllowImplicitRdfRuleInclusions(Utilities.getBooleanFromValue(nextStatement.getObject()));
+                result.setAllowImplicitRdfRuleInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProfileIncludeProviderInProfile()))
             {
@@ -742,7 +742,7 @@ public class ProfileImpl extends Profile
      */
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

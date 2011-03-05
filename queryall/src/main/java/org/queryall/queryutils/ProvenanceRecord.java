@@ -155,11 +155,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         Collection<String> endpointUrls = new HashSet<String>();
         
-		endpointUrls.add(hostToUse+"provenancebykey/"+Utilities.percentEncode(nextElementKey));		
+		endpointUrls.add(hostToUse+"provenancebykey/"+StringUtils.percentEncode(nextElementKey));		
 		
 		dummyProvider.setEndpointUrls(endpointUrls);
 		
-		nextQueryBundle.setQueryEndpoint(hostToUse+"provenancebykey/"+Utilities.percentEncode(nextElementKey));
+		nextQueryBundle.setQueryEndpoint(hostToUse+"provenancebykey/"+StringUtils.percentEncode(nextElementKey));
         
         Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
         
@@ -219,7 +219,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                     
                     if(nextResult.normalisedResult.length() > 0)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress()+"provenancebykey/"+Utilities.percentEncode(nextElementKey), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress()+"provenancebykey/"+StringUtils.percentEncode(nextElementKey), nextReaderFormat);
                     }
                 }
                 catch(org.openrdf.rio.RDFParseException rdfpe)
@@ -310,7 +310,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             {
                 try
                 {
-                    result.recordDate = Utilities.getDateTimeFromValue(nextStatement.getObject());
+                    result.recordDate = RdfUtils.getDateTimeFromValue(nextStatement.getObject());
                 }
                 catch(java.text.ParseException pe)
                 {
@@ -359,7 +359,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                 recordDate = new Date();
             }
             
-            final String recordDateString = Utilities.ISO8601UTC().format(recordDate);
+            final String recordDateString = RdfUtils.ISO8601UTC().format(recordDate);
             
             Literal recordDateLiteral = f.createLiteral(recordDateString, XMLSchema.DATETIME);
             
@@ -464,7 +464,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         sb.append("hasAuthorOpenID="+hasAuthorOpenID+"\n");
         if(recordDate != null)
         {
-            sb.append("recordDate="+Utilities.ISO8601UTC().format(recordDate)+"\n");
+            sb.append("recordDate="+RdfUtils.ISO8601UTC().format(recordDate)+"\n");
         }
         else
         {
@@ -481,7 +481,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         String prefix = "provenance_";
         
-        sb.append("<div class=\""+prefix+"key_div\"><span class=\""+prefix+"key_span\">Key:</span>"+Utilities.xmlEncodeString(getKey().stringValue())+"\"</div>\n");
+        sb.append("<div class=\""+prefix+"key_div\"><span class=\""+prefix+"key_span\">Key:</span>"+StringUtils.xmlEncodeString(getKey().stringValue())+"\"</div>\n");
         
         return sb.toString();
     }
@@ -517,9 +517,9 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         @SuppressWarnings("unused")
         String prefix = "provenancerecord_";
         
-        // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+Utilities.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
-        // sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+Utilities.xmlEncodeString(description)+"\" /></div>\n");
-        // sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+Utilities.xmlEncodeString(identifierRegex)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+RdfUtils.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+RdfUtils.xmlEncodeString(description)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+RdfUtils.xmlEncodeString(identifierRegex)+"\" /></div>\n");
         
         return sb.toString();
     }
@@ -527,7 +527,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
 
     public String toHtml()
     {
-        return "<span>key:</span>"+Utilities.xmlEncodeString(getKey().stringValue());
+        return "<span>key:</span>"+StringUtils.xmlEncodeString(getKey().stringValue());
     }
     
     /**
@@ -545,7 +545,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
 
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

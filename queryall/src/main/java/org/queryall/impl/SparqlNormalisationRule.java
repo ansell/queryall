@@ -433,13 +433,13 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         String result = "";
         
         result += "<div class=\"rulekey\">Rule Key: "
-                + Utilities.xmlEncodeString(this.getKey().stringValue()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getKey().stringValue()) + "</div>\n";
         result += "<div class=\"description\">Description: "
-                + Utilities.xmlEncodeString(this.getDescription()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getDescription()) + "</div>\n";
         result += "<div class=\"order\">Order: "
-                + Utilities.xmlEncodeString(this.getOrder() + "") + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getOrder() + "") + "</div>\n";
         result += "<div class=\"inputMatchSparqlPattern\">SPARQL Construct query: "
-                + Utilities.xmlEncodeString(this.getSparqlConstructQuery()) + "</div>\n";
+                + StringUtils.xmlEncodeString(this.getSparqlConstructQuery()) + "</div>\n";
         
         return result;
     }

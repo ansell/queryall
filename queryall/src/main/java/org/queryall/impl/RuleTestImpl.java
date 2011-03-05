@@ -284,10 +284,10 @@ public class RuleTestImpl extends RuleTest
         
         String prefix = "ruletest_";
         
-        sb.append("<div class=\""+prefix+"rulekey\">Rule Key: "+Utilities.xmlEncodeString( getKey().stringValue() )  + "</div>\n");
-        sb.append("<div class=\""+prefix+"testInputString\">Test Input String: "+Utilities.xmlEncodeString( testInputString+"" )  + "</div>\n");
-        sb.append("<div class=\""+prefix+"testOutputString\">Test Output String: "+Utilities.xmlEncodeString( testOutputString+"" )  + "</div>\n");
-        sb.append("<div class=\""+prefix+"rdfruleuri\">Tests RDF Rules: "+Utilities.xmlEncodeString( rdfRuleUris.toString() )  + "</div>\n");
+        sb.append("<div class=\""+prefix+"rulekey\">Rule Key: "+StringUtils.xmlEncodeString( getKey().stringValue() )  + "</div>\n");
+        sb.append("<div class=\""+prefix+"testInputString\">Test Input String: "+StringUtils.xmlEncodeString( testInputString+"" )  + "</div>\n");
+        sb.append("<div class=\""+prefix+"testOutputString\">Test Output String: "+StringUtils.xmlEncodeString( testOutputString+"" )  + "</div>\n");
+        sb.append("<div class=\""+prefix+"rdfruleuri\">Tests RDF Rules: "+StringUtils.xmlEncodeString( rdfRuleUris.toString() )  + "</div>\n");
         
         return sb.toString();
     }
@@ -405,7 +405,7 @@ public class RuleTestImpl extends RuleTest
 
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

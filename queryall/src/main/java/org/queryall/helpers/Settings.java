@@ -686,7 +686,7 @@ public class Settings
         {
             Pattern nextPattern = Pattern.compile(nextTemplate.getMatchRegex());
             
-            Utilities.replaceMatchesForRegexOnString(nextPattern, nextTemplate.getMatchRegex(), result, new StringBuilder(nextTemplate.getTemplateString()));
+            StringUtils.replaceMatchesForRegexOnString(nextPattern, nextTemplate.getMatchRegex(), result, new StringBuilder(nextTemplate.getTemplateString()));
         }
         
         for(Template nextTemplate : allTemplates)
@@ -701,16 +701,16 @@ public class Settings
                 original = result.toString();
             }
             
-            Utilities.replaceMatchesForRegexOnString(nextPattern, nextTemplate.getMatchRegex(), result, new StringBuilder(nextTemplate.getTemplateString()));
+            StringUtils.replaceMatchesForRegexOnString(nextPattern, nextTemplate.getMatchRegex(), result, new StringBuilder(nextTemplate.getTemplateString()));
             
             // 
             // if(nextTemplate.isNativeFunction)
             // {
-                // Utilities.applyNativeFunctionTemplate(nextTemplate, result);
+                // RdfUtils.applyNativeFunctionTemplate(nextTemplate, result);
             // }
             // else
             // {
-                // Utilities.replaceMatchesForRegexOnString(nextPattern, nextTemplate.matchRegex, result, new StringBuilder(nextTemplate.templateString));
+                // RdfUtils.replaceMatchesForRegexOnString(nextPattern, nextTemplate.matchRegex, result, new StringBuilder(nextTemplate.templateString));
             // }
             if(_DEBUG)
             {
@@ -758,7 +758,7 @@ public class Settings
         for(Template nextTemplate : constantParameters)
         {
             Pattern nextPattern = Pattern.compile(nextTemplate.getMatchRegex());
-            Utilities.replaceMatchesForRegexOnString(nextPattern, nextTemplate.getMatchRegex(), result, new StringBuilder(nextTemplate.getTemplateString()));
+            StringUtils.replaceMatchesForRegexOnString(nextPattern, nextTemplate.getMatchRegex(), result, new StringBuilder(nextTemplate.getTemplateString()));
         }
         
         // return result;
@@ -2386,7 +2386,7 @@ public class Settings
         {
             try
             {
-                for(Statement nextStatement : Utilities.getAllStatementsFromRepository(this.currentBaseConfigurationRepository))
+                for(Statement nextStatement : RdfUtils.getAllStatementsFromRepository(this.currentBaseConfigurationRepository))
                 {
                     Settings.log.trace(nextStatement.toString());
                 }
@@ -2955,7 +2955,7 @@ public class Settings
         
         for(Value nextValue : values)
         {
-            results.add(Utilities.getUTF8StringValueFromSesameValue(nextValue));
+            results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
         }
         
         return results;
@@ -3015,7 +3015,7 @@ public class Settings
     {
         try
         {
-            return Utilities.getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
+            return RdfUtils.getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
         }
         catch(Exception ex)
         {
@@ -3088,7 +3088,7 @@ public class Settings
 
         for(Value nextValue : values)
         {
-            return Utilities.getBooleanFromValue(nextValue);
+            return RdfUtils.getBooleanFromValue(nextValue);
         }
         
         return false;
@@ -3106,7 +3106,7 @@ public class Settings
 
         for(Value nextValue : values)
         {
-            return Utilities.getLongFromValue(nextValue);
+            return RdfUtils.getLongFromValue(nextValue);
         }
         
         return 0L;
@@ -3124,7 +3124,7 @@ public class Settings
 
         for(Value nextValue : values)
         {
-            return Utilities.getIntegerFromValue(nextValue);
+            return RdfUtils.getIntegerFromValue(nextValue);
         }
         
         return 0;
@@ -3142,7 +3142,7 @@ public class Settings
 
         for(Value nextValue : values)
         {
-            return Utilities.getFloatFromValue(nextValue);
+            return MathsUtils.getFloatFromValue(nextValue);
         }
         
         return 0.0f;
@@ -3184,7 +3184,7 @@ public class Settings
         try
         {
             //Repository webappConfig = getWebAppConfigurationRdf();
-            results = Utilities.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
+            results = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
         }
         catch(Exception ex)
         {

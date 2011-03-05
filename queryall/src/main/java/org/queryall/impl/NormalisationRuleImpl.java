@@ -23,7 +23,8 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.NormalisationRule;
 
 import org.queryall.helpers.Settings;
-import org.queryall.helpers.Utilities;
+import org.queryall.helpers.StringUtils;
+import org.queryall.helpers.RdfUtils;
 
 public abstract class NormalisationRuleImpl extends NormalisationRule
 {
@@ -169,7 +170,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
             else if(nextStatement.getPredicate().equals(
                     NormalisationRuleImpl.getRdfruleOrder()))
             {
-                this.order = Utilities.getIntegerFromValue(nextStatement
+                this.order = RdfUtils.getIntegerFromValue(nextStatement
                         .getObject());
             }
             else if(nextStatement.getPredicate().equals(
@@ -478,7 +479,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
      */
     public void setKey(String nextKey)
     {
-        this.setKey(Utilities.createURI(nextKey));
+        this.setKey(StringUtils.createURI(nextKey));
     }
 
     public void setKey(URI nextKey)

@@ -597,11 +597,11 @@ public class SparqlQueryCreator
                 normalisedQueryUri);
         
         replacedString = replacedString.replace(
-                "${urlEncoded_normalisedStandardUri}", Utilities
+                "${urlEncoded_normalisedStandardUri}", StringUtils
                         .percentEncode(normalisedStandardUri));
         
         replacedString = replacedString.replace(
-                "${plusUrlEncoded_normalisedStandardUri}", Utilities
+                "${plusUrlEncoded_normalisedStandardUri}", StringUtils
                         .plusPercentEncode(normalisedStandardUri));
         
         
@@ -622,36 +622,36 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_normalisedStandardUri}",
-                        Utilities.xmlEncodeString(inputUrlEncoded_normalisedStandardUri));
+                        StringUtils.xmlEncodeString(inputUrlEncoded_normalisedStandardUri));
         
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputPlusUrlEncoded_normalisedStandardUri}",
-                        Utilities.xmlEncodeString(inputPlusUrlEncoded_normalisedStandardUri));
+                        StringUtils.xmlEncodeString(inputPlusUrlEncoded_normalisedStandardUri));
         
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputPlusUrlEncoded_normalisedQueryUri}",
-                        Utilities.xmlEncodeString(inputPlusUrlEncoded_normalisedQueryUri));
+                        StringUtils.xmlEncodeString(inputPlusUrlEncoded_normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_normalisedStandardUri}", Utilities
+                "${xmlEncoded_normalisedStandardUri}", StringUtils
                         .xmlEncodeString(normalisedStandardUri));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_normalisedStandardUri}", Utilities
+                "${urlEncoded_lowercase_normalisedStandardUri}", StringUtils
                         .percentEncode(normalisedStandardUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_normalisedStandardUri}", Utilities
+                "${urlEncoded_uppercase_normalisedStandardUri}", StringUtils
                         .percentEncode(normalisedStandardUri.toUpperCase()));
         
         replacedString = replacedString
                 .replace("${xmlEncoded_lowercase_normalisedStandardUri}",
-                        Utilities.xmlEncodeString((normalisedStandardUri
+                        StringUtils.xmlEncodeString((normalisedStandardUri
                                 .toLowerCase())));
         replacedString = replacedString
                 .replace("${xmlEncoded_uppercase_normalisedStandardUri}",
-                        Utilities.xmlEncodeString((normalisedStandardUri
+                        StringUtils.xmlEncodeString((normalisedStandardUri
                                 .toUpperCase())));
         
         replacedString = replacedString.replace(
@@ -671,23 +671,23 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_lowercase_normalisedStandardUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_normalisedStandardUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_uppercase_normalisedStandardUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_normalisedStandardUri));
         
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_normalisedStandardUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_normalisedStandardUri));
         
         // replacedString = replacedString.replace(
@@ -698,29 +698,29 @@ public class SparqlQueryCreator
                         // .xmlEncodeString(normalisedOntologyUriSuffix));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_normalisedQueryUri}", Utilities
+                "${urlEncoded_normalisedQueryUri}", StringUtils
                         .percentEncode(normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_normalisedQueryUri}", Utilities
+                "${xmlEncoded_normalisedQueryUri}", StringUtils
                         .xmlEncodeString(normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_inputUrlEncoded_normalisedQueryUri}", Utilities
+                "${xmlEncoded_inputUrlEncoded_normalisedQueryUri}", StringUtils
                         .xmlEncodeString(inputUrlEncoded_normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_normalisedQueryUri}", Utilities
+                "${urlEncoded_lowercase_normalisedQueryUri}", StringUtils
                         .percentEncode(normalisedQueryUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_normalisedQueryUri}", Utilities
+                "${urlEncoded_uppercase_normalisedQueryUri}", StringUtils
                         .percentEncode(normalisedQueryUri.toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_lowercase_normalisedQueryUri}", Utilities
+                "${xmlEncoded_lowercase_normalisedQueryUri}", StringUtils
                         .xmlEncodeString((normalisedQueryUri.toLowerCase())));
         replacedString = replacedString.replace(
-                "${xmlEncoded_uppercase_normalisedQueryUri}", Utilities
+                "${xmlEncoded_uppercase_normalisedQueryUri}", StringUtils
                         .xmlEncodeString((normalisedQueryUri.toUpperCase())));
         
         replacedString = replacedString.replace(
@@ -740,23 +740,23 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_lowercase_normalisedQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_normalisedQueryUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_uppercase_normalisedQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_normalisedQueryUri));
         
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privatelowercase_normalisedQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_normalisedQueryUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_normalisedQueryUri));
         
         if(SparqlQueryCreator._TRACE)
@@ -766,7 +766,7 @@ public class SparqlQueryCreator
                             + replacedString);
             SparqlQueryCreator.log
                     .trace("SparqlQueryCreator.createQuery: before regex loop started xmlEncoded_inputUrlEncoded_normalisedQueryUri="
-                            + Utilities
+                            + StringUtils
                                     .xmlEncodeString(inputUrlEncoded_normalisedQueryUri));
         }
         
@@ -893,61 +893,61 @@ public class SparqlQueryCreator
                 // "${endpointSpecificOntologyUri}", endpointSpecificOntologyUri);
         
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_endpointSpecificUri}", Utilities
+                "${ntriplesEncoded_endpointSpecificUri}", StringUtils
                         .ntriplesEncode(endpointSpecificUri));
         
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_normalisedStandardUri}", Utilities
+                "${ntriplesEncoded_normalisedStandardUri}", StringUtils
                         .ntriplesEncode(normalisedStandardUri));
         
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_normalisedQueryUri}", Utilities
+                "${ntriplesEncoded_normalisedQueryUri}", StringUtils
                         .ntriplesEncode(normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_ntriplesEncoded_endpointSpecificUri}", Utilities.xmlEncodeString(Utilities.ntriplesEncode(endpointSpecificUri)));
+                "${xmlEncoded_ntriplesEncoded_endpointSpecificUri}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(endpointSpecificUri)));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_ntriplesEncoded_normalisedStandardUri}", Utilities.xmlEncodeString(Utilities.ntriplesEncode(normalisedStandardUri)));
+                "${xmlEncoded_ntriplesEncoded_normalisedStandardUri}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(normalisedStandardUri)));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_ntriplesEncoded_normalisedQueryUri}", Utilities.xmlEncodeString(Utilities.ntriplesEncode(normalisedQueryUri)));
+                "${xmlEncoded_ntriplesEncoded_normalisedQueryUri}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(normalisedQueryUri)));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_endpointSpecificUri}", Utilities
+                "${urlEncoded_lowercase_endpointSpecificUri}", StringUtils
                         .percentEncode(endpointSpecificUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_endpointSpecificUri}", Utilities
+                "${urlEncoded_uppercase_endpointSpecificUri}", StringUtils
                         .percentEncode(endpointSpecificUri.toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_endpointSpecificQueryUri}", Utilities
+                "${urlEncoded_lowercase_endpointSpecificQueryUri}", StringUtils
                         .percentEncode(endpointSpecificQueryUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_endpointSpecificQueryUri}", Utilities
+                "${urlEncoded_uppercase_endpointSpecificQueryUri}", StringUtils
                         .percentEncode(endpointSpecificQueryUri.toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_endpointSpecificUri}", Utilities
+                "${xmlEncoded_endpointSpecificUri}", StringUtils
                         .xmlEncodeString(endpointSpecificUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_endpointSpecificQueryUri}", Utilities
+                "${xmlEncoded_endpointSpecificQueryUri}", StringUtils
                         .xmlEncodeString(endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_lowercase_endpointSpecificUri}", Utilities
+                "${xmlEncoded_lowercase_endpointSpecificUri}", StringUtils
                         .xmlEncodeString(endpointSpecificUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${xmlEncoded_uppercase_endpointSpecificUri}", Utilities
+                "${xmlEncoded_uppercase_endpointSpecificUri}", StringUtils
                         .xmlEncodeString(endpointSpecificUri.toUpperCase()));
         replacedString = replacedString.replace(
                 "${xmlEncoded_lowercase_endpointSpecificQueryUri}",
-                Utilities.xmlEncodeString(endpointSpecificQueryUri
+                StringUtils.xmlEncodeString(endpointSpecificQueryUri
                         .toLowerCase()));
         replacedString = replacedString.replace(
                 "${xmlEncoded_uppercase_endpointSpecificQueryUri}",
-                Utilities.xmlEncodeString(endpointSpecificQueryUri
+                StringUtils.xmlEncodeString(endpointSpecificQueryUri
                         .toUpperCase()));
         
         replacedString = replacedString.replace(
@@ -958,10 +958,10 @@ public class SparqlQueryCreator
                 inputXmlEncoded_endpointSpecificQueryUri);
         
         replacedString = replacedString.replace(
-                "${urlEncoded_endpointSpecificUri}", Utilities
+                "${urlEncoded_endpointSpecificUri}", StringUtils
                         .percentEncode(endpointSpecificUri));
         replacedString = replacedString.replace(
-                "${urlEncoded_endpointSpecificQueryUri}", Utilities
+                "${urlEncoded_endpointSpecificQueryUri}", StringUtils
                         .percentEncode(endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
@@ -979,21 +979,21 @@ public class SparqlQueryCreator
                 inputPlusUrlEncoded_endpointSpecificQueryUri);
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_inputUrlEncoded_endpointSpecificUri}", Utilities
+                "${xmlEncoded_inputUrlEncoded_endpointSpecificUri}", StringUtils
                         .xmlEncodeString(inputUrlEncoded_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_endpointSpecificQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificUri}", Utilities
+                "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificUri}", StringUtils
                         .xmlEncodeString(inputPlusUrlEncoded_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificQueryUri}",
-                        Utilities.xmlEncodeString(inputPlusUrlEncoded_endpointSpecificQueryUri));
+                        StringUtils.xmlEncodeString(inputPlusUrlEncoded_endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
                 "${inputXmlEncoded_uppercase_endpointSpecificUri}",
@@ -1012,12 +1012,12 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_uppercase_endpointSpecificUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_uppercase_endpointSpecificQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
@@ -1036,7 +1036,7 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_lowercase_endpointSpecificUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_endpointSpecificUri));
         replacedString = replacedString.replace(
                 "${inputXmlEncoded_privateuppercase_endpointSpecificUri}",
@@ -1048,7 +1048,7 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_lowercase_endpointSpecificQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_endpointSpecificQueryUri));
         replacedString = replacedString.replace(
                 "${inputXmlEncoded_privateuppercase_endpointSpecificQueryUri}",
@@ -1060,7 +1060,7 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privateuppercase_endpointSpecificUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_endpointSpecificUri));
         replacedString = replacedString.replace(
                 "${inputXmlEncoded_privatelowercase_endpointSpecificUri}",
@@ -1072,7 +1072,7 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privateuppercase_endpointSpecificQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_endpointSpecificQueryUri));
         replacedString = replacedString.replace(
                 "${inputXmlEncoded_privatelowercase_endpointSpecificQueryUri}",
@@ -1084,12 +1084,12 @@ public class SparqlQueryCreator
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privatelowercase_endpointSpecificUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
                         "${xmlEncoded_inputUrlEncoded_privatelowercase_endpointSpecificQueryUri}",
-                        Utilities
+                        StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_endpointSpecificQueryUri));
         
         if(_DEBUG)
@@ -1149,7 +1149,7 @@ public class SparqlQueryCreator
         
         // if(nextProvider.rdfNormalisationsNeeded != null)
         // {
-        // attributeList.put("rdfNormalisationsNeeded",Utilities.joinStringCollection(nextProvider.rdfNormalisationsNeeded,","));
+        // attributeList.put("rdfNormalisationsNeeded",RdfUtils.joinStringCollection(nextProvider.rdfNormalisationsNeeded,","));
         // }
         // else
         // {
@@ -1158,54 +1158,54 @@ public class SparqlQueryCreator
         
         attributeList.put("endpointUrl", nextEndpoint);
         
-        attributeList.put("urlEncoded_defaultHostName", Utilities
+        attributeList.put("urlEncoded_defaultHostName", StringUtils
                 .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName")));
-        attributeList.put("urlEncoded_defaultHostAddress", Utilities
+        attributeList.put("urlEncoded_defaultHostAddress", StringUtils
                 .percentEncode(Settings.getSettings().getDefaultHostAddress()));
-        attributeList.put("urlEncoded_defaultSeparator", Utilities
+        attributeList.put("urlEncoded_defaultSeparator", StringUtils
                 .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator")));
-        attributeList.put("urlEncoded_graphUri", Utilities
+        attributeList.put("urlEncoded_graphUri", StringUtils
                 .percentEncode(nextProvider.getSparqlGraphUri()));
-        attributeList.put("urlEncoded_endpointUrl", Utilities
+        attributeList.put("urlEncoded_endpointUrl", StringUtils
                 .percentEncode(nextEndpoint));
-        attributeList.put("urlEncoded_realHostName", Utilities
+        attributeList.put("urlEncoded_realHostName", StringUtils
                 .percentEncode(realHostName));
-        attributeList.put("urlEncoded_queryString", Utilities
+        attributeList.put("urlEncoded_queryString", StringUtils
                 .percentEncode(queryString));
         
-        attributeList.put("xmlEncoded_defaultHostName", Utilities
+        attributeList.put("xmlEncoded_defaultHostName", StringUtils
                 .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("hostName")));
-        attributeList.put("xmlEncoded_defaultHostAddress", Utilities
+        attributeList.put("xmlEncoded_defaultHostAddress", StringUtils
                 .xmlEncodeString("http://" + Settings.getSettings().getStringPropertyFromConfig("hostName") + "/"));
-        attributeList.put("xmlEncoded_defaultSeparator", Utilities
+        attributeList.put("xmlEncoded_defaultSeparator", StringUtils
                 .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator")));
-        attributeList.put("xmlEncoded_graphUri", Utilities
+        attributeList.put("xmlEncoded_graphUri", StringUtils
                 .xmlEncodeString(nextProvider.getSparqlGraphUri()));
-        attributeList.put("xmlEncoded_endpointUrl", Utilities
+        attributeList.put("xmlEncoded_endpointUrl", StringUtils
                 .xmlEncodeString(nextEndpoint));
-        attributeList.put("xmlEncoded_realHostName", Utilities
+        attributeList.put("xmlEncoded_realHostName", StringUtils
                 .xmlEncodeString(realHostName));
-        attributeList.put("xmlEncoded_queryString", Utilities
+        attributeList.put("xmlEncoded_queryString", StringUtils
                 .xmlEncodeString(queryString));
         
-        attributeList.put("xmlEncoded_urlEncoded_defaultHostName", Utilities
-                .xmlEncodeString(Utilities
+        attributeList.put("xmlEncoded_urlEncoded_defaultHostName", StringUtils
+                .xmlEncodeString(StringUtils
                         .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName"))));
-        attributeList.put("xmlEncoded_urlEncoded_defaultHostAddress", Utilities
-                .xmlEncodeString(Utilities.percentEncode("http://"
+        attributeList.put("xmlEncoded_urlEncoded_defaultHostAddress", StringUtils
+                .xmlEncodeString(StringUtils.percentEncode("http://"
                         + Settings.getSettings().getStringPropertyFromConfig("hostName") + "/")));
-        attributeList.put("xmlEncoded_urlEncoded_defaultSeparator", Utilities
-                .xmlEncodeString(Utilities
+        attributeList.put("xmlEncoded_urlEncoded_defaultSeparator", StringUtils
+                .xmlEncodeString(StringUtils
                         .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator"))));
-        attributeList.put("xmlEncoded_urlEncoded_graphUri", Utilities
-                .xmlEncodeString(Utilities
+        attributeList.put("xmlEncoded_urlEncoded_graphUri", StringUtils
+                .xmlEncodeString(StringUtils
                         .percentEncode(nextProvider.getSparqlGraphUri())));
-        attributeList.put("xmlEncoded_urlEncoded_endpointUrl", Utilities
-                .xmlEncodeString(Utilities.percentEncode(nextEndpoint)));
-        attributeList.put("xmlEncoded_urlEncoded_realHostName", Utilities
-                .xmlEncodeString(Utilities.percentEncode(realHostName)));
-        attributeList.put("xmlEncoded_urlEncoded_queryString", Utilities
-                .xmlEncodeString(Utilities.percentEncode(queryString)));
+        attributeList.put("xmlEncoded_urlEncoded_endpointUrl", StringUtils
+                .xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
+        attributeList.put("xmlEncoded_urlEncoded_realHostName", StringUtils
+                .xmlEncodeString(StringUtils.percentEncode(realHostName)));
+        attributeList.put("xmlEncoded_urlEncoded_queryString", StringUtils
+                .xmlEncodeString(StringUtils.percentEncode(queryString)));
         
         return attributeList;
     }
@@ -1247,39 +1247,39 @@ public class SparqlQueryCreator
             
             final String matchString = "${input_" + number + "}";
             
-            final String urlEncodedReplaceString = Utilities.percentEncode(inputReplaceString);
+            final String urlEncodedReplaceString = StringUtils.percentEncode(inputReplaceString);
             final String urlEncodedMatchString = "${urlEncoded_input_" + number + "}";
             
-            final String plusUrlEncodedReplaceString = Utilities.plusPercentEncode(inputReplaceString);
+            final String plusUrlEncodedReplaceString = StringUtils.plusPercentEncode(inputReplaceString);
             final String plusUrlEncodedMatchString = "${plusUrlEncoded_input_" + number + "}";
             
-            // final String plusSpaceEncodedReplaceString = Utilities.plusSpaceEncode(inputReplaceString);
+            // final String plusSpaceEncodedReplaceString = RdfUtils.plusSpaceEncode(inputReplaceString);
             // final String plusSpaceEncodedMatchString = "${plusSpaceEncoded_input_" + number + "}";
             
-            final String xmlEncodedReplaceString = Utilities.xmlEncodeString(inputReplaceString);
+            final String xmlEncodedReplaceString = StringUtils.xmlEncodeString(inputReplaceString);
             final String xmlEncodedMatchString = "${xmlEncoded_input_" + number + "}";
             
-            final String xmlEncodedUrlEncodedReplaceString = Utilities
-                    .xmlEncodeString(Utilities
+            final String xmlEncodedUrlEncodedReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils
                             .percentEncode(inputReplaceString));
                     
             final String xmlEncodedUrlEncodedMatchString = "${xmlEncoded_urlEncoded_input_"
                     + number + "}";
             
-            final String xmlEncodedPlusUrlEncodedReplaceString = Utilities
-                    .xmlEncodeString(Utilities
+            final String xmlEncodedPlusUrlEncodedReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils
                             .plusPercentEncode(inputReplaceString));
                     
             final String xmlEncodedPlusUrlEncodedMatchString = "${xmlEncoded_plusUrlEncoded_input_"
                     + number + "}";
             
-            final String xmlEncodedNTriplesReplaceString = Utilities
-                    .xmlEncodeString(Utilities
+            final String xmlEncodedNTriplesReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils
                             .ntriplesEncode(inputReplaceString));
             final String xmlEncodedNTriplesMatchString = "${xmlEncoded_ntriplesEncoded_input_"
                     + number + "}";
             
-            final String nTriplesReplaceString = Utilities
+            final String nTriplesReplaceString = StringUtils
                     .ntriplesEncode(inputReplaceString);
             final String nTriplesMatchString = "${ntriplesEncoded_input_"
                     + number + "}";
@@ -1292,24 +1292,24 @@ public class SparqlQueryCreator
             final String lowercaseMatchString = "${lowercase_input_" + number
                     + "}";
             
-            final String urlEncodedLowercaseReplaceString = Utilities
+            final String urlEncodedLowercaseReplaceString = StringUtils
                     .percentEncode(inputReplaceString.toLowerCase());
             final String urlEncodedLowercaseMatchString = "${urlEncoded_lowercase_input_"
                     + number + "}";
             
-            final String xmlEncodedLowercaseReplaceString = Utilities
+            final String xmlEncodedLowercaseReplaceString = StringUtils
                     .xmlEncodeString(inputReplaceString.toLowerCase());
             final String xmlEncodedLowercaseMatchString = "${xmlEncoded_lowercase_input_"
                     + number + "}";
             
-            final String xmlEncodedUrlEncodedLowercaseReplaceString = Utilities
-                    .xmlEncodeString(Utilities.percentEncode(inputReplaceString
+            final String xmlEncodedUrlEncodedLowercaseReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils.percentEncode(inputReplaceString
                             .toLowerCase()));
             final String xmlEncodedUrlEncodedLowercaseMatchString = "${xmlEncoded_urlEncoded_lowercase_input_"
                     + number + "}";
             
-            final String xmlEncodedNTriplesLowercaseReplaceString = Utilities
-                    .xmlEncodeString(Utilities
+            final String xmlEncodedNTriplesLowercaseReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils
                             .ntriplesEncode(inputReplaceString.toLowerCase()));
             final String xmlEncodedNTriplesLowercaseMatchString = "${xmlEncoded_ntriplesEncoded_lowercase_input_"
                     + number + "}";
@@ -1322,24 +1322,24 @@ public class SparqlQueryCreator
             final String uppercaseMatchString = "${uppercase_input_" + number
                     + "}";
             
-            final String urlEncodedUppercaseReplaceString = Utilities
+            final String urlEncodedUppercaseReplaceString = StringUtils
                     .percentEncode(inputReplaceString.toUpperCase());
             final String urlEncodedUppercaseMatchString = "${urlEncoded_uppercase_input_"
                     + number + "}";
             
-            final String xmlEncodedUppercaseReplaceString = Utilities
+            final String xmlEncodedUppercaseReplaceString = StringUtils
                     .xmlEncodeString(inputReplaceString.toUpperCase());
             final String xmlEncodedUppercaseMatchString = "${xmlEncoded_uppercase_input_"
                     + number + "}";
             
-            final String xmlEncodedUrlEncodedUppercaseReplaceString = Utilities
-                    .xmlEncodeString(Utilities.percentEncode(inputReplaceString
+            final String xmlEncodedUrlEncodedUppercaseReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils.percentEncode(inputReplaceString
                             .toUpperCase()));
             final String xmlEncodedUrlEncodedUppercaseMatchString = "${xmlEncoded_urlEncoded_uppercase_input_"
                     + number + "}";
             
-            final String xmlEncodedNTriplesUppercaseReplaceString = Utilities
-                    .xmlEncodeString(Utilities
+            final String xmlEncodedNTriplesUppercaseReplaceString = StringUtils
+                    .xmlEncodeString(StringUtils
                             .ntriplesEncode(inputReplaceString.toUpperCase()));
             final String xmlEncodedNTriplesUppercaseMatchString = "${xmlEncoded_ntriplesEncoded_uppercase_input_"
                     + number + "}";
@@ -1370,23 +1370,23 @@ public class SparqlQueryCreator
             {
                 if(specialInstruction.equals(Settings.INPUT_URL_ENCODED))
                 {
-                    inputReplaceString = Utilities
+                    inputReplaceString = StringUtils
                             .percentEncode(inputReplaceString);
                 }
                 else if(specialInstruction.equals(Settings.INPUT_PLUS_URL_ENCODED))
                 {
-                    inputReplaceString = Utilities
+                    inputReplaceString = StringUtils
                             .plusPercentEncode(inputReplaceString);
                 }
                 else if(specialInstruction.equals(Settings.INPUT_XML_ENCODED))
                 {
-                    inputReplaceString = Utilities
+                    inputReplaceString = StringUtils
                             .xmlEncodeString(inputReplaceString);
                 }
                 else if(specialInstruction
                         .equals(Settings.INPUT_NTRIPLES_ENCODED))
                 {
-                    inputReplaceString = Utilities
+                    inputReplaceString = StringUtils
                             .ntriplesEncode(inputReplaceString);
                 }
                 else if(specialInstruction.equals(Settings.LOWERCASE))
@@ -1485,18 +1485,18 @@ public class SparqlQueryCreator
         replacedString = replacedString.replace("${uppercase_queryString}",
                 queryString.toUpperCase());
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_queryString}", Utilities
+                "${ntriplesEncoded_queryString}", StringUtils
                         .ntriplesEncode(queryString));
         replacedString = replacedString.replace("${urlEncoded_queryString}",
-                Utilities.percentEncode(queryString));
+                StringUtils.percentEncode(queryString));
         replacedString = replacedString.replace("${xmlEncoded_queryString}",
-                Utilities.xmlEncodeString(queryString));
+                StringUtils.xmlEncodeString(queryString));
         replacedString = replacedString.replace(
-                "${xmlEncoded_urlEncoded_queryString}", Utilities
-                        .xmlEncodeString(Utilities.percentEncode(queryString)));
+                "${xmlEncoded_urlEncoded_queryString}", StringUtils
+                        .xmlEncodeString(StringUtils.percentEncode(queryString)));
         replacedString = replacedString
-                .replace("${xmlEncoded_ntriplesEncoded_queryString}", Utilities
-                        .xmlEncodeString(Utilities.ntriplesEncode(queryString)));
+                .replace("${xmlEncoded_ntriplesEncoded_queryString}", StringUtils
+                        .xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         
         if(SparqlQueryCreator._DEBUG)
         {
