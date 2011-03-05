@@ -96,7 +96,7 @@ public class RdfFetchController
             queryBundles = new HashSet<QueryBundle>( 20 );
             
             // TODO: figure out how to also get back the NamespaceEntry objects that matched so we can log this information with the statistics for this query
-            Collection<QueryType> allCustomQueries = Settings.getSettings().getCustomQueriesMatchingQueryString( queryString, sortedIncludedProfiles );
+            Collection<QueryType> allCustomQueries = Settings.getSettings().getQueryTypesMatchingQueryString( queryString, sortedIncludedProfiles );
             
             if( _DEBUG )
             {
@@ -316,7 +316,7 @@ public class RdfFetchController
                                 for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
                                 {
                                     // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                                    Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getSettings().getCustomQueriesByUri( nextCustomInclude );
+                                    Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getSettings().getQueryTypesByUri( nextCustomInclude );
                                     
                                     if( allCustomRdfXmlIncludeTypes.size()  == 0 )
                                     {
@@ -360,7 +360,7 @@ public class RdfFetchController
                         for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
                         {
                             // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                            Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getSettings().getCustomQueriesByUri( nextCustomInclude );
+                            Collection<QueryType> allCustomRdfXmlIncludeTypes = Settings.getSettings().getQueryTypesByUri( nextCustomInclude );
                             
                             for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
                             {

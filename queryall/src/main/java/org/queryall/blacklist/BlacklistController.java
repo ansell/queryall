@@ -417,7 +417,7 @@ public class BlacklistController
                         
                         for(final URI nextQueryDebugTitle : nextQueryDebug.matchingQueryTitles)
                         {
-                            for(final QueryType nextQueryDebugType : Settings.getSettings().getCustomQueriesByUri(nextQueryDebugTitle))
+                            for(final QueryType nextQueryDebugType : Settings.getSettings().getQueryTypesByUri(nextQueryDebugTitle))
                             {
                                 if(nextQueryDebugType.getInRobotsTxt())
                                 {

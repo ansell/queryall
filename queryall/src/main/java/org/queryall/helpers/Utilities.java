@@ -1647,7 +1647,7 @@ public class Utilities
         myRepository.initialize();
         
         // FIXME: fix this reliance on the Settings class
-        final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.getSettings().CONFIG_API_VERSION);
+        final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.CONFIG_API_VERSION);
         
         if(!rdfOkay && isInsert)
         {
@@ -2393,7 +2393,8 @@ public class Utilities
                 hash = "0" + hash;
             }
             
-            log.error("Utilities.md5: inputString="+inputString+ " hash="+hash);
+            if(_DEBUG)
+            	log.debug("Utilities.md5: inputString="+inputString+ " hash="+hash);
             
             return hash;
         }

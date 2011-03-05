@@ -13,10 +13,8 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
-import javax.servlet.*;
 
 import org.apache.log4j.Logger;
 
@@ -396,7 +394,7 @@ public class Settings
                         this.cachedCustomQueries = null;
                     }
                 }
-                this.getAllCustomQueries();
+                this.getAllQueryTypes();
                 if(Settings._TRACE)
                 {
                     Settings.log
@@ -506,7 +504,7 @@ public class Settings
         return false;
     }
     
-    public synchronized Map<URI, QueryType> getAllCustomQueries()
+    public synchronized Map<URI, QueryType> getAllQueryTypes()
     {
         if(this.cachedCustomQueries != null)
         {
@@ -517,7 +515,7 @@ public class Settings
         {
             final Repository myRepository = getServerConfigurationRdf();
             
-            Map<URI, QueryType> results = getCustomQueries(myRepository);
+            Map<URI, QueryType> results = getQueryTypes(myRepository);
             
             if(_INFO)
             {
@@ -536,7 +534,7 @@ public class Settings
         }
     }
     
-    public Map<URI, QueryType> getCustomQueries(Repository myRepository)
+    public Map<URI, QueryType> getQueryTypes(Repository myRepository)
     {
         final Hashtable<URI, QueryType> results = new Hashtable<URI, QueryType>();
         final long start = System.currentTimeMillis();
@@ -583,7 +581,7 @@ public class Settings
                                 .getStatements((URI) valueOfQueryUri,
                                         (URI) null, (Value) null, true);
                         final Collection<Statement> nextStatementList = Iterations.addAll(statements, new HashSet<Statement>());
-                        final QueryType nextQueryConfiguration = QueryTypeImpl.fromRdf(nextStatementList, (URI)valueOfQueryUri, this.CONFIG_API_VERSION);
+                        final QueryType nextQueryConfiguration = QueryTypeImpl.fromRdf(nextStatementList, (URI)valueOfQueryUri, Settings.CONFIG_API_VERSION);
                         if(nextQueryConfiguration != null)
                         {
                             results.put((URI)valueOfQueryUri,
@@ -827,7 +825,7 @@ public class Settings
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final Template nextTemplate = TemplateImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfTemplateUri, this.CONFIG_API_VERSION);
+                                    .fromRdf(nextStatementList, (URI)valueOfTemplateUri, Settings.CONFIG_API_VERSION);
                             if(nextTemplate != null)
                             {
                                 results.put((URI)valueOfTemplateUri,
@@ -1002,7 +1000,7 @@ public class Settings
                                 .addAll(statements, new HashSet<Statement>());
                         final NamespaceEntry nextNamespaceEntryConfiguration = NamespaceEntryImpl
                                 .fromRdf(nextStatementList,
-                                        (URI)valueOfNamespaceEntryUri, this.CONFIG_API_VERSION);
+                                        (URI)valueOfNamespaceEntryUri, Settings.CONFIG_API_VERSION);
                         if(nextNamespaceEntryConfiguration != null)
                         {
                             results.put((URI)valueOfNamespaceEntryUri,
@@ -1097,7 +1095,7 @@ public class Settings
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final Profile nextProfile = ProfileImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfProfileUri, this.CONFIG_API_VERSION);
+                                    .fromRdf(nextStatementList, (URI)valueOfProfileUri, Settings.CONFIG_API_VERSION);
                             if(nextProfile != null)
                             {
                                 results.put((URI)valueOfProfileUri,
@@ -1231,7 +1229,7 @@ public class Settings
                         final Collection<Statement> nextStatementList = Iterations
                                 .addAll(statements, new HashSet<Statement>());
                         final Provider nextProvider = ProviderImpl
-                                .fromRdf(nextStatementList, (URI)valueOfProviderUri, this.CONFIG_API_VERSION);
+                                .fromRdf(nextStatementList, (URI)valueOfProviderUri, Settings.CONFIG_API_VERSION);
                         if(nextProvider != null)
                         {
                             results.put((URI)valueOfProviderUri,
@@ -1331,7 +1329,7 @@ public class Settings
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final RegexNormalisationRule nextRdfRuleConfiguration = 
-                                        new RegexNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, this.CONFIG_API_VERSION);
+                                        new RegexNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
                             results.put((URI)valueOfRdfRuleUri, nextRdfRuleConfiguration);
                         }
                     }
@@ -1384,7 +1382,7 @@ public class Settings
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final SparqlNormalisationRule nextRdfRuleConfiguration = 
-                                        new SparqlNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, this.CONFIG_API_VERSION);
+                                        new SparqlNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
                             results.put((URI)valueOfRdfRuleUri,
                                     nextRdfRuleConfiguration);
                         }
@@ -1477,7 +1475,7 @@ public class Settings
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
                             final RuleTest nextRuleTestConfiguration = RuleTestImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfRuleTestUri, this.CONFIG_API_VERSION);
+                                    .fromRdf(nextStatementList, (URI)valueOfRuleTestUri, Settings.CONFIG_API_VERSION);
                             if(nextRuleTestConfiguration != null)
                             {
                                 results.put((URI)valueOfRuleTestUri,
@@ -1580,10 +1578,10 @@ public class Settings
         return results;
     }
     
-    public Collection<QueryType> getCustomQueriesByUri(URI queryTypeUri)
+    public Collection<QueryType> getQueryTypesByUri(URI queryTypeUri)
     {
         final Collection<QueryType> results = new HashSet<QueryType>();
-        for(final QueryType nextQueryType : this.getAllCustomQueries().values())
+        for(final QueryType nextQueryType : this.getAllQueryTypes().values())
         {
             if(nextQueryType.getKey().equals(queryTypeUri))
             {
@@ -1595,7 +1593,7 @@ public class Settings
     
     // FIXME: This will only return anything if at least one group appears in the
     // relevant regular expression!!
-    public Collection<QueryType> getCustomQueriesMatchingQueryString(String queryString, List<Profile> profileList)
+    public Collection<QueryType> getQueryTypesMatchingQueryString(String queryString, List<Profile> profileList)
     {
         log.debug("this.getCustomQueriesMatchingQueryString: profileList.size()="+profileList.size());
         
@@ -1606,7 +1604,7 @@ public class Settings
         
         final Collection<QueryType> results = new HashSet<QueryType>();
         
-        for(QueryType nextQuery : this.getAllCustomQueries().values())
+        for(QueryType nextQuery : this.getAllQueryTypes().values())
         {
             // FIXME: allow for queries with no matching groups
             // Currently queries with no matching groups will fail this step and not be considered valid
@@ -1851,7 +1849,7 @@ public class Settings
     public Collection<Provider> getProvidersForQueryType(
             URI customService)
     {
-        final Collection<Provider> results = this.getProvidersForQueryTypeFromList(customService, this.getAllProviders().values());
+        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(customService, this.getAllProviders().values());
         
         if(Settings._DEBUG)
         {
@@ -1897,7 +1895,7 @@ public class Settings
                             + namespaceProviders);
         }
         
-        final Collection<Provider> results = this.getProvidersForQueryTypeFromList(customService, namespaceProviders);
+        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(customService, namespaceProviders);
         
         if(Settings._TRACE)
         {
@@ -1908,7 +1906,7 @@ public class Settings
         return results;
     }
     
-    public Collection<Provider> getProvidersForQueryTypeFromList(
+    public static Collection<Provider> getProvidersForQueryTypeFromList(
             URI customService, Collection<Provider> knownProviders)
     {
         final Collection<Provider> results = new HashSet<Provider>();
@@ -2356,15 +2354,7 @@ public class Settings
                     "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
         }
         
-        if(tempConfigurationRepository == null)
-        {
-            throw new RuntimeException(
-            "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository");
-        }
-        else
-        {
-            this.currentBaseConfigurationRepository = tempConfigurationRepository;
-        }
+        this.currentBaseConfigurationRepository = tempConfigurationRepository;
 
         if(Settings._INFO)
         {
@@ -2652,15 +2642,7 @@ public class Settings
             }
         } // end if(backupNeeded)
                 
-        if(tempConfigurationRepository == null)
-        {
-            throw new RuntimeException(
-            "Settings: failed to initialise the configuration repository");
-        }
-        else
-        {
-            this.currentConfigurationRepository = tempConfigurationRepository;
-        }
+        this.currentConfigurationRepository = tempConfigurationRepository;
 
         if(Settings._INFO)
         {
