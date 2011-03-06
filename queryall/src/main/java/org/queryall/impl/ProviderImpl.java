@@ -16,6 +16,7 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
@@ -44,7 +45,7 @@ public class ProviderImpl extends Provider
     // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue() and Provider.providerNoCommunication.stringValue()
     private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
     private Collection<URI> namespaces = new HashSet<URI>();
-    private Collection<URI> includedInCustomQueries = new HashSet<URI>();
+    private Collection<URI> includedInQueryTypes = new HashSet<URI>();
     private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
     private boolean useSparqlGraph = false;
     private String sparqlGraphUri = "";
@@ -290,8 +291,8 @@ public class ProviderImpl extends Provider
         
         result.setNamespaces(tempNamespaces);
         result.setEndpointUrls(tempEndpointUrls);
-        result.setNormalisationsNeeded(tempRdfNormalisationsNeeded);
-        result.setIncludedInCustomQueries(tempIncludedInCustomQueries);
+        result.setNormalisationUris(tempRdfNormalisationsNeeded);
+        result.setIncludedInQueryTypes(tempIncludedInCustomQueries);
         
         if(_DEBUG)
         {
@@ -408,9 +409,9 @@ public class ProviderImpl extends Provider
                 }
             }
             
-            if(getIncludedInCustomQueries() != null)
+            if(getIncludedInQueryTypes() != null)
             {
-                for(URI nextIncludedInCustomQuery : getIncludedInCustomQueries())
+                for(URI nextIncludedInCustomQuery : getIncludedInQueryTypes())
                 {
                     if(nextIncludedInCustomQuery != null)
                     {
@@ -503,6 +504,11 @@ public class ProviderImpl extends Provider
         return false;
     }
     
+    public boolean containsNormalisationUri(URI normalisationKey)
+    {
+        return this.getNormalisationUris().contains(normalisationKey);
+    }
+    
     public boolean isHttpPostSparql()
     {
         return this.getEndpointMethod().equals(ProviderImpl.getProviderHttpPostSparql());
@@ -536,7 +542,7 @@ public class ProviderImpl extends Provider
         result += "endpointUrls="+getEndpointUrls() + "\n";
         result += "endpointMethod="+getEndpointMethod() + "\n";
         result += "namespaces="+getNamespaces() + "\n";
-        result += "includedInCustomQueries="+getIncludedInCustomQueries() + "\n";
+        result += "includedInCustomQueries="+getIncludedInQueryTypes() + "\n";
         result += "useSparqlGraph="+getUseSparqlGraph() + "\n";
         result += "sparqlGraphUri="+getSparqlGraphUri() + "\n";
         result += "redirectOrProxy="+getRedirectOrProxy() + "\n";
@@ -584,9 +590,9 @@ public class ProviderImpl extends Provider
             result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
         }
         
-        if(getIncludedInCustomQueries() != null)
+        if(getIncludedInQueryTypes() != null)
         {
-            result += "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "+StringUtils.xmlEncodeString(getIncludedInCustomQueries().toString()) + "</div>\n";
+            result += "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "+StringUtils.xmlEncodeString(getIncludedInQueryTypes().toString()) + "</div>\n";
         }
         else
         {
@@ -672,23 +678,14 @@ public class ProviderImpl extends Provider
         return getProviderTypeUri().stringValue();
     }
     
-    public boolean handlesQueryExplicitly(URI queryKey)
+    public boolean containsQueryTypeUri(URI queryKey)
     {
-        if(this.getIncludedInCustomQueries() != null)
+        if(this.getIncludedInQueryTypes() != null)
         {
-            return this.getIncludedInCustomQueries().contains(queryKey);
-            // for(String nextCustomQueryType : this.includedInCustomQueries)
-            // {
-                // if(nextCustomQueryType.equals(queryKey))
-                // {
-                    // return true;
-                // }
-            // }
+            return this.getIncludedInQueryTypes().contains(queryKey);
         }
-        else
-        {
-            log.warn("Provider.handlesQueryExplicitly: provider did not have any included custom queries! this.getKey()="+this.getKey());
-        }
+
+        log.warn("Provider.handlesQueryExplicitly: provider did not have any included custom queries! this.getKey()="+this.getKey());
         
         return false;
     }
@@ -739,24 +736,24 @@ public class ProviderImpl extends Provider
         this.sparqlGraphUri = sparqlGraphUri;
     }
     
-    public Collection<URI> getNormalisationsNeeded()
+    public Collection<URI> getNormalisationUris()
     {
         return getRdfNormalisationsNeeded();
     }
     
-    public void setNormalisationsNeeded(Collection<URI> rdfNormalisationsNeeded)
+    public void setNormalisationUris(Collection<URI> rdfNormalisationsNeeded)
     {
         this.setRdfNormalisationsNeeded(rdfNormalisationsNeeded);
     }
 
-    public Collection<URI> getIncludedInCustomQueries()
+    public Collection<URI> getIncludedInQueryTypes()
     {
-        return includedInCustomQueries;
+        return includedInQueryTypes;
     }
     
-    public void setIncludedInCustomQueries(Collection<URI> includedInCustomQueries)
+    public void setIncludedInQueryTypes(Collection<URI> includedInCustomQueries)
     {
-        this.includedInCustomQueries = includedInCustomQueries;
+        this.includedInQueryTypes = includedInCustomQueries;
     }
 
     public Collection<String> getEndpointUrls()
@@ -1127,5 +1124,35 @@ public class ProviderImpl extends Provider
 	public static URI getProviderAcceptHeader() {
 		return providerAcceptHeader;
 	}
+
+    public void addNormalisationUri(URI rdfNormalisationNeeded)
+    {
+        if(this.rdfNormalisationsNeeded == null)
+        {
+            this.rdfNormalisationsNeeded = new LinkedList<URI>();
+        }
+        
+        this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
+    }
+
+    public void addIncludedInQueryType(URI includedInQueryType)
+    {
+        if(this.includedInQueryTypes == null)
+        {
+            this.includedInQueryTypes = new LinkedList<URI>();
+        }
+        
+        this.includedInQueryTypes.add(includedInQueryType);
+    }
+
+    public void addNamespace(URI namespace)
+    {
+        if(this.namespaces == null)
+        {
+            this.namespaces = new LinkedList<URI>();
+        }
+        
+        this.namespaces.add(namespace);
+    }
 
 }

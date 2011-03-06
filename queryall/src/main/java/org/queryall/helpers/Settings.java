@@ -1654,7 +1654,7 @@ public class Settings
         for(final Provider nextProvider : this.getAllProviders().values())
         {
             if(nextProvider.getIsDefaultSource()
-                    && nextProvider.handlesQueryExplicitly(queryKey))
+                    && nextProvider.containsQueryTypeUri(queryKey))
             {
                 results.add(nextProvider);
             }
@@ -1715,14 +1715,14 @@ public class Settings
     public List<NormalisationRule> getSortedRulesForProvider(
             Provider nextProvider, int sortOrder)
     {
-        if(nextProvider.getNormalisationsNeeded().size() == 0)
+        if(nextProvider.getNormalisationUris().size() == 0)
         {
             return new ArrayList<NormalisationRule>(1);
         }
         else
         {
             return this.getNormalisationRulesForUris(
-                    nextProvider.getNormalisationsNeeded(),
+                    nextProvider.getNormalisationUris(),
                     sortOrder);
         }
     }
@@ -1912,7 +1912,7 @@ public class Settings
         final Collection<Provider> results = new HashSet<Provider>();
         for(final Provider nextProvider : knownProviders)
         {
-            if(nextProvider.handlesQueryExplicitly(customService))
+            if(nextProvider.containsQueryTypeUri(customService))
             {
                 results.add(nextProvider);
             }

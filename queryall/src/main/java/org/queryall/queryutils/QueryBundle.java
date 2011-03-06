@@ -263,7 +263,7 @@ public class QueryBundle
 			
 			originalProvider.toRdf(myRepository, originalProvider.getKey(), modelVersion);
 			
-			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(originalProvider.getNormalisationsNeeded(), Settings.LOWEST_ORDER_FIRST))
+			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(originalProvider.getNormalisationUris(), Settings.LOWEST_ORDER_FIRST))
 			{
 				nextRelevantRdfRule.toRdf(myRepository, nextRelevantRdfRule.getKey(), modelVersion);
 			}

@@ -75,7 +75,7 @@ public class SparqlQueryCreator
         
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 queryType.getTemplateString(), queryType, null,
-                nextProvider.getNormalisationsNeeded(),
+                nextProvider.getNormalisationUris(),
                 attributeList, includedProfiles);
     }
     
@@ -113,7 +113,7 @@ public class SparqlQueryCreator
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 includedQueryType.getOutputRdfXmlString(), originalQueryType,
                 includedQueryType,
-                nextProvider.getNormalisationsNeeded(),
+                nextProvider.getNormalisationUris(),
                 attributeList, includedProfiles);
     }
     
@@ -1601,7 +1601,7 @@ public class SparqlQueryCreator
         
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 replacementString, queryType, null,
-                nextProvider.getNormalisationsNeeded(),
+                nextProvider.getNormalisationUris(),
                 attributeList, includedProfiles);
     }
     
