@@ -106,6 +106,7 @@ public class QueryTypeImpl extends QueryType
     
     @SuppressWarnings("unused")
     private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
+    private boolean isDummyQueryType = false;
     
     private static URI queryTypeUri;
     private static URI queryTitle;
@@ -130,6 +131,7 @@ public class QueryTypeImpl extends QueryType
     
     private static URI queryInRobotsTxt;
     private static URI queryIsPageable;
+    private static URI queryIsDummyQueryType;
     private static URI queryNamespaceMatchAny;
     private static URI queryNamespaceMatchAll;
     
@@ -184,7 +186,7 @@ public class QueryTypeImpl extends QueryType
         setQueryTemplateTerm(f.createURI(queryNamespace+"includedQueryTemplate"));
         setQueryParameterTemplateTerm(f.createURI(queryNamespace+"includedQueryParameterTemplate"));
         setQueryStaticOutputTemplateTerm(f.createURI(queryNamespace+"includedStaticOutputTemplate"));
-        
+        setQueryIsDummyQueryType(f.createURI(queryNamespace+"isDummyQueryType"));
     }
     
     // returns true if the input variable is in the list of public input variables
@@ -468,6 +470,10 @@ public class QueryTypeImpl extends QueryType
             {
                 result.setIsPageable(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
+            else if(nextStatement.getPredicate().equals(getQueryIsDummyQueryType()))
+            {
+                result.setIsDummyQueryType(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
             else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
             {
                 result.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
@@ -549,6 +555,7 @@ public class QueryTypeImpl extends QueryType
             
             Literal inRobotsTxtLiteral = f.createLiteral(inRobotsTxt);
             Literal isPageableLiteral = f.createLiteral(isPageable);
+            Literal isDummyQueryTypeLiteral = f.createLiteral(isDummyQueryType);
             URI profileIncludeExcludeOrderLiteral = profileIncludeExcludeOrder;
             
             
@@ -592,7 +599,7 @@ public class QueryTypeImpl extends QueryType
             }
             con.add(queryInstanceUri, getQueryInRobotsTxt(), inRobotsTxtLiteral, queryInstanceUri);
             con.add(queryInstanceUri, getQueryIsPageable(), isPageableLiteral, queryInstanceUri);
-            
+            con.add(queryInstanceUri, getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, queryInstanceUri);
             
             con.add(queryInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral, queryInstanceUri);
             
@@ -769,6 +776,8 @@ public class QueryTypeImpl extends QueryType
             
             con.add(getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             
+            con.add(getQueryIsDummyQueryType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            
             con.add(getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             
             con.add(getQueryPublicIdentifierIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
@@ -931,7 +940,7 @@ public class QueryTypeImpl extends QueryType
     
     public boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck)
     {
-        if(handleAllNamespaces)
+        if(handleAllNamespaces && isNamespaceSpecific)
         {
             return true;
         }
@@ -943,7 +952,7 @@ public class QueryTypeImpl extends QueryType
     
     public boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck)
     {
-        if(namespacesToHandle == null || namespacesToCheck == null)
+        if(!isNamespaceSpecific || namespacesToHandle == null || namespacesToCheck == null)
         {
             return false;
         }
@@ -1231,6 +1240,16 @@ public class QueryTypeImpl extends QueryType
         this.namespacesToHandle = namespacesToHandle;
     }
 
+    public void addNamespaceToHandle(URI namespaceToHandle)
+    {
+        if(this.namespacesToHandle == null)
+        {
+            this.namespacesToHandle = new HashSet<URI>();
+        }
+        
+        this.namespacesToHandle.add(namespaceToHandle);
+    }
+        
     public URI getNamespaceMatchMethod()
     {
         return namespaceMatchMethod;
@@ -1618,6 +1637,30 @@ public class QueryTypeImpl extends QueryType
 	public static URI getQueryNamespaceMatchAll() {
 		return queryNamespaceMatchAll;
 	}
-    
-    
+
+    public boolean getIsDummyQueryType()
+    {
+        return this.isDummyQueryType;
+    }
+
+    public void setIsDummyQueryType(boolean isDummyQueryType)
+    {
+        this.isDummyQueryType = isDummyQueryType;
+    }
+
+    /**
+     * @param queryIsDummyQueryType the queryIsDummyQueryType to set
+     */
+    public static void setQueryIsDummyQueryType(URI queryIsDummyQueryType)
+    {
+        QueryTypeImpl.queryIsDummyQueryType = queryIsDummyQueryType;
+    }
+
+    /**
+     * @return the queryIsDummyQueryType
+     */
+    public static URI getQueryIsDummyQueryType()
+    {
+        return queryIsDummyQueryType;
+    }    
 }

@@ -3,7 +3,6 @@
  */
 package org.queryall.helpers;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
@@ -29,8 +28,11 @@ public class StringUtils
 {
     private static final Logger log = Logger.getLogger(StringUtils.class
             .getName());
+    @SuppressWarnings("unused")
     private static final boolean _TRACE = log.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
 

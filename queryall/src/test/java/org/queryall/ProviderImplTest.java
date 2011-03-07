@@ -14,6 +14,7 @@ import org.queryall.impl.ProviderImpl;
  */
 public class ProviderImplTest extends AbstractProviderTest
 {
+    @Override
     public Provider getNewTestProvider()
     {
         return new ProviderImpl();

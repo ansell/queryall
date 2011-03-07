@@ -77,7 +77,22 @@ public class RdfFetchController
     
     public boolean queryKnown()
     {
-        return queryBundles.size()  > 0;
+        if(queryBundles.size() == 0)
+        {
+            return false;
+        }
+        else
+        {
+            for(QueryBundle nextQueryBundle : queryBundles)
+            {
+                if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
+                {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
     
     private void initialise()

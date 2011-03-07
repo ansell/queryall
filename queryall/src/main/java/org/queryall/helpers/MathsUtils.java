@@ -17,8 +17,11 @@ public class MathsUtils
 {
     private static final Logger log = Logger.getLogger(StringUtils.class
             .getName());
+    @SuppressWarnings("unused")
     private static final boolean _TRACE = log.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
 

@@ -36,7 +36,6 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import org.queryall.*;
 import org.queryall.impl.*;
@@ -92,7 +91,7 @@ public class Settings
     public String SUBVERSION_INFO = null;
 
     public Collection<String> BASE_CONFIG_FILES = null;
-    public static String BASE_CONFIG_URI = null;
+    public String BASE_CONFIG_URI = null;
     public String BASE_CONFIG_MIME_FORMAT = null;
     
     private Repository currentConfigurationRepository = null;
@@ -128,11 +127,11 @@ public class Settings
         
         if(baseConfig == null)
         {
-        	log.error("Settings.init: baseConfig was null");
+        	log.debug("Settings.init: baseConfig was null");
         }
         else
         {
-        	log.error("Settings.init: baseConfig was not null");
+        	log.debug("Settings.init: baseConfig was not null");
         }
     }
     
@@ -910,7 +909,7 @@ public class Settings
         }
     }
     
-    public synchronized Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
+    public static Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
     {
         final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
         if(Settings._DEBUG)
