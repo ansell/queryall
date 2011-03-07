@@ -165,7 +165,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         queryBundles.add(nextQueryBundle);
         
-        RdfFetchController fetchController = new RdfFetchController(queryBundles);
+        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), queryBundles);
         
         try
         {

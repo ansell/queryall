@@ -920,7 +920,7 @@ public class RdfUtils
     
     public static Collection<QueryType> getQueryTypesForQueryBundles(Collection<QueryBundle> queryBundles, int modelVersion)
     {
-        RdfFetchController fetchController = new RdfFetchController(queryBundles);
+        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), queryBundles);
         
         try
         {
