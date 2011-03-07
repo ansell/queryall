@@ -932,7 +932,7 @@ public class RdfUtils
             // throw ie;
         }
         
-        Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.successfulResults;
+        Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
         
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;

@@ -56,7 +56,7 @@ public class SparqlQueryCreator
     public static String createQuery(QueryType queryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles)
+            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         final String queryString = attributeList.get("queryString");
         
@@ -76,7 +76,7 @@ public class SparqlQueryCreator
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 queryType.getTemplateString(), queryType, null,
                 nextProvider.getNormalisationUris(),
-                attributeList, includedProfiles);
+                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules);
     }
     
     /**
@@ -91,7 +91,7 @@ public class SparqlQueryCreator
             QueryType originalQueryType, QueryType includedQueryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles)
+            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         final String queryString = attributeList.get("queryString");
         
@@ -114,7 +114,7 @@ public class SparqlQueryCreator
                 includedQueryType.getOutputRdfXmlString(), originalQueryType,
                 includedQueryType,
                 nextProvider.getNormalisationUris(),
-                attributeList, includedProfiles);
+                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules);
     }
     
     public static String doReplacementsOnString(String queryString,
@@ -122,7 +122,7 @@ public class SparqlQueryCreator
             QueryType includedQueryType,
             Collection<URI> normalisationUrisNeeded,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles)
+            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         if(SparqlQueryCreator._DEBUG)
         {
@@ -808,8 +808,7 @@ public class SparqlQueryCreator
         
         for(final NormalisationRule nextRule : normalisationsNeeded)
         {
-            if(Settings.isRdfRuleUsedWithProfileList(nextRule.getKey(),
-                    nextRule.getProfileIncludeExcludeOrder(), includedProfiles))
+            if(nextRule.isRdfRuleUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
             {
                 endpointSpecificUri = (String)nextRule
                         .stageQueryVariables(endpointSpecificUri);
@@ -1518,14 +1517,16 @@ public class SparqlQueryCreator
     }
     
     /**
-     * @param basicRdfXml
      * @param normalisationRules An ordered list of normalisation rules that need to be applied to the input document
      * @param includedProfiles
+     * @param recogniseImplicitRdfRuleInclusions TODO
+     * @param includeNonProfileMatchedRdfRules TODO
+     * @param basicRdfXml
      * @return
      */
     public static Object normaliseByStage(URI stage, Object input,
             List<NormalisationRule> normalisationRules,
-            Collection<Profile> includedProfiles)
+            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         if(SparqlQueryCreator._TRACE)
         {
@@ -1539,8 +1540,7 @@ public class SparqlQueryCreator
         for(final NormalisationRule nextRule : normalisationRules)
         {
             // TODO: eliminate the reliance on the Settings class here by moving the method to a utilities class
-            if(Settings.isRdfRuleUsedWithProfileList(nextRule.getKey(),
-                    nextRule.getProfileIncludeExcludeOrder(), includedProfiles))
+            if(nextRule.isRdfRuleUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
             {
                 if(SparqlQueryCreator._TRACE)
                 {
@@ -1582,7 +1582,7 @@ public class SparqlQueryCreator
             String replacementString, QueryType queryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles)
+            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         final String queryString = attributeList.get("queryString");
         
@@ -1602,7 +1602,7 @@ public class SparqlQueryCreator
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 replacementString, queryType, null,
                 nextProvider.getNormalisationUris(),
-                attributeList, includedProfiles);
+                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules);
     }
     
     /**

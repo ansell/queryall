@@ -21,6 +21,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.NormalisationRule;
+import org.queryall.Profile;
 
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
@@ -602,7 +603,84 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         this.curationStatus = curationStatus;
     }
 
-	/**
+	public boolean isRdfRuleUsedWithProfileList(Collection<Profile> nextSortedProfileList, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+    {
+        for(final Profile nextProfile : nextSortedProfileList)
+        {
+            final int trueResult = nextProfile.usedWithRdfRule(this.getKey(), this.profileIncludeExcludeOrder);
+            if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
+            {
+                if(Settings._TRACE)
+                {
+                    Settings.log
+                            .trace("Settings.isRdfRuleUsedWithProfileList: found implicit include for rdfRuleUri="
+                                    + this.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                    // log.debug("Settings: this.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions")="+this.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions"));
+                }
+                if(recogniseImplicitRdfRuleInclusions)
+                {
+                    if(Settings._TRACE)
+                    {
+                        Settings.log
+                                .trace("Settings.isRdfRuleUsedWithProfileList: returning implicit include true for rdfRuleUri="
+                                        + this.getKey().stringValue()
+                                        + " profile="
+                                        + nextProfile.getKey().stringValue());
+                    }
+                    return true;
+                }
+                else if(Settings._TRACE)
+                {
+                    Settings.log
+                            .trace("Settings.isRdfRuleUsedWithProfileList: implicit include not recognised for rdfRuleUri="
+                                    + this.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+            }
+            else if(trueResult == ProfileImpl.SPECIFIC_INCLUDE)
+            {
+                if(Settings._TRACE)
+                {
+                    Settings.log
+                            .trace("Settings.isRdfRuleUsedWithProfileList: returning specific true for rdfRuleUri="
+                                    + this.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+                return true;
+            }
+            else if(trueResult == ProfileImpl.SPECIFIC_EXCLUDE)
+            {
+                if(Settings._TRACE)
+                {
+                    Settings.log
+                            .trace("Settings.isRdfRuleUsedWithProfileList: returning specific false for rdfRuleUri="
+                                    + this.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+                return false;
+            }
+        }
+        
+        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && includeNonProfileMatchedRdfRules);
+        
+        if(Settings._DEBUG)
+        {
+            // log.debug("Settings: this.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules")="+this.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+            Settings.log
+                    .debug("Settings.isRdfRuleUsedWithProfileList: returning no specific or implicit matches found returnValue="
+                            + returnValue
+                            + " for rdfRuleUri=" + this.getKey().stringValue());
+        }
+        
+        return returnValue;
+    }
+
+    /**
 	 * @param normalisationRuleTypeUri the normalisationRuleTypeUri to set
 	 */
 	public static void setNormalisationRuleTypeUri(
