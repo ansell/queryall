@@ -4,16 +4,8 @@ import java.util.Collection;
 
 import org.openrdf.model.URI;
 
-public abstract class Provider implements BaseQueryAllInterface, Comparable<Provider>
+public abstract class Provider implements BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface
 {
-    public abstract String getTitle();
-
-    public abstract void setTitle(String title);
-
-    public abstract URI getProfileIncludeExcludeOrder();
-    
-    public abstract void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder);
-    
     public abstract boolean getIsDefaultSource();
 
     public abstract void setIsDefaultSource(boolean isDefaultSource);
@@ -88,5 +80,16 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
     public abstract String getAcceptHeaderString();
     
     public abstract void setAcceptHeaderString(String acceptHeaderString);
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+
+        return result.toString();
+    }
 }
 

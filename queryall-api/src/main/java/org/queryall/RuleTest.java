@@ -12,10 +12,6 @@ public abstract class RuleTest implements BaseQueryAllInterface, Comparable<Rule
     
     public abstract void setStages(Collection<org.openrdf.model.URI> stages);
     
-    public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();
-    
-    public abstract void setProfileIncludeExcludeOrder(org.openrdf.model.URI profileIncludeExcludeOrder);
-    
     public abstract String getTestInputString();
 
     public abstract void setTestInputString(String testInputString);
@@ -23,5 +19,16 @@ public abstract class RuleTest implements BaseQueryAllInterface, Comparable<Rule
     public abstract String getTestOutputString();
 
     public abstract void setTestOutputString(String testOutputString);
+
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+
+        return result.toString();
+    }
 
 }

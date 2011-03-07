@@ -6,13 +6,14 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Statement;
 import java.util.Collection;
 
-@SuppressWarnings("unused")
 public interface BaseQueryAllInterface
 {
     /**
      * Changes the schema used to represent objects of this class into RDF, and inserts the relevant triples into myRepository
      **/
     //public static abstract boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException;
+    
+    //public abstract <T extends BaseQueryAllInterface> T fromRdf(Collection<Statement> relevantStatements, URI keyToUse, int modelVerson)  throws OpenRDFException;
     
     /**
      * Changes the object into RDF, and inserts the relevant triples into myRepository
@@ -57,8 +58,12 @@ public interface BaseQueryAllInterface
      * Returns the representation of the object as an XHTML marked up string for display only
      **/
     public abstract String toHtml();
-    
+        
     public abstract void addUnrecognisedStatement(Statement unrecognisedStatement);
     
     public abstract Collection<Statement> getUnrecognisedStatements();
+
+    public abstract void setTitle(String title);
+
+    public abstract String getTitle();
 }

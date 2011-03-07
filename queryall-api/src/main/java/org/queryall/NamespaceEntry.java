@@ -37,4 +37,14 @@ public abstract class NamespaceEntry implements BaseQueryAllInterface, Comparabl
     
     public abstract boolean getConvertQueriesToPreferredPrefix();
     
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+
+        return result.toString();
+    }
 }

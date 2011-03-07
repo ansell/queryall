@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-public abstract class QueryType implements BaseQueryAllInterface, Comparable<QueryType>
+public abstract class QueryType implements BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
     public abstract String getInputRegex();
     
@@ -21,10 +21,6 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
     public abstract void setHandleAllNamespaces(boolean handleAllNamespaces);
 
     public abstract List<String> matchesForQueryString(String queryString);
-    
-    public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();
-    
-    public abstract void setProfileIncludeExcludeOrder(org.openrdf.model.URI profileIncludeExcludeOrder);
     
     public abstract String getTemplateString();
     
@@ -96,6 +92,16 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
     
     public abstract void setIncludedStaticOutputTemplates(Collection<org.openrdf.model.URI> includedStaticOutputTemplates);
     
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+
+        return result.toString();
+    }
     
     
 }

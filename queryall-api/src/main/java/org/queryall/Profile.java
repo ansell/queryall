@@ -14,10 +14,6 @@ public abstract class Profile implements BaseQueryAllInterface, Comparable<Profi
     
     public abstract void setOrder(int order);
 
-    public abstract String getTitle();
-    
-    public abstract void setTitle(String title);
-    
     public abstract org.openrdf.model.URI getDefaultProfileIncludeExcludeOrder();
     
     public abstract void setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI defaultProfileIncludeExcludeOrder);
@@ -63,4 +59,14 @@ public abstract class Profile implements BaseQueryAllInterface, Comparable<Profi
     
     public abstract Collection<org.openrdf.model.URI> getExcludeRdfRules();
     
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+
+        return result.toString();
+    }
 }

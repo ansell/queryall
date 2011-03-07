@@ -3,12 +3,8 @@ package org.queryall;
 
 import java.util.Collection;
 
-public abstract class NormalisationRule implements BaseQueryAllInterface, Comparable<NormalisationRule>
+public abstract class NormalisationRule implements BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
 {
-    public abstract org.openrdf.model.URI getProfileIncludeExcludeOrder();
-    
-    public abstract void setProfileIncludeExcludeOrder(org.openrdf.model.URI profileIncludeExcludeOrder);
-
     public abstract int getOrder();
     
     public abstract void setOrder(int order);
@@ -37,23 +33,16 @@ public abstract class NormalisationRule implements BaseQueryAllInterface, Compar
 
     // public abstract boolean runTests(Collection<org.queryall.RuleTest> myRules);
     
-    public abstract String toHtml();
-    
-    public abstract String toHtmlFormBody();
-    
     @Override
     public String toString()
     {
-        String result = "\n";
+        StringBuilder result = new StringBuilder();
         
-        result += "key=" + this.getKey().stringValue() + "\n";
-        result += "order=" + this.getOrder() + "\n";
-        result += "description=" + this.getDescription() + "\n";
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+        result.append("order=").append(this.getOrder());
+        result.append("description=").append(this.getDescription());
         
-        return result;
+        return result.toString();
     }
-    
-
-    
-
 }
