@@ -1,6 +1,7 @@
 package org.queryall;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openrdf.model.URI;
 
@@ -49,6 +50,8 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
         return containsNamespaceUri(namespaceKey) || getIsDefaultSource();
     }
 
+    public abstract boolean isProviderUsedWithProfileList(List<Profile> nextSortedProfileList, boolean recogniseImplicitProviderInclusions, boolean includeNonProfileMatchedProviders);
+    
     @Override
     public String toString()
     {

@@ -31,6 +31,8 @@ public abstract class NormalisationRule implements BaseQueryAllInterface, Compar
 
     public abstract Object stageAfterResultsToDocument(Object input);
 
+    public abstract boolean isRdfRuleUsedWithProfileList(Collection<Profile> nextSortedProfileList, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules);
+    
     // public abstract boolean runTests(Collection<org.queryall.RuleTest> myRules);
     
     @Override
