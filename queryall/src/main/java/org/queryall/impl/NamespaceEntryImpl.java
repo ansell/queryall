@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.queryall.NamespaceEntry;
+import org.queryall.helpers.Constants;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
 import org.queryall.helpers.Settings;
@@ -50,6 +51,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes
     private boolean convertQueriesToPreferredPrefix = true;
+    private String title;
     
     private static URI namespaceTypeUri;
     private static URI namespaceAuthority;
@@ -190,7 +192,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
             
             con.add(getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             con.add(getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
             con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#label"), contextKeyUri);
             con.add(getNamespaceAlternativePrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(getNamespaceAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
@@ -246,6 +248,16 @@ public class NamespaceEntryImpl extends NamespaceEntry
         return this.getPreferredPrefix().compareTo(otherNamespace.getPreferredPrefix());
     }
     
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTitle()
+    {
+        return this.title;
+    }
+
     public Collection<String> getAlternativePrefixes()
     {
         return alternativePrefixes;

@@ -588,7 +588,7 @@ public class RdfFetchController
                     nextResult, 
                     Settings.getSettings().getSortedRulesForProvider( 
                         nextThread.originalQueryBundle.getProvider(), 
-                        Settings.HIGHEST_ORDER_FIRST ), 
+                        Constants.HIGHEST_ORDER_FIRST ), 
                     sortedIncludedProfiles );
                 
                 nextThread.normalisedResult = convertedResult;

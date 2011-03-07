@@ -50,6 +50,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     private Collection<URI> validStages = new ArrayList<URI>(7);
     
     private int order = 100;
+    private String title;
     
     private static URI normalisationRuleTypeUri;
     public static URI version2NormalisationRuleTypeUri;
@@ -487,6 +488,17 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         this.key = nextKey;
     }    
 
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTitle()
+    {
+        return this.title;
+    }
+
+    
     /**
      * @return the validStages
      */

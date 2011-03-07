@@ -48,6 +48,7 @@ public class RuleTestImpl extends RuleTest
     private String testOutputString = "";
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    private String title;
     
     
     private static URI ruletestTypeUri;
@@ -291,6 +292,17 @@ public class RuleTestImpl extends RuleTest
         
         return sb.toString();
     }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTitle()
+    {
+        return this.title;
+    }
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()

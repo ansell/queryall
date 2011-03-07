@@ -128,7 +128,7 @@ public class ProfileImpl extends Profile
             
             if(modelVersion == 1)
             {
-                con.add(getProfileTitle(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+                con.add(getProfileTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
             }
             
             con.add(getProfileOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
@@ -226,7 +226,7 @@ public class ProfileImpl extends Profile
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getProfileTitle()) || nextStatement.getPredicate().equals(Settings.getSettings().DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getProfileTitle()) || nextStatement.getPredicate().equals(Constants.DC_TITLE))
             {
                 result.setTitle(nextStatement.getObject().stringValue());
             }
@@ -361,7 +361,7 @@ public class ProfileImpl extends Profile
             }
             else
             {
-                con.add(profileInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, profileInstanceUri);
+                con.add(profileInstanceUri, Constants.DC_TITLE, titleLiteral, profileInstanceUri);
             }
             
             // log.info("About to add to the repository 3");

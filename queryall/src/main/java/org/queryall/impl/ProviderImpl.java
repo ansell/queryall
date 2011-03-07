@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
@@ -128,7 +129,7 @@ public class ProviderImpl extends Provider
             con.add(getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             if(modelVersion == 1)
             {
-                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
             }
             con.add(getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
@@ -197,8 +198,6 @@ public class ProviderImpl extends Provider
     // return providerInstanceUri;
     // }
     
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // throws a RuntimeException if the URI is not in the repository or the information is not enough to create a minimal provider configuration
     public static Provider fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         // TODO: change this line back to "Provider" when refactoring is almost complete
@@ -235,7 +234,7 @@ public class ProviderImpl extends Provider
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getProviderTitle()) || nextStatement.getPredicate().equals(f.createURI(Settings.DC_NAMESPACE+"title")))
+            else if(nextStatement.getPredicate().equals(getProviderTitle()) || nextStatement.getPredicate().equals(f.createURI(Constants.DC_NAMESPACE+"title")))
             {
                 result.setTitle(nextStatement.getObject().stringValue());
             }
@@ -371,7 +370,7 @@ public class ProviderImpl extends Provider
             
             con.add(providerInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, providerInstanceUri);
+            con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, providerInstanceUri);
             
             con.add(providerInstanceUri, getProviderResolutionStrategy(), redirectOrProxyLiteral, providerInstanceUri);
             

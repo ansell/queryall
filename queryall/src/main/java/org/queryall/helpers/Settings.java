@@ -66,52 +66,6 @@ public class Settings
     public static final int CONFIG_API_VERSION = 3;
     public static final String VERSION = getVersion();
     
-    public static final String CURRENT = "current";
-    public static final String URL_ENCODED = "urlEncoded";
-    public static final String PLUS_URL_ENCODED = "plusUrlEncoded";
-    public static final String INPUT_URL_ENCODED = "inputUrlEncoded";
-    public static final String INPUT_PLUS_URL_ENCODED = "inputPlusUrlEncoded";
-    public static final String XML_ENCODED = "xmlEncoded";
-    public static final String INPUT_XML_ENCODED = "inputXmlEncoded";
-    public static final String NTRIPLES_ENCODED = "ntriplesEncoded";
-    public static final String INPUT_NTRIPLES_ENCODED = "inputNTriplesEncoded";
-    public static final String LOWERCASE = "lowercase";
-    public static final String UPPERCASE = "uppercase";
-    public static final String PRIVATE_LOWERCASE = "privatelowercase";
-    public static final String PRIVATE_UPPERCASE = "privateuppercase";
-    
-    // These are used for sorting
-    public static final int LOWEST_ORDER_FIRST = 1;
-    public static final int HIGHEST_ORDER_FIRST = 2;
-    
-    public static final int SUBJECT = 1;
-    public static final int PREDICATE = 2;
-    public static final int OBJECT = 3;
-
-    public static final String STATISTICS_ITEM_PROFILES = "profiles";
-    public static final String STATISTICS_ITEM_SUCCESSFULPROVIDERS = "successfulproviders";
-    public static final String STATISTICS_ITEM_ERRORPROVIDERS = "errorproviders";
-    public static final String STATISTICS_ITEM_CONFIGLOCATIONS = "configlocations";
-    public static final String STATISTICS_ITEM_QUERYTYPES = "querytypes";
-    public static final String STATISTICS_ITEM_NAMESPACES = "namespaces";
-    public static final String STATISTICS_ITEM_CONFIGVERSION = "configversion";
-    public static final String STATISTICS_ITEM_READTIMEOUT = "readtimeout";
-    public static final String STATISTICS_ITEM_CONNECTTIMEOUT = "connecttimeout";
-    public static final String STATISTICS_ITEM_USERHOSTADDRESS = "userhostaddress";
-    public static final String STATISTICS_ITEM_USERAGENT = "useragent";
-    public static final String STATISTICS_ITEM_REALHOSTNAME = "realhostname";
-    public static final String STATISTICS_ITEM_QUERYSTRING = "querystring";
-    public static final String STATISTICS_ITEM_RESPONSETIME = "responsetime";
-    public static final String STATISTICS_ITEM_SUMLATENCY = "sumlatency";
-    public static final String STATISTICS_ITEM_SUMQUERIES = "sumqueries";
-    public static final String STATISTICS_ITEM_STDEVLATENCY = "stdevlatency";
-    public static final String STATISTICS_ITEM_SUMERRORS = "sumerrors";
-    public static final String STATISTICS_ITEM_SUMERRORLATENCY = "sumerrorlatency";
-    public static final String STATISTICS_ITEM_STDEVERRORLATENCY = "stdeverrorlatency";
-
-    public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
-    public URI DC_TITLE = null;
-    
     // These properties are pulled out of the queryall.properties file
     private String DEFAULT_ONTOLOGYTERMURI_PREFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX", "http://purl.org/queryall/");
     private String DEFAULT_ONTOLOGYTERMURI_SUFFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX", ":");
@@ -168,9 +122,7 @@ public class Settings
     
     public Settings(String baseConfigLocation)
     {
-        ValueFactory f = new MemValueFactory();
-        
-        DC_TITLE = f.createURI(DC_NAMESPACE+"title");
+        // Do a quick test on the base config file existence
         
         InputStream baseConfig = this.getClass().getResourceAsStream(baseConfigLocation);
         
@@ -1561,11 +1513,11 @@ public class Settings
             }
         }
         
-        if(nextSortOrder == Settings.LOWEST_ORDER_FIRST)
+        if(nextSortOrder == Constants.LOWEST_ORDER_FIRST)
         {
             Collections.sort(results);
         }
-        else if(nextSortOrder == Settings.HIGHEST_ORDER_FIRST)
+        else if(nextSortOrder == Constants.HIGHEST_ORDER_FIRST)
         {
             Collections.sort(results, Collections.reverseOrder());
         }
@@ -1700,11 +1652,11 @@ public class Settings
             results.addAll(getSortedRulesForProvider(nextProvider, sortOrder));
         }
         
-        if(sortOrder == Settings.HIGHEST_ORDER_FIRST)
+        if(sortOrder == Constants.HIGHEST_ORDER_FIRST)
         {
             Collections.sort(results, Collections.reverseOrder());
         }
-        else if(sortOrder == Settings.LOWEST_ORDER_FIRST)
+        else if(sortOrder == Constants.LOWEST_ORDER_FIRST)
         {
             Collections.sort(results);
         }
@@ -1746,7 +1698,7 @@ public class Settings
         {
             Settings.log.trace("Settings: rule sorting started");
         }
-        if(sortOrder == Settings.LOWEST_ORDER_FIRST)
+        if(sortOrder == Constants.LOWEST_ORDER_FIRST)
         {
             Collections.sort(results);
             
@@ -1788,7 +1740,7 @@ public class Settings
                 }
             } // end if(Settings._TRACE)
         }
-        else if(sortOrder == Settings.HIGHEST_ORDER_FIRST)
+        else if(sortOrder == Constants.HIGHEST_ORDER_FIRST)
         {
             Collections.sort(results, Collections.reverseOrder());
             
@@ -3271,7 +3223,7 @@ public class Settings
             
             if(nextRuleTest.getStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
             {
-                for(final NormalisationRule nextRule : this.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.LOWEST_ORDER_FIRST))
+                for(final NormalisationRule nextRule : this.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Constants.LOWEST_ORDER_FIRST))
                 {
                     nextInputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageQueryVariables(), nextTestInputString);
                 }
@@ -3311,7 +3263,7 @@ public class Settings
             {
                 String nextOutputTestResult = nextTestInputString;
                 
-                for(final NormalisationRule nextRule : this.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Settings.HIGHEST_ORDER_FIRST))
+                for(final NormalisationRule nextRule : this.getNormalisationRulesForUris(nextRuleTest.getRuleUris(), Constants.HIGHEST_ORDER_FIRST))
                 {
                     nextOutputTestResult = (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(), nextTestInputString);
                     

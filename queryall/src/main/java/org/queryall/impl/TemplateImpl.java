@@ -69,6 +69,7 @@ public class TemplateImpl extends Template
     private String contentType = "";
     
     private int order = 100;
+    private String title;
     
     private static URI templateTypeUri = null;
     
@@ -266,7 +267,7 @@ public class TemplateImpl extends Template
         try
         {
             URI contextKeyUri = f.createURI(keyToUse);
-            URI dcFormatUri = f.createURI(Settings.DC_NAMESPACE+"format");
+            URI dcFormatUri = f.createURI(Constants.DC_NAMESPACE+"format");
             
             con.setAutoCommit(false);
             
@@ -325,6 +326,16 @@ public class TemplateImpl extends Template
         String prefix = "template_";
         
         return sb.toString();
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getTitle()
+    {
+        return this.title;
     }
     
     /**

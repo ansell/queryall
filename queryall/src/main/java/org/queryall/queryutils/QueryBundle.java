@@ -21,6 +21,7 @@ import org.queryall.Provider;
 import org.queryall.QueryType;
 import org.queryall.Profile;
 
+import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 
 import org.apache.log4j.Logger;
@@ -263,7 +264,7 @@ public class QueryBundle
 			
 			originalProvider.toRdf(myRepository, originalProvider.getKey(), modelVersion);
 			
-			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(originalProvider.getNormalisationUris(), Settings.LOWEST_ORDER_FIRST))
+			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(originalProvider.getNormalisationUris(), Constants.LOWEST_ORDER_FIRST))
 			{
 				nextRelevantRdfRule.toRdf(myRepository, nextRelevantRdfRule.getKey(), modelVersion);
 			}

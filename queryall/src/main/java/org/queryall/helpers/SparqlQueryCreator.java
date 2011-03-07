@@ -336,82 +336,82 @@ public class SparqlQueryCreator
         }
         
         final List<String> inputUrlEncodeInstructions = new ArrayList<String>(1);
-        inputUrlEncodeInstructions.add(Settings.INPUT_URL_ENCODED);
+        inputUrlEncodeInstructions.add(Constants.INPUT_URL_ENCODED);
         
         final List<String> inputPlusUrlEncodeInstructions = new ArrayList<String>(1);
-        inputPlusUrlEncodeInstructions.add(Settings.INPUT_PLUS_URL_ENCODED);
+        inputPlusUrlEncodeInstructions.add(Constants.INPUT_PLUS_URL_ENCODED);
         
         final List<String> inputXmlEncodeInstructions = new ArrayList<String>(1);
-        inputXmlEncodeInstructions.add(Settings.INPUT_XML_ENCODED);
+        inputXmlEncodeInstructions.add(Constants.INPUT_XML_ENCODED);
         
         final List<String> inputNTriplesEncodeInstructions = new ArrayList<String>(
                 1);
-        inputNTriplesEncodeInstructions.add(Settings.INPUT_NTRIPLES_ENCODED);
+        inputNTriplesEncodeInstructions.add(Constants.INPUT_NTRIPLES_ENCODED);
         
         final List<String> xmlEncodeInstructions = new ArrayList<String>(1);
-        xmlEncodeInstructions.add(Settings.XML_ENCODED);
+        xmlEncodeInstructions.add(Constants.XML_ENCODED);
         
         final List<String> urlEncodeInstructions = new ArrayList<String>(1);
-        urlEncodeInstructions.add(Settings.URL_ENCODED);
+        urlEncodeInstructions.add(Constants.URL_ENCODED);
         
         final List<String> plusUrlEncodeInstructions = new ArrayList<String>(1);
-        plusUrlEncodeInstructions.add(Settings.PLUS_URL_ENCODED);
+        plusUrlEncodeInstructions.add(Constants.PLUS_URL_ENCODED);
         
         final List<String> ntriplesEncodeInstructions = new ArrayList<String>(1);
-        ntriplesEncodeInstructions.add(Settings.NTRIPLES_ENCODED);
+        ntriplesEncodeInstructions.add(Constants.NTRIPLES_ENCODED);
         
         final List<String> lowercaseInstructions = new ArrayList<String>(1);
-        lowercaseInstructions.add(Settings.LOWERCASE);
+        lowercaseInstructions.add(Constants.LOWERCASE);
         
         // NOTE: make sure that LOWERCASE is added before INPUT_URL_ENCODED as
         // we always want uppercase URL encoded %FF character patterns to match
         // against the database
         final List<String> inputUrlEncodedlowercaseInstructions = new ArrayList<String>(
                 1);
-        inputUrlEncodedlowercaseInstructions.add(Settings.LOWERCASE);
-        inputUrlEncodedlowercaseInstructions.add(Settings.INPUT_URL_ENCODED);
+        inputUrlEncodedlowercaseInstructions.add(Constants.LOWERCASE);
+        inputUrlEncodedlowercaseInstructions.add(Constants.INPUT_URL_ENCODED);
         
         final List<String> inputXmlEncodedlowercaseInstructions = new ArrayList<String>(
                 1);
-        inputXmlEncodedlowercaseInstructions.add(Settings.LOWERCASE);
-        inputXmlEncodedlowercaseInstructions.add(Settings.INPUT_XML_ENCODED);
+        inputXmlEncodedlowercaseInstructions.add(Constants.LOWERCASE);
+        inputXmlEncodedlowercaseInstructions.add(Constants.INPUT_XML_ENCODED);
         
         final List<String> inputUrlEncodedprivatelowercaseInstructions = new ArrayList<String>(
                 1);
         inputUrlEncodedprivatelowercaseInstructions
-                .add(Settings.PRIVATE_LOWERCASE);
+                .add(Constants.PRIVATE_LOWERCASE);
         inputUrlEncodedprivatelowercaseInstructions
-                .add(Settings.INPUT_URL_ENCODED);
+                .add(Constants.INPUT_URL_ENCODED);
         
         final List<String> inputXmlEncodedprivatelowercaseInstructions = new ArrayList<String>(1);
         inputXmlEncodedprivatelowercaseInstructions
-                .add(Settings.PRIVATE_LOWERCASE);
+                .add(Constants.PRIVATE_LOWERCASE);
         inputXmlEncodedprivatelowercaseInstructions
-                .add(Settings.INPUT_XML_ENCODED);
+                .add(Constants.INPUT_XML_ENCODED);
         
         final List<String> uppercaseInstructions = new ArrayList<String>(1);
-        uppercaseInstructions.add(Settings.UPPERCASE);
+        uppercaseInstructions.add(Constants.UPPERCASE);
         
         final List<String> inputUrlEncodeduppercaseInstructions = new ArrayList<String>(
                 2);
-        inputUrlEncodeduppercaseInstructions.add(Settings.UPPERCASE);
-        inputUrlEncodeduppercaseInstructions.add(Settings.INPUT_URL_ENCODED);
+        inputUrlEncodeduppercaseInstructions.add(Constants.UPPERCASE);
+        inputUrlEncodeduppercaseInstructions.add(Constants.INPUT_URL_ENCODED);
         
         final List<String> inputXmlEncodeduppercaseInstructions = new ArrayList<String>(
                 2);
-        inputXmlEncodeduppercaseInstructions.add(Settings.UPPERCASE);
-        inputXmlEncodeduppercaseInstructions.add(Settings.INPUT_XML_ENCODED);
+        inputXmlEncodeduppercaseInstructions.add(Constants.UPPERCASE);
+        inputXmlEncodeduppercaseInstructions.add(Constants.INPUT_XML_ENCODED);
         
         final List<String> inputUrlEncodedprivateuppercaseInstructions = new ArrayList<String>(
                 2);
         inputUrlEncodedprivateuppercaseInstructions
-                .add(Settings.PRIVATE_UPPERCASE);
+                .add(Constants.PRIVATE_UPPERCASE);
         inputUrlEncodedprivateuppercaseInstructions
-                .add(Settings.INPUT_URL_ENCODED);
+                .add(Constants.INPUT_URL_ENCODED);
         
         final List<String> inputXmlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
-        inputXmlEncodedprivateuppercaseInstructions.add(Settings.PRIVATE_UPPERCASE);
-        inputXmlEncodedprivateuppercaseInstructions.add(Settings.INPUT_XML_ENCODED);
+        inputXmlEncodedprivateuppercaseInstructions.add(Constants.PRIVATE_UPPERCASE);
+        inputXmlEncodedprivateuppercaseInstructions.add(Constants.INPUT_XML_ENCODED);
         
         String inputUrlEncoded_normalisedStandardUri = normalisedStandardUri;
         
@@ -772,7 +772,7 @@ public class SparqlQueryCreator
         
         final Collection<NormalisationRule> normalisationsNeeded = Settings
                 .getSettings().getNormalisationRulesForUris(normalisationUrisNeeded,
-                        Settings.LOWEST_ORDER_FIRST);
+                        Constants.LOWEST_ORDER_FIRST);
         
         String endpointSpecificUri = normalisedStandardUri;
         String endpointSpecificQueryUri = normalisedQueryUri;
@@ -1368,43 +1368,43 @@ public class SparqlQueryCreator
             // happens, in the order that the list has been constructed in
             for(final String specialInstruction : specialInstructions)
             {
-                if(specialInstruction.equals(Settings.INPUT_URL_ENCODED))
+                if(specialInstruction.equals(Constants.INPUT_URL_ENCODED))
                 {
                     inputReplaceString = StringUtils
                             .percentEncode(inputReplaceString);
                 }
-                else if(specialInstruction.equals(Settings.INPUT_PLUS_URL_ENCODED))
+                else if(specialInstruction.equals(Constants.INPUT_PLUS_URL_ENCODED))
                 {
                     inputReplaceString = StringUtils
                             .plusPercentEncode(inputReplaceString);
                 }
-                else if(specialInstruction.equals(Settings.INPUT_XML_ENCODED))
+                else if(specialInstruction.equals(Constants.INPUT_XML_ENCODED))
                 {
                     inputReplaceString = StringUtils
                             .xmlEncodeString(inputReplaceString);
                 }
                 else if(specialInstruction
-                        .equals(Settings.INPUT_NTRIPLES_ENCODED))
+                        .equals(Constants.INPUT_NTRIPLES_ENCODED))
                 {
                     inputReplaceString = StringUtils
                             .ntriplesEncode(inputReplaceString);
                 }
-                else if(specialInstruction.equals(Settings.LOWERCASE))
+                else if(specialInstruction.equals(Constants.LOWERCASE))
                 {
                     inputReplaceString = inputReplaceString.toLowerCase();
                 }
-                else if(specialInstruction.equals(Settings.UPPERCASE))
+                else if(specialInstruction.equals(Constants.UPPERCASE))
                 {
                     inputReplaceString = inputReplaceString.toUpperCase();
                 }
-                else if(specialInstruction.equals(Settings.PRIVATE_LOWERCASE))
+                else if(specialInstruction.equals(Constants.PRIVATE_LOWERCASE))
                 {
                     if(!isPublic)
                     {
                         inputReplaceString = inputReplaceString.toLowerCase();
                     }
                 }
-                else if(specialInstruction.equals(Settings.PRIVATE_UPPERCASE))
+                else if(specialInstruction.equals(Constants.PRIVATE_UPPERCASE))
                 {
                     if(!isPublic)
                     {

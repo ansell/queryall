@@ -324,7 +324,7 @@ public class QueryTypeImpl extends QueryType
             {
                 result.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getQueryTitle()) || nextStatement.getPredicate().equals(Settings.getSettings().DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getQueryTitle()) || nextStatement.getPredicate().equals(Constants.DC_TITLE))
             {
                 result.setTitle(nextStatement.getObject().stringValue());
             }
@@ -575,7 +575,7 @@ public class QueryTypeImpl extends QueryType
             }
             else
             {
-                con.add(queryInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, queryInstanceUri);
+                con.add(queryInstanceUri, Constants.DC_TITLE, titleLiteral, queryInstanceUri);
             }
             
             con.add(queryInstanceUri, getQueryHandleAllNamespaces(), handleAllNamespacesLiteral, queryInstanceUri);
@@ -733,7 +733,7 @@ public class QueryTypeImpl extends QueryType
             
             if(modelVersion == 1)
             {
-                con.add(getQueryTitle(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+                con.add(getQueryTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
             }
             
             con.add(getQueryHandleAllNamespaces(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);

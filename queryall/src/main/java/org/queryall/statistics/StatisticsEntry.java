@@ -1569,5 +1569,14 @@ public class StatisticsEntry implements BaseQueryAllInterface
         return unrecognisedStatements;
     }
 
+    public void setTitle(String title)
+    {
+    }
+
+    public String getTitle()
+    {
+        return null;
+    }
+
     
 }

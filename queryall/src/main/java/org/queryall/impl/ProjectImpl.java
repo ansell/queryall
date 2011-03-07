@@ -99,7 +99,7 @@ public class ProjectImpl extends Project
             {
                 result.setAuthority((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getProjectTitle()) || nextStatement.getPredicate().equals(Settings.getSettings().DC_TITLE))
+            else if(nextStatement.getPredicate().equals(getProjectTitle()) || nextStatement.getPredicate().equals(Constants.DC_TITLE))
             {
                 if(result.getTitle().equals(""))
                     result.setTitle(nextStatement.getObject().stringValue());
@@ -142,7 +142,7 @@ public class ProjectImpl extends Project
             
             con.add(getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             con.add(getProjectTitle(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI(Settings.DC_NAMESPACE+"title"), contextKeyUri);
+            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
             con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#label"), contextKeyUri);
             con.add(getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(getProjectDescription(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
@@ -219,7 +219,7 @@ public class ProjectImpl extends Project
             }
             else
             {
-                con.add(projectInstanceUri, Settings.getSettings().DC_TITLE, titleLiteral, projectInstanceUri);
+                con.add(projectInstanceUri, Constants.DC_TITLE, titleLiteral, projectInstanceUri);
             }
             con.add(projectInstanceUri, getProjectDescription(), descriptionLiteral, projectInstanceUri);
             
@@ -288,6 +288,7 @@ public class ProjectImpl extends Project
     {
         return "";
     }
+
     
     /**
      * @return the key
