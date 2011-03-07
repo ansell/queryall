@@ -49,6 +49,17 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
         return containsNamespaceUri(namespaceKey) || getIsDefaultSource();
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder result = new StringBuilder();
+        
+        result.append("title=").append(this.getTitle());
+        result.append("key=").append(this.getKey().stringValue());
+
+        return result.toString();
+    }
+
     // TODO XXX FIXME: migrate the following methods to separate interfaces based on the type of provider they are relevant to 
 
     public abstract boolean isHttpGetUrl();
@@ -81,15 +92,5 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
     
     public abstract void setAcceptHeaderString(String acceptHeaderString);
     
-    @Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("title=").append(this.getTitle());
-        result.append("key=").append(this.getKey().stringValue());
-
-        return result.toString();
-    }
 }
 

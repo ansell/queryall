@@ -1,6 +1,5 @@
 package org.queryall;
 
-import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestCase;
 
 import org.junit.After;
@@ -119,7 +118,14 @@ public abstract class AbstractProviderTest
         assertFalse(providerNonDefault.containsNamespaceUri(testFalseNamespaceUri));
         assertFalse(providerNoNamespacesDefault.containsNamespaceUri(testTrueNamespaceUri));
         assertFalse(providerNoNamespacesDefault.containsNamespaceUri(testFalseNamespaceUri));
-
+    }
+    
+    /**
+     * Test method for {@link org.queryall.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}.
+     */
+    @Test
+    public void testContainsNamespaceOrDefault()
+    {
         assertTrue(providerSpecificDefault.containsNamespaceOrDefault(testTrueNamespaceUri));
         assertTrue(providerSpecificDefault.containsNamespaceOrDefault(testFalseNamespaceUri));
         assertTrue(providerNonDefault.containsNamespaceOrDefault(testTrueNamespaceUri));
