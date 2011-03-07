@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
+import org.openrdf.model.URI;
+
 public abstract class QueryType implements BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
     public abstract String getInputRegex();
@@ -40,10 +42,6 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
     
     public abstract boolean isInputVariablePublic(int inputVariableIndex);
 
-    public abstract void setTitle(String title);
-    
-    public abstract String getTitle();
-
     public abstract void setIncludeDefaults(boolean includeDefaults);
     
     public abstract boolean getIncludeDefaults();
@@ -56,21 +54,27 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract boolean getIsPageable();
 
-    public abstract Collection<org.openrdf.model.URI> getSemanticallyLinkedQueryTypes();
+    public abstract boolean getIsDummyQueryType();    
     
-    public abstract void setSemanticallyLinkedQueryTypes(Collection<org.openrdf.model.URI> semanticallyLinkedQueryTypes);
+    public abstract void setIsDummyQueryType(boolean isDummyQueryType);    
+
+    public abstract Collection<URI> getSemanticallyLinkedQueryTypes();
     
-    public abstract Collection<org.openrdf.model.URI> getNamespacesToHandle();
+    public abstract void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedQueryTypes);
     
-    public abstract void setNamespacesToHandle(Collection<org.openrdf.model.URI> namespacesToHandle);
+    public abstract Collection<URI> getNamespacesToHandle();
     
-    public abstract org.openrdf.model.URI getNamespaceMatchMethod();
+    public abstract void setNamespacesToHandle(Collection<URI> namespacesToHandle);
     
-    public abstract void setNamespaceMatchMethod(org.openrdf.model.URI namespaceMatchMethod);
+    public abstract void addNamespaceToHandle(URI namespaceToHandle);
     
-    public abstract boolean handlesNamespaceUris(Collection<Collection<org.openrdf.model.URI>> namespacesToCheck);
+    public abstract URI getNamespaceMatchMethod();
     
-    public abstract boolean handlesNamespacesSpecifically(Collection<Collection<org.openrdf.model.URI>> namespacesToCheck);
+    public abstract void setNamespaceMatchMethod(URI namespaceMatchMethod);
+    
+    public abstract boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
+    
+    public abstract boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
 
     public abstract void setPublicIdentifierIndexes(int[] publicIdentifierIndexes);
 
@@ -80,17 +84,17 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract int[] getNamespaceInputIndexes();
 
-    public abstract Collection<org.openrdf.model.URI> getIncludedQueryTemplates();
+    public abstract Collection<URI> getIncludedQueryTemplates();
     
-    public abstract void setIncludedQueryTemplates(Collection<org.openrdf.model.URI> includedQueryTemplates);
+    public abstract void setIncludedQueryTemplates(Collection<URI> includedQueryTemplates);
     
-    public abstract Collection<org.openrdf.model.URI> getIncludedQueryParameters();
+    public abstract Collection<URI> getIncludedQueryParameters();
     
-    public abstract void setIncludedQueryParameters(Collection<org.openrdf.model.URI> includedQueryParameters);
+    public abstract void setIncludedQueryParameters(Collection<URI> includedQueryParameters);
     
-    public abstract Collection<org.openrdf.model.URI> getIncludedStaticOutputTemplates();
+    public abstract Collection<URI> getIncludedStaticOutputTemplates();
     
-    public abstract void setIncludedStaticOutputTemplates(Collection<org.openrdf.model.URI> includedStaticOutputTemplates);
+    public abstract void setIncludedStaticOutputTemplates(Collection<URI> includedStaticOutputTemplates);
     
     @Override
     public String toString()
@@ -102,6 +106,4 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
         return result.toString();
     }
-    
-    
 }
