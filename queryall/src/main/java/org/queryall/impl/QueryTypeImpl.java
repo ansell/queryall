@@ -1704,7 +1704,9 @@ public class QueryTypeImpl extends QueryType
             }
         }
         
-        boolean returnValue = (profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && includeNonProfileMatchedQueries);
+        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) 
+                || this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
+                && includeNonProfileMatchedQueries;
         
         if(Settings._DEBUG)
         {

@@ -1357,14 +1357,18 @@ public class ProviderImpl extends Provider
                 }
                 return false;
             }
+            
+            
         }
         
-        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && includeNonProfileMatchedProviders);
+        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) 
+                            || this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
+                            && includeNonProfileMatchedProviders;
         
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.isProviderUsedWithProfileList: returning no matches found returnValue="
+                    .debug("ProviderImpl.isProviderUsedWithProfileList: returning no matches found returnValue="
                             + returnValue
                             + " for providerUri=" + this.getKey().stringValue());
         }

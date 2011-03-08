@@ -43,7 +43,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     private String description;
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
-    private URI profileIncludeExcludeOrder;
+    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     private Collection<URI> relatedNamespaces;
     
     protected Collection<URI> stages = new ArrayList<URI>(2);
@@ -666,7 +666,9 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
             }
         }
         
-        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) && includeNonProfileMatchedRdfRules);
+        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) 
+                || this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
+                && includeNonProfileMatchedRdfRules;
         
         if(Settings._DEBUG)
         {
