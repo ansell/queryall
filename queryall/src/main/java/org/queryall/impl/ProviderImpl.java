@@ -468,11 +468,150 @@ public class ProviderImpl extends Provider
     
     public boolean equals(Provider otherProvider)
     {
-        // For simplicity, we do this based on the key which we presume people set differently for different providers!
-        // TODO: enable an exact distinction by normalising the order of each property set and checking if they exactly match
         return this.getKey().equals(otherProvider.getKey());
     }
     
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((acceptHeaderString == null) ? 0 : acceptHeaderString
+                        .hashCode());
+        result = prime * result
+                + ((curationStatus == null) ? 0 : curationStatus.hashCode());
+        result = prime * result
+                + ((endpointMethod == null) ? 0 : endpointMethod.hashCode());
+        result = prime * result
+                + ((endpointUrls == null) ? 0 : endpointUrls.hashCode());
+        result = prime
+                * result
+                + ((includedInQueryTypes == null) ? 0 : includedInQueryTypes
+                        .hashCode());
+        result = prime * result + (isDefaultSourceVar ? 1231 : 1237);
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result
+                + ((namespaces == null) ? 0 : namespaces.hashCode());
+        result = prime
+                * result
+                + ((profileIncludeExcludeOrder == null) ? 0
+                        : profileIncludeExcludeOrder.hashCode());
+        result = prime
+                * result
+                + ((rdfNormalisationsNeeded == null) ? 0
+                        : rdfNormalisationsNeeded.hashCode());
+        result = prime * result
+                + ((redirectOrProxy == null) ? 0 : redirectOrProxy.hashCode());
+        result = prime * result
+                + ((sparqlGraphUri == null) ? 0 : sparqlGraphUri.hashCode());
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + (useSparqlGraph ? 1231 : 1237);
+        return result;
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ProviderImpl other = (ProviderImpl) obj;
+        if (key == null)
+        {
+            if (other.key != null)
+                return false;
+        }
+        else if (!key.equals(other.key))
+            return false;
+
+        if (acceptHeaderString == null)
+        {
+            if (other.acceptHeaderString != null)
+                return false;
+        }
+        else if (!acceptHeaderString.equals(other.acceptHeaderString))
+            return false;
+        if (curationStatus == null)
+        {
+            if (other.curationStatus != null)
+                return false;
+        }
+        else if (!curationStatus.equals(other.curationStatus))
+            return false;
+        if (endpointMethod == null)
+        {
+            if (other.endpointMethod != null)
+                return false;
+        }
+        else if (!endpointMethod.equals(other.endpointMethod))
+            return false;
+        if (endpointUrls == null)
+        {
+            if (other.endpointUrls != null)
+                return false;
+        }
+        else if (!endpointUrls.equals(other.endpointUrls))
+            return false;
+        if (includedInQueryTypes == null)
+        {
+            if (other.includedInQueryTypes != null)
+                return false;
+        }
+        else if (!includedInQueryTypes.equals(other.includedInQueryTypes))
+            return false;
+        if (isDefaultSourceVar != other.isDefaultSourceVar)
+            return false;
+        if (namespaces == null)
+        {
+            if (other.namespaces != null)
+                return false;
+        }
+        else if (!namespaces.equals(other.namespaces))
+            return false;
+        if (profileIncludeExcludeOrder == null)
+        {
+            if (other.profileIncludeExcludeOrder != null)
+                return false;
+        }
+        else if (!profileIncludeExcludeOrder
+                .equals(other.profileIncludeExcludeOrder))
+            return false;
+        if (rdfNormalisationsNeeded == null)
+        {
+            if (other.rdfNormalisationsNeeded != null)
+                return false;
+        }
+        else if (!rdfNormalisationsNeeded.equals(other.rdfNormalisationsNeeded))
+            return false;
+        if (redirectOrProxy == null)
+        {
+            if (other.redirectOrProxy != null)
+                return false;
+        }
+        else if (!redirectOrProxy.equals(other.redirectOrProxy))
+            return false;
+        if (sparqlGraphUri == null)
+        {
+            if (other.sparqlGraphUri != null)
+                return false;
+        }
+        else if (!sparqlGraphUri.equals(other.sparqlGraphUri))
+            return false;
+        if (title == null)
+        {
+            if (other.title != null)
+                return false;
+        }
+        else if (!title.equals(other.title))
+            return false;
+        if (useSparqlGraph != other.useSparqlGraph)
+            return false;
+        return true;
+    }
+
     public int compareTo(Provider otherProvider)
     {
         @SuppressWarnings("unused")
