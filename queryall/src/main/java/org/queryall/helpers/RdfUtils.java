@@ -156,7 +156,7 @@ public class RdfUtils
             if(nsAndIdList.size() == 2)
             {
                 endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nsAndIdList.get(1)));
-                nextQueryBundle.queryEndpoint = hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nsAndIdList.get(1));
+                nextQueryBundle.setQueryEndpoint(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nsAndIdList.get(1)));
             }
         // }
         // else
@@ -210,7 +210,7 @@ public class RdfUtils
         dummyProvider.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
-        nextQueryBundle.originalProvider = dummyProvider;
+        nextQueryBundle.setOriginalProvider(dummyProvider);
         
         
         QueryType dummyQuery = new QueryTypeImpl();

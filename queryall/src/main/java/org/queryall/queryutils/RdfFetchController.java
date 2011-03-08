@@ -79,10 +79,15 @@ public class RdfFetchController
         
         for(QueryBundle nextQueryBundle : queryBundles)
         {
-            results.add(nextQueryBundle.originalProvider);
+            results.add(nextQueryBundle.getOriginalProvider());
         }
         
         return results;
+    }
+    
+    private void setQueryBundles(Collection<QueryBundle> queryBundles)
+    {
+        this.queryBundles = queryBundles;
     }
     
     public Collection<QueryBundle> getQueryBundles()
@@ -184,8 +189,8 @@ public class RdfFetchController
                     }
                 } // end if(_DEBUG}
                 
-                generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
-                        chosenProviders);
+                this.setQueryBundles(generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
+                        chosenProviders, localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider")));
             } // end for(QueryType nextQueryType : allCustomQueries)
         } // end if(queryBundles == null)
         
@@ -207,7 +212,7 @@ public class RdfFetchController
         // queryBundles = multiProviderQueryBundles;
         // return multiProviderQueryBundles;
         
-        generateFetchThreadsFromQueryBundles();
+        this.setFetchThreadGroup(generateFetchThreadsFromQueryBundles(this.queryBundles, localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")));
         
         if( _DEBUG )
         {
@@ -223,9 +228,12 @@ public class RdfFetchController
      * @param nextQueryType
      * @param chosenProviders
      */
-    private void generateQueryBundlesForQueryTypeAndProviders(
-            QueryType nextQueryType, Collection<Provider> chosenProviders)
+    private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
+            QueryType nextQueryType, Collection<Provider> chosenProviders, boolean useAllEndpointsForEachProvider)
     {
+        Collection<QueryBundle> results = new HashSet<QueryBundle>();
+        
+        
         for( Provider nextProvider : chosenProviders )
         {
             if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
@@ -249,12 +257,12 @@ public class RdfFetchController
                 
                 QueryBundle nextProviderQueryBundle = new QueryBundle();
                 
-                nextProviderQueryBundle.staticRdfXmlString = nextStaticRdfXmlString;
+                nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
                 nextProviderQueryBundle.setProvider(nextProvider);
                 nextProviderQueryBundle.setQueryType(nextQueryType);
-                nextProviderQueryBundle.relevantProfiles = sortedIncludedProfiles;
+                nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
                 
-                queryBundles.add( nextProviderQueryBundle );
+                results.add( nextProviderQueryBundle );
             }
             // check if there is an endpoint, as we allow for providers which are really placeholders for static RDF/XML additions, and they are configured without endpoint URL's and with NO_COMMUNICATION
             else if( nextProvider.hasEndpointUrl() )
@@ -270,7 +278,7 @@ public class RdfFetchController
                                         .replace( "${defaultSeparator}",localSettings.getStringPropertyFromConfig("separator") )
                                         .replace( "${offset}",pageOffset+"" );
                     
-                    // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements before using it in the attribute list
+                    // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint = SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
                     
                     attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, replacedEndpoint, realHostName, pageOffset );
@@ -305,18 +313,18 @@ public class RdfFetchController
                         
                         QueryBundle nextProviderQueryBundle = new QueryBundle();
                         
-                        nextProviderQueryBundle.query = nextEndpointQuery;
-                        nextProviderQueryBundle.staticRdfXmlString = nextStaticRdfXmlString;
-                        nextProviderQueryBundle.queryEndpoint = replacedEndpoint;
-                        nextProviderQueryBundle.originalEndpointString = nextEndpoint;
-                        nextProviderQueryBundle.originalProvider = nextProvider;
+                        nextProviderQueryBundle.setQuery(nextEndpointQuery);
+                        nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+                        nextProviderQueryBundle.setQueryEndpoint(replacedEndpoint);
+                        nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
+                        nextProviderQueryBundle.setOriginalProvider(nextProvider);
                         nextProviderQueryBundle.setQueryType(nextQueryType);
-                        nextProviderQueryBundle.relevantProfiles = sortedIncludedProfiles;
+                        nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
                         
-                        queryBundles.add( nextProviderQueryBundle );
+                        results.add( nextProviderQueryBundle );
                         
                         // go to next provider if we are not told to use all of the providers possible
-                        if( !localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"))
+                        if( !useAllEndpointsForEachProvider)
                         {
                             break;
                         }
@@ -328,59 +336,63 @@ public class RdfFetchController
                 log.warn("RdfFetchController: no endpoint URL's found for non-nocommunication provider.getKey()="+nextProvider.getKey());
             }
         } // end for(Provider nextProvider : QueryTypeProviders)
+        
+        return results;
     }
 
-    private void generateFetchThreadsFromQueryBundles()
+    private Collection<RdfFetcherQueryRunnable> generateFetchThreadsFromQueryBundles(Collection<QueryBundle> nextQueryBundles, int pageoffsetIndividualQueryLimit)
     {
-        for( QueryBundle nextBundle : queryBundles )
+        Collection<RdfFetcherQueryRunnable> results = new LinkedList<RdfFetcherQueryRunnable>();
+        
+        for( QueryBundle nextBundle : nextQueryBundles )
         {
-            String nextEndpoint = nextBundle.queryEndpoint;
-            String nextQuery = nextBundle.query;
+            String nextEndpoint = nextBundle.getQueryEndpoint();
+            String nextQuery = nextBundle.getQuery();
             
             if( _DEBUG )
             {
-                log.debug( "RdfFetchController.initialise:: About to create a thread for query on endpoint="+nextEndpoint+" query=" + nextQuery + " provider="+nextBundle.originalProvider.getKey());
+                log.debug( "RdfFetchController.initialise:: About to create a thread for query on endpoint="+nextEndpoint+" query=" + nextQuery + " provider="+nextBundle.getOriginalProvider().getKey());
             }
             
             RdfFetcherQueryRunnable nextThread = null;
             
             boolean addToFetchQueue = false;
             
-            if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.getProviderHttpPostSparql() ) )
+            if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderHttpPostSparql() ) )
             {
                 nextThread = new RdfFetcherSparqlQueryRunnable( nextEndpoint,
-                             nextBundle.originalProvider.getSparqlGraphUri(),
+                             nextBundle.getOriginalProvider().getSparqlGraphUri(),
                              returnFileFormat,
                              nextQuery,
                              "off",
-                             nextBundle.originalProvider.getAcceptHeaderString(),
-                             localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"),
+                             nextBundle.getOriginalProvider().getAcceptHeaderString(),
+                             pageoffsetIndividualQueryLimit,
                              nextBundle );
                              
                 addToFetchQueue = true;
                 
                 if(_TRACE)
                 {
-                    log.trace("RdfFetchController.initialise: created HTTP POST SPARQL query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.originalProvider.getKey());
+                    log.trace("RdfFetchController.initialise: created HTTP POST SPARQL query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
                 }
             }
-            else if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.getProviderHttpGetUrl() ) )
+            else if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderHttpGetUrl() ) )
             {
                 nextThread = new RdfFetcherUriQueryRunnable( nextEndpoint,
                              returnFileFormat,
                              nextQuery,
                              "off",
-                             nextBundle.originalProvider.getAcceptHeaderString(),
+                             nextBundle.getOriginalProvider().getAcceptHeaderString(),
                              nextBundle );
                              
                 addToFetchQueue = true;
                 
                 if(_TRACE)
                 {
-                    log.trace("RdfFetchController.initialise: created HTTP GET query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.originalProvider.getKey());
+                    log.trace("RdfFetchController.initialise: created HTTP GET query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
                 }
             }
-            else if( nextBundle.originalProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
+            else if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
             {
                 if(_TRACE)
                 {
@@ -393,20 +405,20 @@ public class RdfFetchController
             {
                 addToFetchQueue = false;
                 
-                log.warn( "RdfFetchController.initialise: endpointMethod did not match any known values. Not adding endpointMethod="+nextBundle.originalProvider.getEndpointMethod().stringValue() + " providerConfig="+nextBundle.originalProvider.getKey().stringValue() );
+                log.warn( "RdfFetchController.initialise: endpointMethod did not match any known values. Not adding endpointMethod="+nextBundle.getOriginalProvider().getEndpointMethod().stringValue() + " providerConfig="+nextBundle.getOriginalProvider().getKey().stringValue() );
             }
             
             
             if( addToFetchQueue )
             {
-                getFetchThreadGroup().add( nextThread );
+                results.add( nextThread );
             }
             else
             {
-                if( nextThread != null )
-                {
-                    getUncalledThreads().add( nextThread );
-                }
+//                if( nextThread != null )
+//                {
+//                    getUncalledThreads().add( nextThread );
+//                }
                 
                 if( _DEBUG )
                 {
@@ -414,6 +426,8 @@ public class RdfFetchController
                 }
             }
         }
+        
+        return results;
     }
 
     private Collection<Provider> getProvidersForQueryNamespaceSpecific(QueryType nextQueryType)
@@ -616,7 +630,7 @@ public class RdfFetchController
                 
                 if( _DEBUG )
                 {
-                    log.debug( "RdfFetchController.fetchRdfForQuery: Query successful endpoint="+nextThread.originalQueryBundle.queryEndpoint );
+                    log.debug( "RdfFetchController.fetchRdfForQuery: Query successful endpoint="+nextThread.originalQueryBundle.getQueryEndpoint() );
                     
                     if( _TRACE )
                     {

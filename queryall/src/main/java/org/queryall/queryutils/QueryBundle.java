@@ -36,18 +36,18 @@ public class QueryBundle
     private static final boolean _INFO = log.isInfoEnabled();
 	
 	// This query is specifically tailored for the provider with respect to the URI (de)normalisation rules
-	public String query = "";
-	public String staticRdfXmlString = "";
+	private String query = "";
+	private String staticRdfXmlString = "";
 	// Note: although the endpoint URL's are available in the Provider,
 	// this is the one that has actually been chosen and had variables replaced for this bundle out of the available provider endpoints
-	public String queryEndpoint = "";
+	private String queryEndpoint = "";
 	// The following is the unreplaced endpoint String
-	public String originalEndpointString = "";
-	public Provider originalProvider;
+	private String originalEndpointString = "";
+	private Provider originalProvider;
 	private QueryType customQueryType;
-	public boolean redirectRequired = false;
+	private boolean redirectRequired = false;
 	
-	public Collection<Profile> relevantProfiles = new HashSet<Profile>();
+	private Collection<Profile> relevantProfiles = new HashSet<Profile>();
 	
     public static String queryBundleNamespace;
     
@@ -142,7 +142,7 @@ public class QueryBundle
     // NOTE: this will not work if the URL has any templates replaced against it
     public Collection<String> getAlternativeEndpoints()
     {
-        Collection<String> allEndpoints = originalProvider.getEndpointUrls();
+        Collection<String> allEndpoints = getOriginalProvider().getEndpointUrls();
         
         Collection<String> results = new LinkedList<String>();
         
@@ -151,7 +151,7 @@ public class QueryBundle
         
         for(String nextEndpointUrl : allEndpoints)
         {
-            if(!nextEndpointUrl.equals(queryEndpoint))
+            if(!nextEndpointUrl.equals(getQueryEndpoint()))
                 results.add(nextEndpointUrl);
         }
         
@@ -170,7 +170,7 @@ public class QueryBundle
     
     public Provider getProvider()
     {
-        return originalProvider;
+        return getOriginalProvider();
     }
     
 
@@ -186,7 +186,7 @@ public class QueryBundle
     
     public void setProvider(Provider originalProvider)
     {
-        this.originalProvider = originalProvider;
+        this.setOriginalProvider(originalProvider);
     }
     
 
@@ -208,8 +208,8 @@ public class QueryBundle
 			URI queryBundleInstanceUri = f.createURI(keyPrefix + keyToUse);
 			
 			Literal keyLiteral = f.createLiteral(keyToUse.stringValue());
-			Literal queryLiteral = f.createLiteral(query);
-			Literal queryBundleEndpointUri = f.createLiteral(queryEndpoint);
+			Literal queryLiteral = f.createLiteral(getQuery());
+			Literal queryBundleEndpointUri = f.createLiteral(getQueryEndpoint());
 			Literal modelVersionLiteral = f.createLiteral(modelVersion);
 			
 			Collection<String> alternativeEndpoints = getAlternativeEndpoints();
@@ -228,13 +228,13 @@ public class QueryBundle
 			
 			con.add(queryBundleInstanceUri, queryBundleQueryTypeUri, QueryTypeUri, queryBundleInstanceUri);
 			
-			URI originalProviderUri = originalProvider.getKey();
+			URI originalProviderUri = getOriginalProvider().getKey();
 			
 			con.add(queryBundleInstanceUri, queryBundleProviderUri, originalProviderUri, queryBundleInstanceUri);
 			
-			if(relevantProfiles != null)
+			if(getRelevantProfiles() != null)
 			{
-			    for(Profile nextRelevantProfile : relevantProfiles)
+			    for(Profile nextRelevantProfile : getRelevantProfiles())
 			    {
 			        if(nextRelevantProfile != null)
 			            con.add(queryBundleInstanceUri, queryBundleProfileUri, nextRelevantProfile.getKey());
@@ -262,9 +262,9 @@ public class QueryBundle
 			
 			// log.info("QueryBundle: About to add provider configuration RDF to the repository");
 			
-			originalProvider.toRdf(myRepository, originalProvider.getKey(), modelVersion);
+			getOriginalProvider().toRdf(myRepository, getOriginalProvider().getKey(), modelVersion);
 			
-			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(originalProvider.getNormalisationUris(), Constants.LOWEST_ORDER_FIRST))
+			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(getOriginalProvider().getNormalisationUris(), Constants.LOWEST_ORDER_FIRST))
 			{
 				nextRelevantRdfRule.toRdf(myRepository, nextRelevantRdfRule.getKey(), modelVersion);
 			}
@@ -324,17 +324,17 @@ public class QueryBundle
 			sb.append("getQueryType().getKey()=" + getQueryType().getKey() + "\n");
 		}
 		
-		sb.append("queryEndpoint=" + queryEndpoint + "\n");
-		sb.append("query=" + query + "\n");
-		sb.append("staticRdfXmlString=" + staticRdfXmlString + "\n");
+		sb.append("queryEndpoint=" + getQueryEndpoint() + "\n");
+		sb.append("query=" + getQuery() + "\n");
+		sb.append("staticRdfXmlString=" + getStaticRdfXmlString() + "\n");
 		
-		if(originalProvider == null)
+		if(getOriginalProvider() == null)
 		{
 			sb.append("originalProvider=null\n");
 		}
 		else
 		{
-			sb.append("originalProvider.getKey()="+originalProvider.getKey() + "\n");
+			sb.append("originalProvider.getKey()="+getOriginalProvider().getKey() + "\n");
 		}
 		
 		return sb.toString();
@@ -344,4 +344,84 @@ public class QueryBundle
 	{
 	    queryEndpoint = endpointUrl;
 	}
+
+    /**
+     * @param staticRdfXmlString the staticRdfXmlString to set
+     */
+    public void setStaticRdfXmlString(String staticRdfXmlString)
+    {
+        this.staticRdfXmlString = staticRdfXmlString;
+    }
+
+    /**
+     * @return the staticRdfXmlString
+     */
+    public String getStaticRdfXmlString()
+    {
+        return staticRdfXmlString;
+    }
+
+    /**
+     * @param originalEndpointString the originalEndpointString to set
+     */
+    public void setOriginalEndpointString(String originalEndpointString)
+    {
+        this.originalEndpointString = originalEndpointString;
+    }
+
+    /**
+     * @return the originalEndpointString
+     */
+    public String getOriginalEndpointString()
+    {
+        return originalEndpointString;
+    }
+
+    /**
+     * @param originalProvider the originalProvider to set
+     */
+    public void setOriginalProvider(Provider originalProvider)
+    {
+        this.originalProvider = originalProvider;
+    }
+
+    /**
+     * @return the originalProvider
+     */
+    public Provider getOriginalProvider()
+    {
+        return originalProvider;
+    }
+
+    /**
+     * @param redirectRequired the redirectRequired to set
+     */
+    public void setRedirectRequired(boolean redirectRequired)
+    {
+        this.redirectRequired = redirectRequired;
+    }
+
+    /**
+     * @return the redirectRequired
+     */
+    public boolean getRedirectRequired()
+    {
+        return redirectRequired;
+    }
+
+    /**
+     * @param relevantProfiles the relevantProfiles to set
+     */
+    public void setRelevantProfiles(Collection<Profile> relevantProfiles)
+    {
+        this.relevantProfiles = relevantProfiles;
+    }
+
+    /**
+     * @return the relevantProfiles
+     */
+    public Collection<Profile> getRelevantProfiles()
+    {
+        return relevantProfiles;
+    }
 }

@@ -746,6 +746,7 @@ public class BlacklistController
             return false;
         }
         
+        // we test both the full URL and the protocol://host subsection
         if( BlacklistController.isEndpointBlacklisted( inputUrl ) || BlacklistController.isEndpointBlacklisted(url.getProtocol()+"://"+url.getAuthority()) )
         {
             if( _DEBUG )
