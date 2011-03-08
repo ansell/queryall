@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -126,6 +127,10 @@ public class RdfFetchController
             // TODO: should we do classification in the results based on the QueryType that generated the particular subset of QueryBundles to make it easier to distinguish them
             for( QueryType nextQueryType : allCustomQueries )
             {
+                // Non-paged queries are a special case. The caller decides whether 
+                // they want to use non-paged queries, for example, they may say no
+                // if they have decided that they need only extra results from paged 
+                // queries
                 if(!includeNonPagedQueries && !nextQueryType.getIsPageable())
                 {
                     if(_INFO)
@@ -136,99 +141,15 @@ public class RdfFetchController
                     continue;
                 }
                 
-                Collection<Provider> QueryTypeProviders = new HashSet<Provider>();
+                Collection<Provider> chosenProviders = new HashSet<Provider>();
                 
                 if( !nextQueryType.getIsNamespaceSpecific() )
                 {
-                    // if we aren't specific to namespace we simply find all providers for this type of custom query
-                    Collection<Provider> allProviders = localSettings.getProvidersForQueryType( nextQueryType.getKey() );
-                    
-                    for( Provider nextAllProvider : allProviders )
-                    {
-                        if( _DEBUG )
-                        {
-                            log.debug( "RdfFetchController.initialise: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
-                        }
-                        
-                        if( nextAllProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
-                        {
-                            if( _DEBUG )
-                            {
-                                log.debug( "RdfFetchController.initialise: profileList suitable for nextAllProvider.getKey()="+nextAllProvider.getKey()+" queryString="+queryString );
-                            }
-                            
-                            QueryTypeProviders.add( nextAllProvider );
-                        }
-                    }
+                    chosenProviders.addAll(getProvidersForQueryNonNamespaceSpecific(nextQueryType));
                 }
                 else
                 {
-                    List<String> queryStringMatches = nextQueryType.matchesForQueryString( queryString );
-                    
-                    int queryStringMatchesSize = queryStringMatches.size();
-                    
-                    // Collection<String> nextQueryNamespacePrefixes = new HashSet<String>();
-                    Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
-                    Hashtable<String, Hashtable<String, Collection<String>>> titleToPreferredPrefixToUriMapping = new Hashtable<String, Hashtable<String, Collection<String>>>();
-                    
-                    for( int nextNamespaceInputIndex : nextQueryType.getNamespaceInputIndexes() )
-                    {
-                        if( queryStringMatchesSize  >= nextNamespaceInputIndex && nextNamespaceInputIndex > 0 )
-                        {
-                            String nextTitle = queryStringMatches.get( nextNamespaceInputIndex-1 );
-                            
-                            Collection<URI> nextUriFromTitleNamespaceList = localSettings.getNamespaceUrisForTitle( nextTitle );
-                            
-                            if( nextUriFromTitleNamespaceList != null )
-                            {
-                                nextQueryNamespaceUris.add( nextUriFromTitleNamespaceList );
-                            }
-                            else
-                            {
-                                log.warn( "RdfFetchController.initialise did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
-                            }
-                        }
-                        else
-                        {
-                            log.error( "RdfFetchController.initialise: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
-                            
-                            throw new RuntimeException( "Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
-                        }
-                    }
-                    
-                    if( _DEBUG )
-                    {
-                        // log.debug( "RdfFetchController.initialise: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes );
-                        log.debug( "RdfFetchController.initialise: nextQueryNamespaceUris="+nextQueryNamespaceUris );
-                    }
-                    
-                    if( nextQueryType.handlesNamespaceUris( nextQueryNamespaceUris ) )
-                    {
-                        if( _DEBUG )
-                        {
-                            log.debug( "RdfFetchController.initialise: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
-                        }
-                        
-                        Collection<Provider> namespaceSpecificProviders = localSettings.getProvidersForQueryTypeForNamespaceUris( nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
-                        
-                        for( Provider nextNamespaceSpecificProvider : namespaceSpecificProviders )
-                        {
-                            if( _TRACE )
-                            {
-                                log.trace( "RdfFetchController.initialise: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
-                            }
-                            
-                            if( nextNamespaceSpecificProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
-                            {
-                                if( _DEBUG )
-                                {
-                                    log.debug( "RdfFetchController.initialise: profileList suitable for nextNamespaceSpecificProvider.getKey()="+nextNamespaceSpecificProvider.getKey()+" queryString="+queryString );
-                                }
-                                
-                                QueryTypeProviders.add( nextNamespaceSpecificProvider );
-                            }
-                        }
-                    }
+                    chosenProviders.addAll(getProvidersForQueryNamespaceSpecific(nextQueryType));
                 }
                 
                 if( nextQueryType.getIncludeDefaults() && useDefaultProviders )
@@ -238,50 +159,12 @@ public class RdfFetchController
                         log.debug( "RdfFetchController.initialise: including defaults for nextQueryType.title="+nextQueryType.getTitle()+" nextQueryType.getKey()="+nextQueryType.getKey() );
                     }
                     
-                    Collection<Provider> defaultProviders = localSettings.getDefaultProviders(nextQueryType.getKey());
-                    
-                    Collection<Provider> usefulDefaultProviders = new HashSet<Provider>();
-                    
-                    for( Provider nextDefaultProvider : defaultProviders )
-                    {
-                        // Note: We avoid duplicate calls based on the functional specification in Provider.functionallyDifferentTo
-                        boolean providerAlreadyUsed = false;
-                        
-                        for( Provider nextCollectionProvider : QueryTypeProviders )
-                        {
-                            if( nextCollectionProvider.equals( nextDefaultProvider ) )
-                            {
-                                if( _TRACE )
-                                {
-                                    log.trace( "Atlas2Rdf.jsp: Default Provider not functionally different to another provider nextDefaultProvider.getKey()="+nextDefaultProvider.getKey()+" nextCollectionProvider.getKey()="+nextCollectionProvider.getKey() );
-                                }
-                                
-                                providerAlreadyUsed = true;
-                                break;
-                            }
-                        }
-                        
-                        
-                        if( !providerAlreadyUsed )
-                        {
-                            if( nextDefaultProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
-                            {
-                                if( _DEBUG )
-                                {
-                                    log.debug( "RdfFetchController.initialise: profileList suitable for nextDefaultProvider.getKey()="+nextDefaultProvider.getKey()+" queryString="+queryString );
-                                }
-                                
-                                usefulDefaultProviders.add( nextDefaultProvider );
-                            }
-                        }
-                    }
-                    
-                    QueryTypeProviders.addAll( usefulDefaultProviders );
+                    chosenProviders.addAll(localSettings.getDefaultProviders(nextQueryType.getKey()));
                 }
                 
                 if( _DEBUG )
                 {
-                    int QueryTypeProvidersSize = QueryTypeProviders.size();
+                    int QueryTypeProvidersSize = chosenProviders.size();
                     
                     if( QueryTypeProvidersSize  > 0 )
                     {
@@ -289,7 +172,7 @@ public class RdfFetchController
                         
                         if( _TRACE )
                         {
-                            for( Provider nextQueryTypeProvider : QueryTypeProviders )
+                            for( Provider nextQueryTypeProvider : chosenProviders )
                             {
                                 log.trace( "RdfFetchController.initialise: nextQueryTypeProvider="+nextQueryTypeProvider.getKey() );
                             }
@@ -299,111 +182,10 @@ public class RdfFetchController
                     {
                         log.trace( "RdfFetchController.initialise: found NO suitable providers for custom type="+nextQueryType.getKey() );
                     }
-                }
+                } // end if(_DEBUG}
                 
-                for( Provider nextProvider : QueryTypeProviders )
-                {
-                    
-                    // check if there is an endpoint, as we allow for providers which are really placeholders for static RDF/XML additions, and they are configured without endpoint URL's and with NO_COMMUNICATION
-                    if( nextProvider.hasEndpointUrl() )
-                    {
-                        Map<String, String> attributeList = null;
-                        
-                        Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextProvider.getEndpointUrls());
-                        
-                        for( String nextEndpoint : nextEndpointUrls )
-                        {
-                            String replacedEndpoint = nextEndpoint
-                                                .replace( "${realHostName}",realHostName )
-                                                .replace( "${defaultSeparator}",localSettings.getStringPropertyFromConfig("separator") )
-                                                .replace( "${offset}",pageOffset+"" );
-                            
-                            // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements before using it in the attribute list
-                            replacedEndpoint = SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
-                            
-                            attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, replacedEndpoint, realHostName, pageOffset );
-                            
-                            // This step is needed in order to replace endpointSpecific related template elements on the provider URL
-                            replacedEndpoint = SparqlQueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
-                            
-                            // Then test whether the endpoint is blacklisted
-                            if(!BlacklistController.isUrlBlacklisted(replacedEndpoint))
-                            {
-                                String nextEndpointQuery = SparqlQueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
-                                
-                                String nextStaticRdfXmlString = "";
-                                
-                                for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
-                                {
-                                    // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
-                                    
-                                    if( allCustomRdfXmlIncludeTypes.size()  == 0 )
-                                    {
-                                        log.warn( "RdfFetchController: no included queries found for nextCustomInclude="+nextCustomInclude );
-                                    }
-                                    
-                                    for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
-                                    {
-                                        // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
-                                        // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                                        nextStaticRdfXmlString += SparqlQueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
-                                    }
-                                }
-                                
-                                QueryBundle nextProviderQueryBundle = new QueryBundle();
-                                
-                                nextProviderQueryBundle.query = nextEndpointQuery;
-                                nextProviderQueryBundle.staticRdfXmlString = nextStaticRdfXmlString;
-                                nextProviderQueryBundle.queryEndpoint = replacedEndpoint;
-                                nextProviderQueryBundle.originalEndpointString = nextEndpoint;
-                                nextProviderQueryBundle.originalProvider = nextProvider;
-                                nextProviderQueryBundle.setQueryType(nextQueryType);
-                                nextProviderQueryBundle.relevantProfiles = sortedIncludedProfiles;
-                                
-                                queryBundles.add( nextProviderQueryBundle );
-                                
-                                // go to next provider if we are not told to use all of the providers possible
-                                if( !localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"))
-                                {
-                                    break;
-                                }
-                            } // end if(!BlacklistController.isUrlBlacklisted(nextEndpoint))
-                        } // end for(String nextEndpoint : nextProvider.endpointUrls)
-                    } // end if(nextProvider.hasEndpointUrl())
-                    else if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
-                    {
-                        Map<String, String> attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, "", realHostName, pageOffset );
-                        
-                        String nextStaticRdfXmlString = "";
-                        
-                        for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
-                        {
-                            // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                            Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
-                            
-                            for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
-                            {
-                                // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
-                                // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                                nextStaticRdfXmlString += SparqlQueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
-                            }
-                        }
-                        
-                        QueryBundle nextProviderQueryBundle = new QueryBundle();
-                        
-                        nextProviderQueryBundle.staticRdfXmlString = nextStaticRdfXmlString;
-                        nextProviderQueryBundle.setProvider(nextProvider);
-                        nextProviderQueryBundle.setQueryType(nextQueryType);
-                        nextProviderQueryBundle.relevantProfiles = sortedIncludedProfiles;
-                        
-                        queryBundles.add( nextProviderQueryBundle );
-                    }
-                    else
-                    {
-                        log.warn("RdfFetchController: no endpoint URL's found for provider.getKey()="+nextProvider.getKey());
-                    }
-                } // end for(Provider nextProvider : QueryTypeProviders)
+                generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
+                        chosenProviders);
             } // end for(QueryType nextQueryType : allCustomQueries)
         } // end if(queryBundles == null)
         
@@ -425,6 +207,131 @@ public class RdfFetchController
         // queryBundles = multiProviderQueryBundles;
         // return multiProviderQueryBundles;
         
+        generateFetchThreadsFromQueryBundles();
+        
+        if( _DEBUG )
+        {
+            final long end = System.currentTimeMillis();
+            
+            log.debug( "RdfFetchController.initialise: numberOfThreads="+getFetchThreadGroup().size() );
+            
+            log.debug( String.format( "%s: timing=%10d", "RdfFetchController.initialise", ( end - start ) ) );
+        }
+    }
+
+    /**
+     * @param nextQueryType
+     * @param chosenProviders
+     */
+    private void generateQueryBundlesForQueryTypeAndProviders(
+            QueryType nextQueryType, Collection<Provider> chosenProviders)
+    {
+        for( Provider nextProvider : chosenProviders )
+        {
+            if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
+            {
+                Map<String, String> attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, "", realHostName, pageOffset );
+                
+                String nextStaticRdfXmlString = "";
+                
+                for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
+                {
+                    // pick out all of the QueryType's which have been delegated for this particular query as static includes
+                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
+                    
+                    for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
+                    {
+                        // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
+                        // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
+                        nextStaticRdfXmlString += SparqlQueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+                    }
+                }
+                
+                QueryBundle nextProviderQueryBundle = new QueryBundle();
+                
+                nextProviderQueryBundle.staticRdfXmlString = nextStaticRdfXmlString;
+                nextProviderQueryBundle.setProvider(nextProvider);
+                nextProviderQueryBundle.setQueryType(nextQueryType);
+                nextProviderQueryBundle.relevantProfiles = sortedIncludedProfiles;
+                
+                queryBundles.add( nextProviderQueryBundle );
+            }
+            // check if there is an endpoint, as we allow for providers which are really placeholders for static RDF/XML additions, and they are configured without endpoint URL's and with NO_COMMUNICATION
+            else if( nextProvider.hasEndpointUrl() )
+            {
+                Map<String, String> attributeList = null;
+                
+                Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextProvider.getEndpointUrls());
+                
+                for( String nextEndpoint : nextEndpointUrls )
+                {
+                    String replacedEndpoint = nextEndpoint
+                                        .replace( "${realHostName}",realHostName )
+                                        .replace( "${defaultSeparator}",localSettings.getStringPropertyFromConfig("separator") )
+                                        .replace( "${offset}",pageOffset+"" );
+                    
+                    // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements before using it in the attribute list
+                    replacedEndpoint = SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
+                    
+                    attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, replacedEndpoint, realHostName, pageOffset );
+                    
+                    // This step is needed in order to replace endpointSpecific related template elements on the provider URL
+                    replacedEndpoint = SparqlQueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+                    
+                    // Then test whether the endpoint is blacklisted
+                    if(!BlacklistController.isUrlBlacklisted(replacedEndpoint))
+                    {
+                        String nextEndpointQuery = SparqlQueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+                        
+                        String nextStaticRdfXmlString = "";
+                        
+                        for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
+                        {
+                            // pick out all of the QueryType's which have been delegated for this particular query as static includes
+                            Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
+                            
+                            if( allCustomRdfXmlIncludeTypes.size()  == 0 )
+                            {
+                                log.warn( "RdfFetchController: no included queries found for nextCustomInclude="+nextCustomInclude );
+                            }
+                            
+                            for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
+                            {
+                                // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
+                                // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
+                                nextStaticRdfXmlString += SparqlQueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions") , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules"));
+                            }
+                        }
+                        
+                        QueryBundle nextProviderQueryBundle = new QueryBundle();
+                        
+                        nextProviderQueryBundle.query = nextEndpointQuery;
+                        nextProviderQueryBundle.staticRdfXmlString = nextStaticRdfXmlString;
+                        nextProviderQueryBundle.queryEndpoint = replacedEndpoint;
+                        nextProviderQueryBundle.originalEndpointString = nextEndpoint;
+                        nextProviderQueryBundle.originalProvider = nextProvider;
+                        nextProviderQueryBundle.setQueryType(nextQueryType);
+                        nextProviderQueryBundle.relevantProfiles = sortedIncludedProfiles;
+                        
+                        queryBundles.add( nextProviderQueryBundle );
+                        
+                        // go to next provider if we are not told to use all of the providers possible
+                        if( !localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"))
+                        {
+                            break;
+                        }
+                    } // end if(!BlacklistController.isUrlBlacklisted(nextEndpoint))
+                } // end for(String nextEndpoint : nextProvider.endpointUrls)
+            } // end if(nextProvider.hasEndpointUrl())
+            else
+            {
+                log.warn("RdfFetchController: no endpoint URL's found for non-nocommunication provider.getKey()="+nextProvider.getKey());
+            }
+        } // end for(Provider nextProvider : QueryTypeProviders)
+    }
+
+    private void generateFetchThreadsFromQueryBundles()
+    {
         for( QueryBundle nextBundle : queryBundles )
         {
             String nextEndpoint = nextBundle.queryEndpoint;
@@ -507,15 +414,109 @@ public class RdfFetchController
                 }
             }
         }
+    }
+
+    private Collection<Provider> getProvidersForQueryNamespaceSpecific(QueryType nextQueryType)
+    {
+        Collection<Provider> results = new LinkedList<Provider>();
+        
+        List<String> queryStringMatches = nextQueryType.matchesForQueryString( queryString );
+        
+        int queryStringMatchesSize = queryStringMatches.size();
+        
+        // Collection<String> nextQueryNamespacePrefixes = new HashSet<String>();
+        Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
+        Hashtable<String, Hashtable<String, Collection<String>>> titleToPreferredPrefixToUriMapping = new Hashtable<String, Hashtable<String, Collection<String>>>();
+        
+        for( int nextNamespaceInputIndex : nextQueryType.getNamespaceInputIndexes() )
+        {
+            if( queryStringMatchesSize  >= nextNamespaceInputIndex && nextNamespaceInputIndex > 0 )
+            {
+                String nextTitle = queryStringMatches.get( nextNamespaceInputIndex-1 );
+                
+                Collection<URI> nextUriFromTitleNamespaceList = localSettings.getNamespaceUrisForTitle( nextTitle );
+                
+                if( nextUriFromTitleNamespaceList != null )
+                {
+                    nextQueryNamespaceUris.add( nextUriFromTitleNamespaceList );
+                }
+                else
+                {
+                    log.warn( "RdfFetchController.initialise did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
+                }
+            }
+            else
+            {
+                log.error( "RdfFetchController.initialise: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
+                
+                throw new RuntimeException( "Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
+            }
+        }
         
         if( _DEBUG )
         {
-            final long end = System.currentTimeMillis();
-            
-            log.debug( "RdfFetchController.initialise: numberOfThreads="+getFetchThreadGroup().size() );
-            
-            log.debug( String.format( "%s: timing=%10d", "RdfFetchController.initialise", ( end - start ) ) );
+            // log.debug( "RdfFetchController.initialise: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes );
+            log.debug( "RdfFetchController.initialise: nextQueryNamespaceUris="+nextQueryNamespaceUris );
         }
+        
+        if( nextQueryType.handlesNamespaceUris( nextQueryNamespaceUris ) )
+        {
+            if( _DEBUG )
+            {
+                log.debug( "RdfFetchController.initialise: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
+            }
+            
+            Collection<Provider> namespaceSpecificProviders = localSettings.getProvidersForQueryTypeForNamespaceUris( nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
+            
+            for( Provider nextNamespaceSpecificProvider : namespaceSpecificProviders )
+            {
+                if( _TRACE )
+                {
+                    log.trace( "RdfFetchController.initialise: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
+                }
+                
+                if( nextNamespaceSpecificProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
+                {
+                    if( _DEBUG )
+                    {
+                        log.debug( "RdfFetchController.initialise: profileList suitable for nextNamespaceSpecificProvider.getKey()="+nextNamespaceSpecificProvider.getKey()+" queryString="+queryString );
+                    }
+                    
+                    results.add( nextNamespaceSpecificProvider );
+                }
+            }
+        }
+        
+        return results;
+    }
+
+    private Collection<Provider> getProvidersForQueryNonNamespaceSpecific(
+            QueryType nextQueryType)
+    {
+        Collection<Provider> results = new LinkedList<Provider>();
+        
+        // if we aren't specific to namespace we simply find all providers for this type of custom query
+        Collection<Provider> allProviders = localSettings.getProvidersForQueryType( nextQueryType.getKey() );
+        
+        for( Provider nextAllProvider : allProviders )
+        {
+            if( _DEBUG )
+            {
+                log.debug( "RdfFetchController.initialise: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
+            }
+            
+            if( nextAllProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
+            {
+                if( _DEBUG )
+                {
+                    log.debug( "RdfFetchController.initialise: profileList suitable for nextAllProvider.getKey()="+nextAllProvider.getKey()+" queryString="+queryString );
+                }
+                
+                results.add( nextAllProvider );
+            }
+        }
+        
+        return results;
     }
     
     public void fetchRdfForQueries() throws InterruptedException
