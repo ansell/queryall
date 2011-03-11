@@ -325,9 +325,9 @@ public class ProjectImpl extends Project
      * @return the URI used for the rdf Type of these elements
      */
 
-    public String getElementType()
+    public URI getElementType()
     {
-        return getProjectTypeUri().stringValue();
+        return getProjectTypeUri();
     }
     
     public void setCurationStatus(URI curationStatus)

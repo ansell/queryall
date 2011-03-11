@@ -16,6 +16,7 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.HashSet;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import org.queryall.helpers.*;
 import org.queryall.*;
@@ -498,7 +499,7 @@ public class ProfileImpl extends Profile
             log.debug("Profile.usedWithProvider: key="+key+" nextProviderUri="+nextProviderUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder.stringValue());
         }
         
-        int trueResult = usedWithList(nextProviderUri, nextIncludeExcludeOrder, includeProviders, excludeProviders);
+        int trueResult = usedWithIncludeExcludeList(nextProviderUri, nextIncludeExcludeOrder, includeProviders, excludeProviders, defaultProfileIncludeExcludeOrder);
         
         // in all known cases
         
@@ -531,7 +532,7 @@ public class ProfileImpl extends Profile
             log.debug("Profile.usedWithQuery: key="+key+" nextQueryUri="+nextQueryUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder);
         }
         
-        int trueResult = usedWithList(nextQueryUri, nextIncludeExcludeOrder, includeQueries, excludeQueries);
+        int trueResult = usedWithIncludeExcludeList(nextQueryUri, nextIncludeExcludeOrder, includeQueries, excludeQueries, defaultProfileIncludeExcludeOrder);
         
         // in all known cases
         
@@ -565,10 +566,11 @@ public class ProfileImpl extends Profile
             log.debug("Profile.usedWithRdfRule: nextRdfRuleUri="+nextRdfRuleUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder);
         }
         
-        int trueResult = usedWithList(nextRdfRuleUri, nextIncludeExcludeOrder, includeRdfRules, excludeRdfRules);
+        int trueResult = usedWithIncludeExcludeList(nextRdfRuleUri, nextIncludeExcludeOrder, includeRdfRules, excludeRdfRules, defaultProfileIncludeExcludeOrder);
         
-        // in all known cases
-        
+
+        // if the implicit include is not to be recognised in the context of this profile, 
+        // filter it out and indicate to the caller that no match occurred so they can continue looking for a match
         if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
         {
             if(_DEBUG)
@@ -591,37 +593,45 @@ public class ProfileImpl extends Profile
         return trueResult;
     }
     
-    private int usedWithList(URI nextUri, URI nextIncludeExcludeOrder, Collection<URI> includeList, Collection<URI> excludeList)
+    /**
+     * This method implements the main logic with reference to include/exclude decisions
+     * based on a given includeExcludeOrder and the default profile include exclude 
+     * order which overrides the given includeExcludeOrder if it is the undefined URI
+     * 
+     * The algorithm starts by checking both the include and exclude lists for the URI and records the existence of the URI in either list
+     * 
+     * If the nextIncludeExcludeOrder is null or the undefined URI, it is replaced with nextDefaultProfileIncludeExclude, which is not allowed to be undefined if it is required.
+     * 
+     * Then the main part of the algorithm is checked based on whether nextIncludeExcludeOrder is excludeThenInclude or includeThenExclude
+     * 
+     * If nextIncludeOrder is excludeThenInclude and an exclude was found then SPECIFIC_EXCLUDE is returned.
+     * Otherwise if nextIncludeOrder is excludeThenInclude and an include was found, then SPECIFIC_INCLUDE is returned.
+     * Otherwise if nextIncludeOrder is excludeThenInclude, IMPLICIT_INCLUDE is returned.
+     * 
+     * If next IncludeOrder is includeThenExclude and an include was found then SPECIFIC_INCLUDE is returned.
+     * Otherwise if nextIncludeOrder is includeThenExclude and an exclude was found then SPECIFIC_EXCLUDE is returned.
+     * Otherwise if nextIncludeORder is includeThenExclude, NO_MATCH is returned
+     * 
+     * @param nextUri
+     * @param nextIncludeExcludeOrder
+     * @param includeList
+     * @param excludeList
+     * @param nextDefaultProfileIncludeExcludeOrder
+     * @return One of the following constants, ProfileImpl.SPECIFIC_EXCLUDE, ProfileImpl.SPECIFIC_INCLUDE, ProfileImpl.IMPLICIT_INCLUDE or ProfileImpl.NO_MATCH
+     */
+    public static final int usedWithIncludeExcludeList(URI nextUri, URI nextIncludeExcludeOrder, Collection<URI> includeList, Collection<URI> excludeList, URI nextDefaultProfileIncludeExcludeOrder)
     {
-        boolean includeFound = false;
-        boolean excludeFound = false;
-        
         if(includeList == null || excludeList == null)
         {
             throw new IllegalArgumentException("Profile.usedWithList: includeList or excludeList was null");
         }
         
-        for(URI nextIncludedUri : includeList)
-        {
-            if(nextIncludedUri.equals(nextUri))
-            {
-                includeFound = true;
-                break;
-            }
-        }
-        
-        for(URI nextExcludedUri : excludeList)
-        {
-            if(nextExcludedUri.equals(nextUri))
-            {
-                excludeFound = true;
-                break;
-            }
-        }
+        boolean includeFound = includeList.contains(nextUri);
+        boolean excludeFound = excludeList.contains(nextUri);
         
         if(nextIncludeExcludeOrder == null || nextIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
         {
-            nextIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
+            nextIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
         }
         
         if(nextIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()))
@@ -702,11 +712,12 @@ public class ProfileImpl extends Profile
     
     public String toString()
     {
-        String result = "\n";
+        StringBuilder result = new StringBuilder();
         
-        result += "key="+key+"\n";
+        result.append("key=").append(getKey().stringValue());
+        result.append("order=").append(getOrder());
         
-        return result;
+        return result.toString();
     }
     
     public String toHtmlFormBody()
@@ -761,9 +772,9 @@ public class ProfileImpl extends Profile
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    public String getElementType()
+    public URI getElementType()
     {
-        return getProfileTypeUri().stringValue();
+        return getProfileTypeUri();
     }
     
     public int compareTo(Profile otherProfile)
@@ -1206,5 +1217,65 @@ public class ProfileImpl extends Profile
 	public static void setProfileIncludeExcludeOrderUndefinedUri(
 			URI profileIncludeExcludeOrderUndefinedUri) {
 		ProfileImpl.profileIncludeExcludeOrderUndefinedUri = profileIncludeExcludeOrderUndefinedUri;
-	}    
+	}
+
+    public void addIncludeProvider(URI includeProvider)
+    {
+        if(this.includeProviders == null)
+        {
+            this.includeProviders = new LinkedList<URI>();
+        }
+        
+        this.includeProviders.add(includeProvider);
+    }
+
+    public void addExcludeProvider(URI excludeProvider)
+    {
+        if(this.excludeProviders == null)
+        {
+            this.excludeProviders = new LinkedList<URI>();
+        }
+        
+        this.excludeProviders.add(excludeProvider);
+    }
+
+    public void addIncludeQuery(URI includeQuery)
+    {
+        if(this.includeQueries == null)
+        {
+            this.includeQueries = new LinkedList<URI>();
+        }
+        
+        this.includeQueries.add(includeQuery);
+    }
+
+    public void addExcludeQuery(URI excludeQuery)
+    {
+        if(this.excludeQueries == null)
+        {
+            this.excludeQueries = new LinkedList<URI>();
+        }
+        
+        this.excludeQueries.add(excludeQuery);
+    }
+
+    public void addIncludeRdfRule(URI includeRdfRule)
+    {
+        if(this.includeRdfRules == null)
+        {
+            this.includeRdfRules = new LinkedList<URI>();
+        }
+        
+        this.includeRdfRules.add(includeRdfRule);
+    }
+
+    public void addExcludeRdfRule(URI excludeRdfRule)
+    {
+        if(this.excludeRdfRules == null)
+        {
+            this.excludeRdfRules = new LinkedList<URI>();
+        }
+        
+        this.excludeRdfRules.add(excludeRdfRule);
+    }    
 }

@@ -293,9 +293,9 @@ public class NamespaceEntryImpl extends NamespaceEntry
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    public String getElementType()
+    public URI getElementType()
     {
-        return getNamespaceTypeUri().stringValue();
+        return getNamespaceTypeUri();
     }
     
     public String getIdentifierRegex()

@@ -432,11 +432,11 @@ public class RdfUtils
     }
     
     
-    public static String getConstructQueryByType(String nextType, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri)
+    public static String getConstructQueryByType(URI nextType, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri)
     {
         StringBuilder result = new StringBuilder();
         
-        result.append("CONSTRUCT { ?s a <"+nextType+"> . ");
+        result.append("CONSTRUCT { ?s a <"+nextType.stringValue()+"> . ");
         
         int counter = 0;
         
@@ -454,7 +454,7 @@ public class RdfUtils
             result.append(" GRAPH <" + sparqlGraphUri + "> { ");
         }
         
-        result.append(" ?s a <"+nextType+"> . ");
+        result.append(" ?s a <"+nextType.stringValue()+"> . ");
         
         counter = 0;
         

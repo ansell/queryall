@@ -84,7 +84,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         Map<String, ProvenanceRecord> results = new Hashtable<String, ProvenanceRecord>();
         
-        String provenanceTypeUri = new ProvenanceRecord().getElementType();
+        URI provenanceTypeUri = new ProvenanceRecord().getElementType();
         
         RepositoryConnection myRepositoryConnection = null;
         
@@ -93,7 +93,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             myRepositoryConnection = myRepository.getConnection();
             
             final String queryString = "SELECT ?provenanceRecordUri WHERE { ?provenanceRecordUri a <"
-                    + provenanceTypeUri + "> . }";
+                    + provenanceTypeUri.stringValue() + "> . }";
             final TupleQuery tupleQuery = myRepositoryConnection.prepareTupleQuery(
                     QueryLanguage.SPARQL, queryString);
             final TupleQueryResult queryResult = tupleQuery.evaluate();
@@ -565,9 +565,9 @@ public class ProvenanceRecord implements BaseQueryAllInterface
      * @return the URI used for the rdf Type of these elements
      */
 
-    public String getElementType()
+    public URI getElementType()
     {
-        return provenanceTypeUri.stringValue();
+        return provenanceTypeUri;
     }
     
     /**

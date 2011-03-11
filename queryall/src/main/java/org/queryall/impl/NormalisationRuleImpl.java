@@ -528,9 +528,9 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    public String getElementType()
+    public URI getElementType()
     {
-        return getNormalisationRuleTypeUri().stringValue();
+        return getNormalisationRuleTypeUri();
     }
     
     public int getOrder()

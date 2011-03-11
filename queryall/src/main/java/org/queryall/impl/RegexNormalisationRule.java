@@ -600,9 +600,9 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
      * @return the URI used for the rdf Type of these elements
      */
     @Override
-    public String getElementType()
+    public URI getElementType()
     {
-        return getRegexRuleTypeUri().stringValue();
+        return getRegexRuleTypeUri();
     }
 
 	/**

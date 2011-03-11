@@ -537,9 +537,9 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
      * @return the URI used for the rdf Type of these elements
      */
     @Override
-    public String getElementType()
+    public URI getElementType()
     {
-        return getSparqlRuleTypeUri().stringValue();
+        return getSparqlRuleTypeUri();
     }
     
     public URI getMode()

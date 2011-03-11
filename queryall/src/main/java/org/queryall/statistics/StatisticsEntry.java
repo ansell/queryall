@@ -87,9 +87,9 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @return the URI used for the rdf Type of these elements
      */
 
-    public String getElementType()
+    public URI getElementType()
     {
-        return statisticsTypeUri.stringValue();
+        return statisticsTypeUri;
     }
     
     /**

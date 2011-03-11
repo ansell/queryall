@@ -373,9 +373,9 @@ public class TemplateImpl extends Template
      * @return the URI used for the rdf Type of these elements
      */
 
-    public String getElementType()
+    public URI getElementType()
     {
-        return getTemplateTypeUri().stringValue();
+        return getTemplateTypeUri();
     }
     
     public String getTemplateString()

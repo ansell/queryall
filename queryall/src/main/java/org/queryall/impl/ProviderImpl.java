@@ -812,9 +812,9 @@ public class ProviderImpl extends Provider
      * @return the URI used for the rdf Type of these elements
      */
 
-    public String getElementType()
+    public URI getElementType()
     {
-        return getProviderTypeUri().stringValue();
+        return getProviderTypeUri();
     }
     
     public boolean containsQueryTypeUri(URI queryKey)

@@ -213,7 +213,7 @@ public class QueryTypeImpl extends QueryType
     {
         Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
         
-        String queryTypeUri = new QueryTypeImpl().getElementType();
+        URI queryTypeUri = new QueryTypeImpl().getElementType();
         
         RepositoryConnection myRepositoryConnection = null;
         
@@ -222,7 +222,7 @@ public class QueryTypeImpl extends QueryType
             myRepositoryConnection = myRepository.getConnection();
             
             final String queryString = "SELECT ?QueryTypeUri WHERE { ?QueryTypeUri a <"
-                    + queryTypeUri + "> . }";
+                    + queryTypeUri.stringValue() + "> . }";
             final TupleQuery tupleQuery = myRepositoryConnection.prepareTupleQuery(
                     QueryLanguage.SPARQL, queryString);
             final TupleQueryResult queryResult = tupleQuery.evaluate();
@@ -1128,9 +1128,9 @@ public class QueryTypeImpl extends QueryType
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    public String getElementType()
+    public URI getElementType()
     {
-        return getQueryTypeUri().stringValue();
+        return getQueryTypeUri();
     }
     
     public URI getProfileIncludeExcludeOrder()

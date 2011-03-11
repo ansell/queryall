@@ -437,9 +437,9 @@ public class RuleTestImpl extends RuleTest
      * @return the URI used for the rdf Type of these elements
      */
 
-    public String getElementType()
+    public URI getElementType()
     {
-        return ruletestTypeUri.stringValue();
+        return ruletestTypeUri;
     }
     
     /**

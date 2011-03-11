@@ -920,14 +920,14 @@ public class Settings
         final long start = System.currentTimeMillis();
         // final Repository configRepository = Settings
                 // .getServerConfigurationRdf();
-        final String namespaceEntryOntologyTypeUri = new NamespaceEntryImpl().getElementType();
+        final URI namespaceEntryOntologyTypeUri = new NamespaceEntryImpl().getElementType();
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
             try
             {
                 final String queryString = "SELECT ?namespaceEntryUri WHERE { ?namespaceEntryUri a <"
-                        + namespaceEntryOntologyTypeUri + "> . }";
+                        + namespaceEntryOntologyTypeUri.stringValue() + "> . }";
                 final TupleQuery tupleQuery = con.prepareTupleQuery(
                         QueryLanguage.SPARQL, queryString);
                 final TupleQueryResult queryResult = tupleQuery.evaluate();
@@ -1015,7 +1015,7 @@ public class Settings
         try
         {
             final Repository myRepository = this.getServerConfigurationRdf();
-            final String profileOntologyTypeUri = new ProfileImpl().getElementType();
+            final URI profileOntologyTypeUri = new ProfileImpl().getElementType();
 
             try
             {
@@ -1023,7 +1023,7 @@ public class Settings
                 try
                 {
                     final String queryString = "SELECT ?profileUri WHERE { ?profileUri a <"
-                            + profileOntologyTypeUri + "> . }";
+                            + profileOntologyTypeUri.stringValue() + "> . }";
                     final TupleQuery tupleQuery = con.prepareTupleQuery(
                             QueryLanguage.SPARQL, queryString);
                     final TupleQueryResult queryResult = tupleQuery.evaluate();
@@ -1396,14 +1396,14 @@ public class Settings
         try
         {
             final Repository configRepository = this.getServerConfigurationRdf();
-            final String ruleTestOntologyTypeUri = new RuleTestImpl().getElementType();
+            final URI ruleTestOntologyTypeUri = new RuleTestImpl().getElementType();
             try
             {
                 final RepositoryConnection con = configRepository.getConnection();
                 try
                 {
                     final String queryString = "SELECT ?ruleTestUri WHERE { ?ruleTestUri a <"
-                            + ruleTestOntologyTypeUri + "> . }";
+                            + ruleTestOntologyTypeUri.stringValue() + "> . }";
                     final TupleQuery tupleQuery = con.prepareTupleQuery(
                             QueryLanguage.SPARQL, queryString);
                     final TupleQueryResult queryResult = tupleQuery.evaluate();
