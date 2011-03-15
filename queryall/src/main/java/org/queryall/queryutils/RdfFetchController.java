@@ -75,7 +75,7 @@ public class RdfFetchController
     
     public Collection<Provider> getAllUsedProviders()
     {
-        Collection<Provider> results = new HashSet<Provider>();
+        Collection<Provider> results = new LinkedList<Provider>();
         
         for(QueryBundle nextQueryBundle : queryBundles)
         {
@@ -85,9 +85,9 @@ public class RdfFetchController
         return results;
     }
     
-    private void setQueryBundles(Collection<QueryBundle> queryBundles)
+    private void addQueryBundles(Collection<QueryBundle> queryBundles)
     {
-        this.queryBundles = queryBundles;
+        this.queryBundles.addAll(queryBundles);
     }
     
     public Collection<QueryBundle> getQueryBundles()
@@ -119,7 +119,7 @@ public class RdfFetchController
         
         if(queryBundles == null)
         {
-            queryBundles = new HashSet<QueryBundle>( 20 );
+            queryBundles = new LinkedList<QueryBundle>();
             
             Collection<QueryType> allCustomQueries = localSettings.getQueryTypesMatchingQueryString( queryString, sortedIncludedProfiles );
             
@@ -189,8 +189,19 @@ public class RdfFetchController
                     }
                 } // end if(_DEBUG}
                 
-                this.setQueryBundles(generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
-                        chosenProviders, localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider")));
+                log.debug( "RdfFetchController.initialise: about to generate query bundles for query type and providers");
+                
+                Collection<QueryBundle> queryBundlesForQueryType = this.generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
+                        chosenProviders, localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"));
+                
+                log.debug( "RdfFetchController.initialise: queryBundlesForQueryType.size()="+queryBundlesForQueryType.size());
+
+                for(QueryBundle nextQueryBundleForQueryType : queryBundlesForQueryType)
+                {
+                    log.debug( "RdfFetchController.initialise: nextQueryBndleForQueryType="+nextQueryBundleForQueryType.toString());
+                }
+                
+                this.addQueryBundles(queryBundlesForQueryType);
             } // end for(QueryType nextQueryType : allCustomQueries)
         } // end if(queryBundles == null)
         
@@ -203,16 +214,16 @@ public class RdfFetchController
                     log.debug( "RdfFetchController.initialise: nextQueryBundleDebug="+nextQueryBundleDebug.toString() );
                 }
             }
-            else
-            {
-                log.debug("RdfFetchController.initialise: no query bundles given or created");
-            }
+        }
+        if(_INFO)
+        {
+            log.info("RdfFetchController.initialise: no query bundles given or created");
         }
         
         // queryBundles = multiProviderQueryBundles;
         // return multiProviderQueryBundles;
         
-        this.setFetchThreadGroup(generateFetchThreadsFromQueryBundles(this.queryBundles, localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")));
+        this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.queryBundles, localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")));
         
         if( _DEBUG )
         {
@@ -233,7 +244,8 @@ public class RdfFetchController
     {
         Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
-        
+        log.debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: nextQueryType="+nextQueryType.getKey().stringValue()+" chosenProviders.size="+chosenProviders.size());
+
         for( Provider nextProvider : chosenProviders )
         {
             if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
@@ -333,10 +345,12 @@ public class RdfFetchController
             } // end if(nextProvider.hasEndpointUrl())
             else
             {
-                log.warn("RdfFetchController: no endpoint URL's found for non-nocommunication provider.getKey()="+nextProvider.getKey());
+                log.warn("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: no endpoint URL's found for non-nocommunication provider.getKey()="+nextProvider.getKey());
             }
         } // end for(Provider nextProvider : QueryTypeProviders)
         
+        log.debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: results.size()="+results.size());
+
         return results;
     }
 
@@ -351,7 +365,7 @@ public class RdfFetchController
             
             if( _DEBUG )
             {
-                log.debug( "RdfFetchController.initialise:: About to create a thread for query on endpoint="+nextEndpoint+" query=" + nextQuery + " provider="+nextBundle.getOriginalProvider().getKey());
+                log.debug( "RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on endpoint="+nextEndpoint+" query=" + nextQuery + " provider="+nextBundle.getOriginalProvider().getKey());
             }
             
             RdfFetcherQueryRunnable nextThread = null;
@@ -373,7 +387,7 @@ public class RdfFetchController
                 
                 if(_TRACE)
                 {
-                    log.trace("RdfFetchController.initialise: created HTTP POST SPARQL query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
+                    log.trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP POST SPARQL query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
                 }
             }
             else if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderHttpGetUrl() ) )
@@ -389,14 +403,14 @@ public class RdfFetchController
                 
                 if(_TRACE)
                 {
-                    log.trace("RdfFetchController.initialise: created HTTP GET query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
+                    log.trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP GET query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
                 }
             }
             else if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
             {
                 if(_TRACE)
                 {
-                    log.trace("RdfFetchController.initialise: not including no communication provider in fetch queue or creating thread");
+                    log.trace("RdfFetchController.generateFetchThreadsFromQueryBundles: not including no communication provider in fetch queue or creating thread");
                 }
                 
                 addToFetchQueue = false;
@@ -405,7 +419,7 @@ public class RdfFetchController
             {
                 addToFetchQueue = false;
                 
-                log.warn( "RdfFetchController.initialise: endpointMethod did not match any known values. Not adding endpointMethod="+nextBundle.getOriginalProvider().getEndpointMethod().stringValue() + " providerConfig="+nextBundle.getOriginalProvider().getKey().stringValue() );
+                log.warn( "RdfFetchController.generateFetchThreadsFromQueryBundles: endpointMethod did not match any known values. Not adding endpointMethod="+nextBundle.getOriginalProvider().getEndpointMethod().stringValue() + " providerConfig="+nextBundle.getOriginalProvider().getKey().stringValue() );
             }
             
             
@@ -422,7 +436,7 @@ public class RdfFetchController
                 
                 if( _DEBUG )
                 {
-                    log.debug( "RdfFetchController.initialise: not adding bundle/provider to the fetch group for some reason" );
+                    log.debug( "RdfFetchController.generateFetchThreadsFromQueryBundles: not adding bundle/provider to the fetch group for some reason" );
                 }
             }
         }
@@ -456,12 +470,12 @@ public class RdfFetchController
                 }
                 else
                 {
-                    log.warn( "RdfFetchController.initialise did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
+                    log.warn( "RdfFetchController.getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
                 }
             }
             else
             {
-                log.error( "RdfFetchController.initialise: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
+                log.error( "RdfFetchController.getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
                 
                 throw new RuntimeException( "Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
             }
@@ -469,15 +483,15 @@ public class RdfFetchController
         
         if( _DEBUG )
         {
-            // log.debug( "RdfFetchController.initialise: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes );
-            log.debug( "RdfFetchController.initialise: nextQueryNamespaceUris="+nextQueryNamespaceUris );
+            // log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes );
+            log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryNamespaceUris="+nextQueryNamespaceUris );
         }
         
         if( nextQueryType.handlesNamespaceUris( nextQueryNamespaceUris ) )
         {
             if( _DEBUG )
             {
-                log.debug( "RdfFetchController.initialise: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
+                log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
             }
             
             Collection<Provider> namespaceSpecificProviders = localSettings.getProvidersForQueryTypeForNamespaceUris( nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
@@ -486,14 +500,14 @@ public class RdfFetchController
             {
                 if( _TRACE )
                 {
-                    log.trace( "RdfFetchController.initialise: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
+                    log.trace( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
                 }
                 
                 if( nextNamespaceSpecificProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
                 {
                     if( _DEBUG )
                     {
-                        log.debug( "RdfFetchController.initialise: profileList suitable for nextNamespaceSpecificProvider.getKey()="+nextNamespaceSpecificProvider.getKey()+" queryString="+queryString );
+                        log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: profileList suitable for nextNamespaceSpecificProvider.getKey()="+nextNamespaceSpecificProvider.getKey()+" queryString="+queryString );
                     }
                     
                     results.add( nextNamespaceSpecificProvider );
@@ -516,14 +530,14 @@ public class RdfFetchController
         {
             if( _DEBUG )
             {
-                log.debug( "RdfFetchController.initialise: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
+                log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
             }
             
             if( nextAllProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
             {
                 if( _DEBUG )
                 {
-                    log.debug( "RdfFetchController.initialise: profileList suitable for nextAllProvider.getKey()="+nextAllProvider.getKey()+" queryString="+queryString );
+                    log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="+nextAllProvider.getKey()+" queryString="+queryString );
                 }
                 
                 results.add( nextAllProvider );
@@ -549,7 +563,7 @@ public class RdfFetchController
         {
             if( _DEBUG )
             {
-                log.debug( "RdfFetchController.fetchRdfForQuery: about to start thread name="+nextThread.getName() );
+                log.debug( "RdfFetchController.fetchRdfForQueries: about to start thread name="+nextThread.getName() );
             }
             
             nextThread.start();
@@ -557,7 +571,7 @@ public class RdfFetchController
         
         if( _DEBUG )
         {
-            log.debug( "RdfFetchController.fetchRdfForQuery: about to sleep to let other threads do some work" );
+            log.debug( "RdfFetchController.fetchRdfForQueries: about to sleep to let other threads do some work" );
         }
         
         // do some very minor waiting to let the other threads start to do some work
@@ -567,7 +581,7 @@ public class RdfFetchController
         }
         catch ( InterruptedException ie )
         {
-            log.fatal( "RdfFetchController.fetchRdfForQuery: Thread interruption occurred" );
+            log.fatal( "RdfFetchController.fetchRdfForQueries: Thread interruption occurred" );
             throw ie;
         }
         
@@ -580,7 +594,7 @@ public class RdfFetchController
             }
             catch( InterruptedException ie )
             {
-                log.error( "RdfFetchController.fetchRdfForQuery: caught interrupted exception message="+ie.getMessage() );
+                log.error( "RdfFetchController.fetchRdfForQueries: caught interrupted exception message="+ie.getMessage() );
                 throw ie;
             }
         }
@@ -590,7 +604,7 @@ public class RdfFetchController
         {
             if( !nextThread.completed )
             {
-                log.fatal( "RdfFetchController.fetchRdfForQuery: Thread not completed properly name="+nextThread.getName() );
+                log.fatal( "RdfFetchController.fetchRdfForQueries: Thread not completed properly name="+nextThread.getName() );
             }
         }
         
@@ -600,7 +614,7 @@ public class RdfFetchController
             {
                 if( nextThread.lastException != null )
                 {
-                    log.error( "RdfFetchController.fetchRdfForQuery: endpoint="+nextThread.endpointUrl+ " message=" + nextThread.lastException.getMessage() );
+                    log.error( "RdfFetchController.fetchRdfForQueries: endpoint="+nextThread.endpointUrl+ " message=" + nextThread.lastException.getMessage() );
                     
                     URI queryKey = null;
                     
@@ -630,11 +644,11 @@ public class RdfFetchController
                 
                 if( _DEBUG )
                 {
-                    log.debug( "RdfFetchController.fetchRdfForQuery: Query successful endpoint="+nextThread.originalQueryBundle.getQueryEndpoint() );
+                    log.debug( "RdfFetchController.fetchRdfForQueries: Query successful endpoint="+nextThread.originalQueryBundle.getQueryEndpoint() );
                     
                     if( _TRACE )
                     {
-                        log.trace( "RdfFetchController.fetchRdfForQuery: Query successful nextResult="+nextResult +" convertedResult="+convertedResult);
+                        log.trace( "RdfFetchController.fetchRdfForQueries: Query successful nextResult="+nextResult +" convertedResult="+convertedResult);
                     }
                 }
                 
