@@ -1570,7 +1570,7 @@ public class Settings
                                     + " queryString="
                                     + queryString);
                 }
-                if(nextQuery.isQueryUsedWithProfileList(profileList, this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"), this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries")))
+                if(nextQuery.isUsedWithProfileList(profileList, this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"), this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries")))
                 {
                     if(Settings._DEBUG)
                     {

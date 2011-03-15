@@ -1648,78 +1648,6 @@ public class QueryTypeImpl extends QueryType
         this.isDummyQueryType = isDummyQueryType;
     }
 
-    public boolean isQueryUsedWithProfileList(List<Profile> nextSortedProfileList, boolean recogniseImplicitQueryInclusions, boolean includeNonProfileMatchedQueries)
-    {
-        for(final Profile nextProfile : nextSortedProfileList)
-        {
-            final int trueResult = nextProfile.usedWithQuery(this.getKey(),
-                    this.profileIncludeExcludeOrder);
-            if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
-            {
-                if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("this.isQueryUsedWithProfileList: found implicit include for queryUri="
-                                    + this.getKey().stringValue() + " profile=" + nextProfile.getKey().stringValue());
-                    // log.debug("Settings: this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions")="+this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"));
-                }
-                if(recogniseImplicitQueryInclusions)
-                {
-                    if(Settings._TRACE)
-                    {
-                        Settings.log
-                                .trace("this.isQueryUsedWithProfileList: returning implicit include true for queryUri="
-                                        + this.getKey().stringValue()
-                                        + " profile="
-                                        + nextProfile.getKey().stringValue());
-                    }
-                    return true;
-                }
-                else if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("this.isQueryUsedWithProfileList: implicit include not recognised for queryUri="
-                                    + this.getKey().stringValue() + " profile=" + nextProfile.getKey().stringValue());
-                }
-            }
-            else if(trueResult == ProfileImpl.SPECIFIC_INCLUDE)
-            {
-                if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("this.isQueryUsedWithProfileList: returning specific true for queryUri="
-                                    + this.getKey().stringValue() + " profile=" + nextProfile.getKey().stringValue());
-                }
-                return true;
-            }
-            else if(trueResult == ProfileImpl.SPECIFIC_EXCLUDE)
-            {
-                if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("this.isQueryUsedWithProfileList: returning specific false for queryUri="
-                                    + this.getKey().stringValue() + " profile=" + nextProfile.getKey().stringValue());
-                }
-                return false;
-            }
-        }
-        
-        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) 
-                || this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
-                && includeNonProfileMatchedQueries;
-        
-        if(Settings._DEBUG)
-        {
-            // log.debug("Settings: this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries")="+this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries"));
-            Settings.log
-                    .debug("this.isQueryUsedWithProfileList: returning with no specific or implicit matches found returnValue="
-                            + returnValue
-                            + " for queryUri=" + this.getKey().stringValue());
-        }
-        
-        return returnValue;
-    }
-
     /**
      * @param queryIsDummyQueryType the queryIsDummyQueryType to set
      */
@@ -1734,5 +1662,11 @@ public class QueryTypeImpl extends QueryType
     public static URI getQueryIsDummyQueryType()
     {
         return queryIsDummyQueryType;
+    }
+
+    public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
+            boolean allowImplicitInclusions, boolean includeNonProfileMatched)
+    {
+        return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
     }    
 }

@@ -489,7 +489,7 @@ public class RdfFetchController
                     log.trace( "RdfFetchController.initialise: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
                 }
                 
-                if( nextNamespaceSpecificProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
+                if( nextNamespaceSpecificProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
                 {
                     if( _DEBUG )
                     {
@@ -519,7 +519,7 @@ public class RdfFetchController
                 log.debug( "RdfFetchController.initialise: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
             }
             
-            if( nextAllProvider.isProviderUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
+            if( nextAllProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders") ) )
             {
                 if( _DEBUG )
                 {

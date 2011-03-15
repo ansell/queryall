@@ -1294,86 +1294,10 @@ public class ProviderImpl extends Provider
         this.namespaces.add(namespace);
     }
 
-    public boolean isProviderUsedWithProfileList(List<Profile> nextSortedProfileList, boolean recogniseImplicitProviderInclusions, boolean includeNonProfileMatchedProviders)
+    public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
+            boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {
-        for(final Profile nextProfile : nextSortedProfileList)
-        {
-            final int trueResult = nextProfile.usedWithProvider(this.getKey(),
-                    this.profileIncludeExcludeOrder);
-            if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
-            {
-                if(Settings._DEBUG)
-                {
-                    Settings.log
-                            .debug("Settings.isProviderUsedWithProfileList: found implicit include for providerUri="
-                                    + this.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                    // log.debug("Settings: this.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions")="+this.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions"));
-                }
-                
-                if(recogniseImplicitProviderInclusions)
-                {
-                    if(Settings._DEBUG)
-                    {
-                        Settings.log
-                                .debug("Settings.isProviderUsedWithProfileList: returning implicit include true for providerUri="
-                                        + this.getKey().stringValue()
-                                        + " profile="
-                                        + nextProfile.getKey().stringValue());
-                    }
-                    return true;
-                }
-                else if(Settings._DEBUG)
-                {
-                    Settings.log
-                            .debug("Settings.isProviderUsedWithProfileList: implicit include not recognised for providerUri="
-                                    + this.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-            }
-            else if(trueResult == ProfileImpl.SPECIFIC_INCLUDE)
-            {
-                if(Settings._DEBUG)
-                {
-                    Settings.log
-                            .debug("Settings.isProviderUsedWithProfileList: returning specific true for providerUri="
-                                    + this.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-                return true;
-            }
-            else if(trueResult == ProfileImpl.SPECIFIC_EXCLUDE)
-            {
-                if(Settings._DEBUG)
-                {
-                    Settings.log
-                            .debug("Settings.isProviderUsedWithProfileList: returning specific false for providerUri="
-                                    + this.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-                return false;
-            }
-            
-            
-        }
-        
-        boolean returnValue = (this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()) 
-                            || this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
-                            && includeNonProfileMatchedProviders;
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("ProviderImpl.isProviderUsedWithProfileList: returning no matches found returnValue="
-                            + returnValue
-                            + " for providerUri=" + this.getKey().stringValue());
-        }
-        
-        return returnValue;
-    }
+        return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
+    }    
 
 }

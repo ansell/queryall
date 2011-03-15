@@ -56,7 +56,7 @@ public class SparqlQueryCreator
     public static String createQuery(QueryType queryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         final String queryString = attributeList.get("queryString");
         
@@ -91,7 +91,7 @@ public class SparqlQueryCreator
             QueryType originalQueryType, QueryType includedQueryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         final String queryString = attributeList.get("queryString");
         
@@ -122,7 +122,7 @@ public class SparqlQueryCreator
             QueryType includedQueryType,
             Collection<URI> normalisationUrisNeeded,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         if(SparqlQueryCreator._DEBUG)
         {
@@ -808,7 +808,7 @@ public class SparqlQueryCreator
         
         for(final NormalisationRule nextRule : normalisationsNeeded)
         {
-            if(nextRule.isRdfRuleUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
+            if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
             {
                 endpointSpecificUri = (String)nextRule
                         .stageQueryVariables(endpointSpecificUri);
@@ -1526,7 +1526,7 @@ public class SparqlQueryCreator
      */
     public static Object normaliseByStage(URI stage, Object input,
             List<NormalisationRule> normalisationRules,
-            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         if(SparqlQueryCreator._TRACE)
         {
@@ -1540,7 +1540,7 @@ public class SparqlQueryCreator
         for(final NormalisationRule nextRule : normalisationRules)
         {
             // TODO: eliminate the reliance on the Settings class here by moving the method to a utilities class
-            if(nextRule.isRdfRuleUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
+            if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
             {
                 if(SparqlQueryCreator._TRACE)
                 {
@@ -1582,7 +1582,7 @@ public class SparqlQueryCreator
             String replacementString, QueryType queryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            Collection<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
         final String queryString = attributeList.get("queryString");
         

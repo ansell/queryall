@@ -17,6 +17,7 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.queryall.helpers.*;
 import org.queryall.*;
@@ -491,94 +492,48 @@ public class ProfileImpl extends Profile
         // TODO: enable an exact distinction by normalising the order of each property set and checking if they exactly match
         return this.getKey().equals(otherProfile.getKey());
     }
-    
-    public int usedWithProvider(URI nextProviderUri, URI nextIncludeExcludeOrder)
-    {
-        if(_DEBUG)
-        {
-            log.debug("Profile.usedWithProvider: key="+key+" nextProviderUri="+nextProviderUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder.stringValue());
-        }
-        
-        int trueResult = usedWithIncludeExcludeList(nextProviderUri, nextIncludeExcludeOrder, includeProviders, excludeProviders, defaultProfileIncludeExcludeOrder);
-        
-        // in all known cases
-        
-        if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
-        {
-            if(_DEBUG)
-            {
-                log.debug("Profile.usedWithProvider: found implicit match nextProviderUri="+nextProviderUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder+" allowImplicitProviderInclusions="+allowImplicitProviderInclusions);
-            }
-            
-            if(allowImplicitProviderInclusions)
-            {
-                return ProfileImpl.IMPLICIT_INCLUDE;
-            }
-            else
-            {
-                return ProfileImpl.NO_MATCH;
-            }
-        }
-        
-        // in all other cases just return the true result
-        
-        return trueResult;
-    }
-    
-    public int usedWithQuery(URI nextQueryUri, URI nextIncludeExcludeOrder)
-    {
-        if(_DEBUG)
-        {
-            log.debug("Profile.usedWithQuery: key="+key+" nextQueryUri="+nextQueryUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder);
-        }
-        
-        int trueResult = usedWithIncludeExcludeList(nextQueryUri, nextIncludeExcludeOrder, includeQueries, excludeQueries, defaultProfileIncludeExcludeOrder);
-        
-        // in all known cases
-        
-        if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
-        {
-            if(_DEBUG)
-            {
-                log.debug("Profile.usedWithQuery: found implicit match nextQueryUri="+nextQueryUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder+" allowImplicitProviderInclusions="+allowImplicitProviderInclusions);
-            }
-            
-            if(allowImplicitProviderInclusions)
-            {
-                return ProfileImpl.IMPLICIT_INCLUDE;
-            }
-            else
-            {
-                return ProfileImpl.NO_MATCH;
-            }
-        }
-        
-        // in all other cases just return the true result
-        
-        return trueResult;
-    }
-    
-    
-    public int usedWithRdfRule(URI nextRdfRuleUri, URI nextIncludeExcludeOrder)
-    {
-        if(_DEBUG)
-        {
-            log.debug("Profile.usedWithRdfRule: nextRdfRuleUri="+nextRdfRuleUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder);
-        }
-        
-        int trueResult = usedWithIncludeExcludeList(nextRdfRuleUri, nextIncludeExcludeOrder, includeRdfRules, excludeRdfRules, defaultProfileIncludeExcludeOrder);
-        
 
-        // if the implicit include is not to be recognised in the context of this profile, 
-        // filter it out and indicate to the caller that no match occurred so they can continue looking for a match
+    public int usedWithProfilable(ProfilableInterface profilableObject)
+    {
+        Collection<URI> includeList = null;
+        Collection<URI> excludeList = null;
+        boolean allowImplicitInclusions = false;
+        
+        if(profilableObject instanceof Provider)
+        {
+            includeList = this.getIncludeProviders();
+            excludeList = this.getExcludeProviders();
+            allowImplicitInclusions = this.getAllowImplicitProviderInclusions();
+        }
+        else if(profilableObject instanceof QueryType)
+        {
+            includeList = this.getIncludeQueries();
+            excludeList = this.getExcludeQueries();
+            allowImplicitInclusions = this.getAllowImplicitQueryInclusions();
+        }
+        else if(profilableObject instanceof NormalisationRule)
+        {
+            includeList = this.getIncludeRdfRules();
+            excludeList = this.getExcludeRdfRules();
+            allowImplicitInclusions = this.getAllowImplicitRdfRuleInclusions();
+        }
+        else
+        {
+            throw new RuntimeException("ProfileImpl.usedWithProfilable: Did not recognise the type for object profilableObject="+profilableObject.toString());
+        }
+        
+        
+        int trueResult = usedWithIncludeExcludeList(profilableObject.getKey(), profilableObject.getProfileIncludeExcludeOrder(), includeList, excludeList, this.getDefaultProfileIncludeExcludeOrder());
+        
+        
         if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
         {
             if(_DEBUG)
             {
-                log.debug("Profile.usedWithRdfRule: found implicit match nextRdfRuleUri="+nextRdfRuleUri+" nextIncludeExcludeOrder="+nextIncludeExcludeOrder+" allowImplicitProviderInclusions="+allowImplicitProviderInclusions);
+                log.debug("ProfileImpl.usedWithProfilable: found implicit match profilableObject.getKey()="+profilableObject.getKey()+" nextIncludeExcludeOrder="+profilableObject.getProfileIncludeExcludeOrder()+" allowImplicitInclusions="+allowImplicitInclusions);
             }
             
-            if(allowImplicitProviderInclusions)
+            if(allowImplicitInclusions)
             {
                 return ProfileImpl.IMPLICIT_INCLUDE;
             }
@@ -587,9 +542,7 @@ public class ProfileImpl extends Profile
                 return ProfileImpl.NO_MATCH;
             }
         }
-        
-        // in all other cases just return the true result
-        
+
         return trueResult;
     }
     
@@ -709,6 +662,81 @@ public class ProfileImpl extends Profile
             throw new RuntimeException("Profile.usedWithList: nextIncludeExcludeOrder not recognised ("+nextIncludeExcludeOrder+")");
         }
     }
+    
+    public static boolean isUsedWithProfileList(ProfilableInterface profilableObject, List<Profile> nextSortedProfileList, boolean recogniseImplicitInclusions, boolean includeNonProfileMatched)
+    {
+        for(final Profile nextProfile : nextSortedProfileList)
+        {
+            final int trueResult = nextProfile.usedWithProfilable(profilableObject);
+            if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
+            {
+                if(_DEBUG)
+                {
+                    log.debug("isUsedWithProfileList: found implicit include for profilableObject="
+                                    + profilableObject.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+                
+                if(recogniseImplicitInclusions)
+                {
+                    if(_DEBUG)
+                    {
+                        log.debug("isUsedWithProfileList: returning implicit include true for profilableObject="
+                                        + profilableObject.getKey().stringValue()
+                                        + " profile="
+                                        + nextProfile.getKey().stringValue());
+                    }
+                    return true;
+                }
+                else if(_DEBUG)
+                {
+                    log.debug("isUsedWithProfileList: implicit include not recognised for profilableObject="
+                                    + profilableObject.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+            }
+            else if(trueResult == ProfileImpl.SPECIFIC_INCLUDE)
+            {
+                if(_DEBUG)
+                {
+                    log.debug("isUsedWithProfileList: returning specific true for profilableObject="
+                                    + profilableObject.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+                return true;
+            }
+            else if(trueResult == ProfileImpl.SPECIFIC_EXCLUDE)
+            {
+                if(_DEBUG)
+                {
+                    log.debug("isUsedWithProfileList: returning specific false for profilableObject="
+                                    + profilableObject.getKey().stringValue()
+                                    + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+                return false;
+            }
+            
+            
+        }
+        
+        boolean returnValue = (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getExcludeThenIncludeUri()) 
+                            || profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
+                            && includeNonProfileMatched;
+        
+        if(_DEBUG)
+        {
+            log.debug("ProfileImpl.isUsedWithProfileList: returning no matches found returnValue="
+                            + returnValue
+                            + " for profilableObject=" + profilableObject.getKey().stringValue());
+        }
+        
+        return returnValue;
+    }
+
     
     public String toString()
     {
