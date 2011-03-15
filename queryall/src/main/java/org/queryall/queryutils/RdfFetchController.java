@@ -106,9 +106,12 @@ public class RdfFetchController
         {
             if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
             {
+                log.debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="+nextQueryBundle.getQueryType().getKey().stringValue());
                 return true;
             }
         }
+        
+        log.debug("RdfFetchController.queryKnown: returning false at end of method");
         
         return false;
     }
@@ -189,16 +192,25 @@ public class RdfFetchController
                     }
                 } // end if(_DEBUG}
                 
-                log.debug( "RdfFetchController.initialise: about to generate query bundles for query type and providers");
+                if(_TRACE)
+                {
+                    log.trace( "RdfFetchController.initialise: about to generate query bundles for query type and providers");
+                }
                 
                 Collection<QueryBundle> queryBundlesForQueryType = this.generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
                         chosenProviders, localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider"));
                 
-                log.debug( "RdfFetchController.initialise: queryBundlesForQueryType.size()="+queryBundlesForQueryType.size());
-
-                for(QueryBundle nextQueryBundleForQueryType : queryBundlesForQueryType)
+                if(_DEBUG)
                 {
-                    log.debug( "RdfFetchController.initialise: nextQueryBndleForQueryType="+nextQueryBundleForQueryType.toString());
+                    log.debug( "RdfFetchController.initialise: queryBundlesForQueryType.size()="+queryBundlesForQueryType.size());
+                }
+                
+                if(_TRACE)
+                {
+                    for(QueryBundle nextQueryBundleForQueryType : queryBundlesForQueryType)
+                    {
+                        log.trace( "RdfFetchController.initialise: nextQueryBndleForQueryType="+nextQueryBundleForQueryType.toString());
+                    }
                 }
                 
                 this.addQueryBundles(queryBundlesForQueryType);
@@ -217,7 +229,10 @@ public class RdfFetchController
         }
         if(_INFO)
         {
-            log.info("RdfFetchController.initialise: no query bundles given or created");
+            if(queryBundles.size()== 0)
+            {
+                log.info("RdfFetchController.initialise: no query bundles given or created");
+            }
         }
         
         // queryBundles = multiProviderQueryBundles;
