@@ -576,7 +576,7 @@ public class Settings
         return results;
     }
     
-    public synchronized boolean addTemplate(Template nextTemplate, boolean overwritePrevious)
+    public boolean addTemplate(Template nextTemplate, boolean overwritePrevious)
     {
         Template existingTemplate = getTemplate(nextTemplate.getKey());
         
@@ -609,7 +609,7 @@ public class Settings
         return result;
     }
     
-    public synchronized Template createNewTemplateByString(String templateKey, String templateString, String contentType)
+    public Template createNewTemplateByString(String templateKey, String templateString, String contentType)
     {
         Template result = new TemplateImpl();
         
@@ -715,7 +715,7 @@ public class Settings
         // return result;
     }
     
-    public synchronized Template createNewTemplateByKey(String templateKey, String contentType)
+    public Template createNewTemplateByKey(String templateKey, String contentType)
     {
         Template result = new TemplateImpl();
         

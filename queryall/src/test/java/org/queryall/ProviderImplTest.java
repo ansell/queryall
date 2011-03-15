@@ -22,6 +22,11 @@ public class ProviderImplTest extends AbstractProviderTest
         return new ProviderImpl();
     }
 
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
+    }
+
     public URI getProfileExcludeThenIncludeURI()
     {
         return ProfileImpl.getExcludeThenIncludeUri();
@@ -30,11 +35,6 @@ public class ProviderImplTest extends AbstractProviderTest
     public URI getProfileIncludeThenExcludeURI()
     {
         return ProfileImpl.getIncludeThenExcludeUri();
-    }
-
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
     }
 
     public URI getProfileIncludeExcludeOrderUndefinedUri()

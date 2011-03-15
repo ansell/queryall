@@ -234,9 +234,9 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
 
         if(!stages.contains(stage))
         {
-            if(_INFO)
+            if(_DEBUG)
             {
-                log.info("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="+getKey().stringValue()+" stage="+stage);
+                log.debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="+getKey().stringValue()+" stage="+stage);
             }
 
             return input;

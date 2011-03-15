@@ -124,39 +124,39 @@ public abstract class AbstractProviderTest
         
         profileIncludeAllImplicitly = getNewTestProfile();
         profileIncludeAllImplicitly.setAllowImplicitProviderInclusions(true);
-        profileIncludeAllImplicitly.setAllowImplicitQueryInclusions(true);
+        profileIncludeAllImplicitly.setAllowImplicitQueryTypeInclusions(true);
         profileIncludeAllImplicitly.setAllowImplicitRdfRuleInclusions(true);
         profileIncludeAllImplicitly.setDefaultProfileIncludeExcludeOrder(getProfileExcludeThenIncludeURI());
         
         profileIncludeAllImplicitlyExcludeByDefault = getNewTestProfile();
         profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitProviderInclusions(true);
-        profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitQueryInclusions(true);
+        profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitQueryTypeInclusions(true);
         profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitRdfRuleInclusions(true);
         profileIncludeAllImplicitlyExcludeByDefault.setDefaultProfileIncludeExcludeOrder(getProfileIncludeThenExcludeURI());
         
         profileExcludeImplicitly = getNewTestProfile();
         profileExcludeImplicitly.setAllowImplicitProviderInclusions(false);
-        profileExcludeImplicitly.setAllowImplicitQueryInclusions(false);
+        profileExcludeImplicitly.setAllowImplicitQueryTypeInclusions(false);
         profileExcludeImplicitly.setAllowImplicitRdfRuleInclusions(false);
         profileExcludeImplicitly.setDefaultProfileIncludeExcludeOrder(getProfileExcludeThenIncludeURI());
         
         profileExcludeImplicitlyAndByDefault = getNewTestProfile();
         profileExcludeImplicitlyAndByDefault.setAllowImplicitProviderInclusions(false);
-        profileExcludeImplicitlyAndByDefault.setAllowImplicitQueryInclusions(false);
+        profileExcludeImplicitlyAndByDefault.setAllowImplicitQueryTypeInclusions(false);
         profileExcludeImplicitlyAndByDefault.setAllowImplicitRdfRuleInclusions(false);
         profileExcludeImplicitlyAndByDefault.setDefaultProfileIncludeExcludeOrder(getProfileIncludeThenExcludeURI());
         
         profileIncludeTrueOnly = getNewTestProfile();
         profileIncludeTrueOnly.addIncludeProvider(testTrueProviderUri);
         profileIncludeTrueOnly.setAllowImplicitProviderInclusions(false);
-        profileIncludeTrueOnly.setAllowImplicitQueryInclusions(false);
+        profileIncludeTrueOnly.setAllowImplicitQueryTypeInclusions(false);
         profileIncludeTrueOnly.setAllowImplicitRdfRuleInclusions(false);
         profileIncludeTrueOnly.setDefaultProfileIncludeExcludeOrder(getProfileIncludeThenExcludeURI());
         
         profileExcludeFalseOnly = getNewTestProfile();
         profileExcludeFalseOnly.addExcludeProvider(testFalseProviderUri);
         profileExcludeFalseOnly.setAllowImplicitProviderInclusions(false);
-        profileExcludeFalseOnly.setAllowImplicitQueryInclusions(false);
+        profileExcludeFalseOnly.setAllowImplicitQueryTypeInclusions(false);
         profileExcludeFalseOnly.setAllowImplicitRdfRuleInclusions(false);
         profileExcludeFalseOnly.setDefaultProfileIncludeExcludeOrder(getProfileIncludeThenExcludeURI());
 
