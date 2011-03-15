@@ -4,11 +4,7 @@ import java.util.Collection;
 
 public abstract class Profile implements BaseQueryAllInterface, Comparable<Profile>
 {
-    public abstract int usedWithProvider(org.openrdf.model.URI provider, org.openrdf.model.URI profileIncludeExcludeOrder);
-
-    public abstract int usedWithQuery(org.openrdf.model.URI query, org.openrdf.model.URI profileIncludeExcludeOrder);
-
-    public abstract int usedWithRdfRule(org.openrdf.model.URI rdfRule, org.openrdf.model.URI profileIncludeExcludeOrder);
+    public abstract int usedWithProfilable(ProfilableInterface profilableObject);
     
     public abstract int getOrder();
     

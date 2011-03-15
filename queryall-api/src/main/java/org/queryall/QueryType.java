@@ -96,8 +96,6 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
     
     public abstract void setIncludedStaticOutputTemplates(Collection<URI> includedStaticOutputTemplates);
     
-    public abstract boolean isQueryUsedWithProfileList(List<Profile> nextSortedProfileList, boolean recogniseImplicitQueryInclusions, boolean includeNonProfileMatchedQueries);
-    
     @Override
     public String toString()
     {
