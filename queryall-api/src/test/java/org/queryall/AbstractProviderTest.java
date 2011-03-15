@@ -101,7 +101,7 @@ public abstract class AbstractProviderTest
         providerNoNamespacesDefault.setIsDefaultSource(true);
         providerNoNamespacesDefault.addIncludedInQueryType(testTrueQueryTypeUri);
         providerNoNamespacesDefault.addNormalisationUri(testTrueRuleUri);
-        providerSpecificDefault.setProfileIncludeExcludeOrder(getProfileIncludeExcludeOrderUndefinedUri());
+        providerNoNamespacesDefault.setProfileIncludeExcludeOrder(getProfileIncludeExcludeOrderUndefinedUri());
         
         providerTrueUri = getNewTestProvider();
         providerTrueUri.setProfileIncludeExcludeOrder(getProfileIncludeExcludeOrderUndefinedUri());
@@ -323,198 +323,162 @@ public abstract class AbstractProviderTest
      * or when the providers default include exclude order was excludeThenInclude.
      */
     @Test
-    public void testisUsedWithProfileList()
+    public void testIsUsedWithProfileList()
     {
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListEmpty, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListEmpty, false, true));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListEmpty, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListEmpty, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListEmpty, 
+                true, true, false, false);
         
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListEmpty, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListEmpty, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListEmpty, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListEmpty, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListEmpty, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListEmpty, 
+                true, true, false, false);
+
+
         
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListEmpty, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListEmpty, false, true));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListEmpty, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListEmpty, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListSingleIncludeAllImplicitly, 
+                true, true, true, false);
         
-        
-        
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, false, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, false, false));
-        
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, false, false));
-        
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, false, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitly, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListSingleIncludeAllImplicitly, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListSingleIncludeAllImplicitly, 
+                true, true, true, false);
         
         
         
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, false, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListSingleIncludeAllImplicitlyExcludeByDefault, 
+                true, true, true, false);
         
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, false, false));
-        
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, false, true));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleIncludeAllImplicitlyExcludeByDefault, false, false));
-        
-        
-        
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, false, true));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, false, false));
-        
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeImplicitly, false, false));
-        
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeImplicitly, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeImplicitly, false, true));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeImplicitly, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeImplicitly, false, false));
-        
-        
-        
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, false, true));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, false, false));
-        
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, false, false));
-        
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, false, true));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListSingleExcludeExplicitlyAndByDefault, false, false));
-        
-        
-        
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false));
-        
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false));
-        
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListSingleIncludeAllImplicitlyExcludeByDefault, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListSingleIncludeAllImplicitlyExcludeByDefault, 
+                true, true, false, false);
         
 
         
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true));
-        assertTrue(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, true));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, false));
-        assertFalse(providerIncludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListSingleExcludeImplicitly, 
+                true, true, false, false);
         
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, true));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, false));
-        assertFalse(providerExcludeImplicitly.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListSingleExcludeImplicitly, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListSingleExcludeImplicitly, 
+                true, true, false, false);
         
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true));
-        assertTrue(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, true));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, false));
-        assertFalse(providerIncludeExcludeOrderUndefined.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false));
+
         
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListSingleExcludeExplicitlyAndByDefault, 
+                true, true, false, false);
         
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListSingleExcludeExplicitlyAndByDefault, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListSingleExcludeExplicitlyAndByDefault, 
+                true, true, false, false);
+
         
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListSingleIncludeTrue, true, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListSingleIncludeTrue, false, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListSingleIncludeTrue, true, false));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListSingleIncludeTrue, false, false));
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, 
+                true, true, true, false);
         
-        assertTrue(providerFalseUri.isUsedWithProfileList(profileListSingleIncludeTrue, true, true));
-        assertTrue(providerFalseUri.isUsedWithProfileList(profileListSingleIncludeTrue, false, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListSingleIncludeTrue, true, false));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListSingleIncludeTrue, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, 
+                true, true, true, false);
+
         
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeImplicitly, profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, 
+                true, true, false, false);
         
-        
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListSingleExcludeFalse, true, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListSingleExcludeFalse, false, true));
-        assertFalse(providerTrueUri.isUsedWithProfileList(profileListSingleExcludeFalse, true, false));
-        assertFalse(providerTrueUri.isUsedWithProfileList(profileListSingleExcludeFalse, false, false));
-        
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListSingleExcludeFalse, true, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListSingleExcludeFalse, false, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListSingleExcludeFalse, true, false));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListSingleExcludeFalse, false, false));
-        
-        
-        
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, false));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false));
-        
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, false));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false));
-        
-        
-        
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, false));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false));
-        
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, false));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerExcludeImplicitly, profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, 
+                false, false, false, false);
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerIncludeExcludeOrderUndefined, profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, 
+                true, true, false, false);
         
         
         
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, true, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, false, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, true, false));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerTrueUri, profileListSingleIncludeTrue, 
+                true, true, true, true);
         
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, true, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, false, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, true, false));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleIncludeTrueThenExcludeFalse, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerFalseUri, profileListSingleIncludeTrue, 
+                true, true, false, false);
         
+
         
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerTrueUri, profileListSingleExcludeFalse, 
+                true, true, false, false);
         
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, true, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, false, true));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, true, false));
-        assertTrue(providerTrueUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, false, false));
-        
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, true, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, false, true));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, true, false));
-        assertFalse(providerFalseUri.isUsedWithProfileList(profileListMultipleExcludeFalseThenIncludeTrue, false, false));
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerFalseUri, profileListSingleExcludeFalse, 
+                false, false, false, false);
         
         
+
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerTrueUri, profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, 
+                true, true, true, true);
         
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerFalseUri, profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, 
+                false, false, false, false);
+        
+        
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerTrueUri, profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, 
+                true, true, true, true);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerFalseUri, profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, 
+                false, false, false, false);
+        
+        
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerTrueUri, profileListMultipleIncludeTrueThenExcludeFalse, 
+                true, true, true, true);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerFalseUri, profileListMultipleIncludeTrueThenExcludeFalse, 
+                false, false, false, false);
+
+        
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerTrueUri, profileListMultipleExcludeFalseThenIncludeTrue, 
+                true, true, true, true);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(
+                providerFalseUri, profileListMultipleExcludeFalseThenIncludeTrue, 
+                false, false, false, false);
     }
 }
