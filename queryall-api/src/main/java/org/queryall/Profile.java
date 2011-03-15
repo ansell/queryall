@@ -14,9 +14,9 @@ public abstract class Profile implements BaseQueryAllInterface, Comparable<Profi
     
     public abstract void setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI defaultProfileIncludeExcludeOrder);
 
-    public abstract void setAllowImplicitQueryInclusions(boolean allowImplicitQueryInclusions);
+    public abstract void setAllowImplicitQueryTypeInclusions(boolean allowImplicitQueryInclusions);
 
-    public abstract boolean getAllowImplicitQueryInclusions();
+    public abstract boolean getAllowImplicitQueryTypeInclusions();
 
 
     public abstract void setAllowImplicitProviderInclusions(boolean allowImplicitProviderInclusions);
@@ -46,18 +46,18 @@ public abstract class Profile implements BaseQueryAllInterface, Comparable<Profi
     public abstract Collection<org.openrdf.model.URI> getExcludeProviders();
     
 
-    public abstract void addIncludeQuery(org.openrdf.model.URI includeQuery);
+    public abstract void addIncludeQueryType(org.openrdf.model.URI includeQuery);
 
-    public abstract void setIncludeQueries(Collection<org.openrdf.model.URI> includeQueries);
+    public abstract void setIncludeQueryTypes(Collection<org.openrdf.model.URI> includeQueries);
     
-    public abstract Collection<org.openrdf.model.URI> getIncludeQueries();
+    public abstract Collection<org.openrdf.model.URI> getIncludeQueryTypes();
     
 
-    public abstract void addExcludeQuery(org.openrdf.model.URI excludeQuery);
+    public abstract void addExcludeQueryType(org.openrdf.model.URI excludeQuery);
 
-    public abstract void setExcludeQueries(Collection<org.openrdf.model.URI> excludeQueries);
+    public abstract void setExcludeQueryTypes(Collection<org.openrdf.model.URI> excludeQueries);
     
-    public abstract Collection<org.openrdf.model.URI> getExcludeQueries();
+    public abstract Collection<org.openrdf.model.URI> getExcludeQueryTypes();
 
 
     public abstract void addIncludeRdfRule(org.openrdf.model.URI includeRdfRule);

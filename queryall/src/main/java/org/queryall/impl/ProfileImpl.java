@@ -246,7 +246,7 @@ public class ProfileImpl extends Profile
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitQueryInclusionsUri()))
             {
-                result.setAllowImplicitQueryInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                result.setAllowImplicitQueryTypeInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitProviderInclusionsUri()))
             {
@@ -290,8 +290,8 @@ public class ProfileImpl extends Profile
         
         result.setIncludeProviders(tempIncludeProviders);
         result.setExcludeProviders(tempExcludeProviders);
-        result.setIncludeQueries(tempIncludeQueries);
-        result.setExcludeQueries(tempExcludeQueries);
+        result.setIncludeQueryTypes(tempIncludeQueries);
+        result.setExcludeQueryTypes(tempExcludeQueries);
         result.setIncludeRdfRules(tempIncludeRdfRules);
         result.setExcludeRdfRules(tempExcludeRdfRules);
         
@@ -507,9 +507,9 @@ public class ProfileImpl extends Profile
         }
         else if(profilableObject instanceof QueryType)
         {
-            includeList = this.getIncludeQueries();
-            excludeList = this.getExcludeQueries();
-            allowImplicitInclusions = this.getAllowImplicitQueryInclusions();
+            includeList = this.getIncludeQueryTypes();
+            excludeList = this.getExcludeQueryTypes();
+            allowImplicitInclusions = this.getAllowImplicitQueryTypeInclusions();
         }
         else if(profilableObject instanceof NormalisationRule)
         {
@@ -893,12 +893,12 @@ public class ProfileImpl extends Profile
         return unrecognisedStatements;
     }
 
-    public boolean getAllowImplicitQueryInclusions()
+    public boolean getAllowImplicitQueryTypeInclusions()
     {
         return allowImplicitQueryInclusions;
     }
     
-    public void setAllowImplicitQueryInclusions(boolean allowImplicitQueryInclusions)
+    public void setAllowImplicitQueryTypeInclusions(boolean allowImplicitQueryInclusions)
     {
         this.allowImplicitQueryInclusions = allowImplicitQueryInclusions;
     }
@@ -954,22 +954,22 @@ public class ProfileImpl extends Profile
     }
     
 
-    public void setIncludeQueries(Collection<URI> includeQueries)
+    public void setIncludeQueryTypes(Collection<URI> includeQueries)
     {
         this.includeQueries = includeQueries;
     }
     
-    public Collection<URI> getIncludeQueries()
+    public Collection<URI> getIncludeQueryTypes()
     {
         return includeQueries;
     }
     
-    public void setExcludeQueries(Collection<URI> excludeQueries)
+    public void setExcludeQueryTypes(Collection<URI> excludeQueries)
     {
         this.excludeQueries = excludeQueries;
     }
     
-    public Collection<URI> getExcludeQueries()
+    public Collection<URI> getExcludeQueryTypes()
     {
         return excludeQueries;
     }    
@@ -1267,7 +1267,7 @@ public class ProfileImpl extends Profile
         this.excludeProviders.add(excludeProvider);
     }
 
-    public void addIncludeQuery(URI includeQuery)
+    public void addIncludeQueryType(URI includeQuery)
     {
         if(this.includeQueries == null)
         {
@@ -1277,7 +1277,7 @@ public class ProfileImpl extends Profile
         this.includeQueries.add(includeQuery);
     }
 
-    public void addExcludeQuery(URI excludeQuery)
+    public void addExcludeQueryType(URI excludeQuery)
     {
         if(this.excludeQueries == null)
         {
