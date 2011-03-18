@@ -191,11 +191,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             {
                 try
                 {
-                    RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.returnedMIMEType);
+                    RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
                     
                     if(log.isDebugEnabled())
                     {
-                        log.debug("ProvenanceRecord.fetchProvenanceForElementKey: nextReaderFormat for returnedContentType="+nextResult.returnedContentType+" nextReaderFormat="+nextReaderFormat);
+                        log.debug("ProvenanceRecord.fetchProvenanceForElementKey: nextReaderFormat for returnedContentType="+nextResult.getReturnedContentType()+" nextReaderFormat="+nextReaderFormat);
                     }
                     
                     if(nextReaderFormat == null)
@@ -204,22 +204,22 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                             continue;
                         }
                         else
                         {
-                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                         }
                     }
                     else if(log.isDebugEnabled())
                     {
-                        log.debug("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat matched for returnedMIMEType="+nextResult.returnedMIMEType);
+                        log.debug("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat matched for returnedMIMEType="+nextResult.getReturnedMIMEType());
                     }
                     
-                    if(nextResult.normalisedResult.length() > 0)
+                    if(nextResult.getNormalisedResult().length() > 0)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress()+"provenancebykey/"+StringUtils.percentEncode(nextElementKey), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), Settings.getSettings().getDefaultHostAddress()+"provenancebykey/"+StringUtils.percentEncode(nextElementKey), nextReaderFormat);
                     }
                 }
                 catch(org.openrdf.rio.RDFParseException rdfpe)

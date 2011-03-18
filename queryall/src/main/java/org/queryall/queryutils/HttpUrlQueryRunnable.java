@@ -58,7 +58,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
     {
         try
         {
-            queryStartTime = new Date();
+            setQueryStartTime(new Date());
             
             RdfFetcher fetcher = new RdfFetcher();
             
@@ -69,42 +69,42 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
             
             if(this.httpOperation.equals(ProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
             {
-                this.rawResult = fetcher.submitSparqlQuery(this.endpointUrl, this.format, "", this.query, "", maxRowsParameter, this.acceptHeader);
+                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(), "", this.getQuery(), "", maxRowsParameter, this.getAcceptHeader()));
             }
             else if(this.httpOperation.equals(ProviderImpl.getProviderHttpPostUrlUri().stringValue()) || this.httpOperation.equals(ProviderImpl.getProviderHttpGetUrlUri().stringValue()))
             {
-                this.rawResult = fetcher.getDocumentFromUrl(this.endpointUrl, this.query, this.acceptHeader);
+                this.setRawResult(fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(), this.getAcceptHeader()));
             }
             
             // make the normalised Result the same as the raw result unless people actually want to normalise it
-            this.normalisedResult = rawResult;
+            this.setNormalisedResult(getRawResult());
             
-            this.returnedContentType = fetcher.lastReturnedContentType;
+            this.setReturnedContentType(fetcher.lastReturnedContentType);
             
-            if(this.returnedContentType != null)
+            if(this.getReturnedContentType() != null)
             {
                 // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it through the conn neg code
-                this.returnedMIMEType = this.returnedContentType.split(";")[0];
+                this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
             }
             
-            this.returnedContentEncoding = fetcher.lastReturnedContentEncoding;
+            this.setReturnedContentEncoding(fetcher.lastReturnedContentEncoding);
             
-            wasSuccessful = true;
+            setWasSuccessful(true);
         }
         catch(java.net.SocketTimeoutException ste)
         {
-            wasSuccessful = false;
-            lastException = ste;
+            setWasSuccessful(false);
+            setLastException(ste);
         }
         catch(Exception ex)
         {
-            wasSuccessful = false;
-            lastException = ex;
+            setWasSuccessful(false);
+            setLastException(ex);
         }
         finally
         {
-            queryEndTime = new Date();
-            this.completed = true;
+            setQueryEndTime(new Date());
+            this.setCompleted(true);
         }
     }
 }

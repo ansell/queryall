@@ -23,39 +23,39 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 		{
 			RdfFetcher fetcher = new RdfFetcher();
 			
-			queryStartTime = new Date();
+			setQueryStartTime(new Date());
 			
-			this.rawResult = fetcher.getDocumentFromUrl(this.endpointUrl, "", this.acceptHeader);
+			this.setRawResult(fetcher.getDocumentFromUrl(this.getEndpointUrl(), "", this.getAcceptHeader()));
 			
-			queryEndTime = new Date();
+			setQueryEndTime(new Date());
 			
-			this.returnedContentType = fetcher.lastReturnedContentType;
+			this.setReturnedContentType(fetcher.lastReturnedContentType);
 			
-			if(this.returnedContentType != null)
+			if(this.getReturnedContentType() != null)
 			{
 				// HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it through the conn neg code
-				this.returnedMIMEType = this.returnedContentType.split(";")[0];
+				this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
 			}
 			
-			this.returnedContentEncoding = fetcher.lastReturnedContentEncoding;
+			this.setReturnedContentEncoding(fetcher.lastReturnedContentEncoding);
 			
-			wasSuccessful = true;
+			setWasSuccessful(true);
 		}
 		catch(java.net.SocketTimeoutException ste)
 		{
-			queryEndTime = new Date();
-			wasSuccessful = false;
-			lastException = ste;
+			setQueryEndTime(new Date());
+			setWasSuccessful(false);
+			setLastException(ste);
 		}
 		catch(Exception ex)
 		{
-			queryEndTime = new Date();
-			wasSuccessful = false;
-			lastException = ex;
+			setQueryEndTime(new Date());
+			setWasSuccessful(false);
+			setLastException(ex);
 		}
 		finally
 		{
-			this.completed = true;
+			this.setCompleted(true);
 		}
 	}
 }

@@ -29,12 +29,12 @@ public class BlacklistEntry
         
         for(RdfFetcherQueryRunnable nextErrorQuery : errorRunnables)
         {
-            resultBuffer.append("Failed query key : "+nextErrorQuery.originalQueryBundle.getQueryType().getKey().stringValue()+"<br />\n");
-            resultBuffer.append("Failure message : "+nextErrorQuery.lastException.toString()+"<br />\n");
+            resultBuffer.append("Failed query key : "+nextErrorQuery.getOriginalQueryBundle().getQueryType().getKey().stringValue()+"<br />\n");
+            resultBuffer.append("Failure message : "+nextErrorQuery.getLastException().toString()+"<br />\n");
             
-            resultBuffer.append("Time to fail (milliseconds) : "+(nextErrorQuery.queryEndTime.getTime()-nextErrorQuery.queryStartTime.getTime())+" <br />\n");
+            resultBuffer.append("Time to fail (milliseconds) : "+(nextErrorQuery.getQueryEndTime().getTime()-nextErrorQuery.getQueryStartTime().getTime())+" <br />\n");
             
-            totalTime += nextErrorQuery.queryEndTime.getTime()-nextErrorQuery.queryStartTime.getTime();
+            totalTime += nextErrorQuery.getQueryEndTime().getTime()-nextErrorQuery.getQueryStartTime().getTime();
             
             numberOfEntries++;
         }

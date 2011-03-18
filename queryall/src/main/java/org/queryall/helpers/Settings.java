@@ -2510,9 +2510,9 @@ public class Settings
                                 throw ie;
                             }
                             
-                            if(nextThread.wasSuccessful)
+                            if(nextThread.getWasSuccessful())
                             {
-                                myRepositoryConnection.add(new java.io.StringReader(nextThread.rawResult), url.toString(),
+                                myRepositoryConnection.add(new java.io.StringReader(nextThread.getRawResult()), url.toString(),
                                         RDFFormat.forMIMEType(configMIMEFormat));
                                 if(Settings._INFO)
                                 {
@@ -2521,7 +2521,7 @@ public class Settings
                             }
                             else
                             {
-                                Settings.log.error("Settings: error getting backup configuration from URL: nextLocation="+ nextLocation+" nextThread.lastException="+nextThread.lastException);
+                                Settings.log.error("Settings: error getting backup configuration from URL: nextLocation="+ nextLocation+" nextThread.lastException="+nextThread.getLastException());
                                 
                                 // backupNeeded = true;
                                 backupFailed = true;

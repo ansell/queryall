@@ -617,7 +617,7 @@ public class RdfFetchController
         // This loop is a safety check, although it doesn't actually fallover if something is wrong
         for( RdfFetcherQueryRunnable nextThread : getFetchThreadGroup() )
         {
-            if( !nextThread.completed )
+            if( !nextThread.getCompleted() )
             {
                 log.fatal( "RdfFetchController.fetchRdfForQueries: Thread not completed properly name="+nextThread.getName() );
             }
@@ -625,41 +625,41 @@ public class RdfFetchController
         
         for( RdfFetcherQueryRunnable nextThread : getFetchThreadGroup() )
         {
-            if( !nextThread.wasSuccessful )
+            if( !nextThread.getWasSuccessful() )
             {
-                if( nextThread.lastException != null )
+                if( nextThread.getLastException() != null )
                 {
-                    log.error( "RdfFetchController.fetchRdfForQueries: endpoint="+nextThread.endpointUrl+ " message=" + nextThread.lastException.getMessage() );
+                    log.error( "RdfFetchController.fetchRdfForQueries: endpoint="+nextThread.getEndpointUrl()+ " message=" + nextThread.getLastException().getMessage() );
                     
                     URI queryKey = null;
                     
-                    if(nextThread.originalQueryBundle != null && nextThread.originalQueryBundle.getQueryType() != null)
+                    if(nextThread.getOriginalQueryBundle() != null && nextThread.getOriginalQueryBundle().getQueryType() != null)
                     {
-                        queryKey = nextThread.originalQueryBundle.getQueryType().getKey();
+                        queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                     }
                     
-                    nextThread.resultDebugString = "Error occured with querykey="+queryKey+" on endpoint="+nextThread.getEndpointUrl()+" query=" +nextThread.getQuery();
+                    nextThread.setResultDebugString("Error occured with querykey="+queryKey+" on endpoint="+nextThread.getEndpointUrl()+" query=" +nextThread.getQuery());
                     
                     getErrorResults().add( nextThread );
                 }
             }
             else
             {
-                String nextResult = nextThread.rawResult;
+                String nextResult = nextThread.getRawResult();
                 
                 String convertedResult = (String)SparqlQueryCreator.normaliseByStage(
                     NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(),
                     nextResult, 
                     localSettings.getSortedRulesForProvider( 
-                        nextThread.originalQueryBundle.getProvider(), 
+                        nextThread.getOriginalQueryBundle().getProvider(), 
                         Constants.HIGHEST_ORDER_FIRST ), 
                     sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions"), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules") );
                 
-                nextThread.normalisedResult = convertedResult;
+                nextThread.setNormalisedResult(convertedResult);
                 
                 if( _DEBUG )
                 {
-                    log.debug( "RdfFetchController.fetchRdfForQueries: Query successful endpoint="+nextThread.originalQueryBundle.getQueryEndpoint() );
+                    log.debug( "RdfFetchController.fetchRdfForQueries: Query successful endpoint="+nextThread.getOriginalQueryBundle().getQueryEndpoint() );
                     
                     if( _TRACE )
                     {
@@ -669,12 +669,12 @@ public class RdfFetchController
                 
                 URI queryKey = null;
                 
-                if(nextThread.originalQueryBundle != null && nextThread.originalQueryBundle.getQueryType() != null)
+                if(nextThread.getOriginalQueryBundle() != null && nextThread.getOriginalQueryBundle().getQueryType() != null)
                 {
-                    queryKey = nextThread.originalQueryBundle.getQueryType().getKey();
+                    queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                 }
                 
-                nextThread.resultDebugString = "Query queryKey="+queryKey+" successful on endpoint="+nextThread.originalQueryBundle.getQueryEndpoint()+" query=" + nextThread.originalQueryBundle.getQuery();
+                nextThread.setResultDebugString("Query queryKey="+queryKey+" successful on endpoint="+nextThread.getOriginalQueryBundle().getQueryEndpoint()+" query=" + nextThread.getOriginalQueryBundle().getQuery());
                 
                 getSuccessfulResults().add( nextThread );
             }

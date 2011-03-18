@@ -69,14 +69,14 @@ public class BlacklistController
                 {
                     BlacklistController.log
                             .debug("BlacklistController.accumulateBlacklist: going to accumulate entry for endpointUrl="
-                                    + nextQueryObject.endpointUrl);
+                                    + nextQueryObject.getEndpointUrl());
                 }
                 
                 if(BlacklistController.accumulatedBlacklistStatistics
-                        .containsKey(nextQueryObject.endpointUrl))
+                        .containsKey(nextQueryObject.getEndpointUrl()))
                 {
                     final BlacklistEntry previousCount = BlacklistController.accumulatedBlacklistStatistics
-                            .get(nextQueryObject.endpointUrl);
+                            .get(nextQueryObject.getEndpointUrl());
                     
                     if(BlacklistController._DEBUG)
                     {
@@ -84,25 +84,25 @@ public class BlacklistController
                                 .debug("BlacklistController.accumulateBlacklist: There were "
                                         + previousCount
                                         + " previous instances on blacklist for endpointUrl="
-                                        + nextQueryObject.endpointUrl);
+                                        + nextQueryObject.getEndpointUrl());
                     }
                     
                     previousCount.numberOfFailures++;
                     previousCount.errorRunnables.add(nextQueryObject);
                     
                     BlacklistController.accumulatedBlacklistStatistics.put(
-                            nextQueryObject.endpointUrl, previousCount);
+                            nextQueryObject.getEndpointUrl(), previousCount);
                 }
                 else
                 {
                     final BlacklistEntry newFailureCount = new BlacklistEntry();
-                    newFailureCount.endpointUrl = nextQueryObject.endpointUrl;
+                    newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
                     newFailureCount.numberOfFailures = 1;
                     newFailureCount.errorRunnables = new HashSet<RdfFetcherQueryRunnable>();
                     newFailureCount.errorRunnables.add(nextQueryObject);
                     
                     BlacklistController.accumulatedBlacklistStatistics.put(
-                            nextQueryObject.endpointUrl, newFailureCount);
+                            nextQueryObject.getEndpointUrl(), newFailureCount);
                 }
                 
                 BlacklistController.allCurrentBadQueries.add(nextQueryObject);
@@ -278,7 +278,7 @@ public class BlacklistController
             
             for(final HttpUrlQueryRunnable nextThread : BlacklistController.internalStatisticsUploadList)
             {
-                if(nextThread.completed)
+                if(nextThread.getCompleted())
                 {
                     completedThreads.add(nextThread);
                 }
@@ -289,13 +289,13 @@ public class BlacklistController
                 if(nextThread == null)
                     continue;
                 
-                if(!nextThread.wasSuccessful)
+                if(!nextThread.getWasSuccessful())
                 {
                     BlacklistController.log.error(
                                     "BlacklistController: found error while clearing completed statistics threads");
                     if(BlacklistController._DEBUG)
                     {
-                        BlacklistController.log.debug(nextThread.lastException);
+                        BlacklistController.log.debug(nextThread.getLastException());
                     }
                 }
                 
@@ -727,7 +727,7 @@ public class BlacklistController
             {
                 // only deal with it if it was blacklisted
                 BlacklistController.accumulatedBlacklistStatistics
-                        .remove(nextQueryObject.endpointUrl);
+                        .remove(nextQueryObject.getEndpointUrl());
             }
         }
     }

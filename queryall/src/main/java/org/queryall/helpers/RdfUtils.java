@@ -3,9 +3,11 @@ package org.queryall.helpers;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -928,7 +930,7 @@ public class RdfUtils
         }
         catch(InterruptedException ie)
         {
-            log.fatal("QueryType: interrupted exception",ie);
+            log.fatal("RdfUtils.getQueryTypesForQueryBundles: interrupted exception",ie);
             // throw ie;
         }
         
@@ -946,11 +948,11 @@ public class RdfUtils
             {
                 try
                 {
-                    RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.returnedMIMEType);
+                    RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
                     
                     if(log.isDebugEnabled())
                     {
-                        log.debug("QueryType.fetchQueryTypeByKey: nextReaderFormat for returnedContentType="+nextResult.returnedContentType+" nextReaderFormat="+nextReaderFormat);
+                        log.debug("RdfUtils.getQueryTypesForQueryBundles: nextReaderFormat for returnedContentType="+nextResult.getReturnedContentType()+" nextReaderFormat="+nextReaderFormat);
                     }
                     
                     if(nextReaderFormat == null)
@@ -959,41 +961,41 @@ public class RdfUtils
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("QueryType.fetchQueryTypeByKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                             continue;
                         }
                         else
                         {
-                            log.warn("QueryType.fetchQueryTypeByKey: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                         }
                     }
                     else if(log.isDebugEnabled())
                     {
-                        log.debug("QueryType.fetchQueryTypeByKey: readerFormat matched for returnedMIMEType="+nextResult.returnedMIMEType);
+                        log.debug("RdfUtils.getQueryTypesForQueryBundles: readerFormat matched for returnedMIMEType="+nextResult.getReturnedMIMEType());
                     }
                     
-                    if(nextResult.normalisedResult.length() > 0)
+                    if(nextResult.getNormalisedResult().length() > 0)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
                     }
                 }
                 catch(org.openrdf.rio.RDFParseException rdfpe)
                 {
-                    log.error("QueryType.fetchQueryTypeByKey: RDFParseException",rdfpe);
+                    log.error("RdfUtils.getQueryTypesForQueryBundles: RDFParseException",rdfpe);
                 }
                 catch(org.openrdf.repository.RepositoryException re)
                 {
-                    log.error("QueryType.fetchQueryTypeByKey: RepositoryException inner",re);
+                    log.error("RdfUtils.getQueryTypesForQueryBundles: RepositoryException inner",re);
                 }
                 catch(java.io.IOException ioe)
                 {
-                    log.error("QueryType.fetchQueryTypeByKey: IOException",ioe);
+                    log.error("RdfUtils.getQueryTypesForQueryBundles: IOException",ioe);
                 }
             } // end for(RdfFetcherQueryRunnable nextResult : rdfResults)
         }
         catch(org.openrdf.repository.RepositoryException re)
         {
-            log.error("QueryType.fetchQueryTypeByKey: RepositoryException outer",re);
+            log.error("RdfUtils.getQueryTypesForQueryBundles: RepositoryException outer",re);
         }
         finally
         {
@@ -1004,7 +1006,7 @@ public class RdfUtils
             }
             catch(org.openrdf.repository.RepositoryException re2)
             {
-                log.fatal("QueryType.fetchQueryTypeByKey: failed to close repository connection", re2);
+                log.fatal("RdfUtils.getQueryTypesForQueryBundles: failed to close repository connection", re2);
             }
         }
         
@@ -1016,7 +1018,7 @@ public class RdfUtils
         }
         catch(org.openrdf.repository.RepositoryException re)
         {
-            log.fatal("QueryType.fetchQueryTypeByKey: failed to get records due to a repository exception", re);
+            log.fatal("RdfUtils.getQueryTypesForQueryBundles: failed to get records due to a repository exception", re);
         }
         
         return results.values();
@@ -1368,7 +1370,7 @@ public class RdfUtils
     {
         if(_DEBUG)
         {
-            log.debug("Utilities: nextResult.toString()="+nextResult.toString());
+            log.debug("RdfUtils.insertResultIntoRepository: nextResult.toString()="+nextResult.toString());
         }
         
         RepositoryConnection myRepositoryConnection = null;
@@ -1377,11 +1379,11 @@ public class RdfUtils
         {
             myRepositoryConnection = myRepository.getConnection();
             
-            RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.returnedMIMEType);
+            RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
             
             if(_DEBUG)
             {
-                log.debug("Utilities: nextReaderFormat for returnedContentType="+nextResult.returnedContentType+" nextReaderFormat="+nextReaderFormat);
+                log.debug("RdfUtils.insertResultIntoRepository: nextReaderFormat for returnedContentType="+nextResult.getReturnedContentType()+" nextReaderFormat="+nextReaderFormat);
             }
             
             if(nextReaderFormat == null)
@@ -1390,32 +1392,32 @@ public class RdfUtils
                 
                 if(nextReaderFormat == null)
                 {
-                    log.error("Utilities: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.returnedMIMEType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                     //throw new RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
-                else if(nextResult.wasSuccessful)
+                else if(nextResult.getWasSuccessful())
                 {
-                    log.warn("Utilities: readerFormat NOT matched for returnedMIMEType="+nextResult.returnedMIMEType+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
                 }
             }
             else if(_DEBUG)
             {
-                log.debug("Utilities: readerFormat matched for returnedMIMEType="+nextResult.returnedMIMEType);
+                log.debug("RdfUtils.insertResultIntoRepository: readerFormat matched for returnedMIMEType="+nextResult.getReturnedMIMEType());
             }
             
             if(_DEBUG)
             {
-                log.debug("Utilities: nextResult.normalisedResult.length()="+nextResult.normalisedResult.length());
+                log.debug("RdfUtils.insertResultIntoRepository: nextResult.normalisedResult.length()="+nextResult.getNormalisedResult().length());
             }
             
             if(_TRACE)
             {
-                log.trace("Utilities: nextResult.normalisedResult="+nextResult.normalisedResult);
+                log.trace("RdfUtils.insertResultIntoRepository: nextResult.normalisedResult="+nextResult.getNormalisedResult());
             }
             
-            if(nextReaderFormat != null && nextResult.normalisedResult.length() > 0)
+            if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
             {
-                myRepositoryConnection.add(new java.io.StringReader(nextResult.normalisedResult), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
+                myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
                 
                 myRepositoryConnection.commit();
             }
@@ -1427,11 +1429,11 @@ public class RdfUtils
         }
         catch(org.openrdf.rio.RDFParseException rdfpe)
         {
-            log.error("Utilities: RDFParseException result: nextResult.endpointUrl="+nextResult.endpointUrl+" message="+rdfpe.getMessage());
+            log.error("RdfUtils.insertResultIntoRepository: RDFParseException result: nextResult.endpointUrl="+nextResult.getEndpointUrl()+" message="+rdfpe.getMessage());
             
             if(_TRACE)
             {
-                log.debug("Utilities: RDFParseException result: normalisedResult="+nextResult.normalisedResult);
+                log.debug("RdfUtils.insertResultIntoRepository: RDFParseException result: normalisedResult="+nextResult.getNormalisedResult());
             }
         }
         finally
@@ -1444,7 +1446,7 @@ public class RdfUtils
                 }
                 catch(Exception ex)
                 {
-                    log.error("Utilities: finally section, caught exception",ex);
+                    log.error("RdfUtils.insertResultIntoRepository: finally section, caught exception",ex);
                 }
             }
         }
@@ -1467,12 +1469,33 @@ public class RdfUtils
         return result;
     }
     
-    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository) throws RepositoryException, java.io.IOException , InterruptedException
+    public static Collection<Statement> retrieveUrlsToStatements(Collection<String> retrievalUrls, String defaultResultFormat) throws InterruptedException
+    {
+        Collection<Statement> results = new HashSet<Statement>();
+        
+        try
+        {
+            Repository resultsRepository = new SailRepository(new MemoryStore());
+            resultsRepository.initialize();
+            
+            retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, true);
+        
+            results = getAllStatementsFromRepository(resultsRepository);
+        }
+        catch (OpenRDFException e)
+        {
+            log.error("RdfUtils.retrieveUrlsToStatements: caught OpenRDFException", e);
+        }
+        
+        return results;
+    }
+    
+    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository) throws InterruptedException
     {
         retrieveUrls(retrievalUrls, defaultResultFormat, myRepository, true);
     }
 	
-    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository, boolean inParallel) throws RepositoryException, java.io.IOException , InterruptedException
+    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository, boolean inParallel) throws InterruptedException
     {
         Collection<RdfFetcherQueryRunnable> retrievalThreads = new HashSet<RdfFetcherQueryRunnable>();
         
@@ -1523,13 +1546,26 @@ public class RdfUtils
             }
         }
         
-        insertResultsIntoRepository(retrievalThreads, myRepository);
+        try
+        {
+            insertResultsIntoRepository(retrievalThreads, myRepository);
+        }
+        catch (RepositoryException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
     }
     
     public static void retrieveUrls(String retrievalUrl, String defaultResultFormat, Repository myRepository) throws RepositoryException, java.io.IOException , InterruptedException
     {
-        Collection<String> retrievalList = new HashSet<String>();
+        Collection<String> retrievalList = new LinkedList<String>();
         retrievalList.add(retrievalUrl);
         
         retrieveUrls(retrievalList, defaultResultFormat, myRepository, true);
