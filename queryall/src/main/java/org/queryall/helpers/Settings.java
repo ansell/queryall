@@ -186,12 +186,13 @@ public class Settings
     {
         String result = System.getProperty(key);
         
-        if(result == null || result.equals(""))
-        {
+        if(result == null)
         	result = Settings.getString(key, defaultValue);
-        }
 
-        return result;
+        if(result == null)
+            return defaultValue;
+        else
+            return result;
     }
     
     public static Settings getSettings()
@@ -2732,15 +2733,15 @@ public class Settings
             {
                 URI configUri = f.createURI(nextConfigUri);
                 
-                if(_TRACE)
-                    Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+//                if(_TRACE)
+//                    Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
                 results.addAll(getValueCollectionPropertiesFromConfig(configUri, propertyUri));
             }
         }
         catch(Exception ex)
         {
-            Settings.log.error("this.getValueCollectionPropertiesFromConfig: error", ex);
+            Settings.log.error("Settings.getValueCollectionPropertiesFromConfig: error", ex);
         }
         
         return results;
@@ -2756,6 +2757,8 @@ public class Settings
 
     public String getStringPropertyFromConfig(String key, String defaultValue)
     {
+        String result = defaultValue;
+        
         log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<String> values = getStringCollectionPropertiesFromConfig(key);
@@ -2768,10 +2771,12 @@ public class Settings
 
         for(String nextValue : values)
         {
-            return nextValue;
+            result = nextValue;
         }
         
-        return defaultValue;
+        log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue+" returning result="+result);
+
+        return result;
     }
 
     /**
@@ -2784,22 +2789,25 @@ public class Settings
 
     public boolean getBooleanPropertyFromConfig(String key, boolean defaultValue)
     {
-        log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+        boolean result = defaultValue;
+        log.trace("Settings.getBooleanPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            Settings.log.error("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
         for(Value nextValue : values)
         {
-            return RdfUtils.getBooleanFromValue(nextValue);
+            result = RdfUtils.getBooleanFromValue(nextValue);
         }
         
-        return defaultValue;
+        log.trace("Settings.getBooleanPropertyFromConfig: key="+key+" result="+result);
+
+        return result;
     }
 
     /**
@@ -2812,22 +2820,26 @@ public class Settings
 
     public long getLongPropertyFromConfig(String key, long defaultValue)
     {
+        long result = defaultValue;
+        
         log.trace("Settings.getLongPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            Settings.log.error("Settings.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
         for(Value nextValue : values)
         {
-            return RdfUtils.getLongFromValue(nextValue);
+            result = RdfUtils.getLongFromValue(nextValue);
         }
         
-        return defaultValue;
+        log.trace("Settings.getLongPropertyFromConfig: key="+key+" result="+result);
+
+        return result;
     }
         
     /**
@@ -2840,22 +2852,26 @@ public class Settings
 
     public int getIntPropertyFromConfig(String key, int defaultValue)
     {
+        int result = defaultValue;
+        
         log.trace("Settings.getIntPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            Settings.log.error("Settings.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
         for(Value nextValue : values)
         {
-            return RdfUtils.getIntegerFromValue(nextValue);
+            result = RdfUtils.getIntegerFromValue(nextValue);
         }
         
-        return defaultValue;
+        log.trace("Settings.getIntPropertyFromConfig: key="+key+" result="+result);
+
+        return result;
     }
         
     /**
@@ -2868,22 +2884,26 @@ public class Settings
 
     public float getFloatPropertyFromConfig(String key, float defaultValue)
     {
+        float result = defaultValue;
+        
         log.trace("Settings.getFloatPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            Settings.log.error("Settings.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
         for(Value nextValue : values)
         {
-            return MathsUtils.getFloatFromValue(nextValue);
+            result = MathsUtils.getFloatFromValue(nextValue);
         }
         
-        return defaultValue;
+        log.trace("Settings.getFloatPropertyFromConfig: key="+key+" result="+result);
+
+        return result;
     }
         
     private Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri)
