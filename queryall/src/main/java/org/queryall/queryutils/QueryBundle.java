@@ -1,31 +1,31 @@
 package org.queryall.queryutils;
 
-import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.OWL;
-import org.openrdf.model.URI;
-import org.openrdf.model.Literal;
-import org.openrdf.model.ValueFactory;
-
-import org.openrdf.OpenRDFException;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.sail.memory.model.MemValueFactory;
-
-import java.util.LinkedList;
 import java.util.Collection;
 import java.util.HashSet;
-
-import org.queryall.NormalisationRule;
-import org.queryall.Provider;
-import org.queryall.QueryType;
-import org.queryall.Profile;
-
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.Settings;
+import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
+import org.openrdf.OpenRDFException;
+import org.openrdf.model.Literal;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.vocabulary.OWL;
+import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+
+import org.queryall.NormalisationRule;
+import org.queryall.Profile;
+import org.queryall.Provider;
+import org.queryall.QueryType;
+import org.queryall.helpers.Constants;
+import org.queryall.helpers.Settings;
+
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class QueryBundle 
 {
     private static final Logger log = Logger.getLogger(QueryBundle.class.getName());
@@ -64,22 +64,22 @@ public class QueryBundle
     
     static
     {
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         queryBundleNamespace = Settings.getSettings().getOntologyTermUriPrefix()
 			+Settings.getSettings().getNamespaceForQueryBundle()
 			+Settings.getSettings().getOntologyTermUriSuffix();
 		
-        queryBundleTypeUri = f.createURI(queryBundleNamespace+"QueryBundle");
-        queryLiteralUri = f.createURI(queryBundleNamespace+"hasQueryLiteral");
-        queryBundleEndpointUriTerm = f.createURI(queryBundleNamespace+"hasQueryBundleEndpoint");
-        queryBundleOriginalEndpointStringTerm = f.createURI(queryBundleNamespace+"hasOriginalEndpointString");
-        queryBundleAlternativeEndpointUriTerm = f.createURI(queryBundleNamespace+"hasAlternativeQueryBundleEndpoint");
-        queryBundleKeyUri = f.createURI(queryBundleNamespace+"hasQueryBundleKey");
-        queryBundleQueryTypeUri = f.createURI(queryBundleNamespace+"hasQueryTypeUri");
-        queryBundleProviderUri = f.createURI(queryBundleNamespace+"hasProviderUri");
-        queryBundleConfigurationApiVersion = f.createURI(queryBundleNamespace+"hasConfigurationApiVersion");
-        queryBundleProfileUri = f.createURI(queryBundleNamespace+"hasProfileUri");
+        queryBundleTypeUri = f.createURI(queryBundleNamespace,"QueryBundle");
+        queryLiteralUri = f.createURI(queryBundleNamespace,"hasQueryLiteral");
+        queryBundleEndpointUriTerm = f.createURI(queryBundleNamespace,"hasQueryBundleEndpoint");
+        queryBundleOriginalEndpointStringTerm = f.createURI(queryBundleNamespace,"hasOriginalEndpointString");
+        queryBundleAlternativeEndpointUriTerm = f.createURI(queryBundleNamespace,"hasAlternativeQueryBundleEndpoint");
+        queryBundleKeyUri = f.createURI(queryBundleNamespace,"hasQueryBundleKey");
+        queryBundleQueryTypeUri = f.createURI(queryBundleNamespace,"hasQueryTypeUri");
+        queryBundleProviderUri = f.createURI(queryBundleNamespace,"hasProviderUri");
+        queryBundleConfigurationApiVersion = f.createURI(queryBundleNamespace,"hasConfigurationApiVersion");
+        queryBundleProfileUri = f.createURI(queryBundleNamespace,"hasProfileUri");
     }
     
     public String getQueryEndpoint()
@@ -91,7 +91,7 @@ public class QueryBundle
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -196,13 +196,13 @@ public class QueryBundle
 		
 		RepositoryConnection con = myRepository.getConnection();
 		
-		ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
 		
 		try
 		{
 			String keyPrefix = Settings.getSettings().getDefaultHostAddress()
 				+ Settings.getSettings().getNamespaceForQueryBundle()
-				+ Settings.getSettings().getStringPropertyFromConfig("separator");
+				+ Settings.getSettings().getStringPropertyFromConfig("separator", "");
 			
 			// create some resources and literals to make statements out of
 			URI queryBundleInstanceUri = f.createURI(keyPrefix + keyToUse);

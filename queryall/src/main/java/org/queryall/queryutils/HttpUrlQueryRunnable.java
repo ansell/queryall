@@ -6,6 +6,9 @@ import java.util.Date;
 import org.queryall.helpers.Settings;
 import org.queryall.impl.ProviderImpl;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thread
 {
     private static final Logger log = Logger.getLogger(HttpUrlQueryRunnable.class.getName());
@@ -21,7 +24,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
     // public String url = "";
     // public String postInformation = "";
     // public String acceptHeader = "";
-    public int maxRowsParameter = localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
+    public int maxRowsParameter = localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
     // public String format = "";
     
     // public String rawResult = "";

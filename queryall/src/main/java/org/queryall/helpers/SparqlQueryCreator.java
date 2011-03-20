@@ -15,6 +15,9 @@ import org.queryall.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class SparqlQueryCreator
 {
     private static final Logger log = Logger.getLogger(SparqlQueryCreator.class
@@ -186,10 +189,10 @@ public class SparqlQueryCreator
         }
         
         replacedString = replacedString.replace("${limit}", "LIMIT "
-                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"));
+                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0));
         
         normalisedQueryUri = normalisedQueryUri.replace("${limit}", "limit/"
-                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit"));
+                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0));
         
         if(attributeList.containsKey("offset"))
         {
@@ -209,7 +212,7 @@ public class SparqlQueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset = (pageOffset - 1)
-                        * Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
+                        * Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
                 
                 replacedString = replacedString.replace("${sparqlOffset}",
                         "OFFSET " + actualPageOffset);
@@ -1137,9 +1140,9 @@ public class SparqlQueryCreator
         
         final Map<String, String> attributeList = new Hashtable<String, String>();
         
-        attributeList.put("defaultHostName", Settings.getSettings().getStringPropertyFromConfig("hostName"));
+        attributeList.put("defaultHostName", Settings.getSettings().getStringPropertyFromConfig("hostName", ""));
         attributeList.put("defaultHostAddress", Settings.getSettings().getDefaultHostAddress());
-        attributeList.put("defaultSeparator", Settings.getSettings().getStringPropertyFromConfig("separator"));
+        attributeList.put("defaultSeparator", Settings.getSettings().getStringPropertyFromConfig("separator", ""));
         attributeList.put("realHostName", realHostName);
         attributeList.put("queryString", queryString);
         attributeList.put("graphUri", nextProvider.getSparqlGraphUri());
@@ -1158,11 +1161,11 @@ public class SparqlQueryCreator
         attributeList.put("endpointUrl", nextEndpoint);
         
         attributeList.put("urlEncoded_defaultHostName", StringUtils
-                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName")));
+                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName", "")));
         attributeList.put("urlEncoded_defaultHostAddress", StringUtils
                 .percentEncode(Settings.getSettings().getDefaultHostAddress()));
         attributeList.put("urlEncoded_defaultSeparator", StringUtils
-                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator")));
+                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", "")));
         attributeList.put("urlEncoded_graphUri", StringUtils
                 .percentEncode(nextProvider.getSparqlGraphUri()));
         attributeList.put("urlEncoded_endpointUrl", StringUtils
@@ -1173,11 +1176,11 @@ public class SparqlQueryCreator
                 .percentEncode(queryString));
         
         attributeList.put("xmlEncoded_defaultHostName", StringUtils
-                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("hostName")));
+                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("hostName", "")));
         attributeList.put("xmlEncoded_defaultHostAddress", StringUtils
-                .xmlEncodeString("http://" + Settings.getSettings().getStringPropertyFromConfig("hostName") + "/"));
+                .xmlEncodeString("http://" + Settings.getSettings().getStringPropertyFromConfig("hostName", "") + "/"));
         attributeList.put("xmlEncoded_defaultSeparator", StringUtils
-                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator")));
+                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator", "")));
         attributeList.put("xmlEncoded_graphUri", StringUtils
                 .xmlEncodeString(nextProvider.getSparqlGraphUri()));
         attributeList.put("xmlEncoded_endpointUrl", StringUtils
@@ -1189,13 +1192,13 @@ public class SparqlQueryCreator
         
         attributeList.put("xmlEncoded_urlEncoded_defaultHostName", StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName"))));
+                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName", ""))));
         attributeList.put("xmlEncoded_urlEncoded_defaultHostAddress", StringUtils
                 .xmlEncodeString(StringUtils.percentEncode("http://"
-                        + Settings.getSettings().getStringPropertyFromConfig("hostName") + "/")));
+                        + Settings.getSettings().getStringPropertyFromConfig("hostName", "") + "/")));
         attributeList.put("xmlEncoded_urlEncoded_defaultSeparator", StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator"))));
+                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", ""))));
         attributeList.put("xmlEncoded_urlEncoded_graphUri", StringUtils
                 .xmlEncodeString(StringUtils
                         .percentEncode(nextProvider.getSparqlGraphUri())));

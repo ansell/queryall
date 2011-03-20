@@ -6,12 +6,12 @@ package org.queryall.helpers;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
+
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.NumericLiteralImpl;
 
 /**
- * @author peter
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class MathsUtils
 {

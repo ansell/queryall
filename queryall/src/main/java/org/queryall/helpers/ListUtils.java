@@ -11,8 +11,7 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 /**
- * @author peter
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ListUtils 
 {

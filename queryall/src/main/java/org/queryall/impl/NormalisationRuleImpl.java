@@ -18,16 +18,18 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.NormalisationRule;
 import org.queryall.Profile;
 
+import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public abstract class NormalisationRuleImpl extends NormalisationRule
 {
 
@@ -78,56 +80,47 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         NormalisationRuleImpl.rdfruleNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                 + Settings.getSettings().getNamespaceForNormalisationRule()
                 + Settings.getSettings().getOntologyTermUriSuffix();
-        try
-        {
-            final Repository myStaticRepository = new SailRepository(
-                    new MemoryStore());
-            myStaticRepository.initialize();
-            final ValueFactory f = myStaticRepository.getValueFactory();
-            
-            NormalisationRuleImpl.setNormalisationRuleTypeUri(f.createURI(NormalisationRuleImpl.rdfruleNamespace + "NormalisationRule"));
-                    
-            NormalisationRuleImpl.version2NormalisationRuleTypeUri = f.createURI(NormalisationRuleImpl.rdfruleNamespace+"RdfRule");
-            
-            NormalisationRuleImpl.setRdfruleDescription(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace
-                            + "description"));
-            NormalisationRuleImpl.setRdfruleOrder(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "order"));
-            NormalisationRuleImpl.setRdfruleStage(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "stage"));
-            NormalisationRuleImpl.setRdfruleHasRelatedNamespace(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace
-                            + "hasRelatedNamespace"));
-                    
-            NormalisationRuleImpl.setRdfruleStageQueryVariables(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "queryVariables"));
-
-            NormalisationRuleImpl.setRdfruleStageAfterQueryCreation(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "afterQueryCreation"));
-
-            NormalisationRuleImpl.setRdfruleStageAfterQueryParsing(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "afterQueryParsing"));
-
-            NormalisationRuleImpl.setRdfruleStageBeforeResultsImport(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "beforeResultsImport"));
-            
-            NormalisationRuleImpl.setRdfruleStageAfterResultsImport(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "afterResultsImport"));
-            
-            NormalisationRuleImpl.setRdfruleStageAfterResultsToPool(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "afterResultsToPool"));
-
-            NormalisationRuleImpl.setRdfruleStageAfterResultsToDocument(f
-                    .createURI(NormalisationRuleImpl.rdfruleNamespace + "afterResultsToDocument"));
-
-            NormalisationRuleImpl.setRdfruleTypeValidForStage(f.createURI(NormalisationRuleImpl.rdfruleNamespace + "typeValidForStage"));
-        }
-        catch (final RepositoryException re)
-        {
-            log.error(re.getMessage());
-        }
         
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        NormalisationRuleImpl.setNormalisationRuleTypeUri(f.createURI(NormalisationRuleImpl.rdfruleNamespace , "NormalisationRule"));
+                
+        NormalisationRuleImpl.version2NormalisationRuleTypeUri = f.createURI(NormalisationRuleImpl.rdfruleNamespace,"RdfRule");
+        
+        NormalisationRuleImpl.setRdfruleDescription(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace
+                        , "description"));
+        NormalisationRuleImpl.setRdfruleOrder(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "order"));
+        NormalisationRuleImpl.setRdfruleStage(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "stage"));
+        NormalisationRuleImpl.setRdfruleHasRelatedNamespace(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace
+                        , "hasRelatedNamespace"));
+                
+        NormalisationRuleImpl.setRdfruleStageQueryVariables(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "queryVariables"));
+
+        NormalisationRuleImpl.setRdfruleStageAfterQueryCreation(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "afterQueryCreation"));
+
+        NormalisationRuleImpl.setRdfruleStageAfterQueryParsing(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "afterQueryParsing"));
+
+        NormalisationRuleImpl.setRdfruleStageBeforeResultsImport(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "beforeResultsImport"));
+        
+        NormalisationRuleImpl.setRdfruleStageAfterResultsImport(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "afterResultsImport"));
+        
+        NormalisationRuleImpl.setRdfruleStageAfterResultsToPool(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "afterResultsToPool"));
+
+        NormalisationRuleImpl.setRdfruleStageAfterResultsToDocument(f
+                .createURI(NormalisationRuleImpl.rdfruleNamespace , "afterResultsToDocument"));
+
+        NormalisationRuleImpl.setRdfruleTypeValidForStage(f.createURI(NormalisationRuleImpl.rdfruleNamespace , "typeValidForStage"));
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -278,7 +271,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -384,7 +377,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -400,15 +393,13 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
 
             if(modelVersion == 1)
             {
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
                 con.add(NormalisationRuleImpl.getRdfruleDescription(),
                     RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
-
                 con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.RANGE,
                     RDFS.LITERAL, contextKeyUri);
-
                 con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.DOMAIN,
                     NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
-                
                 con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.LABEL, 
                     f.createLiteral("The description of a normalisation rule."),
                     contextKeyUri);
@@ -417,27 +408,21 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
             
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDF.TYPE,
                     OWL.DATATYPEPROPERTY, contextKeyUri);
-            
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.RANGE,
                     RDFS.LITERAL, contextKeyUri);
-
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.DOMAIN,
                     NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
-
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.LABEL, 
                 f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
                     contextKeyUri);
 
             
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDF.TYPE,
-                    OWL.DATATYPEPROPERTY, contextKeyUri);
-            
+                    OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
                     NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
-
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
                     NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
-
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.LABEL, 
                 f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
                     contextKeyUri);

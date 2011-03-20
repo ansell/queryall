@@ -23,7 +23,9 @@ import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.RuleTest;
 import org.queryall.helpers.*;
-
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class SparqlNormalisationRule extends NormalisationRuleImpl
 {
     private static final Logger log = Logger
@@ -59,37 +61,18 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
     
     static
     {
-        // SparqlNormalisationRule.rdfruleNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-                // + Settings.DEFAULT_RDF_RDFRULE_NAMESPACE
-                // + Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        final ValueFactory f = Constants.valueFactory;
         
-        try
-        {
-            final Repository myStaticRepository = new SailRepository(
-                    new MemoryStore());
-            myStaticRepository.initialize();
-            final ValueFactory f = myStaticRepository.getValueFactory();
-            
-            SparqlNormalisationRule.setSparqlRuleTypeUri(f
-                    .createURI(SparqlNormalisationRule.rdfruleNamespace
-                            + "SparqlNormalisationRule"));
-            SparqlNormalisationRule.setSparqlRuleSparqlConstructQuery(f
-                    .createURI(SparqlNormalisationRule.rdfruleNamespace
-                            + "sparqlConstructQuery"));
-            SparqlNormalisationRule.setSparqlRuleMode(f
-                    .createURI(SparqlNormalisationRule.rdfruleNamespace
-                            + "mode"));
-            SparqlNormalisationRule.setSparqlRuleModeOnlyDeleteMatches(f
-                    .createURI(SparqlNormalisationRule.rdfruleNamespace
-                            + "onlyDeleteMatches"));
-            SparqlNormalisationRule.setSparqlRuleModeOnlyIncludeMatches(f
-                    .createURI(SparqlNormalisationRule.rdfruleNamespace
-                            + "onlyIncludeMatches"));
-        }
-        catch (final RepositoryException re)
-        {
-            SparqlNormalisationRule.log.error(re.getMessage());
-        }
+        SparqlNormalisationRule.setSparqlRuleTypeUri(f
+                .createURI(SparqlNormalisationRule.rdfruleNamespace, "SparqlNormalisationRule"));
+        SparqlNormalisationRule.setSparqlRuleSparqlConstructQuery(f
+                .createURI(SparqlNormalisationRule.rdfruleNamespace, "sparqlConstructQuery"));
+        SparqlNormalisationRule.setSparqlRuleMode(f
+                .createURI(SparqlNormalisationRule.rdfruleNamespace, "mode"));
+        SparqlNormalisationRule.setSparqlRuleModeOnlyDeleteMatches(f
+                .createURI(SparqlNormalisationRule.rdfruleNamespace, "onlyDeleteMatches"));
+        SparqlNormalisationRule.setSparqlRuleModeOnlyIncludeMatches(f
+                .createURI(SparqlNormalisationRule.rdfruleNamespace, "onlyIncludeMatches"));
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -190,49 +173,22 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             final URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS,
-                    contextKeyUri);
-            
-            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDFS.LABEL, 
-                f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."),
-                    contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextKeyUri);
 
+            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN, SparqlNormalisationRule.getSparqlRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."), contextKeyUri);
 
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDF.TYPE,
-                    OWL.DATATYPEPROPERTY, contextKeyUri);
-            
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE,
-                    RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.DOMAIN, SparqlNormalisationRule.getSparqlRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.LABEL, f.createLiteral("The mode that this normalisation rule will be used in. In the absence of SPARQL Update language support, this enables deletions and filtering based on the matched triples."), contextKeyUri);
 
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN,
-                    SparqlNormalisationRule.getSparqlRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleModeOnlyIncludeMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and only the matches from the rule will remain in the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
 
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, 
-                f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."),
-                    contextKeyUri);
-
-            
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDF.TYPE,
-                    OWL.OBJECTPROPERTY, contextKeyUri);
-            
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.RANGE,
-                    RDFS.RESOURCE, contextKeyUri);
-
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.DOMAIN,
-                    SparqlNormalisationRule.getSparqlRuleTypeUri(), contextKeyUri);
-
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.LABEL, 
-                f.createLiteral("The mode that this normalisation rule will be used in. In the absence of SPARQL Update language support, this enables deletions and filtering based on the matched triples."),
-                    contextKeyUri);
-
-            
-            con.add(SparqlNormalisationRule.getSparqlRuleModeOnlyIncludeMatches(), RDFS.LABEL, 
-                f.createLiteral("Specifies that the SPARQL rule will be applied, and only the matches from the rule will remain in the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."),
-                    contextKeyUri);
-
-            con.add(SparqlNormalisationRule.getSparqlRuleModeOnlyDeleteMatches(), RDFS.LABEL, 
-                f.createLiteral("Specifies that the SPARQL rule will be applied, and the matches from the rule will be deleted from the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."),
-                    contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleModeOnlyDeleteMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and the matches from the rule will be deleted from the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
 
             // If everything went as planned, we can commit the result
             con.commit();

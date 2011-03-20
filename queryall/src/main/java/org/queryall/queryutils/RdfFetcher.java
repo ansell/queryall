@@ -11,7 +11,9 @@ import java.io.OutputStreamWriter;
 import org.queryall.helpers.*;
 import org.queryall.blacklist.*;
 
-
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class RdfFetcher
 {
     private static final Logger log = Logger.getLogger(RdfFetcher.class.getName());
@@ -50,7 +52,7 @@ public class RdfFetcher
         // particular HTTP server or intermediate proxy
         String postQuery = "format="+StringUtils.percentEncode(format)+"&";
         
-        if(Settings.getSettings().getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter"))
+        if(Settings.getSettings().getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter", true))
             postQuery += "maxrows="+maxRowsParameter+"&";
         
         postQuery += "formatting=Raw&";
@@ -82,7 +84,7 @@ public class RdfFetcher
     {
         if(_DEBUG)
         {
-            log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl="+endpointUrl+" Settings.getStringPropertyFromConfig(\"connectTimeout\")="+Settings.getSettings().getIntPropertyFromConfig("connectTimeout"));
+            log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl="+endpointUrl+" Settings.getStringPropertyFromConfig(\"connectTimeout\")="+Settings.getSettings().getIntPropertyFromConfig("connectTimeout", 0));
         }
         
         final long start = System.currentTimeMillis();
@@ -117,16 +119,16 @@ public class RdfFetcher
             BlacklistController.accumulateQueryTotal(url.getProtocol()+"://"+url.getHost());
             
             conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+Settings.getSettings().getStringPropertyFromConfig("userAgent") + " +http://bio2rdf.wiki.sourceforge.net/RobotHelp)");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+Settings.getSettings().getStringPropertyFromConfig("userAgent", "") + " +http://bio2rdf.wiki.sourceforge.net/RobotHelp)");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
                 conn.setRequestProperty("Accept", acceptHeader);
             }
             
-            conn.setUseCaches(Settings.getSettings().getBooleanPropertyFromConfig("useRequestCache"));
-            conn.setConnectTimeout(Settings.getSettings().getIntPropertyFromConfig("connectTimeout"));
-            conn.setReadTimeout(Settings.getSettings().getIntPropertyFromConfig("readTimeout"));
+            conn.setUseCaches(Settings.getSettings().getBooleanPropertyFromConfig("useRequestCache", true));
+            conn.setConnectTimeout(Settings.getSettings().getIntPropertyFromConfig("connectTimeout", 0));
+            conn.setReadTimeout(Settings.getSettings().getIntPropertyFromConfig("readTimeout", 0));
             
             if(postInformation != null && !postInformation.trim().equals(""))
             {

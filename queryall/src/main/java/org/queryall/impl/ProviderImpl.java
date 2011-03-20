@@ -12,7 +12,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,6 +26,9 @@ import org.queryall.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class ProviderImpl extends Provider
 {
     private static final Logger log = Logger.getLogger(Provider.class.getName());
@@ -85,65 +87,117 @@ public class ProviderImpl extends Provider
     
     static
     {
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         providerNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                             +Settings.getSettings().getNamespaceForProvider()
                             +Settings.getSettings().getOntologyTermUriSuffix();
                             
-//        profileNamespace = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX
-//                           +Settings.DEFAULT_RDF_PROFILE_NAMESPACE
-//                           +Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
                            
-        setProviderTypeUri(f.createURI(providerNamespace+"Provider"));
+        setProviderTypeUri(f.createURI(providerNamespace,"Provider"));
+
+        setProviderResolutionStrategy(f.createURI(providerNamespace,"resolutionStrategy"));
+        setProviderHandledNamespace(f.createURI(providerNamespace,"handlesNamespace"));
+        setProviderResolutionMethod(f.createURI(providerNamespace,"resolutionMethod"));
+        setProviderEndpointUrl(f.createURI(providerNamespace,"endpointUrl"));
+        setProviderRequiresSparqlGraphURI(f.createURI(providerNamespace,"requiresGraphUri"));
+        setProviderGraphUri(f.createURI(providerNamespace,"graphUri"));
+        setProviderIncludedInQuery(f.createURI(providerNamespace,"includedInQuery"));
+        setProviderIsDefaultSource(f.createURI(providerNamespace,"isDefaultSource"));
+        setProviderNeedsRdfNormalisation(f.createURI(providerNamespace,"needsRdfNormalisation"));
+        setProviderAcceptHeader(f.createURI(providerNamespace,"acceptHeader"));
+        setProviderRedirect(f.createURI(providerNamespace,"redirect"));
+        setProviderProxy(f.createURI(providerNamespace,"proxy"));
+        setProviderHttpPostSparql(f.createURI(providerNamespace,"httppostsparql"));
+        setProviderHttpGetUrl(f.createURI(providerNamespace,"httpgeturl"));
+        setProviderNoCommunication(f.createURI(providerNamespace,"nocommunication"));
+        setProviderHttpPostUrl(f.createURI(providerNamespace,"httpposturl"));
+
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
-        setProviderTitle(f.createURI(providerNamespace+"Title"));
-        setProviderResolutionStrategy(f.createURI(providerNamespace+"resolutionStrategy"));
-        setProviderHandledNamespace(f.createURI(providerNamespace+"handlesNamespace"));
-        setProviderResolutionMethod(f.createURI(providerNamespace+"resolutionMethod"));
-        setProviderEndpointUrl(f.createURI(providerNamespace+"endpointUrl"));
-        setProviderRequiresSparqlGraphURI(f.createURI(providerNamespace+"requiresGraphUri"));
-        setProviderGraphUri(f.createURI(providerNamespace+"graphUri"));
-        setProviderIncludedInQuery(f.createURI(providerNamespace+"includedInQuery"));
-        setProviderIsDefaultSource(f.createURI(providerNamespace+"isDefaultSource"));
-        setProviderNeedsRdfNormalisation(f.createURI(providerNamespace+"needsRdfNormalisation"));
-        setProviderAcceptHeader(f.createURI(providerNamespace+"acceptHeader"));
-        setProviderRedirect(f.createURI(providerNamespace+"redirect"));
-        setProviderProxy(f.createURI(providerNamespace+"proxy"));
-        setProviderHttpPostSparql(f.createURI(providerNamespace+"httppostsparql"));
-        setProviderHttpGetUrl(f.createURI(providerNamespace+"httpgeturl"));
-        setProviderNoCommunication(f.createURI(providerNamespace+"nocommunication"));
-        setProviderHttpPostUrl(f.createURI(providerNamespace+"httpposturl"));
+        setProviderTitle(f.createURI(providerNamespace,"Title"));
     }
     
     public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
-        
+        final ValueFactory f = Constants.valueFactory;
+
         try
         {
             URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
             con.add(getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            
             if(modelVersion == 1)
             {
-                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
+                con.add(getProviderTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
+                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
             }
+
             con.add(getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderResolutionStrategy(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProviderResolutionStrategy(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderResolutionStrategy(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
             con.add(getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+            con.add(getProviderHandledNamespace(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderHandledNamespace(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
             con.add(getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderIncludedInQuery(), RDFS.RANGE, QueryTypeImpl.getQueryTypeUri(), contextKeyUri);
+            con.add(getProviderIncludedInQuery(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderIncludedInQuery(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
             con.add(getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDFS.RANGE, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            con.add(getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProviderResolutionMethod(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderResolutionMethod(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+
+            
+            con.add(getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderEndpointUrl(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderEndpointUrl(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            
+            con.add(getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            con.add(getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderGraphUri(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderGraphUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            con.add(getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderIsDefaultSource(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            con.add(getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderAcceptHeader(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderAcceptHeader(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
             con.add(getProviderRedirect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderRedirect(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderRedirect(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderRedirect(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
             con.add(getProviderProxy(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderProxy(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderProxy(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderProxy(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -181,7 +235,7 @@ public class ProviderImpl extends Provider
         }
         else
         {
-            return Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader");
+            return Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader", "");
         }
     }
     
@@ -211,8 +265,7 @@ public class ProviderImpl extends Provider
         Collection<URI> tempIncludedInCustomQueries = new HashSet<URI>();
         Collection<URI> tempRdfNormalisationsNeeded = new HashSet<URI>();
         
-        
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         for(Statement nextStatement : inputStatements)
         {
@@ -313,7 +366,7 @@ public class ProviderImpl extends Provider
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -348,7 +401,7 @@ public class ProviderImpl extends Provider
             
             if(getAcceptHeaderString() == null || getAcceptHeaderString().trim().equals(""))
             {
-                acceptHeaderLiteral = f.createLiteral(Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader"));
+                acceptHeaderLiteral = f.createLiteral(Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader", ""));
             }
             else
             {

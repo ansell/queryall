@@ -16,13 +16,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+
 import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
+
 import org.queryall.Template;
 
 /**
- * @author peter
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class StringUtils 
 {
@@ -343,7 +344,7 @@ public class StringUtils
 
     public static URI createURI(String stringForm)
     {
-        return RdfUtils.myValueFactory.createURI(stringForm);
+        return Constants.valueFactory.createURI(stringForm);
     }
 
     public static String md5(String inputString) 
@@ -393,7 +394,7 @@ public class StringUtils
 
     public static List<String> getNamespaceAndIdentifier(String nsAndId)
     {
-        return matchesForRegexOnString(Settings.getSettings().getPlainNamespaceAndIdentifierPattern(), Settings.getSettings().getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex"), nsAndId);
+        return matchesForRegexOnString(Settings.getSettings().getPlainNamespaceAndIdentifierPattern(), Settings.getSettings().getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex", ""), nsAndId);
     }
 
     public static List<String> getNamespaceAndIdentifierFromUri(String nextUri)

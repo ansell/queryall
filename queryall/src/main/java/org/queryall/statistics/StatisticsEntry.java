@@ -25,12 +25,16 @@ import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.BaseQueryAllInterface;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
+import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.ProjectImpl;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class StatisticsEntry implements BaseQueryAllInterface
 {
     private static final Logger log = Logger.getLogger(StatisticsEntry.class
@@ -672,7 +676,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -747,98 +751,88 @@ public class StatisticsEntry implements BaseQueryAllInterface
                 + Settings.getSettings().getNamespaceForStatistics()
                 + Settings.getSettings().getOntologyTermUriSuffix();
         
-        try
-        {
-            final Repository myStaticRepository = new SailRepository(
-                    new MemoryStore());
-            myStaticRepository.initialize();
-            final ValueFactory f = myStaticRepository.getValueFactory();
-            
-            StatisticsEntry.statisticsTypeUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "Statistics");
-            StatisticsEntry.statisticskeyUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace + "key");
-            
-            StatisticsEntry.statisticscurrentdatetimeUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "submissionDate");
-            StatisticsEntry.statisticsprofileUrisUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "profileUri");
-            StatisticsEntry.statisticssuccessfulproviderUrisUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "successfulProviderUri");
-            StatisticsEntry.statisticserrorproviderUrisUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "errorProviderUri");
-            StatisticsEntry.statisticsconfigLocationsUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "configLocation");
-            StatisticsEntry.statisticsquerytypeUrisUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "querytypeUri");
-            StatisticsEntry.statisticsnamespaceUrisUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "namespaceUri");
-            StatisticsEntry.statisticsconfigVersionUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "configVersion");
-            StatisticsEntry.statisticsreadtimeoutUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "readtimeout");
-            StatisticsEntry.statisticsconnecttimeoutUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "connecttimeout");
-            StatisticsEntry.statisticsuserHostAddressUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "userHostAddress");
-            StatisticsEntry.statisticsuserAgentUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "userAgent");
-            StatisticsEntry.statisticsrealHostNameUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "realHostName");
-            StatisticsEntry.statisticsqueryStringUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "queryString");
-            StatisticsEntry.statisticsresponseTimeUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "responseTime");
-            StatisticsEntry.statisticssumLatencyUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "sumLatency");
-            StatisticsEntry.statisticssumQueriesUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "sumQueries");
-            StatisticsEntry.statisticsstdevlatencyUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "stdevlatency");
-            StatisticsEntry.statisticssumerrorsUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "sumerrors");
-            StatisticsEntry.statisticssumerrorlatencyUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "sumerrorlatency");
-            StatisticsEntry.statisticsstdeverrorlatencyUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "stdeverrorlatency");
-            
-            StatisticsEntry.statisticslastServerRestartUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "lastServerRestart");
-            StatisticsEntry.statisticsserverSoftwareVersionUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "serverSoftwareVersion");
-            StatisticsEntry.statisticsacceptHeaderUri = f
-                    .createURI(StatisticsEntry.statisticsNamespace
-                            + "acceptHeader");
-            StatisticsEntry.statisticsrequestedContentTypeUri = f.createURI(StatisticsEntry.statisticsNamespace+ "requestedContentType");
-        }
-        catch (final RepositoryException re)
-        {
-            StatisticsEntry.log.error(re.getMessage());
-        }
+        final ValueFactory f = Constants.valueFactory;
+        
+        StatisticsEntry.statisticsTypeUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "Statistics");
+        StatisticsEntry.statisticskeyUri = f
+                .createURI(StatisticsEntry.statisticsNamespace , "key");
+        
+        StatisticsEntry.statisticscurrentdatetimeUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "submissionDate");
+        StatisticsEntry.statisticsprofileUrisUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "profileUri");
+        StatisticsEntry.statisticssuccessfulproviderUrisUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "successfulProviderUri");
+        StatisticsEntry.statisticserrorproviderUrisUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "errorProviderUri");
+        StatisticsEntry.statisticsconfigLocationsUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "configLocation");
+        StatisticsEntry.statisticsquerytypeUrisUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "querytypeUri");
+        StatisticsEntry.statisticsnamespaceUrisUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "namespaceUri");
+        StatisticsEntry.statisticsconfigVersionUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "configVersion");
+        StatisticsEntry.statisticsreadtimeoutUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "readtimeout");
+        StatisticsEntry.statisticsconnecttimeoutUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "connecttimeout");
+        StatisticsEntry.statisticsuserHostAddressUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "userHostAddress");
+        StatisticsEntry.statisticsuserAgentUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "userAgent");
+        StatisticsEntry.statisticsrealHostNameUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "realHostName");
+        StatisticsEntry.statisticsqueryStringUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "queryString");
+        StatisticsEntry.statisticsresponseTimeUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "responseTime");
+        StatisticsEntry.statisticssumLatencyUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "sumLatency");
+        StatisticsEntry.statisticssumQueriesUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "sumQueries");
+        StatisticsEntry.statisticsstdevlatencyUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "stdevlatency");
+        StatisticsEntry.statisticssumerrorsUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "sumerrors");
+        StatisticsEntry.statisticssumerrorlatencyUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "sumerrorlatency");
+        StatisticsEntry.statisticsstdeverrorlatencyUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "stdeverrorlatency");
+        
+        StatisticsEntry.statisticslastServerRestartUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "lastServerRestart");
+        StatisticsEntry.statisticsserverSoftwareVersionUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "serverSoftwareVersion");
+        StatisticsEntry.statisticsacceptHeaderUri = f
+                .createURI(StatisticsEntry.statisticsNamespace
+                        , "acceptHeader");
+        StatisticsEntry.statisticsrequestedContentTypeUri = f.createURI(StatisticsEntry.statisticsNamespace, "requestedContentType");
     }
     
     /**
@@ -924,7 +918,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public HttpUrlQueryRunnable generateThread(int modelVersion) throws OpenRDFException
     {
-        if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod")
+        if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", "")
                 .equals(ProviderImpl.getProviderHttpPostSparqlUri()
                         .stringValue()))
         {
@@ -947,10 +941,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
             
-            if(Settings.getSettings().getBooleanPropertyFromConfig("statisticsServerUseGraphUri"))
+            if(Settings.getSettings().getBooleanPropertyFromConfig("statisticsServerUseGraphUri", true))
             {
                 sparqlInsertQuery += " INTO GRAPH <"
-                        + Settings.getSettings().getStringPropertyFromConfig("statisticsServerGraphUri") + "> ";
+                        + Settings.getSettings().getStringPropertyFromConfig("statisticsServerGraphUri", "") + "> ";
             }
             
             sparqlInsertQuery += " { " + insertTriplesContent + " } ";
@@ -962,11 +956,11 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod"),
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl"), sparqlInsertQuery,
-                    "*/*", Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", ""),
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl", ""), sparqlInsertQuery,
+                    "*/*", Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
         }
-        else if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod")
+        else if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", "")
                 .equals(ProviderImpl.getProviderHttpPostUrlUri().stringValue()))
         {
             final String postInformation = this.toPostArray();
@@ -978,15 +972,15 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod"),
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl"), postInformation, "*/*",
-                    Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", ""),
+                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl", ""), postInformation, "*/*",
+                    Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
         }
         else
         {
             throw new RuntimeException(
                     "StatisticsEntry.generateThread: Unknown Settings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
-                            + Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod"));
+                            + Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", ""));
         }
     }
     
@@ -1065,7 +1059,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
         {
             connection = myRepository.getConnection();
             
-            final ValueFactory f = myRepository.getValueFactory();
+            final ValueFactory f = Constants.valueFactory;
             
             // TODO: create a key somehow if the one they give us is illegal...
             if((keyToUse == null))
@@ -1083,7 +1077,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
                 currentDate = new Date();
             }
             
-            final String currentDateString = RdfUtils.ISO8601UTC().format(currentDate);
+            final String currentDateString = Constants.ISO8601UTC().format(currentDate);
             
             final Literal currentDateLiteral = f.createLiteral(currentDateString, XMLSchema.DATETIME);
             

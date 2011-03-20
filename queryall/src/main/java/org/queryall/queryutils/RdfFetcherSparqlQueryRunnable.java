@@ -4,10 +4,13 @@ import java.util.Date;
 
 import org.queryall.helpers.*;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
 	public String graphUri = "";
-	public int maxRowsParameter = Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit");
+	public int maxRowsParameter = Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
     
 	public RdfFetcherSparqlQueryRunnable
 	(

@@ -3,6 +3,9 @@
  */
 package org.queryall.helpers;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
@@ -13,7 +16,8 @@ import org.openrdf.sail.memory.model.MemValueFactory;
  */
 public final class Constants
 {
-
+    public static final ValueFactory valueFactory = new MemValueFactory();
+    
     public static final String CURRENT = "current";
     public static final String URL_ENCODED = "urlEncoded";
     public static final String PLUS_URL_ENCODED = "plusUrlEncoded";
@@ -51,15 +55,39 @@ public final class Constants
     public static final String STATISTICS_ITEM_SUMERRORLATENCY = "sumerrorlatency";
     public static final String STATISTICS_ITEM_STDEVERRORLATENCY = "stdeverrorlatency";
     public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
+    public static final String SKOS_NAMESPACE = "http://www.w3.org/2004/02/skos/core#";
 
     static
     {
-        ValueFactory f = new MemValueFactory();
-        
-        DC_TITLE = f.createURI(Constants.DC_NAMESPACE+"title");        
+        DC_TITLE = valueFactory.createURI(DC_NAMESPACE, "title");
+        SKOS_PREFLABEL = valueFactory.createURI(SKOS_NAMESPACE, "prefLabel");
+        SKOS_ALTLABEL = valueFactory.createURI(SKOS_NAMESPACE, "altLabel");
     }
 
     public static URI DC_TITLE;
-    
+    public static URI SKOS_PREFLABEL;
+    public static URI SKOS_ALTLABEL;
 
+    static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+    static final String TIME_ZOME = "UTC";
+
+    public static final String APPLICATION_RDF_XML = "application/rdf+xml";
+
+    public static final String TEXT_RDF_N3 = "text/rdf+n3";
+
+    public static final String TEXT_HTML = "text/html";
+
+    private Constants()
+    {
+    }
+
+    // Why can't these objects be thread safe???????
+    // TODO: find a thread-safe date formatting library and use it instead
+    public static SimpleDateFormat ISO8601UTC()
+    {
+        final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);
+        result.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZOME));
+        return result;
+    }
 }

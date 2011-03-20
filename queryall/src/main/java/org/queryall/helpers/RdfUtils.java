@@ -2,7 +2,6 @@
 package org.queryall.helpers;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
@@ -41,14 +39,21 @@ import org.openrdf.sail.memory.model.BooleanMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.openrdf.sail.memory.model.CalendarMemLiteral;
 
-import org.queryall.*;
-import org.queryall.impl.*;
-import org.queryall.queryutils.*;
+import org.queryall.BaseQueryAllInterface;
+import org.queryall.Provider;
+import org.queryall.QueryType;
+import org.queryall.impl.ProviderImpl;
+import org.queryall.impl.QueryTypeImpl;
+import org.queryall.queryutils.HttpUrlQueryRunnable;
+import org.queryall.queryutils.QueryBundle;
+import org.queryall.queryutils.RdfFetchController;
+import org.queryall.queryutils.RdfFetcherQueryRunnable;
+import org.queryall.queryutils.RdfFetcherUriQueryRunnable;
 
 
 /**
- * A utility class that is used by multiple different Bio2RDF classes
- * @author peter
+ * A utility class to deal with RDF data and resolve RDF queries
+ * @author Peter Ansell p_ansell@yahoo.com
  * @version $Id: $
  */
 public class RdfUtils
@@ -59,34 +64,6 @@ public class RdfUtils
     static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
     static final boolean _INFO = RdfUtils.log.isInfoEnabled();
     
-    private static Repository myRepository = null;
-    static ValueFactory myValueFactory = null;
-    
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    private static final String TIME_ZOME = "UTC";
-    
-    static
-    {
-        if((RdfUtils.myRepository == null)
-                || (RdfUtils.myValueFactory == null))
-        {
-            try
-            {
-                RdfUtils.myRepository = new SailRepository(new MemoryStore());
-                RdfUtils.myRepository.initialize();
-                
-                RdfUtils.myValueFactory = RdfUtils.myRepository
-                        .getValueFactory();
-            }
-            catch (final RepositoryException re)
-            {
-                RdfUtils.log
-                        .fatal("Utilities: Repository failed to initialise!!!! Bad stuff may happen now!!!");
-                throw new RuntimeException(re);
-            }
-        }
-        
-    }
     
     public static void copyAllStatementsToRepository(Repository destination, Repository source)
     {
@@ -157,8 +134,8 @@ public class RdfUtils
             
             if(nsAndIdList.size() == 2)
             {
-                endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nsAndIdList.get(1)));
-                nextQueryBundle.setQueryEndpoint(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nsAndIdList.get(1)));
+                endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nsAndIdList.get(1)));
+                nextQueryBundle.setQueryEndpoint(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nsAndIdList.get(1)));
             }
         // }
         // else
@@ -169,14 +146,14 @@ public class RdfUtils
         
         dummyProvider.setEndpointUrls(endpointUrls);
         dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpGetUrl());
-        dummyProvider.setKey(hostToUse+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(namespaceAndIdentifier));
+        dummyProvider.setKey(hostToUse+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setProvider(dummyProvider);
         
         QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(hostToUse+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(namespaceAndIdentifier));
+        dummyQuery.setKey(hostToUse+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -209,7 +186,7 @@ public class RdfUtils
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
         dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpPostSparql());
-        dummyProvider.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nextQueryKey.stringValue()));
+        dummyProvider.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
@@ -217,7 +194,7 @@ public class RdfUtils
         
         QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator")+StringUtils.percentEncode(nextQueryKey.stringValue()));
+        dummyQuery.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -532,7 +509,7 @@ public class RdfUtils
                 }
                 try
                 {
-                    result = RdfUtils.ISO8601UTC().parse(nextValue.toString());
+                    result = Constants.ISO8601UTC().parse(nextValue.toString());
                 }
                 catch(java.text.ParseException pe)
                 {
@@ -837,8 +814,7 @@ public class RdfUtils
         
         try
         {
-            
-            final ValueFactory f = nextRepository.getValueFactory();
+            final ValueFactory f = Constants.valueFactory;
             
             for(final String nextInputPredicate : predicateUris)
             {
@@ -957,16 +933,16 @@ public class RdfUtils
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                             continue;
                         }
                         else
                         {
-                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                         }
                     }
                     else if(log.isDebugEnabled())
@@ -1288,7 +1264,7 @@ public class RdfUtils
                     final GraphQueryResult queryResult = tupleQuery.evaluate();
 
                     if(_DEBUG)
-                        RdfUtils.log.debug("w: queryString="+queryString);                   
+                        RdfUtils.log.debug("RdfUtils: queryString="+queryString);                   
 
                     try
                     {
@@ -1388,16 +1364,16 @@ public class RdfUtils
             
             if(nextReaderFormat == null)
             {
-                nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                 
                 if(nextReaderFormat == null)
                 {
-                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                     //throw new RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
                 else if(nextResult.getWasSuccessful())
                 {
-                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                 }
             }
             else if(_DEBUG)
@@ -1459,15 +1435,6 @@ public class RdfUtils
 		    insertResultIntoRepository(nextResult, myRepository);
 		}
 	}
-    
-    // Why can't these objects be thread safe???????
-    // TODO: find a thread-safe date formatting library and use it instead
-    public static SimpleDateFormat ISO8601UTC()
-    {
-        final SimpleDateFormat result = new SimpleDateFormat(DATE_FORMAT);
-        result.setTimeZone(TimeZone.getTimeZone(TIME_ZOME));
-        return result;
-    }
     
     public static Collection<Statement> retrieveUrlsToStatements(Collection<String> retrievalUrls, String defaultResultFormat) throws InterruptedException
     {

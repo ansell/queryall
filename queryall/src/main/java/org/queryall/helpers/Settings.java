@@ -2,7 +2,6 @@ package org.queryall.helpers;
 
 import info.aduna.iteration.Iterations;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,17 +38,12 @@ import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.*;
 import org.queryall.impl.*;
-import org.queryall.queryutils.*;
 
 /**
  * A class used to get access to settings
  * 
- * @author Peter Ansell (p_ansell@yahoo.com)
+ * @author Peter Ansell p_ansell@yahoo.com
  * @version $Id: Settings.java 975 2011-02-23 00:59:00Z p_ansell $
- */
-/**
- * @author peter
- *
  */
 public class Settings
 {
@@ -114,12 +108,12 @@ public class Settings
     
     private static Settings settingsSingleton = null;
     
-    public Settings()
+    private Settings()
     {
     	
     }
     
-    public Settings(String baseConfigLocation)
+    private Settings(String baseConfigLocation)
     {
         // Do a quick test on the base config file existence
         
@@ -127,11 +121,11 @@ public class Settings
         
         if(baseConfig == null)
         {
-        	log.debug("Settings.init: baseConfig was null");
+        	log.debug("Settings.init: TEST: baseConfig was null baseConfigLocation="+baseConfigLocation);
         }
         else
         {
-        	log.debug("Settings.init: baseConfig was not null");
+        	log.debug("Settings.init: TEST: baseConfig was not null baseConfigLocation="+baseConfigLocation);
         }
     }
     
@@ -150,11 +144,11 @@ public class Settings
      * Checks for the base config location first in the system vm properties, 
      * then in the localisation properties file, by default, "queryall.properties",
      * Uses the key "queryall.BaseConfigLocation"
-     * @return The location of the base configuration file, defaults to "queryallBaseConfig.n3"
+     * @return The location of the base configuration file, defaults to "/queryallBaseConfig.n3"
      */
     private static String getBaseConfigLocation()
     {
-    	return getSystemOrPropertyString("queryall.BaseConfigLocation", "queryallBaseConfig.n3");
+    	return getSystemOrPropertyString("queryall.BaseConfigLocation", "/queryallBaseConfig.n3");
     }
     
     
@@ -218,9 +212,9 @@ public class Settings
         {
             Settings.log
                     .debug("Settings.configRefreshCheck: before check Settings.PERIODIC_CONFIGURATION_REFRESH="
-                            + this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh")
+                            + this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh", true)
                             + " Settings.PERIODIC_REFRESH_MILLISECONDS="
-                            + this.getLongPropertyFromConfig("periodicConfigurationMilliseconds")
+                            + this.getLongPropertyFromConfig("periodicConfigurationMilliseconds", 0L)
                             + " currentTimestamp - initialisedTimestamp="
                             + (currentTimestamp - this.initialisedTimestamp)
                             + " ");
@@ -232,8 +226,8 @@ public class Settings
             return false;
         }
         
-        boolean enablePeriodicConfigurationRefresh = this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh");
-        long periodicConfigurationMilliseconds = this.getLongPropertyFromConfig("periodicConfigurationMilliseconds");
+        boolean enablePeriodicConfigurationRefresh = this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh", true);
+        long periodicConfigurationMilliseconds = this.getLongPropertyFromConfig("periodicConfigurationMilliseconds", 0L);
         
         if(Settings._DEBUG)
         {
@@ -1570,7 +1564,7 @@ public class Settings
                                     + " queryString="
                                     + queryString);
                 }
-                if(nextQuery.isUsedWithProfileList(profileList, this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions"), this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries")))
+                if(nextQuery.isUsedWithProfileList(profileList, this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions", true), this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries", true)))
                 {
                     if(Settings._DEBUG)
                     {
@@ -2211,6 +2205,11 @@ public class Settings
     
     private synchronized Repository getBaseConfigurationRdf() throws java.lang.InterruptedException
     {
+        if(_TRACE)
+        {
+            Settings.log.trace("Settings.getBaseConfigurationRdf: entering method");
+        }
+
         if(this.currentBaseConfigurationRepository != null)
         {
             return this.currentBaseConfigurationRepository;
@@ -2471,60 +2470,21 @@ public class Settings
                             .getConnection();
                     try
                     {
-                        File nextUrlFile = new File(nextLocation);
-                        if(!nextUrlFile.isAbsolute())
-                        {
-                            // only let people utilise the WEB-INF directory if they
-                            // give a relative URL
-                            // configFile = new
-                            // File(getServletContext().getRealPath("/") +
-                            // "/WEB-INF/" + configUrl);
-                            nextUrlFile = new File(nextLocation);
-                        }
-                        
                         if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
                         {
-                            if(Settings._INFO)
-                            {
-                                Settings.log.info("Settings: getting backup configuration from URL: nextLocation="+ nextLocation);
-                            }
+                            //final URL url = new URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
                             final URL url = new URL(nextLocation);
                             
-                            RdfFetcherQueryRunnable nextThread = new RdfFetcherUriQueryRunnable( nextLocation,
-                                         configMIMEFormat,
-                                         "",
-                                         "",
-                                         configMIMEFormat,
-                                         new QueryBundle() );
-                            
-                            nextThread.start();
-                            
-                            try
+                            if(Settings._INFO)
                             {
-                                // effectively attempt to join each of the threads, this loop will complete when they are all completed
-                                nextThread.join();
-                            }
-                            catch( InterruptedException ie )
-                            {
-                                log.error( "RdfFetchController.fetchRdfForQuery: caught interrupted exception message="+ie.getMessage() );
-                                throw ie;
+                                Settings.log.info("Settings.getServerConfigurationRdf: getting configuration from URL: nextLocation="+ nextLocation+" url="+url.toString());
                             }
                             
-                            if(nextThread.getWasSuccessful())
+                            myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+
+                            if(Settings._INFO)
                             {
-                                myRepositoryConnection.add(new java.io.StringReader(nextThread.getRawResult()), url.toString(),
-                                        RDFFormat.forMIMEType(configMIMEFormat));
-                                if(Settings._INFO)
-                                {
-                                    Settings.log.info("Settings: finished getting backup configuration from URL: nextLocation="+ nextLocation);
-                                }
-                            }
-                            else
-                            {
-                                Settings.log.error("Settings: error getting backup configuration from URL: nextLocation="+ nextLocation+" nextThread.lastException="+nextThread.getLastException());
-                                
-                                // backupNeeded = true;
-                                backupFailed = true;
+                                Settings.log.info("Settings.getServerConfigurationRdf: finished getting configuration from URL: url="+ url.toString());
                             }
                         }
                         else
@@ -2532,19 +2492,17 @@ public class Settings
                             if(Settings._INFO)
                             {
                                 Settings.log
-                                        .info("Settings: getting backup configuration from file: nextLocation="
-                                                + nextLocation
-                                                + " nextUrlFile="
-                                                + nextUrlFile);
+                                        .info("Settings: getting configuration from file: nextLocation="
+                                                + nextLocation);
                             }
-                            myRepositoryConnection.add(nextUrlFile, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                            InputStream nextInputStream = getClass().getResourceAsStream(nextLocation);
+
+                            myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
                             if(Settings._INFO)
                             {
                                 Settings.log
-                                        .info("Settings: finished getting backup configuration from file: nextLocation="
-                                                + nextLocation
-                                                + " nextUrlFile="
-                                                + nextUrlFile);
+                                        .info("Settings: finished getting configuration from file: nextLocation="
+                                                + nextLocation);
                             }
                         }
                     }
@@ -2624,6 +2582,8 @@ public class Settings
     
     public static String getString(String key, String defaultValue)
     {
+        log.trace("Settings.getString: key="+key+" defaultValue="+defaultValue);
+        
         String result = null;
         try
         {
@@ -2641,14 +2601,16 @@ public class Settings
         	return defaultValue;
         }
         
+        log.trace("Settings.getString: key="+key+" defaultValue="+defaultValue+" result="+result);
+
         return result;
     }
     
     public boolean isManualRefreshAllowed()
     {
-        boolean manualRefresh = this.getBooleanPropertyFromConfig("enableManualConfigurationRefresh");
+        boolean manualRefresh = this.getBooleanPropertyFromConfig("enableManualConfigurationRefresh", true);
         long timestampDiff = (System.currentTimeMillis() - this.initialisedTimestamp);
-        long manualRefreshMinimum = this.getLongPropertyFromConfig("manualConfigurationMinimumMilliseconds");
+        long manualRefreshMinimum = this.getLongPropertyFromConfig("manualConfigurationMinimumMilliseconds", 0L);
         
         if(_DEBUG)
         {
@@ -2701,17 +2663,22 @@ public class Settings
 
     public Collection<Statement> getStatementPropertiesFromConfig(String key)
     {
+        log.trace("Settings.getStatementPropertiesFromConfig: key="+key);
+        
         Collection<Statement> results = new HashSet<Statement>();
         
         try
         {
             Repository webappConfig = getWebAppConfigurationRdf();
             
-            final ValueFactory f = webappConfig.getValueFactory();
+            final ValueFactory f = Constants.valueFactory;
 
             // TODO: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
-            URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix() + key);
+            URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix(), key);
             
+            if(_TRACE)
+                Settings.log.trace("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="+WEBAPP_CONFIG_URI_LIST.size());
+
             for(String nextConfigUri : WEBAPP_CONFIG_URI_LIST)
             {
                 URI configUri = f.createURI(nextConfigUri);
@@ -2732,6 +2699,8 @@ public class Settings
 
     private Collection<Statement> getStatementCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri, Repository nextRepository)
     {
+        log.trace("Settings.getStatementCollectionPropertiesFromConfig: subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue()+" nextRepository="+nextRepository);
+
         try
         {
             return RdfUtils.getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
@@ -2748,23 +2717,23 @@ public class Settings
     
     public Collection<Value> getValueCollectionPropertiesFromConfig(String key)
     {
+        log.trace("Settings.getValueCollectionPropertiesFromConfig: key="+key);
+
         Collection<Value> results = new HashSet<Value>();
         
         try
         {
-            Repository webappConfig = getWebAppConfigurationRdf();
-            
-            final ValueFactory f = webappConfig.getValueFactory();
+            final ValueFactory f = Constants.valueFactory;
 
             // XXX: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
-            URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix() + key);
+            URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix(), key);
             
             for(String nextConfigUri : WEBAPP_CONFIG_URI_LIST)
             {
                 URI configUri = f.createURI(nextConfigUri);
                 
                 if(_TRACE)
-                    Settings.log.trace("this.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+                    Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
                 results.addAll(getValueCollectionPropertiesFromConfig(configUri, propertyUri));
             }
@@ -2777,14 +2746,24 @@ public class Settings
         return results;
     }
 
+    /**
+     * @deprecated Use {@link #getStringPropertyFromConfig(String,String)} instead
+     */
     public String getStringPropertyFromConfig(String key)
     {
+        return getStringPropertyFromConfig(key, "");
+    }
+
+    public String getStringPropertyFromConfig(String key, String defaultValue)
+    {
+        log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
         Collection<String> values = getStringCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("Settings.getStringPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            return defaultValue;
         }
 
         for(String nextValue : values)
@@ -2792,17 +2771,27 @@ public class Settings
             return nextValue;
         }
         
-        return "";
+        return defaultValue;
     }
 
+    /**
+     * @deprecated Use {@link #getBooleanPropertyFromConfig(String,boolean)} instead
+     */
     public boolean getBooleanPropertyFromConfig(String key)
     {
+        return getBooleanPropertyFromConfig(key, true);
+    }
+
+    public boolean getBooleanPropertyFromConfig(String key, boolean defaultValue)
+    {
+        log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("this.getBooleanPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            return defaultValue;
         }
 
         for(Value nextValue : values)
@@ -2810,17 +2799,27 @@ public class Settings
             return RdfUtils.getBooleanFromValue(nextValue);
         }
         
-        return false;
+        return defaultValue;
     }
 
+    /**
+     * @deprecated Use {@link #getLongPropertyFromConfig(String,long)} instead
+     */
     public long getLongPropertyFromConfig(String key)
     {
+        return getLongPropertyFromConfig(key, 0L);
+    }
+
+    public long getLongPropertyFromConfig(String key, long defaultValue)
+    {
+        log.trace("Settings.getLongPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("this.getLongPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            return defaultValue;
         }
 
         for(Value nextValue : values)
@@ -2828,17 +2827,27 @@ public class Settings
             return RdfUtils.getLongFromValue(nextValue);
         }
         
-        return 0L;
+        return defaultValue;
     }
         
+    /**
+     * @deprecated Use {@link #getIntPropertyFromConfig(String,int)} instead
+     */
     public int getIntPropertyFromConfig(String key)
     {
+        return getIntPropertyFromConfig(key, 0);
+    }
+
+    public int getIntPropertyFromConfig(String key, int defaultValue)
+    {
+        log.trace("Settings.getIntPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("this.getIntPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            return defaultValue;
         }
 
         for(Value nextValue : values)
@@ -2846,17 +2855,27 @@ public class Settings
             return RdfUtils.getIntegerFromValue(nextValue);
         }
         
-        return 0;
+        return defaultValue;
     }
         
+    /**
+     * @deprecated Use {@link #getFloatPropertyFromConfig(String,float)} instead
+     */
     public float getFloatPropertyFromConfig(String key)
     {
+        return getFloatPropertyFromConfig(key, 0.0f);
+    }
+
+    public float getFloatPropertyFromConfig(String key, float defaultValue)
+    {
+        log.trace("Settings.getFloatPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         if(values.size() != 1)
         {
-            Settings.log.error("this.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size());
-            throw new RuntimeException("this.getFloatPropertyFromConfig: Did not find a unique result for key="+key);
+            Settings.log.error("this.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            return defaultValue;
         }
 
         for(Value nextValue : values)
@@ -2864,7 +2883,7 @@ public class Settings
             return MathsUtils.getFloatFromValue(nextValue);
         }
         
-        return 0.0f;
+        return defaultValue;
     }
         
     private Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri)
@@ -2963,7 +2982,7 @@ public class Settings
             }
             else if(_TRACE)
             {
-                    log.trace("Settings.doConfigKeyCache: Already cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
+                log.trace("Settings.doConfigKeyCache: Already cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
             }
         }
         else
@@ -3075,22 +3094,22 @@ public class Settings
     
     public String getDefaultHostAddress()
     {
-        return this.getStringPropertyFromConfig("uriPrefix")+this.getStringPropertyFromConfig("hostName")+this.getStringPropertyFromConfig("uriSuffix");
+        return this.getStringPropertyFromConfig("uriPrefix", "")+this.getStringPropertyFromConfig("hostName", "")+this.getStringPropertyFromConfig("uriSuffix", "");
     }
 
     public Pattern getPlainNamespaceAndIdentifierPattern()
     {
-        return Pattern.compile(this.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex"));
+        return Pattern.compile(this.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex", ""));
     }
 
     public Pattern getPlainNamespacePattern()
     {
-        return Pattern.compile(this.getStringPropertyFromConfig("plainNamespaceRegex"));
+        return Pattern.compile(this.getStringPropertyFromConfig("plainNamespaceRegex", ""));
     }
     
     public Pattern getTagPattern()
     {
-        return Pattern.compile(this.getStringPropertyFromConfig("tagPatternRegex"));
+        return Pattern.compile(this.getStringPropertyFromConfig("tagPatternRegex", ""));
     }
 
 	/**

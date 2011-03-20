@@ -21,6 +21,9 @@ import org.queryall.helpers.ListUtils;
 import org.queryall.helpers.Settings;
 import org.queryall.QueryType;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class BlacklistController
 {
     private static final Logger log = Logger
@@ -203,7 +206,7 @@ public class BlacklistController
     public static synchronized void accumulateQueryDebug(
             QueryDebug nextQueryObject)
     {
-        if(Settings.getSettings().getBooleanPropertyFromConfig("automaticallyBlacklistClients"))
+        if(Settings.getSettings().getBooleanPropertyFromConfig("automaticallyBlacklistClients", true))
         {
             if(BlacklistController._DEBUG)
             {
@@ -342,7 +345,7 @@ public class BlacklistController
     {
         // magic values for no expiry are <= 0
         
-        if(Settings.getSettings().getLongPropertyFromConfig("blacklistResetPeriodMilliseconds") <= 0)
+        if(Settings.getSettings().getLongPropertyFromConfig("blacklistResetPeriodMilliseconds", 0L) <= 0)
         {
             return false;
         }
@@ -354,7 +357,7 @@ public class BlacklistController
         final long differenceMilliseconds = currentDate.getTime()
                 - BlacklistController.lastExpiryDate.getTime();
         
-        if((differenceMilliseconds - Settings.getSettings().getLongPropertyFromConfig("blacklistResetPeriodMilliseconds")) >= 0)
+        if((differenceMilliseconds - Settings.getSettings().getLongPropertyFromConfig("blacklistResetPeriodMilliseconds", 0L)) >= 0)
         {
             if(BlacklistController._INFO)
             {
@@ -380,7 +383,7 @@ public class BlacklistController
             
             BlacklistController.allCurrentBadQueries = new HashSet<RdfFetcherQueryRunnable>();
             
-            if(Settings.getSettings().getBooleanPropertyFromConfig("blacklistResetClientBlacklistWithEndpoints"))
+            if(Settings.getSettings().getBooleanPropertyFromConfig("blacklistResetClientBlacklistWithEndpoints", true))
             {
                 BlacklistController.currentQueryDebugInformation = new Hashtable<String, Collection<QueryDebug>>();
                 BlacklistController.initialiseBlacklist();
@@ -397,7 +400,7 @@ public class BlacklistController
     
     public static void evaluateClientBlacklist()
     {
-        if(Settings.getSettings().getBooleanPropertyFromConfig("automaticallyBlacklistClients"))
+        if(Settings.getSettings().getBooleanPropertyFromConfig("automaticallyBlacklistClients", true))
         {
             
             for(final String nextKey : BlacklistController.currentQueryDebugInformation.keySet())
@@ -407,7 +410,7 @@ public class BlacklistController
                 
                 final int overallCount = nextClientQueryList.size();
                 
-                if(overallCount >= Settings.getSettings().getIntPropertyFromConfig("blacklistMinimumQueriesBeforeBlacklistRules"))
+                if(overallCount >= Settings.getSettings().getIntPropertyFromConfig("blacklistMinimumQueriesBeforeBlacklistRules", 0))
                 {
                     int robotsTxtCount = 0;
                     
@@ -460,7 +463,7 @@ public class BlacklistController
                                         + robotsPercentage);
                     }
                     
-                    if(robotsPercentage > Settings.getSettings().getFloatPropertyFromConfig("blacklistPercentageOfRobotTxtQueriesBeforeAutomatic"))
+                    if(robotsPercentage > Settings.getSettings().getFloatPropertyFromConfig("blacklistPercentageOfRobotTxtQueriesBeforeAutomatic", 0.0F))
                     {
                         BlacklistController.log
                                 .warn("BlacklistController: Found client performing too many robots.txt banned queries nextKey="
@@ -478,7 +481,7 @@ public class BlacklistController
                         }
                     }
                     
-                    if(overallCount > Settings.getSettings().getIntPropertyFromConfig("blacklistClientMaxQueriesPerPeriod"))
+                    if(overallCount > Settings.getSettings().getIntPropertyFromConfig("blacklistClientMaxQueriesPerPeriod", 0))
                     {
                         if(!BlacklistController.isClientWhitelisted(nextKey))
                         {
@@ -492,7 +495,7 @@ public class BlacklistController
                                             + " robotsPercentage="
                                             + robotsPercentage
                                             + " Settings.getSettings().getIntPropertyFromConfig(\"blacklistClientMaxQueriesPerPeriod\")="
-                                            + Settings.getSettings().getIntPropertyFromConfig("blacklistClientMaxQueriesPerPeriod"));
+                                            + Settings.getSettings().getIntPropertyFromConfig("blacklistClientMaxQueriesPerPeriod", 0));
                             
                             BlacklistController.permanentServletLifetimeIPBlacklist
                                     .add(nextKey);
@@ -638,7 +641,7 @@ public class BlacklistController
             final BlacklistEntry currentCount = BlacklistController.accumulatedBlacklistStatistics
                     .get(nextEndpointUrl);
             
-            return (currentCount.numberOfFailures >= Settings.getSettings().getIntPropertyFromConfig("blacklistMaxAccumulatedFailures"));
+            return (currentCount.numberOfFailures >= Settings.getSettings().getIntPropertyFromConfig("blacklistMaxAccumulatedFailures", 0));
         }
         else
         {

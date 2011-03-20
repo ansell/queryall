@@ -12,7 +12,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,6 +24,9 @@ import org.queryall.helpers.Settings;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class NamespaceEntryImpl extends NamespaceEntry
 {
     private static final Logger log = Logger.getLogger(NamespaceEntry.class.getName());
@@ -46,7 +48,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     private String description = "";
     private String identifierRegex = "";
     private String uriTemplate = "";
-    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator");
+    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator", "");
     
     // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes
@@ -68,22 +70,22 @@ public class NamespaceEntryImpl extends NamespaceEntry
     
     static
     {
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         namespaceNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                              +Settings.getSettings().getNamespaceForNamespaceEntry()
                              +Settings.getSettings().getOntologyTermUriSuffix();
                              
-        setNamespaceTypeUri(f.createURI(namespaceNamespace+"Namespace"));
-        setNamespaceAuthority(f.createURI(namespaceNamespace+"authority"));
-        setNamespaceIdentifierRegex(f.createURI(namespaceNamespace+"identifierRegex"));
-        setNamespacePreferredPrefix(f.createURI(namespaceNamespace+"preferredPrefix"));
-        setNamespaceAlternativePrefix(f.createURI(namespaceNamespace+"alternativePrefix"));
-        setNamespaceConvertQueriesToPreferredPrefix(f.createURI(namespaceNamespace+"convertToPreferred"));
-        setNamespaceDescription(f.createURI(namespaceNamespace+"description"));
-        setNamespaceUriTemplate(f.createURI(namespaceNamespace+"uriTemplate"));
-        setNamespaceSeparator(f.createURI(namespaceNamespace+"separator"));
-        oldNamespaceTitle = f.createURI(namespaceNamespace+"title");
+        setNamespaceTypeUri(f.createURI(namespaceNamespace,"Namespace"));
+        setNamespaceAuthority(f.createURI(namespaceNamespace,"authority"));
+        setNamespaceIdentifierRegex(f.createURI(namespaceNamespace,"identifierRegex"));
+        setNamespacePreferredPrefix(f.createURI(namespaceNamespace,"preferredPrefix"));
+        setNamespaceAlternativePrefix(f.createURI(namespaceNamespace,"alternativePrefix"));
+        setNamespaceConvertQueriesToPreferredPrefix(f.createURI(namespaceNamespace,"convertToPreferred"));
+        setNamespaceDescription(f.createURI(namespaceNamespace,"description"));
+        setNamespaceUriTemplate(f.createURI(namespaceNamespace,"uriTemplate"));
+        setNamespaceSeparator(f.createURI(namespaceNamespace,"separator"));
+        oldNamespaceTitle = f.createURI(namespaceNamespace,"title");
     }
     
     // keyToUse is the URI of the next instance that can be found in myRepository
@@ -183,7 +185,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -191,15 +193,60 @@ public class NamespaceEntryImpl extends NamespaceEntry
             con.setAutoCommit(false);
             
             con.add(getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+
+            // TODO: Add description
             con.add(getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#label"), contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_PREFLABEL, contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespacePreferredPrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+
+            // TODO: Add description
             con.add(getNamespaceAlternativePrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getNamespaceAlternativePrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_ALTLABEL, contextKeyUri);
+            con.add(getNamespaceAlternativePrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getNamespaceAlternativePrefix(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespaceAlternativePrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+
+            // TODO: Add description
             con.add(getNamespaceAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getNamespaceAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getNamespaceAuthority(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespaceAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            
+            // TODO: Add description
             con.add(getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getNamespaceIdentifierRegex(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespaceIdentifierRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+
+            // TODO: Add description
             con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+
+            
+            // TODO: Add description
             con.add(getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getNamespaceUriTemplate(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getNamespaceUriTemplate(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespaceUriTemplate(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            // TODO: Add description
             con.add(getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getNamespaceSeparator(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
+            con.add(getNamespaceSeparator(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            
             if(modelVersion == 1)
             {
                 con.add(getNamespaceDescription(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
@@ -411,7 +458,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {

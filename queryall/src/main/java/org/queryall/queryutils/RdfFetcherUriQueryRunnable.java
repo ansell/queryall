@@ -2,6 +2,9 @@ package org.queryall.queryutils;
 
 import java.util.Date;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 {
 	public RdfFetcherUriQueryRunnable

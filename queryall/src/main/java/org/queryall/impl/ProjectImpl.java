@@ -12,7 +12,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.HashSet;
 import java.util.Collection;
@@ -22,6 +21,9 @@ import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class ProjectImpl extends Project
 {
     private static final Logger log = Logger.getLogger(Project.class.getName());
@@ -53,20 +55,20 @@ public class ProjectImpl extends Project
     
     static
     {
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         projectNamespace = Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForProject() + Settings.getSettings().getOntologyTermUriSuffix();
         
         
-        setProjectTypeUri(f.createURI(projectNamespace+"Project"));
-        setProjectAuthority(f.createURI(projectNamespace+"authority"));
-        setProjectTitle(f.createURI(projectNamespace+"title"));
-        setProjectDescription(f.createURI(projectNamespace+"description"));
+        setProjectTypeUri(f.createURI(projectNamespace,"Project"));
+        setProjectAuthority(f.createURI(projectNamespace,"authority"));
+        setProjectTitle(f.createURI(projectNamespace,"title"));
+        setProjectDescription(f.createURI(projectNamespace,"description"));
         
-        setProjectCurationStatusUri(f.createURI(projectNamespace+"hasCurationStatus"));
-        setProjectAdminCuratedUri(f.createURI(projectNamespace+"adminCurated"));
-        setProjectUserCuratedUri(f.createURI(projectNamespace+"userCurated"));
-        setProjectNotCuratedUri(f.createURI(projectNamespace+"notCurated"));
+        setProjectCurationStatusUri(f.createURI(projectNamespace,"hasCurationStatus"));
+        setProjectAdminCuratedUri(f.createURI(projectNamespace,"adminCurated"));
+        setProjectUserCuratedUri(f.createURI(projectNamespace,"userCurated"));
+        setProjectNotCuratedUri(f.createURI(projectNamespace,"notCurated"));
         
     }
     
@@ -133,7 +135,7 @@ public class ProjectImpl extends Project
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -141,16 +143,43 @@ public class ProjectImpl extends Project
             con.setAutoCommit(false);
             
             con.add(getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(getProjectTitle(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
-            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#label"), contextKeyUri);
+
+            // TODO: Add description
+            con.add(getProjectTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
+            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
+            con.add(getProjectTitle(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
+            con.add(getProjectTitle(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProjectTitle(), RDFS.DOMAIN, getProjectTypeUri(), contextKeyUri);
+            con.add(getProjectTitle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            // TODO: Add description
             con.add(getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProjectDescription(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProjectDescription(), RDFS.SUBPROPERTYOF, f.createURI("http://www.w3.org/2000/01/rdf-schema#comment"), contextKeyUri);
+            con.add(getProjectAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProjectAuthority(), RDFS.DOMAIN, getProjectTypeUri(), contextKeyUri);
+            con.add(getProjectAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            // TODO: Add description
+            con.add(getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
+            con.add(getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
+            con.add(getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProjectDescription(), RDFS.DOMAIN, getProjectTypeUri(), contextKeyUri);
+            con.add(getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            // TODO: Add description
             con.add(getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectCurationStatusUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            // TODO: Add description
             con.add(getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectAdminCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            // TODO: Add description
             con.add(getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectUserCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+
+            // TODO: Add description
             con.add(getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProjectNotCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -180,7 +209,7 @@ public class ProjectImpl extends Project
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {

@@ -19,7 +19,6 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.model.MemValueFactory;
 import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
@@ -38,6 +37,9 @@ import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class ProvenanceRecord implements BaseQueryAllInterface
 {
     private static final Logger log = Logger.getLogger(ProvenanceRecord.class.getName());
@@ -67,17 +69,17 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     
     static
     {
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         provenanceNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                          +Settings.getSettings().getNamespaceForProvenance()
                          +Settings.getSettings().getOntologyTermUriSuffix();
         
-        provenanceTypeUri = f.createURI(provenanceNamespace+"ProvenanceRecord");
-        provenanceHasAuthorOpenIDUri = f.createURI(provenanceNamespace+"hasAuthorOpenID");
-        provenanceElementTypeUri = f.createURI(provenanceNamespace+"elementType");
-        provenanceElementKeyUri = f.createURI(provenanceNamespace+"elementKey");
-        provenanceRecordDateUri = f.createURI(provenanceNamespace+"recordDate");
+        provenanceTypeUri = f.createURI(provenanceNamespace,"ProvenanceRecord");
+        provenanceHasAuthorOpenIDUri = f.createURI(provenanceNamespace,"hasAuthorOpenID");
+        provenanceElementTypeUri = f.createURI(provenanceNamespace,"elementType");
+        provenanceElementKeyUri = f.createURI(provenanceNamespace,"elementKey");
+        provenanceRecordDateUri = f.createURI(provenanceNamespace,"recordDate");
     }
     
     public static Map<String, ProvenanceRecord> getProvenanceRecordsFromRepository(Repository myRepository, int modelVersion) throws org.openrdf.repository.RepositoryException
@@ -200,16 +202,16 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                             continue;
                         }
                         else
                         {
-                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType"));
+                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
                         }
                     }
                     else if(log.isDebugEnabled())
@@ -345,7 +347,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -359,7 +361,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                 recordDate = new Date();
             }
             
-            final String recordDateString = RdfUtils.ISO8601UTC().format(recordDate);
+            final String recordDateString = Constants.ISO8601UTC().format(recordDate);
             
             Literal recordDateLiteral = f.createLiteral(recordDateString, XMLSchema.DATETIME);
             
@@ -414,7 +416,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -464,7 +466,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         sb.append("hasAuthorOpenID="+hasAuthorOpenID+"\n");
         if(recordDate != null)
         {
-            sb.append("recordDate="+RdfUtils.ISO8601UTC().format(recordDate)+"\n");
+            sb.append("recordDate="+Constants.ISO8601UTC().format(recordDate)+"\n");
         }
         else
         {

@@ -12,7 +12,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.HashSet;
 import java.util.Collection;
@@ -24,6 +23,9 @@ import org.queryall.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class ProfileImpl extends Profile
 {
     private static final Logger log = Logger.getLogger(Profile.class.getName());
@@ -87,39 +89,39 @@ public class ProfileImpl extends Profile
     
     static
     {
-        ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         profileNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                            +Settings.getSettings().getNamespaceForProfile()
                            +Settings.getSettings().getOntologyTermUriSuffix();
                            
-        setProfileTypeUri(f.createURI(profileNamespace+"Profile"));
-        setProfileTitle(f.createURI(profileNamespace+"Title"));
-        setProfileOrderUri(f.createURI(profileNamespace+"order"));
-        setProfileAdministratorUri(f.createURI(profileNamespace+"hasProfileAdministrator"));
+        setProfileTypeUri(f.createURI(profileNamespace,"Profile"));
+        setProfileTitle(f.createURI(profileNamespace,"Title"));
+        setProfileOrderUri(f.createURI(profileNamespace,"order"));
+        setProfileAdministratorUri(f.createURI(profileNamespace,"hasProfileAdministrator"));
         
-        setProfileAllowImplicitQueryInclusionsUri(f.createURI(profileNamespace+"allowImplicitQueryInclusions"));
-        setProfileAllowImplicitProviderInclusionsUri(f.createURI(profileNamespace+"allowImplicitProviderInclusions"));
-        setProfileAllowImplicitRdfRuleInclusionsUri(f.createURI(profileNamespace+"allowImplicitRdfRuleInclusions"));
-        setProfileDefaultIncludeExcludeOrderUri(f.createURI(profileNamespace+"defaultProfileIncludeExcludeOrder"));
-        setProfileIncludeExcludeOrderUri(f.createURI(profileNamespace+"profileIncludeExcludeOrder"));
-        setProfileIncludeProviderInProfile(f.createURI(profileNamespace+"includesProvider"));
-        setProfileExcludeProviderFromProfile(f.createURI(profileNamespace+"excludesProvider"));
-        setProfileIncludeQueryInProfile(f.createURI(profileNamespace+"includesQuery"));
-        setProfileExcludeQueryFromProfile(f.createURI(profileNamespace+"excludesQuery"));
-        setProfileIncludeRdfRuleInProfile(f.createURI(profileNamespace+"includesRdfRule"));
-        setProfileExcludeRdfRuleFromProfile(f.createURI(profileNamespace+"excludesRdfRule"));
+        setProfileAllowImplicitQueryInclusionsUri(f.createURI(profileNamespace,"allowImplicitQueryInclusions"));
+        setProfileAllowImplicitProviderInclusionsUri(f.createURI(profileNamespace,"allowImplicitProviderInclusions"));
+        setProfileAllowImplicitRdfRuleInclusionsUri(f.createURI(profileNamespace,"allowImplicitRdfRuleInclusions"));
+        setProfileDefaultIncludeExcludeOrderUri(f.createURI(profileNamespace,"defaultProfileIncludeExcludeOrder"));
+        setProfileIncludeExcludeOrderUri(f.createURI(profileNamespace,"profileIncludeExcludeOrder"));
+        setProfileIncludeProviderInProfile(f.createURI(profileNamespace,"includesProvider"));
+        setProfileExcludeProviderFromProfile(f.createURI(profileNamespace,"excludesProvider"));
+        setProfileIncludeQueryInProfile(f.createURI(profileNamespace,"includesQuery"));
+        setProfileExcludeQueryFromProfile(f.createURI(profileNamespace,"excludesQuery"));
+        setProfileIncludeRdfRuleInProfile(f.createURI(profileNamespace,"includesRdfRule"));
+        setProfileExcludeRdfRuleFromProfile(f.createURI(profileNamespace,"excludesRdfRule"));
         
-        setProfileExcludeThenIncludeUri(f.createURI(profileNamespace+"excludeThenInclude"));
-        setProfileIncludeThenExcludeUri(f.createURI(profileNamespace+"includeThenExclude"));
-        setProfileIncludeExcludeOrderUndefinedUri(f.createURI(profileNamespace+"includeExcludeOrderUndefined"));
+        setProfileExcludeThenIncludeUri(f.createURI(profileNamespace,"excludeThenInclude"));
+        setProfileIncludeThenExcludeUri(f.createURI(profileNamespace,"includeThenExclude"));
+        setProfileIncludeExcludeOrderUndefinedUri(f.createURI(profileNamespace,"includeExcludeOrderUndefined"));
     }
     
     public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -133,37 +135,85 @@ public class ProfileImpl extends Profile
                 con.add(getProfileTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
             }
             
+            // TODO: Add description
             con.add(getProfileOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProfileOrderUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProfileOrderUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileOrderUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
-            con.add(getProfileOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            // TODO: Add description
+            con.add(getProfileAdministratorUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileAdministratorUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileAdministratorUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileAdministratorUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
-            con.add(getProfileAdministratorUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            
-            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            // TODO: Add description
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileAllowImplicitQueryInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileAllowImplicitProviderInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
             
             con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
             
             con.add(getProfileIncludeProviderInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileIncludeProviderInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileIncludeProviderInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileIncludeProviderInProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileExcludeProviderFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileIncludeQueryInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileIncludeQueryInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileIncludeQueryInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileIncludeQueryInProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileExcludeQueryFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileIncludeRdfRuleInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileExcludeRdfRuleFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileExcludeThenIncludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileIncludeThenExcludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileIncludeThenExcludeUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileIncludeThenExcludeUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileIncludeThenExcludeUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -312,13 +362,9 @@ public class ProfileImpl extends Profile
     
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
-        //Repository myRepository = new SailRepository(new MemoryStore());
-        //myRepository.initialize();
-        
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
-        
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {

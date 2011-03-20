@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Collection;
 import org.openrdf.model.URI;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class QueryDebug
 {
     @SuppressWarnings("unused")

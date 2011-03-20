@@ -4,6 +4,9 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class RdfFetcherQueryRunnable extends Thread
 {
     static final Logger log = Logger.getLogger(RdfFetcherQueryRunnable.class

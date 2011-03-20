@@ -11,7 +11,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,6 +20,9 @@ import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class TemplateImpl extends Template
 {
     private static final Logger log = Logger.getLogger(Template.class.getName());
@@ -91,28 +93,28 @@ public class TemplateImpl extends Template
     
     static
     {
-        ValueFactory f = new MemValueFactory();
-        
         templateNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                          +Settings.getSettings().getNamespaceForTemplate()
                          +Settings.getSettings().getOntologyTermUriSuffix();
                          
-        setTemplateTypeUri(f.createURI(templateNamespace+"Template"));
-        setTemplateContentTypeSparqlQuery(f.createURI(templateNamespace+"ContentTypeSparqlQuery"));
-        setTemplateContentTypeSparqlResultsXml(f.createURI(templateNamespace+"ContentTypeSparqlResultsXml"));
-        setTemplateContentTypeSparqlResultsJson(f.createURI(templateNamespace+"ContentTypeSparqlResultsJson"));
-        setTemplateContentTypeRdfXml(f.createURI(templateNamespace+"ContentTypeRdfXml"));
-        setTemplateContentTypeN3(f.createURI(templateNamespace+"ContentTypeN3"));
-        setTemplateContentTypePlainText(f.createURI(templateNamespace+"ContentTypePlainText"));
-        setTemplateContentType(f.createURI(templateNamespace+"contentType"));
-        setTemplateReferencedTemplate(f.createURI(templateNamespace+"referencedTemplate"));
+        final ValueFactory f = Constants.valueFactory;
+
+        setTemplateTypeUri(f.createURI(templateNamespace,"Template"));
+        setTemplateContentTypeSparqlQuery(f.createURI(templateNamespace,"ContentTypeSparqlQuery"));
+        setTemplateContentTypeSparqlResultsXml(f.createURI(templateNamespace,"ContentTypeSparqlResultsXml"));
+        setTemplateContentTypeSparqlResultsJson(f.createURI(templateNamespace,"ContentTypeSparqlResultsJson"));
+        setTemplateContentTypeRdfXml(f.createURI(templateNamespace,"ContentTypeRdfXml"));
+        setTemplateContentTypeN3(f.createURI(templateNamespace,"ContentTypeN3"));
+        setTemplateContentTypePlainText(f.createURI(templateNamespace,"ContentTypePlainText"));
+        setTemplateContentType(f.createURI(templateNamespace,"contentType"));
+        setTemplateReferencedTemplate(f.createURI(templateNamespace,"referencedTemplate"));
         
-        setTemplateMatchRegex(f.createURI(templateNamespace+"matchRegex"));
-        setTemplateIsNativeFunction(f.createURI(templateNamespace+"isNativeFunction"));
-        setTemplateNativeFunctionUri(f.createURI(templateNamespace+"nativeFunctionUri"));
-        setTemplateTemplateString(f.createURI(templateNamespace+"templateString"));
-        setTemplateContentType(f.createURI(templateNamespace+"contentType"));
-        setTemplateOrder(f.createURI(templateNamespace+"order"));
+        setTemplateMatchRegex(f.createURI(templateNamespace,"matchRegex"));
+        setTemplateIsNativeFunction(f.createURI(templateNamespace,"isNativeFunction"));
+        setTemplateNativeFunctionUri(f.createURI(templateNamespace,"nativeFunctionUri"));
+        setTemplateTemplateString(f.createURI(templateNamespace,"templateString"));
+        setTemplateContentType(f.createURI(templateNamespace,"contentType"));
+        setTemplateOrder(f.createURI(templateNamespace,"order"));
     }
     
     
@@ -262,12 +264,12 @@ public class TemplateImpl extends Template
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
             URI contextKeyUri = f.createURI(keyToUse);
-            URI dcFormatUri = f.createURI(Constants.DC_NAMESPACE+"format");
+            URI dcFormatUri = f.createURI(Constants.DC_NAMESPACE,"format");
             
             con.setAutoCommit(false);
             
