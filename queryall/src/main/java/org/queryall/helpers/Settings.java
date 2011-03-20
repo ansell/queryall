@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,6 +36,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
+import org.openrdf.sail.memory.model.MemValueFactory;
 
 import org.queryall.*;
 import org.queryall.impl.*;
@@ -84,7 +86,7 @@ public class Settings
     // these values are initialised dynamically for the lifetime of the class
     public String SUBVERSION_INFO = null;
 
-    public Collection<String> BASE_CONFIG_FILES = null;
+    public String BASE_CONFIG_LOCATION = null;
     public String BASE_CONFIG_URI = null;
     public String BASE_CONFIG_MIME_FORMAT = null;
     
@@ -100,20 +102,20 @@ public class Settings
     private Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
     private Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
     private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>();
-    public Collection<String> WEBAPP_CONFIG_URI_LIST = new HashSet<String>();
-    public Collection<String> CONFIG_LOCATION_LIST = new HashSet<String>();
+    private Collection<String> webappConfigUriList = new HashSet<String>();
+//    public Collection<String> CONFIG_LOCATION_LIST = new HashSet<String>();
     // public Collection<String> BACKUP_CONFIG_LOCATION_LIST = new HashSet<String>();
 
     private long initialisedTimestamp = System.currentTimeMillis();
     
-    private static Settings settingsSingleton = null;
+    private static Settings defaultSettings = null;
     
-    private Settings()
+    public Settings()
     {
     	
     }
     
-    private Settings(String baseConfigLocation)
+    public Settings(String baseConfigLocation, String baseConfigMimeFormat, String baseConfigUri)
     {
         // Do a quick test on the base config file existence
         
@@ -127,6 +129,28 @@ public class Settings
         {
         	log.debug("Settings.init: TEST: baseConfig was not null baseConfigLocation="+baseConfigLocation);
         }
+        
+        this.BASE_CONFIG_LOCATION = baseConfigLocation;
+        this.BASE_CONFIG_MIME_FORMAT = baseConfigMimeFormat;
+        this.BASE_CONFIG_URI = baseConfigUri;
+    }
+    
+    public static Settings getSettings()
+    {
+        if(defaultSettings == null)
+        {
+            defaultSettings = new Settings();
+//            try
+//            {
+//                defaultSettings.getWebAppConfigurationRdf();
+//            }
+//            catch(InterruptedException ie)
+//            {
+//                log.fatal("Settings.getSettings: caught exception on getWebAppConfigurationRdf for singleton initialisation.");
+//            }
+        }
+        
+        return defaultSettings;
     }
     
     /**
@@ -140,13 +164,23 @@ public class Settings
     	return getSystemOrPropertyString("queryall.Version", "0.0");
     }
     
+    private String getBaseConfigLocation()
+    {
+        if(this.BASE_CONFIG_LOCATION == null)
+        {
+            this.BASE_CONFIG_LOCATION = Settings.getDefaultBaseConfigLocationProperty();
+        }
+        
+        return this.BASE_CONFIG_LOCATION;
+    }
+    
     /**
      * Checks for the base config location first in the system vm properties, 
      * then in the localisation properties file, by default, "queryall.properties",
      * Uses the key "queryall.BaseConfigLocation"
      * @return The location of the base configuration file, defaults to "/queryallBaseConfig.n3"
      */
-    private static String getBaseConfigLocation()
+    private static String getDefaultBaseConfigLocationProperty()
     {
     	return getSystemOrPropertyString("queryall.BaseConfigLocation", "/queryallBaseConfig.n3");
     }
@@ -158,9 +192,29 @@ public class Settings
      * Uses the key "queryall.BaseConfigMimeFormat"
      * @return The mime format of the base config file, defaults to "text/rdf+n3"
      */
-    private static String getBaseConfigMimeFormat()
+    private String getBaseConfigMimeFormat()
     {
-    	return getSystemOrPropertyString("queryall.BaseConfigMimeFormat", "text/rdf+n3");
+        if(this.BASE_CONFIG_MIME_FORMAT == null)
+        {
+            this.BASE_CONFIG_MIME_FORMAT = Settings.getDefaultBaseConfigMimeFormatProperty();
+        }
+        
+        return this.BASE_CONFIG_MIME_FORMAT;
+    }
+    
+    private static String getDefaultBaseConfigMimeFormatProperty()
+    {
+        return getSystemOrPropertyString("queryall.BaseConfigMimeFormat", "text/rdf+n3");
+    }
+    
+    private String getBaseConfigUri()
+    {
+        if(this.BASE_CONFIG_URI == null)
+        {
+            this.BASE_CONFIG_URI = Settings.getDefaultBaseConfigUriProperty();
+        }
+        
+        return this.BASE_CONFIG_URI;
     }
     
     /**
@@ -168,11 +222,42 @@ public class Settings
      * Uses the key "queryall.BaseConfigUri"
      * @return The URI of the configuration object in the base config file, defaults to "http://purl.org/queryall/webapp_configuration:theBaseConfig"
      */
-    private static String getBaseConfigUri()
+    private static String getDefaultBaseConfigUriProperty()
     {
     	return getSystemOrPropertyString("queryall.BaseConfigUri", "http://purl.org/queryall/webapp_configuration:theBaseConfig");
     }
     
+    /**
+     * @param webappConfigUriList the webappConfigUriList to set
+     */
+    public void setWebappConfigUriList(Collection<String> webappConfigUriList)
+    {
+        this.webappConfigUriList = webappConfigUriList;
+    }
+
+    /**
+     * @param webappConfigUriList the webappConfigUriList to set
+     */
+    public void setWebappConfigUriListByValues(Collection<Value> webappConfigUriList)
+    {
+        Collection<String> tempCollection = new HashSet<String>();
+
+        for(Value nextValue : webappConfigUriList)
+        {
+            tempCollection.add(nextValue.stringValue());
+        }
+        
+        this.webappConfigUriList = tempCollection;
+    }
+
+    /**
+     * @return the webappConfigUriList
+     */
+    public Collection<String> getWebappConfigUriList()
+    {
+        return this.webappConfigUriList;
+    }
+
     /**
      * Checks for the key first in the system vm properties, 
      * then in the localisation properties file, by default, "queryall.properties",
@@ -193,16 +278,6 @@ public class Settings
             return defaultValue;
         else
             return result;
-    }
-    
-    public static Settings getSettings()
-    {
-    	if(settingsSingleton == null)
-    	{
-            settingsSingleton = new Settings(getBaseConfigLocation());
-    	}
-    	
-		return settingsSingleton;
     }
     
     public synchronized boolean configRefreshCheck(boolean tryToForceRefresh)
@@ -1996,6 +2071,9 @@ public class Settings
     
     private synchronized Repository getWebAppConfigurationRdf() throws java.lang.InterruptedException
     {
+        if(_DEBUG)
+            Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
+
         if(this.currentWebAppConfigurationRepository != null)
         {
             return this.currentWebAppConfigurationRepository;
@@ -2005,11 +2083,11 @@ public class Settings
             Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
         
         final long start = System.currentTimeMillis();
-        final String configMIMEFormat = Settings.getBaseConfigMimeFormat();
-        final String baseURI = Settings.getBaseConfigUri();
+        Repository nextBaseConfigurationRepository = getBaseConfigurationRdf();
+        final String configMIMEFormat = this.getBaseConfigMimeFormat();
+        final String baseURI = this.getBaseConfigUri();
         Repository tempConfigurationRepository = null;
         Repository finalConfigurationRepository = null;
-        Repository nextBaseConfigurationRepository = getBaseConfigurationRdf();
         boolean backupNeeded = false;
         boolean backupFailed = false;
 
@@ -2040,7 +2118,10 @@ public class Settings
 
             Collection<Value> activeWebappConfigs = getValueCollectionPropertiesFromConfig(
             		subjectConfigUri, activeWebappConfigsUri, nextBaseConfigurationRepository);
-
+            
+            setWebappConfigUriListByValues(activeWebappConfigs);
+            
+            
             if(_DEBUG)
             {
                 log.debug("webappConfigFiles.size()="+webappConfigFiles.size());
@@ -2103,7 +2184,7 @@ public class Settings
                     for(Value nextValue : activeWebappConfigs)
                     {
                         log.debug("Settings.getWebAppConfigurationRdf: started adding statements to finalrepository for nextValue="+nextValue.stringValue()+" finalRepositoryConnection.size()="+finalRepositoryConnection.size());
-                        WEBAPP_CONFIG_URI_LIST.add(nextValue.stringValue());
+                        getWebappConfigUriList().add(nextValue.stringValue());
                         finalRepositoryConnection.add(myRepositoryConnection.getStatements((URI)nextValue, (URI)null, (Resource)null, true));
                         log.debug("Settings.getWebAppConfigurationRdf: finished adding statements to finalrepository for nextValue="+nextValue.stringValue()+" finalRepositoryConnection.size()="+finalRepositoryConnection.size());
                     }
@@ -2222,8 +2303,8 @@ public class Settings
         }
         
         final long start = System.currentTimeMillis();
-        final String configMIMEFormat = Settings.getBaseConfigMimeFormat();
-        final String baseURI = Settings.getBaseConfigUri();
+        final String configMIMEFormat = this.getBaseConfigMimeFormat();
+        final String baseURI = this.getBaseConfigUri();
         Repository tempConfigurationRepository = null;
         boolean backupNeeded = false;
         boolean backupFailed = false;
@@ -2243,8 +2324,9 @@ public class Settings
             final RepositoryConnection myRepositoryConnection = tempConfigurationRepository
                     .getConnection();
             
-            String nextLocation = getBaseConfigLocation();
+            String nextLocation = this.getBaseConfigLocation();
             InputStream nextInputStream = getClass().getResourceAsStream(nextLocation);
+            
             try
             {
                 if(Settings._INFO)
@@ -2357,7 +2439,7 @@ public class Settings
             return this.currentConfigurationRepository;
         }
         final long start = System.currentTimeMillis();
-        final String configMIMEFormat = Settings.getBaseConfigMimeFormat();
+        final String configMIMEFormat = this.getBaseConfigMimeFormat();
         final String baseURI = this.getDefaultHostAddress();
         Repository tempConfigurationRepository = null;
         boolean backupNeeded = false;
@@ -2611,7 +2693,7 @@ public class Settings
     {
         boolean manualRefresh = this.getBooleanPropertyFromConfig("enableManualConfigurationRefresh", true);
         long timestampDiff = (System.currentTimeMillis() - this.initialisedTimestamp);
-        long manualRefreshMinimum = this.getLongPropertyFromConfig("manualConfigurationMinimumMilliseconds", 0L);
+        long manualRefreshMinimum = this.getLongPropertyFromConfig("manualConfigurationMinimumMilliseconds", 60000L);
         
         if(_DEBUG)
         {
@@ -2631,13 +2713,16 @@ public class Settings
     
     public Collection<String> getStringCollectionPropertiesFromConfig(String key)
     {
-        Collection<String> results = new HashSet<String>();
+        log.info("Settings.getStringCollectionPropertiesFromConfig: key="+key);
+
+        Collection<String> results = new LinkedList<String>();
         
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
         for(Value nextValue : values)
         {
-            results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
+            results.add(nextValue.stringValue());
+            //results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
         }
         
         return results;
@@ -2645,6 +2730,8 @@ public class Settings
     
     public Collection<URI> getURICollectionPropertiesFromConfig(String key)
     {
+        log.trace("Settings.getURICollectionPropertiesFromConfig: key="+key);
+
         Collection<URI> results = new HashSet<URI>();
         
         for(Value nextValue : getValueCollectionPropertiesFromConfig(key))
@@ -2664,7 +2751,7 @@ public class Settings
 
     public Collection<Statement> getStatementPropertiesFromConfig(String key)
     {
-        log.trace("Settings.getStatementPropertiesFromConfig: key="+key);
+        log.info("Settings.getStatementPropertiesFromConfig: key="+key);
         
         Collection<Statement> results = new HashSet<Statement>();
         
@@ -2672,15 +2759,15 @@ public class Settings
         {
             Repository webappConfig = getWebAppConfigurationRdf();
             
-            final ValueFactory f = Constants.valueFactory;
+            final ValueFactory f = webappConfig.getValueFactory();
 
             // TODO: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
             URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix(), key);
             
-            if(_TRACE)
-                Settings.log.trace("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="+WEBAPP_CONFIG_URI_LIST.size());
+            if(_INFO)
+                Settings.log.info("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="+getWebappConfigUriList().size());
 
-            for(String nextConfigUri : WEBAPP_CONFIG_URI_LIST)
+            for(String nextConfigUri : getWebappConfigUriList())
             {
                 URI configUri = f.createURI(nextConfigUri);
                 
@@ -2718,23 +2805,26 @@ public class Settings
     
     public Collection<Value> getValueCollectionPropertiesFromConfig(String key)
     {
-        log.trace("Settings.getValueCollectionPropertiesFromConfig: key="+key);
+        log.info("Settings.getValueCollectionPropertiesFromConfig: key="+key);
 
         Collection<Value> results = new HashSet<Value>();
         
         try
         {
-            final ValueFactory f = Constants.valueFactory;
+            final ValueFactory f = getWebAppConfigurationRdf().getValueFactory();
 
             // XXX: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
             URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix(), key);
             
-            for(String nextConfigUri : WEBAPP_CONFIG_URI_LIST)
+            if(_INFO)
+                Settings.log.info("Settings.getValueCollectionPropertiesFromConfig: getWebappConfigUriList().size()="+getWebappConfigUriList().size());
+
+            for(String nextConfigUri : getWebappConfigUriList())
             {
                 URI configUri = f.createURI(nextConfigUri);
                 
 //                if(_TRACE)
-//                    Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+                    Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
                 results.addAll(getValueCollectionPropertiesFromConfig(configUri, propertyUri));
             }
@@ -2765,7 +2855,7 @@ public class Settings
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
@@ -2796,7 +2886,7 @@ public class Settings
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            log.error("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
@@ -2828,7 +2918,7 @@ public class Settings
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            log.error("Settings.getLongPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
@@ -2860,7 +2950,7 @@ public class Settings
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            log.error("Settings.getIntPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
@@ -2892,7 +2982,7 @@ public class Settings
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            log.error("Settings.getFloatPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
             return defaultValue;
         }
 
@@ -2908,11 +2998,15 @@ public class Settings
         
     private Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri)
     {
+        log.info("Settings.getValueCollectionPropertiesFromConfig: subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+
         Collection<Value> cachedResults = getConfigKeyCached(subjectUri, propertyUri);
         Collection<Value> results = new HashSet<Value>();
         
         if(cachedResults != null)
         {
+            log.info("Settings.getValueCollectionPropertiesFromConfig: returning cached values subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+
             return cachedResults;
         }
         else

@@ -68,9 +68,9 @@ public final class Constants
     public static URI SKOS_PREFLABEL;
     public static URI SKOS_ALTLABEL;
 
-    static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-    static final String TIME_ZOME = "UTC";
+    public static final String TIME_ZOME = "UTC";
 
     public static final String APPLICATION_RDF_XML = "application/rdf+xml";
 
