@@ -27,6 +27,14 @@ public class RdfFetcher
     
     public String lastReturnedContentType = null;
     public String lastReturnedContentEncoding = null;
+    private Settings localSettings;
+    private BlacklistController localBlacklistController;
+    
+    public RdfFetcher(Settings localSettings, BlacklistController blacklistController)
+    {
+        this.localSettings = localSettings;
+        this.localBlacklistController = blacklistController;
+    }
     
     public String submitSparqlQuery
     (
@@ -52,7 +60,7 @@ public class RdfFetcher
         // particular HTTP server or intermediate proxy
         String postQuery = "format="+StringUtils.percentEncode(format)+"&";
         
-        if(Settings.getSettings().getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter", true))
+        if(localSettings.getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter", true))
             postQuery += "maxrows="+maxRowsParameter+"&";
         
         postQuery += "formatting=Raw&";
@@ -84,7 +92,7 @@ public class RdfFetcher
     {
         if(_DEBUG)
         {
-            log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl="+endpointUrl+" Settings.getStringPropertyFromConfig(\"connectTimeout\")="+Settings.getSettings().getIntPropertyFromConfig("connectTimeout", 0));
+            log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl="+endpointUrl+" Settings.getStringPropertyFromConfig(\"connectTimeout\")="+localSettings.getIntPropertyFromConfig("connectTimeout", 0));
         }
         
         final long start = System.currentTimeMillis();
@@ -116,19 +124,19 @@ public class RdfFetcher
                 }
             }
             
-            BlacklistController.accumulateQueryTotal(url.getProtocol()+"://"+url.getHost());
+            localBlacklistController.accumulateQueryTotal(url.getProtocol()+"://"+url.getHost());
             
             conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+Settings.getSettings().getStringPropertyFromConfig("userAgent", "") + " +http://bio2rdf.wiki.sourceforge.net/RobotHelp)");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+localSettings.getStringPropertyFromConfig("userAgent", "queryall") + " +http://bio2rdf.wiki.sourceforge.net/RobotHelp)");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
                 conn.setRequestProperty("Accept", acceptHeader);
             }
             
-            conn.setUseCaches(Settings.getSettings().getBooleanPropertyFromConfig("useRequestCache", true));
-            conn.setConnectTimeout(Settings.getSettings().getIntPropertyFromConfig("connectTimeout", 0));
-            conn.setReadTimeout(Settings.getSettings().getIntPropertyFromConfig("readTimeout", 0));
+            conn.setUseCaches(localSettings.getBooleanPropertyFromConfig("useRequestCache", true));
+            conn.setConnectTimeout(localSettings.getIntPropertyFromConfig("connectTimeout", 2000));
+            conn.setReadTimeout(localSettings.getIntPropertyFromConfig("readTimeout", 30000));
             
             if(postInformation != null && !postInformation.trim().equals(""))
             {
@@ -236,7 +244,7 @@ public class RdfFetcher
                 // having conn.getResponseCode() slows everything down apparently if there was an error 
                 // and makes it hard to find out where the error occurred even
                 //BlacklistController.accumulateHttpResponseError(url.getProtocol()+"://"+url.getHost(), conn.getResponseCode());
-                BlacklistController.accumulateHttpResponseError(url.getProtocol()+"://"+url.getHost(), 1);
+                localBlacklistController.accumulateHttpResponseError(url.getProtocol()+"://"+url.getHost(), 1);
                 
                 if(_DEBUG)
                 {

@@ -2,6 +2,7 @@ package org.queryall.queryutils;
 
 import java.util.Date;
 
+import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.*;
 
 /**
@@ -21,10 +22,12 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 		String nextDebug,
 		String nextAcceptHeader,
         int nextMaxRowsParameter,
+        Settings localSettings,
+        BlacklistController localBlacklistController,
 		QueryBundle nextOriginalQueryBundle
 	)
 	{
-		super(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, nextOriginalQueryBundle);
+		super(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController, nextOriginalQueryBundle);
 		
 		this.graphUri = nextGraphUri;
         this.maxRowsParameter = nextMaxRowsParameter;
@@ -34,7 +37,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 	{
 		try
 		{
-			RdfFetcher fetcher = new RdfFetcher();
+			RdfFetcher fetcher = new RdfFetcher(getLocalSettings(), getBlacklistController());
 			
 			setQueryStartTime(new Date());
 			

@@ -42,6 +42,7 @@ import org.openrdf.sail.memory.model.CalendarMemLiteral;
 import org.queryall.BaseQueryAllInterface;
 import org.queryall.Provider;
 import org.queryall.QueryType;
+import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.QueryTypeImpl;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
@@ -245,7 +246,9 @@ public class RdfUtils
         String sparqlEndpointMethod,
         String sparqlEndpointUrl,
         String acceptHeader, 
-        String expectedReturnFormat) 
+        String expectedReturnFormat,
+        Settings localSettings,
+        BlacklistController localBlacklistController) 
     throws OpenRDFException
     {
         String sparqlInsertQuery = getSparulQueryForObject(rdfObject, false, true, useSparqlGraph, sparqlGraphUri);
@@ -255,7 +258,9 @@ public class RdfUtils
          sparqlEndpointMethod,
          sparqlEndpointUrl,
          acceptHeader, 
-         expectedReturnFormat);
+         expectedReturnFormat,
+         localSettings,
+         localBlacklistController);
     }
     
     public static HttpUrlQueryRunnable generateHttpUrlSparqlInsertThread(
@@ -266,7 +271,9 @@ public class RdfUtils
         String sparqlEndpointMethod,
         String sparqlEndpointUrl,
         String acceptHeader, 
-        String expectedReturnFormat) 
+        String expectedReturnFormat,
+        Settings localSettings,
+        BlacklistController localBlacklistController) 
     throws OpenRDFException
     {
         String sparqlInsertQuery = getSparulQueryForObject(rdfObject, true, isDelete, useSparqlGraph, sparqlGraphUri);
@@ -276,7 +283,9 @@ public class RdfUtils
          sparqlEndpointMethod,
          sparqlEndpointUrl,
          acceptHeader, 
-         expectedReturnFormat);
+         expectedReturnFormat,
+         localSettings,
+         localBlacklistController);
     }
     
     public static HttpUrlQueryRunnable generateHttpUrlSparqlThread(
@@ -284,12 +293,14 @@ public class RdfUtils
         String sparqlEndpointMethod,
         String sparqlEndpointUrl,
         String acceptHeader, 
-        String expectedReturnFormat) 
+        String expectedReturnFormat,
+        Settings localSettings,
+        BlacklistController localBlacklistController) 
     {
         return new HttpUrlQueryRunnable(
                 sparqlEndpointMethod,
                 sparqlEndpointUrl, sparqlQuery,
-                acceptHeader, expectedReturnFormat);
+                acceptHeader, expectedReturnFormat, localSettings, localBlacklistController);
     }
     
     /**
@@ -898,7 +909,7 @@ public class RdfUtils
     
     public static Collection<QueryType> getQueryTypesForQueryBundles(Collection<QueryBundle> queryBundles, int modelVersion)
     {
-        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), queryBundles);
+        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
         
         try
         {
@@ -990,7 +1001,7 @@ public class RdfUtils
         
         try
         {
-            results = QueryTypeImpl.getCustomQueriesFromRepository(myRepository, modelVersion);
+            results = QueryTypeImpl.getQueryTypesFromRepository(myRepository, modelVersion);
         }
         catch(org.openrdf.repository.RepositoryException re)
         {
@@ -1436,7 +1447,7 @@ public class RdfUtils
 		}
 	}
     
-    public static Collection<Statement> retrieveUrlsToStatements(Collection<String> retrievalUrls, String defaultResultFormat) throws InterruptedException
+    public static Collection<Statement> retrieveUrlsToStatements(Collection<String> retrievalUrls, String defaultResultFormat, Settings localSettings, BlacklistController localBlacklistController) throws InterruptedException
     {
         Collection<Statement> results = new HashSet<Statement>();
         
@@ -1445,7 +1456,7 @@ public class RdfUtils
             Repository resultsRepository = new SailRepository(new MemoryStore());
             resultsRepository.initialize();
             
-            retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, true);
+            retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, localSettings, localBlacklistController, true);
         
             results = getAllStatementsFromRepository(resultsRepository);
         }
@@ -1457,12 +1468,12 @@ public class RdfUtils
         return results;
     }
     
-    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository) throws InterruptedException
+    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository, Settings localSettings, BlacklistController localBlacklistController) throws InterruptedException
     {
-        retrieveUrls(retrievalUrls, defaultResultFormat, myRepository, true);
+        retrieveUrls(retrievalUrls, defaultResultFormat, myRepository, localSettings, localBlacklistController, true);
     }
 	
-    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository, boolean inParallel) throws InterruptedException
+    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat, Repository myRepository, Settings localSettings, BlacklistController localBlacklistController, boolean inParallel) throws InterruptedException
     {
         Collection<RdfFetcherQueryRunnable> retrievalThreads = new HashSet<RdfFetcherQueryRunnable>();
         
@@ -1473,6 +1484,8 @@ public class RdfUtils
                          "",
                          "",
                          defaultResultFormat,
+                         localSettings,
+                         localBlacklistController,
                          new QueryBundle());
             
             retrievalThreads.add(nextThread);
@@ -1530,12 +1543,12 @@ public class RdfUtils
         
     }
     
-    public static void retrieveUrls(String retrievalUrl, String defaultResultFormat, Repository myRepository) throws RepositoryException, java.io.IOException , InterruptedException
+    public static void retrieveUrls(String retrievalUrl, String defaultResultFormat, Repository myRepository, Settings localSettings, BlacklistController localBlacklistController) throws RepositoryException, java.io.IOException , InterruptedException
     {
         Collection<String> retrievalList = new LinkedList<String>();
         retrievalList.add(retrievalUrl);
         
-        retrieveUrls(retrievalList, defaultResultFormat, myRepository, true);
+        retrieveUrls(retrievalList, defaultResultFormat, myRepository, localSettings, localBlacklistController, true);
     }
     
     /**

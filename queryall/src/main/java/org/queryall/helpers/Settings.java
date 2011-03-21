@@ -36,7 +36,6 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.MemValueFactory;
 
 import org.queryall.*;
 import org.queryall.impl.*;
@@ -290,7 +289,7 @@ public class Settings
                     .debug("Settings.configRefreshCheck: before check Settings.PERIODIC_CONFIGURATION_REFRESH="
                             + this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh", true)
                             + " Settings.PERIODIC_REFRESH_MILLISECONDS="
-                            + this.getLongPropertyFromConfig("periodicConfigurationMilliseconds", 0L)
+                            + this.getLongPropertyFromConfig("periodicConfigurationMilliseconds", 60000L)
                             + " currentTimestamp - initialisedTimestamp="
                             + (currentTimestamp - this.initialisedTimestamp)
                             + " ");
@@ -303,7 +302,7 @@ public class Settings
         }
         
         boolean enablePeriodicConfigurationRefresh = this.getBooleanPropertyFromConfig("enablePeriodicConfigurationRefresh", true);
-        long periodicConfigurationMilliseconds = this.getLongPropertyFromConfig("periodicConfigurationMilliseconds", 0L);
+        long periodicConfigurationMilliseconds = this.getLongPropertyFromConfig("periodicConfigurationMilliseconds", 60000L);
         
         if(Settings._DEBUG)
         {

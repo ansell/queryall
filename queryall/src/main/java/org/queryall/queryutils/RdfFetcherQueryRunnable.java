@@ -3,6 +3,8 @@ package org.queryall.queryutils;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.queryall.blacklist.BlacklistController;
+import org.queryall.helpers.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -35,24 +37,24 @@ public class RdfFetcherQueryRunnable extends Thread
     
     private Date queryStartTime = null;
     private Date queryEndTime = null;
+    private Settings localSettings;
+    private BlacklistController localBlacklistController;
     
     
-    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader)
+    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, Settings localSettings, BlacklistController localBlacklistController)
     {
         this.setEndpointUrl(nextEndpointUrl);
         this.setFormat(nextFormat);
         this.setQuery(nextQuery);
         this.setDebug(nextDebug);
         this.setAcceptHeader(nextAcceptHeader);
+        this.setSettings(localSettings);
+        this.setBlacklistController(localBlacklistController);
     }
 
-    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, QueryBundle nextOriginalQueryBundle )
+    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, Settings localSettings, BlacklistController localBlacklistController, QueryBundle nextOriginalQueryBundle )
     {
-        this.setEndpointUrl(nextEndpointUrl);
-        this.setFormat(nextFormat);
-        this.setQuery(nextQuery);
-        this.setDebug(nextDebug);
-        this.setAcceptHeader(nextAcceptHeader);
+        this(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController);
         this.setOriginalQueryBundle(nextOriginalQueryBundle);
     }
     
@@ -355,5 +357,37 @@ public class RdfFetcherQueryRunnable extends Thread
     public Date getQueryEndTime()
     {
         return queryEndTime;
+    }
+
+    /**
+     * @param localSettings the localSettings to set
+     */
+    public void setSettings(Settings localSettings)
+    {
+        this.localSettings = localSettings;
+    }
+
+    /**
+     * @return the localSettings
+     */
+    public Settings getLocalSettings()
+    {
+        return localSettings;
+    }
+
+    /**
+     * @param localBlacklistController the localBlacklistController to set
+     */
+    public void setBlacklistController(BlacklistController localBlacklistController)
+    {
+        this.localBlacklistController = localBlacklistController;
+    }
+
+    /**
+     * @return the localBlacklistController
+     */
+    public BlacklistController getBlacklistController()
+    {
+        return localBlacklistController;
     }
 }

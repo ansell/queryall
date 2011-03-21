@@ -41,19 +41,22 @@ public class RdfFetchController
     private int pageOffset;
     private String returnFileFormat;
     private boolean includeNonPagedQueries = true;
-    private Settings localSettings = null;
+    private Settings localSettings;
+    private BlacklistController localBlacklistController;
     
-    public RdfFetchController(Settings settingsClass, Collection<QueryBundle> nextQueryBundles)
+    public RdfFetchController(Settings settingsClass, BlacklistController localBlacklistController, Collection<QueryBundle> nextQueryBundles)
     {
         localSettings = settingsClass;
+        this.localBlacklistController = localBlacklistController;
         queryBundles = nextQueryBundles;
         
         initialise();
     }
     
-    public RdfFetchController( Settings settingsClass, String nextQueryString, List<Profile> nextIncludedSortedProfiles, boolean nextUseDefaultProviders, String nextRealHostName, int nextPageOffset, String nextReturnFileFormat )
+    public RdfFetchController( Settings settingsClass, BlacklistController localBlacklistController, String nextQueryString, List<Profile> nextIncludedSortedProfiles, boolean nextUseDefaultProviders, String nextRealHostName, int nextPageOffset, String nextReturnFileFormat )
     {
         localSettings  = settingsClass;
+        this.localBlacklistController = localBlacklistController;        
         queryString = nextQueryString;
         sortedIncludedProfiles = nextIncludedSortedProfiles;
         useDefaultProviders = nextUseDefaultProviders;
@@ -317,7 +320,7 @@ public class RdfFetchController
                     replacedEndpoint = SparqlQueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true));
                     
                     // Then test whether the endpoint is blacklisted
-                    if(!BlacklistController.isUrlBlacklisted(replacedEndpoint))
+                    if(!localBlacklistController.isUrlBlacklisted(replacedEndpoint))
                     {
                         String nextEndpointQuery = SparqlQueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true));
                         
@@ -399,6 +402,8 @@ public class RdfFetchController
                              "off",
                              nextBundle.getOriginalProvider().getAcceptHeaderString(),
                              pageoffsetIndividualQueryLimit,
+                             localSettings,
+                             localBlacklistController,
                              nextBundle );
                              
                 addToFetchQueue = true;
@@ -415,6 +420,8 @@ public class RdfFetchController
                              nextQuery,
                              "off",
                              nextBundle.getOriginalProvider().getAcceptHeaderString(),
+                             localSettings,
+                             localBlacklistController,
                              nextBundle );
                              
                 addToFetchQueue = true;

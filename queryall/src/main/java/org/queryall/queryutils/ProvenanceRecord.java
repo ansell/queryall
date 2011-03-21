@@ -33,6 +33,7 @@ import java.util.Date;
 
 import org.queryall.*;
 import org.queryall.impl.*;
+import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
@@ -167,7 +168,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         queryBundles.add(nextQueryBundle);
         
-        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), queryBundles);
+        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
         
         try
         {

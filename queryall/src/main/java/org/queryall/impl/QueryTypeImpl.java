@@ -211,7 +211,7 @@ public class QueryTypeImpl extends QueryType
         return false;
     }
     
-    public static Map<URI, QueryType> getCustomQueriesFromRepository(Repository myRepository, int modelVersion) throws org.openrdf.repository.RepositoryException
+    public static Map<URI, QueryType> getQueryTypesFromRepository(Repository myRepository, int modelVersion) throws org.openrdf.repository.RepositoryException
     {
         Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
         

@@ -25,6 +25,7 @@ import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.BaseQueryAllInterface;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
+import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
@@ -916,9 +917,9 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @return
      * @throws OpenRDFException
      */
-    public HttpUrlQueryRunnable generateThread(int modelVersion) throws OpenRDFException
+    public HttpUrlQueryRunnable generateThread(Settings localSettings, BlacklistController localBlacklistController, int modelVersion) throws OpenRDFException
     {
-        if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", "")
+        if(localSettings.getStringPropertyFromConfig("statisticsServerMethod", "")
                 .equals(ProviderImpl.getProviderHttpPostSparqlUri()
                         .stringValue()))
         {
@@ -941,7 +942,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
             
-            if(Settings.getSettings().getBooleanPropertyFromConfig("statisticsServerUseGraphUri", true))
+            if(localSettings.getBooleanPropertyFromConfig("statisticsServerUseGraphUri", true))
             {
                 sparqlInsertQuery += " INTO GRAPH <"
                         + Settings.getSettings().getStringPropertyFromConfig("statisticsServerGraphUri", "") + "> ";
@@ -956,11 +957,12 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", ""),
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl", ""), sparqlInsertQuery,
-                    "*/*", Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    localSettings.getStringPropertyFromConfig("statisticsServerMethod", ""),
+                    localSettings.getStringPropertyFromConfig("statisticsServerUrl", ""), sparqlInsertQuery,
+                    "*/*", localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""), localSettings, localBlacklistController);
         }
-        else if(Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", "")
+        // TODO: make this a URI .equals check
+        else if(localSettings.getStringPropertyFromConfig("statisticsServerMethod", "")
                 .equals(ProviderImpl.getProviderHttpPostUrlUri().stringValue()))
         {
             final String postInformation = this.toPostArray();
@@ -972,15 +974,15 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", ""),
-                    Settings.getSettings().getStringPropertyFromConfig("statisticsServerUrl", ""), postInformation, "*/*",
-                    Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    localSettings.getStringPropertyFromConfig("statisticsServerMethod", ""),
+                    localSettings.getStringPropertyFromConfig("statisticsServerUrl", ""), postInformation, "*/*",
+                    localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""), localSettings, localBlacklistController);
         }
         else
         {
             throw new RuntimeException(
-                    "StatisticsEntry.generateThread: Unknown Settings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
-                            + Settings.getSettings().getStringPropertyFromConfig("statisticsServerMethod", ""));
+                    "StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
+                            + localSettings.getStringPropertyFromConfig("statisticsServerMethod", ""));
         }
     }
     

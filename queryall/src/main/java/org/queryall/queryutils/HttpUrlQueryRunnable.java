@@ -3,6 +3,7 @@ package org.queryall.queryutils;
 import org.apache.log4j.Logger;
 import java.util.Date;
 
+import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.Settings;
 import org.queryall.impl.ProviderImpl;
 
@@ -46,15 +47,17 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
         String nextUrl,
         String nextPostInformation,
         String nextAcceptHeader,
-        String nextFormat
-    )
+        String nextFormat, 
+        Settings localSettings,
+        BlacklistController localBlacklistController)
     {
-        super(nextUrl, nextFormat, nextPostInformation, "", nextAcceptHeader);
+        super(nextUrl, nextFormat, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
         this.httpOperation = nextHttpOperation;
         // this.url = nextUrl;
         // this.postInformation = nextPostInformation;
         // this.acceptHeader = nextAcceptHeader;
         // this.format = nextFormat;
+        
     }
     
     public void run()
@@ -63,7 +66,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
         {
             setQueryStartTime(new Date());
             
-            RdfFetcher fetcher = new RdfFetcher();
+            RdfFetcher fetcher = new RdfFetcher(localSettings, getBlacklistController());
             
             if(_TRACE)
             {
