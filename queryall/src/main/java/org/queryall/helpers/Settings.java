@@ -2712,7 +2712,8 @@ public class Settings
     
     public Collection<String> getStringCollectionPropertiesFromConfig(String key)
     {
-        log.info("Settings.getStringCollectionPropertiesFromConfig: key="+key);
+        if(_TRACE)
+            log.trace("Settings.getStringCollectionPropertiesFromConfig: key="+key);
 
         Collection<String> results = new LinkedList<String>();
         
@@ -2729,7 +2730,8 @@ public class Settings
     
     public Collection<URI> getURICollectionPropertiesFromConfig(String key)
     {
-        log.trace("Settings.getURICollectionPropertiesFromConfig: key="+key);
+        if(_TRACE)
+            log.trace("Settings.getURICollectionPropertiesFromConfig: key="+key);
 
         Collection<URI> results = new HashSet<URI>();
         
@@ -2750,7 +2752,8 @@ public class Settings
 
     public Collection<Statement> getStatementPropertiesFromConfig(String key)
     {
-        log.info("Settings.getStatementPropertiesFromConfig: key="+key);
+        if(_TRACE)
+            log.trace("Settings.getStatementPropertiesFromConfig: key="+key);
         
         Collection<Statement> results = new HashSet<Statement>();
         
@@ -2763,8 +2766,8 @@ public class Settings
             // TODO: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
             URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix(), key);
             
-            if(_INFO)
-                Settings.log.info("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="+getWebappConfigUriList().size());
+            if(_TRACE)
+                Settings.log.trace("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="+getWebappConfigUriList().size());
 
             for(String nextConfigUri : getWebappConfigUriList())
             {
@@ -2786,7 +2789,8 @@ public class Settings
 
     private Collection<Statement> getStatementCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri, Repository nextRepository)
     {
-        log.trace("Settings.getStatementCollectionPropertiesFromConfig: subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue()+" nextRepository="+nextRepository);
+        if(_TRACE)
+            log.trace("Settings.getStatementCollectionPropertiesFromConfig: subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue()+" nextRepository="+nextRepository);
 
         try
         {
@@ -2804,7 +2808,8 @@ public class Settings
     
     public Collection<Value> getValueCollectionPropertiesFromConfig(String key)
     {
-        log.info("Settings.getValueCollectionPropertiesFromConfig: key="+key);
+        if(_TRACE)
+            log.trace("Settings.getValueCollectionPropertiesFromConfig: key="+key);
 
         Collection<Value> results = new HashSet<Value>();
         
@@ -2815,14 +2820,14 @@ public class Settings
             // XXX: in future should reform this to accept a full URI as the key so properties outside of the queryall vocabulary can be used for properties
             URI propertyUri = f.createURI(this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration() + this.getOntologyTermUriSuffix(), key);
             
-            if(_INFO)
-                Settings.log.info("Settings.getValueCollectionPropertiesFromConfig: getWebappConfigUriList().size()="+getWebappConfigUriList().size());
+            if(_TRACE)
+                Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: getWebappConfigUriList().size()="+getWebappConfigUriList().size());
 
             for(String nextConfigUri : getWebappConfigUriList())
             {
                 URI configUri = f.createURI(nextConfigUri);
                 
-//                if(_TRACE)
+                if(_TRACE)
                     Settings.log.trace("Settings.getValueCollectionPropertiesFromConfig: configUri="+configUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
                 results.addAll(getValueCollectionPropertiesFromConfig(configUri, propertyUri));
@@ -2848,7 +2853,8 @@ public class Settings
     {
         String result = defaultValue;
         
-        log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+        if(_TRACE)
+            log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<String> values = getStringCollectionPropertiesFromConfig(key);
         
@@ -2863,7 +2869,8 @@ public class Settings
             result = nextValue;
         }
         
-        log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue+" returning result="+result);
+        if(_TRACE)
+            log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue+" returning result="+result);
 
         return result;
     }
@@ -2878,8 +2885,10 @@ public class Settings
 
     public boolean getBooleanPropertyFromConfig(String key, boolean defaultValue)
     {
+        if(_TRACE)
+            log.trace("Settings.getBooleanPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
         boolean result = defaultValue;
-        log.trace("Settings.getBooleanPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
@@ -2894,7 +2903,8 @@ public class Settings
             result = RdfUtils.getBooleanFromValue(nextValue);
         }
         
-        log.trace("Settings.getBooleanPropertyFromConfig: key="+key+" result="+result);
+        if(_TRACE)
+            log.trace("Settings.getBooleanPropertyFromConfig: key="+key+" result="+result);
 
         return result;
     }
@@ -2911,7 +2921,8 @@ public class Settings
     {
         long result = defaultValue;
         
-        log.trace("Settings.getLongPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+        if(_TRACE)
+            log.trace("Settings.getLongPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
@@ -2926,7 +2937,8 @@ public class Settings
             result = RdfUtils.getLongFromValue(nextValue);
         }
         
-        log.trace("Settings.getLongPropertyFromConfig: key="+key+" result="+result);
+        if(_TRACE)
+            log.trace("Settings.getLongPropertyFromConfig: key="+key+" result="+result);
 
         return result;
     }
@@ -2943,7 +2955,8 @@ public class Settings
     {
         int result = defaultValue;
         
-        log.trace("Settings.getIntPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+        if(_TRACE)
+            log.trace("Settings.getIntPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
@@ -2958,7 +2971,8 @@ public class Settings
             result = RdfUtils.getIntegerFromValue(nextValue);
         }
         
-        log.trace("Settings.getIntPropertyFromConfig: key="+key+" result="+result);
+        if(_TRACE)
+            log.trace("Settings.getIntPropertyFromConfig: key="+key+" result="+result);
 
         return result;
     }
@@ -2975,7 +2989,8 @@ public class Settings
     {
         float result = defaultValue;
         
-        log.trace("Settings.getFloatPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+        if(_TRACE)
+            log.trace("Settings.getFloatPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
 
         Collection<Value> values = getValueCollectionPropertiesFromConfig(key);
         
@@ -2990,21 +3005,24 @@ public class Settings
             result = MathsUtils.getFloatFromValue(nextValue);
         }
         
-        log.trace("Settings.getFloatPropertyFromConfig: key="+key+" result="+result);
+        if(_TRACE)
+            log.trace("Settings.getFloatPropertyFromConfig: key="+key+" result="+result);
 
         return result;
     }
         
     private Collection<Value> getValueCollectionPropertiesFromConfig(URI subjectUri, URI propertyUri)
     {
-        log.info("Settings.getValueCollectionPropertiesFromConfig: subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+        if(_TRACE)
+            log.trace("Settings.getValueCollectionPropertiesFromConfig: subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
         Collection<Value> cachedResults = getConfigKeyCached(subjectUri, propertyUri);
         Collection<Value> results = new HashSet<Value>();
         
         if(cachedResults != null)
         {
-            log.info("Settings.getValueCollectionPropertiesFromConfig: returning cached values subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue());
+            if(_TRACE)
+                log.trace("Settings.getValueCollectionPropertiesFromConfig: returning cached values subjectUri="+subjectUri.stringValue()+" propertyUri="+propertyUri.stringValue());
 
             return cachedResults;
         }

@@ -171,6 +171,8 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             
             con.add(RegexNormalisationRule.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             
+            con.add(RegexNormalisationRule.getRegexRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+
             con.add(RegexNormalisationRule.getRegexRuleTypeUri(), RDFS.LABEL, f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."), contextKeyUri);
 
             con.add(RegexNormalisationRule.getRegexRuleInputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
@@ -183,7 +185,7 @@ public class RegexNormalisationRule extends NormalisationRuleImpl
             con.add(RegexNormalisationRule.getRegexRuleInputReplaceRegex(), RDFS.DOMAIN, RegexNormalisationRule.getRegexRuleTypeUri(), contextKeyUri);
             con.add(RegexNormalisationRule.getRegexRuleInputReplaceRegex(), RDFS.LABEL, f.createLiteral("The pattern that is used together with the input match regular expression to define what the denormalised data should be."), contextKeyUri);
 
-            con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDFS.DOMAIN, RegexNormalisationRule.getRegexRuleTypeUri(), contextKeyUri);
             con.add(RegexNormalisationRule.getRegexRuleOutputMatchRegex(), RDFS.LABEL, f.createLiteral("The output regular expression that is used to identify whether the renormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."), contextKeyUri);

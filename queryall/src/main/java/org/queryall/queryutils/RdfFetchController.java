@@ -308,7 +308,7 @@ public class RdfFetchController
                 {
                     String replacedEndpoint = nextEndpoint
                                         .replace( "${realHostName}",realHostName )
-                                        .replace( "${defaultSeparator}",localSettings.getStringPropertyFromConfig("separator", "") )
+                                        .replace( "${defaultSeparator}",localSettings.getStringPropertyFromConfig("separator", ":") )
                                         .replace( "${offset}",pageOffset+"" );
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
@@ -323,6 +323,9 @@ public class RdfFetchController
                     if(!localBlacklistController.isUrlBlacklisted(replacedEndpoint))
                     {
                         String nextEndpointQuery = SparqlQueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true));
+                        
+                        // replace the query on the endpoint URL if necessary
+                        replacedEndpoint = replacedEndpoint.replace("${percentEncoded_endpointQuery}", StringUtils.percentEncode(nextEndpointQuery));
                         
                         String nextStaticRdfXmlString = "";
                         

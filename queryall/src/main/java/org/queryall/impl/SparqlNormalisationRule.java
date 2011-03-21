@@ -175,6 +175,8 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             
             con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextKeyUri);
+            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+
 
             con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
