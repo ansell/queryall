@@ -307,9 +307,9 @@ public class RdfFetchController
                 for( String nextEndpoint : nextEndpointUrls )
                 {
                     String replacedEndpoint = nextEndpoint
-                                        .replace( "${realHostName}",realHostName )
-                                        .replace( "${defaultSeparator}",localSettings.getStringPropertyFromConfig("separator", ":") )
-                                        .replace( "${offset}",pageOffset+"" );
+                                        .replace( Constants.TEMPLATE_REAL_HOST_NAME, realHostName )
+                                        .replace( Constants.TEMPLATE_DEFAULT_SEPARATOR, localSettings.getStringPropertyFromConfig("separator", ":") )
+                                        .replace( Constants.TEMPLATE_OFFSET, String.valueOf(pageOffset) );
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint = SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
@@ -325,7 +325,7 @@ public class RdfFetchController
                         String nextEndpointQuery = SparqlQueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true));
                         
                         // replace the query on the endpoint URL if necessary
-                        replacedEndpoint = replacedEndpoint.replace("${percentEncoded_endpointQuery}", StringUtils.percentEncode(nextEndpointQuery));
+                        replacedEndpoint = replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY, StringUtils.percentEncode(nextEndpointQuery));
                         
                         String nextStaticRdfXmlString = "";
                         

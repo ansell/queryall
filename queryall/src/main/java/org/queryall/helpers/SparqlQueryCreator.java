@@ -61,7 +61,7 @@ public class SparqlQueryCreator
             Map<String, String> attributeList,
             List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
-        final String queryString = attributeList.get("queryString");
+        final String queryString = attributeList.get(Constants.TEMPLATE_QUERY_STRING);
         
         if(queryString.trim().equals(""))
         {
@@ -96,7 +96,7 @@ public class SparqlQueryCreator
             Map<String, String> attributeList,
             List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
-        final String queryString = attributeList.get("queryString");
+        final String queryString = attributeList.get(Constants.TEMPLATE_QUERY_STRING);
         
         if(queryString.trim().equals(""))
         {
@@ -188,17 +188,17 @@ public class SparqlQueryCreator
                             + normalisedQueryUri);
         }
         
-        replacedString = replacedString.replace("${limit}", "LIMIT "
+        replacedString = replacedString.replace(Constants.TEMPLATE_LIMIT, "LIMIT "
                 + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0));
         
-        normalisedQueryUri = normalisedQueryUri.replace("${limit}", "limit/"
+        normalisedQueryUri = normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT, "limit/"
                 + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0));
         
-        if(attributeList.containsKey("offset"))
+        if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {
             try
             {
-                int pageOffset = Integer.parseInt(attributeList.get("offset"));
+                int pageOffset = Integer.parseInt(attributeList.get(Constants.TEMPLATE_KEY_OFFSET));
                 
                 if(pageOffset < 1)
                 {
@@ -214,29 +214,29 @@ public class SparqlQueryCreator
                 final int actualPageOffset = (pageOffset - 1)
                         * Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
                 
-                replacedString = replacedString.replace("${sparqlOffset}",
+                replacedString = replacedString.replace(Constants.TEMPLATE_SPARQL_OFFSET,
                         "OFFSET " + actualPageOffset);
-                replacedString = replacedString.replace("${pageoffset}",""+pageOffset);
+                replacedString = replacedString.replace(Constants.TEMPLATE_PAGEOFFSET,String.valueOf(pageOffset));
                 
                 
                 normalisedQueryUri = normalisedQueryUri.replace(
-                        "${sparqlOffset}", "offset/" + actualPageOffset);
-                normalisedQueryUri = normalisedQueryUri.replace("${offset}",
+                        Constants.TEMPLATE_SPARQL_OFFSET, "offset/" + actualPageOffset);
+                normalisedQueryUri = normalisedQueryUri.replace(Constants.TEMPLATE_OFFSET,
                         "offset/" + pageOffset);
-                normalisedQueryUri = normalisedQueryUri.replace("${pageoffset}",""+pageOffset);
+                normalisedQueryUri = normalisedQueryUri.replace(Constants.TEMPLATE_PAGEOFFSET,String.valueOf(pageOffset));
             }
             catch (final NumberFormatException nfe)
             {
                 SparqlQueryCreator.log
                         .error("SparqlQueryCreator: offset was not valid pageOffset="
-                                + attributeList.get("offset"));
+                                + attributeList.get(Constants.TEMPLATE_KEY_OFFSET));
             }
         }
         
-        if(attributeList.containsKey("useSparqlGraph"))
+        if(attributeList.containsKey(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH))
         {
             final String useSparqlGraphString = attributeList
-                    .get("useSparqlGraph");
+                    .get(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH);
             
             try
             {
@@ -245,9 +245,9 @@ public class SparqlQueryCreator
                 
                 if(useSparqlGraph)
                 {
-                    if(attributeList.containsKey("graphUri"))
+                    if(attributeList.containsKey(Constants.TEMPLATE_KEY_GRAPH_URI))
                     {
-                        final String graphUri = attributeList.get("graphUri");
+                        final String graphUri = attributeList.get(Constants.TEMPLATE_KEY_GRAPH_URI);
                         
                         if(graphUri.trim().length() == 0)
                         {
@@ -257,17 +257,17 @@ public class SparqlQueryCreator
                                             + " . Attempting to ignore graphStart and graphEnd for this query");
                             
                             replacedString = replacedString.replace(
-                                    "${graphStart}", "");
+                                    Constants.TEMPLATE_GRAPH_START, "");
                             replacedString = replacedString.replace(
-                                    "${graphEnd}", "");
+                                    Constants.TEMPLATE_GRAPH_END, "");
                         }
                         else
                         {
                             replacedString = replacedString.replace(
-                                    "${graphStart}", " GRAPH <" + graphUri
+                                    Constants.TEMPLATE_GRAPH_START, " GRAPH <" + graphUri
                                             + "> { ");
                             replacedString = replacedString.replace(
-                                    "${graphEnd}", " } ");
+                                    Constants.TEMPLATE_GRAPH_END, " } ");
                         }
                     }
                     else
@@ -276,8 +276,8 @@ public class SparqlQueryCreator
                                 .warn("SparqlQueryCreator.createQuery: useSparqlGraph was true but there was no graphUri specified. Attempting to ignore graphStart and graphEnd for this query");
                         
                         replacedString = replacedString.replace(
-                                "${graphStart}", "");
-                        replacedString = replacedString.replace("${graphEnd}",
+                                Constants.TEMPLATE_GRAPH_START, "");
+                        replacedString = replacedString.replace(Constants.TEMPLATE_GRAPH_END,
                                 "");
                     }
                 }
@@ -285,8 +285,8 @@ public class SparqlQueryCreator
                 {
                     // replace placeholders with zero spaces
                     replacedString = replacedString
-                            .replace("${graphStart}", "");
-                    replacedString = replacedString.replace("${graphEnd}", "");
+                            .replace(Constants.TEMPLATE_GRAPH_START, "");
+                    replacedString = replacedString.replace(Constants.TEMPLATE_GRAPH_END, "");
                 }
             }
             catch (final Exception ex)
@@ -301,8 +301,8 @@ public class SparqlQueryCreator
         {
             // we have already handled queryString in a special way, the rest
             // are just simple replacements
-            if(nextAttribute.equals("queryString")
-                    || nextAttribute.equals("offset"))
+            if(nextAttribute.equals(Constants.TEMPLATE_QUERY_STRING)
+                    || nextAttribute.equals(Constants.TEMPLATE_KEY_OFFSET))
             {
                 continue;
             }
@@ -594,102 +594,102 @@ public class SparqlQueryCreator
         // These three are known to be able to insert the normalised standard
         // (ie, construct), query specific normalised, and endpointspecific
         // standard URI respectively
-        replacedString = replacedString.replace("${normalisedStandardUri}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_NORMALISED_STANDARD_URI,
                 normalisedStandardUri);
-        replacedString = replacedString.replace("${normalisedQueryUri}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_NORMALISED_QUERY_URI,
                 normalisedQueryUri);
         
         replacedString = replacedString.replace(
-                "${urlEncoded_normalisedStandardUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_NORMALISED_STANDARD_URI, StringUtils
                         .percentEncode(normalisedStandardUri));
         
         replacedString = replacedString.replace(
-                "${plusUrlEncoded_normalisedStandardUri}", StringUtils
+                Constants.TEMPLATE_PLUS_URL_ENCODED_NORMALISED_STANDARD_URI, StringUtils
                         .plusPercentEncode(normalisedStandardUri));
         
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_normalisedStandardUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_NORMALISED_STANDARD_URI,
                 inputUrlEncoded_normalisedStandardUri);
         
         replacedString = replacedString.replace(
-                "${inputPlusUrlEncoded_normalisedStandardUri}", inputPlusUrlEncoded_normalisedStandardUri);
+                Constants.TEMPLATE_INPUT_PLUS_URL_ENCODED_NORMALISED_STANDARD_URI, inputPlusUrlEncoded_normalisedStandardUri);
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_normalisedQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_NORMALISED_QUERY_URI,
                 inputUrlEncoded_normalisedQueryUri);
         
         replacedString = replacedString.replace(
-                "${inputPlusUrlEncoded_normalisedQueryUri}", inputPlusUrlEncoded_normalisedQueryUri);
+                Constants.TEMPLATE_INPUT_PLUS_URL_ENCODED_NORMALISED_QUERY_URI, inputPlusUrlEncoded_normalisedQueryUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_normalisedStandardUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_NORMALISED_STANDARD_URI,
                         StringUtils.xmlEncodeString(inputUrlEncoded_normalisedStandardUri));
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputPlusUrlEncoded_normalisedStandardUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_NORMALISED_STANDARD_URI,
                         StringUtils.xmlEncodeString(inputPlusUrlEncoded_normalisedStandardUri));
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputPlusUrlEncoded_normalisedQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_NORMALISED_QUERY_URI,
                         StringUtils.xmlEncodeString(inputPlusUrlEncoded_normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_normalisedStandardUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_NORMALISED_STANDARD_URI, StringUtils
                         .xmlEncodeString(normalisedStandardUri));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_normalisedStandardUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_LOWERCASE_NORMALISED_STANDARD_URI, StringUtils
                         .percentEncode(normalisedStandardUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_normalisedStandardUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_UPPERCASE_NORMALISED_STANDARD_URI, StringUtils
                         .percentEncode(normalisedStandardUri.toUpperCase()));
         
         replacedString = replacedString
-                .replace("${xmlEncoded_lowercase_normalisedStandardUri}",
+                .replace(Constants.TEMPLATE_XML_ENCODED_LOWERCASE_NORMALISED_STANDARD_URI,
                         StringUtils.xmlEncodeString((normalisedStandardUri
                                 .toLowerCase())));
         replacedString = replacedString
-                .replace("${xmlEncoded_uppercase_normalisedStandardUri}",
+                .replace(Constants.TEMPLATE_XML_ENCODED_UPPERCASE_NORMALISED_STANDARD_URI,
                         StringUtils.xmlEncodeString((normalisedStandardUri
                                 .toUpperCase())));
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_lowercase_normalisedStandardUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_LOWERCASE_NORMALISED_STANDARD_URI,
                 inputUrlEncoded_lowercase_normalisedStandardUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_uppercase_normalisedStandardUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_UPPERCASE_NORMALISED_STANDARD_URI,
                 inputUrlEncoded_uppercase_normalisedStandardUri);
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privatelowercase_normalisedStandardUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATELOWERCASE_NORMALISED_STANDARD_URI,
                 inputUrlEncoded_privatelowercase_normalisedStandardUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privateuppercase_normalisedStandardUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATEUPPERCASE_NORMALISED_STANDARD_URI,
                 inputUrlEncoded_privateuppercase_normalisedStandardUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_lowercase_normalisedStandardUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_LOWERCASE_NORMALISED_STANDARD_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_normalisedStandardUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_uppercase_normalisedStandardUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_UPPERCASE_NORMALISED_STANDARD_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_normalisedStandardUri));
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATELOWERCASE_NORMALISED_STANDARD_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_normalisedStandardUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATEUPPERCASE_NORMALISED_STANDARD_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_normalisedStandardUri));
         
@@ -701,64 +701,64 @@ public class SparqlQueryCreator
                         // .xmlEncodeString(normalisedOntologyUriSuffix));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_NORMALISED_QUERY_URI, StringUtils
                         .percentEncode(normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_NORMALISED_QUERY_URI, StringUtils
                         .xmlEncodeString(normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_inputUrlEncoded_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_NORMALISED_QUERY_URI, StringUtils
                         .xmlEncodeString(inputUrlEncoded_normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_LOWERCASE_NORMALISED_QUERY_URI, StringUtils
                         .percentEncode(normalisedQueryUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_UPPERCASE_NORMALISED_QUERY_URI, StringUtils
                         .percentEncode(normalisedQueryUri.toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_lowercase_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_LOWERCASE_NORMALISED_QUERY_URI, StringUtils
                         .xmlEncodeString((normalisedQueryUri.toLowerCase())));
         replacedString = replacedString.replace(
-                "${xmlEncoded_uppercase_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_UPPERCASE_NORMALISED_QUERY_URI, StringUtils
                         .xmlEncodeString((normalisedQueryUri.toUpperCase())));
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_lowercase_normalisedQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_LOWERCASE_NORMALISED_QUERY_URI,
                 inputUrlEncoded_lowercase_normalisedQueryUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_uppercase_normalisedQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_UPPERCASE_NORMALISED_QUERY_URI,
                 inputUrlEncoded_uppercase_normalisedQueryUri);
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privatelowercase_normalisedQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATELOWERCASE_NORMALISED_QUERY_URI,
                 inputUrlEncoded_privatelowercase_normalisedQueryUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privateuppercase_normalisedQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATEUPPERCASE_NORMALISED_QUERY_URI,
                 inputUrlEncoded_privateuppercase_normalisedQueryUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_lowercase_normalisedQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_LOWERCASE_NORMALISED_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_normalisedQueryUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_uppercase_normalisedQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_UPPERCASE_NORMALISED_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_normalisedQueryUri));
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privatelowercase_normalisedQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATELOWERCASE_NORMALISED_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_normalisedQueryUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATEUPPERCASE_NORMALISED_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_normalisedQueryUri));
         
@@ -887,210 +887,210 @@ public class SparqlQueryCreator
             }
         }
         
-        replacedString = replacedString.replace("${endpointSpecificUri}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_ENDPOINT_SPECIFIC_URI,
                 endpointSpecificUri);
-        replacedString = replacedString.replace("${endpointSpecificQueryUri}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_ENDPOINT_SPECIFIC_QUERY_URI,
                 endpointSpecificQueryUri);
         // replacedString = replacedString.replace(
                 // "${endpointSpecificOntologyUri}", endpointSpecificOntologyUri);
         
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_NTRIPLES_ENCODED_ENDPOINT_SPECIFIC_URI, StringUtils
                         .ntriplesEncode(endpointSpecificUri));
         
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_normalisedStandardUri}", StringUtils
+                Constants.TEMPLATE_NTRIPLES_ENCODED_NORMALISED_STANDARD_URI, StringUtils
                         .ntriplesEncode(normalisedStandardUri));
         
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_normalisedQueryUri}", StringUtils
+                Constants.TEMPLATE_NTRIPLES_ENCODED_NORMALISED_QUERY_URI, StringUtils
                         .ntriplesEncode(normalisedQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_ntriplesEncoded_endpointSpecificUri}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(endpointSpecificUri)));
+                Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_ENDPOINT_SPECIFIC_URI, StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(endpointSpecificUri)));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_ntriplesEncoded_normalisedStandardUri}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(normalisedStandardUri)));
+                Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_NORMALISED_STANDARD_URI, StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(normalisedStandardUri)));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_ntriplesEncoded_normalisedQueryUri}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(normalisedQueryUri)));
+                Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_NORMALISED_QUERY_URI, StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(normalisedQueryUri)));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_URI, StringUtils
                         .percentEncode(endpointSpecificUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_URI, StringUtils
                         .percentEncode(endpointSpecificUri.toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${urlEncoded_lowercase_endpointSpecificQueryUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI, StringUtils
                         .percentEncode(endpointSpecificQueryUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${urlEncoded_uppercase_endpointSpecificQueryUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI, StringUtils
                         .percentEncode(endpointSpecificQueryUri.toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_ENDPOINT_SPECIFIC_URI, StringUtils
                         .xmlEncodeString(endpointSpecificUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_endpointSpecificQueryUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI, StringUtils
                         .xmlEncodeString(endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_lowercase_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_URI, StringUtils
                         .xmlEncodeString(endpointSpecificUri.toLowerCase()));
         replacedString = replacedString.replace(
-                "${xmlEncoded_uppercase_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_URI, StringUtils
                         .xmlEncodeString(endpointSpecificUri.toUpperCase()));
         replacedString = replacedString.replace(
-                "${xmlEncoded_lowercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_XML_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 StringUtils.xmlEncodeString(endpointSpecificQueryUri
                         .toLowerCase()));
         replacedString = replacedString.replace(
-                "${xmlEncoded_uppercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_XML_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 StringUtils.xmlEncodeString(endpointSpecificQueryUri
                         .toUpperCase()));
         
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_ENDPOINT_SPECIFIC_URI,
                 inputXmlEncoded_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputXmlEncoded_endpointSpecificQueryUri);
         
         replacedString = replacedString.replace(
-                "${urlEncoded_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_ENDPOINT_SPECIFIC_URI, StringUtils
                         .percentEncode(endpointSpecificUri));
         replacedString = replacedString.replace(
-                "${urlEncoded_endpointSpecificQueryUri}", StringUtils
+                Constants.TEMPLATE_URL_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI, StringUtils
                         .percentEncode(endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_ENDPOINT_SPECIFIC_URI,
                 inputUrlEncoded_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputUrlEncoded_endpointSpecificQueryUri);
         
         replacedString = replacedString.replace(
-                "${inputPlusUrlEncoded_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_PLUS_URL_ENCODED_ENDPOINT_SPECIFIC_URI,
                 inputPlusUrlEncoded_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputPlusUrlEncoded_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_PLUS_URL_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputPlusUrlEncoded_endpointSpecificQueryUri);
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_inputUrlEncoded_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_ENDPOINT_SPECIFIC_URI, StringUtils
                         .xmlEncodeString(inputUrlEncoded_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_endpointSpecificQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificUri}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_ENDPOINT_SPECIFIC_URI, StringUtils
                         .xmlEncodeString(inputPlusUrlEncoded_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils.xmlEncodeString(inputPlusUrlEncoded_endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_uppercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_URI,
                 inputXmlEncoded_uppercase_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_uppercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_URI,
                 inputUrlEncoded_uppercase_endpointSpecificUri);
         
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_uppercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputXmlEncoded_uppercase_endpointSpecificQueryUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_uppercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputUrlEncoded_uppercase_endpointSpecificQueryUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_uppercase_endpointSpecificUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_uppercase_endpointSpecificQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_UPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_uppercase_endpointSpecificQueryUri));
         
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_lowercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_URI,
                 inputXmlEncoded_lowercase_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_lowercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_URI,
                 inputUrlEncoded_lowercase_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_lowercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputXmlEncoded_lowercase_endpointSpecificQueryUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_lowercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputUrlEncoded_lowercase_endpointSpecificQueryUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_lowercase_endpointSpecificUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_endpointSpecificUri));
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_privateuppercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_PRIVATEUPPERCASE_ENDPOINT_SPECIFIC_URI,
                 inputXmlEncoded_privateuppercase_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privateuppercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATEUPPERCASE_ENDPOINT_SPECIFIC_URI,
                 inputUrlEncoded_privateuppercase_endpointSpecificUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_lowercase_endpointSpecificQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_LOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_lowercase_endpointSpecificQueryUri));
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_privateuppercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_PRIVATEUPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputXmlEncoded_privateuppercase_endpointSpecificQueryUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privateuppercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATEUPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputUrlEncoded_privateuppercase_endpointSpecificQueryUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privateuppercase_endpointSpecificUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATEUPPERCASE_ENDPOINT_SPECIFIC_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_endpointSpecificUri));
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_privatelowercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_URI,
                 inputXmlEncoded_privatelowercase_endpointSpecificUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privatelowercase_endpointSpecificUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_URI,
                 inputUrlEncoded_privatelowercase_endpointSpecificUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privateuppercase_endpointSpecificQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATEUPPERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_endpointSpecificQueryUri));
         replacedString = replacedString.replace(
-                "${inputXmlEncoded_privatelowercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_XML_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputXmlEncoded_privatelowercase_endpointSpecificQueryUri);
         replacedString = replacedString.replace(
-                "${inputUrlEncoded_privatelowercase_endpointSpecificQueryUri}",
+                Constants.TEMPLATE_INPUT_URL_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                 inputUrlEncoded_privatelowercase_endpointSpecificQueryUri);
         
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privatelowercase_endpointSpecificUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_endpointSpecificUri));
         replacedString = replacedString
                 .replace(
-                        "${xmlEncoded_inputUrlEncoded_privatelowercase_endpointSpecificQueryUri}",
+                        Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privatelowercase_endpointSpecificQueryUri));
         
@@ -1140,14 +1140,14 @@ public class SparqlQueryCreator
         
         final Map<String, String> attributeList = new Hashtable<String, String>();
         
-        attributeList.put("defaultHostName", Settings.getSettings().getStringPropertyFromConfig("hostName", ""));
-        attributeList.put("defaultHostAddress", Settings.getSettings().getDefaultHostAddress());
-        attributeList.put("defaultSeparator", Settings.getSettings().getStringPropertyFromConfig("separator", ""));
-        attributeList.put("realHostName", realHostName);
-        attributeList.put("queryString", queryString);
-        attributeList.put("graphUri", nextProvider.getSparqlGraphUri());
-        attributeList.put("useSparqlGraph", nextProvider.getUseSparqlGraph() + "");
-        attributeList.put("offset", pageOffset + "");
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, Settings.getSettings().getStringPropertyFromConfig("hostName", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, Settings.getSettings().getDefaultHostAddress());
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, Settings.getSettings().getStringPropertyFromConfig("separator", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
+        attributeList.put(Constants.TEMPLATE_QUERY_STRING, queryString);
+        attributeList.put(Constants.TEMPLATE_KEY_GRAPH_URI, nextProvider.getSparqlGraphUri());
+        attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, nextProvider.getUseSparqlGraph() + "");
+        attributeList.put(Constants.TEMPLATE_KEY_OFFSET, pageOffset + "");
         
         // if(nextProvider.rdfNormalisationsNeeded != null)
         // {
@@ -1158,55 +1158,55 @@ public class SparqlQueryCreator
         // attributeList.put("rdfNormalisationsNeeded","");
         // }
         
-        attributeList.put("endpointUrl", nextEndpoint);
+        attributeList.put(Constants.TEMPLATE_KEY_ENDPOINT_URL, nextEndpoint);
         
-        attributeList.put("urlEncoded_defaultHostName", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
                 .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName", "")));
-        attributeList.put("urlEncoded_defaultHostAddress", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
                 .percentEncode(Settings.getSettings().getDefaultHostAddress()));
-        attributeList.put("urlEncoded_defaultSeparator", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", "")));
-        attributeList.put("urlEncoded_graphUri", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_GRAPH_URI, StringUtils
                 .percentEncode(nextProvider.getSparqlGraphUri()));
-        attributeList.put("urlEncoded_endpointUrl", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils
                 .percentEncode(nextEndpoint));
-        attributeList.put("urlEncoded_realHostName", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils
                 .percentEncode(realHostName));
-        attributeList.put("urlEncoded_queryString", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING, StringUtils
                 .percentEncode(queryString));
         
-        attributeList.put("xmlEncoded_defaultHostName", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME, StringUtils
                 .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("hostName", "")));
-        attributeList.put("xmlEncoded_defaultHostAddress", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
                 .xmlEncodeString("http://" + Settings.getSettings().getStringPropertyFromConfig("hostName", "") + "/"));
-        attributeList.put("xmlEncoded_defaultSeparator", StringUtils
-                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator", "")));
-        attributeList.put("xmlEncoded_graphUri", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR, StringUtils
+                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator", ":")));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_GRAPH_URI, StringUtils
                 .xmlEncodeString(nextProvider.getSparqlGraphUri()));
-        attributeList.put("xmlEncoded_endpointUrl", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils
                 .xmlEncodeString(nextEndpoint));
-        attributeList.put("xmlEncoded_realHostName", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils
                 .xmlEncodeString(realHostName));
-        attributeList.put("xmlEncoded_queryString", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING, StringUtils
                 .xmlEncodeString(queryString));
         
-        attributeList.put("xmlEncoded_urlEncoded_defaultHostName", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
                 .xmlEncodeString(StringUtils
                         .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName", ""))));
-        attributeList.put("xmlEncoded_urlEncoded_defaultHostAddress", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode("http://"
                         + Settings.getSettings().getStringPropertyFromConfig("hostName", "") + "/")));
-        attributeList.put("xmlEncoded_urlEncoded_defaultSeparator", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", ""))));
-        attributeList.put("xmlEncoded_urlEncoded_graphUri", StringUtils
+                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", ":"))));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_GRAPH_URI, StringUtils
                 .xmlEncodeString(StringUtils
                         .percentEncode(nextProvider.getSparqlGraphUri())));
-        attributeList.put("xmlEncoded_urlEncoded_endpointUrl", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
-        attributeList.put("xmlEncoded_urlEncoded_realHostName", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode(realHostName)));
-        attributeList.put("xmlEncoded_urlEncoded_queryString", StringUtils
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_QUERY_STRING, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode(queryString)));
         
         return attributeList;
@@ -1481,23 +1481,23 @@ public class SparqlQueryCreator
         } // end for(;nextMatch < allMatches.size(); nextMatch++)
         
         // lastly put in the actual query string if they want us to do that
-        replacedString = replacedString.replace("${queryString}", queryString);
-        replacedString = replacedString.replace("${lowercase_queryString}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_QUERY_STRING, queryString);
+        replacedString = replacedString.replace(Constants.TEMPLATE_LOWERCASE_QUERY_STRING,
                 queryString.toLowerCase());
-        replacedString = replacedString.replace("${uppercase_queryString}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_UPPERCASE_QUERY_STRING,
                 queryString.toUpperCase());
         replacedString = replacedString.replace(
-                "${ntriplesEncoded_queryString}", StringUtils
+                Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING, StringUtils
                         .ntriplesEncode(queryString));
-        replacedString = replacedString.replace("${urlEncoded_queryString}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING,
                 StringUtils.percentEncode(queryString));
-        replacedString = replacedString.replace("${xmlEncoded_queryString}",
+        replacedString = replacedString.replace(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING,
                 StringUtils.xmlEncodeString(queryString));
         replacedString = replacedString.replace(
-                "${xmlEncoded_urlEncoded_queryString}", StringUtils
+                Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING, StringUtils
                         .xmlEncodeString(StringUtils.percentEncode(queryString)));
         replacedString = replacedString
-                .replace("${xmlEncoded_ntriplesEncoded_queryString}", StringUtils
+                .replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING, StringUtils
                         .xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         
         if(SparqlQueryCreator._DEBUG)
@@ -1587,7 +1587,7 @@ public class SparqlQueryCreator
             Map<String, String> attributeList,
             List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
-        final String queryString = attributeList.get("queryString");
+        final String queryString = attributeList.get(Constants.TEMPLATE_QUERY_STRING);
         
         if(queryString.trim().equals(""))
         {
