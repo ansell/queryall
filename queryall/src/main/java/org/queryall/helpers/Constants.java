@@ -112,6 +112,7 @@ public final class Constants
     public static final String TEMPLATE_KEY_ENDPOINT_URL = "endpointUrl";
     public static final String TEMPLATE_KEY_GRAPH_URI = "graphUri";
     public static final String TEMPLATE_KEY_OFFSET = "offset";
+    public static final String TEMPLATE_KEY_QUERY_STRING = "queryString";
     public static final String TEMPLATE_KEY_REAL_HOST_NAME = "realHostName";
     public static final String TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS = "urlEncoded_defaultHostAddress";
     public static final String TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME = "urlEncoded_defaultHostName";
@@ -148,7 +149,7 @@ public final class Constants
     public static final String TEMPLATE_PAGEOFFSET = "${pageoffset}";
     public static final String TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY = "${percentEncoded_endpointQuery}";
     public static final String TEMPLATE_PLUS_URL_ENCODED_NORMALISED_STANDARD_URI = "${plusUrlEncoded_normalisedStandardUri}";
-    public static final String TEMPLATE_QUERY_STRING = "queryString";
+    public static final String TEMPLATE_QUERY_STRING = "${queryString}";
     public static final String TEMPLATE_REAL_HOST_NAME = "${realHostName}";
     public static final String TEMPLATE_SPARQL_OFFSET = "${sparqlOffset}";
     public static final String TEMPLATE_UPPERCASE_QUERY_STRING = "${uppercase_queryString}";
@@ -225,6 +226,8 @@ public final class Constants
         result.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZOME));
         return result;
     }
+
+    public static final String TEXT_TURTLE = "text/turtle";
 
     private Constants()
     {

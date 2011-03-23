@@ -59,9 +59,12 @@ public class SparqlQueryCreator
     public static String createQuery(QueryType queryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, 
+            boolean recogniseImplicitRdfRuleInclusions, 
+            boolean includeNonProfileMatchedRdfRules,
+            Settings localSettings)
     {
-        final String queryString = attributeList.get(Constants.TEMPLATE_QUERY_STRING);
+        final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
         if(queryString.trim().equals(""))
         {
@@ -79,7 +82,7 @@ public class SparqlQueryCreator
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 queryType.getTemplateString(), queryType, null,
                 nextProvider.getNormalisationUris(),
-                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules);
+                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }
     
     /**
@@ -94,9 +97,12 @@ public class SparqlQueryCreator
             QueryType originalQueryType, QueryType includedQueryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, 
+            boolean recogniseImplicitRdfRuleInclusions, 
+            boolean includeNonProfileMatchedRdfRules,
+            Settings localSettings)
     {
-        final String queryString = attributeList.get(Constants.TEMPLATE_QUERY_STRING);
+        final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
         if(queryString.trim().equals(""))
         {
@@ -117,7 +123,7 @@ public class SparqlQueryCreator
                 includedQueryType.getOutputRdfXmlString(), originalQueryType,
                 includedQueryType,
                 nextProvider.getNormalisationUris(),
-                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules);
+                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }
     
     public static String doReplacementsOnString(String queryString,
@@ -125,7 +131,10 @@ public class SparqlQueryCreator
             QueryType includedQueryType,
             Collection<URI> normalisationUrisNeeded,
             Map<String, String> attributeList,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, 
+            boolean recogniseImplicitRdfRuleInclusions, 
+            boolean includeNonProfileMatchedRdfRules,
+            Settings localSettings)
     {
         if(SparqlQueryCreator._DEBUG)
         {
@@ -189,10 +198,10 @@ public class SparqlQueryCreator
         }
         
         replacedString = replacedString.replace(Constants.TEMPLATE_LIMIT, "LIMIT "
-                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0));
+                + localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500));
         
         normalisedQueryUri = normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT, "limit/"
-                + Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0));
+                + localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {
@@ -212,7 +221,7 @@ public class SparqlQueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset = (pageOffset - 1)
-                        * Settings.getSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
+                        * localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500);
                 
                 replacedString = replacedString.replace(Constants.TEMPLATE_SPARQL_OFFSET,
                         "OFFSET " + actualPageOffset);
@@ -301,7 +310,7 @@ public class SparqlQueryCreator
         {
             // we have already handled queryString in a special way, the rest
             // are just simple replacements
-            if(nextAttribute.equals(Constants.TEMPLATE_QUERY_STRING)
+            if(nextAttribute.equals(Constants.TEMPLATE_KEY_QUERY_STRING)
                     || nextAttribute.equals(Constants.TEMPLATE_KEY_OFFSET))
             {
                 continue;
@@ -773,8 +782,7 @@ public class SparqlQueryCreator
                                     .xmlEncodeString(inputUrlEncoded_normalisedQueryUri));
         }
         
-        final Collection<NormalisationRule> normalisationsNeeded = Settings
-                .getSettings().getNormalisationRulesForUris(normalisationUrisNeeded,
+        final Collection<NormalisationRule> normalisationsNeeded = localSettings.getNormalisationRulesForUris(normalisationUrisNeeded,
                         Constants.LOWEST_ORDER_FIRST);
         
         String endpointSpecificUri = normalisedStandardUri;
@@ -1121,7 +1129,7 @@ public class SparqlQueryCreator
      */
     public static Map<String, String> getAttributeListFor(
             Provider nextProvider, String queryString,
-            String nextEndpoint, String realHostName, int pageOffset)
+            String nextEndpoint, String realHostName, int pageOffset, Settings localSettings)
     {
         if(SparqlQueryCreator._DEBUG)
         {
@@ -1140,11 +1148,11 @@ public class SparqlQueryCreator
         
         final Map<String, String> attributeList = new Hashtable<String, String>();
         
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, Settings.getSettings().getStringPropertyFromConfig("hostName", ""));
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, Settings.getSettings().getDefaultHostAddress());
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, Settings.getSettings().getStringPropertyFromConfig("separator", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringPropertyFromConfig("hostName", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringPropertyFromConfig("separator", ""));
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
-        attributeList.put(Constants.TEMPLATE_QUERY_STRING, queryString);
+        attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryString);
         attributeList.put(Constants.TEMPLATE_KEY_GRAPH_URI, nextProvider.getSparqlGraphUri());
         attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, nextProvider.getUseSparqlGraph() + "");
         attributeList.put(Constants.TEMPLATE_KEY_OFFSET, pageOffset + "");
@@ -1161,11 +1169,11 @@ public class SparqlQueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_ENDPOINT_URL, nextEndpoint);
         
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName", "")));
+                .percentEncode(localSettings.getStringPropertyFromConfig("hostName", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
-                .percentEncode(Settings.getSettings().getDefaultHostAddress()));
+                .percentEncode(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
-                .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", "")));
+                .percentEncode(localSettings.getStringPropertyFromConfig("separator", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_GRAPH_URI, StringUtils
                 .percentEncode(nextProvider.getSparqlGraphUri()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils
@@ -1176,11 +1184,11 @@ public class SparqlQueryCreator
                 .percentEncode(queryString));
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("hostName", "")));
+                .xmlEncodeString(localSettings.getStringPropertyFromConfig("hostName", "")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
-                .xmlEncodeString("http://" + Settings.getSettings().getStringPropertyFromConfig("hostName", "") + "/"));
+                .xmlEncodeString("http://" + localSettings.getStringPropertyFromConfig("hostName", "") + "/"));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR, StringUtils
-                .xmlEncodeString(Settings.getSettings().getStringPropertyFromConfig("separator", ":")));
+                .xmlEncodeString(localSettings.getStringPropertyFromConfig("separator", ":")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_GRAPH_URI, StringUtils
                 .xmlEncodeString(nextProvider.getSparqlGraphUri()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils
@@ -1192,13 +1200,13 @@ public class SparqlQueryCreator
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("hostName", ""))));
+                        .percentEncode(localSettings.getStringPropertyFromConfig("hostName", ""))));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode("http://"
-                        + Settings.getSettings().getStringPropertyFromConfig("hostName", "") + "/")));
+                        + localSettings.getStringPropertyFromConfig("hostName", "") + "/")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(Settings.getSettings().getStringPropertyFromConfig("separator", ":"))));
+                        .percentEncode(localSettings.getStringPropertyFromConfig("separator", ":"))));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_GRAPH_URI, StringUtils
                 .xmlEncodeString(StringUtils
                         .percentEncode(nextProvider.getSparqlGraphUri())));
@@ -1585,9 +1593,12 @@ public class SparqlQueryCreator
             String replacementString, QueryType queryType,
             Provider nextProvider,
             Map<String, String> attributeList,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
+            List<Profile> includedProfiles, 
+            boolean recogniseImplicitRdfRuleInclusions, 
+            boolean includeNonProfileMatchedRdfRules,
+            Settings localSettings)
     {
-        final String queryString = attributeList.get(Constants.TEMPLATE_QUERY_STRING);
+        final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
         if(queryString.trim().equals(""))
         {
@@ -1605,7 +1616,7 @@ public class SparqlQueryCreator
         return SparqlQueryCreator.doReplacementsOnString(queryString,
                 replacementString, queryType, null,
                 nextProvider.getNormalisationUris(),
-                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules);
+                attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }
     
     /**
@@ -1615,9 +1626,9 @@ public class SparqlQueryCreator
      * @return
      */
     public static String replaceTags(String inputString,
-            Map<String, String> tags)
+            Map<String, String> tags, Settings localSettings)
     {
-        final Matcher m = Settings.getSettings().getTagPattern().matcher(inputString);
+        final Matcher m = localSettings.getTagPattern().matcher(inputString);
         boolean result = m.find();
         
         if(result)
@@ -1665,7 +1676,7 @@ public class SparqlQueryCreator
                 "yourinput2");
         
         final String returnString = SparqlQueryCreator.replaceTags(inputString,
-                myTestHashtable);
+                myTestHashtable, Settings.getSettings());
         
         // log.warn("SparqlQueryCreator.testReplaceMethod returnString="+returnString);
         

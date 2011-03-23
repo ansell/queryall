@@ -48,7 +48,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
     private String description = "";
     private String identifierRegex = "";
     private String uriTemplate = "";
-    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator", "");
+    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator", ":");
     
     // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes

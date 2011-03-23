@@ -119,7 +119,7 @@ public class RdfUtils
 
     }
     
-    public static Collection<QueryType> fetchQueryTypeByKey(String hostToUse, URI nextQueryKey, int modelVersion) throws InterruptedException
+    public static Collection<QueryType> fetchQueryTypeByKey(String hostToUse, URI nextQueryKey, int modelVersion, Settings localSettings) throws InterruptedException
     {
         QueryBundle nextQueryBundle = new QueryBundle();
         
@@ -127,16 +127,16 @@ public class RdfUtils
         
         Collection<String> endpointUrls = new HashSet<String>();
         
-        // if(nextQueryKey.startsWith(Settings.getSettings().getDefaultHostAddress()))
+        // if(nextQueryKey.startsWith(localSettings.getDefaultHostAddress()))
         // {
-            String namespaceAndIdentifier = nextQueryKey.stringValue().substring(Settings.getSettings().getDefaultHostAddress().length());
+            String namespaceAndIdentifier = nextQueryKey.stringValue().substring(localSettings.getDefaultHostAddress().length());
             
-            List<String> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier);
+            List<String> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
             
             if(nsAndIdList.size() == 2)
             {
-                endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nsAndIdList.get(1)));
-                nextQueryBundle.setQueryEndpoint(hostToUse+new QueryTypeImpl().getDefaultNamespace()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nsAndIdList.get(1)));
+                endpointUrls.add(hostToUse+new QueryTypeImpl().getDefaultNamespace()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nsAndIdList.get(1)));
+                nextQueryBundle.setQueryEndpoint(hostToUse+new QueryTypeImpl().getDefaultNamespace()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nsAndIdList.get(1)));
             }
         // }
         // else
@@ -147,14 +147,14 @@ public class RdfUtils
         
         dummyProvider.setEndpointUrls(endpointUrls);
         dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpGetUrl());
-        dummyProvider.setKey(hostToUse+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
+        dummyProvider.setKey(hostToUse+localSettings.getNamespaceForProvider()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setProvider(dummyProvider);
         
         QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(hostToUse+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
+        dummyQuery.setKey(hostToUse+localSettings.getNamespaceForQueryType()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -164,12 +164,12 @@ public class RdfUtils
         
         queryBundles.add(nextQueryBundle);
         
-        return getQueryTypesForQueryBundles(queryBundles, modelVersion);
+        return getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(
         URI nextQueryKey, boolean useSparqlGraph, 
-        String sparqlGraphUri, String sparqlEndpointUrl, int modelVersion)
+        String sparqlGraphUri, String sparqlEndpointUrl, int modelVersion, Settings localSettings)
     {
         String constructQueryString = RdfUtils.getConstructQueryForKey(
             nextQueryKey, useSparqlGraph, sparqlGraphUri);
@@ -187,7 +187,7 @@ public class RdfUtils
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
         dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpPostSparql());
-        dummyProvider.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForProvider()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
+        dummyProvider.setKey(localSettings.getDefaultHostAddress()+localSettings.getNamespaceForProvider()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
@@ -195,7 +195,7 @@ public class RdfUtils
         
         QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(Settings.getSettings().getDefaultHostAddress()+Settings.getSettings().getNamespaceForQueryType()+Settings.getSettings().getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
+        dummyQuery.setKey(localSettings.getDefaultHostAddress()+localSettings.getNamespaceForQueryType()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -207,7 +207,7 @@ public class RdfUtils
         
         queryBundles.add(nextQueryBundle);
         
-        return getQueryTypesForQueryBundles(queryBundles, modelVersion);
+        return getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
     }
     
     public static String findWriterFormat(String requestedContentType, String preferredDisplayContentType, String fallback)
@@ -416,13 +416,13 @@ public class RdfUtils
         return result;
     }
     
-    public static String getConstructQueryByType(BaseQueryAllInterface nextObject, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri)
+    public static String getConstructQueryByType(BaseQueryAllInterface nextObject, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri, Settings localSettings)
     {
-        return getConstructQueryByType(nextObject.getElementType(), offset, limit, useSparqlGraph, sparqlGraphUri);
+        return getConstructQueryByType(nextObject.getElementType(), offset, limit, useSparqlGraph, sparqlGraphUri, localSettings);
     }
     
     
-    public static String getConstructQueryByType(URI nextType, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri)
+    public static String getConstructQueryByType(URI nextType, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri, Settings localSettings)
     {
         StringBuilder result = new StringBuilder();
         
@@ -430,7 +430,7 @@ public class RdfUtils
         
         int counter = 0;
         
-        for(String nextTitleUri : Settings.getSettings().getStringCollectionPropertiesFromConfig("titleProperties"))
+        for(String nextTitleUri : localSettings.getStringCollectionPropertiesFromConfig("titleProperties"))
         {
             result.append(" ?s <"+nextTitleUri+"> ?o"+counter+" . ");
             
@@ -448,7 +448,7 @@ public class RdfUtils
         
         counter = 0;
         
-        for(String nextTitleUri : Settings.getSettings().getStringCollectionPropertiesFromConfig("titleProperties"))
+        for(String nextTitleUri : localSettings.getStringCollectionPropertiesFromConfig("titleProperties"))
         {
             result.append("OPTIONAL{ ?s <"+nextTitleUri+"> ?o"+counter+" . }");
             
@@ -907,9 +907,9 @@ public class RdfUtils
         return results;
     }
     
-    public static Collection<QueryType> getQueryTypesForQueryBundles(Collection<QueryBundle> queryBundles, int modelVersion)
+    public static Collection<QueryType> getQueryTypesForQueryBundles(Collection<QueryBundle> queryBundles, int modelVersion, Settings localSettings)
     {
-        RdfFetchController fetchController = new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
+        RdfFetchController fetchController = new RdfFetchController(localSettings, BlacklistController.getDefaultController(), queryBundles);
         
         try
         {
@@ -944,16 +944,16 @@ public class RdfUtils
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
                             continue;
                         }
                         else
                         {
-                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
                         }
                     }
                     else if(log.isDebugEnabled())
@@ -963,7 +963,7 @@ public class RdfUtils
                     
                     if(nextResult.getNormalisedResult().length() > 0)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), localSettings.getDefaultHostAddress(), nextReaderFormat);
                     }
                 }
                 catch(org.openrdf.rio.RDFParseException rdfpe)
@@ -1353,7 +1353,7 @@ public class RdfUtils
         return getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
     }
     
-    public static void insertResultIntoRepository(RdfFetcherQueryRunnable nextResult, Repository myRepository) throws RepositoryException, java.io.IOException
+    public static void insertResultIntoRepository(RdfFetcherQueryRunnable nextResult, Repository myRepository, Settings localSettings) throws RepositoryException, java.io.IOException
     {
         if(_DEBUG)
         {
@@ -1375,16 +1375,16 @@ public class RdfUtils
             
             if(nextReaderFormat == null)
             {
-                nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedRequestContentType", Constants.APPLICATION_RDF_XML));
                 
                 if(nextReaderFormat == null)
                 {
-                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
                     //throw new RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
                 else if(nextResult.getWasSuccessful())
                 {
-                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
                 }
             }
             else if(_DEBUG)
@@ -1404,7 +1404,7 @@ public class RdfUtils
             
             if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
             {
-                myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), Settings.getSettings().getDefaultHostAddress(), nextReaderFormat);
+                myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), localSettings.getDefaultHostAddress(), nextReaderFormat);
                 
                 myRepositoryConnection.commit();
             }
@@ -1439,11 +1439,11 @@ public class RdfUtils
         }
     }
     
-    public static void insertResultsIntoRepository(Collection<RdfFetcherQueryRunnable> results, Repository myRepository) throws RepositoryException, java.io.IOException
+    public static void insertResultsIntoRepository(Collection<RdfFetcherQueryRunnable> results, Repository myRepository, Settings localSettings) throws RepositoryException, java.io.IOException
     {
         for(RdfFetcherQueryRunnable nextResult : results)
 		{
-		    insertResultIntoRepository(nextResult, myRepository);
+		    insertResultIntoRepository(nextResult, myRepository, localSettings);
 		}
 	}
     
@@ -1528,7 +1528,7 @@ public class RdfUtils
         
         try
         {
-            insertResultsIntoRepository(retrievalThreads, myRepository);
+            insertResultsIntoRepository(retrievalThreads, myRepository, localSettings);
         }
         catch (RepositoryException e)
         {

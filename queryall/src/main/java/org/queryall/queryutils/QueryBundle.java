@@ -202,7 +202,7 @@ public class QueryBundle
 		{
 			String keyPrefix = Settings.getSettings().getDefaultHostAddress()
 				+ Settings.getSettings().getNamespaceForQueryBundle()
-				+ Settings.getSettings().getStringPropertyFromConfig("separator", "");
+				+ Settings.getSettings().getStringPropertyFromConfig("separator", ":");
 			
 			// create some resources and literals to make statements out of
 			URI queryBundleInstanceUri = f.createURI(keyPrefix + keyToUse);

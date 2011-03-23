@@ -382,26 +382,26 @@ public class StringUtils
         }
     }
 
-    public static boolean isPlainNamespaceAndIdentifier(String queryString)
+    public static boolean isPlainNamespaceAndIdentifier(String queryString, Settings localSettings)
     {
-        return Settings.getSettings().getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
+        return localSettings.getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
     }
 
-    public static boolean isPlainNamespace(String queryString)
+    public static boolean isPlainNamespace(String queryString, Settings localSettings)
     {
-        return Settings.getSettings().getPlainNamespacePattern().matcher(queryString).find();
+        return localSettings.getPlainNamespacePattern().matcher(queryString).find();
     }
 
-    public static List<String> getNamespaceAndIdentifier(String nsAndId)
+    public static List<String> getNamespaceAndIdentifier(String nsAndId, Settings localSettings)
     {
-        return matchesForRegexOnString(Settings.getSettings().getPlainNamespaceAndIdentifierPattern(), Settings.getSettings().getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex", ""), nsAndId);
+        return matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(), localSettings.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex", ""), nsAndId);
     }
 
-    public static List<String> getNamespaceAndIdentifierFromUri(String nextUri)
+    public static List<String> getNamespaceAndIdentifierFromUri(String nextUri, Settings localSettings)
     {
-        if(nextUri.startsWith(Settings.getSettings().getDefaultHostAddress()))
+        if(nextUri.startsWith(localSettings.getDefaultHostAddress()))
         {
-            return getNamespaceAndIdentifier(nextUri.substring(Settings.getSettings().getDefaultHostAddress().length()));
+            return getNamespaceAndIdentifier(nextUri.substring(localSettings.getDefaultHostAddress().length()), localSettings);
         }
         
         return null;

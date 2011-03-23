@@ -945,7 +945,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
             if(localSettings.getBooleanPropertyFromConfig("statisticsServerUseGraphUri", true))
             {
                 sparqlInsertQuery += " INTO GRAPH <"
-                        + Settings.getSettings().getStringPropertyFromConfig("statisticsServerGraphUri", "") + "> ";
+                        + localSettings.getStringPropertyFromConfig("statisticsServerGraphUri", "") + "> ";
             }
             
             sparqlInsertQuery += " { " + insertTriplesContent + " } ";

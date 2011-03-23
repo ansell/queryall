@@ -607,12 +607,12 @@ public class BlacklistController
             this.permanentServletLifetimeIPBlacklist = new HashSet<String>();
         }
         
-        this.currentIPBlacklist = Settings.getSettings().getStringCollectionPropertiesFromConfig("blacklistBaseClientIPAddresses");
+        this.currentIPBlacklist = localSettings.getStringCollectionPropertiesFromConfig("blacklistBaseClientIPAddresses");
     }
     
     public void initialiseWhitelist()
     {
-        this.currentIPWhitelist = Settings.getSettings().getStringCollectionPropertiesFromConfig("whitelistBaseClientIPAddresses");
+        this.currentIPWhitelist = localSettings.getStringCollectionPropertiesFromConfig("whitelistBaseClientIPAddresses");
     }
     
     public boolean isClientBlacklisted(String nextClientIPAddress)

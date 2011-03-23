@@ -52,30 +52,45 @@ public class Settings
             .getLogger(Settings.class.getName());
     public static final boolean _TRACE = Settings.log.isTraceEnabled();
     public static final boolean _DEBUG = Settings.log.isDebugEnabled();
-    private static final boolean _INFO = Settings.log.isInfoEnabled();
+    public static final boolean _INFO = Settings.log.isInfoEnabled();
 
-    // This matches the org/queryall/queryall.properties file where
+    // This matches the queryall.properties file where
     // the generally static API specific section of the configuration settings are stored
-    private static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
+    public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
     public static final int CONFIG_API_VERSION = 3;
     public static final String VERSION = getVersion();
     
     // These properties are pulled out of the queryall.properties file
-    private String DEFAULT_ONTOLOGYTERMURI_PREFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX", "http://purl.org/queryall/");
-    private String DEFAULT_ONTOLOGYTERMURI_SUFFIX = Settings.getString("Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX", ":");
-
-    private String DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE", "webapp_configuration");
-    private String DEFAULT_RDF_PROJECT_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROJECT_NAMESPACE", "project");
-    private String DEFAULT_RDF_PROVIDER_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROVIDER_NAMESPACE", "provider");
-    private String DEFAULT_RDF_TEMPLATE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE", "template");
-    private String DEFAULT_RDF_QUERY_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_QUERY_NAMESPACE", "query");
-    private String DEFAULT_RDF_QUERYBUNDLE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE", "querybundle");
-    private String DEFAULT_RDF_RDFRULE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_RDFRULE_NAMESPACE", "rdfrule");
-    private String DEFAULT_RDF_RULETEST_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_RULETEST_NAMESPACE", "ruletest");
-    private String DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE", "ns");
-    private String DEFAULT_RDF_PROFILE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROFILE_NAMESPACE", "profile");
-    private String DEFAULT_RDF_PROVENANCE_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE", "provenance");
-    private String DEFAULT_RDF_STATISTICS_NAMESPACE = Settings.getString("Settings.DEFAULT_RDF_STATISTICS_NAMESPACE", "statistics");
+    private String defaultOntologyTermUriPrefix = Settings.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX", "http://purl.org/queryall/");
+    private String defaultOntologyTermUriSuffix = Settings.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX", ":");
+    private String currentOntologyTermUriPrefix = defaultOntologyTermUriPrefix;
+    private String currentOntologyTermUriSuffix = defaultOntologyTermUriSuffix;
+    
+    private String defaultRdfWebappConfigurationNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE", "webapp_configuration");
+    private String defaultRdfProjectNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_PROJECT_NAMESPACE", "project");
+    private String defaultRdfProviderNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_PROVIDER_NAMESPACE", "provider");
+    private String defaultRdfTemplateNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE", "template");
+    private String defaultRdfQueryNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_QUERY_NAMESPACE", "query");
+    private String defaultRdfQuerybundleNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE", "querybundle");
+    private String defaultRdfRuleNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_RDFRULE_NAMESPACE", "rdfrule");
+    private String defaultRdfRuleTestNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_RULETEST_NAMESPACE", "ruletest");
+    private String defaultRdfNamespaceEntryNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE", "ns");
+    private String defaultRdfProfileNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_PROFILE_NAMESPACE", "profile");
+    private String defaultRdfProvenanceNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE", "provenance");
+    private String defaultRdfStatisticsNamespace = Settings.getSystemOrPropertyString("Settings.DEFAULT_RDF_STATISTICS_NAMESPACE", "statistics");
+            
+    private String currentRdfWebappConfigurationNamespace = defaultRdfWebappConfigurationNamespace;
+    private String currentRdfProjectNamespace = defaultRdfProjectNamespace;
+    private String currentRdfProviderNamespace = defaultRdfProviderNamespace;
+    private String currentRdfTemplateNamespace = defaultRdfTemplateNamespace;
+    private String currentRdfQueryNamespace = defaultRdfQueryNamespace;
+    private String currentRdfQuerybundleNamespace = defaultRdfQuerybundleNamespace;
+    private String currentRdfRuleNamespace = defaultRdfRuleNamespace;
+    private String currentRdfRuleTestNamespace = defaultRdfRuleTestNamespace;
+    private String currentRdfNamespaceEntryNamespace = defaultRdfNamespaceEntryNamespace;
+    private String currentRdfProfileNamespace = defaultRdfProfileNamespace;
+    private String currentRdfProvenanceNamespace = defaultRdfProvenanceNamespace;
+    private String currentRdfStatisticsNamespace = defaultRdfStatisticsNamespace;
             
     private String AUTOGENERATED_QUERY_PREFIX = Settings.getString("Settings.AUTOGENERATED_QUERY_PREFIX", "autogen-");
     private String AUTOGENERATED_QUERY_SUFFIX = Settings.getString("Settings.AUTOGENERATED_QUERY_SUFFIX", "");
@@ -85,13 +100,14 @@ public class Settings
     // these values are initialised dynamically for the lifetime of the class
     public String SUBVERSION_INFO = null;
 
-    public String BASE_CONFIG_LOCATION = null;
-    public String BASE_CONFIG_URI = null;
-    public String BASE_CONFIG_MIME_FORMAT = null;
+    private String baseConfigLocation = null;
+    private String baseConfigUri = null;
+    private String baseConfigMimeFormat = null;
     
-    private Repository currentConfigurationRepository = null;
     private Repository currentBaseConfigurationRepository = null;
     private Repository currentWebAppConfigurationRepository = null;
+    private Repository currentConfigurationRepository = null;
+    
     private Map<URI, Provider> cachedProviders = null;
     private Map<URI, NormalisationRule> cachedNormalisationRules = null;
     private Map<URI, RuleTest> cachedRuleTests = null;
@@ -100,11 +116,9 @@ public class Settings
     private Map<URI, Profile> cachedProfiles = null;
     private Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
     private Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
-    private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>();
+    private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
     private Collection<String> webappConfigUriList = new HashSet<String>();
-//    public Collection<String> CONFIG_LOCATION_LIST = new HashSet<String>();
-    // public Collection<String> BACKUP_CONFIG_LOCATION_LIST = new HashSet<String>();
-
+    
     private long initialisedTimestamp = System.currentTimeMillis();
     
     private static Settings defaultSettings = null;
@@ -129,9 +143,9 @@ public class Settings
         	log.debug("Settings.init: TEST: baseConfig was not null baseConfigLocation="+baseConfigLocation);
         }
         
-        this.BASE_CONFIG_LOCATION = baseConfigLocation;
-        this.BASE_CONFIG_MIME_FORMAT = baseConfigMimeFormat;
-        this.BASE_CONFIG_URI = baseConfigUri;
+        this.baseConfigLocation = baseConfigLocation;
+        this.baseConfigMimeFormat = baseConfigMimeFormat;
+        this.baseConfigUri = baseConfigUri;
     }
     
     public static Settings getSettings()
@@ -139,14 +153,6 @@ public class Settings
         if(defaultSettings == null)
         {
             defaultSettings = new Settings();
-//            try
-//            {
-//                defaultSettings.getWebAppConfigurationRdf();
-//            }
-//            catch(InterruptedException ie)
-//            {
-//                log.fatal("Settings.getSettings: caught exception on getWebAppConfigurationRdf for singleton initialisation.");
-//            }
         }
         
         return defaultSettings;
@@ -165,12 +171,12 @@ public class Settings
     
     private String getBaseConfigLocation()
     {
-        if(this.BASE_CONFIG_LOCATION == null)
+        if(this.baseConfigLocation == null)
         {
-            this.BASE_CONFIG_LOCATION = Settings.getDefaultBaseConfigLocationProperty();
+            this.baseConfigLocation = Settings.getDefaultBaseConfigLocationProperty();
         }
         
-        return this.BASE_CONFIG_LOCATION;
+        return this.baseConfigLocation;
     }
     
     /**
@@ -193,12 +199,12 @@ public class Settings
      */
     private String getBaseConfigMimeFormat()
     {
-        if(this.BASE_CONFIG_MIME_FORMAT == null)
+        if(this.baseConfigMimeFormat == null)
         {
-            this.BASE_CONFIG_MIME_FORMAT = Settings.getDefaultBaseConfigMimeFormatProperty();
+            this.baseConfigMimeFormat = Settings.getDefaultBaseConfigMimeFormatProperty();
         }
         
-        return this.BASE_CONFIG_MIME_FORMAT;
+        return this.baseConfigMimeFormat;
     }
     
     private static String getDefaultBaseConfigMimeFormatProperty()
@@ -208,12 +214,12 @@ public class Settings
     
     private String getBaseConfigUri()
     {
-        if(this.BASE_CONFIG_URI == null)
+        if(this.baseConfigUri == null)
         {
-            this.BASE_CONFIG_URI = Settings.getDefaultBaseConfigUriProperty();
+            this.baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
         }
         
-        return this.BASE_CONFIG_URI;
+        return this.baseConfigUri;
     }
     
     /**
@@ -3244,102 +3250,102 @@ public class Settings
     }
 
 	/**
-	 * @param dEFAULT_ONTOLOGYTERMURI_PREFIX the dEFAULT_ONTOLOGYTERMURI_PREFIX to set
+	 * @param ontologyTermUriPrefix the dEFAULT_ONTOLOGYTERMURI_PREFIX to set
 	 */
-	public void setOntologyTermUriPrefix(String dEFAULT_ONTOLOGYTERMURI_PREFIX) {
-		DEFAULT_ONTOLOGYTERMURI_PREFIX = dEFAULT_ONTOLOGYTERMURI_PREFIX;
+	public void setOntologyTermUriPrefix(String ontologyTermUriPrefix) {
+		currentOntologyTermUriPrefix = ontologyTermUriPrefix;
 	}
 
 	/**
 	 * @return the dEFAULT_ONTOLOGYTERMURI_PREFIX
 	 */
 	public String getOntologyTermUriPrefix() {
-		return DEFAULT_ONTOLOGYTERMURI_PREFIX;
+		return currentOntologyTermUriPrefix;
 	}
 
 	/**
 	 * @param dEFAULT_ONTOLOGYTERMURI_SUFFIX the dEFAULT_ONTOLOGYTERMURI_SUFFIX to set
 	 */
 	public void setOntologyTermUriSuffix(String dEFAULT_ONTOLOGYTERMURI_SUFFIX) {
-		DEFAULT_ONTOLOGYTERMURI_SUFFIX = dEFAULT_ONTOLOGYTERMURI_SUFFIX;
+		defaultOntologyTermUriSuffix = dEFAULT_ONTOLOGYTERMURI_SUFFIX;
 	}
 
 	/**
 	 * @return the dEFAULT_ONTOLOGYTERMURI_SUFFIX
 	 */
 	public String getOntologyTermUriSuffix() {
-		return DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+		return defaultOntologyTermUriSuffix;
 	}
 
 	/**
-	 * @param dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE the dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE to set
+	 * @param rdfWebappConfigurationNamespace the defaultRdfWebappConfigurationNamespace to set
 	 */
-	public void setNamespaceForWebappConfiguration(
-			String dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE) {
-		DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE = dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE;
+	public void setNamespaceForWebappConfiguration(String rdfWebappConfigurationNamespace) 
+	{
+		defaultRdfWebappConfigurationNamespace = rdfWebappConfigurationNamespace;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE
 	 */
 	public String getNamespaceForWebappConfiguration() {
-		return DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE;
+		return defaultRdfWebappConfigurationNamespace;
 	}
 
 	/**
-	 * @param dEFAULT_RDF_PROJECT_NAMESPACE the dEFAULT_RDF_PROJECT_NAMESPACE to set
+	 * @param rdfProjectNamespace the dEFAULT_RDF_PROJECT_NAMESPACE to set
 	 */
-	public void setNamespaceForProject(String dEFAULT_RDF_PROJECT_NAMESPACE) {
-		DEFAULT_RDF_PROJECT_NAMESPACE = dEFAULT_RDF_PROJECT_NAMESPACE;
+	public void setNamespaceForProject(String rdfProjectNamespace) {
+		defaultRdfProjectNamespace = rdfProjectNamespace;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_PROJECT_NAMESPACE
 	 */
 	public String getNamespaceForProject() {
-		return DEFAULT_RDF_PROJECT_NAMESPACE;
+		return defaultRdfProjectNamespace;
 	}
 
 	/**
 	 * @param dEFAULT_RDF_PROVIDER_NAMESPACE the dEFAULT_RDF_PROVIDER_NAMESPACE to set
 	 */
 	public void setNamespaceForProvider(String dEFAULT_RDF_PROVIDER_NAMESPACE) {
-		DEFAULT_RDF_PROVIDER_NAMESPACE = dEFAULT_RDF_PROVIDER_NAMESPACE;
+		defaultRdfProviderNamespace = dEFAULT_RDF_PROVIDER_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_PROVIDER_NAMESPACE
 	 */
 	public String getNamespaceForProvider() {
-		return DEFAULT_RDF_PROVIDER_NAMESPACE;
+		return defaultRdfProviderNamespace;
 	}
 
 	/**
 	 * @param dEFAULT_RDF_TEMPLATE_NAMESPACE the dEFAULT_RDF_TEMPLATE_NAMESPACE to set
 	 */
 	public void setNamespaceForTemplate(String dEFAULT_RDF_TEMPLATE_NAMESPACE) {
-		DEFAULT_RDF_TEMPLATE_NAMESPACE = dEFAULT_RDF_TEMPLATE_NAMESPACE;
+		defaultRdfTemplateNamespace = dEFAULT_RDF_TEMPLATE_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_TEMPLATE_NAMESPACE
 	 */
 	public String getNamespaceForTemplate() {
-		return DEFAULT_RDF_TEMPLATE_NAMESPACE;
+		return defaultRdfTemplateNamespace;
 	}
 
 	/**
 	 * @param dEFAULT_RDF_QUERY_NAMESPACE the dEFAULT_RDF_QUERY_NAMESPACE to set
 	 */
 	public void setNamespaceForQueryType(String dEFAULT_RDF_QUERY_NAMESPACE) {
-		DEFAULT_RDF_QUERY_NAMESPACE = dEFAULT_RDF_QUERY_NAMESPACE;
+		defaultRdfQueryNamespace = dEFAULT_RDF_QUERY_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_QUERY_NAMESPACE
 	 */
 	public String getNamespaceForQueryType() {
-		return DEFAULT_RDF_QUERY_NAMESPACE;
+		return defaultRdfQueryNamespace;
 	}
 
 	/**
@@ -3347,14 +3353,14 @@ public class Settings
 	 */
 	public void setNamespaceForQueryBundle(
 			String dEFAULT_RDF_QUERYBUNDLE_NAMESPACE) {
-		DEFAULT_RDF_QUERYBUNDLE_NAMESPACE = dEFAULT_RDF_QUERYBUNDLE_NAMESPACE;
+		defaultRdfQuerybundleNamespace = dEFAULT_RDF_QUERYBUNDLE_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_QUERYBUNDLE_NAMESPACE
 	 */
 	public String getNamespaceForQueryBundle() {
-		return DEFAULT_RDF_QUERYBUNDLE_NAMESPACE;
+		return defaultRdfQuerybundleNamespace;
 	}
 
 	/**
@@ -3362,28 +3368,28 @@ public class Settings
 	 */
 	public void setNamespaceForNormalisationRule(
 			String dEFAULT_RDF_RDFRULE_NAMESPACE) {
-		DEFAULT_RDF_RDFRULE_NAMESPACE = dEFAULT_RDF_RDFRULE_NAMESPACE;
+		defaultRdfRuleNamespace = dEFAULT_RDF_RDFRULE_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_RDFRULE_NAMESPACE
 	 */
 	public String getNamespaceForNormalisationRule() {
-		return DEFAULT_RDF_RDFRULE_NAMESPACE;
+		return defaultRdfRuleNamespace;
 	}
 
 	/**
 	 * @param dEFAULT_RDF_RULETEST_NAMESPACE the dEFAULT_RDF_RULETEST_NAMESPACE to set
 	 */
 	public void setNamespaceForRuleTest(String dEFAULT_RDF_RULETEST_NAMESPACE) {
-		DEFAULT_RDF_RULETEST_NAMESPACE = dEFAULT_RDF_RULETEST_NAMESPACE;
+		defaultRdfRuleTestNamespace = dEFAULT_RDF_RULETEST_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_RULETEST_NAMESPACE
 	 */
 	public String getNamespaceForRuleTest() {
-		return DEFAULT_RDF_RULETEST_NAMESPACE;
+		return defaultRdfRuleTestNamespace;
 	}
 
 	/**
@@ -3391,28 +3397,28 @@ public class Settings
 	 */
 	public void setNamespaceForNamespaceEntry(
 			String dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE) {
-		DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE = dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
+		defaultRdfNamespaceEntryNamespace = dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_NAMESPACEENTRY_NAMESPACE
 	 */
 	public String getNamespaceForNamespaceEntry() {
-		return DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE;
+		return defaultRdfNamespaceEntryNamespace;
 	}
 
 	/**
 	 * @param dEFAULT_RDF_PROFILE_NAMESPACE the dEFAULT_RDF_PROFILE_NAMESPACE to set
 	 */
 	public void setNamespaceForProfile(String dEFAULT_RDF_PROFILE_NAMESPACE) {
-		DEFAULT_RDF_PROFILE_NAMESPACE = dEFAULT_RDF_PROFILE_NAMESPACE;
+		defaultRdfProfileNamespace = dEFAULT_RDF_PROFILE_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_PROFILE_NAMESPACE
 	 */
 	public String getNamespaceForProfile() {
-		return DEFAULT_RDF_PROFILE_NAMESPACE;
+		return defaultRdfProfileNamespace;
 	}
 
 	/**
@@ -3420,14 +3426,14 @@ public class Settings
 	 */
 	public void setNamespaceForProvenance(
 			String dEFAULT_RDF_PROVENANCE_NAMESPACE) {
-		DEFAULT_RDF_PROVENANCE_NAMESPACE = dEFAULT_RDF_PROVENANCE_NAMESPACE;
+		defaultRdfProvenanceNamespace = dEFAULT_RDF_PROVENANCE_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_PROVENANCE_NAMESPACE
 	 */
 	public String getNamespaceForProvenance() {
-		return DEFAULT_RDF_PROVENANCE_NAMESPACE;
+		return defaultRdfProvenanceNamespace;
 	}
 
 	/**
@@ -3435,14 +3441,14 @@ public class Settings
 	 */
 	public void setNamespaceForStatistics(
 			String dEFAULT_RDF_STATISTICS_NAMESPACE) {
-		DEFAULT_RDF_STATISTICS_NAMESPACE = dEFAULT_RDF_STATISTICS_NAMESPACE;
+		defaultRdfStatisticsNamespace = dEFAULT_RDF_STATISTICS_NAMESPACE;
 	}
 
 	/**
 	 * @return the dEFAULT_RDF_STATISTICS_NAMESPACE
 	 */
 	public String getNamespaceForStatistics() {
-		return DEFAULT_RDF_STATISTICS_NAMESPACE;
+		return defaultRdfStatisticsNamespace;
 	}
 
 	/**

@@ -19,13 +19,13 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private Settings localSettings = Settings.getSettings();
+//    private Settings localSettings = Settings.getSettings();
     
     public String httpOperation = "GET";
     // public String url = "";
     // public String postInformation = "";
     // public String acceptHeader = "";
-    public int maxRowsParameter = localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
+    public int maxRowsParameter = getLocalSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
     // public String format = "";
     
     // public String rawResult = "";
@@ -66,7 +66,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
         {
             setQueryStartTime(new Date());
             
-            RdfFetcher fetcher = new RdfFetcher(localSettings, getBlacklistController());
+            RdfFetcher fetcher = new RdfFetcher(getLocalSettings(), getBlacklistController());
             
             if(_TRACE)
             {
