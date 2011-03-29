@@ -291,7 +291,8 @@ public class Settings extends QueryAllConfiguration
             }
             catch (final Exception ex)
             {
-                Settings.log.error(ex, ex);
+            	if(_DEBUG)
+            		Settings.log.debug(ex, ex);
             }
         }
         
