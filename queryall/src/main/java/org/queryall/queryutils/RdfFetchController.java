@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 
 import org.openrdf.model.URI;
 
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
@@ -173,7 +172,7 @@ public class RdfFetchController
                         log.debug( "RdfFetchController.initialise: including defaults for nextQueryType.title="+nextQueryType.getTitle()+" nextQueryType.getKey()="+nextQueryType.getKey() );
                     }
                     
-                    chosenProviders.addAll(localSettings.getDefaultProviders(nextQueryType.getKey()));
+                    chosenProviders.addAll(localSettings.getDefaultProviders(nextQueryType));
                 }
                 
                 if( _DEBUG )
@@ -482,7 +481,6 @@ public class RdfFetchController
         
         // Collection<String> nextQueryNamespacePrefixes = new HashSet<String>();
         Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
-        Hashtable<String, Hashtable<String, Collection<String>>> titleToPreferredPrefixToUriMapping = new Hashtable<String, Hashtable<String, Collection<String>>>();
         
         for( int nextNamespaceInputIndex : nextQueryType.getNamespaceInputIndexes() )
         {
