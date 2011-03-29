@@ -46,9 +46,11 @@ import org.queryall.impl.*;
  * @author Peter Ansell p_ansell@yahoo.com
  * @version $Id: Settings.java 975 2011-02-23 00:59:00Z p_ansell $
  */
-public class Settings
+public class Settings extends QueryAllConfiguration
 {
-    public static final Logger log = Logger
+    public static final String INCLUDE_NON_PROFILE_MATCHED_QUERIES = "includeNonProfileMatchedQueries";
+	public static final String RECOGNISE_IMPLICIT_QUERY_INCLUSIONS = "recogniseImplicitQueryInclusions";
+	public static final Logger log = Logger
             .getLogger(Settings.class.getName());
     public static final boolean _TRACE = Settings.log.isTraceEnabled();
     public static final boolean _DEBUG = Settings.log.isDebugEnabled();
@@ -277,13 +279,22 @@ public class Settings
      * @param defaultValue The value to return if the key does not match any configured value
      * @return the string matching the key
      */
-    private static String getSystemOrPropertyString(String key, String defaultValue)
+    public static String getSystemOrPropertyString(String key, String defaultValue)
     {
         String result = System.getProperty(key);
         
         if(result == null)
-        	result = Settings.getString(key, defaultValue);
-
+        {
+            try
+            {
+                result = ResourceBundle.getBundle(Settings.DEFAULT_PROPERTIES_BUNDLE_NAME).getString(key);
+            }
+            catch (final Exception ex)
+            {
+                Settings.log.error(ex, ex);
+            }
+        }
+        
         if(result == null)
             return defaultValue;
         else
@@ -535,7 +546,8 @@ public class Settings
         return false;
     }
     
-    public synchronized Map<URI, QueryType> getAllQueryTypes()
+    @Override
+	public synchronized Map<URI, QueryType> getAllQueryTypes()
     {
         if(this.cachedCustomQueries != null)
         {
@@ -550,7 +562,7 @@ public class Settings
             
             if(_INFO)
             {
-                log.info("Settings.getAllCustomQueries: found "+results.size()+" queries");
+                log.info("Settings.getAllQueryTypes: found "+results.size()+" queries");
             }
             
             this.cachedCustomQueries = results;
@@ -559,20 +571,21 @@ public class Settings
         }
         catch(java.lang.InterruptedException ie)
         {
-            Settings.log.fatal("Settings: caught java.lang.InterruptedException: not throwing it.", ie);
+            Settings.log.fatal("Settings.getAllQueryTypes: caught java.lang.InterruptedException: not throwing it.", ie);
             
             return null;
         }
     }
     
-    public Map<URI, QueryType> getQueryTypes(Repository myRepository)
+    @Override
+	public Map<URI, QueryType> getQueryTypes(Repository myRepository)
     {
         final Hashtable<URI, QueryType> results = new Hashtable<URI, QueryType>();
         final long start = System.currentTimeMillis();
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getCustomQueries: started parsing custom queries");
+                    .debug("Settings.getQueryTypes: started parsing custom queries");
         }
         // TODO: make the Query suffix configurable
         final String queryOntologyTypeUri = this.getOntologyTermUriPrefix()
@@ -588,7 +601,7 @@ public class Settings
                 if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("Settings.getCustomQueries: found queryString="
+                            .trace("Settings.getQueryTypes: found queryString="
                                     + queryString);
                 }
                 
@@ -605,7 +618,7 @@ public class Settings
                         if(Settings._DEBUG)
                         {
                             Settings.log
-                                    .debug("Settings: found query: valueOfQueryUri="
+                                    .debug("Settings.getQueryTypes: found query: valueOfQueryUri="
                                             + valueOfQueryUri);
                         }
                         final RepositoryResult<Statement> statements = con
@@ -621,7 +634,7 @@ public class Settings
                         else
                         {
                             Settings.log
-                                    .error("Settings: was not able to create a query configuration with URI valueOfQueryUri="
+                                    .error("Settings.getQueryTypes: was not able to create a query configuration with URI valueOfQueryUri="
                                             + valueOfQueryUri.toString());
                         }
                     }
@@ -639,18 +652,18 @@ public class Settings
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.error("Settings.getCustomQueries:", e);
+            Settings.log.error("Settings.getQueryTypes:", e);
         }
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
             Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getCustomQueries", (end - start)));
+                    "Settings.getQueryTypes", (end - start)));
         }
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getCustomQueries: finished parsing custom queries");
+                    .debug("Settings.getQueryTypes: finished parsing custom queries");
         }
         
         return results;
@@ -746,7 +759,7 @@ public class Settings
             if(_DEBUG)
             {
                 // log.debug("nextTemplate.getKey()="+nextTemplate.getKey().stringValue()+ " matches.size()="+matches.size());
-                log.debug("afterthistemplate: nextTemplate.getKey()="+nextTemplate.getKey().stringValue()+" original="+original+" result="+result.toString());
+                log.debug("Settings.matchTemplatesToPatternsForQuery: afterthistemplate: nextTemplate.getKey()="+nextTemplate.getKey().stringValue()+" original="+original+" result="+result.toString());
             }
             
             List<Template> nextCalledTemplates = new ArrayList<Template>(nextTemplate.getReferencedTemplates().size());
@@ -805,7 +818,8 @@ public class Settings
         return result;
     }
     
-    public synchronized Map<URI, Template> getAllTemplates()
+    @Override
+	public synchronized Map<URI, Template> getAllTemplates()
     {
         if(this.cachedTemplates != null)
         {
@@ -900,11 +914,14 @@ public class Settings
         {
             Settings.log.debug("Settings.getAllTemplates: finished parsing templates");
         }
+        
         this.cachedTemplates = results;
+        
         return this.cachedTemplates;
     }
     
-    public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
+    @Override
+	public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
         if(this.cachedNamespaceEntries != null)
         {
@@ -989,7 +1006,8 @@ public class Settings
         }
     }
     
-    public static Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
+    @Override
+	public Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
     {
         final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
         if(Settings._DEBUG)
@@ -1021,7 +1039,7 @@ public class Settings
                         if(Settings._DEBUG)
                         {
                             Settings.log
-                                    .debug("Settings: found namespace: valueOfNamespaceEntryUri="
+                                    .debug("Settings.getNamespaceEntries: found namespace: valueOfNamespaceEntryUri="
                                             + valueOfNamespaceEntryUri);
                         }
                         final RepositoryResult<Statement> statements = con
@@ -1078,111 +1096,128 @@ public class Settings
         return results;
     }
     
-    public synchronized Map<URI, Profile> getAllProfiles()
+    @Override
+	public synchronized Map<URI, Profile> getAllProfiles()
     {
         if(this.cachedProfiles != null)
         {
             return this.cachedProfiles;
         }
-        final Map<URI, Profile> results = new Hashtable<URI, Profile>();
-        if(Settings._DEBUG)
+        
+        
+        try
+        {
+            final Repository myRepository = getServerConfigurationRdf();
+            
+            Map<URI, Profile> results = getProfiles(myRepository);
+            
+            if(_INFO)
+            {
+                log.info("Settings.getAllProfiles: found "+results.size()+" profiles");
+            }
+            
+            this.cachedProfiles = results;
+            
+            return results;
+        }
+        catch(java.lang.InterruptedException ie)
+        {
+            Settings.log.fatal("Settings.getAllProfiles: caught java.lang.InterruptedException: not throwing it.", ie);
+            
+            return null;
+        }
+    }
+    
+    @Override
+	public Map<URI, Profile> getProfiles(Repository myRepository)
+    {
+    	final Map<URI, Profile> results = new Hashtable<URI, Profile>();
+        
+    	if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getAllProfiles: started parsing profile configurations");
+                    .debug("Settings.getProfiles: started parsing profile configurations");
         }
         final long start = System.currentTimeMillis();
 
+        final URI profileOntologyTypeUri = new ProfileImpl().getElementType();
+
         try
         {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            final URI profileOntologyTypeUri = new ProfileImpl().getElementType();
-
+            final RepositoryConnection con = myRepository.getConnection();
             try
             {
-                final RepositoryConnection con = myRepository.getConnection();
+                final String queryString = "SELECT ?profileUri WHERE { ?profileUri a <"
+                        + profileOntologyTypeUri.stringValue() + "> . }";
+                final TupleQuery tupleQuery = con.prepareTupleQuery(
+                        QueryLanguage.SPARQL, queryString);
+                final TupleQueryResult queryResult = tupleQuery.evaluate();
                 try
                 {
-                    final String queryString = "SELECT ?profileUri WHERE { ?profileUri a <"
-                            + profileOntologyTypeUri.stringValue() + "> . }";
-                    final TupleQuery tupleQuery = con.prepareTupleQuery(
-                            QueryLanguage.SPARQL, queryString);
-                    final TupleQueryResult queryResult = tupleQuery.evaluate();
-                    try
+                    while(queryResult.hasNext())
                     {
-                        while(queryResult.hasNext())
+                        final BindingSet bindingSet = queryResult.next();
+                        final Value valueOfProfileUri = bindingSet
+                                .getValue("profileUri");
+                        if(Settings._DEBUG)
                         {
-                            final BindingSet bindingSet = queryResult.next();
-                            final Value valueOfProfileUri = bindingSet
-                                    .getValue("profileUri");
-                            if(Settings._DEBUG)
-                            {
-                                Settings.log
-                                        .debug("Settings: found profile: valueOfProfileUri="
-                                                + valueOfProfileUri);
-                            }
-                            final RepositoryResult<Statement> statements = con
-                                    .getStatements((URI) valueOfProfileUri,
-                                            (URI) null, (Value) null, true);
-                            final Collection<Statement> nextStatementList = Iterations
-                                    .addAll(statements, new HashSet<Statement>());
-                            final Profile nextProfile = ProfileImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfProfileUri, Settings.CONFIG_API_VERSION);
-                            if(nextProfile != null)
-                            {
-                                results.put((URI)valueOfProfileUri,
-                                        nextProfile);
-                            }
-                            else
-                            {
-                                Settings.log
-                                        .error("Settings: was not able to create a profile with URI valueOfProfileUri="
-                                                + valueOfProfileUri.stringValue());
-                            }
+                            Settings.log
+                                    .debug("Settings.getProfiles: found profile: valueOfProfileUri="
+                                            + valueOfProfileUri);
                         }
-                    }
-                    finally
-                    {
-                        queryResult.close();
+                        final RepositoryResult<Statement> statements = con
+                                .getStatements((URI) valueOfProfileUri,
+                                        (URI) null, (Value) null, true);
+                        final Collection<Statement> nextStatementList = Iterations
+                                .addAll(statements, new HashSet<Statement>());
+                        final Profile nextProfile = ProfileImpl
+                                .fromRdf(nextStatementList, (URI)valueOfProfileUri, Settings.CONFIG_API_VERSION);
+                        if(nextProfile != null)
+                        {
+                            results.put((URI)valueOfProfileUri,
+                                    nextProfile);
+                        }
+                        else
+                        {
+                            Settings.log
+                                    .error("Settings.getProfiles: was not able to create a profile with URI valueOfProfileUri="
+                                            + valueOfProfileUri.stringValue());
+                        }
                     }
                 }
                 finally
                 {
-                    con.close();
+                    queryResult.close();
                 }
             }
-            catch (final OpenRDFException e)
+            finally
             {
-                // handle exception
-                Settings.log.error("Settings:", e);
+                con.close();
             }
         }
-        catch(java.lang.InterruptedException ie)
+        catch (final OpenRDFException e)
         {
-            Settings.log.fatal("Settings: caught java.lang.InterruptedException: not throwing it.", ie);
+            // handle exception
+            Settings.log.error("Settings.getProfiles:", e);
         }
+
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
             Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getAllProfiles", (end - start)));
+                    "Settings.getProfiles", (end - start)));
         }
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getAllProfiles: finished parsing profiles");
+                    .debug("Settings.getProfiles: finished parsing profiles");
         }
         
-        this.cachedProfiles = results;
-        
-        if(_INFO)
-        {
-            log.info("Settings.getAllProfiles: found "+results.size()+" profiles");
-        }
-        
-        return this.cachedProfiles;
+        return results;
     }
     
-    public synchronized Map<URI, Provider> getAllProviders()
+    @Override
+	public synchronized Map<URI, Provider> getAllProviders()
     {
         if(this.cachedProviders != null)
         {
@@ -1204,7 +1239,7 @@ public class Settings
         }
         catch(java.lang.InterruptedException ie)
         {
-            Settings.log.fatal("Settings: caught java.lang.InterruptedException: not throwing it.", ie);
+            Settings.log.fatal("Settings.getAllProviders: caught java.lang.InterruptedException: not throwing it.", ie);
             
             return null;
         }
@@ -1217,9 +1252,10 @@ public class Settings
         return results;
     }
     
-    public Map<URI, Provider> getProviders(Repository myRepository)
+    @Override
+	public Map<URI, Provider> getProviders(Repository myRepository)
     {
-        final Hashtable<URI, Provider> results = new Hashtable<URI, Provider>();
+        final Map<URI, Provider> results = new Hashtable<URI, Provider>();
 
         if(Settings._DEBUG)
         {
@@ -1251,7 +1287,7 @@ public class Settings
                         if(Settings._DEBUG)
                         {
                             Settings.log
-                                    .debug("Settings: found provider: valueOfProviderUri="
+                                    .debug("Settings.getProviders: found provider: valueOfProviderUri="
                                             + valueOfProviderUri);
                         }
                         final RepositoryResult<Statement> statements = con
@@ -1269,7 +1305,7 @@ public class Settings
                         else
                         {
                             Settings.log
-                                    .error("Settings: was not able to create a provider configuration with URI valueOfProviderUri="
+                                    .error("Settings.getProviders: was not able to create a provider configuration with URI valueOfProviderUri="
                                             + valueOfProviderUri.stringValue());
                         }
                     }
@@ -1287,7 +1323,7 @@ public class Settings
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.error("Settings:", e);
+            Settings.log.error("Settings.getProviders:", e);
         }
         if(Settings._INFO)
         {
@@ -1304,17 +1340,44 @@ public class Settings
         return results;
     }
     
-    public synchronized Map<URI, NormalisationRule> getAllNormalisationRules()
+    @Override
+	public synchronized Map<URI, NormalisationRule> getAllNormalisationRules()
     {
         if(this.cachedNormalisationRules != null)
         {
             return this.cachedNormalisationRules;
         }
 
+        try
+        {
+            final Repository myRepository = getServerConfigurationRdf();
+            
+            Map<URI, NormalisationRule> results = getNormalisationRules(myRepository);
+            
+            if(_INFO)
+            {
+                log.info("Settings.getAllNormalisationRules: found "+results.size()+" normalisation rules");
+            }
+            
+            this.cachedNormalisationRules = results;
+            
+            return results;
+        }
+        catch(java.lang.InterruptedException ie)
+        {
+            Settings.log.fatal("Settings.getAllNormalisationRules: caught java.lang.InterruptedException: not throwing it.", ie);
+            
+            return null;
+        }
+    }
+    
+    @Override
+	public Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository)
+    {
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getAllNormalisationRules: started parsing rdf normalisation rules");
+                    .debug("Settings.getNormalisationRules: started parsing rdf normalisation rules");
         }
 
         final long start = System.currentTimeMillis();
@@ -1351,7 +1414,7 @@ public class Settings
                             if(Settings._DEBUG)
                             {
                                 Settings.log
-                                        .debug("Settings: found regex rule: valueOfRdfRuleUri="
+                                        .debug("Settings.getNormalisationRules: found regex rule: valueOfRdfRuleUri="
                                                 + valueOfRdfRuleUri);
                             }
                             final RepositoryResult<Statement> statements = con
@@ -1377,7 +1440,7 @@ public class Settings
             catch (final OpenRDFException e)
             {
                 // handle exception
-                Settings.log.error("Settings:", e);
+                Settings.log.error("Settings.getNormalisationRules:", e);
             }
 
             // Then do the same thing for SPARQL Normalisation Rules
@@ -1394,6 +1457,7 @@ public class Settings
                     final TupleQuery tupleQuery = con.prepareTupleQuery(
                             QueryLanguage.SPARQL, queryString);
                     final TupleQueryResult queryResult = tupleQuery.evaluate();
+                    
                     try
                     {
                         while(queryResult.hasNext())
@@ -1404,7 +1468,7 @@ public class Settings
                             if(Settings._DEBUG)
                             {
                                 Settings.log
-                                        .debug("Settings: found sparql rule: valueOfRdfRuleUri="
+                                        .debug("Settings.getNormalisationRules: found sparql rule: valueOfRdfRuleUri="
                                                 + valueOfRdfRuleUri);
                             }
                             final RepositoryResult<Statement> statements = con
@@ -1436,41 +1500,62 @@ public class Settings
         }
         catch(java.lang.InterruptedException ie)
         {
-            Settings.log.fatal("Settings: caught java.lang.InterruptedException: not throwing it.", ie);
+            Settings.log.fatal("Settings.getNormalisationRules: caught java.lang.InterruptedException: not throwing it.", ie);
         }
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
             Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getAllNormalisationRules", (end - start)));
+                    "Settings.getNormalisationRules", (end - start)));
         }
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getAllNormalisationRules: finished parsing normalisation rules");
-        }
-        this.cachedNormalisationRules = results;
-
-        if(_INFO)
-        {
-            log.info("Settings.getAllNormalisationRules: found "+results.size()+" normalisation rules");
+                    .debug("Settings.getNormalisationRules: finished parsing normalisation rules");
         }
         
-
-        return this.cachedNormalisationRules;
+        return results;
     }
     
-    public synchronized Map<URI, RuleTest> getAllRuleTests()
+    @Override
+	public synchronized Map<URI, RuleTest> getAllRuleTests()
     {
         if(this.cachedRuleTests != null)
         {
             return this.cachedRuleTests;
         }
-        final Hashtable<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
+        
+        try
+        {
+            final Repository myRepository = getServerConfigurationRdf();
+            
+            Map<URI, RuleTest> results = getRuleTests(myRepository);
+            
+            if(_INFO)
+            {
+                log.info("Settings.getAllRuleTests: found "+results.size()+" rule tests");
+            }
+            
+            this.cachedRuleTests = results;
+            
+            return results;
+        }
+        catch(java.lang.InterruptedException ie)
+        {
+            Settings.log.fatal("Settings.getAllRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
+            
+            return null;
+        }
+    }
+    
+    public Map<URI, RuleTest> getRuleTests(Repository myRepository)
+    {
+        final Map<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
+        
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getAllRuleTests: started parsing rule test configurations");
+                    .debug("Settings.getRuleTests: started parsing rule test configurations");
         }
         final long start = System.currentTimeMillis();
         try
@@ -1497,7 +1582,7 @@ public class Settings
                             if(Settings._DEBUG)
                             {
                                 Settings.log
-                                        .debug("Settings: found ruletest: valueOfRuleTestUri="
+                                        .debug("Settings.getRuleTests: found ruletest: valueOfRuleTestUri="
                                                 + valueOfRuleTestUri);
                             }
                             final RepositoryResult<Statement> statements = con
@@ -1515,7 +1600,7 @@ public class Settings
                             else
                             {
                                 Settings.log
-                                        .error("Settings: was not able to create a rule test configuration with URI valueOfRuleTestUri="
+                                        .error("Settings.getRuleTests: was not able to create a rule test configuration with URI valueOfRuleTestUri="
                                                 + valueOfRuleTestUri.toString());
                             }
                         }
@@ -1533,38 +1618,33 @@ public class Settings
             catch (final OpenRDFException e)
             {
                 // handle exception
-                Settings.log.error("Settings:", e);
+                Settings.log.error("Settings.getRuleTests:", e);
             }
         }
         catch(java.lang.InterruptedException ie)
         {
-            Settings.log.fatal("Settings: caught java.lang.InterruptedException: not throwing it.", ie);
+            Settings.log.fatal("Settings.getRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
         }
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
             Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getAllRuleTests", (end - start)));
+                    "Settings.getRuleTests", (end - start)));
         }
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getAllRuleTests: finished getting rdf rule tests");
-        }
-        this.cachedRuleTests = results;
-
-        if(_INFO)
-        {
-            log.info("Settings.getAllRuleTests: found "+results.size()+" rule tests");
+                    .debug("Settings.getRuleTests: finished getting rdf rule tests");
         }
         
-        return this.cachedRuleTests;
+        return results;
     }
     
     public List<Profile> getAndSortProfileList(Collection<URI> nextProfileUriList, int nextSortOrder)
     {
         final Map<URI, Profile> allProfiles = this.getAllProfiles();
-        final List<Profile> results = new ArrayList<Profile>();
+        final List<Profile> results = new LinkedList<Profile>();
+        
         if(nextProfileUriList == null)
         {
         	Settings.log
@@ -1650,7 +1730,7 @@ public class Settings
                                     + " queryString="
                                     + queryString);
                 }
-                if(nextQuery.isUsedWithProfileList(profileList, this.getBooleanPropertyFromConfig("recogniseImplicitQueryInclusions", true), this.getBooleanPropertyFromConfig("includeNonProfileMatchedQueries", true)))
+                if(nextQuery.isUsedWithProfileList(profileList, this.getBooleanPropertyFromConfig(RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true), this.getBooleanPropertyFromConfig(INCLUDE_NON_PROFILE_MATCHED_QUERIES, true)))
                 {
                     if(Settings._DEBUG)
                     {
@@ -1677,20 +1757,24 @@ public class Settings
         return results;
     }
     
-    public Collection<Provider> getDefaultProviders(URI queryKey)
+    public Collection<Provider> getDefaultProviders(QueryType queryType)
     {
         final Collection<Provider> results = new HashSet<Provider>();
+
+        // Return an empty collection if this query type does not include defaults
+    	if(queryType.getIncludeDefaults())
+    	{
+	        for(final Provider nextProvider : this.getAllProviders().values())
+	        {
+	            if(nextProvider.getIsDefaultSource()
+	                    && nextProvider.containsQueryTypeUri(queryType.getKey()))
+	            {
+	                results.add(nextProvider);
+	            }
+	        }
+    	}
         
-        for(final Provider nextProvider : this.getAllProviders().values())
-        {
-            if(nextProvider.getIsDefaultSource()
-                    && nextProvider.containsQueryTypeUri(queryKey))
-            {
-                results.add(nextProvider);
-            }
-        }
-        
-        return results;
+        return Collections.unmodifiableCollection(results);
     }
     
     public NamespaceEntry getNamespaceEntryByUri(URI namespaceEntryUri)
@@ -1718,12 +1802,13 @@ public class Settings
         }
         
         results = this.cachedNamespacePrefixToUriEntries.get(namespacePrefix);
-        return results;
+        
+        return Collections.unmodifiableCollection(results);
     }
     
     public List<NormalisationRule> getSortedRulesForProviders(Collection<Provider> Providers, int sortOrder)
     {
-        List<NormalisationRule> results = new ArrayList<NormalisationRule>();
+        List<NormalisationRule> results = new LinkedList<NormalisationRule>();
         
         for(Provider nextProvider : Providers)
         {
@@ -1738,6 +1823,12 @@ public class Settings
         {
             Collections.sort(results);
         }
+        else
+        {
+            throw new RuntimeException(
+                    "Settings.getSortedRulesForProviders: sortOrder unrecognised sortOrder="
+                            + sortOrder);
+        }
         
         return results;
     }
@@ -1747,7 +1838,7 @@ public class Settings
     {
         if(nextProvider.getNormalisationUris().size() == 0)
         {
-            return new ArrayList<NormalisationRule>(1);
+            return new LinkedList<NormalisationRule>();
         }
         else
         {
@@ -1876,16 +1967,15 @@ public class Settings
         return results;
     }
     
-    public Collection<Provider> getProvidersForQueryType(
-            URI customService)
+    public Collection<Provider> getProvidersForQueryType(URI queryType)
     {
-        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(customService, this.getAllProviders().values());
+        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(queryType, this.getAllProviders().values());
         
         if(Settings._DEBUG)
         {
             Settings.log.debug("Settings.getProvidersForQueryType: Found "
                     + results.size() + " providers for customService="
-                    + customService);
+                    + queryType);
         }
         if(Settings._TRACE)
         {
@@ -1936,7 +2026,7 @@ public class Settings
         return results;
     }
     
-    public static Collection<Provider> getProvidersForQueryTypeFromList(
+    private static Collection<Provider> getProvidersForQueryTypeFromList(
             URI customService, Collection<Provider> knownProviders)
     {
         final Collection<Provider> results = new HashSet<Provider>();
@@ -1948,30 +2038,6 @@ public class Settings
             }
         }
         return results;
-    }
-    
-    public Collection<Provider> getProvidersFornamespacePreferredPrefixs(
-            Collection<String> namespacePreferredPrefixs, URI namespaceMatchMethod)
-    {
-        if((namespacePreferredPrefixs == null)
-                || (namespacePreferredPrefixs.size() == 0))
-        {
-            if(Settings._DEBUG)
-            {
-                Settings.log
-                        .debug("Settings.getProvidersFornamespacePreferredPrefixs: namespacePreferredPrefixs was either null or empty");
-            }
-            return new HashSet<Provider>(1);
-        }
-        
-        final Collection<Collection<URI>> allNamespaceUris = new HashSet<Collection<URI>>();
-        
-        for(final String nextnamespacePreferredPrefix : namespacePreferredPrefixs)
-        {
-            allNamespaceUris.add(this.getNamespaceUrisForTitle(nextnamespacePreferredPrefix));
-        }
-        
-        return this.getProvidersForNamespaceUris(allNamespaceUris, namespaceMatchMethod);
     }
     
     public Collection<Provider> getProvidersForNamespaceUris(
@@ -1993,9 +2059,7 @@ public class Settings
                             + namespaceUris);
         }
         final Collection<Provider> results = new HashSet<Provider>();
-        // final Hashtable<String, Provider> nextAllProviders = this.getAllProviders();
-        // final Collection<Provider> providerCollection = nextAllProviders
-                // .values();
+
         for(final Provider nextProvider : this.getAllProviders().values())
         {
             boolean anyFound = false;
@@ -2067,7 +2131,6 @@ public class Settings
             URI normalisationRuleUri)
     {
         final Collection<RuleTest> results = new HashSet<RuleTest>();
-        //final Hashtable<String, RuleTest> allRdfRules = this.getAllRuleTests();
         
         for(final RuleTest nextRuleTest : this.getAllRuleTests().values())
         {
@@ -2673,32 +2736,6 @@ public class Settings
         return this.currentConfigurationRepository;
     }
     
-    public static String getString(String key, String defaultValue)
-    {
-        log.trace("Settings.getString: key="+key+" defaultValue="+defaultValue);
-        
-        String result = null;
-        try
-        {
-            result = ResourceBundle.getBundle(Settings.DEFAULT_PROPERTIES_BUNDLE_NAME).getString(key);
-        }
-        catch (final Exception ex)
-        {
-            Settings.log.error(ex, ex);
-        }
-        
-        if(result == null)
-        {
-        	Settings.log.error("Settings.getString: result was null key="+key+" defaultValue="+defaultValue);
-
-        	return defaultValue;
-        }
-        
-        log.trace("Settings.getString: key="+key+" defaultValue="+defaultValue+" result="+result);
-
-        return result;
-    }
-    
     public boolean isManualRefreshAllowed()
     {
         boolean manualRefresh = this.getBooleanPropertyFromConfig("enableManualConfigurationRefresh", true);
@@ -2852,14 +2889,6 @@ public class Settings
         return results;
     }
 
-    /**
-     * @deprecated Use {@link #getStringPropertyFromConfig(String,String)} instead
-     */
-    public String getStringPropertyFromConfig(String key)
-    {
-        return getStringPropertyFromConfig(key, "");
-    }
-
     public String getStringPropertyFromConfig(String key, String defaultValue)
     {
         String result = defaultValue;
@@ -2884,14 +2913,6 @@ public class Settings
             log.trace("Settings.getStringPropertyFromConfig: key="+key+" defaultValue="+defaultValue+" returning result="+result);
 
         return result;
-    }
-
-    /**
-     * @deprecated Use {@link #getBooleanPropertyFromConfig(String,boolean)} instead
-     */
-    public boolean getBooleanPropertyFromConfig(String key)
-    {
-        return getBooleanPropertyFromConfig(key, true);
     }
 
     public boolean getBooleanPropertyFromConfig(String key, boolean defaultValue)
@@ -2920,14 +2941,6 @@ public class Settings
         return result;
     }
 
-    /**
-     * @deprecated Use {@link #getLongPropertyFromConfig(String,long)} instead
-     */
-    public long getLongPropertyFromConfig(String key)
-    {
-        return getLongPropertyFromConfig(key, 0L);
-    }
-
     public long getLongPropertyFromConfig(String key, long defaultValue)
     {
         long result = defaultValue;
@@ -2954,14 +2967,6 @@ public class Settings
         return result;
     }
         
-    /**
-     * @deprecated Use {@link #getIntPropertyFromConfig(String,int)} instead
-     */
-    public int getIntPropertyFromConfig(String key)
-    {
-        return getIntPropertyFromConfig(key, 0);
-    }
-
     public int getIntPropertyFromConfig(String key, int defaultValue)
     {
         int result = defaultValue;
@@ -2988,14 +2993,6 @@ public class Settings
         return result;
     }
         
-    /**
-     * @deprecated Use {@link #getFloatPropertyFromConfig(String,float)} instead
-     */
-    public float getFloatPropertyFromConfig(String key)
-    {
-        return getFloatPropertyFromConfig(key, 0.0f);
-    }
-
     public float getFloatPropertyFromConfig(String key, float defaultValue)
     {
         float result = defaultValue;
@@ -3063,7 +3060,6 @@ public class Settings
         
         try
         {
-            //Repository webappConfig = getWebAppConfigurationRdf();
             results = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
         }
         catch(Exception ex)
@@ -3136,6 +3132,12 @@ public class Settings
         }
     }
 
+    /**
+     * Runs rule tests over the stages "QueryVariables" and "BeforeResultsImport"
+     * 
+     * @param myRuleTests
+     * @return true if all of the tests passed, otherwise it returns false
+     */
     public boolean runRuleTests(Collection<RuleTest> myRuleTests)
     {
         boolean allPassed = true;
@@ -3257,6 +3259,7 @@ public class Settings
 	/**
 	 * @param ontologyTermUriPrefix the dEFAULT_ONTOLOGYTERMURI_PREFIX to set
 	 */
+	@Override
 	public void setOntologyTermUriPrefix(String ontologyTermUriPrefix) {
 		currentOntologyTermUriPrefix = ontologyTermUriPrefix;
 	}
@@ -3264,6 +3267,7 @@ public class Settings
 	/**
 	 * @return the dEFAULT_ONTOLOGYTERMURI_PREFIX
 	 */
+	@Override
 	public String getOntologyTermUriPrefix() {
 		return currentOntologyTermUriPrefix;
 	}
@@ -3271,6 +3275,7 @@ public class Settings
 	/**
 	 * @param current_ONTOLOGYTERMURI_SUFFIX the current_ONTOLOGYTERMURI_SUFFIX to set
 	 */
+	@Override
 	public void setOntologyTermUriSuffix(String current_ONTOLOGYTERMURI_SUFFIX) {
 		currentOntologyTermUriSuffix = current_ONTOLOGYTERMURI_SUFFIX;
 	}
@@ -3278,6 +3283,7 @@ public class Settings
 	/**
 	 * @return the current_ONTOLOGYTERMURI_SUFFIX
 	 */
+	@Override
 	public String getOntologyTermUriSuffix() {
 		return currentOntologyTermUriSuffix;
 	}
@@ -3285,6 +3291,7 @@ public class Settings
 	/**
 	 * @param rdfWebappConfigurationNamespace the currentRdfWebappConfigurationNamespace to set
 	 */
+	@Override
 	public void setNamespaceForWebappConfiguration(String rdfWebappConfigurationNamespace) 
 	{
 		currentRdfWebappConfigurationNamespace = rdfWebappConfigurationNamespace;
@@ -3293,6 +3300,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_WEBAPP_CONFIGURATION_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForWebappConfiguration() {
 		return currentRdfWebappConfigurationNamespace;
 	}
@@ -3300,6 +3308,7 @@ public class Settings
 	/**
 	 * @param rdfProjectNamespace the current_RDF_PROJECT_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForProject(String rdfProjectNamespace) {
 		currentRdfProjectNamespace = rdfProjectNamespace;
 	}
@@ -3307,6 +3316,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_PROJECT_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForProject() {
 		return currentRdfProjectNamespace;
 	}
@@ -3314,6 +3324,7 @@ public class Settings
 	/**
 	 * @param current_RDF_PROVIDER_NAMESPACE the current_RDF_PROVIDER_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForProvider(String current_RDF_PROVIDER_NAMESPACE) {
 		currentRdfProviderNamespace = current_RDF_PROVIDER_NAMESPACE;
 	}
@@ -3321,6 +3332,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_PROVIDER_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForProvider() {
 		return currentRdfProviderNamespace;
 	}
@@ -3328,6 +3340,7 @@ public class Settings
 	/**
 	 * @param current_RDF_TEMPLATE_NAMESPACE the current_RDF_TEMPLATE_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForTemplate(String current_RDF_TEMPLATE_NAMESPACE) {
 		currentRdfTemplateNamespace = current_RDF_TEMPLATE_NAMESPACE;
 	}
@@ -3335,6 +3348,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_TEMPLATE_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForTemplate() {
 		return currentRdfTemplateNamespace;
 	}
@@ -3342,6 +3356,7 @@ public class Settings
 	/**
 	 * @param current_RDF_QUERY_NAMESPACE the current_RDF_QUERY_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForQueryType(String current_RDF_QUERY_NAMESPACE) {
 		currentRdfQueryNamespace = current_RDF_QUERY_NAMESPACE;
 	}
@@ -3349,6 +3364,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_QUERY_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForQueryType() {
 		return currentRdfQueryNamespace;
 	}
@@ -3356,6 +3372,7 @@ public class Settings
 	/**
 	 * @param current_RDF_QUERYBUNDLE_NAMESPACE the current_RDF_QUERYBUNDLE_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForQueryBundle(
 			String current_RDF_QUERYBUNDLE_NAMESPACE) {
 		currentRdfQuerybundleNamespace = current_RDF_QUERYBUNDLE_NAMESPACE;
@@ -3364,6 +3381,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_QUERYBUNDLE_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForQueryBundle() {
 		return currentRdfQuerybundleNamespace;
 	}
@@ -3371,6 +3389,7 @@ public class Settings
 	/**
 	 * @param current_RDF_RDFRULE_NAMESPACE the current_RDF_RDFRULE_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForNormalisationRule(
 			String current_RDF_RDFRULE_NAMESPACE) {
 		currentRdfRuleNamespace = current_RDF_RDFRULE_NAMESPACE;
@@ -3379,6 +3398,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_RDFRULE_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForNormalisationRule() {
 		return currentRdfRuleNamespace;
 	}
@@ -3386,6 +3406,7 @@ public class Settings
 	/**
 	 * @param current_RDF_RULETEST_NAMESPACE the current_RDF_RULETEST_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForRuleTest(String current_RDF_RULETEST_NAMESPACE) {
 		currentRdfRuleTestNamespace = current_RDF_RULETEST_NAMESPACE;
 	}
@@ -3393,6 +3414,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_RULETEST_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForRuleTest() {
 		return currentRdfRuleTestNamespace;
 	}
@@ -3400,6 +3422,7 @@ public class Settings
 	/**
 	 * @param current_RDF_NAMESPACEENTRY_NAMESPACE the current_RDF_NAMESPACEENTRY_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForNamespaceEntry(
 			String current_RDF_NAMESPACEENTRY_NAMESPACE) {
 		currentRdfNamespaceEntryNamespace = current_RDF_NAMESPACEENTRY_NAMESPACE;
@@ -3408,6 +3431,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_NAMESPACEENTRY_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForNamespaceEntry() {
 		return currentRdfNamespaceEntryNamespace;
 	}
@@ -3415,6 +3439,7 @@ public class Settings
 	/**
 	 * @param current_RDF_PROFILE_NAMESPACE the current_RDF_PROFILE_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForProfile(String current_RDF_PROFILE_NAMESPACE) {
 		currentRdfProfileNamespace = current_RDF_PROFILE_NAMESPACE;
 	}
@@ -3422,6 +3447,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_PROFILE_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForProfile() {
 		return currentRdfProfileNamespace;
 	}
@@ -3429,6 +3455,7 @@ public class Settings
 	/**
 	 * @param current_RDF_PROVENANCE_NAMESPACE the current_RDF_PROVENANCE_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForProvenance(
 			String current_RDF_PROVENANCE_NAMESPACE) {
 		currentRdfProvenanceNamespace = current_RDF_PROVENANCE_NAMESPACE;
@@ -3437,6 +3464,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_PROVENANCE_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForProvenance() {
 		return currentRdfProvenanceNamespace;
 	}
@@ -3444,6 +3472,7 @@ public class Settings
 	/**
 	 * @param current_RDF_STATISTICS_NAMESPACE the current_RDF_STATISTICS_NAMESPACE to set
 	 */
+	@Override
 	public void setNamespaceForStatistics(
 			String current_RDF_STATISTICS_NAMESPACE) {
 		currentRdfStatisticsNamespace = current_RDF_STATISTICS_NAMESPACE;
@@ -3452,6 +3481,7 @@ public class Settings
 	/**
 	 * @return the current_RDF_STATISTICS_NAMESPACE
 	 */
+	@Override
 	public String getNamespaceForStatistics() {
 		return currentRdfStatisticsNamespace;
 	}
@@ -3513,9 +3543,4 @@ public class Settings
 	public String getAutogeneratedProviderSuffix() {
 		return currentAutogeneratedProviderSuffix;
 	}
-    
-//    public String getWebInfPath()
-//    {
-//        return servletConfig.getServletContext().getRealPath("/")+"WEB-INF/";
-//    }
 }

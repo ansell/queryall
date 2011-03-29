@@ -35,26 +35,6 @@ public class NamespaceEntryImpl extends NamespaceEntry
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForNamespaceEntry();
-    
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    private String authority = "";
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
-    
-    private String preferredPrefix = "";
-    private Collection<String> alternativePrefixes = new HashSet<String>();
-    private String description = "";
-    private String identifierRegex = "";
-    private String uriTemplate = "";
-    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator", ":");
-    
-    // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
-    // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes
-    private boolean convertQueriesToPreferredPrefix = true;
-    private String title;
-    
     private static URI namespaceTypeUri;
     private static URI namespaceAuthority;
     private static URI namespaceIdentifierRegex;
@@ -75,7 +55,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
         namespaceNamespace = Settings.getSettings().getOntologyTermUriPrefix()
                              +Settings.getSettings().getNamespaceForNamespaceEntry()
                              +Settings.getSettings().getOntologyTermUriSuffix();
-                             
+        
         setNamespaceTypeUri(f.createURI(namespaceNamespace,"Namespace"));
         setNamespaceAuthority(f.createURI(namespaceNamespace,"authority"));
         setNamespaceIdentifierRegex(f.createURI(namespaceNamespace,"identifierRegex"));
@@ -87,6 +67,27 @@ public class NamespaceEntryImpl extends NamespaceEntry
         setNamespaceSeparator(f.createURI(namespaceNamespace,"separator"));
         oldNamespaceTitle = f.createURI(namespaceNamespace,"title");
     }
+
+    private String defaultNamespace = Settings.getSettings().getNamespaceForNamespaceEntry();
+    
+    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    
+    private URI key;
+    private String authority = "";
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    
+    private String preferredPrefix = "";
+    private Collection<String> alternativePrefixes = new HashSet<String>();
+    private String description = "";
+    private String identifierRegex = "";
+    private String uriTemplate = "";
+    private String separator = Settings.getSettings().getStringPropertyFromConfig("separator", ":");
+    
+    // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
+    // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes
+    private boolean convertQueriesToPreferredPrefix = true;
+    private String title;
+    
     
     // keyToUse is the URI of the next instance that can be found in myRepository
     // returns null if the URI is not in the repository or the information is not enough to create a minimal provider configuration
@@ -331,7 +332,8 @@ public class NamespaceEntryImpl extends NamespaceEntry
     public String getDefaultNamespace()
     {
         return defaultNamespace;
-    }    
+    }
+    
     public String getDescription()
     {
         return description;
