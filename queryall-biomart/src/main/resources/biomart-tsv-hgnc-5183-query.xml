@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Query>
+<Query  virtualSchemaName = "default" formatter = "TSV" header = "0" uniqueRows = "0" count = "" datasetConfigVersion = "0.7" >
+	<Dataset name = "hgnc" interface = "default" >
+		<Filter name = "gd_pub_eg_id" value = "5183"/>
+		<Attribute name = "gd_app_sym" />
+		<Attribute name = "gd_app_name" />
+		<Attribute name = "gd_prev_sym" />
+		<Attribute name = "gd_prev_name" />
+		<Attribute name = "gd_status" />
+		<Attribute name = "gd_name_aliases" />
+		<Attribute name = "gd_gene_fam_name" />
+		<Attribute name = "gd_aliases" />
+		<Attribute name = "gd_ccds_ids" />
+		<Attribute name = "gd_hgnc_id_key" />
+		<Attribute name = "gd_vega_ids" />
+		<Attribute name = "gd_pubmed_ids" />
+		<Attribute name = "gd_pub_refseq_ids" />
+		<Attribute name = "gd_enz_ids" />
+		<Attribute name = "gd_mgd_id" />
+		<Attribute name = "gd_pub_acc_ids" />
+		<Attribute name = "gd_pub_eg_id" />
+		<Attribute name = "gd_date_sym_change" />
+		<Attribute name = "gd_date_name_change" />
+		<Attribute name = "gd_date_mod" />
+		<Attribute name = "gd_date2app_or_res" />
+		<Attribute name = "md_eg_id" />
+		<Attribute name = "md_ensembl_id" />
+		<Attribute name = "md_mim_id" />
+		<Attribute name = "md_prot_id" />
+		<Attribute name = "md_refseq_id" />
+		<Attribute name = "md_ucsc_id" />
+		<Attribute name = "gd_other_ids_html" />
+		<Attribute name = "gd_pub_chrom_map" />
+		<Attribute name = "gd_record_type" />
+		<Attribute name = "gd_other_ids" />
+		<Attribute name = "gd_lsdb_links" />
+		<Attribute name = "gd_locus_type" />
+		<Attribute name = "f_gd_ccds_ids" />
+		<Attribute name = "f_gd_pubmed_ids" />
+		<Attribute name = "f_gd_pub_refseq_ids" />
+		<Attribute name = "f_gd_pub_acc_ids" />
+		<Attribute name = "f_gd_prev_sym" />
+		<Attribute name = "f_gd_prev_name" />
+		<Attribute name = "f_gd_name_aliases" />
+		<Attribute name = "f_gd_gene_fam_name" />
+		<Attribute name = "f_gd_enz_ids" />
+		<Attribute name = "f_gd_aliases" />
+	</Dataset>
+</Query>
