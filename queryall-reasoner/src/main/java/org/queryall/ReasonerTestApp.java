@@ -11,6 +11,7 @@ import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 /**
  * Hello world!
@@ -42,7 +43,8 @@ public class ReasonerTestApp
         printIterator(report.getReports(), "Validation Results");
         
         printIterator(model.listResourcesWithProperty(RDF.type, OWL.Class),"RDF type resources");
-        
+        BasicPattern pattern = new BasicPattern();
+
     }
     
     public static void printIterator(Iterator<?> i, String header) {
