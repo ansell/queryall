@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -106,6 +107,13 @@
 			<version>2.0</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.biomart</groupId>
+			<artifactId>biomart-java</artifactId>
+			<type>jar</type>
+			<version>0.8-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -164,5 +172,10 @@
 			<name>DBIS Maven Releases Repository</name>
 			<url>http://on.cs.unibas.ch/maven/repository</url>
 		</repository>
+		<!-- <repository> -->
+		<!-- <id>mygrid</id> -->
+		<!-- <name>MyGrid repository</name> -->
+		<!-- <url>http://www.mygrid.org.uk/maven/repository/</url> -->
+		<!-- </repository> -->
 	</repositories>
 </project>
