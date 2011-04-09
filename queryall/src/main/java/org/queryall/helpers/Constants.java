@@ -229,6 +229,10 @@ public final class Constants
 
     public static final String TEXT_TURTLE = "text/turtle";
 
+	public static final String INCLUDE_NON_PROFILE_MATCHED_QUERIES = "includeNonProfileMatchedQueries";
+
+	public static final String RECOGNISE_IMPLICIT_QUERY_INCLUSIONS = "recogniseImplicitQueryInclusions";
+
     private Constants()
     {
     }

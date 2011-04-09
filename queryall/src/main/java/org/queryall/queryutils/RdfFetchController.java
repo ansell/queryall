@@ -663,8 +663,8 @@ public class RdfFetchController
                 String convertedResult = (String)SparqlQueryCreator.normaliseByStage(
                     NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(),
                     nextResult, 
-                    localSettings.getSortedRulesForProvider( 
-                        nextThread.getOriginalQueryBundle().getProvider(), 
+                    localSettings.getNormalisationRulesForUris( 
+                        nextThread.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
                         Constants.HIGHEST_ORDER_FIRST ), 
                     sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true) );
                 

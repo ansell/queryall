@@ -5,12 +5,8 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 
-public abstract class QueryAllConfiguration {
-
-	public QueryAllConfiguration() {
-		super();
-	}
-
+public abstract class QueryAllConfiguration 
+{
 	public abstract String getNamespaceForStatistics();
 
 	public abstract void setNamespaceForStatistics(String current_RDF_STATISTICS_NAMESPACE);
@@ -67,28 +63,36 @@ public abstract class QueryAllConfiguration {
 
 	public abstract void setOntologyTermUriPrefix(String ontologyTermUriPrefix);
 
-	public abstract Map<URI, RuleTest> getAllRuleTests();
+	
+	
+	public abstract Map<URI, NamespaceEntry> getAllNamespaceEntries();
 
 	public abstract Map<URI, NormalisationRule> getAllNormalisationRules();
 
-	public abstract Map<URI, Provider> getProviders(Repository myRepository);
+	public abstract Map<URI, Profile> getAllProfiles();
 
 	public abstract Map<URI, Provider> getAllProviders();
 
-	public abstract Map<URI, Profile> getAllProfiles();
+	public abstract Map<URI, QueryType> getAllQueryTypes();
 
-	public abstract Map<URI, NamespaceEntry> getAllNamespaceEntries();
+	public abstract Map<URI, RuleTest> getAllRuleTests();
 
 	public abstract Map<URI, Template> getAllTemplates();
 
-	public abstract Map<URI, QueryType> getQueryTypes(Repository myRepository);
-
-	public abstract Map<URI, QueryType> getAllQueryTypes();
+	
 
 	public abstract Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository);
 
+	public abstract Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository);
+
 	public abstract Map<URI, Profile> getProfiles(Repository myRepository);
 
-	public abstract Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository);
+    public abstract Map<URI, Provider> getProviders(Repository myRepository);
+
+	public abstract Map<URI, QueryType> getQueryTypes(Repository myRepository);
+
+	public abstract Map<URI, RuleTest> getRuleTests(Repository myRepository);
+
+	public abstract Map<URI, Template> getTemplates(Repository myRepository);
 
 }
