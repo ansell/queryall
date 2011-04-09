@@ -272,7 +272,7 @@ public class RdfFetchController
         {
             if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
             {
-                Map<String, String> attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, "", realHostName, pageOffset , localSettings);
+                Map<String, String> attributeList = QueryCreator.getAttributeListFor( nextProvider, queryString, "", realHostName, pageOffset , localSettings);
                 
                 String nextStaticRdfXmlString = "";
                 
@@ -285,7 +285,7 @@ public class RdfFetchController
                     {
                         // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
                         // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                        nextStaticRdfXmlString += SparqlQueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
                     }
                 }
                 
@@ -313,17 +313,17 @@ public class RdfFetchController
                                         .replace( Constants.TEMPLATE_OFFSET, String.valueOf(pageOffset) );
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
-                    replacedEndpoint = SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
+                    replacedEndpoint = QueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
                     
-                    attributeList = SparqlQueryCreator.getAttributeListFor( nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
+                    attributeList = QueryCreator.getAttributeListFor( nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
                     
                     // This step is needed in order to replace endpointSpecific related template elements on the provider URL
-                    replacedEndpoint = SparqlQueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                    replacedEndpoint = QueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
                     
                     // Then test whether the endpoint is blacklisted
                     if(!localBlacklistController.isUrlBlacklisted(replacedEndpoint))
                     {
-                        String nextEndpointQuery = SparqlQueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                        String nextEndpointQuery = QueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
                         
                         // replace the query on the endpoint URL if necessary
                         replacedEndpoint = replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY, StringUtils.percentEncode(nextEndpointQuery));
@@ -344,7 +344,7 @@ public class RdfFetchController
                             {
                                 // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
                                 // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                                nextStaticRdfXmlString += SparqlQueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                                nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
                             }
                         }
                         
@@ -660,7 +660,7 @@ public class RdfFetchController
             {
                 String nextResult = nextThread.getRawResult();
                 
-                String convertedResult = (String)SparqlQueryCreator.normaliseByStage(
+                String convertedResult = (String)QueryCreator.normaliseByStage(
                     NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(),
                     nextResult, 
                     localSettings.getNormalisationRulesForUris( 

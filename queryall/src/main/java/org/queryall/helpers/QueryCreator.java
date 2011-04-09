@@ -21,16 +21,16 @@ import org.apache.log4j.Logger;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlQueryCreator
+public class QueryCreator
 {
-    private static final Logger log = Logger.getLogger(SparqlQueryCreator.class
+    private static final Logger log = Logger.getLogger(QueryCreator.class
             .getName());
-    private static final boolean _TRACE = SparqlQueryCreator.log
+    private static final boolean _TRACE = QueryCreator.log
             .isTraceEnabled();
-    private static final boolean _DEBUG = SparqlQueryCreator.log
+    private static final boolean _DEBUG = QueryCreator.log
             .isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlQueryCreator.log.isInfoEnabled();
+    private static final boolean _INFO = QueryCreator.log.isInfoEnabled();
     
     // takes a query and a dictionary of attributes which may or may not be
     // useful for this query
@@ -71,18 +71,18 @@ public class SparqlQueryCreator
         
         if(queryString.trim().equals(""))
         {
-            SparqlQueryCreator.log
-                    .error("SparqlQueryCreator.createQuery: queryString was empty");
+            QueryCreator.log
+                    .error("QueryCreator.createQuery: queryString was empty");
         }
         
         if(queryType.getTemplateString() == null)
         {
-            SparqlQueryCreator.log
-                    .error("SparqlQueryCreator.createQuery: template was null queryType.getKey()="
+            QueryCreator.log
+                    .error("QueryCreator.createQuery: template was null queryType.getKey()="
                             + queryType.getKey().stringValue());
         }
         
-        return SparqlQueryCreator.doReplacementsOnString(queryString,
+        return QueryCreator.doReplacementsOnString(queryString,
                 queryType.getTemplateString(), queryType, null,
                 nextProvider.getNormalisationUris(),
                 attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
@@ -109,20 +109,20 @@ public class SparqlQueryCreator
         
         if(queryString.trim().equals(""))
         {
-            SparqlQueryCreator.log
-                    .error("SparqlQueryCreator.createQuery: queryString was empty");
+            QueryCreator.log
+                    .error("QueryCreator.createQuery: queryString was empty");
         }
         
         if(includedQueryType.getOutputRdfXmlString() == null)
         {
-            SparqlQueryCreator.log
-                    .error("SparqlQueryCreator.createQuery: no outputRdfXmlString defined queryType="
+            QueryCreator.log
+                    .error("QueryCreator.createQuery: no outputRdfXmlString defined queryType="
                             + includedQueryType.getKey().stringValue());
             
             return "";
         }
         
-        return SparqlQueryCreator.doReplacementsOnString(queryString,
+        return QueryCreator.doReplacementsOnString(queryString,
                 includedQueryType.getOutputRdfXmlString(), originalQueryType,
                 includedQueryType,
                 nextProvider.getNormalisationUris(),
@@ -139,10 +139,10 @@ public class SparqlQueryCreator
             boolean includeNonProfileMatchedRdfRules,
             Settings localSettings)
     {
-        if(SparqlQueryCreator._DEBUG)
+        if(QueryCreator._DEBUG)
         {
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.doReplacementsOnString: queryString="
+            QueryCreator.log
+                    .debug("QueryCreator.doReplacementsOnString: queryString="
                             + queryString
                             + " templateString="
                             + templateString
@@ -187,16 +187,16 @@ public class SparqlQueryCreator
             normalisedQueryUri = includedQueryType.getQueryUriTemplateString();
         }
         
-        if(SparqlQueryCreator._DEBUG)
+        if(QueryCreator._DEBUG)
         {
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.createQuery: initial value of replacedString="
+            QueryCreator.log
+                    .debug("QueryCreator.createQuery: initial value of replacedString="
                             + replacedString);
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.createQuery: initial value of normalisedStandardUri="
+            QueryCreator.log
+                    .debug("QueryCreator.createQuery: initial value of normalisedStandardUri="
                             + normalisedStandardUri);
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.createQuery: initial value of normalisedQueryUri="
+            QueryCreator.log
+                    .debug("QueryCreator.createQuery: initial value of normalisedQueryUri="
                             + normalisedQueryUri);
         }
         
@@ -214,8 +214,8 @@ public class SparqlQueryCreator
                 
                 if(pageOffset < 1)
                 {
-                    SparqlQueryCreator.log
-                            .warn("SparqlQueryCreator: pageOffset was incorrect fixing it to page 1 bad pageOffset="
+                    QueryCreator.log
+                            .warn("QueryCreator: pageOffset was incorrect fixing it to page 1 bad pageOffset="
                                     + pageOffset);
                     
                     pageOffset = 1;
@@ -239,8 +239,8 @@ public class SparqlQueryCreator
             }
             catch (final NumberFormatException nfe)
             {
-                SparqlQueryCreator.log
-                        .error("SparqlQueryCreator: offset was not valid pageOffset="
+                QueryCreator.log
+                        .error("QueryCreator: offset was not valid pageOffset="
                                 + attributeList.get(Constants.TEMPLATE_KEY_OFFSET));
             }
         }
@@ -263,8 +263,8 @@ public class SparqlQueryCreator
                         
                         if(graphUri.trim().length() == 0)
                         {
-                            SparqlQueryCreator.log
-                                    .error("SparqlQueryCreator.createQuery: useSparqlGraph was true but the graphUri was invalid graphUri="
+                            QueryCreator.log
+                                    .error("QueryCreator.createQuery: useSparqlGraph was true but the graphUri was invalid graphUri="
                                             + graphUri
                                             + " . Attempting to ignore graphStart and graphEnd for this query");
                             
@@ -284,8 +284,8 @@ public class SparqlQueryCreator
                     }
                     else
                     {
-                        SparqlQueryCreator.log
-                                .warn("SparqlQueryCreator.createQuery: useSparqlGraph was true but there was no graphUri specified. Attempting to ignore graphStart and graphEnd for this query");
+                        QueryCreator.log
+                                .warn("QueryCreator.createQuery: useSparqlGraph was true but there was no graphUri specified. Attempting to ignore graphStart and graphEnd for this query");
                         
                         replacedString = replacedString.replace(
                                 Constants.TEMPLATE_GRAPH_START, "");
@@ -303,8 +303,8 @@ public class SparqlQueryCreator
             }
             catch (final Exception ex)
             {
-                SparqlQueryCreator.log
-                        .error("SparqlQueryCreator.createQuery: useSparqlGraph was not a valid boolean value "
+                QueryCreator.log
+                        .error("QueryCreator.createQuery: useSparqlGraph was not a valid boolean value "
                                 + ex.getMessage());
             }
         }
@@ -325,10 +325,10 @@ public class SparqlQueryCreator
             normalisedStandardUri = normalisedStandardUri.replace("${"
                     + nextAttribute + "}", attributeList.get(nextAttribute));
             
-            if(SparqlQueryCreator._TRACE)
+            if(QueryCreator._TRACE)
             {
-                SparqlQueryCreator.log
-                        .trace("SparqlQueryCreator.createQuery: in replace loop ${"
+                QueryCreator.log
+                        .trace("QueryCreator.createQuery: in replace loop ${"
                                 + nextAttribute
                                 + "}="
                                 + attributeList.get(nextAttribute)
@@ -339,10 +339,10 @@ public class SparqlQueryCreator
             normalisedQueryUri = normalisedQueryUri.replace("${"
                     + nextAttribute + "}", attributeList.get(nextAttribute));
             
-            if(SparqlQueryCreator._TRACE)
+            if(QueryCreator._TRACE)
             {
-                SparqlQueryCreator.log
-                        .trace("SparqlQueryCreator.createQuery: in replace loop ${"
+                QueryCreator.log
+                        .trace("QueryCreator.createQuery: in replace loop ${"
                                 + nextAttribute
                                 + "}="
                                 + attributeList.get(nextAttribute)
@@ -457,149 +457,149 @@ public class SparqlQueryCreator
         String inputXmlEncoded_privateuppercase_normalisedStandardUri = normalisedStandardUri;
         String inputXmlEncoded_privateuppercase_normalisedQueryUri = normalisedQueryUri;
         
-        replacedString = SparqlQueryCreator
+        replacedString = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, replacedString, new ArrayList<String>());
         
-        normalisedStandardUri = SparqlQueryCreator
+        normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, normalisedStandardUri,
                         new ArrayList<String>());
         
-        inputUrlEncoded_normalisedStandardUri = SparqlQueryCreator
+        inputUrlEncoded_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, inputUrlEncoded_normalisedStandardUri,
                         inputUrlEncodeInstructions);
         
-        inputXmlEncoded_normalisedStandardUri = SparqlQueryCreator
+        inputXmlEncoded_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, inputXmlEncoded_normalisedStandardUri,
                         inputXmlEncodeInstructions);
         
-        normalisedQueryUri = SparqlQueryCreator
+        normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, normalisedQueryUri,
                         new ArrayList<String>());
         
-        inputUrlEncoded_normalisedQueryUri = SparqlQueryCreator
+        inputUrlEncoded_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, inputUrlEncoded_normalisedQueryUri,
                         inputUrlEncodeInstructions);
         
-        inputPlusUrlEncoded_normalisedStandardUri = SparqlQueryCreator
+        inputPlusUrlEncoded_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, inputPlusUrlEncoded_normalisedStandardUri,
                         inputPlusUrlEncodeInstructions);
         
         
-        inputPlusUrlEncoded_normalisedQueryUri = SparqlQueryCreator
+        inputPlusUrlEncoded_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, inputPlusUrlEncoded_normalisedQueryUri,
                         inputPlusUrlEncodeInstructions);
         
-        inputXmlEncoded_normalisedQueryUri = SparqlQueryCreator
+        inputXmlEncoded_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString, inputXmlEncoded_normalisedQueryUri,
                         inputXmlEncodeInstructions);
         
-        inputUrlEncoded_lowercase_normalisedStandardUri = SparqlQueryCreator
+        inputUrlEncoded_lowercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_lowercase_normalisedStandardUri,
                         inputUrlEncodedlowercaseInstructions);
-        inputUrlEncoded_lowercase_normalisedQueryUri = SparqlQueryCreator
+        inputUrlEncoded_lowercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_lowercase_normalisedQueryUri,
                         inputUrlEncodedlowercaseInstructions);
         
-        inputXmlEncoded_lowercase_normalisedStandardUri = SparqlQueryCreator
+        inputXmlEncoded_lowercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_lowercase_normalisedStandardUri,
                         inputXmlEncodedlowercaseInstructions);
-        inputXmlEncoded_lowercase_normalisedQueryUri = SparqlQueryCreator
+        inputXmlEncoded_lowercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_lowercase_normalisedQueryUri,
                         inputXmlEncodedlowercaseInstructions);
         
-        inputUrlEncoded_uppercase_normalisedStandardUri = SparqlQueryCreator
+        inputUrlEncoded_uppercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_uppercase_normalisedStandardUri,
                         inputUrlEncodeduppercaseInstructions);
-        inputUrlEncoded_uppercase_normalisedQueryUri = SparqlQueryCreator
+        inputUrlEncoded_uppercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_uppercase_normalisedQueryUri,
                         inputUrlEncodeduppercaseInstructions);
         
-        inputXmlEncoded_uppercase_normalisedStandardUri = SparqlQueryCreator
+        inputXmlEncoded_uppercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_uppercase_normalisedStandardUri,
                         inputXmlEncodeduppercaseInstructions);
-        inputXmlEncoded_uppercase_normalisedQueryUri = SparqlQueryCreator
+        inputXmlEncoded_uppercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_uppercase_normalisedQueryUri,
                         inputXmlEncodeduppercaseInstructions);
         
-        inputUrlEncoded_privatelowercase_normalisedStandardUri = SparqlQueryCreator
+        inputUrlEncoded_privatelowercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_privatelowercase_normalisedStandardUri,
                         inputUrlEncodedprivatelowercaseInstructions);
-        inputUrlEncoded_privatelowercase_normalisedQueryUri = SparqlQueryCreator
+        inputUrlEncoded_privatelowercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_privatelowercase_normalisedQueryUri,
                         inputUrlEncodedprivatelowercaseInstructions);
         
-        inputXmlEncoded_privatelowercase_normalisedStandardUri = SparqlQueryCreator
+        inputXmlEncoded_privatelowercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_privatelowercase_normalisedStandardUri,
                         inputXmlEncodedprivatelowercaseInstructions);
-        inputXmlEncoded_privatelowercase_normalisedQueryUri = SparqlQueryCreator
+        inputXmlEncoded_privatelowercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_privatelowercase_normalisedQueryUri,
                         inputXmlEncodedprivatelowercaseInstructions);
         
-        inputUrlEncoded_privateuppercase_normalisedStandardUri = SparqlQueryCreator
+        inputUrlEncoded_privateuppercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_privateuppercase_normalisedStandardUri,
                         inputUrlEncodedprivateuppercaseInstructions);
-        inputUrlEncoded_privateuppercase_normalisedQueryUri = SparqlQueryCreator
+        inputUrlEncoded_privateuppercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputUrlEncoded_privateuppercase_normalisedQueryUri,
                         inputUrlEncodedprivateuppercaseInstructions);
         
-        inputXmlEncoded_privateuppercase_normalisedStandardUri = SparqlQueryCreator
+        inputXmlEncoded_privateuppercase_normalisedStandardUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_privateuppercase_normalisedStandardUri,
                         inputXmlEncodedprivateuppercaseInstructions);
-        inputXmlEncoded_privateuppercase_normalisedQueryUri = SparqlQueryCreator
+        inputXmlEncoded_privateuppercase_normalisedQueryUri = QueryCreator
                 .matchAndReplaceInputVariablesForQueryType(originalQueryType,
                         queryString,
                         inputXmlEncoded_privateuppercase_normalisedQueryUri,
                         inputXmlEncodedprivateuppercaseInstructions);
         
-        if(SparqlQueryCreator._TRACE)
+        if(QueryCreator._TRACE)
         {
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.createQuery: after match replacements replacedString="
+            QueryCreator.log
+                    .trace("QueryCreator.createQuery: after match replacements replacedString="
                             + replacedString);
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.createQuery: after match replacements normalisedStandardUri="
+            QueryCreator.log
+                    .trace("QueryCreator.createQuery: after match replacements normalisedStandardUri="
                             + normalisedStandardUri);
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.createQuery: after match replacements normalisedQueryUri="
+            QueryCreator.log
+                    .trace("QueryCreator.createQuery: after match replacements normalisedQueryUri="
                             + normalisedQueryUri);
         }
         
@@ -774,13 +774,13 @@ public class SparqlQueryCreator
                         StringUtils
                                 .xmlEncodeString(inputUrlEncoded_privateuppercase_normalisedQueryUri));
         
-        if(SparqlQueryCreator._TRACE)
+        if(QueryCreator._TRACE)
         {
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.createQuery: before regex loop started replacedString="
+            QueryCreator.log
+                    .trace("QueryCreator.createQuery: before regex loop started replacedString="
                             + replacedString);
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.createQuery: before regex loop started xmlEncoded_inputUrlEncoded_normalisedQueryUri="
+            QueryCreator.log
+                    .trace("QueryCreator.createQuery: before regex loop started xmlEncoded_inputUrlEncoded_normalisedQueryUri="
                             + StringUtils
                                     .xmlEncodeString(inputUrlEncoded_normalisedQueryUri));
         }
@@ -880,19 +880,19 @@ public class SparqlQueryCreator
                 inputXmlEncoded_privateuppercase_endpointSpecificQueryUri = (String)nextRule
                         .stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificQueryUri);
                 
-                if(SparqlQueryCreator._TRACE)
+                if(QueryCreator._TRACE)
                 {
-                    SparqlQueryCreator.log
-                            .trace("SparqlQueryCreator.createQuery: in regex loop endpointSpecificUri="
+                    QueryCreator.log
+                            .trace("QueryCreator.createQuery: in regex loop endpointSpecificUri="
                                     + endpointSpecificUri);
-                    // SparqlQueryCreator.log
-                            // .trace("SparqlQueryCreator.createQuery: in regex loop endpointSpecificOntologyUri="
+                    // QueryCreator.log
+                            // .trace("QueryCreator.createQuery: in regex loop endpointSpecificOntologyUri="
                                     // + endpointSpecificOntologyUri);
-                    SparqlQueryCreator.log
-                            .trace("SparqlQueryCreator.createQuery: in regex loop inputUrlEncoded_endpointSpecificUri="
+                    QueryCreator.log
+                            .trace("QueryCreator.createQuery: in regex loop inputUrlEncoded_endpointSpecificUri="
                                     + inputUrlEncoded_endpointSpecificUri);
-                    SparqlQueryCreator.log
-                            .trace("SparqlQueryCreator.createQuery: in regex loop inputXmlEncoded_endpointSpecificUri="
+                    QueryCreator.log
+                            .trace("QueryCreator.createQuery: in regex loop inputXmlEncoded_endpointSpecificUri="
                                     + inputXmlEncoded_endpointSpecificUri);
                 }
             }
@@ -1109,13 +1109,13 @@ public class SparqlQueryCreator
         {
             final long end = System.currentTimeMillis();
             
-            SparqlQueryCreator.log
+            QueryCreator.log
                     .debug(String.format("%s: timing=%10d",
-                            "SparqlQueryCreator.doReplacementsOnString",
+                            "QueryCreator.doReplacementsOnString",
                             (end - start)));
             
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.doReplacementsOnString: returning replacedString="
+            QueryCreator.log
+                    .trace("QueryCreator.doReplacementsOnString: returning replacedString="
                             + replacedString);
         }
         
@@ -1134,10 +1134,10 @@ public class SparqlQueryCreator
             Provider nextProvider, String queryString,
             String nextEndpoint, String realHostName, int pageOffset, Settings localSettings)
     {
-        if(SparqlQueryCreator._DEBUG)
+        if(QueryCreator._DEBUG)
         {
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.getAttributeListFor: called with nextProvider="
+            QueryCreator.log
+                    .debug("QueryCreator.getAttributeListFor: called with nextProvider="
                             + nextProvider.toString()
                             + " queryString="
                             + queryString
@@ -1234,10 +1234,10 @@ public class SparqlQueryCreator
             QueryType originalQueryType, String queryString,
             String templateString, List<String> specialInstructions)
     {
-        if(SparqlQueryCreator._DEBUG)
+        if(QueryCreator._DEBUG)
         {
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: queryString="
+            QueryCreator.log
+                    .debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryString="
                             + queryString + " templateString=" + templateString);
         }
         
@@ -1360,19 +1360,19 @@ public class SparqlQueryCreator
             // End uppercase region
             /***********************/
             
-            if(SparqlQueryCreator._TRACE)
+            if(QueryCreator._TRACE)
             {
-                SparqlQueryCreator.log
-                        .trace("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: number="
+                QueryCreator.log
+                        .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: number="
                                 + number);
-                SparqlQueryCreator.log
-                        .trace("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: input_"
+                QueryCreator.log
+                        .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: input_"
                                 + number + "=" + inputReplaceString);
-                SparqlQueryCreator.log
-                        .trace("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: matchString="
+                QueryCreator.log
+                        .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: matchString="
                                 + matchString);
-                SparqlQueryCreator.log
-                        .trace("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: indexOf matchString="
+                QueryCreator.log
+                        .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: indexOf matchString="
                                 + replacedString.indexOf(matchString));
             }
             
@@ -1481,13 +1481,13 @@ public class SparqlQueryCreator
             // End uppercase region
             /***********************/
             
-            if(SparqlQueryCreator._DEBUG)
+            if(QueryCreator._DEBUG)
             {
-                SparqlQueryCreator.log
-                        .debug("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
+                QueryCreator.log
+                        .debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
                                 + replacedString);
-                // log.debug("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedStandardUri="+normalisedStandardUri);
-                // log.debug("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedQueryUri="+normalisedQueryUri);
+                // log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedStandardUri="+normalisedStandardUri);
+                // log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedQueryUri="+normalisedQueryUri);
             }
         } // end for(;nextMatch < allMatches.size(); nextMatch++)
         
@@ -1511,19 +1511,19 @@ public class SparqlQueryCreator
                 .replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING, StringUtils
                         .xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         
-        if(SparqlQueryCreator._DEBUG)
+        if(QueryCreator._DEBUG)
         {
             final long end = System.currentTimeMillis();
             
-            SparqlQueryCreator.log
+            QueryCreator.log
                     .debug(String
                             .format(
                                     "%s: timing=%10d",
-                                    "SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType",
+                                    "QueryCreator.matchAndReplaceInputVariablesForQueryType",
                                     (end - start)));
             
-            SparqlQueryCreator.log
-                    .debug("SparqlQueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
+            QueryCreator.log
+                    .debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
                             + replacedString);
         }
         
@@ -1542,10 +1542,10 @@ public class SparqlQueryCreator
             List<NormalisationRule> normalisationRules,
             List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules)
     {
-        if(SparqlQueryCreator._TRACE)
+        if(QueryCreator._TRACE)
         {
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.normaliseByStage: before applying normalisation rules");
+            QueryCreator.log
+                    .trace("QueryCreator.normaliseByStage: before applying normalisation rules");
         }
         
         final long start = System.currentTimeMillis();
@@ -1556,10 +1556,10 @@ public class SparqlQueryCreator
             // TODO: eliminate the reliance on the Settings class here by moving the method to a utilities class
             if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
             {
-                if(SparqlQueryCreator._TRACE)
+                if(QueryCreator._TRACE)
                 {
-                    SparqlQueryCreator.log
-                            .trace("SparqlQueryCreator.normaliseByStage: nextRule.order="
+                    QueryCreator.log
+                            .trace("QueryCreator.normaliseByStage: nextRule.order="
                                     + nextRule.getOrder());
                 }
                 
@@ -1571,14 +1571,14 @@ public class SparqlQueryCreator
         {
             final long end = System.currentTimeMillis();
             
-            SparqlQueryCreator.log.debug(String.format("%s: timing=%10d",
-                    "SparqlQueryCreator.normaliseByStage", (end - start)));
+            QueryCreator.log.debug(String.format("%s: timing=%10d",
+                    "QueryCreator.normaliseByStage", (end - start)));
         }
         
-        if(SparqlQueryCreator._TRACE)
+        if(QueryCreator._TRACE)
         {
-            SparqlQueryCreator.log
-                    .trace("SparqlQueryCreator.normaliseByStage: after applying normalisation rules");
+            QueryCreator.log
+                    .trace("QueryCreator.normaliseByStage: after applying normalisation rules");
         }
         
         return input;
@@ -1605,18 +1605,18 @@ public class SparqlQueryCreator
         
         if(queryString.trim().equals(""))
         {
-            SparqlQueryCreator.log
-                    .error("SparqlQueryCreator.replaceAttributesOnEndpointUrl: queryString was empty");
+            QueryCreator.log
+                    .error("QueryCreator.replaceAttributesOnEndpointUrl: queryString was empty");
         }
         
         if(replacementString == null)
         {
-            SparqlQueryCreator.log
-                    .error("SparqlQueryCreator.replaceAttributesOnEndpointUrl: queryType="
+            QueryCreator.log
+                    .error("QueryCreator.replaceAttributesOnEndpointUrl: queryType="
                             + queryType.getKey().stringValue());
         }
         
-        return SparqlQueryCreator.doReplacementsOnString(queryString,
+        return QueryCreator.doReplacementsOnString(queryString,
                 replacementString, queryType, null,
                 nextProvider.getNormalisationUris(),
                 attributeList, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
@@ -1678,10 +1678,10 @@ public class SparqlQueryCreator
         myTestHashtable.put("${inputUrlEncoded_privatelowercase_input_2}",
                 "yourinput2");
         
-        final String returnString = SparqlQueryCreator.replaceTags(inputString,
+        final String returnString = QueryCreator.replaceTags(inputString,
                 myTestHashtable, Settings.getSettings());
         
-        // log.warn("SparqlQueryCreator.testReplaceMethod returnString="+returnString);
+        // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
         
         return returnString;
     }
