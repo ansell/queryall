@@ -30,6 +30,7 @@ public class VoidUtility
     private static final boolean _DEBUG = VoidUtility.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = VoidUtility.log.isInfoEnabled();
+    
     private Map<String,Collection<String>> queryUriToVoidSparqlConstructQueries;
     
     public static void testMethod(
@@ -40,19 +41,20 @@ public class VoidUtility
         String linksQueryUri = "http://bio2rdf.org/query:links";
         
         String sparqlQuery = "CONSTRUCT { "
-                                + "  <${resultProviderUri}> a <http://bio2rdf.org/ns/provider:Provider> . "
-                                + "  <${resultProviderUri}> <http://bio2rdf.org/ns/provider:resolutionStrategy> <http://bio2rdf.org/ns/provider:proxy> . "
-                                + "  <${resultProviderUri}> <http://bio2rdf.org/ns/provider:requiresGraphUri> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> . "
-                                + "  <${resultProviderUri}> <http://bio2rdf.org/ns/profile:profileIncludeExcludeOrder> <http://bio2rdf.org/ns/profile:excludeThenInclude> . "
-                                + "  <${resultProviderUri}> <http://bio2rdf.org/ns/provider:endpointUrl> ?endpoint . "
-                                + "  <${resultProviderUri}> <http://bio2rdf.org/ns/provider:handlesNamespace> <${resultNamespaceUri}> . "
-                                + "  <${resultProviderUri}> <http://bio2rdf.org/ns/provider:includedInQuery> <${queryUri}> . "
+                                + "  <${resultProviderUri}> a <http://purl.org/queryall/provider:Provider> . "
+                                + "  <${resultProviderUri}> <http://purl.org/queryall/provider:resolutionStrategy> <http://purl.org/queryall/provider:proxy> . "
+                                + "  <${resultProviderUri}> <http://purl.org/queryall/provider:requiresGraphUri> \"false\"^^<http://www.w3.org/2001/XMLSchema#boolean> . "
+                                + "  <${resultProviderUri}> <http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> . "
+                                + "  <${resultProviderUri}> <http://purl.org/queryall/provider:endpointUrl> ?endpoint . "
+                                + "  <${resultProviderUri}> <http://purl.org/queryall/provider:handlesNamespace> <${resultNamespaceUri}> . "
+                                + "  <${resultProviderUri}> <http://purl.org/queryall/provider:includedInQuery> <${queryUri}> . "
                                 + " } "
                                 + " WHERE "
                                 + " { "
                                 + "  ?dataset a <http://rdfs.org/ns/void#Dataset> . "
                                 + "  ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . "
                                 + " } ";
+        
         Map<String,Collection<String>> testMapping = new Hashtable<String, Collection<String>>();
         
         Collection<String> constructQueries = new HashSet<String>();
