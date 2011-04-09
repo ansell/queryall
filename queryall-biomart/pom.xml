@@ -26,8 +26,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<connection>scm:git:git://bio2rdf.git.sourceforge.net/gitroot/queryall/queryall</connection>
-		<developerConnection>scm:git:ssh://p_ansell@bio2rdf.git.sourceforge.net/gitroot/queryall/queryall</developerConnection>
+		<connection>scm:git:git://bio2rdf.git.sourceforge.net/gitroot/queryall/queryall-biomart</connection>
+		<developerConnection>scm:git:ssh://p_ansell@bio2rdf.git.sourceforge.net/gitroot/queryall/queryall-biomart</developerConnection>
 		<url>http://bio2rdf.git.sourceforge.net/</url>
 	</scm>
 	<dependencies>
@@ -112,6 +112,14 @@
 			<artifactId>biomart-java</artifactId>
 			<type>jar</type>
 			<version>0.8-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- This is required by biomart-java but not declared or provided by any other software -->
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<type>jar</type>
+			<version>1.1</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

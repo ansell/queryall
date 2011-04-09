@@ -28,7 +28,7 @@ import org.biomart.queryEngine.QueryElementType;
 public class RDFXML extends ProcessorImpl 
 {
     @Override
-    public void preProcess(Query query, OutputStream out) throws IOException 
+    public void beforeQuery(Query query, OutputStream out) throws IOException 
     {
         String prelude = null;
         List<String> variableNames = new LinkedList<String>();
@@ -54,7 +54,7 @@ public class RDFXML extends ProcessorImpl
     }
 
     @Override
-    public void postProcess() throws IOException {
+    public void afterQuery() throws IOException {
         this.out.close();
     }
 
