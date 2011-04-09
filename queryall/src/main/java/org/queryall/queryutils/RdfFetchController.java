@@ -1,6 +1,8 @@
 package org.queryall.queryutils;
 
-import org.queryall.*;
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
+import org.queryall.api.QueryType;
 import org.queryall.blacklist.*;
 import org.queryall.impl.*;
 import org.queryall.helpers.*;

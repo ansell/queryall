@@ -31,8 +31,9 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Date;
 
-import org.queryall.*;
 import org.queryall.impl.*;
+import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.Provider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.*;
 

@@ -1,6 +1,10 @@
 package org.queryall;
 
 import java.util.List;
+
+import org.queryall.api.ProfilableInterface;
+import org.queryall.api.Profile;
+
 import static org.junit.Assert.*;
 
 public class ProfilableTestUtil

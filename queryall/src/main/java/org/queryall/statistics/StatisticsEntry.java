@@ -23,8 +23,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 
-import org.queryall.BaseQueryAllInterface;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
+import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;

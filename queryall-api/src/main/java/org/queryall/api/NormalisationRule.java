@@ -1,7 +1,8 @@
 
-package org.queryall;
+package org.queryall.api;
 
 import java.util.Collection;
+
 
 public abstract class NormalisationRule implements BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
 {

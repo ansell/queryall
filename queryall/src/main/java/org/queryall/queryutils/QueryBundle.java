@@ -16,10 +16,10 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
-import org.queryall.NormalisationRule;
-import org.queryall.Profile;
-import org.queryall.Provider;
-import org.queryall.QueryType;
+import org.queryall.api.NormalisationRule;
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
+import org.queryall.api.QueryType;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 

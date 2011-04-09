@@ -28,8 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Hashtable;
 
-import org.queryall.*;
 import org.queryall.queryutils.ProvenanceRecord;
+import org.queryall.api.Profile;
+import org.queryall.api.QueryType;
 import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;

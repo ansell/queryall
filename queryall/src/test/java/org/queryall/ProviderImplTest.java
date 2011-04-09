@@ -4,6 +4,8 @@
 package org.queryall;
 
 import org.openrdf.model.URI;
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProviderImpl;
 

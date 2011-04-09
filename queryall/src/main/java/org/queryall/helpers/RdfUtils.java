@@ -39,9 +39,9 @@ import org.openrdf.sail.memory.model.BooleanMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.openrdf.sail.memory.model.CalendarMemLiteral;
 
-import org.queryall.BaseQueryAllInterface;
-import org.queryall.Provider;
-import org.queryall.QueryType;
+import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.Provider;
+import org.queryall.api.QueryType;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.QueryTypeImpl;

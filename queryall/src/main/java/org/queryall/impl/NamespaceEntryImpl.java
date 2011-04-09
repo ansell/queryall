@@ -16,7 +16,7 @@ import org.openrdf.repository.RepositoryConnection;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.queryall.NamespaceEntry;
+import org.queryall.api.NamespaceEntry;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;

@@ -1,6 +1,7 @@
-package org.queryall;
+package org.queryall.api;
 
 import java.util.Collection;
+
 
 public abstract class RuleTest implements BaseQueryAllInterface, Comparable<RuleTest>
 {

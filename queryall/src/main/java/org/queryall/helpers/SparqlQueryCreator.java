@@ -11,7 +11,10 @@ import java.util.regex.Matcher;
 
 import org.openrdf.model.URI;
 
-import org.queryall.*;
+import org.queryall.api.NormalisationRule;
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
+import org.queryall.api.QueryType;
 
 import org.apache.log4j.Logger;
 

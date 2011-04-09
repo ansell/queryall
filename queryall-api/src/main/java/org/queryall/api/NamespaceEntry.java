@@ -1,6 +1,6 @@
-package org.queryall;
+package org.queryall.api;
 
-import org.queryall.BaseQueryAllInterface;
+
 import java.util.Collection;
 
 public abstract class NamespaceEntry implements BaseQueryAllInterface, Comparable<NamespaceEntry>

@@ -1,4 +1,4 @@
-package org.queryall;
+package org.queryall.api;
 
 import java.util.Collection;
 

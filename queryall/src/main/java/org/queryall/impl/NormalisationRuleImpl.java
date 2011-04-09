@@ -19,9 +19,9 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
-import org.queryall.NormalisationRule;
-import org.queryall.Profile;
 
+import org.queryall.api.NormalisationRule;
+import org.queryall.api.Profile;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;

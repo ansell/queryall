@@ -21,7 +21,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
-import org.queryall.RuleTest;
+import org.queryall.api.RuleTest;
 import org.queryall.helpers.*;
 /**
  * @author Peter Ansell p_ansell@yahoo.com

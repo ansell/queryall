@@ -37,7 +37,14 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 
-import org.queryall.*;
+import org.queryall.api.NamespaceEntry;
+import org.queryall.api.NormalisationRule;
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.QueryType;
+import org.queryall.api.RuleTest;
+import org.queryall.api.Template;
 import org.queryall.impl.*;
 
 /**

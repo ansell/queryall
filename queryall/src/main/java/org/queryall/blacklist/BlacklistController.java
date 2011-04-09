@@ -17,9 +17,9 @@ import org.queryall.queryutils.RdfFetcherQueryRunnable;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.queryutils.QueryDebug;
 import org.queryall.statistics.StatisticsEntry;
+import org.queryall.api.QueryType;
 import org.queryall.helpers.ListUtils;
 import org.queryall.helpers.Settings;
-import org.queryall.QueryType;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

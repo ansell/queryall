@@ -16,7 +16,7 @@ import org.openrdf.repository.RepositoryConnection;
 import java.util.HashSet;
 import java.util.Collection;
 
-import org.queryall.Project;
+import org.queryall.api.Project;
 import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;

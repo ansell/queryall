@@ -18,11 +18,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
-import org.queryall.*;
 
 import org.apache.log4j.Logger;
 

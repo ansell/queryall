@@ -1,6 +1,5 @@
-package org.queryall;
+package org.queryall.api;
 
-import org.queryall.BaseQueryAllInterface;
 
 public abstract class Project implements BaseQueryAllInterface, Comparable<Project>
 {

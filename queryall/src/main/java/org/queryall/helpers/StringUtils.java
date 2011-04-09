@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 
-import org.queryall.Template;
+import org.queryall.api.Template;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

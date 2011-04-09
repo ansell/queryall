@@ -18,8 +18,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.queryall.api.NormalisationRule;
+import org.queryall.api.ProfilableInterface;
+import org.queryall.api.Profile;
+import org.queryall.api.Provider;
+import org.queryall.api.QueryType;
 import org.queryall.helpers.*;
-import org.queryall.*;
 
 import org.apache.log4j.Logger;
 
