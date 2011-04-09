@@ -9,59 +9,61 @@ public abstract class QueryAllConfiguration
 {
 	public abstract String getNamespaceForStatistics();
 
-	public abstract void setNamespaceForStatistics(String current_RDF_STATISTICS_NAMESPACE);
+	public abstract void setNamespaceForStatistics(String currentRdfStatisticsNamespace);
 
 	public abstract String getNamespaceForProvenance();
 
-	public abstract void setNamespaceForProvenance(String current_RDF_PROVENANCE_NAMESPACE);
+	public abstract void setNamespaceForProvenance(String currentRdfProvenanceNamespace);
 
 	public abstract String getNamespaceForProfile();
 
-	public abstract void setNamespaceForProfile(String current_RDF_PROFILE_NAMESPACE);
+	public abstract void setNamespaceForProfile(String currentRdfProfileNamespace);
 
 	public abstract String getNamespaceForNamespaceEntry();
 
-	public abstract void setNamespaceForNamespaceEntry(String current_RDF_NAMESPACEENTRY_NAMESPACE);
+	public abstract void setNamespaceForNamespaceEntry(String currentRdfNamespaceNamespace);
 
 	public abstract String getNamespaceForRuleTest();
 
-	public abstract void setNamespaceForRuleTest(String current_RDF_RULETEST_NAMESPACE);
+	public abstract void setNamespaceForRuleTest(String currentRdfRuleTestNamespace);
 
 	public abstract String getNamespaceForNormalisationRule();
 
-	public abstract void setNamespaceForNormalisationRule(String current_RDF_RDFRULE_NAMESPACE);
+	public abstract void setNamespaceForNormalisationRule(String currentRdfNormalisationRuleNamespace);
 
 	public abstract String getNamespaceForQueryBundle();
 
-	public abstract void setNamespaceForQueryBundle(String current_RDF_QUERYBUNDLE_NAMESPACE);
+	public abstract void setNamespaceForQueryBundle(String currentRdfQueryBundleNamespace);
 
 	public abstract String getNamespaceForQueryType();
 
-	public abstract void setNamespaceForQueryType(String current_RDF_QUERY_NAMESPACE);
+	public abstract void setNamespaceForQueryType(String currentRdfQueryNamespace);
 
 	public abstract String getNamespaceForTemplate();
 
-	public abstract void setNamespaceForTemplate(String current_RDF_TEMPLATE_NAMESPACE);
+	public abstract void setNamespaceForTemplate(String currentRdfTemplateNamespace);
 
 	public abstract String getNamespaceForProvider();
 
-	public abstract void setNamespaceForProvider(String current_RDF_PROVIDER_NAMESPACE);
+	public abstract void setNamespaceForProvider(String currentRdfProviderNamespace);
 
 	public abstract String getNamespaceForProject();
 
-	public abstract void setNamespaceForProject(String rdfProjectNamespace);
+	public abstract void setNamespaceForProject(String currentRdfProjectNamespace);
 
 	public abstract String getNamespaceForWebappConfiguration();
 
-	public abstract void setNamespaceForWebappConfiguration(String rdfWebappConfigurationNamespace);
+	public abstract void setNamespaceForWebappConfiguration(String currentRdfWebappConfigurationNamespace);
 
+	
+	
 	public abstract String getOntologyTermUriSuffix();
 
-	public abstract void setOntologyTermUriSuffix(String current_ONTOLOGYTERMURI_SUFFIX);
+	public abstract void setOntologyTermUriSuffix(String currentOntologyTermUriSuffix);
 
 	public abstract String getOntologyTermUriPrefix();
 
-	public abstract void setOntologyTermUriPrefix(String ontologyTermUriPrefix);
+	public abstract void setOntologyTermUriPrefix(String currentOntologyTermUriPrefix);
 
 	
 	
