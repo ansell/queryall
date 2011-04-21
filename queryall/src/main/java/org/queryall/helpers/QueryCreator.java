@@ -200,7 +200,8 @@ public class QueryCreator
                             + normalisedQueryUri);
         }
         
-        replacedString = replacedString.replace(Constants.TEMPLATE_XML_ENCODED_INCLUDED_QUERY_TYPE, StringUtils.xmlEncodeString(includedQueryType.getKey().stringValue()));
+        if(includedQueryType != null && includedQueryType.getKey() != null)
+        	replacedString = replacedString.replace(Constants.TEMPLATE_XML_ENCODED_INCLUDED_QUERY_TYPE, StringUtils.xmlEncodeString(includedQueryType.getKey().stringValue()));
         
         replacedString = replacedString.replace(Constants.TEMPLATE_LIMIT, "LIMIT "
                 + localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500));
@@ -1154,7 +1155,8 @@ public class QueryCreator
         
         final Map<String, String> attributeList = new Hashtable<String, String>();
         
-        attributeList.put(Constants.TEMPLATE_KEY_INCLUDED_QUERY_TYPE, nextIncludedQueryType.getKey().stringValue());
+        if(nextIncludedQueryType != null && nextIncludedQueryType.getKey() != null)
+        	attributeList.put(Constants.TEMPLATE_KEY_INCLUDED_QUERY_TYPE, nextIncludedQueryType.getKey().stringValue());
         
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringPropertyFromConfig("hostName", ""));
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());

@@ -335,7 +335,7 @@ public class RdfFetchController
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint = QueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
                     
-                    attributeList = QueryCreator.getAttributeListFor( null, nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
+                    attributeList = QueryCreator.getAttributeListFor( nextQueryType, nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
                     
                     // This step is needed in order to replace endpointSpecific related template elements on the provider URL
                     replacedEndpoint = QueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
