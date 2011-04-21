@@ -111,6 +111,7 @@ public final class Constants
     public static final String TEMPLATE_KEY_DEFAULT_SEPARATOR = "defaultSeparator";
     public static final String TEMPLATE_KEY_ENDPOINT_URL = "endpointUrl";
     public static final String TEMPLATE_KEY_GRAPH_URI = "graphUri";
+	public static final String TEMPLATE_KEY_INCLUDED_QUERY_TYPE = "includedQueryType";
     public static final String TEMPLATE_KEY_OFFSET = "offset";
     public static final String TEMPLATE_KEY_QUERY_STRING = "queryString";
     public static final String TEMPLATE_KEY_REAL_HOST_NAME = "realHostName";
@@ -168,6 +169,7 @@ public final class Constants
     public static final String TEMPLATE_URL_ENCODED_UPPERCASE_NORMALISED_STANDARD_URI = "${urlEncoded_uppercase_normalisedStandardUri}";
     public static final String TEMPLATE_XML_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI = "${xmlEncoded_endpointSpecificQueryUri}";
     public static final String TEMPLATE_XML_ENCODED_ENDPOINT_SPECIFIC_URI = "${xmlEncoded_endpointSpecificUri}";
+	public static final String TEMPLATE_XML_ENCODED_INCLUDED_QUERY_TYPE = "${xmlEncoded_includedQueryType}";
     public static final String TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_ENDPOINT_SPECIFIC_QUERY_URI = "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificQueryUri}";
     public static final String TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_ENDPOINT_SPECIFIC_URI = "${xmlEncoded_inputPlusUrlEncoded_endpointSpecificUri}";
     public static final String TEMPLATE_XML_ENCODED_INPUT_PLUS_URL_ENCODED_NORMALISED_QUERY_URI = "${xmlEncoded_inputPlusUrlEncoded_normalisedQueryUri}";

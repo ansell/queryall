@@ -766,7 +766,7 @@ public class Settings extends QueryAllConfiguration
             
             if(_INFO)
             {
-                log.info("Settings.getAllTemplates: found "+results.size()+" rule tests");
+                log.info("Settings.getAllTemplates: found "+results.size()+" templates");
             }
             
 	        this.cachedTemplates = results;
@@ -1185,7 +1185,10 @@ public class Settings extends QueryAllConfiguration
         
         results = this.cachedNamespacePrefixToUriEntries.get(namespacePrefix);
         
-        return Collections.unmodifiableCollection(results);
+        if(results == null)
+        	return null;
+        else
+        	return Collections.unmodifiableCollection(results);
     }
     
     @Override

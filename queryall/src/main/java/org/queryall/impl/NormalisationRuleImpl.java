@@ -285,9 +285,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         {
             if(_DEBUG)
             {
-                log
-                        .debug("NormalisationRuleImpl.toRdf: keyToUse="
-                                + keyToUse);
+                log.debug("NormalisationRuleImpl.toRdf: keyToUse="+ keyToUse);
             }
             
             final URI keyUri = keyToUse;

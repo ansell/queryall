@@ -44,6 +44,7 @@ public class RdfFetchController
     private boolean includeNonPagedQueries = true;
     private Settings localSettings;
     private BlacklistController localBlacklistController;
+	private boolean namespaceNotRecognised = false;
     
     public RdfFetchController(Settings settingsClass, BlacklistController localBlacklistController, Collection<QueryBundle> nextQueryBundles)
     {
@@ -111,16 +112,25 @@ public class RdfFetchController
 
         for(QueryBundle nextQueryBundle : queryBundles)
         {
+        	// if the query type for this query bundle is not a dummy query, return true
             if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
             {
-                log.debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="+nextQueryBundle.getQueryType().getKey().stringValue());
-                return true;
+            	if(_DEBUG)
+            		log.debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="+nextQueryBundle.getQueryType().getKey().stringValue());
+
+            	return true;
             }
         }
         
-        log.debug("RdfFetchController.queryKnown: returning false at end of method");
+        if(_DEBUG)
+        	log.debug("RdfFetchController.queryKnown: returning false at end of method");
         
         return false;
+    }
+    
+    public boolean anyNamespaceNotRecognised()
+    {
+    	return namespaceNotRecognised;
     }
     
     private void initialise()
@@ -221,6 +231,15 @@ public class RdfFetchController
                 }
                 
                 this.addQueryBundles(queryBundlesForQueryType);
+
+                // if there are still no query bundles check for the non-namespace specific version of the query type to flag any instances of the namespace not being recognised
+                if(queryBundlesForQueryType.size() == 0)
+                {
+                	if(nextQueryType.getIsNamespaceSpecific() && getProvidersForQueryNonNamespaceSpecific(nextQueryType).size() > 0)
+                	{
+                		namespaceNotRecognised = true;
+                	}
+                }
             } // end for(QueryType nextQueryType : allCustomQueries)
         } // end if(queryBundles == null)
         
@@ -266,14 +285,13 @@ public class RdfFetchController
     {
         Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
-        log.debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: nextQueryType="+nextQueryType.getKey().stringValue()+" chosenProviders.size="+chosenProviders.size());
+        if(_DEBUG)
+        	log.debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: nextQueryType="+nextQueryType.getKey().stringValue()+" chosenProviders.size="+chosenProviders.size());
 
         for( Provider nextProvider : chosenProviders )
         {
             if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
             {
-                Map<String, String> attributeList = QueryCreator.getAttributeListFor( nextProvider, queryString, "", realHostName, pageOffset , localSettings);
-                
                 String nextStaticRdfXmlString = "";
                 
                 for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
@@ -283,6 +301,8 @@ public class RdfFetchController
                     
                     for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
                     {
+                        Map<String, String> attributeList = QueryCreator.getAttributeListFor( nextCustomIncludeType, nextProvider, queryString, "", realHostName , pageOffset, localSettings);
+                        
                         // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
                         // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
                         nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
@@ -315,7 +335,7 @@ public class RdfFetchController
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint = QueryCreator.matchAndReplaceInputVariablesForQueryType( nextQueryType, queryString, replacedEndpoint, new ArrayList<String>() );
                     
-                    attributeList = QueryCreator.getAttributeListFor( nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
+                    attributeList = QueryCreator.getAttributeListFor( null, nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
                     
                     // This step is needed in order to replace endpointSpecific related template elements on the provider URL
                     replacedEndpoint = QueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
@@ -374,7 +394,8 @@ public class RdfFetchController
             }
         } // end for(Provider nextProvider : QueryTypeProviders)
         
-        log.debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: results.size()="+results.size());
+        if(_DEBUG)
+        	log.debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: results.size()="+results.size());
 
         return results;
     }
