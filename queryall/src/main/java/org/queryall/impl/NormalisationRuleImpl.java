@@ -1,6 +1,7 @@
 package org.queryall.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.List;
@@ -123,6 +124,11 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         NormalisationRuleImpl.setRdfruleTypeValidForStage(f.createURI(NormalisationRuleImpl.rdfruleNamespace , "typeValidForStage"));
     }
     
+    protected NormalisationRuleImpl()
+    {
+    	
+    }
+    
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
     public NormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
@@ -213,7 +219,8 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         
     }
 
-    public Object normaliseByStage(URI stage, Object input)
+    @Override
+	public Object normaliseByStage(URI stage, Object input)
     {
         if(!validStages.contains(stage))
         {
@@ -267,7 +274,8 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         throw new RuntimeException("Normalisation rule stage unknown : stage="+stage);
     }
 
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    @Override
+	public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -457,7 +465,8 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the key
      */
-    public URI getKey()
+    @Override
+	public URI getKey()
     {
         return key;
     }
@@ -465,22 +474,26 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @param key the key to set
      */
-    public void setKey(String nextKey)
+    @Override
+	public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
 
-    public void setKey(URI nextKey)
+    @Override
+	public void setKey(URI nextKey)
     {
         this.key = nextKey;
     }    
 
-    public void setTitle(String title)
+    @Override
+	public void setTitle(String title)
     {
         this.title = title;
     }
 
-    public String getTitle()
+    @Override
+	public String getTitle()
     {
         return this.title;
     }
@@ -489,24 +502,68 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the validStages
      */
-    public Collection<URI> getValidStages()
+    @Override
+	public Collection<URI> getValidStages()
     {
-        return validStages;
+        return Collections.unmodifiableCollection(validStages);
     }
 
     /**
      * @param validStages the validStages to set
      */
-    protected void setValidStages(Collection<URI> nextValidStages)
+    @Override
+	protected void setValidStages(Collection<URI> nextValidStages)
     {
         this.validStages = nextValidStages;
     }
     
+    /**
+     * @return the validStages
+     */
+    @Override
+	protected void addValidStage(URI validStage)
+    {
+    	if(validStages == null)
+    		validStages = new ArrayList<URI>();
+    	
+    	validStages.add(validStage);
+    }
+    
+    /**
+     * @return the Stages
+     */
+    @Override
+	public Collection<URI> getStages()
+    {
+        return Collections.unmodifiableCollection(stages);
+    }
+
+    /**
+     * @param Stages the Stages to set
+     */
+    @Override
+	public void setStages(Collection<URI> nextStages)
+    {
+        this.stages = nextStages;
+    }
+    
+    /**
+     * @return the Stages
+     */
+    @Override
+	public void addStage(URI stage)
+    {
+    	if(stages == null)
+    		stages = new ArrayList<URI>();
+    	
+    	stages.add(stage);
+    }
     
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    public String getDefaultNamespace()
+    @Override
+	public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
@@ -514,22 +571,26 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the URI used for the rdf Type of these elements
      */
-    public URI getElementType()
+    @Override
+	public URI getElementType()
     {
         return getNormalisationRuleTypeUri();
     }
     
-    public int getOrder()
+    @Override
+	public int getOrder()
     {
         return order;
     }
     
-    public void setOrder(int order)
+    @Override
+	public void setOrder(int order)
     {
         this.order = order;
     }
 
-    public String getDescription()
+    @Override
+	public String getDescription()
     {
         return description;
     }
@@ -539,7 +600,8 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         this.description = description;
     }
 
-    public int compareTo(NormalisationRule otherRule)
+    @Override
+	public int compareTo(NormalisationRule otherRule)
     {
         final int BEFORE = -1;
         final int EQUAL = 0;
@@ -557,39 +619,46 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         return this.getKey().stringValue().compareTo(otherRule.getKey().stringValue());
     }
 
-    public URI getProfileIncludeExcludeOrder()
+    @Override
+	public URI getProfileIncludeExcludeOrder()
     {
         return profileIncludeExcludeOrder;
     }
 
-    public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
+    @Override
+	public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
 
     
     
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
+    @Override
+	public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
         unrecognisedStatements.add(unrecognisedStatement);
     }
 
-    public Collection<Statement> getUnrecognisedStatements()
+    @Override
+	public Collection<Statement> getUnrecognisedStatements()
     {
         return unrecognisedStatements;
     }
 
-    public URI getCurationStatus()
+    @Override
+	public URI getCurationStatus()
     {
         return curationStatus;
     }
     
-    public void setCurationStatus(URI curationStatus)
+    @Override
+	public void setCurationStatus(URI curationStatus)
     {
         this.curationStatus = curationStatus;
     }
 
-    public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
+    @Override
+	public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {
         return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);

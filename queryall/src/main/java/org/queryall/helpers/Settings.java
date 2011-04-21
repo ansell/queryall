@@ -51,7 +51,7 @@ import org.queryall.impl.*;
  * A class used to get access to settings
  * 
  * @author Peter Ansell p_ansell@yahoo.com
- * @version $Id: Settings.java 975 2011-02-23 00:59:00Z p_ansell $
+ * @version $Id: $
  */
 public class Settings extends QueryAllConfiguration
 {
@@ -1208,7 +1208,7 @@ public class Settings extends QueryAllConfiguration
             
             // Import Regular Expression Normalisation Rules first
 
-            final String regexRuleTypeUri = RegexNormalisationRule.getRegexRuleTypeUri().stringValue();
+            final String regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri().stringValue();
 
             try
             {
@@ -1239,8 +1239,8 @@ public class Settings extends QueryAllConfiguration
                                             (URI) null, (Value) null, true);
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
-                            final RegexNormalisationRule nextRdfRuleConfiguration = 
-                                        new RegexNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
+                            final RegexNormalisationRuleImpl nextRdfRuleConfiguration = 
+                                        new RegexNormalisationRuleImpl(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
                             results.put((URI)valueOfRdfRuleUri, nextRdfRuleConfiguration);
                         }
                     }
@@ -1261,7 +1261,7 @@ public class Settings extends QueryAllConfiguration
             }
 
             // Then do the same thing for SPARQL Normalisation Rules
-            final String sparqlruleTypeUri = SparqlNormalisationRule.getSparqlRuleTypeUri().stringValue();
+            final String sparqlruleTypeUri = SparqlNormalisationRuleImpl.getSparqlRuleTypeUri().stringValue();
 
             try
             {
@@ -1293,8 +1293,8 @@ public class Settings extends QueryAllConfiguration
                                             (URI) null, (Value) null, true);
                             final Collection<Statement> nextStatementList = Iterations
                                     .addAll(statements, new HashSet<Statement>());
-                            final SparqlNormalisationRule nextRdfRuleConfiguration = 
-                                        new SparqlNormalisationRule(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
+                            final SparqlNormalisationRuleImpl nextRdfRuleConfiguration = 
+                                        new SparqlNormalisationRuleImpl(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
                             results.put((URI)valueOfRdfRuleUri,
                                     nextRdfRuleConfiguration);
                         }
@@ -1314,6 +1314,62 @@ public class Settings extends QueryAllConfiguration
                 // handle exception
                 Settings.log.error("Settings:", e);
             }
+
+            // Then do the same thing for XSLT Normalisation Rules
+            final String xsltruleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri().stringValue();
+
+            try
+            {
+                final RepositoryConnection con = configRepository.getConnection();
+
+                try
+                {
+                    final String queryString = "SELECT ?rdfRuleUri WHERE { ?rdfRuleUri a <"
+                            + xsltruleTypeUri + "> . }";
+                    final TupleQuery tupleQuery = con.prepareTupleQuery(
+                            QueryLanguage.SPARQL, queryString);
+                    final TupleQueryResult queryResult = tupleQuery.evaluate();
+                    
+                    try
+                    {
+                        while(queryResult.hasNext())
+                        {
+                            final BindingSet bindingSet = queryResult.next();
+                            final Value valueOfRdfRuleUri = bindingSet
+                                    .getValue("rdfRuleUri");
+                            if(Settings._DEBUG)
+                            {
+                                Settings.log
+                                        .debug("Settings.getNormalisationRules: found xslt rule: valueOfRdfRuleUri="
+                                                + valueOfRdfRuleUri);
+                            }
+                            final RepositoryResult<Statement> statements = con
+                                    .getStatements((URI) valueOfRdfRuleUri,
+                                            (URI) null, (Value) null, true);
+                            final Collection<Statement> nextStatementList = Iterations
+                                    .addAll(statements, new HashSet<Statement>());
+                            final XsltNormalisationRuleImpl nextRdfRuleConfiguration = 
+                                        new XsltNormalisationRuleImpl(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
+                            results.put((URI)valueOfRdfRuleUri,
+                                    nextRdfRuleConfiguration);
+                        }
+                    }
+                    finally
+                    {
+                        queryResult.close();
+                    }
+                }
+                finally
+                {
+                    con.close();
+                }
+            }
+            catch (final OpenRDFException e)
+            {
+                // handle exception
+                Settings.log.error("Settings:", e);
+            }
+
         }
         catch(java.lang.InterruptedException ie)
         {

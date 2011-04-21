@@ -23,19 +23,20 @@ import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.api.RuleTest;
 import org.queryall.helpers.*;
+
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRule extends NormalisationRuleImpl
+public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl
 {
     private static final Logger log = Logger
-            .getLogger(SparqlNormalisationRule.class.getName());
-    private static final boolean _TRACE = SparqlNormalisationRule.log
+            .getLogger(SparqlNormalisationRuleImpl.class.getName());
+    private static final boolean _TRACE = SparqlNormalisationRuleImpl.log
             .isTraceEnabled();
-    private static final boolean _DEBUG = SparqlNormalisationRule.log
+    private static final boolean _DEBUG = SparqlNormalisationRuleImpl.log
             .isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlNormalisationRule.log
+    private static final boolean _INFO = SparqlNormalisationRuleImpl.log
             .isInfoEnabled();
         
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -49,7 +50,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             // .stringValue();
     // public Collection<String> relatedNamespaces = new HashSet<String>();
     
-    private URI mode = SparqlNormalisationRule.getSparqlRuleModeOnlyDeleteMatches();
+    private URI mode = SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
     
     private static URI sparqlruleTypeUri;
     private static URI sparqlruleSparqlConstructQuery;
@@ -63,21 +64,26 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
     {
         final ValueFactory f = Constants.valueFactory;
         
-        SparqlNormalisationRule.setSparqlRuleTypeUri(f
-                .createURI(SparqlNormalisationRule.rdfruleNamespace, "SparqlNormalisationRule"));
-        SparqlNormalisationRule.setSparqlRuleSparqlConstructQuery(f
-                .createURI(SparqlNormalisationRule.rdfruleNamespace, "sparqlConstructQuery"));
-        SparqlNormalisationRule.setSparqlRuleMode(f
-                .createURI(SparqlNormalisationRule.rdfruleNamespace, "mode"));
-        SparqlNormalisationRule.setSparqlRuleModeOnlyDeleteMatches(f
-                .createURI(SparqlNormalisationRule.rdfruleNamespace, "onlyDeleteMatches"));
-        SparqlNormalisationRule.setSparqlRuleModeOnlyIncludeMatches(f
-                .createURI(SparqlNormalisationRule.rdfruleNamespace, "onlyIncludeMatches"));
+        SparqlNormalisationRuleImpl.setSparqlRuleTypeUri(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "SparqlNormalisationRule"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQuery(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlConstructQuery"));
+        SparqlNormalisationRuleImpl.setSparqlRuleMode(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "mode"));
+        SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyDeleteMatches(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyDeleteMatches"));
+        SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyIncludeMatches(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyIncludeMatches"));
+    }
+    
+    public SparqlNormalisationRuleImpl()
+    {
+    	super();
     }
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public SparqlNormalisationRule(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
+    public SparqlNormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
             throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -86,21 +92,21 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         
         for(final Statement nextStatement : inputStatements)
         {
-            if(SparqlNormalisationRule._DEBUG)
+            if(SparqlNormalisationRuleImpl._DEBUG)
             {
-                SparqlNormalisationRule.log
-                        .debug("SparqlNormalisationRule: nextStatement: "
+                SparqlNormalisationRuleImpl.log
+                        .debug("SparqlNormalisationRuleImpl: nextStatement: "
                                 + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(
-                            SparqlNormalisationRule.getSparqlRuleTypeUri()))
+                            SparqlNormalisationRuleImpl.getSparqlRuleTypeUri()))
             {
-                if(SparqlNormalisationRule._TRACE)
+                if(SparqlNormalisationRuleImpl._TRACE)
                 {
-                    SparqlNormalisationRule.log
-                            .trace("SparqlNormalisationRule: found valid type predicate for URI: "
+                    SparqlNormalisationRuleImpl.log
+                            .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: "
                                     + keyToUse);
                 }
                 
@@ -108,24 +114,24 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
-                    SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery()))
+                    SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery()))
             {
                 this.setSparqlConstructQuery(nextStatement.getObject()
                         .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
-                    SparqlNormalisationRule.getSparqlRuleMode()) 
+                    SparqlNormalisationRuleImpl.getSparqlRuleMode()) 
                 && nextStatement.getObject().equals(
-                    SparqlNormalisationRule.getSparqlRuleModeOnlyIncludeMatches()))
+                    SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches()))
             {
-                this.mode = SparqlNormalisationRule.getSparqlRuleModeOnlyIncludeMatches();
+                this.mode = SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
             }
             else if(nextStatement.getPredicate().equals(
-                    SparqlNormalisationRule.getSparqlRuleMode()) 
+                    SparqlNormalisationRuleImpl.getSparqlRuleMode()) 
                 && nextStatement.getObject().equals(
-                    SparqlNormalisationRule.getSparqlRuleModeOnlyDeleteMatches()))
+                    SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()))
             {
-                this.mode = SparqlNormalisationRule.getSparqlRuleModeOnlyDeleteMatches();
+                this.mode = SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
             }
             else
             {
@@ -140,23 +146,20 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         
         // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
 
-        Collection<URI> tempValidStages = new HashSet<URI>(2);
-        tempValidStages.add(getRdfruleStageAfterResultsImport());
-        tempValidStages.add(getRdfruleStageAfterResultsToPool());
+        this.addValidStage(getRdfruleStageAfterResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToPool());
 
-        this.setValidStages(tempValidStages);
-        
-        if(SparqlNormalisationRule._DEBUG)
+        if(SparqlNormalisationRuleImpl._DEBUG)
         {
-            SparqlNormalisationRule.log
-                    .debug("SparqlNormalisationRule constructor: toString()="
+            SparqlNormalisationRuleImpl.log
+                    .debug("SparqlNormalisationRuleImpl constructor: toString()="
                             + this.toString());
         }
         
         if(!isValid)
         {
             throw new RuntimeException(
-                    "SparqlNormalisationRule.fromRdf: result was not valid");
+                    "SparqlNormalisationRuleImpl constructor: was not valid");
         }
     }
     
@@ -173,24 +176,24 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             final URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
 
 
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN, SparqlNormalisationRule.getSparqlRuleTypeUri(), contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."), contextKeyUri);
 
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.DOMAIN, SparqlNormalisationRule.getSparqlRuleTypeUri(), contextKeyUri);
-            con.add(SparqlNormalisationRule.getSparqlRuleMode(), RDFS.LABEL, f.createLiteral("The mode that this normalisation rule will be used in. In the absence of SPARQL Update language support, this enables deletions and filtering based on the matched triples."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.LABEL, f.createLiteral("The mode that this normalisation rule will be used in. In the absence of SPARQL Update language support, this enables deletions and filtering based on the matched triples."), contextKeyUri);
 
-            con.add(SparqlNormalisationRule.getSparqlRuleModeOnlyIncludeMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and only the matches from the rule will remain in the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and only the matches from the rule will remain in the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
 
-            con.add(SparqlNormalisationRule.getSparqlRuleModeOnlyDeleteMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and the matches from the rule will be deleted from the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and the matches from the rule will be deleted from the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
 
             // If everything went as planned, we can commit the result
             con.commit();
@@ -205,7 +208,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
                 con.rollback();
             }
             
-            SparqlNormalisationRule.log.error("RepositoryException: "
+            SparqlNormalisationRuleImpl.log.error("RepositoryException: "
                     + re.getMessage());
         }
         finally
@@ -274,7 +277,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         {
             if(_DEBUG)
             {
-                log.debug("SparqlNormalisationRule: removing statements according to sparqlConstructQuery="+getSparqlConstructQuery());
+                log.debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQuery="+getSparqlConstructQuery());
             }        
             
             RepositoryConnection removeConnection = myRepository.getConnection();
@@ -295,13 +298,13 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
                 removeConnection.commit();
                 if(_DEBUG)
                 {
-                    log.debug("SparqlNormalisationRule: removed "+deletedStatements+ " results");
+                    log.debug("SparqlNormalisationRuleImpl: removed "+deletedStatements+ " results");
                 }        
                 
             }
             catch(Exception ex)
             {
-                log.error("SparqlNormalisationRule: exception removing statements",ex);
+                log.error("SparqlNormalisationRuleImpl: exception removing statements",ex);
             }
             finally
             {
@@ -310,7 +313,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         }
         catch(org.openrdf.repository.RepositoryException rex)
         {
-            log.error("SparqlNormalisationRule: RepositoryException exception adding statements", rex);
+            log.error("SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
         }
         
         return myRepository;
@@ -327,7 +330,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             
             if(_DEBUG)
             {
-                log.debug("SparqlNormalisationRule: selecting statements according to sparqlConstructQuery="+getSparqlConstructQuery());
+                log.debug("SparqlNormalisationRuleImpl: selecting statements according to sparqlConstructQuery="+getSparqlConstructQuery());
             }        
             
             RepositoryConnection selectConnection = myRepository.getConnection();
@@ -348,14 +351,14 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
                 
                 if(_DEBUG)
                 {
-                    log.debug("SparqlNormalisationRule: slected "+selectedStatements+ " statements for results");
+                    log.debug("SparqlNormalisationRuleImpl: slected "+selectedStatements+ " statements for results");
                 }        
                 
                 addConnection.commit();
             }
             catch(Exception ex)
             {
-                log.error("SparqlNormalisationRule: exception adding statements",ex);
+                log.error("SparqlNormalisationRuleImpl: exception adding statements",ex);
             }
             finally
             {
@@ -365,7 +368,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         }
         catch(org.openrdf.repository.RepositoryException rex)
         {
-            log.error("SparqlNormalisationRule: RepositoryException exception adding statements", rex);
+            log.error("SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
         }
         
         return myResultRepository;
@@ -424,10 +427,10 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
         
         try
         {
-            if(SparqlNormalisationRule._DEBUG)
+            if(SparqlNormalisationRuleImpl._DEBUG)
             {
-                SparqlNormalisationRule.log
-                        .debug("SparqlNormalisationRule.toRdf: keyToUse="
+                SparqlNormalisationRuleImpl.log
+                        .debug("SparqlNormalisationRuleImpl.toRdf: keyToUse="
                                 + keyToUse);
             }
             
@@ -438,14 +441,14 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, SparqlNormalisationRule.getSparqlRuleTypeUri(),
+            con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(),
                     keyUri);
             
             // TODO: do null and empty checks on the following
             
-            con.add(keyUri, SparqlNormalisationRule.getSparqlRuleSparqlConstructQuery(),
+            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(),
                     sparqlConstructQueryLiteral, keyUri);
-            con.add(keyUri, SparqlNormalisationRule.getSparqlRuleMode(),
+            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(),
                     modeUri, keyUri);
 
             // if(this.unrecognisedStatements != null)
@@ -466,7 +469,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            SparqlNormalisationRule.log.error("RepositoryException: "
+            SparqlNormalisationRuleImpl.log.error("RepositoryException: "
                     + re.getMessage());
         }
         finally
@@ -524,7 +527,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
 	 */
 	public static void setSparqlRuleModeOnlyDeleteMatches(
 			URI sparqlruleModeOnlyDeleteMatches) {
-		SparqlNormalisationRule.sparqlruleModeOnlyDeleteMatches = sparqlruleModeOnlyDeleteMatches;
+		SparqlNormalisationRuleImpl.sparqlruleModeOnlyDeleteMatches = sparqlruleModeOnlyDeleteMatches;
 	}
 
 	/**
@@ -538,7 +541,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
 	 * @param sparqlruleTypeUri the sparqlruleTypeUri to set
 	 */
 	public static void setSparqlRuleTypeUri(URI sparqlruleTypeUri) {
-		SparqlNormalisationRule.sparqlruleTypeUri = sparqlruleTypeUri;
+		SparqlNormalisationRuleImpl.sparqlruleTypeUri = sparqlruleTypeUri;
 	}
 
 	/**
@@ -553,7 +556,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
 	 */
 	public static void setSparqlRuleSparqlConstructQuery(
 			URI sparqlruleSparqlConstructQuery) {
-		SparqlNormalisationRule.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
+		SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
 	}
 
 	/**
@@ -567,7 +570,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
 	 * @param sparqlruleMode the sparqlruleMode to set
 	 */
 	public static void setSparqlRuleMode(URI sparqlruleMode) {
-		SparqlNormalisationRule.sparqlruleMode = sparqlruleMode;
+		SparqlNormalisationRuleImpl.sparqlruleMode = sparqlruleMode;
 	}
 
 	/**
@@ -582,7 +585,7 @@ public class SparqlNormalisationRule extends NormalisationRuleImpl
 	 */
 	public static void setSparqlRuleModeOnlyIncludeMatches(
 			URI sparqlruleModeOnlyIncludeMatches) {
-		SparqlNormalisationRule.sparqlruleModeOnlyIncludeMatches = sparqlruleModeOnlyIncludeMatches;
+		SparqlNormalisationRuleImpl.sparqlruleModeOnlyIncludeMatches = sparqlruleModeOnlyIncludeMatches;
 	}
 
 	/**
