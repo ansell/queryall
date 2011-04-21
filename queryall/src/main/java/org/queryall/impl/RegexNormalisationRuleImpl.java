@@ -17,12 +17,13 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
+import org.queryall.api.RegexNormalisationRule;
 import org.queryall.helpers.*;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexNormalisationRuleImpl extends NormalisationRuleImpl
+public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements RegexNormalisationRule
 {
     private static final Logger log = Logger
             .getLogger(RegexNormalisationRuleImpl.class.getName());
@@ -356,7 +357,11 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl
 
     // NOTE: it is quite okay to have an empty replace regex, but an empty match
     // is not considered useful here
-    public boolean hasInputRule()
+    /* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#hasInputRule()
+	 */
+    @Override
+	public boolean hasInputRule()
     {
         return (this.getInputMatchRegex() != null)
                 && (this.getInputReplaceRegex() != null)
@@ -365,7 +370,11 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl
     
     // NOTE: it is quite okay to have an empty replace regex, but an empty match
     // is not considered useful here
-    public boolean hasOutputRule()
+    /* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#hasOutputRule()
+	 */
+    @Override
+	public boolean hasOutputRule()
     {
         return (this.getOutputMatchRegex() != null)
                 && (this.getOutputReplaceRegex() != null)
@@ -545,58 +554,66 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl
         return getRegexRuleTypeUri();
     }
 
-	/**
-	 * @param inputMatchRegex the inputMatchRegex to set
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#setInputMatchRegex(java.lang.String)
 	 */
+	@Override
 	public void setInputMatchRegex(String inputMatchRegex) {
 		this.inputMatchRegex = inputMatchRegex;
 	}
 
-	/**
-	 * @return the inputMatchRegex
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#getInputMatchRegex()
 	 */
+	@Override
 	public String getInputMatchRegex() {
 		return inputMatchRegex;
 	}
 
-	/**
-	 * @param inputReplaceRegex the inputReplaceRegex to set
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#setInputReplaceRegex(java.lang.String)
 	 */
+	@Override
 	public void setInputReplaceRegex(String inputReplaceRegex) {
 		this.inputReplaceRegex = inputReplaceRegex;
 	}
 
-	/**
-	 * @return the inputReplaceRegex
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#getInputReplaceRegex()
 	 */
+	@Override
 	public String getInputReplaceRegex() {
 		return inputReplaceRegex;
 	}
 
-	/**
-	 * @param outputMatchRegex the outputMatchRegex to set
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#setOutputMatchRegex(java.lang.String)
 	 */
+	@Override
 	public void setOutputMatchRegex(String outputMatchRegex) {
 		this.outputMatchRegex = outputMatchRegex;
 	}
 
-	/**
-	 * @return the outputMatchRegex
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#getOutputMatchRegex()
 	 */
+	@Override
 	public String getOutputMatchRegex() {
 		return outputMatchRegex;
 	}
 
-	/**
-	 * @param outputReplaceRegex the outputReplaceRegex to set
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#setOutputReplaceRegex(java.lang.String)
 	 */
+	@Override
 	public void setOutputReplaceRegex(String outputReplaceRegex) {
 		this.outputReplaceRegex = outputReplaceRegex;
 	}
 
-	/**
-	 * @return the outputReplaceRegex
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.RegexNormalisationRule#getOutputReplaceRegex()
 	 */
+	@Override
 	public String getOutputReplaceRegex() {
 		return outputReplaceRegex;
 	}

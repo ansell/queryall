@@ -22,12 +22,13 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.api.RuleTest;
+import org.queryall.api.SparqlNormalisationRule;
 import org.queryall.helpers.*;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl
+public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implements SparqlNormalisationRule
 {
     private static final Logger log = Logger
             .getLogger(SparqlNormalisationRuleImpl.class.getName());
@@ -124,14 +125,14 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl
                 && nextStatement.getObject().equals(
                     SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches()))
             {
-                this.mode = SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
+                this.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches());
             }
             else if(nextStatement.getPredicate().equals(
                     SparqlNormalisationRuleImpl.getSparqlRuleMode()) 
                 && nextStatement.getObject().equals(
                     SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()))
             {
-                this.mode = SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
+                this.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches());
             }
             else
             {
@@ -259,11 +260,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl
 
     private Repository doWorkBasedOnMode(Repository input)
     {
-        if(mode.equals(getSparqlRuleModeOnlyDeleteMatches()))
+        if(getMode().equals(getSparqlRuleModeOnlyDeleteMatches()))
         {
             return removeStatementsFromRepository((Repository) input);
         }
-        else if(mode.equals(getSparqlRuleModeOnlyIncludeMatches()))
+        else if(getMode().equals(getSparqlRuleModeOnlyIncludeMatches()))
         {
             return chooseStatementsFromRepository((Repository) input);
         }
@@ -437,7 +438,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl
             final URI keyUri = keyToUse;
             final Literal sparqlConstructQueryLiteral = f
                     .createLiteral(this.getSparqlConstructQuery());
-            final URI modeUri = mode;
+            final URI modeUri = getMode();
             
             con.setAutoCommit(false);
             
@@ -503,21 +504,36 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl
         return getSparqlRuleTypeUri();
     }
     
-    public URI getMode()
+    /* (non-Javadoc)
+	 * @see org.queryall.impl.SparqlNormalisationRule#getMode()
+	 */
+    @Override
+	public URI getMode()
     {
         return mode;
     }
 
-	/**
-	 * @param sparqlConstructQuery the sparqlConstructQuery to set
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.SparqlNormalisationRule#setMode(org.openrdf.model.URI)
 	 */
+	@Override
+	public void setMode(URI mode)
+	{
+		this.mode = mode;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.SparqlNormalisationRule#setSparqlConstructQuery(java.lang.String)
+	 */
+	@Override
 	public void setSparqlConstructQuery(String sparqlConstructQuery) {
 		this.sparqlConstructQuery = sparqlConstructQuery;
 	}
 
-	/**
-	 * @return the sparqlConstructQuery
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.SparqlNormalisationRule#getSparqlConstructQuery()
 	 */
+	@Override
 	public String getSparqlConstructQuery() {
 		return sparqlConstructQuery;
 	}

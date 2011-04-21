@@ -19,6 +19,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.XsltNormalisationRule;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.StringUtils;
 
@@ -32,14 +33,12 @@ import javax.xml.transform.stream.StreamResult;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class XsltNormalisationRuleImpl extends NormalisationRuleImpl
+public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements XsltNormalisationRule
 {
     private static final Logger log = Logger
     .getLogger(XsltNormalisationRuleImpl.class.getName());
-	@SuppressWarnings("unused")
 	private static final boolean _TRACE = XsltNormalisationRuleImpl.log
 	    .isTraceEnabled();
-	@SuppressWarnings("unused")
 	private static final boolean _DEBUG = XsltNormalisationRuleImpl.log
 	    .isDebugEnabled();
 	@SuppressWarnings("unused")
@@ -242,17 +241,19 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl
         return false;
     }
     
-	/**
-	 * @param xsltStylesheet the xsltStylesheet to set
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.XsltNormalisationRule#setXsltStylesheet(java.lang.String)
 	 */
+	@Override
 	public void setXsltStylesheet(String xsltStylesheet)
 	{
 		this.xsltStylesheet = xsltStylesheet;
 	}
 
-	/**
-	 * @return the xsltStylesheet
+	/* (non-Javadoc)
+	 * @see org.queryall.impl.XsltNormalisationRule#getXsltStylesheet()
 	 */
+	@Override
 	public String getXsltStylesheet()
 	{
 		return xsltStylesheet;
