@@ -6,6 +6,7 @@ package org.queryall.helpers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -183,5 +184,33 @@ public class ListUtils
         }
         
         return null;
+    }
+    
+    /**
+     * 
+     * @param stringCollection
+     * @param searchString
+     * @return
+     */
+    public static boolean collectionContainsStringIgnoreCase(Collection<String> stringCollection, String searchString)
+    {
+    	searchString = searchString.toLowerCase(Locale.ENGLISH);
+
+    	if(stringCollection == null)
+    	{
+    		return false;
+    	}
+    	
+    	for(String nextString : stringCollection)
+    	{
+    		if(nextString.toLowerCase(Locale.ENGLISH).contains(searchString))
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
     }
 }

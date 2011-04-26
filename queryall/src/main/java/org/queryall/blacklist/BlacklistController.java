@@ -108,8 +108,7 @@ public class BlacklistController
                                         + nextQueryObject.getEndpointUrl());
                     }
                     
-                    previousCount.numberOfFailures++;
-                    previousCount.errorRunnables.add(nextQueryObject);
+                    previousCount.addErrorMessageForRunnable(nextQueryObject);
                     
                     this.accumulatedBlacklistStatistics.put(
                             nextQueryObject.getEndpointUrl(), previousCount);
@@ -118,9 +117,7 @@ public class BlacklistController
                 {
                     final BlacklistEntry newFailureCount = new BlacklistEntry();
                     newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
-                    newFailureCount.numberOfFailures = 1;
-                    newFailureCount.errorRunnables = new HashSet<RdfFetcherQueryRunnable>();
-                    newFailureCount.errorRunnables.add(nextQueryObject);
+                    newFailureCount.addErrorMessageForRunnable(nextQueryObject);
                     
                     this.accumulatedBlacklistStatistics.put(
                             nextQueryObject.getEndpointUrl(), newFailureCount);
