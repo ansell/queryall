@@ -22,6 +22,8 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
     
     public abstract void setHandleAllNamespaces(boolean handleAllNamespaces);
 
+    public abstract boolean matchesQueryString(String queryString);
+    
     public abstract List<String> matchesForQueryString(String queryString);
     
     public abstract String getTemplateString();

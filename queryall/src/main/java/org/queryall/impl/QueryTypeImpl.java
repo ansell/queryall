@@ -1026,6 +1026,12 @@ public class QueryTypeImpl extends QueryType
         return StringUtils.matchesForRegexOnString(getInputRegexPattern(), this.inputRegex, nextQueryString);
     }
     
+	@Override
+	public boolean matchesQueryString(String nextQueryString) 
+	{
+        return StringUtils.matchesRegexOnString(getInputRegexPattern(), this.inputRegex, nextQueryString);
+	}    
+	
     public boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck)
     {
         if(handleAllNamespaces && isNamespaceSpecific)
@@ -1756,5 +1762,5 @@ public class QueryTypeImpl extends QueryType
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {
         return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
-    }    
+    }
 }

@@ -961,7 +961,34 @@ public class Settings extends QueryAllConfiguration
         return result;
     }
     
-    public long getLongPropertyFromConfig(String key, long defaultValue)
+    public URI getURIPropertyFromConfig(String key, URI defaultValue)
+    {
+    	URI result = defaultValue;
+    	
+        if(_TRACE)
+            log.trace("Settings.getUriPropertyFromConfig: key="+key+" defaultValue="+defaultValue);
+
+        Collection<URI> values = getURICollectionPropertiesFromConfig(key);
+        
+        if(values.size() != 1)
+        {
+            log.error("Settings.getUriPropertyFromConfig: Did not find a unique result for key="+key+ " values.size()="+values.size()+" defaultValue="+defaultValue);
+            return defaultValue;
+        }
+
+        for(URI nextValue : values)
+        {
+            result = nextValue;
+        }
+        
+        if(_TRACE)
+            log.trace("Settings.getUriPropertyFromConfig: key="+key+" result="+result);
+
+        return result;
+    	
+    }
+    
+	public long getLongPropertyFromConfig(String key, long defaultValue)
     {
         long result = defaultValue;
         
@@ -1967,8 +1994,6 @@ public class Settings extends QueryAllConfiguration
         return results;
     }
         
-    // FIXME: This will only return anything if at least one group appears in the
-    // relevant regular expression!!
     public Collection<QueryType> getQueryTypesMatchingQueryString(String queryString, List<Profile> profileList)
     {
         log.debug("this.getCustomQueriesMatchingQueryString: profileList.size()="+profileList.size());
@@ -1982,9 +2007,7 @@ public class Settings extends QueryAllConfiguration
         
         for(QueryType nextQuery : this.getAllQueryTypes().values())
         {
-            // FIXME: allow for queries with no matching groups
-            // Currently queries with no matching groups will fail this step and not be considered valid
-            if(nextQuery.matchesForQueryString(queryString).size() > 0)
+            if(nextQuery.matchesQueryString(queryString))
             {
                 if(Settings._TRACE)
                 {

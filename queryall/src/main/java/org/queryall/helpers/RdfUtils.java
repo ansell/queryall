@@ -1026,7 +1026,7 @@ public class RdfUtils
         final Repository myRepository = new SailRepository(new MemoryStore());
         myRepository.initialize();
         
-        // FIXME: fix this reliance on the Settings class
+        // TODO: remove this reliance on the Settings class
         final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.CONFIG_API_VERSION);
         
         if(!rdfOkay && isInsert)

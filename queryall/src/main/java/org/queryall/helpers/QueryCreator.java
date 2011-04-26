@@ -1126,7 +1126,7 @@ public class QueryCreator
     }
     
     /**
-     * @param nextQueryType TODO
+     * @param nextQueryType
      * @param nextProvider
      * @param queryString
      * @param nextEndpoint
@@ -1540,8 +1540,8 @@ public class QueryCreator
     /**
      * @param normalisationRules An ordered list of normalisation rules that need to be applied to the input document
      * @param includedProfiles
-     * @param recogniseImplicitRdfRuleInclusions TODO
-     * @param includeNonProfileMatchedRdfRules TODO
+     * @param recogniseImplicitRdfRuleInclusions
+     * @param includeNonProfileMatchedRdfRules
      * @param basicRdfXml
      * @return
      */
@@ -1560,7 +1560,6 @@ public class QueryCreator
         // go through the rules
         for(final NormalisationRule nextRule : normalisationRules)
         {
-            // TODO: eliminate the reliance on the Settings class here by moving the method to a utilities class
             if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules))
             {
                 if(QueryCreator._TRACE)

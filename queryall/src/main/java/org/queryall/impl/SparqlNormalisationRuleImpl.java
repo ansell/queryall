@@ -445,8 +445,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(),
                     keyUri);
             
-            // TODO: do null and empty checks on the following
-            
             con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(),
                     sparqlConstructQueryLiteral, keyUri);
             con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(),

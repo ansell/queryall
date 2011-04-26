@@ -188,6 +188,16 @@ public class StringUtils
         return encodedString.toString();
     }
 
+    public static boolean matchesRegexOnString(Pattern nextRegexPattern, String nextRegex, String nextQueryString)
+    {
+        if(nextRegex == null || nextRegex.trim().equals(""))
+        {
+        	return false;
+        }
+        
+        return nextRegexPattern.matcher(nextQueryString).matches();
+    }
+    
     public static List<String> matchesForRegexOnString(Pattern nextRegexPattern, String nextRegex, String nextQueryString)
     {
         List<String> results = new ArrayList<String>();

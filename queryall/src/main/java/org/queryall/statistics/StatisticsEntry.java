@@ -770,9 +770,9 @@ public class StatisticsEntry implements BaseQueryAllInterface
 			BlacklistController localBlacklistController, int modelVersion)
 			throws OpenRDFException
 	{
-		if(localSettings.getStringPropertyFromConfig("statisticsServerMethod",
-				"").equals(
-				ProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
+		if(localSettings.getURIPropertyFromConfig("statisticsServerMethod",
+				ProviderImpl.getProviderHttpPostSparqlUri()).equals(
+				ProviderImpl.getProviderHttpPostSparqlUri()))
 		{
 			final Repository myRepository = new SailRepository(
 					new MemoryStore());
@@ -820,10 +820,9 @@ public class StatisticsEntry implements BaseQueryAllInterface
 							"assumedRequestContentType", ""), localSettings,
 					localBlacklistController);
 		}
-		// TODO: make this a URI .equals check
-		else if(localSettings.getStringPropertyFromConfig(
-				"statisticsServerMethod", "").equals(
-				ProviderImpl.getProviderHttpPostUrlUri().stringValue()))
+		else if(localSettings.getURIPropertyFromConfig(
+				"statisticsServerMethod", ProviderImpl.getProviderHttpPostUrlUri()).equals(
+				ProviderImpl.getProviderHttpPostUrlUri()))
 		{
 			final String postInformation = this.toPostArray();
 
@@ -1418,7 +1417,6 @@ public class StatisticsEntry implements BaseQueryAllInterface
 
 			final ValueFactory f = Constants.valueFactory;
 
-			// TODO: create a key somehow if the one they give us is illegal...
 			if((keyToUse == null))
 			{
 				StatisticsEntry.log

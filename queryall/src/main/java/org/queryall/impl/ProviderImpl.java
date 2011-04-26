@@ -256,7 +256,6 @@ public class ProviderImpl extends Provider
     
     public static Provider fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
     {
-        // TODO: change this line back to "Provider" when refactoring is almost complete
         Provider result = new ProviderImpl();
         
         boolean resultIsValid = false;

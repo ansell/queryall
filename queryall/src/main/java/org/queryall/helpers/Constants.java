@@ -220,8 +220,6 @@ public final class Constants
     public static final String URL_ENCODED = "urlEncoded";
     public static final String XML_ENCODED = "xmlEncoded";
 
-    // Why can't these objects be thread safe???????
-    // TODO: find a thread-safe date formatting library and use it instead
     public static final SimpleDateFormat ISO8601UTC()
     {
         final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);
