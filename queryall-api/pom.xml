@@ -22,6 +22,15 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	<mailingLists>
+		<mailingList>
+			<name>Bio2RDF Google Group</name>
+			<archive>https://groups.google.com/group/bio2rdf/</archive>
+			<post>bio2rdf@googlegroups.com</post>
+			<subscribe>https://groups.google.com/group/bio2rdf/subscribe</subscribe>
+			<unsubscribe>https://groups.google.com/group/bio2rdf/subscribe</unsubscribe>
+		</mailingList>
+	</mailingLists>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
