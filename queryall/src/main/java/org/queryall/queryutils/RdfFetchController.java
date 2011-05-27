@@ -1,8 +1,11 @@
 package org.queryall.queryutils;
 
+import org.queryall.api.HttpProvider;
+import org.queryall.api.NoCommunicationProvider;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
+import org.queryall.api.SparqlProvider;
 import org.queryall.blacklist.*;
 import org.queryall.impl.*;
 import org.queryall.helpers.*;
@@ -290,7 +293,7 @@ public class RdfFetchController
 
         for( Provider nextProvider : chosenProviders )
         {
-            if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
+        	if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
             {
                 String nextStaticRdfXmlString = "";
                 
@@ -319,11 +322,13 @@ public class RdfFetchController
                 results.add( nextProviderQueryBundle );
             }
             // check if there is an endpoint, as we allow for providers which are really placeholders for static RDF/XML additions, and they are configured without endpoint URL's and with NO_COMMUNICATION
-            else if( nextProvider.hasEndpointUrl() )
+            //else if( nextProvider.hasEndpointUrl() )
+        	else if(nextProvider instanceof HttpProvider)
             {
+        		HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = null;
                 
-                Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextProvider.getEndpointUrls());
+                Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextHttpProvider.getEndpointUrls());
                 
                 for( String nextEndpoint : nextEndpointUrls )
                 {
@@ -418,14 +423,14 @@ public class RdfFetchController
             
             boolean addToFetchQueue = false;
             
-            if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderHttpPostSparql() ) )
+            if( nextBundle.getOriginalProvider().getEndpointMethod().equals( HttpProviderImpl.getProviderHttpPostSparql() ) )
             {
                 nextThread = new RdfFetcherSparqlQueryRunnable( nextEndpoint,
-                             nextBundle.getOriginalProvider().getSparqlGraphUri(),
+                			 ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(),
                              returnFileFormat,
                              nextQuery,
                              "off",
-                             nextBundle.getOriginalProvider().getAcceptHeaderString(),
+                             ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
                              pageoffsetIndividualQueryLimit,
                              localSettings,
                              localBlacklistController,
@@ -438,13 +443,13 @@ public class RdfFetchController
                     log.trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP POST SPARQL query thread on nextEndpoint="+nextEndpoint+" provider.getKey()="+nextBundle.getOriginalProvider().getKey());
                 }
             }
-            else if( nextBundle.getOriginalProvider().getEndpointMethod().equals( ProviderImpl.getProviderHttpGetUrl() ) )
+            else if( nextBundle.getOriginalProvider().getEndpointMethod().equals( HttpProviderImpl.getProviderHttpGetUrl() ) )
             {
                 nextThread = new RdfFetcherUriQueryRunnable( nextEndpoint,
                              returnFileFormat,
                              nextQuery,
                              "off",
-                             nextBundle.getOriginalProvider().getAcceptHeaderString(),
+                             ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
                              localSettings,
                              localBlacklistController,
                              nextBundle );

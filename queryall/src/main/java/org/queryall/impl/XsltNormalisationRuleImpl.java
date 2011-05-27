@@ -6,6 +6,7 @@ package org.queryall.impl;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
@@ -130,9 +131,13 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 	{
         super(inputStatements, keyToUse, modelVersion);
         
-        boolean isValid = false;
-        
-        for(final Statement nextStatement : inputStatements)
+    	Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+    	
+    	currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+    	
+    	this.unrecognisedStatements = new HashSet<Statement>();
+    	
+        for(Statement nextStatement : currentUnrecognisedStatements)
         {
             if(XsltNormalisationRuleImpl._DEBUG)
             {
@@ -150,7 +155,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
                                     + keyToUse);
                 }
                 
-                isValid = true;
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri()))
@@ -159,18 +163,14 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             }
             else
             {
-            	// TODO: fixme, should be removing the recognised statements in the NormalisationRuleImpl call so that they don't get put back into unrecognisedStatements here
-                unrecognisedStatements.add(nextStatement);
+                if(_TRACE)
+                {
+                    log.trace("XsltNormalisationRuleImpl: unrecognisedStatement nextStatement: "+nextStatement.toString());
+                }
+                this.unrecognisedStatements.add(nextStatement);
             }
         }
         
-        // this.relatedNamespaces = tempRelatedNamespaces;
-        // this.unrecognisedStatements = tempUnrecognisedStatements;
-        
-        // stages.add(NormalisationRule.rdfruleStageAfterResultsImport.stringValue());
-        
-        // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
-
         this.addValidStage(getRdfruleStageQueryVariables());
         this.addValidStage(getRdfruleStageAfterQueryCreation());
         this.addValidStage(getRdfruleStageBeforeResultsImport());
@@ -181,12 +181,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             XsltNormalisationRuleImpl.log
                     .debug("XsltNormalisationRuleImpl constructor: toString()="
                             + this.toString());
-        }
-        
-        if(!isValid)
-        {
-            throw new RuntimeException(
-                    "XsltNormalisationRuleImpl constructor: result was not valid");
         }
 	}
 

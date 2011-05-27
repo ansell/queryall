@@ -49,7 +49,18 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
         return containsNamespaceUri(namespaceKey) || getIsDefaultSource();
     }
 
-    @Override
+	public abstract URI getRedirectOrProxy();
+
+	public abstract void setRedirectOrProxy(URI redirectOrProxy);
+
+	public abstract boolean needsRedirect();
+
+	public abstract URI getEndpointMethod();
+
+	public abstract void setEndpointMethod(URI endpointMethod);
+
+
+	@Override
     public String toString()
     {
         StringBuilder result = new StringBuilder();
@@ -59,38 +70,5 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
 
         return result.toString();
     }
-
-    // TODO XXX FIXME: migrate the following methods to separate interfaces based on the type of provider they are relevant to 
-
-    public abstract boolean isHttpGetUrl();
-    
-    public abstract boolean needsRedirect();
-    
-    public abstract boolean hasEndpointUrl();
-    
-    public abstract Collection<String> getEndpointUrls();
-    
-    public abstract void setEndpointUrls(Collection<String> endpointUrls);
-    
-    public abstract URI getEndpointMethod();
-
-    public abstract void setEndpointMethod(URI endpointMethod);
-        
-    public abstract String getSparqlGraphUri();
-
-    public abstract void setSparqlGraphUri(String sparqlGraphUri);
-
-    public abstract boolean getUseSparqlGraph();
-
-    public abstract void setUseSparqlGraph(boolean useSparqlGraph);
-
-    public abstract URI getRedirectOrProxy();
-
-    public abstract void setRedirectOrProxy(URI redirectOrProxy);
-    
-    public abstract String getAcceptHeaderString();
-    
-    public abstract void setAcceptHeaderString(String acceptHeaderString);
-    
 }
 

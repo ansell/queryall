@@ -155,7 +155,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         QueryBundle nextQueryBundle = new QueryBundle();
         
-        Provider dummyProvider = new ProviderImpl();
+        HttpProviderImpl dummyProvider = new HttpProviderImpl();
         
         Collection<String> endpointUrls = new HashSet<String>();
         

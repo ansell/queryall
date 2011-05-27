@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.Settings;
-import org.queryall.impl.ProviderImpl;
+import org.queryall.impl.HttpProviderImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -73,11 +73,11 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
                 log.trace("HttpUrlQueryRunnable.run: about to fetch");
             }
             
-            if(this.httpOperation.equals(ProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
+            if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
             {
                 this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(), "", this.getQuery(), "", maxRowsParameter, this.getAcceptHeader()));
             }
-            else if(this.httpOperation.equals(ProviderImpl.getProviderHttpPostUrlUri().stringValue()) || this.httpOperation.equals(ProviderImpl.getProviderHttpGetUrlUri().stringValue()))
+            else if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostUrlUri().stringValue()) || this.httpOperation.equals(HttpProviderImpl.getProviderHttpGetUrlUri().stringValue()))
             {
                 this.setRawResult(fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(), this.getAcceptHeader()));
             }

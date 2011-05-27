@@ -89,9 +89,13 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        boolean isValid = false;
-        
-        for(final Statement nextStatement : inputStatements)
+    	Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+    	
+    	currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+    	
+    	this.unrecognisedStatements = new HashSet<Statement>();
+    	
+        for(Statement nextStatement : currentUnrecognisedStatements)
         {
             if(SparqlNormalisationRuleImpl._DEBUG)
             {
@@ -111,7 +115,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                                     + keyToUse);
                 }
                 
-                isValid = true;
+//                isValid = true;
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
@@ -136,7 +140,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             }
             else
             {
-                unrecognisedStatements.add(nextStatement);
+                if(_TRACE)
+                {
+                    log.trace("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "+nextStatement.toString());
+                }
+                this.unrecognisedStatements.add(nextStatement);
             }
         }
         
@@ -155,12 +163,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             SparqlNormalisationRuleImpl.log
                     .debug("SparqlNormalisationRuleImpl constructor: toString()="
                             + this.toString());
-        }
-        
-        if(!isValid)
-        {
-            throw new RuntimeException(
-                    "SparqlNormalisationRuleImpl constructor: was not valid");
         }
     }
     

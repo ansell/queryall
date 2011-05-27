@@ -31,7 +31,6 @@ public class ListUtils
     public static final Random prng = new Random();
 
     /**
-     * @param <T>
      * @param newList
      * @return
      */
@@ -210,7 +209,5 @@ public class ListUtils
     	}
     	
     	return false;
-    }
-    
     }
 }

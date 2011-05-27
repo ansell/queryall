@@ -64,7 +64,7 @@ public class Settings extends QueryAllConfiguration
     // This matches the queryall.properties file where
     // the generally static API specific section of the configuration settings are stored
     public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
-    public static final int CONFIG_API_VERSION = 3;
+    public static final int CONFIG_API_VERSION = 4;
     public static final String VERSION = getVersion();
     
     public static Settings getSettings()
@@ -1665,9 +1665,14 @@ public class Settings extends QueryAllConfiguration
         }
         final long start = System.currentTimeMillis();
 
-        final String providerOntologyTypeUri = this.getOntologyTermUriPrefix()
-                + this.getNamespaceForProvider()
-                + this.getOntologyTermUriSuffix() + "Provider";
+//        final String providerOntologyTypeUri = this.getOntologyTermUriPrefix()
+//                + this.getNamespaceForProvider()
+//                + this.getOntologyTermUriSuffix() + "Provider";
+        
+        //final String providerOntologyTypeUri = HttpProviderImpl.getProviderHttpProviderUri().stringValue();
+        
+        final String providerOntologyTypeUri = ProviderImpl.getProviderTypeUri().stringValue();
+        
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
@@ -1696,19 +1701,9 @@ public class Settings extends QueryAllConfiguration
                                         (URI) null, (Value) null, true);
                         final Collection<Statement> nextStatementList = Iterations
                                 .addAll(statements, new HashSet<Statement>());
-                        final Provider nextProvider = ProviderImpl
-                                .fromRdf(nextStatementList, (URI)valueOfProviderUri, Settings.CONFIG_API_VERSION);
-                        if(nextProvider != null)
-                        {
-                            results.put((URI)valueOfProviderUri,
-                                    nextProvider);
-                        }
-                        else
-                        {
-                            Settings.log
-                                    .error("Settings.getProviders: was not able to create a provider configuration with URI valueOfProviderUri="
-                                            + valueOfProviderUri.stringValue());
-                        }
+                        final Provider nextProvider = new HttpProviderImpl(nextStatementList, (URI)valueOfProviderUri, Settings.CONFIG_API_VERSION);
+                        results.put((URI)valueOfProviderUri,
+                                nextProvider);
                     }
                 }
                 finally

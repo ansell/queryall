@@ -16,6 +16,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
+import org.queryall.api.HttpProvider;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
@@ -142,18 +143,22 @@ public class QueryBundle
     // NOTE: this will not work if the URL has any templates replaced against it
     public Collection<String> getAlternativeEndpoints()
     {
-        Collection<String> allEndpoints = getOriginalProvider().getEndpointUrls();
-        
         Collection<String> results = new LinkedList<String>();
-        
-        if(allEndpoints == null || allEndpoints.size() <=1)
-            return results;
-        
-        for(String nextEndpointUrl : allEndpoints)
-        {
-            if(!nextEndpointUrl.equals(getQueryEndpoint()))
-                results.add(nextEndpointUrl);
-        }
+    	
+    	if(getProvider() instanceof HttpProvider)
+    	{
+	        Collection<String> allEndpoints = ((HttpProvider)getProvider()).getEndpointUrls();
+	        
+	        
+	        if(allEndpoints == null || allEndpoints.size() <=1)
+	            return results;
+	        
+	        for(String nextEndpointUrl : allEndpoints)
+	        {
+	            if(!nextEndpointUrl.equals(getQueryEndpoint()))
+	                results.add(nextEndpointUrl);
+	        }
+    	}
         
         return results;
     }

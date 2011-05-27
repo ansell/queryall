@@ -2,6 +2,9 @@ package org.queryall.api;
 
 import org.openrdf.model.URI;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface SparqlNormalisationRule
 {
 

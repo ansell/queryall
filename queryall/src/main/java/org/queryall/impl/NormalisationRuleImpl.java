@@ -50,7 +50,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     private Collection<URI> relatedNamespaces;
     
-    protected Collection<URI> stages = new ArrayList<URI>(2);
+    protected Collection<URI> stages = new ArrayList<URI>(3);
     
     private Collection<URI> validStages = new ArrayList<URI>(7);
     
@@ -134,9 +134,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     public NormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
             throws OpenRDFException
     {
-        @SuppressWarnings("unused")
-        boolean isValid = false;
-        
         final Collection<URI> tempRelatedNamespaces = new HashSet<URI>();
         final Collection<URI> tempStages = new HashSet<URI>();
         
@@ -161,7 +158,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
                                     + keyToUse);
                 }
                 
-                isValid = true;
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
@@ -195,10 +191,10 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
-            // else
-            // {
-                // tempUnrecognisedStatements.add(nextStatement);
-            // }
+			else
+			{
+			    this.addUnrecognisedStatement(nextStatement);
+			}
         }
         
         this.relatedNamespaces = tempRelatedNamespaces;
@@ -210,13 +206,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
                     .debug("NormalisationRuleImpl.fromRdf: would have returned... result="
                             + this.toString());
         }
-        
-        // if(!isValid)
-        // {
-            // throw new RuntimeException(
-                    // "NormalisationRuleImpl.fromRdf: result was not valid");
-        // }
-        
     }
 
     @Override

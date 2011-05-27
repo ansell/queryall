@@ -15,6 +15,7 @@ import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
+import org.queryall.api.SparqlProvider;
 
 import org.apache.log4j.Logger;
 
@@ -1163,8 +1164,21 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringPropertyFromConfig("separator", ""));
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
         attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryString);
-        attributeList.put(Constants.TEMPLATE_KEY_GRAPH_URI, nextProvider.getSparqlGraphUri());
-        attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, nextProvider.getUseSparqlGraph() + "");
+        if(nextProvider instanceof SparqlProvider)
+        {
+        	SparqlProvider nextSparqlProvider = (SparqlProvider)nextProvider;
+        	
+	        attributeList.put(Constants.TEMPLATE_KEY_GRAPH_URI, nextSparqlProvider.getSparqlGraphUri());
+	        attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, nextSparqlProvider.getUseSparqlGraph() + "");
+	        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_GRAPH_URI, StringUtils
+	                .percentEncode(nextSparqlProvider.getSparqlGraphUri()));
+	        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_GRAPH_URI, StringUtils
+	                .xmlEncodeString(nextSparqlProvider.getSparqlGraphUri()));
+	        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_GRAPH_URI, StringUtils
+	                .xmlEncodeString(StringUtils
+	                        .percentEncode(nextSparqlProvider.getSparqlGraphUri())));
+        }
+        
         attributeList.put(Constants.TEMPLATE_KEY_OFFSET, pageOffset + "");
         
         // if(nextProvider.rdfNormalisationsNeeded != null)
@@ -1184,8 +1198,6 @@ public class QueryCreator
                 .percentEncode(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .percentEncode(localSettings.getStringPropertyFromConfig("separator", "")));
-        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_GRAPH_URI, StringUtils
-                .percentEncode(nextProvider.getSparqlGraphUri()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils
                 .percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils
@@ -1199,8 +1211,6 @@ public class QueryCreator
                 .xmlEncodeString("http://" + localSettings.getStringPropertyFromConfig("hostName", "") + "/"));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .xmlEncodeString(localSettings.getStringPropertyFromConfig("separator", ":")));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_GRAPH_URI, StringUtils
-                .xmlEncodeString(nextProvider.getSparqlGraphUri()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils
                 .xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils
@@ -1217,9 +1227,6 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .xmlEncodeString(StringUtils
                         .percentEncode(localSettings.getStringPropertyFromConfig("separator", ":"))));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_GRAPH_URI, StringUtils
-                .xmlEncodeString(StringUtils
-                        .percentEncode(nextProvider.getSparqlGraphUri())));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME, StringUtils

@@ -43,6 +43,7 @@ import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.QueryTypeImpl;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
@@ -123,7 +124,7 @@ public class RdfUtils
     {
         QueryBundle nextQueryBundle = new QueryBundle();
         
-        Provider dummyProvider = new ProviderImpl();
+        HttpProviderImpl dummyProvider = new HttpProviderImpl();
         
         Collection<String> endpointUrls = new HashSet<String>();
         
@@ -146,7 +147,7 @@ public class RdfUtils
         // }
         
         dummyProvider.setEndpointUrls(endpointUrls);
-        dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpGetUrl());
+        dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpGetUrl());
         dummyProvider.setKey(hostToUse+localSettings.getNamespaceForProvider()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         
@@ -176,7 +177,7 @@ public class RdfUtils
         
         QueryBundle nextQueryBundle = new QueryBundle();
         
-        Provider dummyProvider = new ProviderImpl();
+        HttpProviderImpl dummyProvider = new HttpProviderImpl();
         
         Collection<String> endpointUrls = new HashSet<String>();
         
@@ -186,7 +187,7 @@ public class RdfUtils
         
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
-        dummyProvider.setEndpointMethod(ProviderImpl.getProviderHttpPostSparql());
+        dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpPostSparql());
         dummyProvider.setKey(localSettings.getDefaultHostAddress()+localSettings.getNamespaceForProvider()+localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         

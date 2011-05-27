@@ -2,6 +2,7 @@
 package org.queryall.impl;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.log4j.Logger;
@@ -73,10 +74,13 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        @SuppressWarnings("unused")
-        boolean isValid = false;
-
-        for(final Statement nextStatement : inputStatements)
+    	Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+    	
+    	currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+    	
+    	this.unrecognisedStatements = new HashSet<Statement>();
+    	
+        for(Statement nextStatement : currentUnrecognisedStatements)
         {
             if(RegexNormalisationRuleImpl._TRACE)
             {
@@ -98,7 +102,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
                                     + keyToUse);
                 }
                 
-                isValid = true;
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
@@ -127,7 +130,11 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             }
             else
             {
-                unrecognisedStatements.add(nextStatement);
+                if(_TRACE)
+                {
+                    log.trace("RegexNormalisationRuleImpl: unrecognisedStatement nextStatement: "+nextStatement.toString());
+                }
+                this.unrecognisedStatements.add(nextStatement);
             }
         }
         
@@ -136,24 +143,12 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         this.addValidStage(getRdfruleStageBeforeResultsImport());
         this.addValidStage(getRdfruleStageAfterResultsToDocument());
 
-        // TODO: iterate over the tempUnrecognisedStatements and add them to unrecognisedStatements
-        //this.unrecognisedStatements = tempUnrecognisedStatements;
-        
-        // stages.add(NormalisationRule.rdfruleStageQueryVariables.stringValue());
-        // stages.add(NormalisationRule.rdfruleStageBeforeResultsImport.stringValue());
-
         if(RegexNormalisationRuleImpl._TRACE)
         {
             RegexNormalisationRuleImpl.log
                     .trace("RegexNormalisationRuleImpl.fromRdf: would have returned... result="
                             + this.toString());
         }
-        
-        // if(!isValid)
-        // {
-            // throw new RuntimeException(
-                    // "RegexNormalisationRuleImpl.fromRdf: result was not valid");
-        // }
     }
     
     public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException

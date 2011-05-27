@@ -29,7 +29,7 @@ import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
-import org.queryall.impl.ProviderImpl;
+import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProjectImpl;
 
 /**
@@ -771,8 +771,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
 			throws OpenRDFException
 	{
 		if(localSettings.getURIPropertyFromConfig("statisticsServerMethod",
-				ProviderImpl.getProviderHttpPostSparqlUri()).equals(
-				ProviderImpl.getProviderHttpPostSparqlUri()))
+				HttpProviderImpl.getProviderHttpPostSparqlUri()).equals(
+				HttpProviderImpl.getProviderHttpPostSparqlUri()))
 		{
 			final Repository myRepository = new SailRepository(
 					new MemoryStore());
@@ -821,8 +821,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
 					localBlacklistController);
 		}
 		else if(localSettings.getURIPropertyFromConfig(
-				"statisticsServerMethod", ProviderImpl.getProviderHttpPostUrlUri()).equals(
-				ProviderImpl.getProviderHttpPostUrlUri()))
+				"statisticsServerMethod", HttpProviderImpl.getProviderHttpPostUrlUri()).equals(
+				HttpProviderImpl.getProviderHttpPostUrlUri()))
 		{
 			final String postInformation = this.toPostArray();
 

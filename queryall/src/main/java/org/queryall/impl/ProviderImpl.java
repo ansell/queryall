@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  */
 public class ProviderImpl extends Provider
 {
-    private static final Logger log = Logger.getLogger(Provider.class.getName());
+    private static final Logger log = Logger.getLogger(ProviderImpl.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
     private static final boolean _DEBUG = log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -40,15 +40,12 @@ public class ProviderImpl extends Provider
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForProvider();
     
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key = null;
     
     private String title = "";
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
-    private Collection<String> endpointUrls = new HashSet<String>();
-    // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue() and Provider.providerNoCommunication.stringValue()
-    private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
     private Collection<URI> namespaces = new HashSet<URI>();
     private Collection<URI> includedInQueryTypes = new HashSet<URI>();
     private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
@@ -57,19 +54,19 @@ public class ProviderImpl extends Provider
     private URI redirectOrProxy = ProviderImpl.getProviderRedirect();
     private boolean isDefaultSourceVar = false;
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+	// See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue() and Provider.providerNoCommunication.stringValue()
+	private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
+	static URI providerNoCommunication;
     
     // Use these to include information based on whether or not the provider was actually used to provide information for particular user queries
 //    public Collection<String> providerQueryInclusions = new HashSet<String>();
 //    public boolean onlyIncludeProviderQueryIfInformationReturned = true;
-    
-    private String acceptHeaderString = "";
     
     private static URI providerTypeUri;
     private static URI providerTitle;
     private static URI providerResolutionStrategy;
     private static URI providerHandledNamespace;
     private static URI providerResolutionMethod;
-    private static URI providerEndpointUrl;
     private static URI providerRequiresSparqlGraphURI;
     private static URI providerGraphUri;
     private static URI providerIncludedInQuery;
@@ -77,12 +74,6 @@ public class ProviderImpl extends Provider
     private static URI providerNeedsRdfNormalisation;
     private static URI providerRedirect;
     private static URI providerProxy;
-    private static URI providerHttpPostSparql;
-    private static URI providerHttpGetUrl;
-    private static URI providerNoCommunication;
-    private static URI providerHttpPostUrl;
-    private static URI providerAcceptHeader;
-    
     public static String providerNamespace;
 //    public static String profileNamespace;
     
@@ -100,22 +91,37 @@ public class ProviderImpl extends Provider
         setProviderResolutionStrategy(f.createURI(providerNamespace,"resolutionStrategy"));
         setProviderHandledNamespace(f.createURI(providerNamespace,"handlesNamespace"));
         setProviderResolutionMethod(f.createURI(providerNamespace,"resolutionMethod"));
-        setProviderEndpointUrl(f.createURI(providerNamespace,"endpointUrl"));
         setProviderRequiresSparqlGraphURI(f.createURI(providerNamespace,"requiresGraphUri"));
         setProviderGraphUri(f.createURI(providerNamespace,"graphUri"));
         setProviderIncludedInQuery(f.createURI(providerNamespace,"includedInQuery"));
         setProviderIsDefaultSource(f.createURI(providerNamespace,"isDefaultSource"));
         setProviderNeedsRdfNormalisation(f.createURI(providerNamespace,"needsRdfNormalisation"));
-        setProviderAcceptHeader(f.createURI(providerNamespace,"acceptHeader"));
         setProviderRedirect(f.createURI(providerNamespace,"redirect"));
         setProviderProxy(f.createURI(providerNamespace,"proxy"));
-        setProviderHttpPostSparql(f.createURI(providerNamespace,"httppostsparql"));
-        setProviderHttpGetUrl(f.createURI(providerNamespace,"httpgeturl"));
         setProviderNoCommunication(f.createURI(providerNamespace,"nocommunication"));
-        setProviderHttpPostUrl(f.createURI(providerNamespace,"httpposturl"));
 
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
         setProviderTitle(f.createURI(providerNamespace,"Title"));
+    }
+    
+    public boolean getUseSparqlGraph()
+    {
+        return useSparqlGraph;
+    }
+
+    public void setUseSparqlGraph(boolean useSparqlGraph)
+    {
+        this.useSparqlGraph = useSparqlGraph;
+    }
+
+    public String getSparqlGraphUri()
+    {
+        return sparqlGraphUri;
+    }
+
+    public void setSparqlGraphUri(String sparqlGraphUri)
+    {
+        this.sparqlGraphUri = sparqlGraphUri;
     }
     
     public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
@@ -140,7 +146,7 @@ public class ProviderImpl extends Provider
             con.add(getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(getProviderResolutionStrategy(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
             con.add(getProviderResolutionStrategy(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderResolutionStrategy(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderResolutionStrategy(), RDFS.LABEL, f.createLiteral("The provider may use a strategy of either proxying the communications with this provider, or it may redirect to it."), contextKeyUri);
 
             con.add(getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
@@ -160,15 +166,7 @@ public class ProviderImpl extends Provider
             con.add(getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
             con.add(getProviderResolutionMethod(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderResolutionMethod(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-
-            
-            con.add(getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderEndpointUrl(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderEndpointUrl(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
+            con.add(getProviderResolutionMethod(), RDFS.LABEL, f.createLiteral("The provider may either use no-communication, or one of the supported resolution methods, for example, HTTP GET or HTTP POST."), contextKeyUri);
             
             con.add(getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(getProviderRequiresSparqlGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
@@ -184,11 +182,6 @@ public class ProviderImpl extends Provider
             con.add(getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(getProviderIsDefaultSource(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
             con.add(getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-            con.add(getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderAcceptHeader(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderAcceptHeader(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
 
             con.add(getProviderRedirect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(getProviderRedirect(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
@@ -223,21 +216,16 @@ public class ProviderImpl extends Provider
         return false;
     }
     
-    public void setAcceptHeaderString(String acceptHeaderString)
+    @Override
+    public URI getEndpointMethod()
     {
-        this.acceptHeaderString = acceptHeaderString;
+        return endpointMethod;
     }
-    
-    public String getAcceptHeaderString()
+
+    @Override
+    public void setEndpointMethod(URI endpointMethod)
     {
-        if(acceptHeaderString != null && !acceptHeaderString.trim().equals(""))
-        {
-            return acceptHeaderString;
-        }
-        else
-        {
-            return Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader", "");
-        }
+        this.endpointMethod = endpointMethod;
     }
     
     // public static URI getInstanceUri(ValueFactory f, String keyToUse)
@@ -253,18 +241,13 @@ public class ProviderImpl extends Provider
     //
     // return providerInstanceUri;
     // }
-    
-    public static Provider fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    public ProviderImpl()
     {
-        Provider result = new ProviderImpl();
-        
-        boolean resultIsValid = false;
-        
-        Collection<String> tempEndpointUrls = new HashSet<String>();
-        Collection<URI> tempNamespaces = new HashSet<URI>();
-        Collection<URI> tempIncludedInCustomQueries = new HashSet<URI>();
-        Collection<URI> tempRdfNormalisationsNeeded = new HashSet<URI>();
-        
+    	super();
+    }
+    
+    public ProviderImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    {
         final ValueFactory f = Constants.valueFactory;
         
         for(Statement nextStatement : inputStatements)
@@ -281,84 +264,54 @@ public class ProviderImpl extends Provider
                     log.trace("Provider: found valid type predicate for URI: "+keyToUse);
                 }
                 
-                resultIsValid = true;
-                result.setKey(keyToUse);
+                //resultIsValid = true;
+                this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
             {
-                result.setCurationStatus((URI)nextStatement.getObject());
+                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProviderTitle()) || nextStatement.getPredicate().equals(f.createURI(Constants.DC_NAMESPACE+"title")))
             {
-                result.setTitle(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(getProviderAcceptHeader()))
-            {
-                result.setAcceptHeaderString(nextStatement.getObject().stringValue());
+                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getProviderResolutionStrategy()))
             {
-                result.setRedirectOrProxy((URI)nextStatement.getObject());
+                this.setRedirectOrProxy((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProviderHandledNamespace()))
             {
-                tempNamespaces.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProviderResolutionMethod()))
-            {
-                result.setEndpointMethod((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProviderEndpointUrl()))
-            {
-                tempEndpointUrls.add(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(getProviderRequiresSparqlGraphURI()))
-            {
-                result.setUseSparqlGraph(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(getProviderGraphUri()))
-            {
-                result.setSparqlGraphUri(nextStatement.getObject().stringValue());
+                this.addNamespace((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProviderIncludedInQuery()))
             {
-                tempIncludedInCustomQueries.add((URI)nextStatement.getObject());
+                this.addIncludedInQueryType((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProviderIsDefaultSource()))
             {
-                result.setIsDefaultSource(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setIsDefaultSource(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getProviderNeedsRdfNormalisation()))
             {
-                tempRdfNormalisationsNeeded.add((URI)nextStatement.getObject());
+                this.addNormalisationUri((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
             {
-                result.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProviderResolutionMethod()))
+            {
+                this.setEndpointMethod((URI)nextStatement.getObject());
             }
             else
             {
-                result.addUnrecognisedStatement(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
         
-        result.setNamespaces(tempNamespaces);
-        result.setEndpointUrls(tempEndpointUrls);
-        result.setNormalisationUris(tempRdfNormalisationsNeeded);
-        result.setIncludedInQueryTypes(tempIncludedInCustomQueries);
-        
         if(_DEBUG)
         {
-            log.debug("Provider.fromRdf: would have returned... keyToUse="+keyToUse+ " result="+result.toString());
-        }
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("Provider.fromRdf: result was not valid");
+            log.debug("Provider.fromRdf: would have returned... keyToUse="+keyToUse+ " result="+this.toString());
         }
     }
     
@@ -395,19 +348,6 @@ public class ProviderImpl extends Provider
             Literal sparqlGraphUriLiteral = f.createLiteral(getSparqlGraphUri());
             Literal isDefaultSourceLiteral = f.createLiteral(getIsDefaultSourceVar());
             
-            // backwards compatibility check, and use default if nothing was previously specified
-            // NOTE: we assume empty accept header is non-intentional as it doesn't have a non-trivial purpose
-            Literal acceptHeaderLiteral = null;
-            
-            if(getAcceptHeaderString() == null || getAcceptHeaderString().trim().equals(""))
-            {
-                acceptHeaderLiteral = f.createLiteral(Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader", ""));
-            }
-            else
-            {
-                acceptHeaderLiteral = f.createLiteral(getAcceptHeaderString());
-            }
-            
             URI curationStatusLiteral = null;
             
             if(getCurationStatus() == null)
@@ -436,20 +376,7 @@ public class ProviderImpl extends Provider
             
             con.add(providerInstanceUri, getProviderIsDefaultSource(), isDefaultSourceLiteral, providerInstanceUri);
             
-            con.add(providerInstanceUri, getProviderAcceptHeader(), acceptHeaderLiteral, providerInstanceUri);
-            
             con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral, providerInstanceUri);
-            
-            if(getEndpointUrls() != null)
-            {
-                for(String nextEndpointUrl : getEndpointUrls())
-                {
-                    if(nextEndpointUrl != null)
-                    {
-                        con.add(providerInstanceUri, getProviderEndpointUrl(), f.createLiteral(nextEndpointUrl), providerInstanceUri);
-                    }
-                }
-            }
             
             if(getNamespaces() != null)
             {
@@ -528,16 +455,8 @@ public class ProviderImpl extends Provider
     {
         final int prime = 31;
         int result = 1;
-        result = prime
-                * result
-                + ((acceptHeaderString == null) ? 0 : acceptHeaderString
-                        .hashCode());
         result = prime * result
                 + ((curationStatus == null) ? 0 : curationStatus.hashCode());
-        result = prime * result
-                + ((endpointMethod == null) ? 0 : endpointMethod.hashCode());
-        result = prime * result
-                + ((endpointUrls == null) ? 0 : endpointUrls.hashCode());
         result = prime
                 * result
                 + ((includedInQueryTypes == null) ? 0 : includedInQueryTypes
@@ -580,33 +499,12 @@ public class ProviderImpl extends Provider
         else if (!key.equals(other.key))
             return false;
 
-        if (acceptHeaderString == null)
-        {
-            if (other.acceptHeaderString != null)
-                return false;
-        }
-        else if (!acceptHeaderString.equals(other.acceptHeaderString))
-            return false;
         if (curationStatus == null)
         {
             if (other.curationStatus != null)
                 return false;
         }
         else if (!curationStatus.equals(other.curationStatus))
-            return false;
-        if (endpointMethod == null)
-        {
-            if (other.endpointMethod != null)
-                return false;
-        }
-        else if (!endpointMethod.equals(other.endpointMethod))
-            return false;
-        if (endpointUrls == null)
-        {
-            if (other.endpointUrls != null)
-                return false;
-        }
-        else if (!endpointUrls.equals(other.endpointUrls))
             return false;
         if (includedInQueryTypes == null)
         {
@@ -701,21 +599,6 @@ public class ProviderImpl extends Provider
         return this.getNormalisationUris().contains(normalisationKey);
     }
     
-    public boolean isHttpPostSparql()
-    {
-        return this.getEndpointMethod().equals(ProviderImpl.getProviderHttpPostSparql());
-    }
-    
-    public boolean isHttpGetUrl()
-    {
-        return this.getEndpointMethod().equals(ProviderImpl.getProviderHttpGetUrl());
-    }
-    
-    public boolean hasEndpointUrl()
-    {
-        return (this.getEndpointUrls() != null && this.getEndpointUrls().size() > 0);
-    }
-    
     public boolean needsRedirect()
     {
         return getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect().stringValue());
@@ -731,7 +614,7 @@ public class ProviderImpl extends Provider
         String result = "\n";
         
         result += "key="+getKey()+"\n";
-        result += "endpointUrls="+getEndpointUrls() + "\n";
+//        result += "endpointUrls="+getEndpointUrls() + "\n";
         result += "endpointMethod="+getEndpointMethod() + "\n";
         result += "namespaces="+getNamespaces() + "\n";
         result += "includedInCustomQueries="+getIncludedInQueryTypes() + "\n";
@@ -741,7 +624,7 @@ public class ProviderImpl extends Provider
         result += "isDefaultSource="+getIsDefaultSourceVar() + "\n";
         result += "needsUriNormalisation="+getRdfNormalisationsNeeded() + "\n";
         result += "profileIncludeExcludeOrder="+getProfileIncludeExcludeOrder() + "\n";
-        result += "acceptHeaderString="+getAcceptHeaderString() + "\n";
+//        result += "acceptHeaderString="+getAcceptHeaderString() + "\n";
         
         return result;
     }
@@ -762,16 +645,16 @@ public class ProviderImpl extends Provider
     {
         String result = "";
         
-        if(getEndpointUrls() != null)
-        {
-            result += "<div class=\"endpointurl\">Endpoint URL's: "+StringUtils.xmlEncodeString(getEndpointUrls().toString()) + "</div>\n";
-        }
-        else
-        {
-            result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
-        }
-        
-        result += "<div class=\"endpointmethod\">Retrieval Method: "+StringUtils.xmlEncodeString(getEndpointMethod().stringValue()) + "</div>\n";
+//        if(getEndpointUrls() != null)
+//        {
+//            result += "<div class=\"endpointurl\">Endpoint URL's: "+StringUtils.xmlEncodeString(getEndpointUrls().toString()) + "</div>\n";
+//        }
+//        else
+//        {
+//            result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
+//        }
+//        
+//        result += "<div class=\"endpointmethod\">Retrieval Method: "+StringUtils.xmlEncodeString(getEndpointMethod().stringValue()) + "</div>\n";
         
         if(getNamespaces() != null)
         {
@@ -877,25 +760,9 @@ public class ProviderImpl extends Provider
             return this.getIncludedInQueryTypes().contains(queryKey);
         }
 
-        log.warn("Provider.handlesQueryExplicitly: provider did not have any included custom queries! this.getKey()="+this.getKey());
+        log.warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="+this.getKey());
         
         return false;
-    }
-    
-    public static URI getProviderHttpPostSparqlUri()
-    {
-        return getProviderHttpPostSparql();
-    }
-    
-    public static URI getProviderHttpPostUrlUri()
-    {
-        return getProviderHttpPostUrl();
-    }
-    
-    
-    public static URI getProviderHttpGetUrlUri()
-    {
-        return getProviderHttpGetUrl();
     }
     
     public boolean getIsDefaultSource()
@@ -906,26 +773,6 @@ public class ProviderImpl extends Provider
     public void setIsDefaultSource(boolean isDefaultSourceVar)
     {
         this.setIsDefaultSourceVar(isDefaultSourceVar);
-    }
-
-    public boolean getUseSparqlGraph()
-    {
-        return useSparqlGraph;
-    }
-
-    public void setUseSparqlGraph(boolean useSparqlGraph)
-    {
-        this.useSparqlGraph = useSparqlGraph;
-    }
-
-    public String getSparqlGraphUri()
-    {
-        return sparqlGraphUri;
-    }
-
-    public void setSparqlGraphUri(String sparqlGraphUri)
-    {
-        this.sparqlGraphUri = sparqlGraphUri;
     }
     
     public Collection<URI> getNormalisationUris()
@@ -948,26 +795,6 @@ public class ProviderImpl extends Provider
         this.includedInQueryTypes = includedInCustomQueries;
     }
 
-    public Collection<String> getEndpointUrls()
-    {
-        return endpointUrls;
-    }
-    
-    public void setEndpointUrls(Collection<String> endpointUrls)
-    {
-        this.endpointUrls = endpointUrls;
-    }
-
-    public URI getEndpointMethod()
-    {
-        return endpointMethod;
-    }
-
-    public void setEndpointMethod(URI endpointMethod)
-    {
-        this.endpointMethod = endpointMethod;
-    }
-    
     public URI getRedirectOrProxy()
     {
         return redirectOrProxy;
@@ -1028,21 +855,6 @@ public class ProviderImpl extends Provider
     {
         return unrecognisedStatements;
     }
-
-	/**
-	 * @param providerNoCommunication the providerNoCommunication to set
-	 */
-	public static void setProviderNoCommunication(
-			URI providerNoCommunication) {
-		ProviderImpl.providerNoCommunication = providerNoCommunication;
-	}
-
-	/**
-	 * @return the providerNoCommunication
-	 */
-	public static URI getProviderNoCommunication() {
-		return providerNoCommunication;
-	}
 
 	/**
 	 * @param rdfNormalisationsNeeded the rdfNormalisationsNeeded to set
@@ -1160,20 +972,6 @@ public class ProviderImpl extends Provider
 	}
 
 	/**
-	 * @param providerEndpointUrl the providerEndpointUrl to set
-	 */
-	public static void setProviderEndpointUrl(URI providerEndpointUrl) {
-		ProviderImpl.providerEndpointUrl = providerEndpointUrl;
-	}
-
-	/**
-	 * @return the providerEndpointUrl
-	 */
-	public static URI getProviderEndpointUrl() {
-		return providerEndpointUrl;
-	}
-
-	/**
 	 * @param providerRequiresSparqlGraphURI the providerRequiresSparqlGraphURI to set
 	 */
 	public static void setProviderRequiresSparqlGraphURI(
@@ -1261,63 +1059,7 @@ public class ProviderImpl extends Provider
 		return providerProxy;
 	}
 
-	/**
-	 * @param providerHttpPostSparql the providerHttpPostSparql to set
-	 */
-	public static void setProviderHttpPostSparql(URI providerHttpPostSparql) {
-		ProviderImpl.providerHttpPostSparql = providerHttpPostSparql;
-	}
-
-	/**
-	 * @return the providerHttpPostSparql
-	 */
-	public static URI getProviderHttpPostSparql() {
-		return providerHttpPostSparql;
-	}
-
-	/**
-	 * @param providerHttpGetUrl the providerHttpGetUrl to set
-	 */
-	public static void setProviderHttpGetUrl(URI providerHttpGetUrl) {
-		ProviderImpl.providerHttpGetUrl = providerHttpGetUrl;
-	}
-
-	/**
-	 * @return the providerHttpGetUrl
-	 */
-	public static URI getProviderHttpGetUrl() {
-		return providerHttpGetUrl;
-	}
-
-	/**
-	 * @param providerHttpPostUrl the providerHttpPostUrl to set
-	 */
-	public static void setProviderHttpPostUrl(URI providerHttpPostUrl) {
-		ProviderImpl.providerHttpPostUrl = providerHttpPostUrl;
-	}
-
-	/**
-	 * @return the providerHttpPostUrl
-	 */
-	public static URI getProviderHttpPostUrl() {
-		return providerHttpPostUrl;
-	}
-
-	/**
-	 * @param providerAcceptHeader the providerAcceptHeader to set
-	 */
-	public static void setProviderAcceptHeader(URI providerAcceptHeader) {
-		ProviderImpl.providerAcceptHeader = providerAcceptHeader;
-	}
-
-	/**
-	 * @return the providerAcceptHeader
-	 */
-	public static URI getProviderAcceptHeader() {
-		return providerAcceptHeader;
-	}
-
-    public void addNormalisationUri(URI rdfNormalisationNeeded)
+	public void addNormalisationUri(URI rdfNormalisationNeeded)
     {
         if(this.rdfNormalisationsNeeded == null)
         {
@@ -1351,6 +1093,21 @@ public class ProviderImpl extends Provider
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {
         return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
-    }    
+    }
+
+	/**
+	 * @return the providerNoCommunication
+	 */
+	public static URI getProviderNoCommunication() {
+		return providerNoCommunication;
+	}
+
+	/**
+	 * @param providerNoCommunication the providerNoCommunication to set
+	 */
+	public static void setProviderNoCommunication(
+			URI providerNoCommunication) {
+		ProviderImpl.providerNoCommunication = providerNoCommunication;
+	}    
 
 }
