@@ -60,7 +60,7 @@ public class RdfFetcher
         // particular HTTP server or intermediate proxy
         String postQuery = "format="+StringUtils.percentEncode(format)+"&";
         
-        if(localSettings.getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter", true))
+        if(localSettings.getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter", false))
             postQuery += "maxrows="+maxRowsParameter+"&";
         
         postQuery += "formatting=Raw&";

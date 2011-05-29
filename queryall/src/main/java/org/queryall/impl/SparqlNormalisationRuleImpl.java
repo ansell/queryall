@@ -58,6 +58,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     private static URI sparqlruleMode;
     private static URI sparqlruleModeOnlyIncludeMatches;
     private static URI sparqlruleModeOnlyDeleteMatches;
+	private static URI sparqlruleModeAddAllMatchingTriples;
     
     // public static String rdfruleNamespace;
     
@@ -72,9 +73,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         SparqlNormalisationRuleImpl.setSparqlRuleMode(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "mode"));
         SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyDeleteMatches(f
-                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyDeleteMatches"));
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyDeleteMatchingTriples"));
         SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyIncludeMatches(f
-                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyIncludeMatches"));
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyIncludeMatchingTriples"));
+        SparqlNormalisationRuleImpl.setSparqlRuleModeAddAllMatchingTriples(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "addAllMatchingTriples"));
     }
     
     public SparqlNormalisationRuleImpl()
@@ -137,6 +140,13 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                     SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()))
             {
                 this.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches());
+            }
+            else if(nextStatement.getPredicate().equals(
+                    SparqlNormalisationRuleImpl.getSparqlRuleMode()) 
+                && nextStatement.getObject().equals(
+                    SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples()))
+            {
+                this.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples());
             }
             else
             {
@@ -268,7 +278,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         }
         else if(getMode().equals(getSparqlRuleModeOnlyIncludeMatches()))
         {
-            return chooseStatementsFromRepository((Repository) input);
+            return chooseStatementsFromRepository((Repository) input, false);
+        }
+        else if(getMode().equals(getSparqlRuleModeAddAllMatchingTriples()))
+        {
+            return chooseStatementsFromRepository((Repository) input, true);
         }
         
         return input;
@@ -322,14 +336,17 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         return myRepository;
     }
 
-    private Repository chooseStatementsFromRepository(Repository myRepository)
+    private Repository chooseStatementsFromRepository(Repository myRepository, boolean addToMyRepository)
     {
-        Repository myResultRepository = null;
+        Repository resultRepository = null;
         
         try
         {
-            myResultRepository = new SailRepository(new MemoryStore());
-            myResultRepository.initialize();
+        	if(!addToMyRepository)
+        	{
+	            resultRepository = new SailRepository(new MemoryStore());
+	            resultRepository.initialize();
+        	}
             
             if(_DEBUG)
             {
@@ -337,7 +354,16 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             }        
             
             RepositoryConnection selectConnection = myRepository.getConnection();
-            RepositoryConnection addConnection = myResultRepository.getConnection();
+            RepositoryConnection addConnection = null;
+            
+            if(addToMyRepository)
+            {
+            	addConnection = myRepository.getConnection();
+            }
+            else
+            {
+            	addConnection = resultRepository.getConnection();
+            }
             
             try 
             {
@@ -374,7 +400,10 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             log.error("SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
         }
         
-        return myResultRepository;
+        if(addToMyRepository)
+        	return myRepository;
+        else
+        	return resultRepository;
     }
 
     public boolean runTests(Collection<RuleTest> myRules)
@@ -609,5 +638,22 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	 */
 	public static URI getSparqlRuleModeOnlyIncludeMatches() {
 		return sparqlruleModeOnlyIncludeMatches;
+	}
+
+	/**
+	 * @param sparqlruleModeAddAllMatchingTriples the sparqlruleModeAddAllMatchingTriples to set
+	 */
+	public static void setSparqlRuleModeAddAllMatchingTriples(
+			URI sparqlruleModeAddAllMatchingTriples)
+	{
+		SparqlNormalisationRuleImpl.sparqlruleModeAddAllMatchingTriples = sparqlruleModeAddAllMatchingTriples;
+	}
+
+	/**
+	 * @return the sparqlruleModeAddAllMatchingTriples
+	 */
+	public static URI getSparqlRuleModeAddAllMatchingTriples()
+	{
+		return sparqlruleModeAddAllMatchingTriples;
 	}
 }
