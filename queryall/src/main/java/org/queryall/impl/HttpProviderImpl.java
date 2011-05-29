@@ -63,7 +63,6 @@ public class HttpProviderImpl extends ProviderImpl implements
         HttpProviderImpl.setProviderHttpPostSparql(f.createURI(providerNamespace,"httppostsparql"));
         HttpProviderImpl.setProviderHttpGetUrl(f.createURI(providerNamespace,"httpgeturl"));
         HttpProviderImpl.setProviderHttpPostUrl(f.createURI(providerNamespace,"httpposturl"));
-        ProviderImpl.setProviderNoCommunication(f.createURI(providerNamespace,"nocommunication"));
     }
     
     public HttpProviderImpl()

@@ -1,7 +1,6 @@
 package org.queryall.queryutils;
 
 import org.queryall.api.HttpProvider;
-import org.queryall.api.NoCommunicationProvider;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
@@ -14,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import org.openrdf.model.URI;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
@@ -293,42 +293,44 @@ public class RdfFetchController
 
         for( Provider nextProvider : chosenProviders )
         {
-        	if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
-            {
-                String nextStaticRdfXmlString = "";
-                
-                for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
-                {
-                    // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
-                    
-                    for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
-                    {
-                        Map<String, String> attributeList = QueryCreator.getAttributeListFor( nextCustomIncludeType, nextProvider, queryString, "", realHostName , pageOffset, localSettings);
-                        
-                        // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
-                        // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
-                    }
-                }
-                
-                QueryBundle nextProviderQueryBundle = new QueryBundle();
-                
-                nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
-                nextProviderQueryBundle.setProvider(nextProvider);
-                nextProviderQueryBundle.setQueryType(nextQueryType);
-                nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
-                
-                results.add( nextProviderQueryBundle );
-            }
-            // check if there is an endpoint, as we allow for providers which are really placeholders for static RDF/XML additions, and they are configured without endpoint URL's and with NO_COMMUNICATION
-            //else if( nextProvider.hasEndpointUrl() )
-        	else if(nextProvider instanceof HttpProvider)
-            {
+//        	if( nextProvider.getEndpointMethod().equals( ProviderImpl.getProviderNoCommunication() ) )
+//            {
+//                String nextStaticRdfXmlString = "";
+//                
+//                for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
+//                {
+//                    // pick out all of the QueryType's which have been delegated for this particular query as static includes
+//                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
+//                    
+//                    for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
+//                    {
+//                        Map<String, String> attributeList = QueryCreator.getAttributeListFor( nextCustomIncludeType, nextProvider, queryString, "", realHostName , pageOffset, localSettings);
+//                        
+//                        // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
+//                        // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
+//                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+//                    }
+//                }
+//                
+//                QueryBundle nextProviderQueryBundle = new QueryBundle();
+//                
+//                nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+//                nextProviderQueryBundle.setProvider(nextProvider);
+//                nextProviderQueryBundle.setQueryType(nextQueryType);
+//                nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
+//                
+//                results.add( nextProviderQueryBundle );
+//            }
+//            // check if there is an endpoint, as we allow for providers which are really placeholders for static RDF/XML additions, and they are configured without endpoint URL's and with NO_COMMUNICATION
+//            //else if( nextProvider.hasEndpointUrl() )
+//        	else if(nextProvider instanceof HttpProvider)
+//            {
         		HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = null;
                 
                 Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextHttpProvider.getEndpointUrls());
+                
+                Map<String, Map<String, String>> replacedEndpoints = new HashMap<String, Map<String, String>>();
                 
                 for( String nextEndpoint : nextEndpointUrls )
                 {
@@ -345,58 +347,97 @@ public class RdfFetchController
                     // This step is needed in order to replace endpointSpecific related template elements on the provider URL
                     replacedEndpoint = QueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
                     
-                    // Then test whether the endpoint is blacklisted
-                    if(!localBlacklistController.isUrlBlacklisted(replacedEndpoint))
+                    String nextEndpointQuery = QueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                    
+                    // replace the query on the endpoint URL if necessary
+                    replacedEndpoint = replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY, StringUtils.percentEncode(nextEndpointQuery));
+                
+                	Map<String, String> newList = new HashMap<String,String>();
+                	newList.put(replacedEndpoint, nextEndpointQuery);
+
+                	if(replacedEndpoints.containsKey(nextEndpoint))
                     {
-                        String nextEndpointQuery = QueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
-                        
-                        // replace the query on the endpoint URL if necessary
-                        replacedEndpoint = replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY, StringUtils.percentEncode(nextEndpointQuery));
-                        
-                        String nextStaticRdfXmlString = "";
-                        
-                        for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
-                        {
-                            // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                            Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
-                            
-                            if( allCustomRdfXmlIncludeTypes.size()  == 0 )
-                            {
-                                log.warn( "RdfFetchController: no included queries found for nextCustomInclude="+nextCustomInclude );
-                            }
-                            
-                            for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
-                            {
-                                // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
-                                // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                                nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
-                            }
-                        }
-                        
-                        QueryBundle nextProviderQueryBundle = new QueryBundle();
-                        
-                        nextProviderQueryBundle.setQuery(nextEndpointQuery);
-                        nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
-                        nextProviderQueryBundle.setQueryEndpoint(replacedEndpoint);
-                        nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
-                        nextProviderQueryBundle.setOriginalProvider(nextProvider);
-                        nextProviderQueryBundle.setQueryType(nextQueryType);
-                        nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
-                        
-                        results.add( nextProviderQueryBundle );
-                        
-                        // go to next provider if we are not told to use all of the providers possible
-                        if( !useAllEndpointsForEachProvider)
-                        {
-                            break;
-                        }
-                    } // end if(!BlacklistController.isUrlBlacklisted(nextEndpoint))
-                } // end for(String nextEndpoint : nextProvider.endpointUrls)
-            } // end if(nextProvider.hasEndpointUrl())
-            else
-            {
-                log.warn("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: no endpoint URL's found for non-nocommunication provider.getKey()="+nextProvider.getKey());
-            }
+                    	replacedEndpoints.get(nextEndpoint).put(replacedEndpoint, nextEndpointQuery);
+                    }
+                    else
+                    {
+                    	replacedEndpoints.put(nextEndpoint, newList);
+                    }
+                }
+                
+                String nextStaticRdfXmlString = "";
+                
+                for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
+                {
+                    // pick out all of the QueryType's which have been delegated for this particular query as static includes
+                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
+                    
+                    if( allCustomRdfXmlIncludeTypes.size()  == 0 )
+                    {
+                        log.warn( "RdfFetchController: no included queries found for nextCustomInclude="+nextCustomInclude );
+                    }
+                    
+                    for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
+                    {
+                        // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
+                        // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
+                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                    }
+                }
+                
+                if(replacedEndpoints.size()>0)
+                {
+                	for(String nextEndpoint : replacedEndpoints.keySet())
+                	{
+                		Map<String, String> endpointEntries = replacedEndpoints.get(nextEndpoint);
+                		
+                		for(String replacedEndpoint : endpointEntries.keySet())
+                		{
+			                QueryBundle nextProviderQueryBundle = new QueryBundle();
+			                
+			                nextProviderQueryBundle.setQuery(endpointEntries.get(replacedEndpoint));
+			                nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+			                nextProviderQueryBundle.setQueryEndpoint(replacedEndpoint);
+			                nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
+			                nextProviderQueryBundle.setOriginalProvider(nextProvider);
+			                nextProviderQueryBundle.setQueryType(nextQueryType);
+			                nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
+			                
+			                // Then test whether the endpoint is blacklisted
+			                if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication()) || !localBlacklistController.isUrlBlacklisted(replacedEndpoint))
+			                {
+			                	results.add(nextProviderQueryBundle);
+			                }
+			                else
+			                {
+			                	log.warn("Not including provider because it is not no-communication and is a blacklisted url nextProvider.getKey()="+nextProvider.getKey());
+			                }
+                		}
+		                // go to next provider if we are not told to use all of the endpoints for the provider
+		                if( endpointEntries.size() > 0 && !useAllEndpointsForEachProvider)
+		                {
+		                    break;
+		                }
+                	}
+                }
+                else
+                {
+					QueryBundle nextProviderQueryBundle = new QueryBundle();
+					  
+					nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+					nextProviderQueryBundle.setProvider(nextProvider);
+					nextProviderQueryBundle.setQueryType(nextQueryType);
+					nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
+					  
+					results.add( nextProviderQueryBundle );
+
+                }
+                // end for(String nextEndpoint : nextProvider.endpointUrls)
+//            } // end if(nextProvider.hasEndpointUrl())
+//            else
+//            {
+//                log.warn("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: no endpoint URL's found for non-nocommunication provider.getKey()="+nextProvider.getKey());
+//            }
         } // end for(Provider nextProvider : QueryTypeProviders)
         
         if(_DEBUG)
@@ -631,7 +672,7 @@ public class RdfFetchController
         // do some very minor waiting to let the other threads start to do some work
         try
         {
-            Thread.sleep( 10 );
+            Thread.sleep( 2 );
         }
         catch ( InterruptedException ie )
         {

@@ -151,6 +151,19 @@ public class QueryCreator
                             + normalisationUrisNeeded);
         }
         
+        if(!localSettings.getTagPattern().matcher(templateString).matches())
+        {
+        	if(_DEBUG)
+            {
+            	log.debug("tag pattern " + localSettings.getTagPattern().toString() + " does not match template string=" + templateString);
+            	log.debug("returning templateString unchanged");
+            }
+        	
+        	return templateString;
+        }
+        
+        
+        
         final long start = System.currentTimeMillis();
         
         String replacedString = templateString;
