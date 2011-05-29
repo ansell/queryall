@@ -601,12 +601,12 @@ public class ProviderImpl extends Provider
     
     public boolean needsRedirect()
     {
-        return getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect().stringValue());
+        return getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect());
     }
     
     public boolean needsProxy()
     {
-        return getRedirectOrProxy().equals(ProviderImpl.getProviderProxy().stringValue());
+        return getRedirectOrProxy().equals(ProviderImpl.getProviderProxy());
     }
     
     public String toString()
