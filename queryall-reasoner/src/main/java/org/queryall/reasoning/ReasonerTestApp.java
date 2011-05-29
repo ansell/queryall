@@ -1,17 +1,20 @@
-package org.queryall;
+package org.queryall.reasoning;
 
 import java.util.Iterator;
 
 import org.mindswap.pellet.jena.PelletReasonerFactory;
 
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
 
 /**
  * Hello world!
@@ -23,17 +26,14 @@ public class ReasonerTestApp
     {
         Reasoner reasoner = PelletReasonerFactory.theInstance().create();
         
-        // create an empty model
-        Model emptyModel = ModelFactory.createDefaultModel();
+        // create the base model
+        OntModel baseModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
+        //baseModel.read("http://localhost:8080/queryall/");
+        baseModel.read("http://localhost:8080/admin/configuration/3/n3","N3");
         
         // create an inferencing model using Pellet reasoner
-        InfModel model = ModelFactory.createInfModel(reasoner, emptyModel);
-        
-        // read the file
-        //model.read( ont );
-        
-        model.read("http://localhost:8080/queryall/");
-        model.read("http://localhost:8080/admin/configuration/3/n3","N3");
+        final InfModel model = ModelFactory.createInfModel(reasoner, baseModel);
+
 
         System.out.println("model.size()="+model.size());
         
@@ -43,8 +43,12 @@ public class ReasonerTestApp
         printIterator(report.getReports(), "Validation Results");
         
         printIterator(model.listResourcesWithProperty(RDF.type, OWL.Class),"RDF type resources");
-        BasicPattern pattern = new BasicPattern();
-
+    	printIterator(model.listStatements().filterDrop( new Filter<Statement>() {
+    		public boolean accept(Statement o) {
+    			return model.getRawModel().contains(o);
+    			}
+    			})
+			, "Inferred statements");
     }
     
     public static void printIterator(Iterator<?> i, String header) {
