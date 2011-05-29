@@ -58,12 +58,14 @@
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<version>2.3.2</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-repository-api</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<version>2.3.2</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<build>
