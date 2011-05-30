@@ -56,6 +56,7 @@ public class ProviderImpl extends Provider
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
 	// See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue() and Provider.providerNoCommunication.stringValue()
 	private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
+	private String assumedContentType = Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType",Constants.APPLICATION_RDF_XML);
 	static URI providerNoCommunication;
     
     // Use these to include information based on whether or not the provider was actually used to provide information for particular user queries
@@ -76,6 +77,7 @@ public class ProviderImpl extends Provider
     private static URI providerProxy;
     public static String providerNamespace;
 //    public static String profileNamespace;
+	private static URI providerAssumedContentType;
     
     static
     {
@@ -99,7 +101,8 @@ public class ProviderImpl extends Provider
         setProviderRedirect(f.createURI(providerNamespace,"redirect"));
         setProviderProxy(f.createURI(providerNamespace,"proxy"));
         setProviderNoCommunication(f.createURI(providerNamespace,"nocommunication"));
-
+        setProviderAssumedContentType(f.createURI(providerNamespace,"assumedContentType"));
+        
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
         setProviderTitle(f.createURI(providerNamespace,"Title"));
     }
@@ -303,6 +306,10 @@ public class ProviderImpl extends Provider
             {
                 this.setEndpointMethod((URI)nextStatement.getObject());
             }
+            else if(nextStatement.getPredicate().equals(getProviderAssumedContentType()))
+            {
+                this.setAssumedContentType(nextStatement.getObject().stringValue());
+            }
             else
             {
                 this.addUnrecognisedStatement(nextStatement);
@@ -347,6 +354,7 @@ public class ProviderImpl extends Provider
             Literal useSparqlGraphLiteral = f.createLiteral(getUseSparqlGraph());
             Literal sparqlGraphUriLiteral = f.createLiteral(getSparqlGraphUri());
             Literal isDefaultSourceLiteral = f.createLiteral(getIsDefaultSourceVar());
+            Literal assumedContentTypeLiteral = f.createLiteral(getAssumedContentType());
             
             URI curationStatusLiteral = null;
             
@@ -377,6 +385,8 @@ public class ProviderImpl extends Provider
             con.add(providerInstanceUri, getProviderIsDefaultSource(), isDefaultSourceLiteral, providerInstanceUri);
             
             con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral, providerInstanceUri);
+            
+            con.add(providerInstanceUri, getProviderAssumedContentType(), assumedContentTypeLiteral, providerInstanceUri);
             
             if(getNamespaces() != null)
             {
@@ -1108,6 +1118,36 @@ public class ProviderImpl extends Provider
 	public static void setProviderNoCommunication(
 			URI providerNoCommunication) {
 		ProviderImpl.providerNoCommunication = providerNoCommunication;
+	}
+
+	@Override
+	public String getAssumedContentType()
+	{
+		return assumedContentType;
+	}
+
+	@Override
+	public void setAssumedContentType(String assumedContentType)
+	{
+		this.assumedContentType = assumedContentType;
+		
+	}
+
+	/**
+	 * @param providerAssumedContentType the providerAssumedContentType to set
+	 */
+	public static void setProviderAssumedContentType(
+			URI providerAssumedContentType)
+	{
+		ProviderImpl.providerAssumedContentType = providerAssumedContentType;
+	}
+
+	/**
+	 * @return the providerAssumedContentType
+	 */
+	public static URI getProviderAssumedContentType()
+	{
+		return providerAssumedContentType;
 	}    
 
 }

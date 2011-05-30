@@ -312,10 +312,14 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 	@Override
 	public Object stageBeforeResultsImport(Object input)
 	{
+		log.info("stageBeforeResultsImport input="+(String)input);
 		if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()) && this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()))
 			return transformString((String)input);
 		else
+		{
+			log.info("stageBeforeResultsImport returning input unchanged this.getValidStages="+this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())+" this.getStages()="+this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()));
 			return input;
+		}
 	}
 	
 
@@ -351,11 +355,12 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 
 	private String transformString(String input)
 	{
+		log.info("input="+input);
 		StringWriter outputWriter = new StringWriter();
 		try
 		{	
 			TransformerFactory tFactory = TransformerFactory.newInstance();
-			System.out.println("this.getXsltStyleSheet()="+this.getXsltStylesheet());
+			//System.out.println("this.getXsltStyleSheet()="+this.getXsltStylesheet());
 			StringReader xsltReader = new StringReader(this.getXsltStylesheet());
 			StringReader inputReader = new StringReader(input);
 
@@ -374,6 +379,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 			return input;
 		}
 		
+		log.info("output="+outputWriter.toString());
 		return outputWriter.toString();
 	}
 	

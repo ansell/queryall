@@ -59,7 +59,10 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
 
 	public abstract void setEndpointMethod(URI endpointMethod);
 
-
+	public abstract String getAssumedContentType();
+	
+	public abstract void setAssumedContentType(String assumedContentType);
+	
 	@Override
     public String toString()
     {
