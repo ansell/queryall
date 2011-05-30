@@ -6,6 +6,7 @@ package org.queryall;
 import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProviderImpl;
 
@@ -20,7 +21,7 @@ public class ProviderImplTest extends AbstractProviderTest
     @Override
     public Provider getNewTestProvider()
     {
-        return new ProviderImpl();
+        return new HttpProviderImpl();
     }
 
     public Profile getNewTestProfile()

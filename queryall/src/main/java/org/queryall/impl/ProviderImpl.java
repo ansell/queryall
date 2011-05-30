@@ -56,7 +56,7 @@ public class ProviderImpl extends Provider
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
 	// See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue() and Provider.providerNoCommunication.stringValue()
 	private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
-	private String assumedContentType = Settings.getSettings().getStringPropertyFromConfig("assumedRequestContentType",Constants.APPLICATION_RDF_XML);
+	private String assumedContentType = "";
 	static URI providerNoCommunication;
     
     // Use these to include information based on whether or not the provider was actually used to provide information for particular user queries

@@ -1376,11 +1376,21 @@ public class RdfUtils
             
             if(nextReaderFormat == null)
             {
-                nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedRequestContentType", Constants.APPLICATION_RDF_XML));
-                
-                if(nextReaderFormat == null)
+            	String assumedContentType = nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
+
+            	if(assumedContentType != null && assumedContentType.trim().length() > 0)
+            	{
+            		nextReaderFormat = Rio.getParserFormatForMIMEType(assumedContentType);
+            	}
+            	
+            	if(nextReaderFormat == null)
+            	{            	
+	                nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedRequestContentType", Constants.APPLICATION_RDF_XML));
+            	}
+
+            	if(nextReaderFormat == null)
                 {
-                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because assumedRequestContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" nextResult.assumedContentType="+assumedContentType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
                     //throw new RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
                 else if(nextResult.getWasSuccessful())
