@@ -1590,11 +1590,11 @@ public class RdfUtils
         }
         catch (final RepositoryException e)
         {
-            RdfUtils.log.error(e.toString());
+            RdfUtils.log.error("repository exception", e);
         }
         catch (final RDFHandlerException e)
         {
-            RdfUtils.log.error(e.toString());
+            RdfUtils.log.error("rdfhandler exception", e);
         }
         finally
         {
@@ -1630,11 +1630,11 @@ public class RdfUtils
         }
         catch (final RepositoryException e)
         {
-            RdfUtils.log.error(e.toString());
+            RdfUtils.log.error("repository exception", e);
         }
         catch (final RDFHandlerException e)
         {
-            RdfUtils.log.error(e.toString());
+            RdfUtils.log.error("rdfhandler exception", e);
         }
         finally
         {
@@ -1681,11 +1681,11 @@ public class RdfUtils
         }
         catch (final RepositoryException e)
         {
-            RdfUtils.log.error(e.toString());
+            RdfUtils.log.error("repository exception", e);
         }
         catch (final RDFHandlerException e)
         {
-            RdfUtils.log.error(e.toString());
+            RdfUtils.log.error("rdfhandler exception", e);
         }
         finally
         {

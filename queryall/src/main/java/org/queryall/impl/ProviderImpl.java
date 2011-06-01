@@ -186,15 +186,14 @@ public class ProviderImpl extends Provider
             con.add(getProviderIsDefaultSource(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
             con.add(getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
 
-            con.add(getProviderRedirect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderRedirect(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderRedirect(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderRedirect(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderAssumedContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getProviderAssumedContentType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getProviderAssumedContentType(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
+            con.add(getProviderAssumedContentType(), RDFS.LABEL, f.createLiteral("If the provider does not send a recognised RDF format MIME type, the assumed content type will be used, as long as it is a recognised RDF format MIME type."), contextKeyUri);
 
-            con.add(getProviderProxy(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderProxy(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderProxy(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderProxy(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderRedirect(), RDFS.LABEL, f.createLiteral("The provider will redirect users to one of the endpoints given."), contextKeyUri);
+
+            con.add(getProviderProxy(), RDFS.LABEL, f.createLiteral("The provider will proxy requests for users and return results in combination with other providers."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
