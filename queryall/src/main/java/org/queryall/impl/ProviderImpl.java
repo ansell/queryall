@@ -127,7 +127,7 @@ public class ProviderImpl extends Provider
         this.sparqlGraphUri = sparqlGraphUri;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -135,65 +135,64 @@ public class ProviderImpl extends Provider
 
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             
             if(modelVersion == 1)
             {
-                con.add(getProviderTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
+                con.add(getProviderTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
+                con.add(getProviderTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextUri);
             }
 
-            con.add(getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderResolutionStrategy(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProviderResolutionStrategy(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderResolutionStrategy(), RDFS.LABEL, f.createLiteral("The provider may use a strategy of either proxying the communications with this provider, or it may redirect to it."), contextKeyUri);
+            con.add(getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProviderResolutionStrategy(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProviderResolutionStrategy(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderResolutionStrategy(), RDFS.LABEL, f.createLiteral("The provider may use a strategy of either proxying the communications with this provider, or it may redirect to it."), contextUri);
 
-            con.add(getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
-            con.add(getProviderHandledNamespace(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderHandledNamespace(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(), contextUri);
+            con.add(getProviderHandledNamespace(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderHandledNamespace(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderIncludedInQuery(), RDFS.RANGE, QueryTypeImpl.getQueryTypeUri(), contextKeyUri);
-            con.add(getProviderIncludedInQuery(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderIncludedInQuery(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProviderIncludedInQuery(), RDFS.RANGE, QueryTypeImpl.getQueryTypeUri(), contextUri);
+            con.add(getProviderIncludedInQuery(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderIncludedInQuery(), RDFS.LABEL, f.createLiteral("."), contextUri);
 
-            con.add(getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderNeedsRdfNormalisation(), RDFS.RANGE, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
-            con.add(getProviderNeedsRdfNormalisation(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDFS.RANGE, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("."), contextUri);
 
-            con.add(getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProviderResolutionMethod(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderResolutionMethod(), RDFS.LABEL, f.createLiteral("The provider may either use no-communication, or one of the supported resolution methods, for example, HTTP GET or HTTP POST."), contextKeyUri);
+            con.add(getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProviderResolutionMethod(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderResolutionMethod(), RDFS.LABEL, f.createLiteral("The provider may either use no-communication, or one of the supported resolution methods, for example, HTTP GET or HTTP POST."), contextUri);
             
-            con.add(getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderRequiresSparqlGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderRequiresSparqlGraphURI(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderRequiresSparqlGraphURI(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderRequiresSparqlGraphURI(), RDFS.LABEL, f.createLiteral("."), contextUri);
 
-            con.add(getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderGraphUri(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderGraphUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProviderGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProviderGraphUri(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderGraphUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
 
-            con.add(getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderIsDefaultSource(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProviderIsDefaultSource(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextUri);
 
-            con.add(getProviderAssumedContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProviderAssumedContentType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProviderAssumedContentType(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(getProviderAssumedContentType(), RDFS.LABEL, f.createLiteral("If the provider does not send a recognised RDF format MIME type, the assumed content type will be used, as long as it is a recognised RDF format MIME type."), contextKeyUri);
+            con.add(getProviderAssumedContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProviderAssumedContentType(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProviderAssumedContentType(), RDFS.DOMAIN, getProviderTypeUri(), contextUri);
+            con.add(getProviderAssumedContentType(), RDFS.LABEL, f.createLiteral("If the provider does not send a recognised RDF format MIME type, the assumed content type will be used, as long as it is a recognised RDF format MIME type."), contextUri);
 
-            con.add(getProviderRedirect(), RDFS.LABEL, f.createLiteral("The provider will redirect users to one of the endpoints given."), contextKeyUri);
+            con.add(getProviderRedirect(), RDFS.LABEL, f.createLiteral("The provider will redirect users to one of the endpoints given."), contextUri);
 
-            con.add(getProviderProxy(), RDFS.LABEL, f.createLiteral("The provider will proxy requests for users and return results in combination with other providers."), contextKeyUri);
+            con.add(getProviderProxy(), RDFS.LABEL, f.createLiteral("The provider will proxy requests for users and return results in combination with other providers."), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -88,7 +88,7 @@ public class QueryBundle
         return queryEndpoint;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -96,25 +96,23 @@ public class QueryBundle
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
-            
             con.setAutoCommit(false);
             
-            con.add(queryBundleTypeUri, RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(queryBundleTypeUri, RDF.TYPE, OWL.CLASS, contextUri);
             
-            con.add(queryLiteralUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(queryLiteralUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             
-            con.add(queryBundleEndpointUriTerm, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(queryBundleEndpointUriTerm, RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             
-            con.add(queryBundleKeyUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(queryBundleKeyUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             
-            con.add(queryBundleQueryTypeUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(queryBundleQueryTypeUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             
-            con.add(queryBundleProviderUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(queryBundleProviderUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             
-            con.add(queryBundleProfileUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(queryBundleProfileUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
 
-            con.add(queryBundleConfigurationApiVersion, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(queryBundleConfigurationApiVersion, RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

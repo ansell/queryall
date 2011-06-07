@@ -363,7 +363,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return false;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -371,17 +371,16 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(provenanceTypeUri, RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(provenanceTypeUri, RDF.TYPE, OWL.CLASS, contextUri);
             
             
-            con.add(provenanceRecordDateUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(provenanceRecordDateUri, RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             
-            con.add(provenanceElementKeyUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(provenanceElementTypeUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(provenanceHasAuthorOpenIDUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(provenanceElementKeyUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(provenanceElementTypeUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(provenanceHasAuthorOpenIDUri, RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -244,7 +244,7 @@ public class TemplateImpl extends Template
         return false;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -252,22 +252,21 @@ public class TemplateImpl extends Template
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
             URI dcFormatUri = f.createURI(Constants.DC_NAMESPACE,"format");
             
             con.setAutoCommit(false);
             
-            con.add(getTemplateTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(getTemplateContentTypeSparqlQuery(), dcFormatUri, f.createLiteral("application/sparql-query"), contextKeyUri);
-            con.add(getTemplateContentTypeSparqlResultsXml(), dcFormatUri, f.createLiteral("application/sparql-results+xml"), contextKeyUri);
-            con.add(getTemplateContentTypeSparqlResultsJson(), dcFormatUri, f.createLiteral("application/sparql-results+json"), contextKeyUri);
-            con.add(getTemplateContentTypeRdfXml(), dcFormatUri, f.createLiteral("application/rdf+xml"), contextKeyUri);
-            con.add(getTemplateContentTypeN3(), dcFormatUri, f.createLiteral("text/rdf+n3"), contextKeyUri);
-            con.add(getTemplateContentTypePlainText(), dcFormatUri, f.createLiteral("text/plain"), contextKeyUri);
+            con.add(getTemplateTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(getTemplateContentTypeSparqlQuery(), dcFormatUri, f.createLiteral("application/sparql-query"), contextUri);
+            con.add(getTemplateContentTypeSparqlResultsXml(), dcFormatUri, f.createLiteral("application/sparql-results+xml"), contextUri);
+            con.add(getTemplateContentTypeSparqlResultsJson(), dcFormatUri, f.createLiteral("application/sparql-results+json"), contextUri);
+            con.add(getTemplateContentTypeRdfXml(), dcFormatUri, f.createLiteral("application/rdf+xml"), contextUri);
+            con.add(getTemplateContentTypeN3(), dcFormatUri, f.createLiteral("text/rdf+n3"), contextUri);
+            con.add(getTemplateContentTypePlainText(), dcFormatUri, f.createLiteral("text/plain"), contextUri);
             
-            con.add(getTemplateContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getTemplateContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             
-            con.add(getTemplateReferencedTemplate(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(getTemplateReferencedTemplate(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

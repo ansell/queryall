@@ -125,9 +125,9 @@ public class HttpProviderImpl extends ProviderImpl implements
     	
     }
 
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
-    	ProviderImpl.schemaToRdf(myRepository, keyToUse, modelVersion);
+    	ProviderImpl.schemaToRdf(myRepository, contextUri, modelVersion);
     	
         RepositoryConnection con = myRepository.getConnection();
         
@@ -135,20 +135,20 @@ public class HttpProviderImpl extends ProviderImpl implements
 
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(HttpProviderImpl.getProviderHttpProviderUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(HttpProviderImpl.getProviderHttpProviderUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(HttpProviderImpl.getProviderHttpProviderUri(), RDFS.SUBCLASSOF, ProviderImpl.getProviderTypeUri(), contextUri);
             
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.LABEL, f.createLiteral("The HTTP Accept header to send to this provider."), contextKeyUri);
+            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.DOMAIN, HttpProviderImpl.getProviderHttpProviderUri(), contextUri);
+            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.LABEL, f.createLiteral("The HTTP Accept header to send to this provider."), contextUri);
 
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.DOMAIN, getProviderTypeUri(), contextKeyUri);
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.LABEL, f.createLiteral("The URL template for this provider. If it contains variables, these may be replaced when executing a query."), contextKeyUri);
+            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.DOMAIN, HttpProviderImpl.getProviderHttpProviderUri(), contextUri);
+            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.LABEL, f.createLiteral("The URL template for this provider. If it contains variables, these may be replaced when executing a query."), contextUri);
 
 	        // If everything went as planned, we can commit the result
 	        con.commit();
@@ -183,6 +183,8 @@ public class HttpProviderImpl extends ProviderImpl implements
         
         try
         {
+        	con.setAutoCommit(false);
+        	
             if(_TRACE)
             {
                 log.trace("Provider.toRdf: keyToUse="+keyToUse);
@@ -191,6 +193,7 @@ public class HttpProviderImpl extends ProviderImpl implements
             // create some resources and literals to make statements out of
             URI providerInstanceUri = keyToUse;
             
+            con.add(providerInstanceUri, RDF.TYPE, HttpProviderImpl.getProviderTypeUri(), providerInstanceUri);
 
 		    // backwards compatibility check, and use default if nothing was previously specified
 		    // NOTE: we assume empty accept header is non-intentional as it doesn't have a non-trivial purpose
@@ -233,6 +236,9 @@ public class HttpProviderImpl extends ProviderImpl implements
         }
         catch(Exception ex)
         {
+            // Something went wrong during the transaction, so we roll it back
+            con.rollback();
+
             log.error("Provider: Exception.. keyToUse="+keyToUse, ex);
         }
         finally

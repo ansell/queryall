@@ -131,7 +131,7 @@ public class ProjectImpl extends Project
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -139,7 +139,7 @@ public class ProjectImpl extends Project
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
+            URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
             con.add(getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);

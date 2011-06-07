@@ -368,7 +368,7 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         return false;
     }
 
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -376,51 +376,50 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
         
         try
         {
-            final URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
             con.add(NormalisationRuleImpl.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS,
-                    contextKeyUri);
+                    contextUri);
             
             con.add(NormalisationRuleImpl.getNormalisationRuleTypeUri(), RDFS.LABEL, 
                 f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
-                    contextKeyUri);
+                    contextUri);
 
             if(modelVersion == 1)
             {
-                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
                 con.add(NormalisationRuleImpl.getRdfruleDescription(),
-                    RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
+                    RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
                 con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.RANGE,
-                    RDFS.LITERAL, contextKeyUri);
+                    RDFS.LITERAL, contextUri);
                 con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.DOMAIN,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
                 con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.LABEL, 
                     f.createLiteral("The description of a normalisation rule."),
-                    contextKeyUri);
+                    contextUri);
 
             }
             
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDF.TYPE,
-                    OWL.DATATYPEPROPERTY, contextKeyUri);
+                    OWL.DATATYPEPROPERTY, contextUri);
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.RANGE,
-                    RDFS.LITERAL, contextKeyUri);
+                    RDFS.LITERAL, contextUri);
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.DOMAIN,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
             con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.LABEL, 
                 f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
-                    contextKeyUri);
+                    contextUri);
 
             
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDF.TYPE,
-                    OWL.OBJECTPROPERTY, contextKeyUri);
+                    OWL.OBJECTPROPERTY, contextUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
-                    NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.LABEL, 
                 f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
-                    contextKeyUri);
+                    contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

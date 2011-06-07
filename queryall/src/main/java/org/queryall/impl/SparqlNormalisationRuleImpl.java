@@ -176,9 +176,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
-        NormalisationRuleImpl.schemaToRdf(myRepository, keyToUse, modelVersion);
+        NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -186,27 +186,26 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         try
         {
-            final URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
 
 
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."), contextUri);
 
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextKeyUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.LABEL, f.createLiteral("The mode that this normalisation rule will be used in. In the absence of SPARQL Update language support, this enables deletions and filtering based on the matched triples."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.LABEL, f.createLiteral("The mode that this normalisation rule will be used in. In the absence of SPARQL Update language support, this enables deletions and filtering based on the matched triples."), contextUri);
 
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and only the matches from the rule will remain in the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and only the matches from the rule will remain in the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextUri);
 
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and the matches from the rule will be deleted from the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextKeyUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches(), RDFS.LABEL, f.createLiteral("Specifies that the SPARQL rule will be applied, and the matches from the rule will be deleted from the relevant RDF triple store after the application. If the stage is after Results Import, only the results from the current provider and query will be affected."), contextUri);
 
             // If everything went as planned, we can commit the result
             con.commit();

@@ -635,7 +635,7 @@ public class QueryTypeImpl extends QueryType
         return false;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -643,7 +643,7 @@ public class QueryTypeImpl extends QueryType
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
+            URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
             con.add(getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);

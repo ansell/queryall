@@ -65,9 +65,9 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
-        NormalisationRuleImpl.schemaToRdf(myRepository, keyToUse, modelVersion);
+        NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -75,18 +75,17 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         try
         {
-            final URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.LABEL, f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."), contextKeyUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.LABEL, f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."), contextUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
 
 
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.DOMAIN, XsltNormalisationRuleImpl.getXsltRuleTypeUri(), contextKeyUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.LABEL, f.createLiteral("An XSLT stylesheet that will be used to transform textual queries or result documents"), contextKeyUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.DOMAIN, XsltNormalisationRuleImpl.getXsltRuleTypeUri(), contextUri);
+            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.LABEL, f.createLiteral("An XSLT stylesheet that will be used to transform textual queries or result documents"), contextUri);
 
             // If everything went as planned, we can commit the result
             con.commit();

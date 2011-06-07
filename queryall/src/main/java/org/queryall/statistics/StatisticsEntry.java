@@ -347,7 +347,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 		return statisticsuserHostAddressUri;
 	}
 
-	public static boolean schemaToRdf(Repository myRepository, String keyToUse,
+	public static boolean schemaToRdf(Repository myRepository, URI contextUri,
 			int modelVersion) throws OpenRDFException
 	{
 		RepositoryConnection con = myRepository.getConnection();
@@ -356,65 +356,64 @@ public class StatisticsEntry implements BaseQueryAllInterface
 
 		try
 		{
-			URI contextKeyUri = f.createURI(keyToUse);
-			con.setAutoCommit(false);
+            con.setAutoCommit(false);
 
-			con.add(statisticsTypeUri, RDF.TYPE, OWL.CLASS, contextKeyUri);
+			con.add(statisticsTypeUri, RDF.TYPE, OWL.CLASS, contextUri);
 
 			con.add(statisticskeyUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 
 			con.add(statisticsprofileUrisUri, RDF.TYPE, OWL.OBJECTPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsquerytypeUrisUri, RDF.TYPE, OWL.OBJECTPROPERTY,
-					contextKeyUri);
+					contextUri);
 
 			con.add(statisticscurrentdatetimeUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticssuccessfulproviderUrisUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticserrorproviderUrisUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsconfigLocationsUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsnamespaceUrisUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsconfigVersionUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsreadtimeoutUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsconnecttimeoutUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsuserHostAddressUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsuserAgentUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsrealHostNameUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsqueryStringUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsresponseTimeUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticssumLatencyUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticssumQueriesUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsstdevlatencyUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticssumerrorsUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticssumerrorlatencyUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsstdeverrorlatencyUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticslastServerRestartUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsserverSoftwareVersionUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 			con.add(statisticsacceptHeaderUri, RDF.TYPE, OWL.DATATYPEPROPERTY,
-					contextKeyUri);
+					contextUri);
 			con.add(statisticsrequestedContentTypeUri, RDF.TYPE,
-					OWL.DATATYPEPROPERTY, contextKeyUri);
+					OWL.DATATYPEPROPERTY, contextUri);
 
 			// If everything went as planned, we can commit the result
 			con.commit();

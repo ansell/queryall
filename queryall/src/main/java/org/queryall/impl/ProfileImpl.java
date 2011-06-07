@@ -232,7 +232,7 @@ public class ProfileImpl extends Profile
 		// TODO Auto-generated constructor stub
 	}
 
-	public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+	public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -240,95 +240,94 @@ public class ProfileImpl extends Profile
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
             con.setAutoCommit(false);
             
-            con.add(getProfileTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(getProfileTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             
             if(modelVersion == 1)
             {
-                con.add(getProfileTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextKeyUri);
+                con.add(getProfileTitle(), RDFS.SUBPROPERTYOF, f.createURI(Constants.DC_NAMESPACE+"title"), contextUri);
             }
             
             // TODO: Add description
-            con.add(getProfileOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProfileOrderUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProfileOrderUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileOrderUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProfileOrderUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProfileOrderUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileOrderUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             // TODO: Add description
-            con.add(getProfileAdministratorUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileAdministratorUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileAdministratorUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileAdministratorUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileAdministratorUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileAdministratorUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileAdministratorUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileAdministratorUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             // TODO: Add description
-            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileDefaultIncludeExcludeOrderUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileAllowImplicitQueryInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            
-            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileAllowImplicitProviderInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             
-            con.add(getProfileIncludeProviderInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileIncludeProviderInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileIncludeProviderInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileIncludeProviderInProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileExcludeProviderFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileExcludeProviderFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileExcludeProviderFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileExcludeProviderFromProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
-            con.add(getProfileIncludeQueryInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileIncludeQueryInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileIncludeQueryInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileIncludeQueryInProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileIncludeProviderInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileIncludeProviderInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileIncludeProviderInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileIncludeProviderInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileExcludeQueryFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileExcludeQueryFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileExcludeQueryFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileExcludeQueryFromProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileExcludeProviderFromProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileIncludeRdfRuleInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileIncludeQueryInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileIncludeQueryInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileIncludeQueryInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileIncludeQueryInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileExcludeRdfRuleFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileExcludeQueryFromProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileExcludeThenIncludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileExcludeThenIncludeUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileExcludeThenIncludeUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileExcludeThenIncludeUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileIncludeRdfRuleInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileIncludeThenExcludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileIncludeThenExcludeUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileIncludeThenExcludeUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileIncludeThenExcludeUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileExcludeRdfRuleFromProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
-            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.DOMAIN, getProfileTypeUri(), contextKeyUri);
-            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileExcludeThenIncludeUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(getProfileIncludeThenExcludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileIncludeThenExcludeUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileIncludeThenExcludeUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileIncludeThenExcludeUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.DOMAIN, getProfileTypeUri(), contextUri);
+            con.add(getProfileIncludeExcludeOrderUndefinedUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

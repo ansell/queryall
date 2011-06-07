@@ -151,9 +151,9 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
-        NormalisationRuleImpl.schemaToRdf(myRepository, keyToUse, modelVersion);
+        NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -161,35 +161,31 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         
         try
         {
-            final URI contextKeyUri = f.createURI(keyToUse);
-            
             con.setAutoCommit(false);
             
-            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            
-            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDFS.LABEL, f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."), contextUri);
 
-            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDFS.LABEL, f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."), contextKeyUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.LABEL, f.createLiteral("The input regular expression that is used to identify whether the denormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."), contextUri);
 
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.LABEL, f.createLiteral("The input regular expression that is used to identify whether the denormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."), contextKeyUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.LABEL, f.createLiteral("The pattern that is used together with the input match regular expression to define what the denormalised data should be."), contextUri);
 
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.LABEL, f.createLiteral("The pattern that is used together with the input match regular expression to define what the denormalised data should be."), contextKeyUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.LABEL, f.createLiteral("The output regular expression that is used to identify whether the renormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."), contextUri);
 
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.LABEL, f.createLiteral("The output regular expression that is used to identify whether the renormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."), contextKeyUri);
-
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextKeyUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.LABEL, f.createLiteral("The pattern that is used together with the output match regular expression to define what the normalised data should be."), contextKeyUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.DOMAIN, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
+            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.LABEL, f.createLiteral("The pattern that is used together with the output match regular expression to define what the normalised data should be."), contextUri);
 
             // for(String nextValidStage : validStages)
             // {

@@ -128,7 +128,7 @@ public class RuleTestImpl extends RuleTest
         }
 	}
 
-	public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+	public static boolean schemaToRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -136,8 +136,8 @@ public class RuleTestImpl extends RuleTest
         
         try
         {
-            URI contextKeyUri = f.createURI( keyToUse );
-            con.setAutoCommit( false );
+            URI contextKeyUri = keyToUse;
+            con.setAutoCommit(false);
             
             con.add(getRuletestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             con.add(getRuletestTypeUri(), RDFS.LABEL, f.createLiteral("A test case for normalisation rules."), contextKeyUri);

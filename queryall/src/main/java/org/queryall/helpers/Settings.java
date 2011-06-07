@@ -36,6 +36,7 @@ import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
 import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.api.NamespaceEntry;
@@ -47,6 +48,9 @@ import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.api.Template;
 import org.queryall.impl.*;
+import org.queryall.queryutils.ProvenanceRecord;
+import org.queryall.queryutils.QueryBundle;
+import org.queryall.statistics.StatisticsEntry;
 
 /**
  * A class used to get access to settings
@@ -1475,7 +1479,7 @@ public class Settings extends QueryAllConfiguration
             			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
             			nextSubjectUri, 
             			Settings.CONFIG_API_VERSION));
-            }                
+            }
         }
         catch (final OpenRDFException e)
         {
@@ -1610,14 +1614,14 @@ public class Settings extends QueryAllConfiguration
     }
 
     public Collection<Provider> getProvidersForQueryTypeForNamespaceUris(
-            URI customService, Collection<Collection<URI>> namespaceUris,
+            URI queryType, Collection<Collection<URI>> namespaceUris,
             URI namespaceMatchMethod)
     {
         if(Settings._TRACE)
         {
             Settings.log
-                    .trace("Settings.getProvidersForQueryTypeForNamespaceUris: customService="
-                            + customService
+                    .trace("Settings.getProvidersForQueryTypeForNamespaceUris: queryType="
+                            + queryType
                             + " namespaceMatchMethod="
                             + namespaceMatchMethod
                             + " namespaceUris="
@@ -1629,19 +1633,19 @@ public class Settings extends QueryAllConfiguration
         if(Settings._TRACE)
         {
             Settings.log
-                    .trace("Settings.getProvidersForQueryTypeForNamespaceUris: customService="
-                            + customService
+                    .trace("Settings.getProvidersForQueryTypeForNamespaceUris: queryType="
+                            + queryType
                             + " namespaceProviders="
                             + namespaceProviders);
         }
         
-        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(customService, namespaceProviders);
+        final Collection<Provider> results = Settings.getProvidersForQueryTypeFromList(queryType, namespaceProviders);
         
         if(Settings._TRACE)
         {
             Settings.log
-                    .trace("Settings.getProvidersForQueryTypeForNamespaceUris: customService="
-                            + customService + " results=" + results);
+                    .trace("Settings.getProvidersForQueryTypeForNamespaceUris: queryType="
+                            + queryType + " results=" + results);
         }
         return results;
     }
@@ -1654,7 +1658,7 @@ public class Settings extends QueryAllConfiguration
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getQueryTypes: started parsing custom queries");
+                    .debug("Settings.getQueryTypes: started parsing query types");
         }
 
         final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
@@ -1687,7 +1691,7 @@ public class Settings extends QueryAllConfiguration
         if(Settings._DEBUG)
         {
             Settings.log
-                    .debug("Settings.getQueryTypes: finished parsing custom queries");
+                    .debug("Settings.getQueryTypes: finished parsing query types");
         }
         
         return results;
@@ -1708,11 +1712,11 @@ public class Settings extends QueryAllConfiguration
         
     public Collection<QueryType> getQueryTypesMatchingQueryString(String queryString, List<Profile> profileList)
     {
-        log.debug("this.getCustomQueriesMatchingQueryString: profileList.size()="+profileList.size());
+        log.debug("getQueryTypesMatchingQueryString: profileList.size()="+profileList.size());
         
         for(Profile nextProfile : profileList)
         {
-            log.trace("this.getCustomQueriesMatchingQueryString: nextProfile.getKey()="+nextProfile.getKey().stringValue());
+            log.trace("getQueryTypesMatchingQueryString: nextProfile.getKey()="+nextProfile.getKey().stringValue());
         }
         
         final Collection<QueryType> results = new HashSet<QueryType>();
@@ -1724,7 +1728,7 @@ public class Settings extends QueryAllConfiguration
                 if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("this.getCustomQueriesMatchingQueryString: tentative, pre-profile-check match for"
+                            .trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
                                     + " nextQuery.getKey()="
                                     + nextQuery.getKey().stringValue()
                                     + " queryString="
@@ -1735,7 +1739,7 @@ public class Settings extends QueryAllConfiguration
                     if(Settings._DEBUG)
                     {
                         Settings.log
-                                .debug("this.getCustomQueriesMatchingQueryString: profileList suitable for"
+                                .debug("getQueryTypesMatchingQueryString: profileList suitable for"
                                         + " nextQuery.getKey()="
                                         + nextQuery.getKey().stringValue()
                                         + " queryString="
@@ -1746,7 +1750,7 @@ public class Settings extends QueryAllConfiguration
                 else if(Settings._TRACE)
                 {
                     Settings.log
-                            .trace("this.getCustomQueriesMatchingQueryString: profileList not suitable for"
+                            .trace("getQueryTypesMatchingQueryString: profileList not suitable for"
                                     + " nextQuery.getKey()="
                                     + nextQuery.getKey().stringValue()
                                     + " queryString="
@@ -1786,7 +1790,7 @@ public class Settings extends QueryAllConfiguration
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.fatal("Settings.getProviders:", e);
+            Settings.log.fatal("Settings.getRuleTests:", e);
         }
 
 
@@ -2587,10 +2591,18 @@ public class Settings extends QueryAllConfiguration
         
         try
         {
-            tempConfigurationRepository = new SailRepository(new MemoryStore());
-            tempConfigurationRepository.initialize();
+        	// start off with the schemas in the repository
+            tempConfigurationRepository = Settings.getSchemas();
             
-            for(final String nextLocation : this.getStringCollectionPropertiesFromConfig("queryConfigLocations"))
+            Collection<String> queryConfigLocationsList = this.getStringCollectionPropertiesFromConfig("queryConfigLocations");
+            
+            if(queryConfigLocationsList == null)
+            {
+            	log.fatal("queryConfigLocationsList was null");
+            	throw new RuntimeException("Configuration locations were not discovered, failing fast.");
+            }
+            
+            for(final String nextLocation : queryConfigLocationsList)
             {
                 // TODO: negotiate between local and non-local addresses better
                 // than this
@@ -2682,8 +2694,7 @@ public class Settings extends QueryAllConfiguration
             // Try again with the backup configuration list...
             try
             {
-                tempConfigurationRepository = new SailRepository(new MemoryStore());
-                tempConfigurationRepository.initialize();
+                tempConfigurationRepository = Settings.getSchemas();
                 
                 for(final String nextLocation : this.getStringCollectionPropertiesFromConfig("backupQueryConfigLocations"))
                 {
@@ -3086,4 +3097,221 @@ public class Settings extends QueryAllConfiguration
         
         return this.currentWebAppConfigurationRepository;
     }
+
+	public static Repository getSchemas()
+	{
+		return getSchemas(null);
+	}
+	
+	public static Repository getSchemas(URI contextUri)
+	{
+		Repository myRepository = new SailRepository(new ForwardChainingRDFSInferencer(new MemoryStore()));
+		
+		try
+		{
+			myRepository.initialize();
+		}
+		catch(RepositoryException e)
+		{
+			log.fatal("Could not initialise repository for schemas");
+			throw new RuntimeException(e);
+		}
+
+		try
+		{
+			if(!ProviderImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: Provider schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating Provider schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!HttpProviderImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: HttpProviderImpl schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating HttpProviderImpl schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!ProjectImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: Project schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating Project schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!QueryTypeImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: QueryType schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating QueryType schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!RegexNormalisationRuleImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: RegexNormalisationRuleImpl schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating RegexNormalisationRuleImpl schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!SparqlNormalisationRuleImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: SparqlNormalisationRuleImpl schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!XsltNormalisationRuleImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: XsltNormalisationRuleImpl schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!RuleTestImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: RuleTest schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating RuleTest schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!NamespaceEntryImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: NamespaceEntry schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating NamespaceEntry schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!ProfileImpl.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: Profile schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating Profile schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!StatisticsEntry.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: Statistics schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating Statistics schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!ProvenanceRecord.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: Provenance schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating Provenance schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+
+		try
+		{
+			if(!QueryBundle.schemaToRdf(myRepository,
+					contextUri, Settings.CONFIG_API_VERSION))
+			{
+				log.error("QueryAllSchemaServlet: QueryBundle schema was not placed correctly in the rdf store");
+			}
+		}
+		catch(Exception ex)
+		{
+			log.error(
+					"QueryAllSchemaServlet: Problem generating QueryBundle schema RDF with type="
+							+ ex.getClass().getName(), ex);
+		}
+		
+		return myRepository;
+	}
 }

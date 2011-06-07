@@ -171,7 +171,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -179,7 +179,7 @@ public class NamespaceEntryImpl extends NamespaceEntry
         
         try
         {
-            URI contextKeyUri = f.createURI(keyToUse);
+            URI contextKeyUri = contextUri;
             con.setAutoCommit(false);
             
             con.add(getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
