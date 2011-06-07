@@ -315,36 +315,43 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         return inputText;
     }
     
+    @Override
     public Object stageQueryVariables(Object input)
     {
         return stages.contains(getRdfruleStageQueryVariables()) ? this.applyInputRuleToString((String)input) : input ;
     }
     
+    @Override
     public Object stageAfterQueryCreation(Object input)
     {
         return stages.contains(getRdfruleStageAfterQueryCreation()) ? this.applyInputRuleToString((String)input) : input ;
     }
 
+    @Override
     public Object stageAfterQueryParsing(Object input)
     {
         return input;
     }
 
+    @Override
     public Object stageBeforeResultsImport(Object input)
     {
         return stages.contains(getRdfruleStageBeforeResultsImport()) ? this.applyOutputRuleToString((String)input) : input ;
     }
 
+    @Override
     public Object stageAfterResultsImport(Object input)
     {
         return input;
     }
 
+    @Override
     public Object stageAfterResultsToPool(Object input)
     {
         return input;
     }
 
+    @Override
     public Object stageAfterResultsToDocument(Object input)
     {
         return stages.contains(getRdfruleStageAfterResultsToDocument()) ? this.applyOutputRuleToString((String)input) : input ;
