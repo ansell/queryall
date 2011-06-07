@@ -14,6 +14,7 @@ import org.openrdf.repository.RepositoryConnection;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.queryall.api.Template;
 import org.queryall.helpers.*;
@@ -118,14 +119,8 @@ public class TemplateImpl extends Template
     }
     
     
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // returns null if the URI is not in the repository or the information is not enough to create a minimal query configuration
-    public static Template fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    public TemplateImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
     {
-        Template result = new TemplateImpl();
-        
-        boolean resultIsValid = false;
-        
         for(Statement nextStatement : inputStatements)
         {
             if(_DEBUG)
@@ -140,32 +135,21 @@ public class TemplateImpl extends Template
                     log.trace("Template: found valid type predicate for URI: "+keyToUse);
                 }
                 
-                resultIsValid = true;
-                result.setKey(keyToUse);
+                this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
             {
-                result.setCurationStatus((URI)nextStatement.getObject());
+                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else
             {
-                result.addUnrecognisedStatement(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
         
         if(_DEBUG)
         {
-            log.debug("Template.fromRdf: would have returned... keyToUse="+keyToUse+" result="+result.toString());
-        }
-        
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("Template.fromRdf: result was not valid keyToUse="+keyToUse);
+            log.debug("Template.fromRdf: would have returned... keyToUse="+keyToUse+" result="+this.toString());
         }
     }
     

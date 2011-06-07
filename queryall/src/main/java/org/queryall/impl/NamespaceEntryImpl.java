@@ -15,6 +15,7 @@ import org.openrdf.repository.RepositoryConnection;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.queryall.api.NamespaceEntry;
 import org.queryall.helpers.Constants;
@@ -88,15 +89,13 @@ public class NamespaceEntryImpl extends NamespaceEntry
     private boolean convertQueriesToPreferredPrefix = true;
     private String title;
     
-    
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // returns null if the URI is not in the repository or the information is not enough to create a minimal provider configuration
-    public static NamespaceEntry fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    public NamespaceEntryImpl()
     {
-        NamespaceEntry result = new NamespaceEntryImpl();
-        
-        boolean resultIsValid = false;
-        
+    	
+    }
+
+    public NamespaceEntryImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+	{
         Collection<String> tempAlternativePrefixes = new HashSet<String>();
         
         for(Statement nextStatement : inputStatements)
@@ -113,26 +112,25 @@ public class NamespaceEntryImpl extends NamespaceEntry
                     log.trace("NamespaceEntry: found valid type predicate for URI: "+keyToUse);
                 }
                 
-                resultIsValid = true;
-                result.setKey(keyToUse);
+                this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
             {
-                result.setCurationStatus((URI)nextStatement.getObject());
+                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getNamespaceAuthority()))
             {
-                result.setAuthority(nextStatement.getObject().stringValue());
+                this.setAuthority(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getNamespacePreferredPrefix()) || nextStatement.getPredicate().equals(oldNamespaceTitle))
             {
-                if(result.getPreferredPrefix().trim().equals(""))
+                if(this.getPreferredPrefix().trim().equals(""))
                 {
-                    result.setPreferredPrefix(nextStatement.getObject().stringValue());
+                    this.setPreferredPrefix(nextStatement.getObject().stringValue());
                 }
                 else
                 {
-                    log.error("NamespaceEntry.fromRdf: found two preferred prefixes keyToUse="+keyToUse+" .... chosen="+result.getPreferredPrefix()+" other="+nextStatement.getObject().stringValue());
+                    log.error("NamespaceEntry.fromRdf: found two preferred prefixes keyToUse="+keyToUse+" .... chosen="+this.getPreferredPrefix()+" other="+nextStatement.getObject().stringValue());
                 }
             }
             else if(nextStatement.getPredicate().equals(getNamespaceAlternativePrefix()))
@@ -141,44 +139,35 @@ public class NamespaceEntryImpl extends NamespaceEntry
             }
             else if(nextStatement.getPredicate().equals(getNamespaceDescription()) || nextStatement.getPredicate().equals(RDFS.COMMENT))
             {
-                result.setDescription(nextStatement.getObject().stringValue());
+                this.setDescription(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getNamespaceIdentifierRegex()))
             {
-                result.setIdentifierRegex(nextStatement.getObject().stringValue());
+                this.setIdentifierRegex(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getNamespaceUriTemplate()))
             {
-                result.setUriTemplate(nextStatement.getObject().stringValue());
+                this.setUriTemplate(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getNamespaceSeparator()))
             {
-                result.setSeparator(nextStatement.getObject().stringValue());
+                this.setSeparator(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getNamespaceConvertQueriesToPreferredPrefix()))
             {
-                result.setConvertQueriesToPreferredPrefix(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setConvertQueriesToPreferredPrefix(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else
             {
-                result.addUnrecognisedStatement(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
         
-        result.setAlternativePrefixes(tempAlternativePrefixes);
+        this.setAlternativePrefixes(tempAlternativePrefixes);
         
         if(_TRACE)
         {
-            log.trace("NamespaceEntry.fromRdf: would have returned... result="+result.toString());
-        }
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("NamespaceEntry.fromRdf: result was not valid");
+            log.trace("NamespaceEntry.fromRdf: would have returned... result="+this.toString());
         }
     }
     

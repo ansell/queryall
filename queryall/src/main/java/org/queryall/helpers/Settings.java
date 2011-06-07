@@ -24,6 +24,7 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -886,7 +887,7 @@ public class Settings extends QueryAllConfiguration
     
     public String getDefaultHostAddress()
     {
-        return this.getStringPropertyFromConfig("uriPrefix", "")+this.getStringPropertyFromConfig("hostName", "")+this.getStringPropertyFromConfig("uriSuffix", "");
+        return this.getStringPropertyFromConfig("uriPrefix", "http://")+this.getStringPropertyFromConfig("hostName", "bio2rdf.org")+this.getStringPropertyFromConfig("uriSuffix", "/");
     }
     
     public Collection<Provider> getDefaultProviders(QueryType queryType)
@@ -1024,69 +1025,27 @@ public class Settings extends QueryAllConfiguration
                     .debug("Settings.getNamespaceEntries: started parsing namespace entry configurations");
         }
         final long start = System.currentTimeMillis();
-        // final Repository configRepository = Settings
-                // .getServerConfigurationRdf();
-        final URI namespaceEntryOntologyTypeUri = new NamespaceEntryImpl().getElementType();
+
+        final URI namespaceEntryTypeUri = NamespaceEntryImpl.getNamespaceTypeUri();
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
-            try
+
+            for(Statement nextNamespaceEntry : con.getStatements(null, RDF.TYPE, namespaceEntryTypeUri, true).asList())
             {
-                final String queryString = "SELECT ?namespaceEntryUri WHERE { ?namespaceEntryUri a <"
-                        + namespaceEntryOntologyTypeUri.stringValue() + "> . }";
-                final TupleQuery tupleQuery = con.prepareTupleQuery(
-                        QueryLanguage.SPARQL, queryString);
-                final TupleQueryResult queryResult = tupleQuery.evaluate();
-                try
-                {
-                    while(queryResult.hasNext())
-                    {
-                        final BindingSet bindingSet = queryResult.next();
-                        final Value valueOfNamespaceEntryUri = bindingSet
-                                .getValue("namespaceEntryUri");
-                        if(Settings._DEBUG)
-                        {
-                            Settings.log
-                                    .debug("Settings.getNamespaceEntries: found namespace: valueOfNamespaceEntryUri="
-                                            + valueOfNamespaceEntryUri);
-                        }
-                        final RepositoryResult<Statement> statements = con
-                                .getStatements((URI) valueOfNamespaceEntryUri,
-                                        (URI) null, (Value) null, true);
-                        final Collection<Statement> nextStatementList = Iterations
-                                .addAll(statements, new HashSet<Statement>());
-                        final NamespaceEntry nextNamespaceEntryConfiguration = NamespaceEntryImpl
-                                .fromRdf(nextStatementList,
-                                        (URI)valueOfNamespaceEntryUri, Settings.CONFIG_API_VERSION);
-                        if(nextNamespaceEntryConfiguration != null)
-                        {
-                            results.put((URI)valueOfNamespaceEntryUri,
-                                    nextNamespaceEntryConfiguration);
-                        }
-                        else
-                        {
-                            Settings.log
-                                    .error("Settings.getNamespaceEntries: was not able to create a namespace entry configuration with URI valueOfNamespaceEntryUri="
-                                            + valueOfNamespaceEntryUri
-                                                    .toString());
-                        }
-                    }
-                }
-                finally
-                {
-                    queryResult.close();
-                }
-            }
-            finally
-            {
-                con.close();
-            }
+            	URI nextSubjectUri = (URI)nextNamespaceEntry.getSubject();
+            	results.put(nextSubjectUri, new NamespaceEntryImpl(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
         }
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.error("Settings.getNamespaceEntries:", e);
+            Settings.log.fatal("Settings.getNamespaceEntries:", e);
         }
+
         
         if(Settings._INFO)
         {
@@ -1229,177 +1188,54 @@ public class Settings extends QueryAllConfiguration
 
         final long start = System.currentTimeMillis();
 
-        final Hashtable<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
+        final Map<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
         try
         {
             final Repository configRepository = this.getServerConfigurationRdf();
             
             // TODO: use reflection and dynamic loading of rules classes to make this process generic and static to future additions
-            
-            // Import Regular Expression Normalisation Rules first
-
-            final String regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri().stringValue();
-
             try
             {
                 final RepositoryConnection con = configRepository.getConnection();
 
-                try
+                // Import Regular Expression Normalisation Rules first
+                final URI regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri();
+                for(Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri, true).asList())
                 {
-                    final String queryString = "SELECT ?rdfRuleUri WHERE { ?rdfRuleUri a <"
-                            + regexRuleTypeUri + "> . }";
-                    final TupleQuery tupleQuery = con.prepareTupleQuery(
-                            QueryLanguage.SPARQL, queryString);
-                    final TupleQueryResult queryResult = tupleQuery.evaluate();
-                    try
-                    {
-                        while(queryResult.hasNext())
-                        {
-                            final BindingSet bindingSet = queryResult.next();
-                            final Value valueOfRdfRuleUri = bindingSet
-                                    .getValue("rdfRuleUri");
-                            if(Settings._DEBUG)
-                            {
-                                Settings.log
-                                        .debug("Settings.getNormalisationRules: found regex rule: valueOfRdfRuleUri="
-                                                + valueOfRdfRuleUri);
-                            }
-                            final RepositoryResult<Statement> statements = con
-                                    .getStatements((URI) valueOfRdfRuleUri,
-                                            (URI) null, (Value) null, true);
-                            final Collection<Statement> nextStatementList = Iterations
-                                    .addAll(statements, new HashSet<Statement>());
-                            final RegexNormalisationRuleImpl nextRdfRuleConfiguration = 
-                                        new RegexNormalisationRuleImpl(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
-                            results.put((URI)valueOfRdfRuleUri, nextRdfRuleConfiguration);
-                        }
-                    }
-                    finally
-                    {
-                        queryResult.close();
-                    }
-                }
-                finally
+                	URI nextSubjectUri = (URI)nextRegexRule.getSubject();
+                	results.put(nextSubjectUri, new RegexNormalisationRuleImpl(
+                			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+                			nextSubjectUri, 
+                			Settings.CONFIG_API_VERSION));
+                }                
+
+        		// Then do the same thing for SPARQL Normalisation Rules
+                final URI sparqlRuleTypeUri = SparqlNormalisationRuleImpl.getSparqlRuleTypeUri();
+                for(Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri, true).asList())
                 {
-                    con.close();
+                	URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
+                	results.put(nextSubjectUri, new SparqlNormalisationRuleImpl(
+                			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+                			nextSubjectUri, 
+                			Settings.CONFIG_API_VERSION));
+                }                
+
+                // Then do the same thing for XSLT Normalisation Rules
+                final URI xsltRuleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri();
+                for(Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri, true).asList())
+                {
+                	URI nextSubjectUri = (URI)nextXsltRule.getSubject();
+                	results.put(nextSubjectUri, new XsltNormalisationRuleImpl(
+                			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+                			nextSubjectUri, 
+                			Settings.CONFIG_API_VERSION));
                 }
             }
             catch (final OpenRDFException e)
             {
                 // handle exception
-                Settings.log.error("Settings.getNormalisationRules:", e);
+                Settings.log.fatal("Settings.getNormalisationRules:", e);
             }
-
-            // Then do the same thing for SPARQL Normalisation Rules
-            final String sparqlruleTypeUri = SparqlNormalisationRuleImpl.getSparqlRuleTypeUri().stringValue();
-
-            try
-            {
-                final RepositoryConnection con = configRepository.getConnection();
-
-                try
-                {
-                    final String queryString = "SELECT ?rdfRuleUri WHERE { ?rdfRuleUri a <"
-                            + sparqlruleTypeUri + "> . }";
-                    final TupleQuery tupleQuery = con.prepareTupleQuery(
-                            QueryLanguage.SPARQL, queryString);
-                    final TupleQueryResult queryResult = tupleQuery.evaluate();
-                    
-                    try
-                    {
-                        while(queryResult.hasNext())
-                        {
-                            final BindingSet bindingSet = queryResult.next();
-                            final Value valueOfRdfRuleUri = bindingSet
-                                    .getValue("rdfRuleUri");
-                            if(Settings._DEBUG)
-                            {
-                                Settings.log
-                                        .debug("Settings.getNormalisationRules: found sparql rule: valueOfRdfRuleUri="
-                                                + valueOfRdfRuleUri);
-                            }
-                            final RepositoryResult<Statement> statements = con
-                                    .getStatements((URI) valueOfRdfRuleUri,
-                                            (URI) null, (Value) null, true);
-                            final Collection<Statement> nextStatementList = Iterations
-                                    .addAll(statements, new HashSet<Statement>());
-                            final SparqlNormalisationRuleImpl nextRdfRuleConfiguration = 
-                                        new SparqlNormalisationRuleImpl(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
-                            results.put((URI)valueOfRdfRuleUri,
-                                    nextRdfRuleConfiguration);
-                        }
-                    }
-                    finally
-                    {
-                        queryResult.close();
-                    }
-                }
-                finally
-                {
-                    con.close();
-                }
-            }
-            catch (final OpenRDFException e)
-            {
-                // handle exception
-                Settings.log.error("Settings:", e);
-            }
-
-            // Then do the same thing for XSLT Normalisation Rules
-            final String xsltruleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri().stringValue();
-
-            try
-            {
-                final RepositoryConnection con = configRepository.getConnection();
-
-                try
-                {
-                    final String queryString = "SELECT ?rdfRuleUri WHERE { ?rdfRuleUri a <"
-                            + xsltruleTypeUri + "> . }";
-                    final TupleQuery tupleQuery = con.prepareTupleQuery(
-                            QueryLanguage.SPARQL, queryString);
-                    final TupleQueryResult queryResult = tupleQuery.evaluate();
-                    
-                    try
-                    {
-                        while(queryResult.hasNext())
-                        {
-                            final BindingSet bindingSet = queryResult.next();
-                            final Value valueOfRdfRuleUri = bindingSet
-                                    .getValue("rdfRuleUri");
-                            if(Settings._DEBUG)
-                            {
-                                Settings.log
-                                        .debug("Settings.getNormalisationRules: found xslt rule: valueOfRdfRuleUri="
-                                                + valueOfRdfRuleUri);
-                            }
-                            final RepositoryResult<Statement> statements = con
-                                    .getStatements((URI) valueOfRdfRuleUri,
-                                            (URI) null, (Value) null, true);
-                            final Collection<Statement> nextStatementList = Iterations
-                                    .addAll(statements, new HashSet<Statement>());
-                            final XsltNormalisationRuleImpl nextRdfRuleConfiguration = 
-                                        new XsltNormalisationRuleImpl(nextStatementList, (URI)valueOfRdfRuleUri, Settings.CONFIG_API_VERSION);
-                            results.put((URI)valueOfRdfRuleUri,
-                                    nextRdfRuleConfiguration);
-                        }
-                    }
-                    finally
-                    {
-                        queryResult.close();
-                    }
-                }
-                finally
-                {
-                    con.close();
-                }
-            }
-            catch (final OpenRDFException e)
-            {
-                // handle exception
-                Settings.log.error("Settings:", e);
-            }
-
         }
         catch(java.lang.InterruptedException ie)
         {
@@ -1577,65 +1413,25 @@ public class Settings extends QueryAllConfiguration
         }
         final long start = System.currentTimeMillis();
 
-        final URI profileOntologyTypeUri = new ProfileImpl().getElementType();
+        final URI profileTypeUri = ProfileImpl.getProfileTypeUri();
 
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
-            try
+
+            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, profileTypeUri, true).asList())
             {
-                final String queryString = "SELECT ?profileUri WHERE { ?profileUri a <"
-                        + profileOntologyTypeUri.stringValue() + "> . }";
-                final TupleQuery tupleQuery = con.prepareTupleQuery(
-                        QueryLanguage.SPARQL, queryString);
-                final TupleQueryResult queryResult = tupleQuery.evaluate();
-                try
-                {
-                    while(queryResult.hasNext())
-                    {
-                        final BindingSet bindingSet = queryResult.next();
-                        final Value valueOfProfileUri = bindingSet
-                                .getValue("profileUri");
-                        if(Settings._DEBUG)
-                        {
-                            Settings.log
-                                    .debug("Settings.getProfiles: found profile: valueOfProfileUri="
-                                            + valueOfProfileUri);
-                        }
-                        final RepositoryResult<Statement> statements = con
-                                .getStatements((URI) valueOfProfileUri,
-                                        (URI) null, (Value) null, true);
-                        final Collection<Statement> nextStatementList = Iterations
-                                .addAll(statements, new HashSet<Statement>());
-                        final Profile nextProfile = ProfileImpl
-                                .fromRdf(nextStatementList, (URI)valueOfProfileUri, Settings.CONFIG_API_VERSION);
-                        if(nextProfile != null)
-                        {
-                            results.put((URI)valueOfProfileUri,
-                                    nextProfile);
-                        }
-                        else
-                        {
-                            Settings.log
-                                    .error("Settings.getProfiles: was not able to create a profile with URI valueOfProfileUri="
-                                            + valueOfProfileUri.stringValue());
-                        }
-                    }
-                }
-                finally
-                {
-                    queryResult.close();
-                }
-            }
-            finally
-            {
-                con.close();
-            }
+            	URI nextSubjectUri = (URI)nextProvider.getSubject();
+            	results.put(nextSubjectUri, new ProfileImpl(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
         }
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.error("Settings.getProfiles:", e);
+            Settings.log.fatal("Settings.getProviders:", e);
         }
 
         if(Settings._INFO)
@@ -1665,62 +1461,28 @@ public class Settings extends QueryAllConfiguration
         }
         final long start = System.currentTimeMillis();
 
-//        final String providerOntologyTypeUri = this.getOntologyTermUriPrefix()
-//                + this.getNamespaceForProvider()
-//                + this.getOntologyTermUriSuffix() + "Provider";
-        
-        //final String providerOntologyTypeUri = HttpProviderImpl.getProviderHttpProviderUri().stringValue();
-        
-        final String providerOntologyTypeUri = ProviderImpl.getProviderTypeUri().stringValue();
+        // TODO: HACK: treat all providers as HttpProviderImpl for now
+        final URI providerTypeUri = ProviderImpl.getProviderTypeUri();
         
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
-            try
+
+            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList())
             {
-                final String queryString = "SELECT ?providerUri WHERE { ?providerUri a <"
-                        + providerOntologyTypeUri + "> . }";
-                final TupleQuery tupleQuery = con.prepareTupleQuery(
-                        QueryLanguage.SPARQL, queryString);
-                final TupleQueryResult queryResult = tupleQuery.evaluate();
-                try
-                {
-                    while(queryResult.hasNext())
-                    {
-                        final BindingSet bindingSet = queryResult.next();
-                        final Value valueOfProviderUri = bindingSet
-                                .getValue("providerUri");
-                        if(Settings._DEBUG)
-                        {
-                            Settings.log
-                                    .debug("Settings.getProviders: found provider: valueOfProviderUri="
-                                            + valueOfProviderUri);
-                        }
-                        final RepositoryResult<Statement> statements = con
-                                .getStatements((URI) valueOfProviderUri,
-                                        (URI) null, (Value) null, true);
-                        final Collection<Statement> nextStatementList = Iterations
-                                .addAll(statements, new HashSet<Statement>());
-                        final Provider nextProvider = new HttpProviderImpl(nextStatementList, (URI)valueOfProviderUri, Settings.CONFIG_API_VERSION);
-                        results.put((URI)valueOfProviderUri,
-                                nextProvider);
-                    }
-                }
-                finally
-                {
-                    queryResult.close();
-                }
-            }
-            finally
-            {
-                con.close();
-            }
+            	URI nextSubjectUri = (URI)nextProvider.getSubject();
+            	results.put(nextSubjectUri, new HttpProviderImpl(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
         }
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.error("Settings.getProviders:", e);
+            Settings.log.fatal("Settings.getProviders:", e);
         }
+
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
@@ -1887,80 +1649,35 @@ public class Settings extends QueryAllConfiguration
     @Override
 	public Map<URI, QueryType> getQueryTypes(Repository myRepository)
     {
-        final Hashtable<URI, QueryType> results = new Hashtable<URI, QueryType>();
+        final Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
         final long start = System.currentTimeMillis();
         if(Settings._DEBUG)
         {
             Settings.log
                     .debug("Settings.getQueryTypes: started parsing custom queries");
         }
-        // TODO: make the Query suffix configurable
-        final String queryOntologyTypeUri = this.getOntologyTermUriPrefix()
-                + this.getNamespaceForQueryType()
-                + this.getOntologyTermUriSuffix() + "Query";
+
+        final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
+
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
-            try
+
+            for(Statement nextQueryType : con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList())
             {
-                final String queryString = "SELECT ?queryUri WHERE { ?queryUri a <"
-                        + queryOntologyTypeUri + "> . }";
-                if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("Settings.getQueryTypes: found queryString="
-                                    + queryString);
-                }
-                
-                final TupleQuery tupleQuery = con.prepareTupleQuery(
-                        QueryLanguage.SPARQL, queryString);
-                final TupleQueryResult queryResult = tupleQuery.evaluate();
-                try
-                {
-                    while(queryResult.hasNext())
-                    {
-                        final BindingSet bindingSet = queryResult.next();
-                        final Value valueOfQueryUri = bindingSet
-                                .getValue("queryUri");
-                        if(Settings._DEBUG)
-                        {
-                            Settings.log
-                                    .debug("Settings.getQueryTypes: found query: valueOfQueryUri="
-                                            + valueOfQueryUri);
-                        }
-                        final RepositoryResult<Statement> statements = con
-                                .getStatements((URI) valueOfQueryUri,
-                                        (URI) null, (Value) null, true);
-                        final Collection<Statement> nextStatementList = Iterations.addAll(statements, new HashSet<Statement>());
-                        final QueryType nextQueryConfiguration = QueryTypeImpl.fromRdf(nextStatementList, (URI)valueOfQueryUri, Settings.CONFIG_API_VERSION);
-                        if(nextQueryConfiguration != null)
-                        {
-                            results.put((URI)valueOfQueryUri,
-                                    nextQueryConfiguration);
-                        }
-                        else
-                        {
-                            Settings.log
-                                    .error("Settings.getQueryTypes: was not able to create a query configuration with URI valueOfQueryUri="
-                                            + valueOfQueryUri.toString());
-                        }
-                    }
-                }
-                finally
-                {
-                    queryResult.close();
-                }
-            }
-            finally
-            {
-                con.close();
-            }
+            	URI nextSubjectUri = (URI)nextQueryType.getSubject();
+            	results.put(nextSubjectUri, new QueryTypeImpl(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
         }
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.error("Settings.getQueryTypes:", e);
+            Settings.log.fatal("Settings.getQueryTypes:", e);
         }
+
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
@@ -2051,73 +1768,28 @@ public class Settings extends QueryAllConfiguration
                     .debug("Settings.getRuleTests: started parsing rule test configurations");
         }
         final long start = System.currentTimeMillis();
+        
+        final URI ruleTestTypeUri = RuleTestImpl.getRuletestTypeUri();
         try
         {
-            final Repository configRepository = this.getServerConfigurationRdf();
-            final URI ruleTestOntologyTypeUri = new RuleTestImpl().getElementType();
-            try
+            final RepositoryConnection con = myRepository.getConnection();
+
+            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
             {
-                final RepositoryConnection con = configRepository.getConnection();
-                try
-                {
-                    final String queryString = "SELECT ?ruleTestUri WHERE { ?ruleTestUri a <"
-                            + ruleTestOntologyTypeUri.stringValue() + "> . }";
-                    final TupleQuery tupleQuery = con.prepareTupleQuery(
-                            QueryLanguage.SPARQL, queryString);
-                    final TupleQueryResult queryResult = tupleQuery.evaluate();
-                    try
-                    {
-                        while(queryResult.hasNext())
-                        {
-                            final BindingSet bindingSet = queryResult.next();
-                            final Value valueOfRuleTestUri = bindingSet
-                                    .getValue("ruleTestUri");
-                            if(Settings._DEBUG)
-                            {
-                                Settings.log
-                                        .debug("Settings.getRuleTests: found ruletest: valueOfRuleTestUri="
-                                                + valueOfRuleTestUri);
-                            }
-                            final RepositoryResult<Statement> statements = con
-                                    .getStatements((URI) valueOfRuleTestUri,
-                                            (URI) null, (Value) null, true);
-                            final Collection<Statement> nextStatementList = Iterations
-                                    .addAll(statements, new HashSet<Statement>());
-                            final RuleTest nextRuleTestConfiguration = RuleTestImpl
-                                    .fromRdf(nextStatementList, (URI)valueOfRuleTestUri, Settings.CONFIG_API_VERSION);
-                            if(nextRuleTestConfiguration != null)
-                            {
-                                results.put((URI)valueOfRuleTestUri,
-                                        nextRuleTestConfiguration);
-                            }
-                            else
-                            {
-                                Settings.log
-                                        .error("Settings.getRuleTests: was not able to create a rule test configuration with URI valueOfRuleTestUri="
-                                                + valueOfRuleTestUri.toString());
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        queryResult.close();
-                    }
-                }
-                finally
-                {
-                    con.close();
-                }
-            }
-            catch (final OpenRDFException e)
-            {
-                // handle exception
-                Settings.log.error("Settings.getRuleTests:", e);
-            }
+            	URI nextSubjectUri = (URI)nextProvider.getSubject();
+            	results.put(nextSubjectUri, new RuleTestImpl(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
         }
-        catch(java.lang.InterruptedException ie)
+        catch (final OpenRDFException e)
         {
-            Settings.log.fatal("Settings.getRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
+            // handle exception
+            Settings.log.fatal("Settings.getProviders:", e);
         }
+
+
         if(Settings._INFO)
         {
             final long end = System.currentTimeMillis();
@@ -2259,68 +1931,26 @@ public class Settings extends QueryAllConfiguration
         
         final long start = System.currentTimeMillis();
         
-        final String templateOntologyTypeUri = this.getOntologyTermUriPrefix()
-        + this.getNamespaceForTemplate()
-        + this.getOntologyTermUriSuffix() + "Template";
-        
-		try
-		{
-		    final RepositoryConnection con = myRepository.getConnection();
-		    try
-		    {
-		        final String queryString = "SELECT ?templateUri WHERE { ?templateUri a <"
-		                + templateOntologyTypeUri + "> . }";
-		        final TupleQuery tupleQuery = con.prepareTupleQuery(
-		                QueryLanguage.SPARQL, queryString);
-		        final TupleQueryResult queryResult = tupleQuery.evaluate();
-		        try
-		        {
-		            while(queryResult.hasNext())
-		            {
-		                final BindingSet bindingSet = queryResult.next();
-		                final Value valueOfTemplateUri = bindingSet
-		                        .getValue("templateUri");
-		                if(Settings._DEBUG)
-		                {
-		                    Settings.log
-		                            .debug("Settings.getTemplates: found template: valueOfTemplateUri="
-		                                    + valueOfTemplateUri);
-		                }
-		                final RepositoryResult<Statement> statements = con
-		                        .getStatements((URI) valueOfTemplateUri,
-		                                (URI) null, (Value) null, true);
-		                final Collection<Statement> nextStatementList = Iterations
-		                        .addAll(statements, new HashSet<Statement>());
-		                final Template nextTemplate = TemplateImpl
-		                        .fromRdf(nextStatementList, (URI)valueOfTemplateUri, Settings.CONFIG_API_VERSION);
-		                if(nextTemplate != null)
-		                {
-		                    results.put((URI)valueOfTemplateUri,
-		                            nextTemplate);
-		                }
-		                else
-		                {
-		                    Settings.log.error("Settings.getTemplates: was not able to create a template configuration with URI valueOfTemplateUri="
-		                                    + valueOfTemplateUri.toString());
-		                }
-		            }
-		        }
-		        finally
-		        {
-		            queryResult.close();
-		        }
-		    }
-		    finally
-		    {
-		        con.close();
-		    }
-		}
-		catch (OpenRDFException e)
-		{
-		    // handle exception
-		    Settings.log.error("Settings.getTemplates:", e);
-		}
-		
+        final URI ruleTestTypeUri = TemplateImpl.getTemplateTypeUri();
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+
+            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
+            {
+            	URI nextSubjectUri = (URI)nextProvider.getSubject();
+            	results.put(nextSubjectUri, new TemplateImpl(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
+        }
+        catch (final OpenRDFException e)
+        {
+            // handle exception
+            Settings.log.fatal("Settings.getTemplates:", e);
+        }
+
 		if(Settings._INFO)
 		{
 			final long end = System.currentTimeMillis();

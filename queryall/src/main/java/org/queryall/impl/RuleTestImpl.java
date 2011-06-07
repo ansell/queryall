@@ -15,6 +15,7 @@ import org.openrdf.repository.RepositoryConnection;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.queryall.api.RuleTest;
 import org.queryall.helpers.*;
@@ -30,7 +31,6 @@ public class RuleTestImpl extends RuleTest
 {
     private static final Logger log = Logger.getLogger( RuleTest.class.getName() );
     private static final boolean _TRACE = log.isTraceEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _DEBUG = log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
@@ -72,7 +72,63 @@ public class RuleTestImpl extends RuleTest
         setRuletestOutputTestString(f.createURI( ruletestNamespace,"outputTestString" ));
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public RuleTestImpl(Collection<Statement> inputStatements, URI keyToUse , int modelVersion )  throws OpenRDFException
+    {
+        Collection<URI> tempTestUris = new HashSet<URI>();
+        Collection<URI> tempStages = new HashSet<URI>();
+        
+        for( Statement nextStatement : inputStatements )
+        {
+        	if(_DEBUG)
+        	{
+        		log.debug( "RuleTest: nextStatement: "+nextStatement.toString() );
+        	}
+        	
+            if( nextStatement.getPredicate().equals( RDF.TYPE )  && nextStatement.getObject().equals( getRuletestTypeUri() ) )
+            {
+            	if(_TRACE)
+            	{
+            		log.trace( "RuleTest: found valid type predicate for URI: "+keyToUse );
+            	}
+            	
+                this.setKey(keyToUse);
+            }
+            else if( nextStatement.getPredicate().equals( ProjectImpl.getProjectCurationStatusUri() ) )
+            {
+                this.setCurationStatus((URI)nextStatement.getObject());
+            }
+            else if( nextStatement.getPredicate().equals( getRuletestHasRuleUri() ) )
+            {
+                tempTestUris.add( (URI)nextStatement.getObject() );
+            }
+            else if( nextStatement.getPredicate().equals( getRuletestTestsStage() ) )
+            {
+                tempStages.add( (URI)nextStatement.getObject() );
+            }           
+            else if( nextStatement.getPredicate().equals( getRuletestInputTestString() ) )
+            {
+                this.setTestInputString(nextStatement.getObject().stringValue());
+            }
+            else if( nextStatement.getPredicate().equals( getRuletestOutputTestString() ) )
+            {
+                this.setTestOutputString(nextStatement.getObject().stringValue());
+            }
+            else
+            {
+                this.addUnrecognisedStatement( nextStatement );
+            }
+        }
+        
+        this.setRuleUris(tempTestUris);
+        this.setStages(tempStages);
+        
+        if( _TRACE )
+        {
+            log.trace( "RuleTest.fromRdf: would have returned... result="+this.toString() );
+        }
+	}
+
+	public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -128,71 +184,6 @@ public class RuleTestImpl extends RuleTest
         return false;
     }
     
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    public static RuleTest fromRdf( Collection<Statement> inputStatements, URI keyToUse , int modelVersion )  throws OpenRDFException
-    {
-        RuleTest result = new RuleTestImpl();
-        
-        boolean resultIsValid = false;
-        
-        Collection<URI> tempTestUris = new HashSet<URI>();
-        Collection<URI> tempStages = new HashSet<URI>();
-        
-        for( Statement nextStatement : inputStatements )
-        {
-            log.debug( "RuleTest: nextStatement: "+nextStatement.toString() );
-            
-            if( nextStatement.getPredicate().equals( RDF.TYPE )  && nextStatement.getObject().equals( getRuletestTypeUri() ) )
-            {
-                log.trace( "RuleTest: found valid type predicate for URI: "+keyToUse );
-                resultIsValid = true;
-                result.setKey(keyToUse);
-            }
-            else if( nextStatement.getPredicate().equals( ProjectImpl.getProjectCurationStatusUri() ) )
-            {
-                result.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if( nextStatement.getPredicate().equals( getRuletestHasRuleUri() ) )
-            {
-                tempTestUris.add( (URI)nextStatement.getObject() );
-            }
-            else if( nextStatement.getPredicate().equals( getRuletestTestsStage() ) )
-            {
-                tempStages.add( (URI)nextStatement.getObject() );
-            }           
-            else if( nextStatement.getPredicate().equals( getRuletestInputTestString() ) )
-            {
-                result.setTestInputString(nextStatement.getObject().stringValue());
-            }
-            else if( nextStatement.getPredicate().equals( getRuletestOutputTestString() ) )
-            {
-                result.setTestOutputString(nextStatement.getObject().stringValue());
-            }
-            else
-            {
-                result.addUnrecognisedStatement( nextStatement );
-            }
-        }
-        
-        result.setRuleUris(tempTestUris);
-        result.setStages(tempStages);
-        
-        if( _TRACE )
-        {
-            log.trace( "RuleTest.fromRdf: would have returned... result="+result.toString() );
-        }
-        
-        if( resultIsValid )
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException( "RuleTest.fromRdf: result was not valid" );
-        }
-    }
-    
-
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();

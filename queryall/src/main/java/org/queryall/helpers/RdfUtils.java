@@ -1000,14 +1000,7 @@ public class RdfUtils
         
         Map<URI, QueryType> results = null;
         
-        try
-        {
-            results = QueryTypeImpl.getQueryTypesFromRepository(myRepository, modelVersion);
-        }
-        catch(org.openrdf.repository.RepositoryException re)
-        {
-            log.fatal("RdfUtils.getQueryTypesForQueryBundles: failed to get records due to a repository exception", re);
-        }
+        results = localSettings.getQueryTypes(myRepository);
         
         return results.values();
     }

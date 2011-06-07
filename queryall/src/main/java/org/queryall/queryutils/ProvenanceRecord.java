@@ -84,74 +84,95 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         provenanceRecordDateUri = f.createURI(provenanceNamespace,"recordDate");
     }
     
-    public static Map<String, ProvenanceRecord> getProvenanceRecordsFromRepository(Repository myRepository, int modelVersion) throws org.openrdf.repository.RepositoryException
+    // keyToUse is the URI of the next instance that can be found in myRepository
+    // returns null if the URI is not in the repository or the information is not enough to create a minimal query configuration
+    public ProvenanceRecord(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
     {
-        Map<String, ProvenanceRecord> results = new Hashtable<String, ProvenanceRecord>();
+        Collection<Statement> tempUnrecognisedStatements = new HashSet<Statement>();
         
-        URI provenanceTypeUri = new ProvenanceRecord().getElementType();
+        for(Statement nextStatement : inputStatements)
+        {
+            if(_DEBUG)
+            {
+                log.debug("ProvenanceRecord: nextStatement: "+nextStatement.toString());
+            }
+            
+            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(provenanceTypeUri))
+            {
+                if(_TRACE)
+                {
+                    log.trace("ProvenanceRecord: found valid type predicate for URI: "+keyToUse);
+                }
+                
+                this.setKey(keyToUse);
+            }
+            else if(nextStatement.getPredicate().equals(provenanceHasAuthorOpenIDUri))
+            {
+                this.hasAuthorOpenID = nextStatement.getObject().stringValue();
+            }
+            else if(nextStatement.getPredicate().equals(provenanceElementTypeUri))
+            {
+                this.elementType = nextStatement.getObject().stringValue();
+            }
+            else if(nextStatement.getPredicate().equals(provenanceElementKeyUri))
+            {
+                this.elementKey = nextStatement.getObject().stringValue();
+            }
+            else if(nextStatement.getPredicate().equals(provenanceRecordDateUri))
+            {
+                try
+                {
+                    this.recordDate = RdfUtils.getDateTimeFromValue(nextStatement.getObject());
+                }
+                catch(java.text.ParseException pe)
+                {
+                    log.error("ProvenanceRecord.fromRdf: could not parse date: value="+nextStatement.getObject().stringValue(), pe);
+                }
+            }
+            else
+            {
+                tempUnrecognisedStatements.add(nextStatement);
+            }
+        }
         
-        RepositoryConnection myRepositoryConnection = null;
+        this.unrecognisedStatements = tempUnrecognisedStatements;
+        
+        if(_DEBUG)
+        {
+            log.debug("ProvenanceRecord.fromRdf: would have returned... keyToUse="+keyToUse+" result="+this.toString());
+        }
+    }
+
+    public static Map<URI, ProvenanceRecord> getProvenanceRecordsFromRepository(Repository myRepository, int modelVersion) throws org.openrdf.repository.RepositoryException
+    {
+        Map<URI, ProvenanceRecord> results = new Hashtable<URI, ProvenanceRecord>();
+        
+        URI provenanceTypeUri = ProvenanceRecord.provenanceTypeUri;
         
         try
         {
-            myRepositoryConnection = myRepository.getConnection();
-            
-            final String queryString = "SELECT ?provenanceRecordUri WHERE { ?provenanceRecordUri a <"
-                    + provenanceTypeUri.stringValue() + "> . }";
-            final TupleQuery tupleQuery = myRepositoryConnection.prepareTupleQuery(
-                    QueryLanguage.SPARQL, queryString);
-            final TupleQueryResult queryResult = tupleQuery.evaluate();
-            try
+            final RepositoryConnection con = myRepository.getConnection();
+
+            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, provenanceTypeUri, true).asList())
             {
-                while(queryResult.hasNext())
-                {
-                    final BindingSet bindingSet = queryResult.next();
-                    final Value valueOfProvenanceRecordUri = bindingSet
-                            .getValue("provenanceRecordUri");
-                    if(_TRACE)
-                    {
-                        log.trace("ProvenanceRecord.getProvenanceRecordsFromRepository: found provenanceRecord: valueOfProvenanceRecordUri="
-                                        + valueOfProvenanceRecordUri);
-                    }
-                    final RepositoryResult<Statement> statements = 
-                            myRepositoryConnection.getStatements((URI) valueOfProvenanceRecordUri,
-                                    (URI) null, (Value) null, true);
-                    final Collection<Statement> nextStatementList = 
-                            Iterations.addAll(statements, new HashSet<Statement>());
-                    final ProvenanceRecord nextRecord = ProvenanceRecord.fromRdf(nextStatementList, valueOfProvenanceRecordUri.stringValue(), modelVersion);
-                    
-                    if(nextRecord != null)
-                    {
-                        results.put(valueOfProvenanceRecordUri.stringValue(),
-                                nextRecord);
-                    }
-                    else
-                    {
-                        log.error("ProvenanceRecord.getProvenanceRecordsFromRepository: was not able to create a provenance record with URI valueOfProvenanceRecordUri="
-                                        + valueOfProvenanceRecordUri.toString());
-                    }
-                }
-            }
-            finally
-            {
-                queryResult.close();
-            }
+            	URI nextSubjectUri = (URI)nextProvider.getSubject();
+            	results.put(nextSubjectUri, new ProvenanceRecord(
+            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
+            			nextSubjectUri, 
+            			Settings.CONFIG_API_VERSION));
+            }                
         }
-        catch (OpenRDFException e)
+        catch (final OpenRDFException e)
         {
             // handle exception
-            log.error("ProvenanceRecord.getProvenanceRecordsFromRepository:", e);
+            Settings.log.fatal("Settings.getProviders:", e);
         }
-        finally
-        {
-            if(myRepositoryConnection != null)
-                myRepositoryConnection.close();
-        }
+
         
         return results;
     }
     
-    public static Map<String, ProvenanceRecord> fetchProvenanceForElementKey(String hostToUse, String nextElementKey, int modelVersion) throws InterruptedException
+    public static Map<URI, ProvenanceRecord> fetchProvenanceForElementKey(String hostToUse, String nextElementKey, int modelVersion) throws InterruptedException
     {
         QueryBundle nextQueryBundle = new QueryBundle();
         
@@ -257,7 +278,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             }
         }
         
-        Map<String, ProvenanceRecord> results = null;
+        Map<URI, ProvenanceRecord> results = null;
         
         try
         {
@@ -271,78 +292,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return results;
     }
     
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // returns null if the URI is not in the repository or the information is not enough to create a minimal query configuration
-    public static ProvenanceRecord fromRdf(Collection<Statement> inputStatements, String keyToUse, int modelVersion) throws OpenRDFException
-    {
-        ProvenanceRecord result = new ProvenanceRecord();
-        
-        boolean resultIsValid = false;
-        
-        Collection<Statement> tempUnrecognisedStatements = new HashSet<Statement>();
-        
-        for(Statement nextStatement : inputStatements)
-        {
-            if(_DEBUG)
-            {
-                log.debug("ProvenanceRecord: nextStatement: "+nextStatement.toString());
-            }
-            
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(provenanceTypeUri))
-            {
-                if(_TRACE)
-                {
-                    log.trace("ProvenanceRecord: found valid type predicate for URI: "+keyToUse);
-                }
-                
-                resultIsValid = true;
-                result.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(provenanceHasAuthorOpenIDUri))
-            {
-                result.hasAuthorOpenID = nextStatement.getObject().stringValue();
-            }
-            else if(nextStatement.getPredicate().equals(provenanceElementTypeUri))
-            {
-                result.elementType = nextStatement.getObject().stringValue();
-            }
-            else if(nextStatement.getPredicate().equals(provenanceElementKeyUri))
-            {
-                result.elementKey = nextStatement.getObject().stringValue();
-            }
-            else if(nextStatement.getPredicate().equals(provenanceRecordDateUri))
-            {
-                try
-                {
-                    result.recordDate = RdfUtils.getDateTimeFromValue(nextStatement.getObject());
-                }
-                catch(java.text.ParseException pe)
-                {
-                    log.error("ProvenanceRecord.fromRdf: could not parse date: value="+nextStatement.getObject().stringValue(), pe);
-                }
-            }
-            else
-            {
-                tempUnrecognisedStatements.add(nextStatement);
-            }
-        }
-        
-        result.unrecognisedStatements = tempUnrecognisedStatements;
-        
-        if(_DEBUG)
-        {
-            log.debug("ProvenanceRecord.fromRdf: would have returned... keyToUse="+keyToUse+" result="+result.toString());
-        }
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("ProvenanceRecord.fromRdf: result was not valid keyToUse="+keyToUse);
-        }
-    }
     
 
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException

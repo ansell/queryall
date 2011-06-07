@@ -1,32 +1,22 @@
 package org.queryall.impl;
 
-import info.aduna.iteration.Iterations;
-
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Literal;
-import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
 
 import java.util.regex.Pattern;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Hashtable;
 
 import org.queryall.queryutils.ProvenanceRecord;
 import org.queryall.api.Profile;
@@ -140,154 +130,9 @@ public class QueryTypeImpl extends QueryType
     
     public static String queryNamespace;
     
-    public String getInputRegex()
-    {
-        return inputRegex;
-    }
-    
-    public Pattern getInputRegexPattern()
-    {
-        if(inputRegexPattern == null && inputRegex != null)
-            inputRegexPattern = Pattern.compile(inputRegex);
-            
-        return inputRegexPattern;
-    }
-    
-    public void setInputRegex(String nextInputRegex)
-    {
-        inputRegex = nextInputRegex;
-        inputRegexPattern = Pattern.compile(nextInputRegex);
-    }
-    
-    static
-    {
-        final ValueFactory f = Constants.valueFactory;
-        
-        queryNamespace = Settings.getSettings().getOntologyTermUriPrefix()
-                         +Settings.getSettings().getNamespaceForQueryType()
-                         +Settings.getSettings().getOntologyTermUriSuffix();
-                         
-        setQueryTypeUri(f.createURI(queryNamespace,"Query"));
-        setQueryTitle(f.createURI(queryNamespace,"title"));
-        setQueryHandleAllNamespaces(f.createURI(queryNamespace,"handleAllNamespaces"));
-        setQueryNamespaceToHandle(f.createURI(queryNamespace,"namespaceToHandle"));
-        setQueryPublicIdentifierIndex(f.createURI(queryNamespace,"hasPublicIdentifierIndex"));
-        setQueryNamespaceInputIndex(f.createURI(queryNamespace,"hasNamespaceInputIndex"));
-        setQueryNamespaceMatchMethod(f.createURI(queryNamespace,"namespaceMatchMethod"));
-        setQueryNamespaceSpecific(f.createURI(queryNamespace,"isNamespaceSpecific"));
-        setQueryIncludeDefaults(f.createURI(queryNamespace,"includeDefaults"));
-        setQueryIncludeQueryType(f.createURI(queryNamespace,"includeQueryType"));
-        setQueryInputRegex(f.createURI(queryNamespace,"inputRegex"));
-        OLDqueryTemplateString = f.createURI(queryNamespace,"templateString");
-        OLDqueryQueryUriTemplateString = f.createURI(queryNamespace,"queryUriTemplateString");
-        OLDqueryStandardUriTemplateString = f.createURI(queryNamespace,"standardUriTemplateString");
-        OLDqueryOutputRdfXmlString = f.createURI(queryNamespace,"outputRdfXmlString");
-        setQueryInRobotsTxt(f.createURI(queryNamespace,"inRobotsTxt"));
-        setQueryIsPageable(f.createURI(queryNamespace,"isPageable"));
-        setQueryNamespaceMatchAny(f.createURI(queryNamespace,"namespaceMatchAny"));
-        setQueryNamespaceMatchAll(f.createURI(queryNamespace,"namespaceMatchAll"));
-        setQueryTemplateTerm(f.createURI(queryNamespace,"includedQueryTemplate"));
-        setQueryParameterTemplateTerm(f.createURI(queryNamespace,"includedQueryParameterTemplate"));
-        setQueryStaticOutputTemplateTerm(f.createURI(queryNamespace,"includedStaticOutputTemplate"));
-        setQueryIsDummyQueryType(f.createURI(queryNamespace,"isDummyQueryType"));
-    }
-    
-    // returns true if the input variable is in the list of public input variables
-    public boolean isInputVariablePublic(int inputNumber)
-    {
-        if(publicIdentifierIndexes != null)
-        {
-        
-            for(int nextPublicIdentifierIndex : publicIdentifierIndexes)
-            {
-                if(inputNumber == nextPublicIdentifierIndex)
-                {
-                    return true;
-                }
-            }
-        }
-        
-        // if there are no defined public indexes we default to false
-        // also default to false if we didn't find the index in the list
-        return false;
-    }
-    
-    public static Map<URI, QueryType> getQueryTypesFromRepository(Repository myRepository, int modelVersion) throws org.openrdf.repository.RepositoryException
-    {
-        Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
-        
-        URI queryTypeUri = new QueryTypeImpl().getElementType();
-        
-        RepositoryConnection myRepositoryConnection = null;
-        
-        try
-        {
-            myRepositoryConnection = myRepository.getConnection();
-            
-            final String queryString = "SELECT ?QueryTypeUri WHERE { ?QueryTypeUri a <"
-                    + queryTypeUri.stringValue() + "> . }";
-            final TupleQuery tupleQuery = myRepositoryConnection.prepareTupleQuery(
-                    QueryLanguage.SPARQL, queryString);
-            final TupleQueryResult queryResult = tupleQuery.evaluate();
-            try
-            {
-                while(queryResult.hasNext())
-                {
-                    final BindingSet bindingSet = queryResult.next();
-                    final Value valueOfQueryTypeUri = bindingSet
-                            .getValue("QueryTypeUri");
-                    if(_TRACE)
-                    {
-                        log.trace("QueryType.getCustomQueriesFromRepository: found QueryType: valueOfQueryTypeUri="
-                                        + valueOfQueryTypeUri);
-                    }
-                    final RepositoryResult<Statement> statements = 
-                            myRepositoryConnection.getStatements((URI) valueOfQueryTypeUri,
-                                    (URI) null, (Value) null, true);
-                    final Collection<Statement> nextStatementList = 
-                            Iterations.addAll(statements, new HashSet<Statement>());
-                    final QueryType nextRecord = QueryTypeImpl.fromRdf(nextStatementList, (URI)valueOfQueryTypeUri, modelVersion);
-                    
-                    if(nextRecord != null)
-                    {
-                        results.put((URI)valueOfQueryTypeUri,
-                                nextRecord);
-                    }
-                    else
-                    {
-                        log.error("QueryType.getCustomQueriesFromRepository: was not able to create a custom query with URI valueOfQueryTypeUri="
-                                        + valueOfQueryTypeUri.toString());
-                    }
-                }
-            }
-            finally
-            {
-                queryResult.close();
-            }
-        }
-        catch (OpenRDFException e)
-        {
-            // handle exception
-            log.error("QueryType.getCustomQueriesFromRepository:", e);
-        }
-        finally
-        {
-            if(myRepositoryConnection != null)
-                myRepositoryConnection.close();
-        }
-        
-        return results;
-    }
-    
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // returns null if the URI is not in the repository or the information is not enough to create a minimal query configuration
     @SuppressWarnings("unused")
-	public static QueryType fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
-    {
-        QueryType result = new QueryTypeImpl();
-        
-        boolean resultIsValid = false;
-        
+	public QueryTypeImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+	{
         // TEMPORARY
         // This is just used to assign unique identifiers to each of the included templates which previously did not have identifiers
         int templatecounter = 0;
@@ -304,10 +149,6 @@ public class QueryTypeImpl extends QueryType
         
         Collection<URI> tempsemanticallyLinkedCustomQueries = new HashSet<URI>();
         
-        final ValueFactory f = Constants.valueFactory;
-        
-        URI queryInstanceUri = keyToUse;
-        
         for(Statement nextStatement : inputStatements)
         {
             if(_DEBUG)
@@ -322,20 +163,19 @@ public class QueryTypeImpl extends QueryType
                     log.trace("QueryType: found valid type predicate for URI: "+keyToUse);
                 }
                 
-                resultIsValid = true;
-                result.setKey(keyToUse);
+                this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
             {
-                result.setCurationStatus((URI)nextStatement.getObject());
+                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getQueryTitle()) || nextStatement.getPredicate().equals(Constants.DC_TITLE))
             {
-                result.setTitle(nextStatement.getObject().stringValue());
+                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getQueryHandleAllNamespaces()))
             {
-                result.setHandleAllNamespaces(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setHandleAllNamespaces(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceToHandle()))
             {
@@ -351,19 +191,19 @@ public class QueryTypeImpl extends QueryType
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceMatchMethod()))
             {
-                result.setNamespaceMatchMethod((URI)nextStatement.getObject());
+                this.setNamespaceMatchMethod((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getQueryNamespaceSpecific()))
             {
-                result.setIsNamespaceSpecific(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setIsNamespaceSpecific(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryIncludeDefaults()))
             {
-                result.setIncludeDefaults(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setIncludeDefaults(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryInputRegex()))
             {
-                result.setInputRegex(nextStatement.getObject().stringValue());
+                this.setInputRegex(nextStatement.getObject().stringValue());
             }
 //            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
 //            {
@@ -451,71 +291,138 @@ public class QueryTypeImpl extends QueryType
             }
             else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryTemplateString))
             {
-                result.setTemplateString(nextStatement.getObject().stringValue());
+                this.setTemplateString(nextStatement.getObject().stringValue());
             }
             else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString))
             {
-                result.setQueryUriTemplateString(nextStatement.getObject().stringValue());
+                this.setQueryUriTemplateString(nextStatement.getObject().stringValue());
             }
             else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
             {
-                result.setStandardUriTemplateString(nextStatement.getObject().stringValue());
+                this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
             else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
             {
-                result.setOutputRdfXmlString(nextStatement.getObject().stringValue());
+                this.setOutputRdfXmlString(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(getQueryInRobotsTxt()))
             {
-                result.setInRobotsTxt(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setInRobotsTxt(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryIsPageable()))
             {
-                result.setIsPageable(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setIsPageable(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(getQueryIsDummyQueryType()))
             {
-                result.setIsDummyQueryType(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+                this.setIsDummyQueryType(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
             {
-                result.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
             else
             {
-                result.addUnrecognisedStatement(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
         
-        result.setNamespacesToHandle(tempNamespacesToHandle);
-        result.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes.toArray(new Integer[0])));
-        result.setNamespaceInputIndexes(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes.toArray(new Integer[0])));
+        this.setNamespacesToHandle(tempNamespacesToHandle);
+        this.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes.toArray(new Integer[0])));
+        this.setNamespaceInputIndexes(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes.toArray(new Integer[0])));
         
         if(USING_TEMPLATES)
         {
-            result.setIncludedQueryTemplates(tempIncludedQueryTemplates);
-            result.setIncludedQueryParameters(tempIncludedQueryParameters);
-            result.setIncludedStaticOutputTemplates(tempIncludedStaticOutputTemplates);
+            this.setIncludedQueryTemplates(tempIncludedQueryTemplates);
+            this.setIncludedQueryParameters(tempIncludedQueryParameters);
+            this.setIncludedStaticOutputTemplates(tempIncludedStaticOutputTemplates);
         }
         else
         {
-            result.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
+            this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         }
         
         if(_DEBUG)
         {
-            log.debug("QueryType.fromRdf: would have returned... keyToUse="+keyToUse+" result="+result.toString());
+            log.debug("QueryType.fromRdf: would have returned... keyToUse="+keyToUse+" result="+this.toString());
+        }
+    }
+
+	public QueryTypeImpl()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getInputRegex()
+    {
+        return inputRegex;
+    }
+    
+    public Pattern getInputRegexPattern()
+    {
+        if(inputRegexPattern == null && inputRegex != null)
+            inputRegexPattern = Pattern.compile(inputRegex);
+            
+        return inputRegexPattern;
+    }
+    
+    public void setInputRegex(String nextInputRegex)
+    {
+        inputRegex = nextInputRegex;
+        inputRegexPattern = Pattern.compile(nextInputRegex);
+    }
+    
+    static
+    {
+        final ValueFactory f = Constants.valueFactory;
+        
+        queryNamespace = Settings.getSettings().getOntologyTermUriPrefix()
+                         +Settings.getSettings().getNamespaceForQueryType()
+                         +Settings.getSettings().getOntologyTermUriSuffix();
+                         
+        setQueryTypeUri(f.createURI(queryNamespace,"Query"));
+        setQueryTitle(f.createURI(queryNamespace,"title"));
+        setQueryHandleAllNamespaces(f.createURI(queryNamespace,"handleAllNamespaces"));
+        setQueryNamespaceToHandle(f.createURI(queryNamespace,"namespaceToHandle"));
+        setQueryPublicIdentifierIndex(f.createURI(queryNamespace,"hasPublicIdentifierIndex"));
+        setQueryNamespaceInputIndex(f.createURI(queryNamespace,"hasNamespaceInputIndex"));
+        setQueryNamespaceMatchMethod(f.createURI(queryNamespace,"namespaceMatchMethod"));
+        setQueryNamespaceSpecific(f.createURI(queryNamespace,"isNamespaceSpecific"));
+        setQueryIncludeDefaults(f.createURI(queryNamespace,"includeDefaults"));
+        setQueryIncludeQueryType(f.createURI(queryNamespace,"includeQueryType"));
+        setQueryInputRegex(f.createURI(queryNamespace,"inputRegex"));
+        OLDqueryTemplateString = f.createURI(queryNamespace,"templateString");
+        OLDqueryQueryUriTemplateString = f.createURI(queryNamespace,"queryUriTemplateString");
+        OLDqueryStandardUriTemplateString = f.createURI(queryNamespace,"standardUriTemplateString");
+        OLDqueryOutputRdfXmlString = f.createURI(queryNamespace,"outputRdfXmlString");
+        setQueryInRobotsTxt(f.createURI(queryNamespace,"inRobotsTxt"));
+        setQueryIsPageable(f.createURI(queryNamespace,"isPageable"));
+        setQueryNamespaceMatchAny(f.createURI(queryNamespace,"namespaceMatchAny"));
+        setQueryNamespaceMatchAll(f.createURI(queryNamespace,"namespaceMatchAll"));
+        setQueryTemplateTerm(f.createURI(queryNamespace,"includedQueryTemplate"));
+        setQueryParameterTemplateTerm(f.createURI(queryNamespace,"includedQueryParameterTemplate"));
+        setQueryStaticOutputTemplateTerm(f.createURI(queryNamespace,"includedStaticOutputTemplate"));
+        setQueryIsDummyQueryType(f.createURI(queryNamespace,"isDummyQueryType"));
+    }
+    
+    // returns true if the input variable is in the list of public input variables
+    public boolean isInputVariablePublic(int inputNumber)
+    {
+        if(publicIdentifierIndexes != null)
+        {
+        
+            for(int nextPublicIdentifierIndex : publicIdentifierIndexes)
+            {
+                if(inputNumber == nextPublicIdentifierIndex)
+                {
+                    return true;
+                }
+            }
         }
         
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("QueryType.fromRdf: result was not valid keyToUse="+keyToUse);
-        }
+        // if there are no defined public indexes we default to false
+        // also default to false if we didn't find the index in the list
+        return false;
     }
     
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException

@@ -121,7 +121,118 @@ public class ProfileImpl extends Profile
         setProfileIncludeExcludeOrderUndefinedUri(f.createURI(profileNamespace,"includeExcludeOrderUndefined"));
     }
     
-    public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
+    public ProfileImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+	{
+    	// TODO: Remove these temporary collections and replace with .add methods instead of .set
+        Collection<URI> tempProfileAdministrators = new HashSet<URI>();
+        
+        Collection<URI> tempIncludeProviders = new HashSet<URI>();
+        Collection<URI> tempExcludeProviders = new HashSet<URI>();
+        Collection<URI> tempIncludeQueries = new HashSet<URI>();
+        Collection<URI> tempExcludeQueries = new HashSet<URI>();
+        Collection<URI> tempIncludeRdfRules = new HashSet<URI>();
+        Collection<URI> tempExcludeRdfRules = new HashSet<URI>();
+        
+        for(Statement nextStatement : inputStatements)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Profile.fromRdf: nextStatement: "+nextStatement.toString());
+            }
+            
+            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(getProfileTypeUri()))
+            {
+                if(_TRACE)
+                {
+                    log.trace("Profile.fromRdf: found valid type predicate for URI: "+keyToUse);
+                }
+                
+                // resultIsValid = true;
+                this.setKey(keyToUse);
+            }
+            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            {
+                this.setCurationStatus((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileTitle()) || nextStatement.getPredicate().equals(Constants.DC_TITLE))
+            {
+                this.setTitle(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileOrderUri()))
+            {
+                this.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(getProfileAdministratorUri()))
+            {
+                tempProfileAdministrators.add((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileDefaultIncludeExcludeOrderUri()))
+            {
+                this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileAllowImplicitQueryInclusionsUri()))
+            {
+                this.setAllowImplicitQueryTypeInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(getProfileAllowImplicitProviderInclusionsUri()))
+            {
+                this.setAllowImplicitProviderInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(getProfileAllowImplicitRdfRuleInclusionsUri()))
+            {
+                this.setAllowImplicitRdfRuleInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(getProfileIncludeProviderInProfile()))
+            {
+                tempIncludeProviders.add((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileExcludeProviderFromProfile()))
+            {
+                tempExcludeProviders.add((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileIncludeQueryInProfile()))
+            {
+                tempIncludeQueries.add((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileExcludeQueryFromProfile()))
+            {
+                tempExcludeQueries.add((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileIncludeRdfRuleInProfile()))
+            {
+                tempIncludeRdfRules.add((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(getProfileExcludeRdfRuleFromProfile()))
+            {
+                tempExcludeRdfRules.add((URI)nextStatement.getObject());
+            }
+            else
+            {
+                this.addUnrecognisedStatement(nextStatement);
+            }
+        }
+        
+        this.setProfileAdministrators(tempProfileAdministrators);
+        
+        this.setIncludeProviders(tempIncludeProviders);
+        this.setExcludeProviders(tempExcludeProviders);
+        this.setIncludeQueryTypes(tempIncludeQueries);
+        this.setExcludeQueryTypes(tempExcludeQueries);
+        this.setIncludeRdfRules(tempIncludeRdfRules);
+        this.setExcludeRdfRules(tempExcludeRdfRules);
+        
+        if(_TRACE)
+        {
+            log.trace("Profile.fromRdf: would have returned... result="+this.toString());
+        }
+    }
+
+	public ProfileImpl()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+	public static boolean schemaToRdf(Repository myRepository, String keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -241,129 +352,7 @@ public class ProfileImpl extends Profile
         
         return false;
     }
-    
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // returns null if the URI is not in the repository or the information is not enough to create a minimal profile configuration
-    public static Profile fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
-    {
-        Profile result = new ProfileImpl();
         
-        // TODO: reenable this when the profiles are being correctly exported and able to be imported with rdf type statements
-        // boolean resultIsValid = false;
-        boolean resultIsValid = true;
-        
-        Collection<URI> tempProfileAdministrators = new HashSet<URI>();
-        
-        Collection<URI> tempIncludeProviders = new HashSet<URI>();
-        Collection<URI> tempExcludeProviders = new HashSet<URI>();
-        Collection<URI> tempIncludeQueries = new HashSet<URI>();
-        Collection<URI> tempExcludeQueries = new HashSet<URI>();
-        Collection<URI> tempIncludeRdfRules = new HashSet<URI>();
-        Collection<URI> tempExcludeRdfRules = new HashSet<URI>();
-        
-        for(Statement nextStatement : inputStatements)
-        {
-            if(_DEBUG)
-            {
-                log.debug("Profile.fromRdf: nextStatement: "+nextStatement.toString());
-            }
-            
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(getProfileTypeUri()))
-            {
-                if(_TRACE)
-                {
-                    log.trace("Profile.fromRdf: found valid type predicate for URI: "+keyToUse);
-                }
-                
-                // resultIsValid = true;
-                result.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
-            {
-                result.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileTitle()) || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                result.setTitle(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileOrderUri()))
-            {
-                result.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(getProfileAdministratorUri()))
-            {
-                tempProfileAdministrators.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileDefaultIncludeExcludeOrderUri()))
-            {
-                result.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileAllowImplicitQueryInclusionsUri()))
-            {
-                result.setAllowImplicitQueryTypeInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(getProfileAllowImplicitProviderInclusionsUri()))
-            {
-                result.setAllowImplicitProviderInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(getProfileAllowImplicitRdfRuleInclusionsUri()))
-            {
-                result.setAllowImplicitRdfRuleInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(getProfileIncludeProviderInProfile()))
-            {
-                tempIncludeProviders.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileExcludeProviderFromProfile()))
-            {
-                tempExcludeProviders.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileIncludeQueryInProfile()))
-            {
-                tempIncludeQueries.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileExcludeQueryFromProfile()))
-            {
-                tempExcludeQueries.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileIncludeRdfRuleInProfile()))
-            {
-                tempIncludeRdfRules.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(getProfileExcludeRdfRuleFromProfile()))
-            {
-                tempExcludeRdfRules.add((URI)nextStatement.getObject());
-            }
-            else
-            {
-                result.addUnrecognisedStatement(nextStatement);
-            }
-        }
-        
-        result.setProfileAdministrators(tempProfileAdministrators);
-        
-        result.setIncludeProviders(tempIncludeProviders);
-        result.setExcludeProviders(tempExcludeProviders);
-        result.setIncludeQueryTypes(tempIncludeQueries);
-        result.setExcludeQueryTypes(tempExcludeQueries);
-        result.setIncludeRdfRules(tempIncludeRdfRules);
-        result.setExcludeRdfRules(tempExcludeRdfRules);
-        
-        if(_TRACE)
-        {
-            log.trace("Profile.fromRdf: would have returned... result="+result.toString());
-        }
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("Profile.fromRdf: result was not valid");
-        }
-    }
-    
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
