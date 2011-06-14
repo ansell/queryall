@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -104,6 +105,11 @@ public class Settings extends QueryAllConfiguration
             try
             {
                 result = ResourceBundle.getBundle(Settings.DEFAULT_PROPERTIES_BUNDLE_NAME).getString(key);
+            }
+            catch(final MissingResourceException mre)
+            {
+            	if(_TRACE)
+            		Settings.log.trace(mre, mre);
             }
             catch (final Exception ex)
             {
@@ -505,9 +511,9 @@ public class Settings extends QueryAllConfiguration
                 return false;
             }
         }
-        if(Settings._TRACE)
+        if(Settings._DEBUG)
         {
-            Settings.log.trace("Settings.configRefreshCheck: returning");
+            Settings.log.debug("Settings.configRefreshCheck: returning");
         }
         return false;
     }
@@ -2888,8 +2894,8 @@ public class Settings extends QueryAllConfiguration
 
 	private synchronized Repository getWebAppConfigurationRdf() throws java.lang.InterruptedException
     {
-        if(_DEBUG)
-            Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
+        if(_TRACE)
+            Settings.log.trace("Settings.getWebAppConfigurationRdf: entering");
 
         if(this.currentWebAppConfigurationRepository != null)
         {
