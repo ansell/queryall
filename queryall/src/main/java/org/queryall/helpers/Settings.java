@@ -903,26 +903,6 @@ public class Settings extends QueryAllConfiguration
         return this.getStringPropertyFromConfig("uriPrefix", "http://")+this.getStringPropertyFromConfig("hostName", "bio2rdf.org")+this.getStringPropertyFromConfig("uriSuffix", "/");
     }
     
-    public Collection<Provider> getDefaultProviders(QueryType queryType)
-    {
-        final Collection<Provider> results = new HashSet<Provider>();
-
-        // Return an empty collection if this query type does not include defaults
-    	if(queryType.getIncludeDefaults())
-    	{
-	        for(final Provider nextProvider : this.getAllProviders().values())
-	        {
-	            if(nextProvider.getIsDefaultSource()
-	                    && nextProvider.containsQueryTypeUri(queryType.getKey()))
-	            {
-	                results.add(nextProvider);
-	            }
-	        }
-    	}
-        
-        return Collections.unmodifiableCollection(results);
-    }
-    
     public float getFloatPropertyFromConfig(String key, float defaultValue)
     {
         float result = defaultValue;

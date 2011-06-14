@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import org.openrdf.model.URI;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -187,7 +188,7 @@ public class RdfFetchController
                         log.debug( "RdfFetchController.initialise: including defaults for nextQueryType.title="+nextQueryType.getTitle()+" nextQueryType.getKey()="+nextQueryType.getKey() );
                     }
                     
-                    chosenProviders.addAll(localSettings.getDefaultProviders(nextQueryType));
+                    chosenProviders.addAll(getDefaultProviders(nextQueryType, this.sortedIncludedProfiles));
                 }
                 
                 if( _DEBUG )
@@ -642,6 +643,34 @@ public class RdfFetchController
                 results.add( nextAllProvider );
             }
         }
+        
+        return results;
+    }
+    
+    public Collection<Provider> getDefaultProviders(QueryType queryType, List<Profile> profileList)
+    {
+        final Collection<Provider> results = new HashSet<Provider>();
+
+        // Return an empty collection if this query type does not include defaults
+    	if(queryType.getIncludeDefaults())
+    	{
+	        for(final Provider nextProvider : localSettings.getAllProviders().values())
+	        {
+	            if(nextProvider.getIsDefaultSource()
+	                    && nextProvider.containsQueryTypeUri(queryType.getKey()))
+	            {
+	                    if( nextProvider.isUsedWithProfileList( profileList, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions", true), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders", true) ) )
+	                    {
+	                        if( _DEBUG )
+	                        {
+	                            log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="+nextProvider.getKey()+" queryString=" +queryString);
+	                        }
+	                        
+	                        results.add( nextProvider );
+	                    }
+	            }
+	        }
+    	}
         
         return results;
     }
