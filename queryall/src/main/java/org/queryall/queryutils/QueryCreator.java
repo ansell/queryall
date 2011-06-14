@@ -1,5 +1,5 @@
 
-package org.queryall.helpers;
+package org.queryall.queryutils;
 
 import java.util.Hashtable;
 import java.util.Collection;
@@ -16,6 +16,9 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.api.SparqlProvider;
+import org.queryall.helpers.Constants;
+import org.queryall.helpers.Settings;
+import org.queryall.helpers.StringUtils;
 
 import org.apache.log4j.Logger;
 

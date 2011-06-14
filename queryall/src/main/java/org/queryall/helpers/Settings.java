@@ -1,7 +1,5 @@
 package org.queryall.helpers;
 
-import info.aduna.iteration.Iterations;
-
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,14 +23,9 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -47,7 +40,18 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.api.Template;
-import org.queryall.impl.*;
+import org.queryall.impl.HttpProviderImpl;
+import org.queryall.impl.NamespaceEntryImpl;
+import org.queryall.impl.NormalisationRuleImpl;
+import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.ProjectImpl;
+import org.queryall.impl.ProviderImpl;
+import org.queryall.impl.QueryTypeImpl;
+import org.queryall.impl.RegexNormalisationRuleImpl;
+import org.queryall.impl.RuleTestImpl;
+import org.queryall.impl.SparqlNormalisationRuleImpl;
+import org.queryall.impl.TemplateImpl;
+import org.queryall.impl.XsltNormalisationRuleImpl;
 import org.queryall.queryutils.ProvenanceRecord;
 import org.queryall.queryutils.QueryBundle;
 import org.queryall.statistics.StatisticsEntry;
@@ -931,7 +935,7 @@ public class Settings extends QueryAllConfiguration
 
         for(Value nextValue : values)
         {
-            result = MathsUtils.getFloatFromValue(nextValue);
+            result = RdfUtils.getFloatFromValue(nextValue);
         }
         
         if(_TRACE)

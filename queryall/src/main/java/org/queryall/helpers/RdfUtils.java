@@ -19,8 +19,9 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.BooleanLiteralImpl;
-import org.openrdf.model.impl.IntegerLiteralImpl;
 import org.openrdf.model.impl.CalendarLiteralImpl;
+import org.openrdf.model.impl.IntegerLiteralImpl;
+import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
@@ -741,68 +742,6 @@ public class RdfUtils
     }
     
     /**
-     * @param nextValue
-     * @return
-     */
-    public static int getIntegerFromValue(Value nextValue)
-    {
-        int result = 0;
-        
-        try
-        {
-            result = ((IntegerLiteralImpl) nextValue).intValue();
-        }
-        catch (final ClassCastException cce)
-        {
-            try
-            {
-                result = ((IntegerMemLiteral) nextValue).intValue();
-            }
-            catch (final ClassCastException cce2)
-            {
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log
-                            .debug("RdfUtils.getIntegerFromValue: nextValue was not a typed integer literal. Trying to parse it as a string... type="
-                                    + nextValue.getClass().getName());
-                }
-                
-                result = Integer.parseInt(nextValue.toString());
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @param nextValue
-     * @return
-     */
-    public static long getLongFromValue(Value nextValue)
-    {
-        long result = 0L;
-        
-        try
-        {
-            result = ((IntegerMemLiteral) nextValue).longValue();
-        }
-        catch (final ClassCastException cce)
-        {
-            RdfUtils.log.error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="+ nextValue.getClass().getName());
-            try
-            {
-                result = Long.parseLong(nextValue.stringValue());
-            }
-            catch(NumberFormatException nfe)
-            {
-                RdfUtils.log.error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="+ nextValue.getClass().getName());
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
      * @param nextRepository
      * @param predicateUris
      * @return
@@ -1020,7 +959,7 @@ public class RdfUtils
         final Repository myRepository = new SailRepository(new MemoryStore());
         myRepository.initialize();
         
-        // TODO: remove this reliance on the Settings class
+        // All queryall objects can be serialised to RDF using this method, along with a given subject URI, which in this case is derived from the object
         final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.CONFIG_API_VERSION);
         
         if(!rdfOkay && isInsert)
@@ -1033,6 +972,7 @@ public class RdfUtils
             return "";
         }
         
+        // text/plain is the accepted MIME format for NTriples because they were too lazy to define one... go figure
         final RDFFormat writerFormat = Rio.getWriterFormatForMIMEType("text/plain");
         
         final StringWriter insertTriples = new StringWriter();
@@ -1052,6 +992,7 @@ public class RdfUtils
         // SPARUL doesn't play nicely if you don't know whether the delete will delete any triples,
         // and empty blocks are mandatory for the MODIFY statement if they are not applicable
         // The define sql:log-enable is a Virtuoso hack to enable SPARUL to work with more than one thread at once
+        // HACK: Specific to Virtuoso!
         String sparqlInsertQuery = "define sql:log-enable 2 MODIFY ";
         
         if(useSparqlGraph)
@@ -1107,37 +1048,7 @@ public class RdfUtils
             {
                 try
                 {
-                    final String queryString = "CONSTRUCT { ?subject <"
-                            + nextInputPredicateUri.stringValue()
-                            + "> ?object . } WHERE { ?subject <"
-                            + nextInputPredicateUri.stringValue()
-                            + "> ?object . }";
-                    final GraphQuery tupleQuery = con.prepareGraphQuery(
-                            QueryLanguage.SPARQL, queryString);
-                    final GraphQueryResult queryResult = tupleQuery.evaluate();
-                    
-                    try
-                    {
-                        while(queryResult.hasNext())
-                        {
-                            final Statement bindingSet = queryResult.next();
-                            // final Value valueOfObject = bindingSet.getValue("object");
-                            
-                            // if(RdfUtils._DEBUG)
-                            // {
-                                // RdfUtils.log
-                                        // .debug("Utilities: found object: valueOfObject="
-                                                // + valueOfObject);
-                            // }
-                            
-                            results.add(bindingSet);
-                            // results.add(getUTF8StringValueFromSesameValue(valueOfObject));
-                        }
-                    }
-                    finally
-                    {
-                        queryResult.close();
-                    }
+                	con.getStatements((URI)null, nextInputPredicateUri, (Value)null, true).addTo(results);
                 }
                 catch (final OpenRDFException ordfe)
                 {
@@ -1153,12 +1064,6 @@ public class RdfUtils
                 }
             }
         }
-        
-        // catch(OpenRDFException ordfe)
-        // {
-        // log.error("RdfUtils.getValuesFromRepositoryByPredicateUris: error found");
-        // throw ordfe;
-        // }
         finally
         {
             if(con != null)
@@ -1174,16 +1079,44 @@ public class RdfUtils
             Repository nextRepository, Collection<URI> predicateUris, URI subjectUri)
             throws OpenRDFException
     {
-        
-        Collection<Statement> results = new HashSet<Statement>();
-        
-        Collection<Statement> tempResults = getStatementsFromRepositoryByPredicateUris(nextRepository, predicateUris);
-        
-        for(Statement nextTempResults : tempResults)
+        final Collection<Statement> results = new HashSet<Statement>();
+        if(RdfUtils._DEBUG)
         {
-            if(nextTempResults.getSubject().equals(subjectUri))
+            RdfUtils.log
+                    .debug("RdfUtils.getStatementsFromRepositoryByPredicateUris: entering method");
+            RdfUtils.log.debug(nextRepository);
+            RdfUtils.log.debug(predicateUris);
+        }
+        
+        final RepositoryConnection con = nextRepository.getConnection();
+        
+        try
+        {
+            for(final URI nextInputPredicateUri : predicateUris)
             {
-                results.add(nextTempResults);
+                try
+                {
+                	con.getStatements(subjectUri, nextInputPredicateUri, (Value)null, true).addTo(results);
+                }
+                catch (final OpenRDFException ordfe)
+                {
+                    RdfUtils.log
+                            .error("RdfUtils.getValuesFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
+                                    + nextInputPredicateUri.stringValue());
+                }
+                catch (final Exception ex)
+                {
+                    RdfUtils.log
+                            .error("RdfUtils.getValuesFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
+                                    + nextInputPredicateUri.stringValue());
+                }
+            }
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
             }
         }
         
@@ -1202,11 +1135,12 @@ public class RdfUtils
         return getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
     }
     
+    // make sure that we are using UTF-8 to decode to item
     public static String getUTF8StringValueFromSesameValue(Value nextValue)
     {
         try
         {
-            return new String(nextValue.stringValue().getBytes(), "utf-8");
+            return new String(nextValue.stringValue().getBytes("utf-8"), "utf-8");
         }
         catch(java.io.UnsupportedEncodingException uee)
         {
@@ -1237,6 +1171,7 @@ public class RdfUtils
         
     }
     
+    // TODO: make me more efficient
     public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(
             Repository nextRepository, Collection<URI> predicateUris, URI subjectUri)
             throws OpenRDFException
@@ -1665,7 +1600,7 @@ public class RdfUtils
     public static void toWriter(Repository nextRepository, java.io.Writer nextWriter, RDFFormat format)
     {
         RepositoryConnection nextConnection = null;
-        
+
         try
         {
             nextConnection = nextRepository.getConnection();
@@ -1772,5 +1707,87 @@ public class RdfUtils
         return true;
         *****/
     }
+
+	/**
+	 * @param nextValue
+	 * @return
+	 */
+	public static long getLongFromValue(Value nextValue)
+	{
+	    long result = 0L;
+	    
+	    try
+	    {
+	        result = ((IntegerMemLiteral) nextValue).longValue();
+	    }
+	    catch (final ClassCastException cce)
+	    {
+	        RdfUtils.log.error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="+ nextValue.getClass().getName());
+	        try
+	        {
+	            result = Long.parseLong(nextValue.stringValue());
+	        }
+	        catch(NumberFormatException nfe)
+	        {
+	            RdfUtils.log.error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="+ nextValue.getClass().getName());
+	        }
+	    }
+	    
+	    return result;
+	}
+
+	/**
+	 * @param nextValue
+	 * @return
+	 */
+	public static int getIntegerFromValue(Value nextValue)
+	{
+	    int result = 0;
+	    
+	    try
+	    {
+	        result = ((IntegerLiteralImpl) nextValue).intValue();
+	    }
+	    catch (final ClassCastException cce)
+	    {
+	        try
+	        {
+	            result = ((IntegerMemLiteral) nextValue).intValue();
+	        }
+	        catch (final ClassCastException cce2)
+	        {
+	            if(RdfUtils._DEBUG)
+	            {
+	                RdfUtils.log
+	                        .debug("RdfUtils.getIntegerFromValue: nextValue was not a typed integer literal. Trying to parse it as a string... type="
+	                                + nextValue.getClass().getName());
+	            }
+	            
+	            result = Integer.parseInt(nextValue.toString());
+	        }
+	    }
+	    
+	    return result;
+	}
+
+	/**
+	 * @param nextValue
+	 * @return
+	 */
+	public static float getFloatFromValue(Value nextValue)
+	{
+	    float result = 0.0f;
+	    
+	    try
+	    {
+	        result = ((NumericLiteralImpl) nextValue).floatValue();
+	    }
+	    catch (final ClassCastException cce)
+	    {
+	        result = Float.parseFloat(nextValue.toString());
+	    }
+	    
+	    return result;
+	}
     
 }

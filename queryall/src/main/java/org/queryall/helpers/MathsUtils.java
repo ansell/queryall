@@ -7,8 +7,6 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.NumericLiteralImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -151,26 +149,6 @@ public class MathsUtils
         }
         
         return Math.sqrt(sumOfSquares / (count - 1));
-    }
-
-    /**
-     * @param nextValue
-     * @return
-     */
-    public static float getFloatFromValue(Value nextValue)
-    {
-        float result = 0.0f;
-        
-        try
-        {
-            result = ((NumericLiteralImpl) nextValue).floatValue();
-        }
-        catch (final ClassCastException cce)
-        {
-            result = Float.parseFloat(nextValue.toString());
-        }
-        
-        return result;
     }
 
 }
