@@ -884,16 +884,16 @@ public class RdfUtils
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedResponseContentType", ""));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedRequestContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
+                            log.error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+localSettings.getStringPropertyFromConfig("assumedResponseContentType", ""));
                             continue;
                         }
                         else
                         {
-                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
+                            log.warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+localSettings.getStringPropertyFromConfig("assumedResponseContentType", ""));
                         }
                     }
                     else if(log.isDebugEnabled())
@@ -1144,7 +1144,8 @@ public class RdfUtils
         }
         catch(java.io.UnsupportedEncodingException uee)
         {
-            throw new RuntimeException("Utilities: UTF-8 is not supported by this java vm!!!", uee);
+        	log.fatal("RdfUtils: UTF-8 is not supported by this java vm!!!", uee);
+            throw new RuntimeException("RdfUtils: UTF-8 is not supported by this java vm!!!", uee);
         }
     }
     
@@ -1313,17 +1314,17 @@ public class RdfUtils
             	
             	if(nextReaderFormat == null)
             	{            	
-	                nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedRequestContentType", Constants.APPLICATION_RDF_XML));
+	                nextReaderFormat = Rio.getParserFormatForMIMEType(localSettings.getStringPropertyFromConfig("assumedResponseContentType", Constants.APPLICATION_RDF_XML));
             	}
 
             	if(nextReaderFormat == null)
                 {
-                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because assumedRequestContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" nextResult.assumedContentType="+assumedContentType+" Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    log.error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because assumedResponseContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" nextResult.assumedContentType="+assumedContentType+" Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+localSettings.getStringPropertyFromConfig("assumedResponseContentType", ""));
                     //throw new RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
                 else if(nextResult.getWasSuccessful())
                 {
-                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedRequestContentType\")="+localSettings.getStringPropertyFromConfig("assumedRequestContentType", ""));
+                    log.warn("RdfUtils.insertResultIntoRepository: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+localSettings.getStringPropertyFromConfig("assumedResponseContentType", ""));
                 }
             }
             else if(_DEBUG)

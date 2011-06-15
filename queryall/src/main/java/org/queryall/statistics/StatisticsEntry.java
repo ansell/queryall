@@ -816,7 +816,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 					localSettings.getStringPropertyFromConfig(
 							"statisticsServerUrl", ""), sparqlInsertQuery,
 					"*/*", localSettings.getStringPropertyFromConfig(
-							"assumedRequestContentType", ""), localSettings,
+							"assumedResponseContentType", ""), localSettings,
 					localBlacklistController);
 		}
 		else if(localSettings.getURIPropertyFromConfig(
@@ -837,7 +837,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 					localSettings.getStringPropertyFromConfig(
 							"statisticsServerUrl", ""), postInformation, "*/*",
 					localSettings.getStringPropertyFromConfig(
-							"assumedRequestContentType", ""), localSettings,
+							"assumedResponseContentType", ""), localSettings,
 					localBlacklistController);
 		}
 		else

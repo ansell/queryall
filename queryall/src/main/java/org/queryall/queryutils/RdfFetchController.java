@@ -568,9 +568,9 @@ public class RdfFetchController
                 {
                     nextQueryNamespaceUris.add( nextUriFromTitleNamespaceList );
                 }
-                else
+                else if(_DEBUG)
                 {
-                    log.warn( "RdfFetchController.getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
+            		log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
                 }
             }
             else
