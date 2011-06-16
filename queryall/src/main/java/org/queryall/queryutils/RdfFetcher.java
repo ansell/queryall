@@ -127,7 +127,7 @@ public class RdfFetcher
             localBlacklistController.accumulateQueryTotal(url.getProtocol()+"://"+url.getHost());
             
             conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+localSettings.getStringPropertyFromConfig("userAgent", "queryall") + " +http://bio2rdf.wiki.sourceforge.net/RobotHelp)");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+localSettings.getStringPropertyFromConfig("userAgent", "queryall") + " +"+localSettings.getStringPropertyFromConfig("robotHelpUrl", "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp")+")");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
