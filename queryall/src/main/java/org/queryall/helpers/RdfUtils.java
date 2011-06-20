@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Map;
 
+import net.fortytwo.sesametools.rdfjson.RDFJSONWriter;
+import net.fortytwo.sesametools.rdfjson.RDFJSONWriterFactory;
+
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -35,6 +38,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
+import org.openrdf.rio.rdfxml.RDFXMLWriter;
 import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.memory.model.BooleanMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
@@ -212,9 +216,20 @@ public class RdfUtils
         return getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
     }
     
+    public static RDFFormat getWriterFormat(String requestedContentType)
+    {
+    	if(requestedContentType.equals(Constants.TEXT_HTML))
+    		return null;
+    	
+//    	if(requestedContentType.equals(Constants.APPLICATION_JSON))
+//    		return RDFJSONWriter.RDFJSON_FORMAT;
+    	
+    	return Rio.getWriterFormatForMIMEType(requestedContentType, RDFFormat.RDFXML);
+    }
+    
     public static String findWriterFormat(String requestedContentType, String preferredDisplayContentType, String fallback)
     {
-        if(requestedContentType.equals("text/html"))
+        if(requestedContentType.equals(Constants.TEXT_HTML))
         {
             return requestedContentType;
         }

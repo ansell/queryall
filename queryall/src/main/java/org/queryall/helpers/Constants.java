@@ -233,6 +233,10 @@ public final class Constants
 
 	public static final String RECOGNISE_IMPLICIT_QUERY_INCLUSIONS = "recogniseImplicitQueryInclusions";
 
+	public static final String APPLICATION_JSON = "application/json";
+
+	public static final String PREFERRED_DISPLAY_CONTENT_TYPE = "preferredDisplayContentType";
+
     private Constants()
     {
     }

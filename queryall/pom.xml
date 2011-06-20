@@ -103,6 +103,13 @@
 			<version>2.4.0</version>
 		</dependency>
 		<dependency>
+			<artifactId>rdfjson</artifactId>
+			<groupId>net.fortytwo.sesametools</groupId>
+			<type>jar</type>
+			<scope>compile</scope>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
 			<artifactId>sesame-sail-memory</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
@@ -207,5 +214,11 @@
 			<name>DBIS Maven Releases Repository</name>
 			<url>http://on.cs.unibas.ch/maven/repository</url>
 		</repository>
+		<repository>
+			<id>fortytwo.net</id>
+			<name>SesameTools Repository</name>
+			<url>http://fortytwo.net/maven2</url>
+		</repository>
+		
 	</repositories>
 </project>
