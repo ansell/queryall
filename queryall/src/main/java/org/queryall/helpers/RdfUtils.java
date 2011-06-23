@@ -17,6 +17,7 @@ import net.fortytwo.sesametools.rdfjson.RDFJSONWriterFactory;
 
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -221,9 +222,6 @@ public class RdfUtils
     	if(requestedContentType.equals(Constants.TEXT_HTML))
     		return null;
     	
-//    	if(requestedContentType.equals(Constants.APPLICATION_JSON))
-//    		return RDFJSONWriter.RDFJSON_FORMAT;
-    	
     	return Rio.getWriterFormatForMIMEType(requestedContentType, RDFFormat.RDFXML);
     }
     
@@ -328,50 +326,17 @@ public class RdfUtils
     public static List<Statement> getAllStatementsFromRepository(
             Repository nextRepository) throws OpenRDFException
     {
-        final List<Statement> results = new ArrayList<Statement>();
+        List<Statement> results = new ArrayList<Statement>(1);
         
         final RepositoryConnection con = nextRepository.getConnection();
         
         try
         {
-            final String queryString = "CONSTRUCT { ?subject ?predicate ?object . } WHERE { ?subject ?predicate ?object . } ORDER BY ?subject ?predicate ?object";
-            final GraphQuery tupleQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-            final GraphQueryResult queryResult = tupleQuery.evaluate();
-            
-            try
-            {
-                while(queryResult.hasNext())
-                {
-                    final Statement nextStatement = queryResult.next();
-                    
-                    if(RdfUtils._DEBUG)
-                    {
-                        RdfUtils.log
-                                .debug("RdfUtils.getAllStatementsFromRepository: found statement: nextStatement="
-                                        + nextStatement);
-                    }
-                    
-                    results.add(nextStatement);
-                }
-            }
-            catch (final OpenRDFException ordfe)
-            {
-                RdfUtils.log
-                        .error("RdfUtils.getAllStatementsFromRepository: inner caught exception "
-                                + ordfe);
-                
-                throw ordfe;
-            }
-            finally
-            {
-                queryResult.close();
-            }
+        	results = con.getStatements((Resource)null, (URI)null, (Value)null, true).asList();
         }
         catch (final OpenRDFException ordfe)
         {
-            RdfUtils.log
-                    .error("RdfUtils.getAllStatementsFromRepository: outer caught exception "
-                            + ordfe);
+            RdfUtils.log.error("RdfUtils.getAllStatementsFromRepository: outer caught exception ", ordfe);
             
             throw ordfe;
         }
