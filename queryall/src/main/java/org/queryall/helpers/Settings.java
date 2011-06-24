@@ -3094,7 +3094,8 @@ public class Settings extends QueryAllConfiguration
 	
 	public static Repository getSchemas(URI contextUri)
 	{
-		Repository myRepository = new SailRepository(new ForwardChainingRDFSInferencer(new MemoryStore()));
+		//Repository myRepository = new SailRepository(new ForwardChainingRDFSInferencer(new MemoryStore()));
+		Repository myRepository = new SailRepository(new MemoryStore());
 		
 		try
 		{
