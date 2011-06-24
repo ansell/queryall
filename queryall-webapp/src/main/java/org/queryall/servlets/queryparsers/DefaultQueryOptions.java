@@ -99,11 +99,11 @@ public class DefaultQueryOptions
         
         String requestString = requestUri;
         
-        if(requestString.startsWith("/"))
+        if(requestString.startsWith(localSettings.getStringPropertyFromConfig("uriSuffix", "/")))
         {
             if(_DEBUG)
             	log.debug("requestString="+requestString);
-            requestString = requestString.substring(1);
+            requestString = requestString.substring(localSettings.getStringPropertyFromConfig("uriSuffix", "/").length());
             if(_DEBUG)
             	log.debug("requestString="+requestString);
         }
