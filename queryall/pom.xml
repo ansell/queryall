@@ -111,6 +111,13 @@
 			<version>1.3</version>
 		</dependency>
 		<dependency>
+			<artifactId>nquads</artifactId>
+			<groupId>net.fortytwo.sesametools</groupId>
+			<type>jar</type>
+			<scope>compile</scope>
+			<version>1.3</version>
+		</dependency>
+		<dependency>
 			<artifactId>sesame-sail-memory</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>

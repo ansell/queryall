@@ -90,12 +90,32 @@ public class QueryallContentNegotiator
         }
         else
         {
-            newContentNegotiator.addVariant("application/json;q=0.90")
-            .addAliasMediaType("application/rdf+json;q=0.8");
+            newContentNegotiator.addVariant("application/json;q=0.6")
+            .addAliasMediaType("application/rdf+json;q=0.6");
         }
         
         
-        newContentNegotiator.addVariant("text/plain;q=0.2");
+        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_X_NQUADS))
+        {
+            newContentNegotiator.addVariant("text/x-nquads;q=0.99")
+            .addAliasMediaType("text/nquads;q=0.8");
+        }
+        else
+        {
+            newContentNegotiator.addVariant("text/x-nquads;q=0.6")
+            .addAliasMediaType("text/nquads;q=0.6");
+        }
+        
+        
+        // NTriples content type was not intelligently defined, but we try to work with it anyway, basically, if they ask for anything else at the same time as NTriples, they will get it instead
+        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_PLAIN))
+        {
+        	newContentNegotiator.addVariant("text/plain;q=0.99");
+        }
+        else
+        {
+        	newContentNegotiator.addVariant("text/plain;q=0.2");
+        }
 
         return newContentNegotiator;
     }

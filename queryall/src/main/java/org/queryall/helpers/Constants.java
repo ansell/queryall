@@ -237,6 +237,10 @@ public final class Constants
 
 	public static final String PREFERRED_DISPLAY_CONTENT_TYPE = "preferredDisplayContentType";
 
+	public static final String TEXT_PLAIN = "text/plain";
+
+	public static final String TEXT_X_NQUADS = "text/x-nquads";
+
     private Constants()
     {
     }
