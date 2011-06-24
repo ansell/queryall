@@ -104,13 +104,13 @@ public class HtmlPageRenderer
         context.put("debug_level_trace", GeneralServlet._TRACE);
         
         
-        context.put("project_name", localSettings.getStringPropertyFromConfig("projectName", ""));
-        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUrl", ""));
-        context.put("project_html_url_prefix", localSettings.getStringPropertyFromConfig("htmlUrlPrefix", ""));
+        context.put("project_name", localSettings.getStringPropertyFromConfig("projectName", "queryall"));
+        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUri", ""));
+        context.put("project_html_url_prefix", localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/"));
         context.put("project_html_url_suffix", localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
         context.put("project_link", localSettings.getStringPropertyFromConfig("projectHomeUrl", ""));
         context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "")+ "/"+Settings.VERSION);
-        context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", ""));
+        context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
         context.put("uri", resolvedUri);
         
         boolean is_plainnsid = false;
@@ -141,10 +141,10 @@ public class HtmlPageRenderer
         context.put("real_hostname", realHostName);
         context.put("context_path", contextPath);
         context.put("server_base", realHostName+contextPath);
-        context.put("rdfxml_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "")+queryString+localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", ""));
-        context.put("rdfn3_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("n3UrlPrefix", "")+queryString+localSettings.getStringPropertyFromConfig("n3UrlSuffix", ""));
-        context.put("html_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "")+queryString+localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
-        context.put("json_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "")+queryString+localSettings.getStringPropertyFromConfig("jsonUrlSuffix", ""));
+        context.put("rdfxml_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("uriSuffix","/")+localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "rdfxml/")+queryString+localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", ""));
+        context.put("rdfn3_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("n3UrlPrefix", "n3/")+queryString+localSettings.getStringPropertyFromConfig("n3UrlSuffix", ""));
+        context.put("html_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/")+queryString+localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
+        context.put("json_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "json/")+queryString+localSettings.getStringPropertyFromConfig("jsonUrlSuffix", ""));
         // context.put("disco_link", discoLink);
         // context.put("tabulator_link", tabulatorLink);
         // context.put("openlink_link", openLinkLink);
