@@ -90,7 +90,7 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminPrefix(String requestString)
     {
-        String adminUrlPrefix = localSettings.getStringPropertyFromConfig("adminUrlPrefix", "");
+        String adminUrlPrefix = localSettings.getStringPropertyFromConfig("adminUrlPrefix", "admin/");
         
         if(matchesPrefixAndSuffix(requestString, adminUrlPrefix, ""))
         {
@@ -104,9 +104,9 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminConfiguration(String requestString)
     {
-        String adminConfigurationPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationPrefix", "");
+        String adminConfigurationPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationPrefix", "configuration/");
 
-        String adminWebappConfigurationPrefix = localSettings.getStringPropertyFromConfig("adminWebappConfigurationPrefix", "");
+        String adminWebappConfigurationPrefix = localSettings.getStringPropertyFromConfig("adminWebappConfigurationPrefix", "webappconfiguration/");
         
         if(matchesPrefixAndSuffix(requestString, adminConfigurationPrefix, ""))
         {
@@ -126,7 +126,7 @@ public class ConfigurationQueryOptions
 
     private String parseForRefresh(String requestString)
     {
-        String adminConfigurationRefreshPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationRefreshPrefix", "");
+        String adminConfigurationRefreshPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationRefreshPrefix", "refresh");
         
         if(matchesPrefixAndSuffix(requestString, adminConfigurationRefreshPrefix, ""))
         {
@@ -140,13 +140,17 @@ public class ConfigurationQueryOptions
     private String parseForAdminFormat(String requestString)
     {
         String adminConfigurationHtmlPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationHtmlPrefix", "");
-        String adminConfigurationHtmlSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationHtmlSuffix", "");
+        String adminConfigurationHtmlSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationHtmlSuffix", "/html");
         String adminConfigurationRdfxmlPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationRdfxmlPrefix", "");
-        String adminConfigurationRdfxmlSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationRdfxmlSuffix", "");
+        String adminConfigurationRdfxmlSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationRdfxmlSuffix", "/rdfxml");
         String adminConfigurationN3Prefix = localSettings.getStringPropertyFromConfig("adminConfigurationN3Prefix", "");
-        String adminConfigurationN3Suffix = localSettings.getStringPropertyFromConfig("adminConfigurationN3Suffix", "");
+        String adminConfigurationN3Suffix = localSettings.getStringPropertyFromConfig("adminConfigurationN3Suffix", "/n3");
         String adminConfigurationJsonPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationJsonPrefix", "");
-        String adminConfigurationJsonSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationJsonSuffix", "");
+        String adminConfigurationJsonSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationJsonSuffix", "/json");
+        String adminConfigurationNTriplesPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationNTriplesPrefix", "");
+        String adminConfigurationNTriplesSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationNTriplesSuffix", "/ntriples");
+        String adminConfigurationNQuadsPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationNQuadsPrefix", "");
+        String adminConfigurationNQuadsSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationNQuadsSuffix", "/nquads");
         
         if(matchesPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix, adminConfigurationHtmlSuffix))
         {
@@ -183,10 +187,30 @@ public class ConfigurationQueryOptions
             _hasExplicitFormat = true;
             _chosenFormat = Constants.APPLICATION_JSON;
             if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
+            	log.debug("json: requestString="+requestString);
             requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix);
             if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
+            	log.debug("json: requestString="+requestString);
+        }
+        else if(matchesPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix, adminConfigurationNTriplesSuffix))
+        {
+            _hasExplicitFormat = true;
+            _chosenFormat = Constants.TEXT_PLAIN;
+            if(_DEBUG)
+            	log.debug("ntriples: requestString="+requestString);
+            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix, adminConfigurationNTriplesSuffix);
+            if(_DEBUG)
+            	log.debug("ntriples: requestString="+requestString);
+        }
+        else if(matchesPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix, adminConfigurationNQuadsSuffix))
+        {
+            _hasExplicitFormat = true;
+            _chosenFormat = Constants.TEXT_X_NQUADS;
+            if(_DEBUG)
+            	log.debug("nquads: requestString="+requestString);
+            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix, adminConfigurationNQuadsSuffix);
+            if(_DEBUG)
+            	log.debug("nquads: requestString="+requestString);
         }
         
         return requestString;
@@ -194,14 +218,18 @@ public class ConfigurationQueryOptions
 
     private String parseForNsIdFormat(String requestString)
     {
-        String nsIdHtmlPrefix = localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "");
+        String nsIdHtmlPrefix = localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/");
         String nsIdHtmlSuffix = localSettings.getStringPropertyFromConfig("htmlUrlSuffix", "");
-        String nsIdRdfxmlPrefix = localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "");
+        String nsIdRdfxmlPrefix = localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "rdfxml/");
         String nsIdRdfxmlSuffix = localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", "");
-        String nsIdN3Prefix = localSettings.getStringPropertyFromConfig("n3UrlPrefix", "");
+        String nsIdN3Prefix = localSettings.getStringPropertyFromConfig("n3UrlPrefix", "n3/");
         String nsIdN3Suffix = localSettings.getStringPropertyFromConfig("n3UrlSuffix", "");
-        String nsIdJsonPrefix = localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "");
+        String nsIdJsonPrefix = localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "json/");
         String nsIdJsonSuffix = localSettings.getStringPropertyFromConfig("jsonUrlSuffix", "");
+        String nsIdNTriplesPrefix = localSettings.getStringPropertyFromConfig("ntriplesUrlPrefix", "ntriples/");
+        String nsIdNTriplesSuffix = localSettings.getStringPropertyFromConfig("ntriplesUrlSuffix", "");
+        String nsIdNQuadsPrefix = localSettings.getStringPropertyFromConfig("nquadsUrlPrefix", "nquads/");
+        String nsIdNQuadsSuffix = localSettings.getStringPropertyFromConfig("nquadsUrlSuffix", "");
         
         
         if(matchesPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix))
@@ -239,10 +267,30 @@ public class ConfigurationQueryOptions
             _hasExplicitFormat = true;
             _chosenFormat = Constants.APPLICATION_JSON;
             if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
+            	log.debug("json: requestString="+requestString);
             requestString = takeOffPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix);
             if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
+            	log.debug("json: requestString="+requestString);
+        }
+        else if(matchesPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix))
+        {
+            _hasExplicitFormat = true;
+            _chosenFormat = Constants.TEXT_PLAIN;
+            if(_DEBUG)
+            	log.debug("ntriples: requestString="+requestString);
+            requestString = takeOffPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix);
+            if(_DEBUG)
+            	log.debug("ntriples: requestString="+requestString);
+        }
+        else if(matchesPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix))
+        {
+            _hasExplicitFormat = true;
+            _chosenFormat = Constants.TEXT_X_NQUADS;
+            if(_DEBUG)
+            	log.debug("nquads: requestString="+requestString);
+            requestString = takeOffPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix);
+            if(_DEBUG)
+            	log.debug("nquads: requestString="+requestString);
         }
         
         return requestString;
@@ -274,9 +322,10 @@ public class ConfigurationQueryOptions
     private String parseForApiVersion(String requestString)
     {
         String adminConfigurationApiOpeningPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationApiVersionOpeningPrefix", "");
-        String adminConfigurationApiClosingPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationApiVersionClosingPrefix", "");
+        String adminConfigurationApiClosingPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationApiVersionClosingPrefix", "/");
         String adminConfigurationApiSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationApiVersionSuffix", "");
 
+        // TODO: how do you escape these parameters so they don't interfere with the regular expression?
         String apiVersionPatternString = "^"+adminConfigurationApiOpeningPrefix+"(\\d+)"+adminConfigurationApiClosingPrefix+"(.*)"+adminConfigurationApiSuffix+"$";
         
         if(_DEBUG)
@@ -311,7 +360,7 @@ public class ConfigurationQueryOptions
         catch(NumberFormatException nfe)
         {
             _apiVersion = Settings.CONFIG_API_VERSION;
-            log.error("ConfigurationQueryOptions: nfe", nfe);
+            log.error("ConfigurationQueryOptions: nfe: check the adminConfigurationApiOpeningPrefix for the likely mistake", nfe);
         }
         
         requestString = matcher.group(2);

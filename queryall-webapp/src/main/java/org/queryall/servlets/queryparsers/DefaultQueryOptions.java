@@ -42,6 +42,10 @@ public class DefaultQueryOptions
 	private String n3UrlSuffix;
 	private String jsonUrlPrefix;
 	private String jsonUrlSuffix;
+	private String ntriplesUrlPrefix;
+	private String ntriplesUrlSuffix;
+	private String nquadsUrlPrefix;
+	private String nquadsUrlSuffix;
     
     public DefaultQueryOptions(String requestUri, String contextPath, Settings nextSettings)
     {
@@ -58,6 +62,10 @@ public class DefaultQueryOptions
         n3UrlSuffix = localSettings.getStringPropertyFromConfig("n3UrlSuffix", "");
         jsonUrlPrefix = localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "json/");
         jsonUrlSuffix = localSettings.getStringPropertyFromConfig("jsonUrlSuffix", "");
+        ntriplesUrlPrefix = localSettings.getStringPropertyFromConfig("ntriplesUrlPrefix", "ntriples/");
+        ntriplesUrlSuffix = localSettings.getStringPropertyFromConfig("ntriplesUrlSuffix", "");
+        nquadsUrlPrefix = localSettings.getStringPropertyFromConfig("nquadsUrlPrefix", "nquads/");
+        nquadsUrlSuffix = localSettings.getStringPropertyFromConfig("nquadsUrlSuffix", "");
         queryplanUrlPrefix = localSettings.getStringPropertyFromConfig("queryplanUrlPrefix", "queryplan/");
         queryplanUrlSuffix = localSettings.getStringPropertyFromConfig("queryplanUrlSuffix", "");
         
@@ -148,6 +156,26 @@ public class DefaultQueryOptions
             if(_DEBUG)
             	log.debug("requestString="+requestString);
             requestString = takeOffPrefixAndSuffix(requestString, jsonUrlPrefix, jsonUrlSuffix);
+            if(_DEBUG)
+            	log.debug("requestString="+requestString);
+        }
+        else if(matchesPrefixAndSuffix(requestString, ntriplesUrlPrefix, ntriplesUrlSuffix))
+        {
+            _hasExplicitFormat = true;
+            _chosenFormat = Constants.TEXT_PLAIN;
+            if(_DEBUG)
+            	log.debug("requestString="+requestString);
+            requestString = takeOffPrefixAndSuffix(requestString, ntriplesUrlPrefix, ntriplesUrlSuffix);
+            if(_DEBUG)
+            	log.debug("requestString="+requestString);
+        }
+        else if(matchesPrefixAndSuffix(requestString, nquadsUrlPrefix, nquadsUrlSuffix))
+        {
+            _hasExplicitFormat = true;
+            _chosenFormat = Constants.TEXT_X_NQUADS;
+            if(_DEBUG)
+            	log.debug("requestString="+requestString);
+            requestString = takeOffPrefixAndSuffix(requestString, nquadsUrlPrefix, nquadsUrlSuffix);
             if(_DEBUG)
             	log.debug("requestString="+requestString);
         }

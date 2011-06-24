@@ -16,8 +16,8 @@ import org.openrdf.sail.memory.*;
 import org.apache.log4j.Logger;
 
 import org.queryall.impl.*;
-import org.bio2rdf.servlets.queryparsers.*;
-import org.bio2rdf.servlets.html.*;
+import org.queryall.servlets.queryparsers.*;
+import org.queryall.servlets.html.*;
 import org.queryall.queryutils.*;
 import org.queryall.helpers.*;
 import org.queryall.api.HttpProvider;

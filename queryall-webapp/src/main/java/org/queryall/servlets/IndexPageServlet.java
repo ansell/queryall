@@ -7,7 +7,7 @@ import javax.servlet.http.*;
 
 import org.apache.log4j.Logger;
 
-import org.bio2rdf.servlets.html.HtmlPageRenderer;
+import org.queryall.servlets.html.HtmlPageRenderer;
 
 import org.openrdf.OpenRDFException;
 

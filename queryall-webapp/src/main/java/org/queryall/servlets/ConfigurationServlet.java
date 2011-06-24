@@ -222,10 +222,6 @@ public class ConfigurationServlet extends HttpServlet
                             // out.write(RdfUtils.xmlEncodeString(allQueries.get(nextQueryKey).toString()));
                         }
                     }
-                    else
-                    {
-                    	log.info("nextQueryKey did not match");
-                    }
                 }
                 
                 Map<URI, Template> allTemplates = localSettings.getAllTemplates();
@@ -375,6 +371,14 @@ public class ConfigurationServlet extends HttpServlet
                 
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("jsonUrlSuffix"));
                 
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("ntriplesUrlPrefix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("ntriplesUrlSuffix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("nquadsUrlPrefix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("nquadsUrlSuffix"));
+                
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("alwaysRedirectToExplicitFormatUrl"));
 
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("redirectToExplicitFormatHttpCode"));
@@ -418,6 +422,14 @@ public class ConfigurationServlet extends HttpServlet
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("adminConfigurationJsonPrefix"));
                 
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("adminConfigurationJsonSuffix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("adminConfigurationNTriplesPrefix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("adminConfigurationNTriplesSuffix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("adminConfigurationNQuadsPrefix"));
+                
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("adminConfigurationNQuadsSuffix"));
                 
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("pageoffsetOnlyShowForNsId"));
                 

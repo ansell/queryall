@@ -1,7 +1,7 @@
 package org.queryall.servlets.html;
 
-import org.bio2rdf.servlets.GeneralServlet;
-import org.bio2rdf.servlets.html.VelocityHelper;
+import org.queryall.servlets.GeneralServlet;
+import org.queryall.servlets.html.VelocityHelper;
 import org.queryall.queryutils.*;
 import org.queryall.helpers.*;
 
