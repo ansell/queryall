@@ -8,6 +8,7 @@
 	<name>QueryAll BioMart integration</name>
 	<packaging>jar</packaging>
 	<url>http://bio2rdf.wiki.sourceforge.net</url>
+	<inceptionYear>2011</inceptionYear>
 	<developers>
 		<developer>
 			<id>p_ansell</id>
