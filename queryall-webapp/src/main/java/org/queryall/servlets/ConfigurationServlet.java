@@ -1,12 +1,12 @@
-package org.bio2rdf.servlets;
+package org.queryall.servlets;
 
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.bio2rdf.servlets.queryparsers.*;
-import org.bio2rdf.servlets.html.*;
+import org.queryall.servlets.queryparsers.*;
+import org.queryall.servlets.html.*;
 import org.queryall.helpers.*;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
