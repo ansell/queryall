@@ -141,7 +141,7 @@ public class HtmlPageRenderer
         context.put("real_hostname", realHostName);
         context.put("context_path", contextPath);
         context.put("server_base", realHostName+contextPath);
-        context.put("rdfxml_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("uriSuffix","/")+localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "rdfxml/")+queryString+localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", ""));
+        context.put("rdfxml_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "rdfxml/")+queryString+localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", ""));
         context.put("rdfn3_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("n3UrlPrefix", "n3/")+queryString+localSettings.getStringPropertyFromConfig("n3UrlSuffix", ""));
         context.put("html_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/")+queryString+localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
         context.put("json_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "json/")+queryString+localSettings.getStringPropertyFromConfig("jsonUrlSuffix", ""));
