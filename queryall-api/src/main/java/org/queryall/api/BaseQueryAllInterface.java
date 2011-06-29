@@ -16,7 +16,7 @@ public interface BaseQueryAllInterface
     //public abstract <T extends BaseQueryAllInterface> T fromRdf(Collection<Statement> relevantStatements, URI keyToUse, int modelVerson)  throws OpenRDFException;
     
     /**
-     * Changes the object into RDF, and inserts the relevant triples into myRepository
+     * Changes the object into RDF, and inserts the relevant triples into myRepository using the URI keyToUse as the context URI
      **/
     public abstract boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException;
     

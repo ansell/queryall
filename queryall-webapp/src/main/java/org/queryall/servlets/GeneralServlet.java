@@ -359,6 +359,7 @@ public class GeneralServlet extends HttpServlet
                 response.setContentType(requestedContentType);
                 response.setCharacterEncoding("UTF-8");
                 response.setStatus(responseCode);
+                response.setHeader("Vary", "Accept");
                 response.flushBuffer();
                 
                 // Start sending output before we fetch the rdf so the client doesn't decide to timeout or re-request
@@ -399,10 +400,10 @@ public class GeneralServlet extends HttpServlet
                     nextScheduledQueryBundle.toRdf(
                         myRepository, 
                         StringUtils.createURI(StringUtils.percentEncode(queryString)
-                        +localSettings.getStringPropertyFromConfig("separator", "")+"pageoffset"+pageOffset
-                        +localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextScheduledQueryBundle.getOriginalProvider().getKey().stringValue().toLowerCase())
-                        +localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue().toLowerCase())
-                        +localSettings.getStringPropertyFromConfig("separator", "")+StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint()))
+                        +localSettings.getStringPropertyFromConfig("separator", ":")+"pageoffset"+pageOffset
+                        +localSettings.getStringPropertyFromConfig("separator", ":")+StringUtils.percentEncode(nextScheduledQueryBundle.getOriginalProvider().getKey().stringValue().toLowerCase())
+                        +localSettings.getStringPropertyFromConfig("separator", ":")+StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue().toLowerCase())
+                        +localSettings.getStringPropertyFromConfig("separator", ":")+StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint()))
                         , Settings.CONFIG_API_VERSION);
                 }
                 
@@ -435,13 +436,12 @@ public class GeneralServlet extends HttpServlet
                 response.setContentType(requestedContentType+"; charset=UTF-8");
                 response.setCharacterEncoding("UTF-8");
                 response.setStatus(responseCode);
+                response.setHeader("Vary", "Accept");
                 response.flushBuffer();
                                 
                 Collection<String> currentStaticStrings = new HashSet<String>();
                 
-                Collection<String> backupStaticRdfXmlStrings = new HashSet<String>();
-                
-                Collection<URI> staticQueryTypesForUnknown = null;
+                Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
                 
                 if(fetchController.anyNamespaceNotRecognised())
                     staticQueryTypesForUnknown = localSettings.getURICollectionPropertiesFromConfig("unknownNamespaceStaticAdditions");
@@ -466,7 +466,15 @@ public class GeneralServlet extends HttpServlet
                         
                         nextBackupString = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" + nextBackupString + "</rdf:RDF>";
                         
-                        currentStaticStrings.add(nextBackupString);
+                        try
+                        {
+                            myRepositoryConnection.add(new java.io.StringReader(nextBackupString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextQueryType.getKey());
+                        }
+                        catch(org.openrdf.rio.RDFParseException rdfpe)
+                        {
+                            log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
+                            log.error("GeneralServlet: nextBackupString="+nextBackupString);
+                        }
                     }
                 }
                 
@@ -476,27 +484,14 @@ public class GeneralServlet extends HttpServlet
                     
                     if(requestedContentType.equals("application/rdf+xml") || requestedContentType.equals("text/html"))
                     {
-                        debugStrings.add("<!-- Could not find anything at all to match at query level queryString="+StringUtils.xmlEncodeString(queryString).replace("--","- -")+" -->");
+                        debugStrings.add("<!-- Could not find anything at all to match at query level -->");
                     }
                     else if(requestedContentType.equals("text/rdf+n3"))
                     {
-                        debugStrings.add("# Could not find anything at all to match at query level queryString="+queryString.replace("\n","").replace("\r",""));
+                        debugStrings.add("# Could not find anything at all to match at query level");
                     }
                 }
                 
-                // make one pass through the static strings adding them to the repository
-                for(String nextUniqueStaticString : currentStaticStrings)
-                {
-                    try
-                    {
-                        myRepositoryConnection.add(new java.io.StringReader(nextUniqueStaticString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML);
-                    }
-                    catch(org.openrdf.rio.RDFParseException rdfpe)
-                    {
-                        log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
-                        log.error("GeneralServlet: nextUniqueStaticString="+nextUniqueStaticString);
-                    }
-                }
                 
                 if(_TRACE)
                 {
@@ -534,6 +529,7 @@ public class GeneralServlet extends HttpServlet
                 Collection<String> currentStaticStrings = new HashSet<String>();
                 
                 response.setStatus(responseCode);
+                response.setHeader("Vary", "Accept");
                 response.flushBuffer();
                 
                 // version = RdfUtils.xmlEncodeString(version).replace("--","- -");
@@ -624,20 +620,14 @@ public class GeneralServlet extends HttpServlet
                     
                     nextStaticString = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" + nextStaticString + "</rdf:RDF>";
                     
-                    currentStaticStrings.add(nextStaticString);
-                }
-                
-                // make one pass through the static strings adding them to the repository
-                for(String nextUniqueStaticString : currentStaticStrings)
-                {
                     try
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextUniqueStaticString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML);
+                        myRepositoryConnection.add(new java.io.StringReader(nextStaticString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextPotentialQueryBundle.getOriginalProvider().getKey());
                     }
                     catch(org.openrdf.rio.RDFParseException rdfpe)
                     {
                         log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
-                        log.error("GeneralServlet: nextUniqueStaticString="+nextUniqueStaticString);
+                        log.error("GeneralServlet: nextStaticString="+nextStaticString);
                     }
                 }
             } // end else !isPretendQuery
@@ -688,6 +678,12 @@ public class GeneralServlet extends HttpServlet
             }
             else
             {
+                if(_DEBUG)
+                {
+                    log.debug("GeneralServlet: about to call rdf rendering method");
+                    log.debug("GeneralServlet: fetchController.queryKnown()="+fetchController.queryKnown());
+                }
+
                 RdfUtils.toWriter(convertedPool, cleanOutput, writerFormat);
             }
             

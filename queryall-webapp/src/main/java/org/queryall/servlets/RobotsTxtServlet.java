@@ -31,7 +31,8 @@ public class RobotsTxtServlet extends HttpServlet
     {
         // Settings.setServletContext(getServletConfig().getServletContext());
         
-        log.debug("request.getRequestURI()="+request.getRequestURI());
+    	if(_INFO)
+    		log.info("Robots.txt requested: request.getRequestURI()="+request.getRequestURI());
         
         response.setContentType("text/plain");
         
@@ -55,6 +56,8 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /admin/\n");
         out.write("Disallow: /error/\n\n");
 
+        // TODO: automate this using configuration
+        
         out.write("Disallow: /label/\n");
         out.write("Disallow: /links/\n");
         out.write("Disallow: /linkstonamespace/\n");
@@ -126,6 +129,60 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /n3/data/\n");
         out.write("Disallow: /n3/countlinks/\n");
         out.write("Disallow: /n3/countlinksns/\n\n");
+
+        out.write("Disallow: /json/label/\n");
+        out.write("Disallow: /json/links/\n");
+        out.write("Disallow: /json/linkstonamespace/\n");
+        out.write("Disallow: /json/proteinlinks/\n");
+        out.write("Disallow: /json/search/\n");
+        out.write("Disallow: /json/searchns/\n");
+        out.write("Disallow: /json/related/\n");
+        out.write("Disallow: /json/suppliers/\n");
+        out.write("Disallow: /json/index/\n");
+        out.write("Disallow: /json/html/\n");
+        out.write("Disallow: /json/image/\n");
+        out.write("Disallow: /json/license/\n");
+        out.write("Disallow: /json/ihop/\n");
+        out.write("Disallow: /json/xml/\n");
+        out.write("Disallow: /json/data/\n");
+        out.write("Disallow: /json/countlinks/\n");
+        out.write("Disallow: /json/countlinksns/\n\n");
+
+        out.write("Disallow: /ntriples/label/\n");
+        out.write("Disallow: /ntriples/links/\n");
+        out.write("Disallow: /ntriples/linkstonamespace/\n");
+        out.write("Disallow: /ntriples/proteinlinks/\n");
+        out.write("Disallow: /ntriples/search/\n");
+        out.write("Disallow: /ntriples/searchns/\n");
+        out.write("Disallow: /ntriples/related/\n");
+        out.write("Disallow: /ntriples/suppliers/\n");
+        out.write("Disallow: /ntriples/index/\n");
+        out.write("Disallow: /ntriples/html/\n");
+        out.write("Disallow: /ntriples/image/\n");
+        out.write("Disallow: /ntriples/license/\n");
+        out.write("Disallow: /ntriples/ihop/\n");
+        out.write("Disallow: /ntriples/xml/\n");
+        out.write("Disallow: /ntriples/data/\n");
+        out.write("Disallow: /ntriples/countlinks/\n");
+        out.write("Disallow: /ntriples/countlinksns/\n\n");
+
+        out.write("Disallow: /nquads/label/\n");
+        out.write("Disallow: /nquads/links/\n");
+        out.write("Disallow: /nquads/linkstonamespace/\n");
+        out.write("Disallow: /nquads/proteinlinks/\n");
+        out.write("Disallow: /nquads/search/\n");
+        out.write("Disallow: /nquads/searchns/\n");
+        out.write("Disallow: /nquads/related/\n");
+        out.write("Disallow: /nquads/suppliers/\n");
+        out.write("Disallow: /nquads/index/\n");
+        out.write("Disallow: /nquads/html/\n");
+        out.write("Disallow: /nquads/image/\n");
+        out.write("Disallow: /nquads/license/\n");
+        out.write("Disallow: /nquads/ihop/\n");
+        out.write("Disallow: /nquads/xml/\n");
+        out.write("Disallow: /nquads/data/\n");
+        out.write("Disallow: /nquads/countlinks/\n");
+        out.write("Disallow: /nquads/countlinksns/\n\n");
 
         out.flush();
     }

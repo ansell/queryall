@@ -360,12 +360,12 @@ public class HtmlPageRenderer
             contextPath = contextPath.substring(1)+"/";
         }
         
-        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestContext", true))
+        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestContext", false))
         {
             contextPath = localSettings.getStringPropertyFromConfig("hardcodedRequestContext", "");
         }
         
-        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestHostname", true))
+        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestHostname", false))
         {
             realHostName = localSettings.getStringPropertyFromConfig("hardcodedRequestHostname", "");
         }
@@ -398,7 +398,8 @@ public class HtmlPageRenderer
         context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "queryall")+ "/"+Settings.VERSION);
         context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
 
-        context.put("index_banner_image", localSettings.getStringPropertyFromConfig("indexBannerImagePath","static/includes-images/Bio2RDF.jpg"));
+        context.put("index_banner_image", localSettings.getStringPropertyFromConfig("indexBannerImagePath","static/includes-images/merged-bio2rdf-baner.jpg"));
+        context.put("index_project_image", localSettings.getStringPropertyFromConfig("indexProjectImagePath","static/includes-images/Bio2RDF.jpg"));
         
         context.put("shortcut_icon", localSettings.getStringPropertyFromConfig("shortcutIconPath","static/includes-images/favicon.ico"));
         context.put("scripts", localSettings.getStringCollectionPropertiesFromConfig("indexPageScripts"));

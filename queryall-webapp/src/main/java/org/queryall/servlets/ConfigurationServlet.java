@@ -487,6 +487,8 @@ public class ConfigurationServlet extends HttpServlet
 
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("indexBannerImagePath"));
 
+                myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("indexProjectImagePath"));
+
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("unknownQueryStaticAdditions"));
 
                 myRepositoryConnection.add(localSettings.getStatementPropertiesFromConfig("unknownQueryHttpResponseCode"));
