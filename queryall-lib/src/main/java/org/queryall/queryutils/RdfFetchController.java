@@ -332,7 +332,7 @@ public class RdfFetchController
         		HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
-                Collection<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextHttpProvider.getEndpointUrls());
+                List<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextHttpProvider.getEndpointUrls());
                 
                 Map<String, Map<String, String>> replacedEndpoints = new HashMap<String, Map<String, String>>();
                 
@@ -391,6 +391,7 @@ public class RdfFetchController
                 
                 if(replacedEndpoints.size()>0)
                 {
+                	// TODO: this code seems to be not randomising the endpoints that are chosen if not all endpoints are required for each provider
                 	for(String nextEndpoint : replacedEndpoints.keySet())
                 	{
                 		Map<String, String> endpointEntries = replacedEndpoints.get(nextEndpoint);
