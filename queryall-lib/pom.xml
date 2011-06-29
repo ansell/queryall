@@ -104,6 +104,20 @@
 			<version>2.4.0</version>
 		</dependency>
 		<dependency>
+			<artifactId>sesame-rio-trix</artifactId>
+			<groupId>org.openrdf.sesame</groupId>
+			<type>jar</type>
+			<scope>compile</scope>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>sesame-rio-trig</artifactId>
+			<groupId>org.openrdf.sesame</groupId>
+			<type>jar</type>
+			<scope>compile</scope>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
 			<artifactId>rdfjson</artifactId>
 			<groupId>net.fortytwo.sesametools</groupId>
 			<type>jar</type>
