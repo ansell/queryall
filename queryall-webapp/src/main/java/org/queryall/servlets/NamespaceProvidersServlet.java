@@ -130,7 +130,20 @@ public class NamespaceProvidersServlet extends HttpServlet
                         }
                     }
                 }
+                
+                if(!allNamespaceEntries.containsKey(nextNamespace))
+                {
+                	log.error("Namespace is defined on a provider but not in the namespace entries list nextProvider="+nextProvider.getKey().stringValue()+" nextNamespace="+nextNamespace.stringValue());
+                }
             }
+        }
+        
+        for(URI nextNamespaceEntry : allNamespaceEntries.keySet())
+        {
+        	if(!providersByNamespace.containsKey(nextNamespaceEntry))
+        	{
+        		log.warn("Namespace entry is defined but it does not have any linked providers nextNamespaceEntry="+nextNamespaceEntry.stringValue());
+        	}
         }
         
         
