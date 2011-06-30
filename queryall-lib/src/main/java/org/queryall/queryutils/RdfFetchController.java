@@ -391,10 +391,10 @@ public class RdfFetchController
                 
                 if(replacedEndpoints.size()>0)
                 {
-                	// TODO: this code seems to be not randomising the endpoints that are chosen if not all endpoints are required for each provider
-                	for(String nextEndpoint : replacedEndpoints.keySet())
+                	for(String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
                 	{
                 		Map<String, String> endpointEntries = replacedEndpoints.get(nextEndpoint);
+                		boolean foundAnEndpoint = false;
                 		
                 		for(String replacedEndpoint : endpointEntries.keySet())
                 		{
@@ -412,6 +412,7 @@ public class RdfFetchController
 			                if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication()) || !localBlacklistController.isUrlBlacklisted(replacedEndpoint))
 			                {
 			                	results.add(nextProviderQueryBundle);
+			                	foundAnEndpoint = true;
 			                }
 			                else
 			                {
@@ -419,7 +420,7 @@ public class RdfFetchController
 			                }
                 		}
 		                // go to next provider if we are not told to use all of the endpoints for the provider
-		                if( endpointEntries.size() > 0 && !useAllEndpointsForEachProvider)
+		                if( foundAnEndpoint && !useAllEndpointsForEachProvider)
 		                {
 		                    break;
 		                }
@@ -428,7 +429,7 @@ public class RdfFetchController
                 else
                 {
 					QueryBundle nextProviderQueryBundle = new QueryBundle();
-					  
+					
 					nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
 					nextProviderQueryBundle.setProvider(nextProvider);
 					nextProviderQueryBundle.setQueryType(nextQueryType);
@@ -752,7 +753,7 @@ public class RdfFetchController
                         queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                     }
                     
-                    nextThread.setResultDebugString("Error occured with querykey="+queryKey+" on endpoint="+nextThread.getEndpointUrl()+" query=" +nextThread.getQuery());
+                    nextThread.setResultDebugString("Error occured with querykey="+queryKey+" on endpoint="+nextThread.getEndpointUrl()+" query=" +nextThread.getQuery() + " message=" + nextThread.getLastException().getMessage());
                     
                     getErrorResults().add( nextThread );
                 }
