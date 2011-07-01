@@ -29,7 +29,7 @@ public class ReasonerTestApp
         // create the base model
         OntModel baseModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
         //baseModel.read("http://localhost:8080/queryall/");
-        baseModel.read("http://localhost:8080/admin/configuration/3/n3","N3");
+        baseModel.read("http://config.bio2rdf.org/admin/configuration/4/n3","N3");
         
         // create an inferencing model using Pellet reasoner
         final InfModel model = ModelFactory.createInfModel(reasoner, baseModel);
