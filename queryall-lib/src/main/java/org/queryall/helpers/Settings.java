@@ -74,7 +74,7 @@ public class Settings extends QueryAllConfiguration
     // This matches the queryall.properties file where
     // the generally static API specific section of the configuration settings are stored
     public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
-    public static final int CONFIG_API_VERSION = 4;
+    public static final int CONFIG_API_VERSION = 5;
     public static final String VERSION = getVersion();
     
     public static Settings getSettings()

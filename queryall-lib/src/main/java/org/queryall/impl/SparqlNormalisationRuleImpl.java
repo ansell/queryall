@@ -63,6 +63,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	private static URI sparqlruleModeAddAllMatchingTriples;
 	private static URI sparqlruleSparqlWherePattern;
 	private static URI sparqlruleSparqlPrefixes;
+	private static URI sparqlruleSparqlConstructQuery;
     
     // public static String rdfruleNamespace;
     
@@ -72,6 +73,8 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         SparqlNormalisationRuleImpl.setSparqlRuleTypeUri(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "SparqlNormalisationRule"));
+        SparqlNormalisationRuleImpl.setOLDSparqlRuleSparqlConstructQuery(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlConstructQuery"));
         SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQueryTarget(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlConstructQueryTarget"));
         SparqlNormalisationRuleImpl.setSparqlRuleSparqlWherePattern(f
@@ -93,6 +96,8 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     	super();
     }
     
+
+	
 	// keyToUse is the URI of the next instance that can be found in
     // myRepository
     public SparqlNormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
@@ -496,12 +501,19 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(),
             		keyToUse);
             
-            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlPrefixes(),
-                    sparqlPrefixesLiteral, keyToUse);
-            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(),
-                    sparqlConstructQueryTargetLiteral, keyToUse);
-            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern(),
-                    sparqlWherePatternLiteral, keyToUse);
+            if(modelVersion >= 5)
+            {
+	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlPrefixes(),
+	                    sparqlPrefixesLiteral, keyToUse);
+	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(),
+	                    sparqlConstructQueryTargetLiteral, keyToUse);
+	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern(),
+	                    sparqlWherePatternLiteral, keyToUse);
+            }
+            else
+            {
+            	con.add(keyUri, SparqlNormalisationRuleImpl.getOLDSparqlRuleSparqlConstructQuery(), f.createLiteral(getSparqlConstructQuery()), keyToUse);
+            }
             con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(),
                     modeUri, keyToUse);
 
@@ -526,7 +538,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         return false;
     }
     
-    @Override
+	@Override
     public String toString()
     {
         String result = "\n";
@@ -720,5 +732,16 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	public void setSparqlPrefixes(String sparqlPrefixes)
 	{
 		this.sparqlPrefixes = sparqlPrefixes;
+	}
+
+	private static void setOLDSparqlRuleSparqlConstructQuery(URI sparqlruleSparqlConstructQuery)
+	{
+		SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
+		
+	}
+
+    private static URI getOLDSparqlRuleSparqlConstructQuery()
+	{
+    	return SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery;
 	}
 }
