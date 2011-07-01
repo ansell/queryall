@@ -6,6 +6,11 @@ import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -29,26 +34,42 @@ public class ReasonerTestApp
         // create the base model
         OntModel baseModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
         //baseModel.read("http://localhost:8080/queryall/");
-        baseModel.read("http://config.bio2rdf.org/admin/configuration/4/n3","N3");
+        //baseModel.read("http://config.bio2rdf.org/admin/configuration/4/n3","N3");
         
         // create an inferencing model using Pellet reasoner
         final InfModel model = ModelFactory.createInfModel(reasoner, baseModel);
-
-
         System.out.println("model.size()="+model.size());
         
         // print validation report
-        ValidityReport report = model.validate();
+        if(false)
+        {
+	        ValidityReport report = model.validate();
+	        
+	        printIterator(report.getReports(), "Validation Results");
+	        
+	        printIterator(model.listResourcesWithProperty(RDF.type, OWL.Class),"RDF type resources");
+	    	printIterator(model.listStatements().filterDrop( new Filter<Statement>() {
+	    		public boolean accept(Statement o) {
+	    			return model.getRawModel().contains(o);
+	    			}
+	    			})
+				, "Inferred statements");
+        }
         
-        printIterator(report.getReports(), "Validation Results");
+        Model geneidModel = ModelFactory.createDefaultModel();
         
-        printIterator(model.listResourcesWithProperty(RDF.type, OWL.Class),"RDF type resources");
-    	printIterator(model.listStatements().filterDrop( new Filter<Statement>() {
-    		public boolean accept(Statement o) {
-    			return model.getRawModel().contains(o);
-    			}
-    			})
-			, "Inferred statements");
+        geneidModel.read("http://bio2rdf.org/geneid:12334");
+        
+    	printIterator(geneidModel.listStatements(), "sparql 1.1 query data");
+
+    	Query query = QueryFactory.create("CONSTRUCT { ?myUri <http://bio2rdf.org/bio2rdf_resource:symbol_ref> ?symbolUri .  } WHERE { ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarySymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri) }", Syntax.syntaxSPARQL_11);
+    	QueryExecution qe = QueryExecutionFactory.create(query, geneidModel);
+    	
+    	final Model resultsModel = ModelFactory.createDefaultModel();
+        
+    	qe.execConstruct(resultsModel);
+    	
+    	printIterator(resultsModel.listStatements(), "sparql 1.1 query results");
     }
     
     public static void printIterator(Iterator<?> i, String header) {
