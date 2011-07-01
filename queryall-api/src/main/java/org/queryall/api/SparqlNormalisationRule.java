@@ -40,4 +40,14 @@ public interface SparqlNormalisationRule
 	 */
 	public abstract String getSparqlConstructQuery();
 
+	/**
+	 * @return the sparqlConstructQuery
+	 */
+	public abstract String getSparqlPrefixes();
+
+	/**
+	 * @param sparqlConstructQuery the sparqlConstructQuery to set
+	 */
+	public abstract void setSparqlPrefixes(String sparqlPrefixes);
+
 }
