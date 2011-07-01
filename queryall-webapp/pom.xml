@@ -5,7 +5,7 @@
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall-webapp</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>Queryall Webapp library</name>
 	<url>http://bio2rdf.org</url>
 	<developers>
@@ -43,13 +43,7 @@
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
-			<version>1.0.1</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-api</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.2-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

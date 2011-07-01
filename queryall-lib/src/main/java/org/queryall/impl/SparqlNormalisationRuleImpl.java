@@ -584,7 +584,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	 */
 	@Override
 	public String getSparqlConstructQuery() {
-		return new StringBuilder(getSparqlPrefixes()).append(" CONSTRUCT { ").append(getSparqlConstructQueryTarget()).append(" } WHERE { ").append(getSparqlWherePattern()).append(" }").toString();
+		StringBuilder results = new StringBuilder(getSparqlPrefixes()).append(" CONSTRUCT { ").append(getSparqlConstructQueryTarget()).append(" } WHERE { ").append(getSparqlWherePattern()).append(" }");
+		
+		log.info("sparql construct query="+results.toString());
+		
+		return results.toString();
 	}
 
 	/**
