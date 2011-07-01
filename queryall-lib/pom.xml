@@ -5,7 +5,7 @@
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall-lib</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<name>queryall</name>
 	<url>http://bio2rdf.wiki.sourceforge.net</url>
 	<inceptionYear>2007</inceptionYear>
@@ -44,14 +44,14 @@
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 			<scope>compile</scope>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>

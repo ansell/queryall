@@ -46,7 +46,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     // public String description = "";
     // public String curationStatus = ProjectImpl.projectNotCuratedUri.stringValue();
     
-    private String sparqlConstructQuery = "";
+    private String sparqlConstructQueryTarget = "";
+    private String sparqlWherePattern = "";
+	private String sparqlPrefixes = "";
     // public String profileIncludeExcludeOrder = Profile.getProfileIncludeExcludeOrder()UndefinedUri
             // .stringValue();
     // public Collection<String> relatedNamespaces = new HashSet<String>();
@@ -54,11 +56,13 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     private URI mode = SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
     
     private static URI sparqlruleTypeUri;
-    private static URI sparqlruleSparqlConstructQuery;
+    private static URI sparqlruleSparqlConstructQueryTarget;
     private static URI sparqlruleMode;
     private static URI sparqlruleModeOnlyIncludeMatches;
     private static URI sparqlruleModeOnlyDeleteMatches;
 	private static URI sparqlruleModeAddAllMatchingTriples;
+	private static URI sparqlruleSparqlWherePattern;
+	private static URI sparqlruleSparqlPrefixes;
     
     // public static String rdfruleNamespace;
     
@@ -68,8 +72,12 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         SparqlNormalisationRuleImpl.setSparqlRuleTypeUri(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "SparqlNormalisationRule"));
-        SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQuery(f
-                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlConstructQuery"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQueryTarget(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlConstructQueryTarget"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlWherePattern(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlWherePattern"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlPrefixes(f
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlPrefixes"));
         SparqlNormalisationRuleImpl.setSparqlRuleMode(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "mode"));
         SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyDeleteMatches(f
@@ -85,7 +93,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     	super();
     }
     
-    // keyToUse is the URI of the next instance that can be found in
+	// keyToUse is the URI of the next instance that can be found in
     // myRepository
     public SparqlNormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
             throws OpenRDFException
@@ -122,9 +130,21 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
-                    SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery()))
+                    SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget()))
             {
-                this.setSparqlConstructQuery(nextStatement.getObject()
+                this.setSparqlConstructQueryTarget(nextStatement.getObject()
+                        .stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(
+                    SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern()))
+            {
+                this.setSparqlWherePattern(nextStatement.getObject()
+                        .stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(
+                    SparqlNormalisationRuleImpl.getSparqlRuleSparqlPrefixes()))
+            {
+                this.setSparqlPrefixes(nextStatement.getObject()
                         .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
@@ -176,7 +196,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
+	public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
     {
         NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
         
@@ -193,10 +213,10 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
 
 
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextUri);
-            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(), RDFS.LABEL, f.createLiteral("A SPARQL CONSTRUCT pattern that will be used to match against RDF triples in memory at the assigned stages, in the form CONSTRUCT { ... } WHERE { ... }."), contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextUri);
+            con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDFS.LABEL, f.createLiteral("The CONSTRUCT { ... } part of the query that will be used to match against RDF triples in memory at the assigned stages, in the form of a basic graph pattern."), contextUri);
 
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleMode(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
@@ -293,7 +313,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         {
             if(_DEBUG)
             {
-                log.debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQuery="+getSparqlConstructQuery());
+                log.debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQueryTarget="+getSparqlConstructQuery());
             }        
             
             RepositoryConnection removeConnection = myRepository.getConnection();
@@ -349,7 +369,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             
             if(_DEBUG)
             {
-                log.debug("SparqlNormalisationRuleImpl: selecting statements according to sparqlConstructQuery="+getSparqlConstructQuery());
+                log.debug("SparqlNormalisationRuleImpl: selecting statements according to sparqlConstructQueryTarget="+getSparqlConstructQuery());
             }        
             
             RepositoryConnection selectConnection = myRepository.getConnection();
@@ -466,8 +486,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             }
             
             final URI keyUri = this.getKey();
-            final Literal sparqlConstructQueryLiteral = f
-                    .createLiteral(this.getSparqlConstructQuery());
+            final Literal sparqlConstructQueryTargetLiteral = f.createLiteral(this.getSparqlConstructQueryTarget());
+            final Literal sparqlWherePatternLiteral = f.createLiteral(this.getSparqlWherePattern());
+            final Literal sparqlPrefixesLiteral = f.createLiteral(this.getSparqlPrefixes());
             final URI modeUri = getMode();
             
             con.setAutoCommit(false);
@@ -475,8 +496,12 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(),
             		keyToUse);
             
-            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQuery(),
-                    sparqlConstructQueryLiteral, keyToUse);
+            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlPrefixes(),
+                    sparqlPrefixesLiteral, keyToUse);
+            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(),
+                    sparqlConstructQueryTargetLiteral, keyToUse);
+            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern(),
+                    sparqlWherePatternLiteral, keyToUse);
             con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(),
                     modeUri, keyToUse);
 
@@ -508,7 +533,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         result += "key=" + this.getKey() + "\n";
         result += "order=" + this.getOrder() + "\n";
-        result += "sparqlConstructQuery=" + this.getSparqlConstructQuery() + "\n";
+        result += "sparqlConstructQueryTarget=" + this.getSparqlConstructQuery() + "\n";
         result += "mode=" + this.getMode() + "\n";
         result += "description=" + this.getDescription() + "\n";
         
@@ -543,19 +568,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	}
 
 	/* (non-Javadoc)
-	 * @see org.queryall.impl.SparqlNormalisationRule#setSparqlConstructQuery(java.lang.String)
-	 */
-	@Override
-	public void setSparqlConstructQuery(String sparqlConstructQuery) {
-		this.sparqlConstructQuery = sparqlConstructQuery;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.queryall.impl.SparqlNormalisationRule#getSparqlConstructQuery()
 	 */
 	@Override
 	public String getSparqlConstructQuery() {
-		return sparqlConstructQuery;
+		return new StringBuilder(getSparqlPrefixes()).append(" CONSTRUCT { ").append(getSparqlConstructQueryTarget()).append(" } WHERE { ").append(getSparqlWherePattern()).append(" }").toString();
 	}
 
 	/**
@@ -588,20 +605,41 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	}
 
 	/**
-	 * @param sparqlruleSparqlConstructQuery the sparqlruleSparqlConstructQuery to set
+	 * @param sparqlruleSparqlConstructQueryTarget the sparqlruleSparqlConstructQueryTarget to set
 	 */
-	public static void setSparqlRuleSparqlConstructQuery(
+	public static void setSparqlRuleSparqlConstructQueryTarget(
 			URI sparqlruleSparqlConstructQuery) {
-		SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
+		SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
 	}
 
 	/**
-	 * @return the sparqlruleSparqlConstructQuery
+	 * @return the sparqlruleSparqlConstructQueryTarget
 	 */
-	public static URI getSparqlRuleSparqlConstructQuery() {
-		return sparqlruleSparqlConstructQuery;
+	public static URI getSparqlRuleSparqlConstructQueryTarget() {
+		return sparqlruleSparqlConstructQueryTarget;
 	}
 
+    public static void setSparqlRuleSparqlPrefixes(URI sparqlruleSparqlPrefixes)
+	{
+    	SparqlNormalisationRuleImpl.sparqlruleSparqlPrefixes = sparqlruleSparqlPrefixes;
+	}
+
+	public static void setSparqlRuleSparqlWherePattern(URI sparqlruleSparqlWherePattern)
+	{
+		SparqlNormalisationRuleImpl.sparqlruleSparqlWherePattern = sparqlruleSparqlWherePattern;
+	}
+
+    public static URI getSparqlRuleSparqlPrefixes()
+	{
+		return sparqlruleSparqlPrefixes;
+	}
+
+	public static URI getSparqlRuleSparqlWherePattern()
+	{
+		return sparqlruleSparqlWherePattern;
+	}
+
+	
 	/**
 	 * @param sparqlruleMode the sparqlruleMode to set
 	 */
@@ -646,5 +684,41 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	public static URI getSparqlRuleModeAddAllMatchingTriples()
 	{
 		return sparqlruleModeAddAllMatchingTriples;
+	}
+
+	@Override
+	public String getSparqlConstructQueryTarget()
+	{
+		return this.sparqlConstructQueryTarget;
+	}
+
+	@Override
+	public void setSparqlConstructQueryTarget(String sparqlConstructQueryTarget)
+	{
+		this.sparqlConstructQueryTarget = sparqlConstructQueryTarget;
+	}
+
+	@Override
+	public String getSparqlWherePattern()
+	{
+		return this.sparqlWherePattern;
+	}
+
+	@Override
+	public void setSparqlWherePattern(String sparqlWherePattern)
+	{
+		this.sparqlWherePattern = sparqlWherePattern;
+	}
+
+	@Override
+	public String getSparqlPrefixes()
+	{
+		return this.sparqlPrefixes;
+	}
+
+	@Override
+	public void setSparqlPrefixes(String sparqlPrefixes)
+	{
+		this.sparqlPrefixes = sparqlPrefixes;
 	}
 }
