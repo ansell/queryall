@@ -398,7 +398,7 @@ public class HtmlPageRenderer
         context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "queryall")+ "/"+Settings.VERSION);
         context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
 
-        context.put("index_banner_image", localSettings.getStringPropertyFromConfig("indexBannerImagePath","static/includes-images/merged-bio2rdf-baner.jpg"));
+        context.put("index_banner_image", localSettings.getStringPropertyFromConfig("indexBannerImagePath","static/includes-images/merged-bio2rdf-banner.jpg"));
         context.put("index_project_image", localSettings.getStringPropertyFromConfig("indexProjectImagePath","static/includes-images/Bio2RDF.jpg"));
         
         context.put("shortcut_icon", localSettings.getStringPropertyFromConfig("shortcutIconPath","static/includes-images/favicon.ico"));
