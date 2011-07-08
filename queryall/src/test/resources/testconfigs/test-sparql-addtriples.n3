@@ -1,7 +1,0 @@
-<http://example.org/rdfrule:sparqladdrandomtriplestest> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> ;
-    <http://purl.org/queryall/rdfrule:mode> <http://purl.org/queryall/rdfrule:addAllMatchingTriples> ;
-    <http://purl.org/queryall/rdfrule:sparqlConstructQuery> "CONSTRUCT { <http://example.org/test> <http://example.org/example_resource:testproperty> <urn:lsid:example.org:test> . } WHERE { ?myUri ?property ?object . FILTER(isBound(?object) || !isBound(?object)) } LIMIT 1" ;
-	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsToPool> ;
-	<http://purl.org/queryall/rdfrule:description> "Testing add all matching triples" ;
-	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
-	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .

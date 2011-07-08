@@ -1,6 +1,0 @@
-<http://bio2rdf.org/rdfrule:testXsltTransform> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:XsltNormalisationRule> ;
-    <http://purl.org/queryall/rdfrule:xsltStylesheet> "<xsl:stylesheet version=\"2.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:output method=\"text\" indent=\"no\" encoding=\"UTF-8\" omit-xml-declaration=\"yes\"></xsl:output><xsl:template match=\"/test\"><xsl:value-of select=\"@testAttr\"/></xsl:template></xsl:stylesheet>" ;
-	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:beforeResultsImport> ;
-	<http://purl.org/queryall/rdfrule:description> "Test XSLT transformation" ;
-	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
-	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:includeThenExclude> .
