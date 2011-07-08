@@ -61,8 +61,17 @@ public class ReasonerTestApp
         geneidModel.read("http://bio2rdf.org/geneid:12334");
         
     	printIterator(geneidModel.listStatements(), "sparql 1.1 query data");
-
+    	
+    	Model oboAeoModel = ModelFactory.createDefaultModel();
+    	
+    	oboAeoModel.read("http://bio2rdf.org/obo_aeo:0000293");
+    	
+    	String testUri = "http://purl.obolibrary.org/obo/AEO_";
+    	String testQuery = "?myUri ?property ?object . FILTER(isUri(?object) && regex(str(?object), http://purl.obolibrary.org/obo/AEO_)) . bind(iri(concat(\"http://bio2rdf.org/obo_aeo:\", encode_for_uri(lcase(substr(str(?uri), 35)))) AS ?symbolUri)";
+    	
     	Query query = QueryFactory.create("CONSTRUCT { ?myUri <http://bio2rdf.org/bio2rdf_resource:symbol_ref> ?symbolUri .  } WHERE { ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarySymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri) }", Syntax.syntaxSPARQL_11);
+
+    	
     	QueryExecution qe = QueryExecutionFactory.create(query, geneidModel);
     	
     	final Model resultsModel = ModelFactory.createDefaultModel();
