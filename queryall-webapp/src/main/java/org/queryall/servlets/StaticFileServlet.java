@@ -66,7 +66,7 @@ public class StaticFileServlet extends HttpServlet
 	    	f = new File(fileResource.toURI());
 	    	
 	    	// check to see if /static/ is in the path still
-	    	if(f.getCanonicalPath().contains("/static/"))
+	    	if(f.getCanonicalPath().contains(File.separator+"static"+File.separator))
 	    	{	    	
 			    int                 length   = 0;
 			    ServletOutputStream op       = response.getOutputStream();
