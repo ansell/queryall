@@ -46,7 +46,7 @@ public class RdfFetcher
         int maxRowsParameter,
         String acceptHeader
     )
-    throws java.net.SocketTimeoutException, java.net.ConnectException, Exception
+    throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, Exception
     {
         if(_DEBUG)
         {
@@ -88,7 +88,7 @@ public class RdfFetcher
     
     // If postInformation is empty String "" or null then we assume they did not want to post
     public String getDocumentFromUrl(String endpointUrl, String postInformation, String acceptHeader)
-    throws java.net.SocketTimeoutException, java.net.ConnectException, Exception
+    throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, Exception
     {
         if(_DEBUG)
         {
@@ -179,6 +179,17 @@ public class RdfFetcher
                 
                 results.append(line + "\n");
             }
+        }
+        catch(java.net.UnknownHostException uhe)
+        {
+            if(_INFO)
+            {
+                log.info("RdfFetcher.getDocumentFromUrl: Unknown Host Exception occurred endpointUrl="+endpointUrl);
+            }
+            
+            errorOccured = true;
+            
+            throw uhe;
         }
         catch(java.net.ConnectException ce)
         {

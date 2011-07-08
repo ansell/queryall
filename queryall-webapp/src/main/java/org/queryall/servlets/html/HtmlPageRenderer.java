@@ -50,9 +50,6 @@ public class HtmlPageRenderer
         boolean nextpagelinkuseful = false;
         boolean previouspagelinkuseful = false;
         int previouspageoffset = pageoffset - 1;
-        // String discoLink = "http://www4.wiwiss.fu-berlin.de/rdf_browser/?browse_uri=" + RdfUtils.percentEncode(resolvedUri);
-        // String tabulatorLink = "http://dig.csail.mit.edu/2005/ajar/ajaw/tab.html?uri=" + RdfUtils.percentEncode(resolvedUri);
-        // String openLinkLink = "http://demo.openlinksw.com/rdfbrowser/?uri=" + RdfUtils.percentEncode(resolvedUri);
         
         if(fetchController != null)
         {
@@ -105,11 +102,11 @@ public class HtmlPageRenderer
         
         
         context.put("project_name", localSettings.getStringPropertyFromConfig("projectName", "queryall"));
-        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUri", ""));
+        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUri", "http://bio2rdf.org/"));
         context.put("project_html_url_prefix", localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/"));
         context.put("project_html_url_suffix", localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
-        context.put("project_link", localSettings.getStringPropertyFromConfig("projectHomeUrl", ""));
-        context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "")+ "/"+Settings.VERSION);
+        context.put("project_link", localSettings.getStringPropertyFromConfig("projectHomeUrl", "http://bio2rdf.org/"));
+        context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "queryall")+ "/"+Settings.VERSION);
         context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
         context.put("uri", resolvedUri);
         
@@ -391,7 +388,7 @@ public class HtmlPageRenderer
         context.put("title", localSettings.getStringPropertyFromConfig("projectName", "Bio2RDF"));
 
         context.put("project_name", localSettings.getStringPropertyFromConfig("projectName", "Bio2RDF"));
-        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUrl", "http://bio2rdf.org/"));
+        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUri", "http://bio2rdf.org/"));
         context.put("project_html_url_prefix", localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "html/"));
         context.put("project_html_url_suffix", localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
         context.put("project_link", localSettings.getStringPropertyFromConfig("projectHomeUrl", "http://bio2rdf.org/"));
