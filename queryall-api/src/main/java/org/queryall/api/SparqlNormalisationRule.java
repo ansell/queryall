@@ -1,5 +1,7 @@
 package org.queryall.api;
 
+import java.util.List;
+
 import org.openrdf.model.URI;
 
 /**
@@ -28,12 +30,12 @@ public interface SparqlNormalisationRule
 	/**
 	 * @return the sparqlConstructQuery
 	 */
-	public abstract String getSparqlWherePattern();
+	public abstract List<String> getSparqlWherePatterns();
 
 	/**
 	 * @param sparqlConstructQuery the sparqlConstructQuery to set
 	 */
-	public abstract void setSparqlWherePattern(String sparqlWherePattern);
+	public abstract void addSparqlWherePattern(String sparqlWherePattern);
 
 	/**
 	 * @return the sparqlConstructQuery
