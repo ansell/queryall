@@ -60,25 +60,69 @@ public class ReasonerTestApp
         
         geneidModel.read("http://bio2rdf.org/geneid:12334");
         
-    	printIterator(geneidModel.listStatements(), "sparql 1.1 query data");
+//   	printIterator(geneidModel.listStatements(), "sparql 1.1 query data");
+		//"CONSTRUCT { ?myUri <http://bio2rdf.org/bio2rdf_resource:symbol_ref> ?symbolUri .  } WHERE { ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarySymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri) }"
     	
     	Model oboAeoModel = ModelFactory.createDefaultModel();
     	
     	oboAeoModel.read("http://bio2rdf.org/obo_aeo:0000293");
     	
-    	String testUri = "http://purl.obolibrary.org/obo/AEO_";
-    	String testQuery = "?myUri ?property ?object . FILTER(isUri(?object) && regex(str(?object), http://purl.obolibrary.org/obo/AEO_)) . bind(iri(concat(\"http://bio2rdf.org/obo_aeo:\", encode_for_uri(lcase(substr(str(?uri), 35)))) AS ?symbolUri)";
+    	printIterator(oboAeoModel.listStatements(), "sparql 1.1 query data");
     	
-    	Query query = QueryFactory.create("CONSTRUCT { ?myUri <http://bio2rdf.org/bio2rdf_resource:symbol_ref> ?symbolUri .  } WHERE { ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarySymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri) }", Syntax.syntaxSPARQL_11);
+    	String testStartingUri = "http://purl.obolibrary.org/obo/AEO_";
+    	String testFinalUri = "http://bio2rdf.org/obo_aeo:";
+    	String testQueryConstructGraph = "?myUri ?property ?bio2rdfUri . ?bio2rdfUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
+    	String testQueryWherePattern = generateConversionPattern(testStartingUri, testFinalUri);
 
+    	Query query = QueryFactory.create(
+    			mergeQuery(testQueryConstructGraph, testQueryWherePattern)
+    			, Syntax.syntaxSPARQL_11);
     	
-    	QueryExecution qe = QueryExecutionFactory.create(query, geneidModel);
+    	QueryExecution qe = QueryExecutionFactory.create(query, oboAeoModel);
     	
     	final Model resultsModel = ModelFactory.createDefaultModel();
         
     	qe.execConstruct(resultsModel);
     	
     	printIterator(resultsModel.listStatements(), "sparql 1.1 query results");
+    }
+
+	/**
+	 * @param testStartingUri
+	 * @param testFinalUri
+	 * @return
+	 */
+	private static String generateConversionPattern(String testStartingUri,
+			String testFinalUri)
+	{
+		return "?myUri ?property ?object . " +
+    			" " +
+    			"FILTER(isUri(?object) && regex(str(?object), \"" +
+    			testStartingUri +
+    			"\")) . " +
+    			" " +
+    			"bind(" +
+    			"iri(" +
+    			"concat(" +
+    			"\"" +
+    			testFinalUri +
+    			"\"," +
+    			" " +
+    			"encode_for_uri(" +
+    			"lcase(" +
+    			"substr(" +
+    			"str(?object), " +
+    			(testStartingUri.length()+1) +
+    			")))" +
+    			" " +
+    			") " +
+    			") " +
+    			"AS ?bio2rdfUri) . ";
+	}
+    
+    public static String mergeQuery(String constructGraphPattern, String wherePattern)
+    {
+    	return new StringBuilder(200).append("CONSTRUCT { ").append(constructGraphPattern).append(" } WHERE { ").append(wherePattern).append(" }").toString();
     }
     
     public static void printIterator(Iterator<?> i, String header) {
