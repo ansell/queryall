@@ -1,6 +1,6 @@
 package org.queryall.api;
 
-public interface RegexNormalisationRule
+public abstract class RegexNormalisationRule extends NormalisationRule
 {
 
 	// NOTE: it is quite okay to have an empty replace regex, but an empty match
