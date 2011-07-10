@@ -1,8 +1,10 @@
 
 package org.queryall.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
@@ -47,7 +49,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     // public String curationStatus = ProjectImpl.projectNotCuratedUri.stringValue();
     
     private String sparqlConstructQueryTarget = "";
-    private String sparqlWherePattern = "";
+    private List<String> sparqlWherePatterns = new ArrayList<String>();
 	private String sparqlPrefixes = "";
     // public String profileIncludeExcludeOrder = Profile.getProfileIncludeExcludeOrder()UndefinedUri
             // .stringValue();
@@ -78,7 +80,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQueryTarget(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlConstructQueryTarget"));
         SparqlNormalisationRuleImpl.setSparqlRuleSparqlWherePattern(f
-                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlWherePattern"));
+                .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlWherePatterns"));
         SparqlNormalisationRuleImpl.setSparqlRuleSparqlPrefixes(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "sparqlPrefixes"));
         SparqlNormalisationRuleImpl.setSparqlRuleMode(f
@@ -143,7 +145,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             else if(nextStatement.getPredicate().equals(
                     SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern()))
             {
-                this.setSparqlWherePattern(nextStatement.getObject()
+                this.addSparqlWherePattern(nextStatement.getObject()
                         .stringValue());
             }
             else if(nextStatement.getPredicate().equals(
@@ -217,7 +219,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.LABEL, f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."), contextUri);
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF, NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
 
-
+            // TODO: update schema
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDFS.DOMAIN, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), contextUri);
@@ -323,29 +325,35 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             
             RepositoryConnection removeConnection = myRepository.getConnection();
             
-            try 
+        	try
             {
-                GraphQueryResult graphResult = removeConnection.prepareGraphQuery(
-                    QueryLanguage.SPARQL, getSparqlConstructQuery()).evaluate();
-                
-                int deletedStatements = 0;
-                
-                while (graphResult.hasNext()) 
-                {
-                   removeConnection.remove(graphResult.next());
-                   deletedStatements++;
-                }
-                
-                removeConnection.commit();
-                if(_DEBUG)
-                {
-                    log.debug("SparqlNormalisationRuleImpl: removed "+deletedStatements+ " results");
-                }        
-                
-            }
-            catch(Exception ex)
-            {
-                log.error("SparqlNormalisationRuleImpl: exception removing statements",ex);
+	            for(String nextConstructQuery : getSparqlConstructQueries())
+	            {
+		            try 
+		            {
+		                GraphQueryResult graphResult = removeConnection.prepareGraphQuery(
+		                    QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+		                
+		                int deletedStatements = 0;
+		                
+		                while (graphResult.hasNext()) 
+		                {
+		                   removeConnection.remove(graphResult.next());
+		                   deletedStatements++;
+		                }
+		                
+		                removeConnection.commit();
+		                if(_DEBUG)
+		                {
+		                    log.debug("SparqlNormalisationRuleImpl: removed "+deletedStatements+ " results");
+		                }        
+		                
+		            }
+		            catch(Exception ex)
+		            {
+		                log.error("SparqlNormalisationRuleImpl: exception removing statements",ex);
+		            }
+	            }
             }
             finally
             {
@@ -389,29 +397,37 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             	addConnection = resultRepository.getConnection();
             }
             
-            try 
+        	addConnection.setAutoCommit(false);
+
+        	try
             {
-                GraphQueryResult graphResult = selectConnection.prepareGraphQuery(
-                    QueryLanguage.SPARQL, getSparqlConstructQuery()).evaluate();
-                
-                int selectedStatements = 0;
-                
-                while (graphResult.hasNext()) 
-                {
-                   addConnection.add(graphResult.next());
-                   selectedStatements++;
-                }
-                
-                if(_DEBUG)
-                {
-                    log.debug("SparqlNormalisationRuleImpl: slected "+selectedStatements+ " statements for results");
-                }        
-                
-                addConnection.commit();
-            }
-            catch(Exception ex)
-            {
-                log.error("SparqlNormalisationRuleImpl: exception adding statements",ex);
+	            for(String nextConstructQuery : getSparqlConstructQueries())
+	            {
+		            try 
+		            {
+		                GraphQueryResult graphResult = selectConnection.prepareGraphQuery(
+		                    QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+		                
+		                int selectedStatements = 0;
+		                
+		                while (graphResult.hasNext()) 
+		                {
+		                   addConnection.add(graphResult.next());
+		                   selectedStatements++;
+		                }
+		                
+		                if(_DEBUG)
+		                {
+		                    log.debug("SparqlNormalisationRuleImpl: slected "+selectedStatements+ " statements for results");
+		                }        
+		                
+		                addConnection.commit();
+		            }
+		            catch(Exception ex)
+		            {
+		                log.error("SparqlNormalisationRuleImpl: exception adding statements",ex);
+		            }
+	            }
             }
             finally
             {
@@ -432,6 +448,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 
     public boolean runTests(Collection<RuleTest> myRules)
     {
+    	// TODO: implement me or delete me!
         boolean allPassed = true;
         
         //final Collection<RuleTest> myRules = Settings.getRuleTestsForNormalisationRuleUri(this.getKey());
@@ -492,30 +509,30 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             
             final URI keyUri = this.getKey();
             final Literal sparqlConstructQueryTargetLiteral = f.createLiteral(this.getSparqlConstructQueryTarget());
-            final Literal sparqlWherePatternLiteral = f.createLiteral(this.getSparqlWherePattern());
             final Literal sparqlPrefixesLiteral = f.createLiteral(this.getSparqlPrefixes());
             final URI modeUri = getMode();
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(),
-            		keyToUse);
+            con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), keyToUse);
             
             if(modelVersion >= 5)
             {
-	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlPrefixes(),
-	                    sparqlPrefixesLiteral, keyToUse);
-	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(),
-	                    sparqlConstructQueryTargetLiteral, keyToUse);
-	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern(),
-	                    sparqlWherePatternLiteral, keyToUse);
+	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlPrefixes(), sparqlPrefixesLiteral, keyToUse);
+	            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), sparqlConstructQueryTargetLiteral, keyToUse);
+	            
+	            for(String nextWherePattern : this.getSparqlWherePatterns())
+	            {
+		            Literal sparqlWherePatternLiteral = f.createLiteral(nextWherePattern);
+		            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleSparqlWherePattern(), sparqlWherePatternLiteral, keyToUse);
+	            }
             }
             else
             {
             	con.add(keyUri, SparqlNormalisationRuleImpl.getOLDSparqlRuleSparqlConstructQuery(), f.createLiteral(getSparqlConstructQuery()), keyToUse);
             }
-            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(),
-                    modeUri, keyToUse);
+
+            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(), modeUri, keyToUse);
 
             // If everything went as planned, we can commit the result
             con.commit();
@@ -583,40 +600,75 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	 * @see org.queryall.impl.SparqlNormalisationRule#getSparqlConstructQuery()
 	 */
 	@Override
-	public String getSparqlConstructQuery() {
-		StringBuilder results = new StringBuilder(getSparqlPrefixes()).append(" CONSTRUCT { ").append(getSparqlConstructQueryTarget()).append(" } WHERE { ").append(getSparqlWherePattern()).append(" }");
+	public String getSparqlConstructQuery() 
+	{
+		List<String> results = getSparqlConstructQueries();
 		
-		log.info("sparql construct query="+results.toString());
+		if(results.size() > 0)
+		{
+			return results.get(0);
+		}
+		else
+		{
+			log.error("Could not find a sparql construct query for key="+this.getKey().stringValue());
+			return "";
+		}
+	}
+	
+	public List<String> getSparqlConstructQueries()
+	{
+		List<String> results = new ArrayList<String>(getSparqlWherePatterns().size());
+		for(String wherePattern : getSparqlWherePatterns())
+		{
+			String result = getConstructQueryUsingWherePattern(wherePattern);
+			
+			results.add(result.toString());
+		}
 		
-		return results.toString();
+		return results;
+	}
+
+
+
+	/**
+	 * @param wherePattern
+	 * @return
+	 */
+	private String getConstructQueryUsingWherePattern(String wherePattern)
+	{
+		return new StringBuilder(getSparqlPrefixes()).append(" CONSTRUCT { ").append(getSparqlConstructQueryTarget()).append(" } WHERE { ").append(wherePattern).append(" }").toString();
 	}
 
 	/**
 	 * @param sparqlruleModeOnlyDeleteMatches the sparqlruleModeOnlyDeleteMatches to set
 	 */
 	public static void setSparqlRuleModeOnlyDeleteMatches(
-			URI sparqlruleModeOnlyDeleteMatches) {
+			URI sparqlruleModeOnlyDeleteMatches) 
+	{
 		SparqlNormalisationRuleImpl.sparqlruleModeOnlyDeleteMatches = sparqlruleModeOnlyDeleteMatches;
 	}
 
 	/**
 	 * @return the sparqlruleModeOnlyDeleteMatches
 	 */
-	public static URI getSparqlRuleModeOnlyDeleteMatches() {
+	public static URI getSparqlRuleModeOnlyDeleteMatches() 
+	{
 		return sparqlruleModeOnlyDeleteMatches;
 	}
 
 	/**
 	 * @param sparqlruleTypeUri the sparqlruleTypeUri to set
 	 */
-	public static void setSparqlRuleTypeUri(URI sparqlruleTypeUri) {
+	public static void setSparqlRuleTypeUri(URI sparqlruleTypeUri) 
+	{
 		SparqlNormalisationRuleImpl.sparqlruleTypeUri = sparqlruleTypeUri;
 	}
 
 	/**
 	 * @return the sparqlruleTypeUri
 	 */
-	public static URI getSparqlRuleTypeUri() {
+	public static URI getSparqlRuleTypeUri() 
+	{
 		return sparqlruleTypeUri;
 	}
 
@@ -624,14 +676,16 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	 * @param sparqlruleSparqlConstructQueryTarget the sparqlruleSparqlConstructQueryTarget to set
 	 */
 	public static void setSparqlRuleSparqlConstructQueryTarget(
-			URI sparqlruleSparqlConstructQuery) {
+			URI sparqlruleSparqlConstructQuery) 
+	{
 		SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
 	}
 
 	/**
 	 * @return the sparqlruleSparqlConstructQueryTarget
 	 */
-	public static URI getSparqlRuleSparqlConstructQueryTarget() {
+	public static URI getSparqlRuleSparqlConstructQueryTarget() 
+	{
 		return sparqlruleSparqlConstructQueryTarget;
 	}
 
@@ -715,15 +769,15 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	}
 
 	@Override
-	public String getSparqlWherePattern()
+	public List<String> getSparqlWherePatterns()
 	{
-		return this.sparqlWherePattern;
+		return this.sparqlWherePatterns;
 	}
 
 	@Override
-	public void setSparqlWherePattern(String sparqlWherePattern)
+	public void addSparqlWherePattern(String sparqlWherePattern)
 	{
-		this.sparqlWherePattern = sparqlWherePattern;
+		this.sparqlWherePatterns.add(sparqlWherePattern);
 	}
 
 	@Override
