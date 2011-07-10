@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import org.openrdf.model.URI;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

@@ -7,7 +7,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -21,8 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /**
- * @author karina
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class StaticFileServlet extends HttpServlet
 {

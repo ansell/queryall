@@ -13,9 +13,6 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Map;
 
-import net.fortytwo.sesametools.rdfjson.RDFJSONWriter;
-import net.fortytwo.sesametools.rdfjson.RDFJSONWriterFactory;
-
 import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
@@ -40,18 +37,15 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
-import org.openrdf.rio.rdfxml.RDFXMLWriter;
 import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.memory.model.BooleanMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.openrdf.sail.memory.model.CalendarMemLiteral;
 
 import org.queryall.api.BaseQueryAllInterface;
-import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.HttpProviderImpl;
-import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.QueryTypeImpl;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.queryutils.QueryBundle;

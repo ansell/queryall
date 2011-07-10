@@ -1,7 +1,5 @@
 package org.queryall.queryutils;
 
-import info.aduna.iteration.Iterations;
-
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.XMLSchema;
@@ -16,14 +14,9 @@ import org.openrdf.rio.Rio;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,7 +26,6 @@ import java.util.Date;
 
 import org.queryall.impl.*;
 import org.queryall.api.BaseQueryAllInterface;
-import org.queryall.api.Provider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.*;
 

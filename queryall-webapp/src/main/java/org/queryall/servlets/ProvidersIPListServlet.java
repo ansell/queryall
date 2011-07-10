@@ -7,20 +7,11 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.queryall.impl.*;
 import org.queryall.api.HttpProvider;
-import org.queryall.api.NamespaceEntry;
-import org.queryall.api.NormalisationRule;
-import org.queryall.api.Profile;
 import org.queryall.api.Provider;
-import org.queryall.api.QueryType;
-import org.queryall.api.RuleTest;
-import org.queryall.api.SparqlProvider;
 import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
-
-import org.openrdf.model.URI;
 
 /** 
  * 

@@ -8,7 +8,6 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.ProviderImpl;
 
 /**
  * Provides the implementation of the Provider class 

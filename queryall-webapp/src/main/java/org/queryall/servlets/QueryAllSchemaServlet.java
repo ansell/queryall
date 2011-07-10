@@ -7,17 +7,11 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.servlets.html.*;
-import org.queryall.queryutils.*;
-import org.queryall.statistics.*;
 import org.queryall.helpers.*;
-import org.queryall.impl.*;
 
 import org.openrdf.*;
 import org.openrdf.rio.*;
 import org.openrdf.repository.*;
-import org.openrdf.repository.sail.*;
-import org.openrdf.sail.inferencer.fc.ForwardChainingRDFSInferencer;
-import org.openrdf.sail.memory.*;
 
 import org.apache.log4j.Logger;
 

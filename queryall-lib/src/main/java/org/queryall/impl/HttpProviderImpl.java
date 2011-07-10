@@ -4,7 +4,6 @@
 package org.queryall.impl;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
@@ -20,7 +19,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.HttpProvider;
-import org.queryall.api.Provider;
 import org.queryall.api.SparqlProvider;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.RdfUtils;

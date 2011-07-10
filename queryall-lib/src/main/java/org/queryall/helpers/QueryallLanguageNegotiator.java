@@ -5,8 +5,6 @@ import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 
 import org.apache.log4j.Logger;
 
-import org.queryall.helpers.*;
-
 public class QueryallLanguageNegotiator
 {
     private static final Logger log = Logger.getLogger(QueryallLanguageNegotiator.class.getName());
