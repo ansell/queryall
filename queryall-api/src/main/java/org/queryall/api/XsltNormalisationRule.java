@@ -1,6 +1,6 @@
 package org.queryall.api;
 
-public abstract class XsltNormalisationRule extends NormalisationRule
+public interface XsltNormalisationRule
 {
 
 	/**

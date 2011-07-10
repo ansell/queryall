@@ -49,4 +49,16 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     {
         return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     }
+
+	@Override
+	public URI getSparqlRuleModeAddAllMatchingTriplesURI() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public URI getRdfruleStageAfterResultsImportURI() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
