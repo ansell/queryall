@@ -3,6 +3,8 @@ package org.queryall.reasoning;
 import java.util.Iterator;
 
 import org.mindswap.pellet.jena.PelletReasonerFactory;
+import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.SparqlNormalisationRuleImpl;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -71,9 +73,21 @@ public class ReasonerTestApp
     	
     	String testStartingUri = "http://purl.obolibrary.org/obo/AEO_";
     	String testFinalUri = "http://bio2rdf.org/obo_aeo:";
-    	String testQueryConstructGraph = "?myUri ?property ?bio2rdfUri . ?bio2rdfUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
+    	String testQueryConstructGraph = "?myUri ?property ?convertedUri . ?convertedUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
     	String testQueryWherePattern = generateConversionPattern(testStartingUri, testFinalUri);
-
+    	
+    	SparqlNormalisationRuleImpl queryallRule = new SparqlNormalisationRuleImpl();
+    	
+    	queryallRule.setKey("http://bio2rdf.org/rdfrule:oboaeosparqlrule");
+    	queryallRule.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples());
+    	queryallRule.setOrder(100);
+    	queryallRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
+    	queryallRule.addSparqlWherePattern(testQueryWherePattern);
+    	queryallRule.addStage(SparqlNormalisationRuleImpl.getRdfruleStageAfterResultsImport());
+    	queryallRule.setProfileIncludeExcludeOrder(ProfileImpl.getExcludeThenIncludeUri());
+    	
+    	
+    	
     	Query query = QueryFactory.create(
     			mergeQuery(testQueryConstructGraph, testQueryWherePattern)
     			, Syntax.syntaxSPARQL_11);
@@ -117,12 +131,12 @@ public class ReasonerTestApp
     			" " +
     			") " +
     			") " +
-    			"AS ?bio2rdfUri) . ";
+    			"AS ?convertedUri) . ";
 	}
     
     public static String mergeQuery(String constructGraphPattern, String wherePattern)
     {
-    	return new StringBuilder(200).append("CONSTRUCT { ").append(constructGraphPattern).append(" } WHERE { ").append(wherePattern).append(" }").toString();
+    	return new StringBuilder(300).append("CONSTRUCT { ").append(constructGraphPattern).append(" } WHERE { ").append(wherePattern).append(" }").toString();
     }
     
     public static void printIterator(Iterator<?> i, String header) {
