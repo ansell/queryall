@@ -21,6 +21,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.XsltNormalisationRule;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.StringUtils;
 
@@ -135,6 +136,11 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 	{
         super(inputStatements, keyToUse, modelVersion);
         
+        this.addValidStage(getRdfruleStageQueryVariables());
+        this.addValidStage(getRdfruleStageAfterQueryCreation());
+        this.addValidStage(getRdfruleStageBeforeResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToDocument());
+        
     	Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
     	
     	currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
@@ -174,11 +180,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
                 this.unrecognisedStatements.add(nextStatement);
             }
         }
-        
-        this.addValidStage(getRdfruleStageQueryVariables());
-        this.addValidStage(getRdfruleStageAfterQueryCreation());
-        this.addValidStage(getRdfruleStageBeforeResultsImport());
-        this.addValidStage(getRdfruleStageAfterResultsToDocument());
         
         if(XsltNormalisationRuleImpl._DEBUG)
         {
@@ -398,8 +399,16 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
 		XsltNormalisationRuleImpl testRule = new XsltNormalisationRuleImpl();
 		testRule.setKey(StringUtils.createURI("http://example.org/test/xsltnormalisationrule/42"));
 		testRule.setXsltStylesheet(testXsltStyleSheet);
-		testRule.addStage(getRdfruleStageBeforeResultsImport());
         testRule.addValidStage(getRdfruleStageBeforeResultsImport());
+		
+        try
+        {
+        	testRule.addStage(getRdfruleStageBeforeResultsImport());
+        }
+        catch(InvalidStageException ise)
+        {
+        	System.err.println("Found invalid stage exception");
+        }
 		
 		String result = (String)testRule.stageBeforeResultsImport(input);
 

@@ -23,12 +23,14 @@ import org.openrdf.repository.RepositoryException;
 
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
 
 /**
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class NormalisationRuleImpl extends NormalisationRule
@@ -528,21 +530,35 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
      * @param Stages the Stages to set
      */
     @Override
-	public void setStages(Collection<URI> nextStages)
+	public void setStages(Collection<URI> nextStages) throws InvalidStageException
     {
-        this.stages = nextStages;
+    	try
+    	{
+	    	for(URI nextStage : nextStages)
+	    	{
+	    		addStage(nextStage);
+	    	}
+    	}
+    	catch(InvalidStageException ise)
+    	{
+    		this.stages = new ArrayList<URI>();
+    		throw ise;
+    	}
     }
     
     /**
      * @return the Stages
      */
     @Override
-	public void addStage(URI stage)
+	public void addStage(URI stage) throws InvalidStageException
     {
     	if(stages == null)
     		stages = new ArrayList<URI>();
     	
-    	stages.add(stage);
+    	if(validInStage(stage))
+    		stages.add(stage);
+    	else
+    		throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages");
     }
     
     public boolean validInStage(org.openrdf.model.URI stage)

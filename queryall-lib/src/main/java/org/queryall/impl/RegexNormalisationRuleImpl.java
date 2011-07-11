@@ -79,6 +79,11 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         super(inputStatements, keyToUse, modelVersion);
         
+        this.addValidStage(getRdfruleStageQueryVariables());
+        this.addValidStage(getRdfruleStageAfterQueryCreation());
+        this.addValidStage(getRdfruleStageBeforeResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToDocument());
+
     	Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
     	
     	currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
@@ -143,11 +148,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             }
         }
         
-        this.addValidStage(getRdfruleStageQueryVariables());
-        this.addValidStage(getRdfruleStageAfterQueryCreation());
-        this.addValidStage(getRdfruleStageBeforeResultsImport());
-        this.addValidStage(getRdfruleStageAfterResultsToDocument());
-
         if(RegexNormalisationRuleImpl._TRACE)
         {
             RegexNormalisationRuleImpl.log

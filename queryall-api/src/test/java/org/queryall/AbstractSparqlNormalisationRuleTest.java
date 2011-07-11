@@ -5,6 +5,7 @@ package org.queryall;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -16,24 +17,19 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 
 import org.queryall.api.NormalisationRule;
-import org.queryall.api.Profile;
 import org.queryall.api.SparqlNormalisationRule;
 
 /**
- * @author peter
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractSparqlNormalisationRuleTest
+public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormalisationRuleTest
 {
-    private URI testTrueSparqlNormalisationRuleUri;
-	private URI testFalseSparqlNormalisationRuleUri;
 	private URI testMultipleWherePatternsSparqlNormalisationRuleUri;
-	private SparqlNormalisationRule queryallRule;
+	private URI testStageEmptyConstructQuerySetSparqlNormalisationRuleUri;
 	private String testStartingUriAEOBase;
 	private String testFinalUriAEOBase;
 	private String testStartingUriPOBase;
 	private String testFinalUriPOBase;
-	private URI testStageInclusionSparqlNormalisationRuleUri;
 
 	/**
      * @throws java.lang.Exception
@@ -43,14 +39,26 @@ public abstract class AbstractSparqlNormalisationRuleTest
     {
         ValueFactory f = new MemValueFactory();
 
-        testTrueSparqlNormalisationRuleUri = f.createURI("http://example.org/test/includedNormalisationRule");
-        testFalseSparqlNormalisationRuleUri = f.createURI("http://example.org/test/excludedNormalisationRule");
         testMultipleWherePatternsSparqlNormalisationRuleUri = f.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
+        testStageEmptyConstructQuerySetSparqlNormalisationRuleUri =  f.createURI("http://example.org/test/emptyConstructQuerySetSparqlNormalisationRule");
 
-		testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
+        testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
 		testFinalUriAEOBase = "http://bio2rdf.org/obo_aeo:";
 		testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
 		testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
+
+        invalidStages = new ArrayList<URI>(5);
+		
+		invalidStages.add(getRdfruleStageQueryVariablesURI());
+		invalidStages.add(getRdfruleStageAfterQueryCreationURI());
+		invalidStages.add(getRdfruleStageAfterQueryParsingURI());
+		invalidStages.add(getRdfruleStageBeforeResultsImportURI());
+		invalidStages.add(getRdfruleStageAfterResultsToDocumentURI());
+
+		validStages = new ArrayList<URI>(2);
+
+		validStages.add(getRdfruleStageAfterResultsImportURI());
+		validStages.add(getRdfruleStageAfterResultsToPoolURI());
     }
     
     /**
@@ -59,13 +67,20 @@ public abstract class AbstractSparqlNormalisationRuleTest
     @After
     public void tearDown() throws Exception
     {
-    	testTrueSparqlNormalisationRuleUri = null;
-    	testFalseSparqlNormalisationRuleUri = null;
+        testMultipleWherePatternsSparqlNormalisationRuleUri = null;
 
-		testStartingUriAEOBase = null;
+        testStartingUriAEOBase = null;
 		testFinalUriAEOBase = null;
 		testStartingUriPOBase = null;
 		testFinalUriPOBase = null;
+    }    
+
+    @Override
+    public final NormalisationRule getNewTestRule()
+    {
+    	NormalisationRule result = (NormalisationRule)getNewTestSparqlRule();
+    	
+    	return result;
     }
     
     /**
@@ -74,53 +89,30 @@ public abstract class AbstractSparqlNormalisationRuleTest
      */
     public abstract SparqlNormalisationRule getNewTestSparqlRule();
 
-    /**
-     * Create a new profile instance with default properties
-     * @return A new profile instance with default properties
-     */
-	public abstract Profile getNewTestProfile();
-
-	public abstract URI getProfileIncludeExcludeOrderUndefinedUri();
-
-	public abstract URI getProfileIncludeThenExcludeURI();
-
-	public abstract URI getProfileExcludeThenIncludeURI();
-	
 	public abstract URI getSparqlRuleModeAddAllMatchingTriplesURI();
 	
 	public abstract URI getSparqlRuleModeOnlyDeleteMatchesURI();
 
 	public abstract URI getSparqlRuleModeOnlyIncludeMatchesURI();
 
-	public abstract URI getRdfruleStageAfterResultsImportURI();
-	
-	public abstract URI getRdfruleStageQueryVariablesURI();
-
-	public abstract URI getRdfruleStageAfterQueryCreationURI();
-
-	public abstract URI getRdfruleStageAfterQueryParsingURI();
-
-	public abstract URI getRdfruleStageBeforeResultsImportURI();
-
-	public abstract URI getRdfruleStageAfterResultsToPoolURI();
-
-	public abstract URI getRdfruleStageAfterResultsToDocumentURI();
-
     @Test
 	public void testConstructQueryMultipleWherePatterns()
 	{
 		String testQueryConstructGraph = "?myUri ?property ?convertedUri . ?convertedUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
 		
-		queryallRule = getNewTestSparqlRule();
+		NormalisationRule queryallRule = getNewTestRule();
 		
 		assertTrue(queryallRule instanceof NormalisationRule);
+		assertTrue(queryallRule instanceof SparqlNormalisationRule);
 
-		((NormalisationRule)queryallRule).setKey(testMultipleWherePatternsSparqlNormalisationRuleUri);
-		queryallRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
-		queryallRule.addSparqlWherePattern(generateConversionPattern(testStartingUriAEOBase, testFinalUriAEOBase));
-		queryallRule.addSparqlWherePattern(generateConversionPattern(testStartingUriPOBase, testFinalUriPOBase));
+		SparqlNormalisationRule sparqlRule = (SparqlNormalisationRule)queryallRule;
+
+		queryallRule.setKey(testMultipleWherePatternsSparqlNormalisationRuleUri);
+		sparqlRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
+		sparqlRule.addSparqlWherePattern(generateConversionPattern(testStartingUriAEOBase, testFinalUriAEOBase));
+		sparqlRule.addSparqlWherePattern(generateConversionPattern(testStartingUriPOBase, testFinalUriPOBase));
 		
-		List<String> constructQueries = queryallRule.getSparqlConstructQueries();
+		List<String> constructQueries = sparqlRule.getSparqlConstructQueries();
 
 		assertEquals(constructQueries.size(), 2);
 		
@@ -133,23 +125,22 @@ public abstract class AbstractSparqlNormalisationRuleTest
 	}
 	
     @Test
-	public void testStageInclusion()
+	public void testEmptyConstructQuerySet()
 	{
-		queryallRule = getNewTestSparqlRule();
+		NormalisationRule queryallRule = getNewTestRule();
 		
 		assertTrue(queryallRule instanceof NormalisationRule);
 		
-		((NormalisationRule)queryallRule).setKey(testStageInclusionSparqlNormalisationRuleUri);
-		((NormalisationRule)queryallRule).addStage(getRdfruleStageAfterResultsImportURI());
+		SparqlNormalisationRule sparqlRule = (SparqlNormalisationRule)queryallRule;
 		
-		List<String> constructQueries = queryallRule.getSparqlConstructQueries();
+		queryallRule.setKey(testStageEmptyConstructQuerySetSparqlNormalisationRuleUri);
+
+		List<String> constructQueries = sparqlRule.getSparqlConstructQueries();
 
 		assertEquals(constructQueries.size(), 0);
 		
-		assertTrue(((NormalisationRule)queryallRule).validInStage(getRdfruleStageAfterResultsImportURI()));
-		assertTrue(((NormalisationRule)queryallRule).usedInStage(getRdfruleStageAfterResultsImportURI()));
-		assertFalse(((NormalisationRule)queryallRule).usedInStage(getRdfruleStageQueryVariablesURI()));
 	}
+
 
     /**
 	 * @param testStartingUri

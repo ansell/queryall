@@ -3,6 +3,8 @@ package org.queryall.api;
 
 import java.util.Collection;
 
+import org.queryall.exception.InvalidStageException;
+
 
 public abstract class NormalisationRule implements BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
 {
@@ -16,9 +18,9 @@ public abstract class NormalisationRule implements BaseQueryAllInterface, Compar
     
     public abstract Collection<org.openrdf.model.URI> getValidStages();
     
-    public abstract void setStages(Collection<org.openrdf.model.URI> stages);
+    public abstract void setStages(Collection<org.openrdf.model.URI> stages) throws InvalidStageException;
 
-    public abstract void addStage(org.openrdf.model.URI stage);
+    public abstract void addStage(org.openrdf.model.URI stage) throws InvalidStageException;
     
     public abstract boolean validInStage(org.openrdf.model.URI stage);
 

@@ -110,6 +110,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     {
         super(inputStatements, keyToUse, modelVersion);
         
+        this.addValidStage(getRdfruleStageAfterResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToPool());
+
     	Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
     	
     	currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
@@ -194,9 +197,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         // stages.add(NormalisationRule.rdfruleStageAfterResultsImport.stringValue());
         
         // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
-
-        this.addValidStage(getRdfruleStageAfterResultsImport());
-        this.addValidStage(getRdfruleStageAfterResultsToPool());
 
         if(SparqlNormalisationRuleImpl._DEBUG)
         {

@@ -7,9 +7,9 @@ import org.queryall.api.Profile;
 
 import static org.junit.Assert.*;
 
-public class ProfilableTestUtil
+public final class ProfilableTestUtil
 {
-    public static void testIsUsedWithProfileList(ProfilableInterface profilableObject, List<Profile> profileList, boolean test1Result, boolean test2Result, boolean test3Result, boolean test4Result)
+    public final static void testIsUsedWithProfileList(ProfilableInterface profilableObject, List<Profile> profileList, boolean test1Result, boolean test2Result, boolean test3Result, boolean test4Result)
     {
         assertEquals(test1Result, profilableObject.isUsedWithProfileList(profileList, true, true));
         assertEquals(test2Result, profilableObject.isUsedWithProfileList(profileList, false, true));

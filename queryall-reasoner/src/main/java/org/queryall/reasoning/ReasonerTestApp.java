@@ -3,6 +3,7 @@ package org.queryall.reasoning;
 import java.util.Iterator;
 
 import org.mindswap.pellet.jena.PelletReasonerFactory;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.SparqlNormalisationRuleImpl;
 
@@ -83,7 +84,16 @@ public class ReasonerTestApp
     	queryallRule.setOrder(100);
     	queryallRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
     	queryallRule.addSparqlWherePattern(testQueryWherePattern);
-    	queryallRule.addStage(SparqlNormalisationRuleImpl.getRdfruleStageAfterResultsImport());
+    	
+    	try
+    	{
+    		queryallRule.addStage(SparqlNormalisationRuleImpl.getRdfruleStageAfterResultsImport());
+    	}
+    	catch(InvalidStageException ise)
+    	{
+    		System.err.println("Found invalid stage exception");
+    	}
+    	
     	queryallRule.setProfileIncludeExcludeOrder(ProfileImpl.getExcludeThenIncludeUri());
     	
     	
