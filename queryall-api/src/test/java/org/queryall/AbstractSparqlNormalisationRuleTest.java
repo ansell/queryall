@@ -75,6 +75,13 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
 		testFinalUriPOBase = null;
     }    
 
+    /**
+     * This method returns a SparqlNormalisationRule, that is also a NormalisationRule.
+     * This enforces the contract that a normalisation rule may implement more than one
+     * of the interfaces (ie, regular expression, sparql, xslt, etc.), it must
+     * implement SparqlNormalisationRule and NormalisationRule to be used in this test
+     * @return A NormalisationRule that is also a SparqlNormalisationRule
+     */
     @Override
     public final NormalisationRule getNewTestRule()
     {
@@ -140,7 +147,6 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
 		assertEquals(constructQueries.size(), 0);
 		
 	}
-
 
     /**
 	 * @param testStartingUri
