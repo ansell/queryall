@@ -117,6 +117,11 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     public XsltNormalisationRuleImpl()
 	{
     	super();
+        
+        this.addValidStage(getRdfruleStageQueryVariables());
+        this.addValidStage(getRdfruleStageAfterQueryCreation());
+        this.addValidStage(getRdfruleStageBeforeResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToDocument());
 	}
 	
 	/**

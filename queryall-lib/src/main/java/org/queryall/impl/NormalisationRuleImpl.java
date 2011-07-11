@@ -545,6 +545,16 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     	stages.add(stage);
     }
     
+    public boolean validInStage(org.openrdf.model.URI stage)
+    {
+    	return this.validStages.contains(stage);
+    }
+
+    public boolean usedInStage(org.openrdf.model.URI stage)
+    {
+    	return this.stages.contains(stage);
+    }
+
     /**
      * @return the namespace used to represent objects of this type by default
      */

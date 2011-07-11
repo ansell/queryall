@@ -65,6 +65,11 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     public RegexNormalisationRuleImpl()
     {
     	super();
+
+    	this.addValidStage(getRdfruleStageQueryVariables());
+        this.addValidStage(getRdfruleStageAfterQueryCreation());
+        this.addValidStage(getRdfruleStageBeforeResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToDocument());
     }
     
     // keyToUse is the URI of the next instance that can be found in

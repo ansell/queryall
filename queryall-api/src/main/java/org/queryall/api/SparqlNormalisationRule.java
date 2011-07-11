@@ -17,39 +17,19 @@ public interface SparqlNormalisationRule
 	 */
 	public abstract void setMode(URI mode);
 
-	/**
-	 * @return the sparqlConstructQuery
-	 */
 	public abstract String getSparqlConstructQueryTarget();
 
-	/**
-	 * @param sparqlConstructQuery the sparqlConstructQuery to set
-	 */
 	public abstract void setSparqlConstructQueryTarget(String sparqlConstructQueryTarget);
 
-	/**
-	 * @return the sparqlConstructQuery
-	 */
 	public abstract List<String> getSparqlWherePatterns();
 
-	/**
-	 * @param sparqlConstructQuery the sparqlConstructQuery to set
-	 */
 	public abstract void addSparqlWherePattern(String sparqlWherePattern);
 
-	/**
-	 * @return the sparqlConstructQuery
-	 */
 	public abstract String getSparqlConstructQuery();
 
-	/**
-	 * @return the sparqlConstructQuery
-	 */
 	public abstract String getSparqlPrefixes();
 
-	/**
-	 * @param sparqlConstructQuery the sparqlConstructQuery to set
-	 */
 	public abstract void setSparqlPrefixes(String sparqlPrefixes);
 
+	public abstract List<String> getSparqlConstructQueries();
 }

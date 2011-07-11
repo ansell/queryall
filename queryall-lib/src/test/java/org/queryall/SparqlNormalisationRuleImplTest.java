@@ -6,6 +6,7 @@ package org.queryall;
 import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.SparqlNormalisationRule;
+import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.SparqlNormalisationRuleImpl;
 
@@ -48,14 +49,63 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     }
 
 	@Override
-	public URI getSparqlRuleModeAddAllMatchingTriplesURI() {
-		// TODO Auto-generated method stub
-		return null;
+	public URI getSparqlRuleModeAddAllMatchingTriplesURI() 
+	{
+		return SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples();
 	}
 
 	@Override
-	public URI getRdfruleStageAfterResultsImportURI() {
-		// TODO Auto-generated method stub
-		return null;
+	public URI getSparqlRuleModeOnlyDeleteMatchesURI() 
+	{
+		return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
 	}
+
+	@Override
+	public URI getSparqlRuleModeOnlyIncludeMatchesURI() 
+	{
+		return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
+	}
+
+	@Override
+	public URI getRdfruleStageQueryVariablesURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageQueryVariables();
+	}
+
+	@Override
+	public URI getRdfruleStageAfterQueryCreationURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageAfterQueryCreation();
+	}
+
+	@Override
+	public URI getRdfruleStageAfterQueryParsingURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageAfterQueryParsing();
+	}
+
+	@Override
+	public URI getRdfruleStageBeforeResultsImportURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageBeforeResultsImport();
+	}
+
+	@Override
+	public URI getRdfruleStageAfterResultsImportURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageAfterResultsImport();
+	}
+
+	@Override
+	public URI getRdfruleStageAfterResultsToPoolURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageAfterResultsToPool();
+	}
+
+	@Override
+	public URI getRdfruleStageAfterResultsToDocumentURI() 
+	{
+		return NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument();
+	}
+
 }

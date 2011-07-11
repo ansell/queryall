@@ -18,8 +18,12 @@ public abstract class NormalisationRule implements BaseQueryAllInterface, Compar
     
     public abstract void setStages(Collection<org.openrdf.model.URI> stages);
 
-    public abstract void addStage(org.openrdf.model.URI Stage);
+    public abstract void addStage(org.openrdf.model.URI stage);
     
+    public abstract boolean validInStage(org.openrdf.model.URI stage);
+
+    public abstract boolean usedInStage(org.openrdf.model.URI stage);
+
     public abstract Collection<org.openrdf.model.URI> getStages();
     
     public abstract String getDescription();

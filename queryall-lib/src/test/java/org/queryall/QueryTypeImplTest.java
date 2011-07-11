@@ -21,11 +21,13 @@ public class QueryTypeImplTest extends AbstractQueryTypeTest
         return new QueryTypeImpl();
     }
 
+    @Override
     public URI getAllNamespaceMatchMethodUri()
     {
         return QueryTypeImpl.getQueryNamespaceMatchAll();
     }
 
+    @Override
     public URI getAnyNamespaceMatchMethodUri()
     {
         return QueryTypeImpl.getQueryNamespaceMatchAny();

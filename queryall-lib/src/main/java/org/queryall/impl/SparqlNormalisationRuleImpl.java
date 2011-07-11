@@ -96,6 +96,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     public SparqlNormalisationRuleImpl()
     {
     	super();
+    	
+        this.addValidStage(getRdfruleStageAfterResultsImport());
+        this.addValidStage(getRdfruleStageAfterResultsToPool());
     }
     
 
@@ -615,6 +618,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 		}
 	}
 	
+	@Override
 	public List<String> getSparqlConstructQueries()
 	{
 		List<String> results = new ArrayList<String>(getSparqlWherePatterns().size());

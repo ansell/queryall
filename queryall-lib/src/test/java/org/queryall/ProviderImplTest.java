@@ -23,21 +23,25 @@ public class ProviderImplTest extends AbstractProviderTest
         return new HttpProviderImpl();
     }
 
+    @Override
     public Profile getNewTestProfile()
     {
         return new ProfileImpl();
     }
 
+    @Override
     public URI getProfileExcludeThenIncludeURI()
     {
         return ProfileImpl.getExcludeThenIncludeUri();
     }
 
+    @Override
     public URI getProfileIncludeThenExcludeURI()
     {
         return ProfileImpl.getIncludeThenExcludeUri();
     }
 
+    @Override
     public URI getProfileIncludeExcludeOrderUndefinedUri()
     {
         return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();

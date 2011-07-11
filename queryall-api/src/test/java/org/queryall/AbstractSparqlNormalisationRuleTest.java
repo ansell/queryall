@@ -5,6 +5,8 @@ package org.queryall;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,13 @@ public abstract class AbstractSparqlNormalisationRuleTest
 {
     private URI testTrueSparqlNormalisationRuleUri;
 	private URI testFalseSparqlNormalisationRuleUri;
+	private URI testMultipleWherePatternsSparqlNormalisationRuleUri;
 	private SparqlNormalisationRule queryallRule;
+	private String testStartingUriAEOBase;
+	private String testFinalUriAEOBase;
+	private String testStartingUriPOBase;
+	private String testFinalUriPOBase;
+	private URI testStageInclusionSparqlNormalisationRuleUri;
 
 	/**
      * @throws java.lang.Exception
@@ -37,6 +45,12 @@ public abstract class AbstractSparqlNormalisationRuleTest
 
         testTrueSparqlNormalisationRuleUri = f.createURI("http://example.org/test/includedNormalisationRule");
         testFalseSparqlNormalisationRuleUri = f.createURI("http://example.org/test/excludedNormalisationRule");
+        testMultipleWherePatternsSparqlNormalisationRuleUri = f.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
+
+		testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
+		testFinalUriAEOBase = "http://bio2rdf.org/obo_aeo:";
+		testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
+		testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
     }
     
     /**
@@ -47,10 +61,23 @@ public abstract class AbstractSparqlNormalisationRuleTest
     {
     	testTrueSparqlNormalisationRuleUri = null;
     	testFalseSparqlNormalisationRuleUri = null;
+
+		testStartingUriAEOBase = null;
+		testFinalUriAEOBase = null;
+		testStartingUriPOBase = null;
+		testFinalUriPOBase = null;
     }
     
+    /**
+     * Create a new instance of the SparqlNormalisationRule implementation being tested
+     * @return a new instance of the implemented SparqlNormalisationRule
+     */
     public abstract SparqlNormalisationRule getNewTestSparqlRule();
 
+    /**
+     * Create a new profile instance with default properties
+     * @return A new profile instance with default properties
+     */
 	public abstract Profile getNewTestProfile();
 
 	public abstract URI getProfileIncludeExcludeOrderUndefinedUri();
@@ -61,33 +88,70 @@ public abstract class AbstractSparqlNormalisationRuleTest
 	
 	public abstract URI getSparqlRuleModeAddAllMatchingTriplesURI();
 	
+	public abstract URI getSparqlRuleModeOnlyDeleteMatchesURI();
+
+	public abstract URI getSparqlRuleModeOnlyIncludeMatchesURI();
+
 	public abstract URI getRdfruleStageAfterResultsImportURI();
 	
+	public abstract URI getRdfruleStageQueryVariablesURI();
+
+	public abstract URI getRdfruleStageAfterQueryCreationURI();
+
+	public abstract URI getRdfruleStageAfterQueryParsingURI();
+
+	public abstract URI getRdfruleStageBeforeResultsImportURI();
+
+	public abstract URI getRdfruleStageAfterResultsToPoolURI();
+
+	public abstract URI getRdfruleStageAfterResultsToDocumentURI();
+
     @Test
 	public void testConstructQueryMultipleWherePatterns()
 	{
-		String testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
-		String testFinalUriAEOBase = "http://bio2rdf.org/obo_aeo:";
-		String testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
-		String testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
 		String testQueryConstructGraph = "?myUri ?property ?convertedUri . ?convertedUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
 		
 		queryallRule = getNewTestSparqlRule();
 		
-		((NormalisationRule)queryallRule).setKey("http://bio2rdf.org/rdfrule:oboaeosparqlrule");
-		queryallRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
-		((NormalisationRule)queryallRule).setOrder(100);
+		assertTrue(queryallRule instanceof NormalisationRule);
+
+		((NormalisationRule)queryallRule).setKey(testMultipleWherePatternsSparqlNormalisationRuleUri);
 		queryallRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
 		queryallRule.addSparqlWherePattern(generateConversionPattern(testStartingUriAEOBase, testFinalUriAEOBase));
 		queryallRule.addSparqlWherePattern(generateConversionPattern(testStartingUriPOBase, testFinalUriPOBase));
-		((NormalisationRule)queryallRule).addStage(getRdfruleStageAfterResultsImportURI());
-		((NormalisationRule)queryallRule).setProfileIncludeExcludeOrder(getProfileExcludeThenIncludeURI());
 		
+		List<String> constructQueries = queryallRule.getSparqlConstructQueries();
+
+		assertEquals(constructQueries.size(), 2);
 		
-		
+		// TODO: this should be insensitive to spaces, possibly by using regular expression matchers, or by removing spaces
+		//		Matcher matcher = new Matcher();
+		//		assertThat(actual, matcher)
+		// TODO: add prefix testing
+		assertTrue(constructQueries.contains(mergeQuery("", testQueryConstructGraph, generateConversionPattern(testStartingUriAEOBase, testFinalUriAEOBase))));
+		assertTrue(constructQueries.contains(mergeQuery("", testQueryConstructGraph, generateConversionPattern(testStartingUriPOBase, testFinalUriPOBase))));
 	}
 	
-	/**
+    @Test
+	public void testStageInclusion()
+	{
+		queryallRule = getNewTestSparqlRule();
+		
+		assertTrue(queryallRule instanceof NormalisationRule);
+		
+		((NormalisationRule)queryallRule).setKey(testStageInclusionSparqlNormalisationRuleUri);
+		((NormalisationRule)queryallRule).addStage(getRdfruleStageAfterResultsImportURI());
+		
+		List<String> constructQueries = queryallRule.getSparqlConstructQueries();
+
+		assertEquals(constructQueries.size(), 0);
+		
+		assertTrue(((NormalisationRule)queryallRule).validInStage(getRdfruleStageAfterResultsImportURI()));
+		assertTrue(((NormalisationRule)queryallRule).usedInStage(getRdfruleStageAfterResultsImportURI()));
+		assertFalse(((NormalisationRule)queryallRule).usedInStage(getRdfruleStageQueryVariablesURI()));
+	}
+
+    /**
 	 * @param testStartingUri
 	 * @param testFinalUri
 	 * @return
@@ -120,8 +184,9 @@ public abstract class AbstractSparqlNormalisationRuleTest
 				"AS ?convertedUri) . ";
 	}
 	
-	private static String mergeQuery(String constructGraphPattern, String wherePattern)
+	private static String mergeQuery(String sparqlPrefixes, String constructGraphPattern, String wherePattern)
 	{
-		return new StringBuilder(300).append("CONSTRUCT { ").append(constructGraphPattern).append(" } WHERE { ").append(wherePattern).append(" }").toString();
+		return new StringBuilder(sparqlPrefixes).append(" CONSTRUCT { ").append(constructGraphPattern).append(" } WHERE { ").append(wherePattern).append(" }").toString();
 	}
+
 }
