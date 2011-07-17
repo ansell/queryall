@@ -44,19 +44,21 @@
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
+			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
+			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<artifactId>velocity</artifactId>
 			<groupId>org.apache.velocity</groupId>
-			<type>jar</type>
 			<version>1.6.4</version>
+			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -70,12 +72,14 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
+			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.4</version>
+			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

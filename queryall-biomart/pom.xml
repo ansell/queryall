@@ -59,58 +59,58 @@
 			<artifactId>sesame-model</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-repository-sail</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-rio-ntriples</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-rio-rdfxml</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-rio-n3</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-sail-memory</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-queryparser-sparql</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.3.2</version>
+			<version>2.5.0-SNAPSHOT</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.5.6</version>
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
+ -->		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<type>jar</type>
