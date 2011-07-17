@@ -25,8 +25,6 @@ public interface SparqlNormalisationRule
 
 	public abstract void addSparqlWherePattern(String sparqlWherePattern);
 
-	public abstract String getSparqlConstructQuery();
-
 	public abstract String getSparqlPrefixes();
 
 	public abstract void setSparqlPrefixes(String sparqlPrefixes);

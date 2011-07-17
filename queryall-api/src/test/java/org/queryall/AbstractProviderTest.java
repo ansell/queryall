@@ -19,18 +19,18 @@ import org.queryall.api.Provider;
 
 public abstract class AbstractProviderTest 
 {
-    protected URI testTrueQueryTypeUri;
-    protected URI testFalseQueryTypeUri;
-    protected URI testTrueRuleUri;
-    protected URI testFalseRuleUri;
-    protected URI testTrueNamespaceUri;
-    protected URI testFalseNamespaceUri;
-    protected URI testTrueProviderUri;
-    protected URI testFalseProviderUri;
+    protected URI testTrueQueryTypeUri = null;
+    protected URI testFalseQueryTypeUri = null;
+    protected URI testTrueRuleUri = null;
+    protected URI testFalseRuleUri = null;
+    protected URI testTrueNamespaceUri = null;
+    protected URI testFalseNamespaceUri = null;
+    protected URI testTrueProviderUri = null;
+    protected URI testFalseProviderUri = null;
     
-    private Provider providerNonDefault;
-    private Provider providerSpecificDefault;
-    private Provider providerNoNamespacesDefault;
+    private Provider providerNonDefault = null;
+    private Provider providerSpecificDefault = null;
+    private Provider providerNoNamespacesDefault = null;
 
     /**
      * This method performs the following actions:

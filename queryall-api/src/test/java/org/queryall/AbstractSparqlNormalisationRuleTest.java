@@ -37,6 +37,8 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     @Before
     public void setUp() throws Exception
     {
+    	super.setUp();
+    	
         ValueFactory f = new MemValueFactory();
 
         testMultipleWherePatternsSparqlNormalisationRuleUri = f.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
@@ -67,7 +69,9 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     @After
     public void tearDown() throws Exception
     {
-        testMultipleWherePatternsSparqlNormalisationRuleUri = null;
+    	super.tearDown();
+
+    	testMultipleWherePatternsSparqlNormalisationRuleUri = null;
 
         testStartingUriAEOBase = null;
 		testFinalUriAEOBase = null;
@@ -131,6 +135,22 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
 		assertTrue(constructQueries.contains(mergeQuery("", testQueryConstructGraph, generateConversionPattern(testStartingUriPOBase, testFinalUriPOBase))));
 	}
 	
+    @Test
+	public void testModes()
+	{
+		SparqlNormalisationRule queryallRule = getNewTestSparqlRule();
+		queryallRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
+		assertTrue(queryallRule.getMode().equals(getSparqlRuleModeAddAllMatchingTriplesURI()));
+		
+		queryallRule = getNewTestSparqlRule();
+		queryallRule.setMode(getSparqlRuleModeOnlyDeleteMatchesURI());
+		assertTrue(queryallRule.getMode().equals(getSparqlRuleModeOnlyDeleteMatchesURI()));
+		
+		queryallRule = getNewTestSparqlRule();
+		queryallRule.setMode(getSparqlRuleModeOnlyIncludeMatchesURI());
+		assertTrue(queryallRule.getMode().equals(getSparqlRuleModeOnlyIncludeMatchesURI()));
+	}
+
     @Test
 	public void testEmptyConstructQuerySet()
 	{
