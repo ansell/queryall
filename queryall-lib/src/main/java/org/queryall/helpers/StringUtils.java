@@ -20,8 +20,6 @@ import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 
-import org.queryall.api.Template;
-
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -243,21 +241,6 @@ public class StringUtils
         }
         
         return results;
-    }
-
-    public static StringBuilder applyNativeFunctionTemplate(Template nativeFunction, StringBuilder result)
-    {
-        if(!nativeFunction.isNativeFunction())
-        {
-            RdfUtils.log.error("RdfUtils.applyNativeFunctionTemplate: template was not a native function");
-        }
-        
-        if(nativeFunction.getNativeFunctionUri().equals("http://purl.org/queryall/template:xmlencoding"))
-        {
-            result = new StringBuilder(xmlEncodeString(result.toString()));
-        }
-        
-        return result;
     }
 
     public static void replaceMatchesForRegexOnString(

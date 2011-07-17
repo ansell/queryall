@@ -79,10 +79,8 @@ public abstract class QueryAllConfiguration
 
 	public abstract Map<URI, RuleTest> getAllRuleTests();
 
-	public abstract Map<URI, Template> getAllTemplates();
 
 	
-
 	public abstract Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository);
 
 	public abstract Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository);
@@ -94,7 +92,5 @@ public abstract class QueryAllConfiguration
 	public abstract Map<URI, QueryType> getQueryTypes(Repository myRepository);
 
 	public abstract Map<URI, RuleTest> getRuleTests(Repository myRepository);
-
-	public abstract Map<URI, Template> getTemplates(Repository myRepository);
 
 }

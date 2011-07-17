@@ -86,18 +86,6 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract int[] getNamespaceInputIndexes();
 
-    public abstract Collection<URI> getIncludedQueryTemplates();
-    
-    public abstract void setIncludedQueryTemplates(Collection<URI> includedQueryTemplates);
-    
-    public abstract Collection<URI> getIncludedQueryParameters();
-    
-    public abstract void setIncludedQueryParameters(Collection<URI> includedQueryParameters);
-    
-    public abstract Collection<URI> getIncludedStaticOutputTemplates();
-    
-    public abstract void setIncludedStaticOutputTemplates(Collection<URI> includedStaticOutputTemplates);
-    
     @Override
     public String toString()
     {

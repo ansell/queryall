@@ -38,10 +38,6 @@ public class QueryTypeImpl extends QueryType
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForQueryType();
     
-    // this is a temporary flag used to enable a smooth transition 
-    // from hard-coded templates to generic extensible templates in the future
-    public static final boolean USING_TEMPLATES = false;
-    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
@@ -78,19 +74,6 @@ public class QueryTypeImpl extends QueryType
     
     private String inputRegex = "";
     private Pattern inputRegexPattern = null;
-    
-    // public String queryTemplateKey = null;
-    
-    // Each query template must be separately executed on any provide endpoints which support any of the content types for this query template
-    private Collection<URI> includedQueryTemplates = new HashSet<URI>();
-    
-    // Query Parameters are references to Templates that are specific to this query with respect to the semantic meanings of terms that may be discovered at lower levels
-    // queries that reference normalisedQueryUri will be matched against queries in this list since they are not going to be contextually independent templates, but are used in templates as query parameters
-    private Collection<URI> includedQueryParameters = new HashSet<URI>();
-    
-    // Each static output template must be converted as necessary using the includedQueryParameters, 
-    // but they result in RDF documents that can be included in the result sets
-    private Collection<URI> includedStaticOutputTemplates = new HashSet<URI>();
     
     private String templateString = "";
     private String queryUriTemplateString = "";
@@ -205,103 +188,23 @@ public class QueryTypeImpl extends QueryType
             {
                 this.setInputRegex(nextStatement.getObject().stringValue());
             }
-//            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
-//            {
-//                Template tempTemplate = Settings.createNewTemplateByKey(nextStatement.getObject().stringValue()+"_outputtemplate_0", TemplateImpl.getTemplateContentTypeRdfXml().stringValue());
-//                
-//                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
-//                
-//                if(existingTemplate == null)
-//                {
-//                    Settings.addTemplate(tempTemplate, false);
-//                }
-//                // else
-//                // {
-//                    // log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-//                // }
-//                
-//                tempIncludedStaticOutputTemplates.add(tempTemplate.getKey());
-//                
-//                includecounter++;
-//            }
-//            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryTemplateString))
-//            {
-//                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_querytemplate_"+templatecounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypeSparqlQuery().stringValue());
-//                
-//                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
-//                
-//                if(existingTemplate == null)
-//                {
-//                    if(!Settings.addTemplate(tempTemplate, false))
-//                    {
-//                        log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-//                    }
-//                }
-//                else
-//                {
-//                    log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-//                }
-//                
-//                tempIncludedQueryTemplates.add(tempTemplate.getKey());
-//                
-//                templatecounter++;
-//            }
-//            else if(USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
-//            {
-//                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_outputtemplate_"+outputcounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypeRdfXml().stringValue());
-//                
-//                if(!Settings.addTemplate(tempTemplate, true))
-//                {
-//                    log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-//                }
-//                
-//                // The previous semantics was that these templates were not recognised unless they were included from somewhere, so not adding here or it will break that semantics
-//                // tempIncludedStaticOutputTemplates.add(tempTemplate.getKey());
-//                
-//                outputcounter++;
-//            }
-//            else if(USING_TEMPLATES && 
-//                    (nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString) 
-//                  || nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
-//                 )
-//            {
-//                Template tempTemplate = Settings.createNewTemplateByString(keyToUse+"_parametertemplate_"+parametercounter, nextStatement.getObject().stringValue(), TemplateImpl.getTemplateContentTypePlainText().stringValue());
-//                
-//                Template existingTemplate = Settings.getTemplate(tempTemplate.getKey());
-//                
-//                if(existingTemplate == null)
-//                {
-//                    if(!Settings.addTemplate(tempTemplate, false))
-//                    {
-//                        log.error("QueryType.fromRdf: failed to add template to collection : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-//                    }
-//                }
-//                else
-//                {
-//                    log.info("QueryType.fromRdf: already found existing template : keyToUse="+keyToUse+" tempTemplate.getKey()="+tempTemplate.getKey());
-//                }
-//                
-//                tempIncludedQueryParameters.add(tempTemplate.getKey());
-//                
-//                parametercounter++;
-//            }
-            else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
+            else if(nextStatement.getPredicate().equals(getQueryIncludeQueryType()))
             {
                 tempsemanticallyLinkedCustomQueries.add((URI)nextStatement.getObject());
             }
-            else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryTemplateString))
+            else if(nextStatement.getPredicate().equals(OLDqueryTemplateString))
             {
                 this.setTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString))
+            else if(nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString))
             {
                 this.setQueryUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
+            else if(nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
             {
                 this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(!USING_TEMPLATES && nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
+            else if(nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
             {
                 this.setOutputRdfXmlString(nextStatement.getObject().stringValue());
             }
@@ -331,16 +234,7 @@ public class QueryTypeImpl extends QueryType
         this.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes.toArray(new Integer[0])));
         this.setNamespaceInputIndexes(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes.toArray(new Integer[0])));
         
-        if(USING_TEMPLATES)
-        {
-            this.setIncludedQueryTemplates(tempIncludedQueryTemplates);
-            this.setIncludedQueryParameters(tempIncludedQueryParameters);
-            this.setIncludedStaticOutputTemplates(tempIncludedStaticOutputTemplates);
-        }
-        else
-        {
-            this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
-        }
+        this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
         if(_DEBUG)
         {
@@ -500,13 +394,10 @@ public class QueryTypeImpl extends QueryType
             con.add(queryInstanceUri, getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryInputRegex(), inputRegexLiteral, keyToUse);
-            if(!USING_TEMPLATES)
-            {
-                con.add(queryInstanceUri, OLDqueryTemplateString, templateStringLiteral, keyToUse);
-                con.add(queryInstanceUri, OLDqueryQueryUriTemplateString, queryUriTemplateStringLiteral, keyToUse);
-                con.add(queryInstanceUri, OLDqueryStandardUriTemplateString, standardUriTemplateStringLiteral, keyToUse);
-                con.add(queryInstanceUri, OLDqueryOutputRdfXmlString, outputRdfXmlStringLiteral, keyToUse);
-            }
+            con.add(queryInstanceUri, OLDqueryTemplateString, templateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, OLDqueryQueryUriTemplateString, queryUriTemplateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, OLDqueryStandardUriTemplateString, standardUriTemplateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, OLDqueryOutputRdfXmlString, outputRdfXmlStringLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryIsPageable(), isPageableLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
@@ -544,61 +435,16 @@ public class QueryTypeImpl extends QueryType
                 }
             }
             
-            // log.info("before included query templates created");
-            
-            if(USING_TEMPLATES)
+            if(semanticallyLinkedCustomQueries != null)
             {
-                if(includedQueryTemplates != null)
+                for(URI nextSemanticallyLinkedQueryType : semanticallyLinkedCustomQueries)
                 {
-                    for(URI nextIncludeQueryTemplate : includedQueryTemplates)
+                    if(nextSemanticallyLinkedQueryType != null)
                     {
-                        if(nextIncludeQueryTemplate != null)
-                        {
-                            con.add(queryInstanceUri, getQueryTemplateTerm(), nextIncludeQueryTemplate, keyToUse);
-                        }
-                    }
-                }
-                
-                // log.info("before included query parameters created");
-                
-                if(includedQueryParameters != null)
-                {
-                    for(URI nextIncludedQueryParameter : includedQueryParameters)
-                    {
-                        if(nextIncludedQueryParameter != null)
-                        {
-                            con.add(queryInstanceUri, getQueryParameterTemplateTerm(), nextIncludedQueryParameter, keyToUse);
-                        }
-                    }
-                }
-                
-                // log.info("before included static output templates created");
-                
-                if(includedStaticOutputTemplates != null)
-                {
-                    for(URI nextIncludedStaticOutputTemplate : includedStaticOutputTemplates)
-                    {
-                        if(nextIncludedStaticOutputTemplate != null)
-                        {
-                            con.add(queryInstanceUri, getQueryStaticOutputTemplateTerm(), nextIncludedStaticOutputTemplate, keyToUse);
-                        }
-                    }
-                }
-            } // end if(USING_TEMPLATES)
-            else
-            {
-                if(semanticallyLinkedCustomQueries != null)
-                {
-                    for(URI nextSemanticallyLinkedQueryType : semanticallyLinkedCustomQueries)
-                    {
-                        if(nextSemanticallyLinkedQueryType != null)
-                        {
-                            con.add(queryInstanceUri, getQueryIncludeQueryType(), nextSemanticallyLinkedQueryType, keyToUse);
-                        }
+                        con.add(queryInstanceUri, getQueryIncludeQueryType(), nextSemanticallyLinkedQueryType, keyToUse);
                     }
                 }
             }
-            // log.info("before unrecognised statements added");
             
             if(unrecognisedStatements != null)
             {
@@ -722,63 +568,28 @@ public class QueryTypeImpl extends QueryType
             con.add(getQueryNamespaceInputIndex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             
-            if(!QueryTypeImpl.USING_TEMPLATES)
-            {
-                con.add(OLDqueryTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-                con.add(OLDqueryTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-                con.add(OLDqueryTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(OLDqueryTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-                
-                con.add(OLDqueryQueryUriTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-                con.add(OLDqueryQueryUriTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-                con.add(OLDqueryQueryUriTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(OLDqueryQueryUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-                
-                con.add(OLDqueryStandardUriTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-                con.add(OLDqueryStandardUriTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-                con.add(OLDqueryStandardUriTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(OLDqueryStandardUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-                
-                con.add(OLDqueryOutputRdfXmlString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-                con.add(OLDqueryOutputRdfXmlString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-                con.add(OLDqueryOutputRdfXmlString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(OLDqueryOutputRdfXmlString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-            }
-            else
-            {
-                // publish the old terms using OWL DeprecatedProperty types
-                con.add(OLDqueryTemplateString, RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(OLDqueryTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                con.add(OLDqueryQueryUriTemplateString, RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(OLDqueryQueryUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                con.add(OLDqueryStandardUriTemplateString, RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(OLDqueryStandardUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                con.add(OLDqueryOutputRdfXmlString, RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(OLDqueryOutputRdfXmlString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-                con.add(getQueryTemplateTerm(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-                con.add(getQueryTemplateTerm(), RDFS.RANGE, TemplateImpl.getTemplateTypeUri(), contextKeyUri);
-                con.add(getQueryTemplateTerm(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(getQueryTemplateTerm(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-                
-                con.add(getQueryParameterTemplateTerm(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-                con.add(getQueryParameterTemplateTerm(), RDFS.RANGE, TemplateImpl.getTemplateTypeUri(), contextKeyUri);
-                con.add(getQueryParameterTemplateTerm(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(getQueryParameterTemplateTerm(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-                
-                con.add(getQueryStaticOutputTemplateTerm(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-                con.add(getQueryStaticOutputTemplateTerm(), RDFS.RANGE, TemplateImpl.getTemplateTypeUri(), contextKeyUri);
-                con.add(getQueryStaticOutputTemplateTerm(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-                con.add(getQueryStaticOutputTemplateTerm(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-                
-            }
+            con.add(OLDqueryTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(OLDqueryTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(OLDqueryTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(OLDqueryTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
+            
+            con.add(OLDqueryQueryUriTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(OLDqueryQueryUriTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(OLDqueryQueryUriTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(OLDqueryQueryUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            
+            con.add(OLDqueryStandardUriTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(OLDqueryStandardUriTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(OLDqueryStandardUriTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(OLDqueryStandardUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            
+            con.add(OLDqueryOutputRdfXmlString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(OLDqueryOutputRdfXmlString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(OLDqueryOutputRdfXmlString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(OLDqueryOutputRdfXmlString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -1198,38 +1009,6 @@ public class QueryTypeImpl extends QueryType
         this.semanticallyLinkedCustomQueries = semanticallyLinkedCustomQueries;
     }
 
-    
-    public Collection<URI> getIncludedQueryTemplates()
-    {
-        return includedQueryTemplates;
-    }
-
-    public void setIncludedQueryTemplates(Collection<URI> includedQueryTemplates)
-    {
-        this.includedQueryTemplates = includedQueryTemplates;
-    }
-    
-    public Collection<URI> getIncludedQueryParameters()
-    {
-        return includedQueryParameters;
-    }
-
-    public void setIncludedQueryParameters(Collection<URI> includedQueryParameters)
-    {
-        this.includedQueryParameters = includedQueryParameters;
-    }
-    
-    public Collection<URI> getIncludedStaticOutputTemplates()
-    {
-        return includedStaticOutputTemplates;
-    }
-
-    public void setIncludedStaticOutputTemplates(Collection<URI> includedStaticOutputTemplates)
-    {
-        this.includedStaticOutputTemplates = includedStaticOutputTemplates;
-    }
-    
-    
     public Collection<URI> getNamespacesToHandle()
     {
         return namespacesToHandle;

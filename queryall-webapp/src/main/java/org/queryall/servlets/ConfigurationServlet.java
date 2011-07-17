@@ -14,7 +14,6 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
-import org.queryall.api.Template;
 import org.queryall.blacklist.*;
 
 import org.openrdf.*;
@@ -220,27 +219,6 @@ public class ConfigurationServlet extends HttpServlet
                             log.error(ex.getMessage());
                             // out.write("Problem generating Query RDF with key: "+nextQueryKey+"<br />\n");
                             // out.write(RdfUtils.xmlEncodeString(allQueries.get(nextQueryKey).toString()));
-                        }
-                    }
-                }
-                
-                Map<URI, Template> allTemplates = localSettings.getAllTemplates();
-                
-                for(URI nextTemplateKey : allTemplates.keySet())
-                {
-                    if(!targetOnlyQueryString || queryStringURI.equals(nextTemplateKey.stringValue()))
-                    {
-                        try
-                        {
-                            if(!allTemplates.get(nextTemplateKey).toRdf(myRepository, nextTemplateKey, apiVersion))
-                            {
-                                log.error("ConfigurationServlet: Template was not placed correctly in the rdf store key="+nextTemplateKey);
-                            }
-                        }
-                        catch(Exception ex)
-                        {
-                            log.error("ConfigurationServlet: Problem generating Template RDF with key: "+nextTemplateKey+" type="+ex.getClass().getName());
-                            log.error(ex.getMessage());
                         }
                     }
                 }

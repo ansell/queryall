@@ -39,7 +39,6 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
-import org.queryall.api.Template;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.NamespaceEntryImpl;
 import org.queryall.impl.NormalisationRuleImpl;
@@ -50,7 +49,6 @@ import org.queryall.impl.QueryTypeImpl;
 import org.queryall.impl.RegexNormalisationRuleImpl;
 import org.queryall.impl.RuleTestImpl;
 import org.queryall.impl.SparqlNormalisationRuleImpl;
-import org.queryall.impl.TemplateImpl;
 import org.queryall.impl.XsltNormalisationRuleImpl;
 import org.queryall.queryutils.ProvenanceRecord;
 import org.queryall.queryutils.QueryBundle;
@@ -203,7 +201,6 @@ public class Settings extends QueryAllConfiguration
     private Map<URI, NormalisationRule> cachedNormalisationRules = null;
     private Map<URI, RuleTest> cachedRuleTests = null;
     private Map<URI, QueryType> cachedCustomQueries = null;
-    private Map<URI, Template> cachedTemplates = null;
     private Map<URI, Profile> cachedProfiles = null;
     private Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
     private Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
@@ -480,15 +477,6 @@ public class Settings extends QueryAllConfiguration
                             .trace("Settings.configRefreshCheck: refresh required... cachedRuleTests refreshed");
                 }
                 
-                if(this.cachedTemplates != null)
-                {
-                    synchronized(this.cachedTemplates)
-                    {
-                        this.cachedTemplates = null;
-                    }
-                }
-                this.getAllTemplates();
-                
                 if(Settings._TRACE)
                 {
                     Settings.log
@@ -763,37 +751,6 @@ public class Settings extends QueryAllConfiguration
             Settings.log.fatal("Settings.getAllRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
             
             return null;
-        }
-    }
-    
-    @Override
-	public synchronized Map<URI, Template> getAllTemplates()
-    {
-        if(this.cachedTemplates != null)
-        {
-            return this.cachedTemplates;
-        }
-
-        try
-        {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            
-            Map<URI, Template> results = getTemplates(myRepository);
-            
-            if(_INFO)
-            {
-                log.info("Settings.getAllTemplates: found "+results.size()+" templates");
-            }
-            
-	        this.cachedTemplates = results;
-	        
-	        return results;
-        }
-        catch(InterruptedException ie)
-        {
-        	Settings.log.fatal("Settings.getAllTemplates: caught java.lang.InterruptedException: not throwing it.", ie);
-
-        	return null;
         }
     }
     
@@ -1924,55 +1881,6 @@ public class Settings extends QueryAllConfiguration
         return Pattern.compile(this.getStringPropertyFromConfig("tagPatternRegex", ""));
     }
 
-    @Override
-    public Map<URI, Template> getTemplates(Repository myRepository)
-    {
-        final Map<URI, Template> results = new Hashtable<URI, Template>();
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getTemplates: started parsing template configurations");
-        }
-        
-        final long start = System.currentTimeMillis();
-        
-        final URI ruleTestTypeUri = TemplateImpl.getTemplateTypeUri();
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
-            {
-            	URI nextSubjectUri = (URI)nextProvider.getSubject();
-            	results.put(nextSubjectUri, new TemplateImpl(
-            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-            			nextSubjectUri, 
-            			Settings.CONFIG_API_VERSION));
-            }                
-        }
-        catch (final OpenRDFException e)
-        {
-            // handle exception
-            Settings.log.fatal("Settings.getTemplates:", e);
-        }
-
-		if(Settings._INFO)
-		{
-			final long end = System.currentTimeMillis();
-			Settings.log.info(String.format("%s: timing=%10d",
-		        "Settings.getTemplates", (end - start)));
-		}
-		
-		if(Settings._DEBUG)
-		{
-			Settings.log.debug("Settings.getTemplates: finished parsing templates");
-		}
-
-
-        return results;
-    }
-    
     public Collection<URI> getURICollectionPropertiesFromConfig(String key)
     {
         if(_TRACE)
