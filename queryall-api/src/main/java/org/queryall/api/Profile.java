@@ -5,8 +5,6 @@ import java.util.Collection;
 
 public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
 {
-    public abstract int usedWithProfilable(ProfilableInterface profilableObject);
-    
     public abstract int getOrder();
     
     public abstract void setOrder(int order);

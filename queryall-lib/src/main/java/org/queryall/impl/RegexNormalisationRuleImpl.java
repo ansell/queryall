@@ -1,7 +1,6 @@
 
 package org.queryall.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.PatternSyntaxException;

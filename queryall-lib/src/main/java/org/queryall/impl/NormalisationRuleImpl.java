@@ -25,6 +25,7 @@ import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.helpers.Constants;
+import org.queryall.helpers.ProfileUtils;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
@@ -675,7 +676,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
 	public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {
-        return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
+        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
     }    
 
     /**

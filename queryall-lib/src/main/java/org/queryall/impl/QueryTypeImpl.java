@@ -1497,7 +1497,7 @@ public class QueryTypeImpl implements QueryType
     public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {
-        return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
+        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
     }
 
 	/**

@@ -17,13 +17,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
-import org.queryall.api.NormalisationRule;
-import org.queryall.api.ProfilableInterface;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
-import org.queryall.api.QueryType;
 import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
@@ -40,11 +35,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     private static final boolean _INFO = log.isInfoEnabled();
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForProfile();
-    
-    public static final int SPECIFIC_INCLUDE = 1;
-    public static final int SPECIFIC_EXCLUDE = 2;
-    public static final int IMPLICIT_INCLUDE = 3;
-    public static final int NO_MATCH = 4;
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -124,6 +114,8 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     
     public ProfileImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
 	{
+    	boolean defaultProfileIncludeExcludeOrderValidationFailed = false;
+
     	// TODO: Remove these temporary collections and replace with .add methods instead of .set
         Collection<URI> tempProfileAdministrators = new HashSet<URI>();
         
@@ -170,6 +162,11 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             else if(nextStatement.getPredicate().equals(getProfileDefaultIncludeExcludeOrderUri()))
             {
                 this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                
+                if(!this.getDefaultProfileIncludeExcludeOrder().equals(getProfileIncludeExcludeOrderUri()) && !this.getDefaultProfileIncludeExcludeOrder().equals(getProfileExcludeThenIncludeUri()))
+                {
+                	defaultProfileIncludeExcludeOrderValidationFailed = true;
+                }
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitQueryInclusionsUri()))
             {
@@ -222,6 +219,11 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         this.setIncludeRdfRules(tempIncludeRdfRules);
         this.setExcludeRdfRules(tempExcludeRdfRules);
         
+        if(defaultProfileIncludeExcludeOrderValidationFailed)
+        {
+        	log.warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="+this.getKey());
+        }
+        
         if(_TRACE)
         {
             log.trace("Profile.fromRdf: would have returned... result="+this.toString());
@@ -230,7 +232,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
 
 	public ProfileImpl()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
@@ -526,134 +527,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         return false;
     }
     
-    @Override
-    public int usedWithProfilable(ProfilableInterface profilableObject)
-    {
-        Collection<URI> includeList = null;
-        Collection<URI> excludeList = null;
-        boolean allowImplicitInclusions = false;
-        
-        if(profilableObject instanceof Provider)
-        {
-            includeList = this.getIncludeProviders();
-            excludeList = this.getExcludeProviders();
-            allowImplicitInclusions = this.getAllowImplicitProviderInclusions();
-        }
-        else if(profilableObject instanceof QueryType)
-        {
-            includeList = this.getIncludeQueryTypes();
-            excludeList = this.getExcludeQueryTypes();
-            allowImplicitInclusions = this.getAllowImplicitQueryTypeInclusions();
-        }
-        else if(profilableObject instanceof NormalisationRule)
-        {
-            includeList = this.getIncludeRdfRules();
-            excludeList = this.getExcludeRdfRules();
-            allowImplicitInclusions = this.getAllowImplicitRdfRuleInclusions();
-        }
-        else
-        {
-            throw new RuntimeException("ProfileImpl.usedWithProfilable: Did not recognise the type for object profilableObject="+profilableObject.toString());
-        }
-        
-        
-        int trueResult = ProfileUtils.usedWithIncludeExcludeList(profilableObject.getKey(), profilableObject.getProfileIncludeExcludeOrder(), includeList, excludeList, this.getDefaultProfileIncludeExcludeOrder());
-        
-        
-        if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
-        {
-            if(_DEBUG)
-            {
-                log.debug("ProfileImpl.usedWithProfilable: found implicit match profilableObject.getKey()="+profilableObject.getKey()+" nextIncludeExcludeOrder="+profilableObject.getProfileIncludeExcludeOrder()+" allowImplicitInclusions="+allowImplicitInclusions);
-            }
-            
-            if(allowImplicitInclusions)
-            {
-                return ProfileImpl.IMPLICIT_INCLUDE;
-            }
-            else
-            {
-                return ProfileImpl.NO_MATCH;
-            }
-        }
-
-        return trueResult;
-    }
-    
-    public static boolean isUsedWithProfileList(ProfilableInterface profilableObject, List<Profile> nextSortedProfileList, boolean recogniseImplicitInclusions, boolean includeNonProfileMatched)
-    {
-        for(final Profile nextProfile : nextSortedProfileList)
-        {
-            final int trueResult = nextProfile.usedWithProfilable(profilableObject);
-            if(trueResult == ProfileImpl.IMPLICIT_INCLUDE)
-            {
-                if(_DEBUG)
-                {
-                    log.debug("isUsedWithProfileList: found implicit include for profilableObject="
-                                    + profilableObject.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-                
-                if(recogniseImplicitInclusions)
-                {
-                    if(_DEBUG)
-                    {
-                        log.debug("isUsedWithProfileList: returning implicit include true for profilableObject="
-                                        + profilableObject.getKey().stringValue()
-                                        + " profile="
-                                        + nextProfile.getKey().stringValue());
-                    }
-                    return true;
-                }
-                else if(_DEBUG)
-                {
-                    log.debug("isUsedWithProfileList: implicit include not recognised for profilableObject="
-                                    + profilableObject.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-            }
-            else if(trueResult == ProfileImpl.SPECIFIC_INCLUDE)
-            {
-                if(_DEBUG)
-                {
-                    log.debug("isUsedWithProfileList: returning specific true for profilableObject="
-                                    + profilableObject.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-                return true;
-            }
-            else if(trueResult == ProfileImpl.SPECIFIC_EXCLUDE)
-            {
-                if(_DEBUG)
-                {
-                    log.debug("isUsedWithProfileList: returning specific false for profilableObject="
-                                    + profilableObject.getKey().stringValue()
-                                    + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-                return false;
-            }
-            
-            
-        }
-        
-        boolean returnValue = (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getExcludeThenIncludeUri()) 
-                            || profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri())) 
-                            && includeNonProfileMatched;
-        
-        if(_DEBUG)
-        {
-            log.debug("ProfileImpl.isUsedWithProfileList: returning no matches found returnValue="
-                            + returnValue
-                            + " for profilableObject=" + profilableObject.getKey().stringValue());
-        }
-        
-        return returnValue;
-    }
-
     @Override
     public String toString()
     {
