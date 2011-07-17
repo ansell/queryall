@@ -96,10 +96,10 @@ public class QueryTypeImpl extends QueryType
     private static URI queryInputRegex;
     
     private static URI queryIncludeQueryType;
-    public static URI OLDqueryTemplateString;
-    public static URI OLDqueryQueryUriTemplateString;
-    public static URI OLDqueryStandardUriTemplateString;
-    public static URI OLDqueryOutputRdfXmlString;
+    private static URI queryTemplateString;
+    private static URI queryQueryUriTemplateString;
+    private static URI queryStandardUriTemplateString;
+    private static URI queryOutputRdfXmlString;
     
     private static URI queryTemplateTerm;
     private static URI queryParameterTemplateTerm;
@@ -192,19 +192,19 @@ public class QueryTypeImpl extends QueryType
             {
                 tempsemanticallyLinkedCustomQueries.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(OLDqueryTemplateString))
+            else if(nextStatement.getPredicate().equals(getQueryTemplateString()))
             {
                 this.setTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(OLDqueryQueryUriTemplateString))
+            else if(nextStatement.getPredicate().equals(getQueryQueryUriTemplateString()))
             {
                 this.setQueryUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(OLDqueryStandardUriTemplateString))
+            else if(nextStatement.getPredicate().equals(getQueryStandardUriTemplateString()))
             {
                 this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(OLDqueryOutputRdfXmlString))
+            else if(nextStatement.getPredicate().equals(getQueryOutputRdfXmlString()))
             {
                 this.setOutputRdfXmlString(nextStatement.getObject().stringValue());
             }
@@ -285,10 +285,10 @@ public class QueryTypeImpl extends QueryType
         setQueryIncludeDefaults(f.createURI(queryNamespace,"includeDefaults"));
         setQueryIncludeQueryType(f.createURI(queryNamespace,"includeQueryType"));
         setQueryInputRegex(f.createURI(queryNamespace,"inputRegex"));
-        OLDqueryTemplateString = f.createURI(queryNamespace,"templateString");
-        OLDqueryQueryUriTemplateString = f.createURI(queryNamespace,"queryUriTemplateString");
-        OLDqueryStandardUriTemplateString = f.createURI(queryNamespace,"standardUriTemplateString");
-        OLDqueryOutputRdfXmlString = f.createURI(queryNamespace,"outputRdfXmlString");
+        setQueryTemplateString(f.createURI(queryNamespace,"templateString"));
+        setQueryQueryUriTemplateString(f.createURI(queryNamespace,"queryUriTemplateString"));
+        setQueryStandardUriTemplateString(f.createURI(queryNamespace,"standardUriTemplateString"));
+        setQueryOutputRdfXmlString(f.createURI(queryNamespace,"outputRdfXmlString"));
         setQueryInRobotsTxt(f.createURI(queryNamespace,"inRobotsTxt"));
         setQueryIsPageable(f.createURI(queryNamespace,"isPageable"));
         setQueryNamespaceMatchAny(f.createURI(queryNamespace,"namespaceMatchAny"));
@@ -394,10 +394,10 @@ public class QueryTypeImpl extends QueryType
             con.add(queryInstanceUri, getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryInputRegex(), inputRegexLiteral, keyToUse);
-            con.add(queryInstanceUri, OLDqueryTemplateString, templateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, OLDqueryQueryUriTemplateString, queryUriTemplateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, OLDqueryStandardUriTemplateString, standardUriTemplateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, OLDqueryOutputRdfXmlString, outputRdfXmlStringLiteral, keyToUse);
+            con.add(queryInstanceUri, getQueryTemplateString(), templateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, getQueryStandardUriTemplateString(), standardUriTemplateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, getQueryOutputRdfXmlString(), outputRdfXmlStringLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryIsPageable(), isPageableLiteral, keyToUse);
             con.add(queryInstanceUri, getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
@@ -568,28 +568,28 @@ public class QueryTypeImpl extends QueryType
             con.add(getQueryNamespaceInputIndex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             
-            con.add(OLDqueryTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(OLDqueryTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(OLDqueryTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-            con.add(OLDqueryTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getQueryTemplateString(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             
-            con.add(OLDqueryQueryUriTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(OLDqueryQueryUriTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(OLDqueryQueryUriTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-            con.add(OLDqueryQueryUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getQueryQueryUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getQueryQueryUriTemplateString(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(getQueryQueryUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             
-            con.add(OLDqueryStandardUriTemplateString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(OLDqueryStandardUriTemplateString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(OLDqueryStandardUriTemplateString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-            con.add(OLDqueryStandardUriTemplateString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getQueryStandardUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getQueryStandardUriTemplateString(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             
-            con.add(OLDqueryOutputRdfXmlString, RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(OLDqueryOutputRdfXmlString, RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(OLDqueryOutputRdfXmlString, RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
-            con.add(OLDqueryOutputRdfXmlString, RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(getQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(getQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(getQueryOutputRdfXmlString(), RDFS.DOMAIN, getQueryTypeUri(), contextKeyUri);
+            con.add(getQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -1448,4 +1448,71 @@ public class QueryTypeImpl extends QueryType
     {
         return ProfileImpl.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions, includeNonProfileMatched);
     }
+
+	/**
+	 * @return the queryTemplateString
+	 */
+	public static URI getQueryTemplateString()
+	{
+		return queryTemplateString;
+	}
+
+	/**
+	 * @param queryTemplateString the queryTemplateString to set
+	 */
+	public static void setQueryTemplateString(URI queryTemplateString)
+	{
+		QueryTypeImpl.queryTemplateString = queryTemplateString;
+	}
+
+	/**
+	 * @return the queryQueryUriTemplateString
+	 */
+	public static URI getQueryQueryUriTemplateString()
+	{
+		return queryQueryUriTemplateString;
+	}
+
+	/**
+	 * @param queryQueryUriTemplateString the queryQueryUriTemplateString to set
+	 */
+	public static void setQueryQueryUriTemplateString(
+			URI queryQueryUriTemplateString)
+	{
+		QueryTypeImpl.queryQueryUriTemplateString = queryQueryUriTemplateString;
+	}
+
+	/**
+	 * @return the queryStandardUriTemplateString
+	 */
+	public static URI getQueryStandardUriTemplateString()
+	{
+		return queryStandardUriTemplateString;
+	}
+
+	/**
+	 * @param queryStandardUriTemplateString the queryStandardUriTemplateString to set
+	 */
+	public static void setQueryStandardUriTemplateString(
+			URI queryStandardUriTemplateString)
+	{
+		QueryTypeImpl.queryStandardUriTemplateString = queryStandardUriTemplateString;
+	}
+
+	/**
+	 * @return the queryOutputRdfXmlString
+	 */
+	public static URI getQueryOutputRdfXmlString()
+	{
+		return queryOutputRdfXmlString;
+	}
+
+	/**
+	 * @param queryOutputRdfXmlString the queryOutputRdfXmlString to set
+	 */
+	public static void setQueryOutputRdfXmlString(
+			URI queryOutputRdfXmlString)
+	{
+		QueryTypeImpl.queryOutputRdfXmlString = queryOutputRdfXmlString;
+	}
 }
