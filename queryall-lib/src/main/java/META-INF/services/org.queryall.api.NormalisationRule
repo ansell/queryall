@@ -1,0 +1,3 @@
+org.queryall.impl.RegexNormalisationRuleImpl
+org.queryall.impl.SparqlNormalisationRuleImpl
+org.queryall.impl.XsltNormalisationRuleImpl
