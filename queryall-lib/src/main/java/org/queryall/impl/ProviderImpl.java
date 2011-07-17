@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProviderImpl extends Provider
+public class ProviderImpl implements Provider
 {
     private static final Logger log = Logger.getLogger(ProviderImpl.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
@@ -232,19 +232,12 @@ public class ProviderImpl extends Provider
         this.endpointMethod = endpointMethod;
     }
     
-    // public static URI getInstanceUri(ValueFactory f, String keyToUse)
-    // {
-    // URI providerInstanceUri = null;
-    //
-    // if(_TRACE)
-    // {
-    // log.trace("Provider.getInstanceUri: keyToUse="+keyToUse);
-    // }
-    //
-    // providerInstanceUri = f.createURI(keyToUse);
-    //
-    // return providerInstanceUri;
-    // }
+    @Override
+    public boolean containsNamespaceOrDefault(URI namespaceKey)
+    {
+        return containsNamespaceUri(namespaceKey) || getIsDefaultSource();
+    }
+
     public ProviderImpl()
     {
     	super();

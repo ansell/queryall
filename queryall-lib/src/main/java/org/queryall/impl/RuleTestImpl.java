@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RuleTestImpl extends RuleTest
+public class RuleTestImpl implements RuleTest
 {
     private static final Logger log = Logger.getLogger( RuleTest.class.getName() );
     private static final boolean _TRACE = log.isTraceEnabled();

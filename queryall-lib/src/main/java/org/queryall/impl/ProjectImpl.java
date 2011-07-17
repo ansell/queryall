@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProjectImpl extends Project
+public class ProjectImpl implements Project
 {
     private static final Logger log = Logger.getLogger(Project.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();

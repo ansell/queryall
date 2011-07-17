@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeImpl extends QueryType
+public class QueryTypeImpl implements QueryType
 {
     private static final Logger log = Logger.getLogger(QueryType.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();

@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NamespaceEntryImpl extends NamespaceEntry
+public class NamespaceEntryImpl implements NamespaceEntry
 {
     private static final Logger log = Logger.getLogger(NamespaceEntry.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();

@@ -60,7 +60,7 @@ import org.queryall.statistics.StatisticsEntry;
  * @author Peter Ansell p_ansell@yahoo.com
  * @version $Id: $
  */
-public class Settings extends QueryAllConfiguration
+public class Settings implements QueryAllConfiguration
 {
     public static final Logger log = Logger
             .getLogger(Settings.class.getName());

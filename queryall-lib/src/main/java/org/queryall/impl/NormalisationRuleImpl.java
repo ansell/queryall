@@ -33,7 +33,7 @@ import org.queryall.helpers.RdfUtils;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class NormalisationRuleImpl extends NormalisationRule
+public abstract class NormalisationRuleImpl implements NormalisationRule
 {
 
     protected static final Logger log = Logger.getLogger(NormalisationRuleImpl.class.getName());
@@ -499,7 +499,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @param validStages the validStages to set
      */
-    @Override
 	protected void setValidStages(Collection<URI> nextValidStages)
     {
         this.validStages = nextValidStages;
@@ -508,7 +507,6 @@ public abstract class NormalisationRuleImpl extends NormalisationRule
     /**
      * @return the validStages
      */
-    @Override
 	protected void addValidStage(URI validStage)
     {
     	if(validStages == null)
