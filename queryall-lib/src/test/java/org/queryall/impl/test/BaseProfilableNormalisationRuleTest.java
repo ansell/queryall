@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.impl.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.Profile;

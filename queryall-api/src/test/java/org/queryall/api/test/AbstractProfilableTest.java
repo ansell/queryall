@@ -1,4 +1,4 @@
-package org.queryall;
+package org.queryall.api.test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,11 +14,8 @@ import org.queryall.api.ProfilableInterface;
 import org.queryall.api.Profile;
 
 /**
- * Abstract unit test for Provider API
- * 
- * Implementations must implement the abstract setUp method
+ * Abstract unit test for Profilable API
  */
-
 public abstract class AbstractProfilableTest 
 {
     protected URI testTrueQueryTypeUri;

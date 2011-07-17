@@ -1,4 +1,4 @@
-package org.queryall;
+package org.queryall.api.test;
 
 import static org.junit.Assert.*;
 
@@ -14,9 +14,7 @@ import org.queryall.api.Provider;
 /**
  * Abstract unit test for Provider API
  * 
- * Implementations must implement the abstract setUp method
  */
-
 public abstract class AbstractProviderTest 
 {
     protected URI testTrueQueryTypeUri = null;

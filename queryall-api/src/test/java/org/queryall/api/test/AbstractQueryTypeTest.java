@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.api.test;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +17,7 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.QueryType;
 
 /**
- * @author peter
+ * Abstract unit test for QueryType API
  *
  */
 public abstract class AbstractQueryTypeTest

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.api.test;
 
 import static org.junit.Assert.*;
 
@@ -22,6 +22,7 @@ import org.queryall.api.Profile;
 import org.queryall.exception.InvalidStageException;
 
 /**
+ * Abstract unit test for NormalisationRule API
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractNormalisationRuleTest

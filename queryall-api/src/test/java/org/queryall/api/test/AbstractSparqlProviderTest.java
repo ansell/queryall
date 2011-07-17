@@ -1,4 +1,4 @@
-package org.queryall;
+package org.queryall.api.test;
 
 import static org.junit.Assert.*;
 
@@ -9,15 +9,11 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.Provider;
 import org.queryall.api.SparqlProvider;
 
 /**
- * Abstract unit test for Provider API
- * 
- * Implementations must implement the abstract setUp method
+ * Abstract unit test for SparqlProvider API
  */
-
 public abstract class AbstractSparqlProviderTest
 {
     private SparqlProvider providerDoesUseSparqlGraphWithGraphUri;

@@ -1,10 +1,11 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.impl.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.QueryType;
+import org.queryall.api.test.AbstractQueryTypeTest;
 import org.queryall.impl.QueryTypeImpl;
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.api.test;
 
 import static org.junit.Assert.*;
 
@@ -20,6 +20,8 @@ import org.queryall.api.NormalisationRule;
 import org.queryall.api.SparqlNormalisationRule;
 
 /**
+ * Abstract unit test for SparqlNormalisationRule API
+ *
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormalisationRuleTest

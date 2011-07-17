@@ -1,10 +1,10 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.impl.test;
 
 import org.queryall.api.ProfilableInterface;
-import org.queryall.impl.SparqlNormalisationRuleImpl;
+import org.queryall.impl.XsltNormalisationRuleImpl;
 
 /**
  * Provides the implementation of the Provider class 
@@ -12,11 +12,11 @@ import org.queryall.impl.SparqlNormalisationRuleImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfilableSparqlNormalisationRuleImplTest extends BaseProfilableNormalisationRuleTest
+public class ProfilableXsltNormalisationRuleImplTest extends BaseProfilableNormalisationRuleTest
 {
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
-        return new SparqlNormalisationRuleImpl();
+        return new XsltNormalisationRuleImpl();
     }
 }

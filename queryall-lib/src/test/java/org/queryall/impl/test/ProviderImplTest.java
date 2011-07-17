@@ -1,9 +1,10 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.impl.test;
 
 import org.queryall.api.Provider;
+import org.queryall.api.test.AbstractProviderTest;
 import org.queryall.impl.HttpProviderImpl;
 
 /**

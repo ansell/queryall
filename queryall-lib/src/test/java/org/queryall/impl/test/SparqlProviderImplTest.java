@@ -1,9 +1,10 @@
 /**
  * 
  */
-package org.queryall;
+package org.queryall.impl.test;
 
 import org.queryall.api.SparqlProvider;
+import org.queryall.api.test.AbstractSparqlProviderTest;
 import org.queryall.impl.HttpProviderImpl;
 
 /**

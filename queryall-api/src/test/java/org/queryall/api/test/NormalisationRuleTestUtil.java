@@ -1,4 +1,4 @@
-package org.queryall;
+package org.queryall.api.test;
 
 import java.util.Collection;
 
@@ -9,12 +9,12 @@ import static org.junit.Assert.*;
 
 public final class NormalisationRuleTestUtil
 {
-    public final static void testIsUsedInStage(NormalisationRule rule, URI stage, boolean expectedResult)
+    protected final static void testIsUsedInStage(NormalisationRule rule, URI stage, boolean expectedResult)
     {
     	assertEquals(expectedResult, rule.usedInStage(stage));
     }
 
-    public final static void testIsUsedInStages(NormalisationRule rule, Collection<URI> stages, boolean expectedResult)
+    protected final static void testIsUsedInStages(NormalisationRule rule, Collection<URI> stages, boolean expectedResult)
     {
     	for(URI nextStage : stages)
     	{
@@ -22,12 +22,12 @@ public final class NormalisationRuleTestUtil
     	}
     }
 
-    public final static void testIsValidInStage(NormalisationRule rule, URI stage, boolean expectedResult)
+    protected final static void testIsValidInStage(NormalisationRule rule, URI stage, boolean expectedResult)
     {
     	assertEquals(expectedResult, rule.validInStage(stage));
     }
 
-    public final static void testIsValidInStages(NormalisationRule rule, Collection<URI> stages, boolean expectedResult)
+    protected final static void testIsValidInStages(NormalisationRule rule, Collection<URI> stages, boolean expectedResult)
     {
     	for(URI nextStage : stages)
     	{
