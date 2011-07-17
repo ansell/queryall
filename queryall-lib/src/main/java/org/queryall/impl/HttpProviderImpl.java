@@ -33,7 +33,8 @@ public class HttpProviderImpl extends ProviderImpl implements
 {
     private static final Logger log = Logger.getLogger(HttpProviderImpl.class.getName());
     private static final boolean _TRACE = log.isTraceEnabled();
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    @SuppressWarnings("unused")
+	private static final boolean _DEBUG = log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
@@ -44,18 +45,22 @@ public class HttpProviderImpl extends ProviderImpl implements
 	private static URI providerHttpPostUrl;
 	private static URI providerAcceptHeader;
 	private static URI providerEndpointUrl;
+	private static URI providerSparqlProviderUri;
 	private Collection<String> endpointUrls = new HashSet<String>();
 	// Use these to include information based on whether or not the provider was actually used to provide information for particular user queries
 	//    public Collection<String> providerQueryInclusions = new HashSet<String>();
 	//    public boolean onlyIncludeProviderQueryIfInformationReturned = true;
 	    
     private String acceptHeaderString = "";
+	private boolean useSparqlGraph = false;
+	private String sparqlGraphUri = "";
 
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
         HttpProviderImpl.setProviderHttpProviderUri(f.createURI(providerNamespace, "HttpProvider"));
+        HttpProviderImpl.setProviderSparqlProviderUri(f.createURI(providerNamespace, "SparqlProvider"));
         HttpProviderImpl.setProviderEndpointUrl(f.createURI(providerNamespace,"endpointUrl"));
         HttpProviderImpl.setProviderAcceptHeader(f.createURI(providerNamespace,"acceptHeader"));
         HttpProviderImpl.setProviderHttpPostSparql(f.createURI(providerNamespace,"httppostsparql"));
@@ -68,7 +73,8 @@ public class HttpProviderImpl extends ProviderImpl implements
     	super();
     }
     
-    public HttpProviderImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+
+	public HttpProviderImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
     {
     	super(inputStatements, keyToUse, modelVersion);
     	
@@ -204,12 +210,19 @@ public class HttpProviderImpl extends ProviderImpl implements
 		        acceptHeaderLiteral = f.createLiteral(getAcceptHeaderString());
 		    }
 		    
-		    con.setAutoCommit(false);
+            Literal useSparqlGraphLiteral = f.createLiteral(getUseSparqlGraph());
+            Literal sparqlGraphUriLiteral = f.createLiteral(getSparqlGraphUri());
+
+            con.setAutoCommit(false);
 		    
 		    con.add(providerInstanceUri, RDF.TYPE, HttpProviderImpl.getProviderTypeUri(), keyToUse);
 
 		    con.add(providerInstanceUri, HttpProviderImpl.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
 		    
+            con.add(providerInstanceUri, getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, getProviderGraphUri(), sparqlGraphUriLiteral, keyToUse);
+            
 		
 		    if(getEndpointUrls() != null)
 		    {
@@ -249,6 +262,20 @@ public class HttpProviderImpl extends ProviderImpl implements
         return false;
     }
 	
+    /**
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
+     */
+    @Override
+	public Collection<URI> getElementTypes()
+    {
+    	Collection<URI> results = super.getElementTypes();
+        
+    	results.add(getProviderHttpProviderUri());
+    	results.add(getProviderSparqlProviderUri());
+    	
+        return results;
+    }
+
     @Override
     public Collection<String> getEndpointUrls()
     {
@@ -306,6 +333,29 @@ public class HttpProviderImpl extends ProviderImpl implements
         this.acceptHeaderString = acceptHeaderString;
     }
     
+	public boolean getUseSparqlGraph()
+	{
+	    return useSparqlGraph;
+	}
+
+	public void setUseSparqlGraph(boolean useSparqlGraph)
+	{
+	    this.useSparqlGraph = useSparqlGraph;
+	}
+
+	public String getSparqlGraphUri()
+	{
+		if(this.getUseSparqlGraph())
+			return sparqlGraphUri;
+		else
+			return "";
+	}
+
+	public void setSparqlGraphUri(String sparqlGraphUri)
+	{
+	    this.sparqlGraphUri = sparqlGraphUri;
+	}
+
 	/**
 	 * @param providerEndpointUrl the providerEndpointUrl to set
 	 */
@@ -406,6 +456,25 @@ public class HttpProviderImpl extends ProviderImpl implements
 	public static URI getProviderHttpProviderUri()
 	{
 		return providerHttpProviderUri;
+	}
+
+
+	/**
+	 * @return the providerSparqlProviderUri
+	 */
+	public static URI getProviderSparqlProviderUri()
+	{
+		return providerSparqlProviderUri;
+	}
+
+
+	/**
+	 * @param providerSparqlProviderUri the providerSparqlProviderUri to set
+	 */
+	public static void setProviderSparqlProviderUri(
+			URI providerSparqlProviderUri)
+	{
+		HttpProviderImpl.providerSparqlProviderUri = providerSparqlProviderUri;
 	}
 
     

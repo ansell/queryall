@@ -1,6 +1,7 @@
 
 package org.queryall.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.PatternSyntaxException;
@@ -501,12 +502,15 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     }
     
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
     @Override
-    public URI getElementType()
+	public Collection<URI> getElementTypes()
     {
-        return getRegexRuleTypeUri();
+    	Collection<URI> results = super.getElementTypes();
+        
+        results.add(getRegexRuleTypeUri());
+        return results;
     }
 
 	/* (non-Javadoc)

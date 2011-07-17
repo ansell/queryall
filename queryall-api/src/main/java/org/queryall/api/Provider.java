@@ -13,13 +13,6 @@ public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, P
     public abstract Collection<URI> getNormalisationUris();
     
     /**
-     * Deletes all of the current normalisation rules and adds all of the normalisations in the given collection
-     * 
-     * @param rdfNormalisationsNeeded A collection of URIs designating normalisations that are relevant to this Provider
-     */
-    public abstract void setNormalisationUris(Collection<URI> rdfNormalisationsNeeded);
-
-    /**
      * Adds the normalisation to this current collection of normalisations
      * 
      * @param rdfNormalisationNeeded
@@ -51,6 +44,8 @@ public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, P
 	public abstract void setRedirectOrProxy(URI redirectOrProxy);
 
 	public abstract boolean needsRedirect();
+
+	public abstract boolean needsProxy();
 
 	public abstract URI getEndpointMethod();
 

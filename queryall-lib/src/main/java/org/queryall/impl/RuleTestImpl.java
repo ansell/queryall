@@ -13,6 +13,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -183,6 +184,7 @@ public class RuleTestImpl implements RuleTest
         return false;
     }
     
+    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -245,7 +247,7 @@ public class RuleTestImpl implements RuleTest
         return false;
     }
     
-
+    @Override
     public String toString()
     {
         String result = "\n";
@@ -258,7 +260,7 @@ public class RuleTestImpl implements RuleTest
         return result;
     }
     
-
+    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -269,7 +271,7 @@ public class RuleTestImpl implements RuleTest
         return sb.toString();
     }
     
-
+    @Override
     public String toHtml()
     {
         StringBuilder sb = new StringBuilder();
@@ -284,11 +286,13 @@ public class RuleTestImpl implements RuleTest
         return sb.toString();
     }
 
+    @Override
     public void setTitle(String title)
     {
         this.title = title;
     }
 
+    @Override
     public String getTitle()
     {
         return this.title;
@@ -298,7 +302,7 @@ public class RuleTestImpl implements RuleTest
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
-
+    @Override
     public int hashCode()
     {
         final int prime = 31;
@@ -319,7 +323,7 @@ public class RuleTestImpl implements RuleTest
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-
+    @Override
     public boolean equals(Object obj)
     {
         if(this == obj)
@@ -396,7 +400,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @return the key
      */
-
+    @Override
     public URI getKey()
     {
         return key;
@@ -405,12 +409,13 @@ public class RuleTestImpl implements RuleTest
     /**
      * @param key the key to set
      */
-
+    @Override
     public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
 
+    @Override
     public void setKey(URI nextKey)
     {
         this.key = nextKey;
@@ -418,24 +423,29 @@ public class RuleTestImpl implements RuleTest
     /**
      * @return the namespace used to represent objects of this type by default
      */
-
+    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
     
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
-
-    public URI getElementType()
+    @Override
+    public Collection<URI> getElementTypes()
     {
-        return getRuletestTypeUri();
+        Collection<URI> results = new ArrayList<URI>(1);
+    	
+    	results.add(getRuletestTypeUri());
+    	
+    	return results;
     }
     
     /**
      * @return the rdfRuleUris
      */
+    @Override
     public Collection<URI> getRuleUris()
     {
         return rdfRuleUris;
@@ -444,6 +454,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @param rdfRuleUris the rdfRuleUris to set
      */
+    @Override
     public void setRuleUris(Collection<URI> rdfRuleUris)
     {
         this.rdfRuleUris = rdfRuleUris;
@@ -452,6 +463,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @return the stages
      */
+    @Override
     public Collection<URI> getStages()
     {
         return stages;
@@ -460,6 +472,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @param stages the stages to set
      */
+    @Override
     public void setStages(Collection<URI> stages)
     {
         this.stages = stages;
@@ -468,6 +481,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @return the testInputString
      */
+    @Override
     public String getTestInputString()
     {
         return testInputString;
@@ -476,6 +490,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @param testInputString the testInputString to set
      */
+    @Override
     public void setTestInputString(String testInputString)
     {
         this.testInputString = testInputString;
@@ -484,6 +499,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @return the testOutputString
      */
+    @Override
     public String getTestOutputString()
     {
         return testOutputString;
@@ -492,6 +508,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @param testOutputString the testOutputString to set
      */
+    @Override
     public void setTestOutputString(String testOutputString)
     {
         this.testOutputString = testOutputString;
@@ -500,6 +517,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @return the curationStatus
      */
+    @Override
     public URI getCurationStatus()
     {
         return curationStatus;
@@ -508,6 +526,7 @@ public class RuleTestImpl implements RuleTest
     /**
      * @param curationStatus the curationStatus to set
      */
+    @Override
     public void setCurationStatus(URI curationStatus)
     {
         this.curationStatus = curationStatus;
@@ -553,6 +572,7 @@ public class RuleTestImpl implements RuleTest
         return ruletestNamespace;
     }
 
+    @Override
     public int compareTo(RuleTest otherRuleTest)
     {
         @SuppressWarnings("unused")
@@ -567,11 +587,13 @@ public class RuleTestImpl implements RuleTest
         return getKey().stringValue().compareTo(otherRuleTest.getKey().stringValue());
     }    
 
+    @Override
     public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
         unrecognisedStatements.add(unrecognisedStatement);
     }
 
+    @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
         return unrecognisedStatements;

@@ -92,8 +92,6 @@ public class QueryBundle
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
-        
         try
         {
             con.setAutoCommit(false);

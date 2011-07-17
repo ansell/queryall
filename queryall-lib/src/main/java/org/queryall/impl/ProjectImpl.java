@@ -13,6 +13,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Collection;
 
@@ -204,7 +205,7 @@ public class ProjectImpl implements Project
         return false;
     }
     
-
+    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -281,7 +282,7 @@ public class ProjectImpl implements Project
         return false;
     }
     
-
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -294,7 +295,7 @@ public class ProjectImpl implements Project
         return sb.toString();
     }
     
-
+    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -309,7 +310,7 @@ public class ProjectImpl implements Project
         return sb.toString();
     }
     
-
+    @Override
     public String toHtml()
     {
         return "";
@@ -319,7 +320,7 @@ public class ProjectImpl implements Project
     /**
      * @return the key
      */
-
+    @Override
     public URI getKey()
     {
         return key;
@@ -328,84 +329,101 @@ public class ProjectImpl implements Project
     /**
      * @param key the key to set
      */
-
+    @Override
     public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
 
+    @Override
     public void setKey(URI nextKey)
     {
         this.key = nextKey;
     }    
+
     /**
      * @return the namespace used to represent objects of this type by default
      */
-
+    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
     
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
-
-    public URI getElementType()
+    @Override
+    public Collection<URI> getElementTypes()
     {
-        return getProjectTypeUri();
+        Collection<URI> results = new ArrayList<URI>(1);
+    	
+    	results.add(getProjectTypeUri());
+    	
+    	return results;
     }
     
+    @Override
     public void setCurationStatus(URI curationStatus)
     {
         this.curationStatus = curationStatus;
     }
     
+    @Override
     public URI getCurationStatus()
     {
         return curationStatus;
     }
 
+    @Override
     public void setAuthority(URI authority)
     {
         this.authority = authority;
     }
     
+    @Override
     public URI getAuthority()
     {
         return authority;
     }
 
+    @Override
     public void setDescription(String description)
     {
         this.description = description;
     }
     
+    @Override
     public String getDescription()
     {
         return description;
     }
 
+    @Override
     public void setTitle(String title)
     {
         this.title = title;
     }
     
+    @Override
     public String getTitle()
     {
         return title;
     }
 
+    @Override
     public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
         unrecognisedStatements.add(unrecognisedStatement);
     }
 
+    @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
         return unrecognisedStatements;
     }
 
+    @Override
     public int compareTo(Project otherProject)
     {
         @SuppressWarnings("unused")

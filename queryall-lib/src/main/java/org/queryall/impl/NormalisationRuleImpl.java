@@ -578,13 +578,17 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         return defaultNamespace;
     }
     
+
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
     @Override
-	public URI getElementType()
+	public Collection<URI> getElementTypes()
     {
-        return getNormalisationRuleTypeUri();
+    	Collection<URI> ruleTypes = new ArrayList<URI>(2);
+        ruleTypes.add(getNormalisationRuleTypeUri());
+        
+        return ruleTypes;
     }
     
     @Override

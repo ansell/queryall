@@ -18,6 +18,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -47,8 +48,8 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     public Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
-    public String elementType = "";
-    public String elementKey = "";
+    public String recordElementType = "";
+    public String recordElementKey = "";
     public String hasAuthorOpenID = "";
     public Date recordDate = null;
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
@@ -104,11 +105,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             }
             else if(nextStatement.getPredicate().equals(provenanceElementTypeUri))
             {
-                this.elementType = nextStatement.getObject().stringValue();
+                this.recordElementType = nextStatement.getObject().stringValue();
             }
             else if(nextStatement.getPredicate().equals(provenanceElementKeyUri))
             {
-                this.elementKey = nextStatement.getObject().stringValue();
+                this.recordElementKey = nextStatement.getObject().stringValue();
             }
             else if(nextStatement.getPredicate().equals(provenanceRecordDateUri))
             {
@@ -284,8 +285,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return results;
     }
     
-    
-
+    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -308,10 +308,10 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             
             Literal recordDateLiteral = f.createLiteral(recordDateString, XMLSchema.DATETIME);
             
-            log.debug("ProvenanceRecord.toRdf: 2 elementType="+elementType);
-            URI elementTypeLiteral = f.createURI(elementType);
-            log.debug("ProvenanceRecord.toRdf: 3 elementKey="+elementKey);
-            URI elementKeyLiteral = f.createURI(elementKey);
+            log.debug("ProvenanceRecord.toRdf: 2 elementType="+recordElementType);
+            URI elementTypeLiteral = f.createURI(recordElementType);
+            log.debug("ProvenanceRecord.toRdf: 3 elementKey="+recordElementKey);
+            URI elementKeyLiteral = f.createURI(recordElementKey);
             log.debug("ProvenanceRecord.toRdf: 4 hasAuthorOpenID="+hasAuthorOpenID);
             URI hasAuthorOpenIDLiteral = f.createURI(hasAuthorOpenID);
             log.debug("ProvenanceRecord.toRdf: 5");
@@ -359,8 +359,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
-        
         try
         {
             con.setAutoCommit(false);
@@ -397,14 +395,14 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return false;
     }
     
-
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
         
         sb.append("key="+key+"\n");
-        sb.append("elementType="+elementType+"\n");
-        sb.append("elementKey="+elementKey+"\n");
+        sb.append("elementType="+recordElementType+"\n");
+        sb.append("elementKey="+recordElementKey+"\n");
         sb.append("hasAuthorOpenID="+hasAuthorOpenID+"\n");
         if(recordDate != null)
         {
@@ -418,7 +416,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         return sb.toString();
     }
-    
+ 
     public String toHtmlDisplayBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -432,7 +430,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     
     public boolean relatedToElementTypes(Collection<URI> typesToCheck)
     {
-        if(typesToCheck == null || elementType == null || elementType.trim().equals(""))
+        if(typesToCheck == null || recordElementType == null || recordElementType.trim().equals(""))
         {
             return false;
         }
@@ -444,7 +442,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         for(URI nextTypeToCheck : typesToCheck)
         {
-            if(elementType.equals(nextTypeToCheck))
+            if(recordElementType.equals(nextTypeToCheck))
             {
                 return true;
             }
@@ -453,7 +451,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return false;
     }
     
-
+    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -468,7 +466,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         return sb.toString();
     }
     
-
+    @Override
     public String toHtml()
     {
         return "<span>key:</span>"+StringUtils.xmlEncodeString(getKey().stringValue());
@@ -477,7 +475,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     /**
      * @return the key
      */
-
+    @Override
     public URI getKey()
     {
         return key;
@@ -486,40 +484,47 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     /**
      * @param key the key to set
      */
-
+    @Override
     public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
 
+    @Override
     public void setKey(URI nextKey)
     {
         this.key = nextKey;
     }    
+
     /**
      * @return the namespace used to represent objects of this type by default
      */
-
+    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
 
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
-
-    public URI getElementType()
+    @Override
+    public Collection<URI> getElementTypes()
     {
-        return provenanceTypeUri;
+        Collection<URI> results = new ArrayList<URI>(1);
+    	
+    	results.add(provenanceTypeUri);
+    	
+    	return results;
     }
     
+    
     /**
-     * @param elementType the elementType to set
+     * @param recordElementType the elementType to set
      */
     public void setElementType(String nextElementType)
     {
-        this.elementType = nextElementType;
+        this.recordElementType = nextElementType;
     }
     
     
@@ -528,15 +533,15 @@ public class ProvenanceRecord implements BaseQueryAllInterface
      */
     public String getElementKey()
     {
-        return elementKey;
+        return recordElementKey;
     }
     
     /**
-     * @param elementKey the elementKey to set
+     * @param recordElementKey the elementKey to set
      */
     public void setElementKey(String nextElementKey)
     {
-        this.elementKey = nextElementKey;
+        this.recordElementKey = nextElementKey;
     }
     
     /**

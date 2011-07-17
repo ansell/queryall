@@ -397,48 +397,65 @@ public class RdfUtils
     
     public static String getConstructQueryByType(BaseQueryAllInterface nextObject, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri, Settings localSettings)
     {
-        return getConstructQueryByType(nextObject.getElementType(), offset, limit, useSparqlGraph, sparqlGraphUri, localSettings);
+        return getConstructQueryByType(nextObject.getElementTypes(), offset, limit, useSparqlGraph, sparqlGraphUri, localSettings);
     }
     
-    
-    public static String getConstructQueryByType(URI nextType, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri, Settings localSettings)
+    public static String getConstructQueryByType(Collection<URI> nextTypes, int offset, int limit, boolean useSparqlGraph, String sparqlGraphUri, Settings localSettings)
     {
         StringBuilder result = new StringBuilder();
         
-        result.append("CONSTRUCT { ?s a <"+nextType.stringValue()+"> . ");
+        result.append("CONSTRUCT { ?s a ?type . ");
         
         int counter = 0;
+
+        // TODO: change this to List<String> when titleProperties are ordered in the configuration
+        Collection<URI> titleProperties = localSettings.getURICollectionPropertiesFromConfig("titleProperties");
         
-        for(String nextTitleUri : localSettings.getStringCollectionPropertiesFromConfig("titleProperties"))
+        for(URI nextTitleUri : titleProperties)
         {
-            result.append(" ?s <"+nextTitleUri+"> ?o"+counter+" . ");
+            result.append(" ?s <"+nextTitleUri.stringValue()+"> ?o"+counter+" . ");
             
             counter++;
         }
         
         result.append(" } WHERE { ");
         
-        if(useSparqlGraph)
+        boolean firstType = true;
+        
+        for(URI nextTypeUri : nextTypes)
         {
-            result.append(" GRAPH <" + sparqlGraphUri + "> { ");
+        	if(!firstType)
+        		result.append(" UNION ");
+        	
+            // need to open up the union pattern using this if there is more than one type
+            if(nextTypes.size() > 1)
+            	result.append(" { ");
+
+            if(useSparqlGraph)
+	        {
+	            result.append(" GRAPH <" + sparqlGraphUri + "> { ");
+	        }
+	        
+	        result.append(" ?s a ?type . ");
+	        result.append(" FILTER(?type = ").append(nextTypeUri.toString()).append(" ) . ");
+	        
+	        counter = 0;
+	        
+	        for(URI nextTitleUri : titleProperties)
+	        {
+	            result.append("OPTIONAL{ ?s <"+nextTitleUri.stringValue()+"> ?o"+counter+" . }");
+	            
+	            counter++;
+	        }
+	        
+	        if(useSparqlGraph)
+	        {
+	            result.append(" } ");
+	        }
+	        
+	        firstType = false;
         }
-        
-        result.append(" ?s a <"+nextType.stringValue()+"> . ");
-        
-        counter = 0;
-        
-        for(String nextTitleUri : localSettings.getStringCollectionPropertiesFromConfig("titleProperties"))
-        {
-            result.append("OPTIONAL{ ?s <"+nextTitleUri+"> ?o"+counter+" . }");
-            
-            counter++;
-        }
-        
-        if(useSparqlGraph)
-        {
-            result.append(" } ");
-        }
-        
+
         result.append(" } ");
         
         return result.toString();

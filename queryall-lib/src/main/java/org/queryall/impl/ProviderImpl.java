@@ -13,6 +13,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -49,8 +50,6 @@ public class ProviderImpl implements Provider
     private Collection<URI> namespaces = new HashSet<URI>();
     private Collection<URI> includedInQueryTypes = new HashSet<URI>();
     private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
-    private boolean useSparqlGraph = false;
-    private String sparqlGraphUri = "";
     private URI redirectOrProxy = ProviderImpl.getProviderRedirect();
     private boolean isDefaultSourceVar = false;
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
@@ -105,29 +104,6 @@ public class ProviderImpl implements Provider
         
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
         setProviderTitle(f.createURI(providerNamespace,"Title"));
-    }
-    
-    public boolean getUseSparqlGraph()
-    {
-        return useSparqlGraph;
-    }
-
-    public void setUseSparqlGraph(boolean useSparqlGraph)
-    {
-        this.useSparqlGraph = useSparqlGraph;
-    }
-
-    public String getSparqlGraphUri()
-    {
-    	if(this.getUseSparqlGraph())
-    		return sparqlGraphUri;
-    	else
-    		return "";
-    }
-
-    public void setSparqlGraphUri(String sparqlGraphUri)
-    {
-        this.sparqlGraphUri = sparqlGraphUri;
     }
     
     public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
@@ -316,6 +292,7 @@ public class ProviderImpl implements Provider
         }
     }
     
+    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -345,8 +322,6 @@ public class ProviderImpl implements Provider
             
             URI redirectOrProxyLiteral = getRedirectOrProxy();
             URI endpointMethodLiteral = getEndpointMethod();
-            Literal useSparqlGraphLiteral = f.createLiteral(getUseSparqlGraph());
-            Literal sparqlGraphUriLiteral = f.createLiteral(getSparqlGraphUri());
             Literal isDefaultSourceLiteral = f.createLiteral(getIsDefaultSourceVar());
             Literal assumedContentTypeLiteral = f.createLiteral(getAssumedContentType());
             
@@ -371,10 +346,6 @@ public class ProviderImpl implements Provider
             con.add(providerInstanceUri, getProviderResolutionStrategy(), redirectOrProxyLiteral, keyToUse);
             
             con.add(providerInstanceUri, getProviderResolutionMethod(), endpointMethodLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, getProviderGraphUri(), sparqlGraphUriLiteral, keyToUse);
             
             con.add(providerInstanceUri, getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
             
@@ -404,9 +375,9 @@ public class ProviderImpl implements Provider
                 }
             }
             
-            if(getRdfNormalisationsNeeded() != null)
+            if(getNormalisationUris() != null)
             {
-                for(URI nextRdfNormalisationNeeded : getRdfNormalisationsNeeded())
+                for(URI nextRdfNormalisationNeeded : getNormalisationUris())
                 {
                     if(nextRdfNormalisationNeeded != null)
                     {
@@ -450,11 +421,7 @@ public class ProviderImpl implements Provider
         return false;
     }
     
-    public boolean equals(Provider otherProvider)
-    {
-        return this.getKey().equals(otherProvider.getKey());
-    }
-    
+    @Override
     public int hashCode()
     {
         final int prime = 31;
@@ -479,13 +446,11 @@ public class ProviderImpl implements Provider
                         : rdfNormalisationsNeeded.hashCode());
         result = prime * result
                 + ((redirectOrProxy == null) ? 0 : redirectOrProxy.hashCode());
-        result = prime * result
-                + ((sparqlGraphUri == null) ? 0 : sparqlGraphUri.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + (useSparqlGraph ? 1231 : 1237);
         return result;
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
@@ -548,13 +513,6 @@ public class ProviderImpl implements Provider
         }
         else if (!redirectOrProxy.equals(other.redirectOrProxy))
             return false;
-        if (sparqlGraphUri == null)
-        {
-            if (other.sparqlGraphUri != null)
-                return false;
-        }
-        else if (!sparqlGraphUri.equals(other.sparqlGraphUri))
-            return false;
         if (title == null)
         {
             if (other.title != null)
@@ -562,11 +520,11 @@ public class ProviderImpl implements Provider
         }
         else if (!title.equals(other.title))
             return false;
-        if (useSparqlGraph != other.useSparqlGraph)
-            return false;
+
         return true;
     }
 
+    @Override
     public int compareTo(Provider otherProvider)
     {
         @SuppressWarnings("unused")
@@ -581,6 +539,7 @@ public class ProviderImpl implements Provider
         return this.getKey().stringValue().compareTo(otherProvider.getKey().stringValue());
     }
 
+    @Override
     public boolean containsNamespaceUri(URI newNamespaceUri)
     {
         if(this.getNamespaces() != null && newNamespaceUri != null)
@@ -591,6 +550,7 @@ public class ProviderImpl implements Provider
         return false;
     }
     
+    @Override
     public boolean containsNormalisationUri(URI normalisationKey)
     {
         if(this.getNormalisationUris() != null && normalisationKey != null)
@@ -601,16 +561,19 @@ public class ProviderImpl implements Provider
         return false;
     }
     
+    @Override
     public boolean needsRedirect()
     {
         return getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect());
     }
     
+    @Override
     public boolean needsProxy()
     {
         return getRedirectOrProxy().equals(ProviderImpl.getProviderProxy());
     }
     
+    @Override
     public String toString()
     {
         String result = "\n";
@@ -620,18 +583,15 @@ public class ProviderImpl implements Provider
         result += "endpointMethod="+getEndpointMethod() + "\n";
         result += "namespaces="+getNamespaces() + "\n";
         result += "includedInCustomQueries="+getIncludedInQueryTypes() + "\n";
-        result += "useSparqlGraph="+getUseSparqlGraph() + "\n";
-        result += "sparqlGraphUri="+getSparqlGraphUri() + "\n";
         result += "redirectOrProxy="+getRedirectOrProxy() + "\n";
         result += "isDefaultSource="+getIsDefaultSourceVar() + "\n";
-        result += "needsUriNormalisation="+getRdfNormalisationsNeeded() + "\n";
         result += "profileIncludeExcludeOrder="+getProfileIncludeExcludeOrder() + "\n";
 //        result += "acceptHeaderString="+getAcceptHeaderString() + "\n";
         
         return result;
     }
     
-
+    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -642,7 +602,7 @@ public class ProviderImpl implements Provider
         return sb.toString();
     }
     
-
+    @Override
     public String toHtml()
     {
         String result = "";
@@ -676,15 +636,6 @@ public class ProviderImpl implements Provider
             result += "<div class=\"includedInCustomQueries\"><span class=\"error\">This provider is not going to be used in any queries!</span></div>\n";
         }
         
-        if(getUseSparqlGraph())
-        {
-            result += "<div class=\"useSparqlGraph\">Uses a SPARQL graph URI with URI: "+StringUtils.xmlEncodeString(getSparqlGraphUri()) + "</div>\n";
-        }
-        else
-        {
-            result += "<div class=\"useSparqlGraph\">This provider does not use SPARQL graphs!</div>\n";
-        }
-        
         if(needsRedirect())
         {
             result += "<div class=\"redirectOrProxy\">Redirect to this provider</div>\n";
@@ -703,22 +654,13 @@ public class ProviderImpl implements Provider
             result += "<div class=\"redirectOrProxy\">This provider will not be used on all namespaces for the configured queries</div>\n";
         }
         
-        if(getRdfNormalisationsNeeded() != null)
-        {
-            result += "<div class=\"includedInCustomQueries\">This provider requires the following normalisations to match the normalised URI formats: "+StringUtils.xmlEncodeString(getRdfNormalisationsNeeded().toString()) + "</div>\n";
-        }
-        else
-        {
-            result += "<div class=\"includedInCustomQueries\">No RDF normalisations needed for this provider!</div>\n";
-        }
-        
         return result;
     }
     
     /**
      * @return the key
      */
-
+    @Override
     public URI getKey()
     {
         return key;
@@ -727,12 +669,13 @@ public class ProviderImpl implements Provider
     /**
      * @param key the key to set
      */
-
+    @Override
     public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
 
+    @Override
     public void setKey(URI nextKey)
     {
         this.key = nextKey;
@@ -740,21 +683,26 @@ public class ProviderImpl implements Provider
     /**
      * @return the namespace used to represent objects of this type by default
      */
-
+    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
     
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
-
-    public URI getElementType()
+    @Override
+    public Collection<URI> getElementTypes()
     {
-        return getProviderTypeUri();
+        Collection<URI> results = new ArrayList<URI>(1);
+    	
+    	results.add(getProviderTypeUri());
+    	
+    	return results;
     }
-    
+        
+    @Override
     public boolean containsQueryTypeUri(URI queryKey)
     {
         if(this.getIncludedInQueryTypes() != null && queryKey != null)
@@ -768,110 +716,107 @@ public class ProviderImpl implements Provider
         return false;
     }
     
+    @Override
     public boolean getIsDefaultSource()
     {
         return getIsDefaultSourceVar();
     }
 
+    @Override
     public void setIsDefaultSource(boolean isDefaultSourceVar)
     {
         this.setIsDefaultSourceVar(isDefaultSourceVar);
     }
     
+    @Override
     public Collection<URI> getNormalisationUris()
     {
-        return getRdfNormalisationsNeeded();
+        return rdfNormalisationsNeeded;
     }
     
-    public void setNormalisationUris(Collection<URI> rdfNormalisationsNeeded)
-    {
-        this.setRdfNormalisationsNeeded(rdfNormalisationsNeeded);
-    }
-
+    @Override
     public Collection<URI> getIncludedInQueryTypes()
     {
         return includedInQueryTypes;
     }
     
+    @Override
     public void setIncludedInQueryTypes(Collection<URI> includedInCustomQueries)
     {
         this.includedInQueryTypes = includedInCustomQueries;
     }
 
+    @Override
     public URI getRedirectOrProxy()
     {
         return redirectOrProxy;
     }
 
+    @Override
     public void setRedirectOrProxy(URI redirectOrProxy)
     {
         this.redirectOrProxy = redirectOrProxy;
     }
     
+    @Override
     public URI getProfileIncludeExcludeOrder()
     {
         return profileIncludeExcludeOrder;
     }
 
+    @Override
     public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
 
-    
+    @Override
     public Collection<URI> getNamespaces()
     {
         return namespaces;
     }
 
+    @Override
     public void setNamespaces(Collection<URI> namespaces)
     {
         this.namespaces = namespaces;
     }
 
+    @Override
     public void setCurationStatus(URI curationStatus)
     {
         this.curationStatus = curationStatus;
     }
     
+    @Override
     public URI getCurationStatus()
     {
         return curationStatus;
     }
 
+    @Override
     public String getTitle()
     {
         return title;
     }
 
+    @Override
     public void setTitle(String title)
     {
         this.title = title;
     }
     
+    @Override
     public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
         unrecognisedStatements.add(unrecognisedStatement);
     }
 
+    @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
         return unrecognisedStatements;
     }
-
-	/**
-	 * @param rdfNormalisationsNeeded the rdfNormalisationsNeeded to set
-	 */
-	public void setRdfNormalisationsNeeded(Collection<URI> rdfNormalisationsNeeded) {
-		this.rdfNormalisationsNeeded = rdfNormalisationsNeeded;
-	}
-
-	/**
-	 * @return the rdfNormalisationsNeeded
-	 */
-	public Collection<URI> getRdfNormalisationsNeeded() {
-		return rdfNormalisationsNeeded;
-	}
 
 	/**
 	 * @param providerRedirect the providerRedirect to set
@@ -1058,10 +1003,12 @@ public class ProviderImpl implements Provider
 	/**
 	 * @return the providerProxy
 	 */
-	public static URI getProviderProxy() {
+	public static URI getProviderProxy() 
+	{
 		return providerProxy;
 	}
 
+    @Override
 	public void addNormalisationUri(URI rdfNormalisationNeeded)
     {
         if(this.rdfNormalisationsNeeded == null)
@@ -1072,6 +1019,7 @@ public class ProviderImpl implements Provider
         this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
     }
 
+    @Override
     public void addIncludedInQueryType(URI includedInQueryType)
     {
         if(this.includedInQueryTypes == null)
@@ -1082,6 +1030,7 @@ public class ProviderImpl implements Provider
         this.includedInQueryTypes.add(includedInQueryType);
     }
 
+    @Override
     public void addNamespace(URI namespace)
     {
         if(this.namespaces == null)
@@ -1092,6 +1041,7 @@ public class ProviderImpl implements Provider
         this.namespaces.add(namespace);
     }
 
+    @Override
     public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {

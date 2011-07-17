@@ -1,6 +1,7 @@
 package org.queryall.statistics;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Date;
 import java.util.Collection;
@@ -351,8 +352,6 @@ public class StatisticsEntry implements BaseQueryAllInterface
 			int modelVersion) throws OpenRDFException
 	{
 		RepositoryConnection con = myRepository.getConnection();
-
-		final ValueFactory f = Constants.valueFactory;
 
 		try
 		{
@@ -887,14 +886,18 @@ public class StatisticsEntry implements BaseQueryAllInterface
 		return defaultNamespace;
 	}
 
-	/**
-	 * @return the URI used for the rdf Type of these elements
-	 */
-
-	public URI getElementType()
-	{
-		return statisticsTypeUri;
-	}
+    /**
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
+     */
+    @Override
+    public Collection<URI> getElementTypes()
+    {
+        Collection<URI> results = new ArrayList<URI>(1);
+    	
+    	results.add(statisticsTypeUri);
+    	
+    	return results;
+    }
 
 	/**
 	 * @return the errorproviderUris

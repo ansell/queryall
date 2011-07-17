@@ -14,6 +14,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
 
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -113,22 +114,11 @@ public class QueryTypeImpl implements QueryType
     
     public static String queryNamespace;
     
-    @SuppressWarnings("unused")
 	public QueryTypeImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
 	{
-        // TEMPORARY
-        // This is just used to assign unique identifiers to each of the included templates which previously did not have identifiers
-        int templatecounter = 0;
-        int parametercounter = 0;
-        int outputcounter = 0;
-        int includecounter = 0;
-        
         Collection<URI> tempNamespacesToHandle = new HashSet<URI>();
         Collection<Integer> tempPublicIdentifierIndexes = new HashSet<Integer>();
         Collection<Integer> tempNamespaceInputIndexes = new HashSet<Integer>();
-        Collection<URI> tempIncludedQueryTemplates = new HashSet<URI>();
-        Collection<URI> tempIncludedQueryParameters = new HashSet<URI>();
-        Collection<URI> tempIncludedStaticOutputTemplates = new HashSet<URI>();
         
         Collection<URI> tempsemanticallyLinkedCustomQueries = new HashSet<URI>();
         
@@ -247,11 +237,13 @@ public class QueryTypeImpl implements QueryType
 		// TODO Auto-generated constructor stub
 	}
 
+    @Override
 	public String getInputRegex()
     {
         return inputRegex;
     }
     
+    @Override
     public Pattern getInputRegexPattern()
     {
         if(inputRegexPattern == null && inputRegex != null)
@@ -260,6 +252,7 @@ public class QueryTypeImpl implements QueryType
         return inputRegexPattern;
     }
     
+    @Override
     public void setInputRegex(String nextInputRegex)
     {
         inputRegex = nextInputRegex;
@@ -300,6 +293,7 @@ public class QueryTypeImpl implements QueryType
     }
     
     // returns true if the input variable is in the list of public input variables
+    @Override
     public boolean isInputVariablePublic(int inputNumber)
     {
         if(publicIdentifierIndexes != null)
@@ -319,6 +313,7 @@ public class QueryTypeImpl implements QueryType
         return false;
     }
     
+    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -614,6 +609,7 @@ public class QueryTypeImpl implements QueryType
         return false;
     }
     
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
@@ -660,6 +656,7 @@ public class QueryTypeImpl implements QueryType
         return sb.toString();
     }
     
+    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -738,6 +735,7 @@ public class QueryTypeImpl implements QueryType
         return sb.toString();
     }
     
+    @Override
     public List<String> matchesForQueryString(String nextQueryString)
     {
         return StringUtils.matchesForRegexOnString(getInputRegexPattern(), this.inputRegex, nextQueryString);
@@ -749,6 +747,7 @@ public class QueryTypeImpl implements QueryType
         return StringUtils.matchesRegexOnString(getInputRegexPattern(), this.inputRegex, nextQueryString);
 	}    
 	
+    @Override
     public boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck)
     {
         if(handleAllNamespaces && isNamespaceSpecific)
@@ -761,6 +760,7 @@ public class QueryTypeImpl implements QueryType
         }
     }
     
+    @Override
     public boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck)
     {
         if(!isNamespaceSpecific || namespacesToHandle == null || namespacesToCheck == null)
@@ -894,6 +894,7 @@ public class QueryTypeImpl implements QueryType
         }
     }
     
+    @Override
     public String toHtml()
     {
         StringBuilder sb = new StringBuilder();
@@ -911,6 +912,7 @@ public class QueryTypeImpl implements QueryType
     /**
      * @return the key
      */
+    @Override
     public URI getKey()
     {
         return key;
@@ -919,36 +921,47 @@ public class QueryTypeImpl implements QueryType
     /**
      * @param key the key to set
      */
+    @Override
     public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
 
+    @Override
     public void setKey(URI nextKey)
     {
         this.key = nextKey;
     }    
+
     /**
      * @return the namespace used to represent objects of this type by default
      */
+    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
 
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
-    public URI getElementType()
+    @Override
+    public Collection<URI> getElementTypes()
     {
-        return getQueryTypeUri();
+        Collection<URI> results = new ArrayList<URI>(1);
+    	
+    	results.add(getQueryTypeUri());
+    	
+    	return results;
     }
     
+    @Override
     public URI getProfileIncludeExcludeOrder()
     {
         return profileIncludeExcludeOrder;
     }
 
+    @Override
     public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
@@ -964,16 +977,19 @@ public class QueryTypeImpl implements QueryType
         return getQueryNamespaceMatchAll();
     }
 
+    @Override
     public void setCurationStatus(URI curationStatus)
     {
         this.curationStatus = curationStatus;
     }
     
+    @Override
     public URI getCurationStatus()
     {
         return curationStatus;
     }
     
+    @Override
     public int compareTo(QueryType otherQueryType)
     {
         @SuppressWarnings("unused")
@@ -988,37 +1004,43 @@ public class QueryTypeImpl implements QueryType
         return getKey().stringValue().compareTo(otherQueryType.getKey().stringValue());
     }
     
-    
+    @Override
     public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
         unrecognisedStatements.add(unrecognisedStatement);
     }
 
+    @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
         return unrecognisedStatements;
     }
     
+    @Override
     public Collection<URI> getSemanticallyLinkedQueryTypes()
     {
         return semanticallyLinkedCustomQueries;
     }
 
+    @Override
     public void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedCustomQueries)
     {
         this.semanticallyLinkedCustomQueries = semanticallyLinkedCustomQueries;
     }
 
+    @Override
     public Collection<URI> getNamespacesToHandle()
     {
         return namespacesToHandle;
     }
 
+    @Override
     public void setNamespacesToHandle(Collection<URI> namespacesToHandle)
     {
         this.namespacesToHandle = namespacesToHandle;
     }
 
+    @Override
     public void addNamespaceToHandle(URI namespaceToHandle)
     {
         if(this.namespacesToHandle == null)
@@ -1029,131 +1051,157 @@ public class QueryTypeImpl implements QueryType
         this.namespacesToHandle.add(namespaceToHandle);
     }
         
+    @Override
     public URI getNamespaceMatchMethod()
     {
         return namespaceMatchMethod;
     }
     
+    @Override
     public void setNamespaceMatchMethod(URI namespaceMatchMethod)
     {
         this.namespaceMatchMethod = namespaceMatchMethod;
     }
     
+    @Override
     public void setIsNamespaceSpecific(boolean isNamespaceSpecific)
     {
         this.isNamespaceSpecific = isNamespaceSpecific;
     }
 
+    @Override
     public boolean getIsNamespaceSpecific()
     {
         return isNamespaceSpecific;
     }
 
+    @Override
     public void setIncludeDefaults(boolean includeDefaults)
     {
         this.includeDefaults = includeDefaults;
     }
 
+    @Override
     public boolean getIncludeDefaults()
     {
         return includeDefaults;
     }
 
+    @Override
     public String getTitle()
     {
         return title;
     }
 
+    @Override
     public void setTitle(String title)
     {
         this.title = title;
     }
     
+    @Override
     public String getQueryUriTemplateString()
     {
         return queryUriTemplateString;
     }
 
+    @Override
     public void setQueryUriTemplateString(String queryUriTemplateString)
     {
         this.queryUriTemplateString = queryUriTemplateString;
     }
     
+    @Override
     public String getStandardUriTemplateString()
     {
         return standardUriTemplateString;
     }
 
+    @Override
     public void setStandardUriTemplateString(String standardUriTemplateString)
     {
         this.standardUriTemplateString = standardUriTemplateString;
     }
     
+    @Override
     public String getTemplateString()
     {
         return templateString;
     }
 
+    @Override
     public void setTemplateString(String templateString)
     {
         this.templateString = templateString;
     }
     
+    @Override
     public String getOutputRdfXmlString()
     {
         return outputRdfXmlString;
     }
 
+    @Override
     public void setOutputRdfXmlString(String outputRdfXmlString)
     {
         this.outputRdfXmlString = outputRdfXmlString;
     }
     
+    @Override
     public void setPublicIdentifierIndexes(int[] publicIdentifierIndexes)
     {
         this.publicIdentifierIndexes = publicIdentifierIndexes;
     }
 
+    @Override
     public int[] getPublicIdentifierIndexes()
     {
         return publicIdentifierIndexes;
     }
 
+    @Override
     public void setNamespaceInputIndexes(int[] namespaceInputIndexes)
     {
         this.namespaceInputIndexes = namespaceInputIndexes;
     }
 
+    @Override
     public int[] getNamespaceInputIndexes()
     {
         return namespaceInputIndexes;
     }
 
+    @Override
     public boolean getIsPageable()
     {
         return isPageable;
     }
     
+    @Override
     public void setIsPageable(boolean isPageable)
     {
         this.isPageable = isPageable;
     }
     
+    @Override
     public boolean getInRobotsTxt()
     {
         return inRobotsTxt;
     }
     
+    @Override
     public void setInRobotsTxt(boolean inRobotsTxt)
     {
         this.inRobotsTxt = inRobotsTxt;
     }
 
+    @Override
     public boolean getHandleAllNamespaces()
     {
         return handleAllNamespaces;
     }
     
+    @Override
     public void setHandleAllNamespaces(boolean handleAllNamespaces)
     {
         this.handleAllNamespaces = handleAllNamespaces;
@@ -1417,11 +1465,13 @@ public class QueryTypeImpl implements QueryType
 		return queryNamespaceMatchAll;
 	}
 
+    @Override
     public boolean getIsDummyQueryType()
     {
         return this.isDummyQueryType;
     }
 
+    @Override
     public void setIsDummyQueryType(boolean isDummyQueryType)
     {
         this.isDummyQueryType = isDummyQueryType;
@@ -1443,6 +1493,7 @@ public class QueryTypeImpl implements QueryType
         return queryIsDummyQueryType;
     }
 
+    @Override
     public boolean isUsedWithProfileList(List<Profile> orderedProfileList,
             boolean allowImplicitInclusions, boolean includeNonProfileMatched)
     {

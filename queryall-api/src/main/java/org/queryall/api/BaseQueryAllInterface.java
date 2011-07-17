@@ -27,7 +27,7 @@ public interface BaseQueryAllInterface
     public abstract String getDefaultNamespace();
     
     
-    public abstract URI getElementType();
+    public abstract Collection<URI> getElementTypes();
     
     
     /**

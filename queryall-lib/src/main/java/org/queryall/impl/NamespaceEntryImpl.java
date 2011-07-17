@@ -13,6 +13,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -265,11 +266,13 @@ public class NamespaceEntryImpl implements NamespaceEntry
         return false;
     }
     
+    @Override
     public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
         unrecognisedStatements.add(unrecognisedStatement);
     }
     
+    @Override
     public int compareTo(NamespaceEntry otherNamespace)
     {
         @SuppressWarnings("unused")
@@ -284,31 +287,37 @@ public class NamespaceEntryImpl implements NamespaceEntry
         return this.getPreferredPrefix().compareTo(otherNamespace.getPreferredPrefix());
     }
     
+    @Override
     public void setTitle(String title)
     {
         this.title = title;
     }
 
+    @Override
     public String getTitle()
     {
         return this.title;
     }
 
+    @Override
     public Collection<String> getAlternativePrefixes()
     {
         return alternativePrefixes;
     }
     
+    @Override
     public String getAuthority()
     {
         return authority;
     }
     
+    @Override
     public boolean getConvertQueriesToPreferredPrefix()
     {
         return convertQueriesToPreferredPrefix;
     }
 
+    @Override
     public URI getCurationStatus()
     {
         return curationStatus;
@@ -317,24 +326,31 @@ public class NamespaceEntryImpl implements NamespaceEntry
     /**
      * @return the namespace used to represent objects of this type by default
      */
+    @Override
     public String getDefaultNamespace()
     {
         return defaultNamespace;
     }
     
+    @Override
     public String getDescription()
     {
         return description;
     }
     
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
-    public URI getElementType()
+    @Override
+    public Collection<URI> getElementTypes()
     {
-        return getNamespaceTypeUri();
+        Collection<URI> results = new ArrayList<URI>(1);
+		results.add(getNamespaceTypeUri());
+		
+		return results;
     }
     
+    @Override
     public String getIdentifierRegex()
     {
         return identifierRegex;
@@ -343,56 +359,67 @@ public class NamespaceEntryImpl implements NamespaceEntry
     /**
      * @return the key
      */
+    @Override
     public URI getKey()
     {
         return key;
     }
     
+    @Override
     public String getPreferredPrefix()
     {
         return preferredPrefix;
     }
     
+    @Override
     public String getSeparator()
     {
         return separator;
     }
     
+    @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
         return unrecognisedStatements;
     }
 
+    @Override
     public String getUriTemplate()
     {
         return uriTemplate;
     }
     
+    @Override
     public void setAlternativePrefixes(Collection<String> alternativePrefixes)
     {
         this.alternativePrefixes = alternativePrefixes;
     }
     
+    @Override
     public void setAuthority(String authority)
     {
         this.authority = authority;
     }
     
+    @Override
     public void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix)
     {
         this.convertQueriesToPreferredPrefix = convertQueriesToPreferredPrefix;
     }
     
+    @Override
     public void setCurationStatus(URI curationStatus)
     {
         this.curationStatus = curationStatus;
     }
     
+    @Override
     public void setDescription(String description)
     {
         this.description = description;
     }    
     
+    @Override
     public void setIdentifierRegex(String identifierRegex)
     {
         this.identifierRegex = identifierRegex;
@@ -401,36 +428,43 @@ public class NamespaceEntryImpl implements NamespaceEntry
     /**
      * @param key the key to set
      */
+    @Override
     public void setKey(String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
     
+    @Override
     public void setKey(URI nextKey)
     {
         this.key = nextKey;
     }
     
+    @Override
     public void setPreferredPrefix(String preferredPrefix)
     {
         this.preferredPrefix = preferredPrefix;
     }
 
+    @Override
     public void setSeparator(String separator)
     {
         this.separator = separator;
     }
     
+    @Override
     public void setUriTemplate(String uriTemplate)
     {
         this.uriTemplate = uriTemplate;
     }    
     
+    @Override
     public String toHtml()
     {
         return "";
     }
     
+    @Override
     public String toHtmlFormBody()
     {
         StringBuilder sb = new StringBuilder();
@@ -444,6 +478,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
         return sb.toString();
     }    
     
+    @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
@@ -550,6 +585,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
         return false;
     }
 
+    @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();

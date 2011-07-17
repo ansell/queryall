@@ -573,12 +573,15 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     }
     
     /**
-     * @return the URI used for the rdf Type of these elements
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
      */
     @Override
-    public URI getElementType()
+	public Collection<URI> getElementTypes()
     {
-        return getSparqlRuleTypeUri();
+    	Collection<URI> results = super.getElementTypes();
+        
+        results.add(getSparqlRuleTypeUri());
+        return results;
     }
     
     /* (non-Javadoc)

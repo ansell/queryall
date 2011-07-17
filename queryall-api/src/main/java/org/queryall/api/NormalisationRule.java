@@ -41,5 +41,5 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     public abstract Object stageAfterResultsToPool(Object input);
 
     public abstract Object stageAfterResultsToDocument(Object input);
-
+    
 }

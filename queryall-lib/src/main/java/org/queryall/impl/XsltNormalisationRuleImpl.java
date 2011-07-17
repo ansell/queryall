@@ -240,6 +240,18 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         return false;
     }
     
+    /**
+     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
+     */
+    @Override
+	public Collection<URI> getElementTypes()
+    {
+    	Collection<URI> results = super.getElementTypes();
+        
+        results.add(getXsltRuleTypeUri());
+        return results;
+    }
+
 	/* (non-Javadoc)
 	 * @see org.queryall.impl.XsltNormalisationRule#setXsltStylesheet(java.lang.String)
 	 */
