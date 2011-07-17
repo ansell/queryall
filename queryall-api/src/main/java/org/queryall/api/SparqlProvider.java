@@ -3,7 +3,7 @@ package org.queryall.api;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public interface SparqlProvider
+public interface SparqlProvider extends Provider
 {
     /**
      * The graph URI may contain template elements, so it cannot be directly verified as a URI

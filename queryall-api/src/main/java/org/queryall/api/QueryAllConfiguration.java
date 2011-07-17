@@ -5,7 +5,7 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 
-public abstract class QueryAllConfiguration 
+public interface QueryAllConfiguration 
 {
 	public abstract String getNamespaceForStatistics();
 

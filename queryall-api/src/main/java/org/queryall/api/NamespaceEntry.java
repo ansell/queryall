@@ -3,7 +3,7 @@ package org.queryall.api;
 
 import java.util.Collection;
 
-public abstract class NamespaceEntry implements BaseQueryAllInterface, Comparable<NamespaceEntry>
+public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
 {
     public abstract String getPreferredPrefix();
     
@@ -36,15 +36,4 @@ public abstract class NamespaceEntry implements BaseQueryAllInterface, Comparabl
     public abstract void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
     
     public abstract boolean getConvertQueriesToPreferredPrefix();
-    
-    @Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("title=").append(this.getTitle());
-        result.append("key=").append(this.getKey().stringValue());
-
-        return result.toString();
-    }
 }

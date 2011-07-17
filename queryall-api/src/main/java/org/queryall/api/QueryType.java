@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
 
-public abstract class QueryType implements BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
+public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
     public abstract String getInputRegex();
     
@@ -86,14 +86,4 @@ public abstract class QueryType implements BaseQueryAllInterface, Comparable<Que
 
     public abstract int[] getNamespaceInputIndexes();
 
-    @Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("title=").append(this.getTitle());
-        result.append("key=").append(this.getKey().stringValue());
-
-        return result.toString();
-    }
 }

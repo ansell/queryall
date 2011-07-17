@@ -9,7 +9,7 @@ import java.util.Collection;
  * @author karina
  *
  */
-public interface HttpProvider
+public interface HttpProvider extends Provider
 {
 	public abstract boolean isHttpGetUrl();
 

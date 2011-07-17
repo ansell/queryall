@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.openrdf.model.URI;
 
-public abstract class Provider implements BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface
+public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface
 {
     public abstract boolean getIsDefaultSource();
 
@@ -44,11 +44,8 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
 
     public abstract boolean containsNamespaceUri(URI namespaceKey);
     
-    public boolean containsNamespaceOrDefault(URI namespaceKey)
-    {
-        return containsNamespaceUri(namespaceKey) || getIsDefaultSource();
-    }
-
+	public abstract boolean containsNamespaceOrDefault(URI namespaceKey);
+	
 	public abstract URI getRedirectOrProxy();
 
 	public abstract void setRedirectOrProxy(URI redirectOrProxy);
@@ -62,16 +59,6 @@ public abstract class Provider implements BaseQueryAllInterface, Comparable<Prov
 	public abstract String getAssumedContentType();
 	
 	public abstract void setAssumedContentType(String assumedContentType);
-	
-	@Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("title=").append(this.getTitle());
-        result.append("key=").append(this.getKey().stringValue());
 
-        return result.toString();
-    }
 }
 

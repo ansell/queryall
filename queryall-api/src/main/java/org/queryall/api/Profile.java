@@ -3,7 +3,7 @@ package org.queryall.api;
 import java.util.Collection;
 
 
-public abstract class Profile implements BaseQueryAllInterface, Comparable<Profile>
+public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
 {
     public abstract int usedWithProfilable(ProfilableInterface profilableObject);
     
@@ -73,15 +73,4 @@ public abstract class Profile implements BaseQueryAllInterface, Comparable<Profi
     public abstract void setExcludeRdfRules(Collection<org.openrdf.model.URI> excludeRdfRules);
     
     public abstract Collection<org.openrdf.model.URI> getExcludeRdfRules();
-    
-    @Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("title=").append(this.getTitle());
-        result.append("key=").append(this.getKey().stringValue());
-
-        return result.toString();
-    }
 }

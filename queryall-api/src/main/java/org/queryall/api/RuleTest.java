@@ -2,8 +2,7 @@ package org.queryall.api;
 
 import java.util.Collection;
 
-
-public abstract class RuleTest implements BaseQueryAllInterface, Comparable<RuleTest>
+public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>
 {
     public abstract Collection<org.openrdf.model.URI> getRuleUris();
     
@@ -20,16 +19,4 @@ public abstract class RuleTest implements BaseQueryAllInterface, Comparable<Rule
     public abstract String getTestOutputString();
 
     public abstract void setTestOutputString(String testOutputString);
-
-    @Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        
-        result.append("title=").append(this.getTitle());
-        result.append("key=").append(this.getKey().stringValue());
-
-        return result.toString();
-    }
-
 }
