@@ -119,7 +119,10 @@ public class ProviderImpl extends Provider
 
     public String getSparqlGraphUri()
     {
-        return sparqlGraphUri;
+    	if(this.getUseSparqlGraph())
+    		return sparqlGraphUri;
+    	else
+    		return "";
     }
 
     public void setSparqlGraphUri(String sparqlGraphUri)
@@ -587,16 +590,9 @@ public class ProviderImpl extends Provider
 
     public boolean containsNamespaceUri(URI newNamespaceUri)
     {
-        if(this.getNamespaces() != null)
+        if(this.getNamespaces() != null && newNamespaceUri != null)
         {
             return this.getNamespaces().contains(newNamespaceUri);
-            // for(String nextNamespace : this.namespaces)
-            // {
-                // if(nextNamespace.equals(newNamespaceUri))
-                // {
-                    // return true;
-                // }
-            // }
         }
         
         return false;
@@ -604,7 +600,12 @@ public class ProviderImpl extends Provider
     
     public boolean containsNormalisationUri(URI normalisationKey)
     {
-        return this.getNormalisationUris().contains(normalisationKey);
+        if(this.getNormalisationUris() != null && normalisationKey != null)
+        {
+        	return this.getNormalisationUris().contains(normalisationKey);
+        }
+        
+        return false;
     }
     
     public boolean needsRedirect()
@@ -763,12 +764,13 @@ public class ProviderImpl extends Provider
     
     public boolean containsQueryTypeUri(URI queryKey)
     {
-        if(this.getIncludedInQueryTypes() != null)
+        if(this.getIncludedInQueryTypes() != null && queryKey != null)
         {
             return this.getIncludedInQueryTypes().contains(queryKey);
         }
 
-        log.warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="+this.getKey());
+        if(queryKey != null)
+        	log.warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="+this.getKey());
         
         return false;
     }

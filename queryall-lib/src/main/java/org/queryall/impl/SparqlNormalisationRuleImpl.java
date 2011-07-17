@@ -602,7 +602,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	/* (non-Javadoc)
 	 * @see org.queryall.impl.SparqlNormalisationRule#getSparqlConstructQuery()
 	 */
-	@Override
 	public String getSparqlConstructQuery() 
 	{
 		List<String> results = getSparqlConstructQueries();
