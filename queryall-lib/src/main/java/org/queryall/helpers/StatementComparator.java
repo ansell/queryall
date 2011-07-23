@@ -5,10 +5,12 @@ import java.util.Comparator;
 import org.openrdf.model.Statement;
 
 /**
- * Implements a Comparator for OpenRDF statements using the order Subject->Predicate->Object->Context
+ * Implements a Comparator for OpenRDF Statements using the order Subject->Predicate->Object->Context
  */
 public class StatementComparator implements Comparator<Statement>
 {
+	public final static int EQUALS = 0;
+
 	@Override
 	public int compare(Statement first, Statement second)
 	{
