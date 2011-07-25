@@ -242,12 +242,15 @@
 			<id>on.cs.unibas.ch</id>
 			<name>DBIS Maven Releases Repository</name>
 			<url>http://on.cs.unibas.ch/maven/repository</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
 		</repository>
 		<repository>
 			<id>fortytwo.net</id>
 			<name>SesameTools Repository</name>
 			<url>http://fortytwo.net/maven2</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>false</enabled></snapshots>
 		</repository>
-		
 	</repositories>
 </project>
