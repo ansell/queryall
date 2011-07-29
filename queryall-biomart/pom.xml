@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>org.queryall</groupId>
+		<artifactId>queryall</artifactId>
+		<version>1</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall-biomart</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>QueryAll BioMart integration</name>
 	<packaging>jar</packaging>
-	<url>http://bio2rdf.wiki.sourceforge.net</url>
+	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
 	<inceptionYear>2011</inceptionYear>
 	<developers>
 		<developer>
@@ -59,49 +65,49 @@
 			<artifactId>sesame-model</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-repository-sail</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-rio-ntriples</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-rio-rdfxml</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-rio-n3</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-sail-memory</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 		<dependency>
 			<artifactId>sesame-queryparser-sparql</artifactId>
 			<groupId>org.openrdf.sesame</groupId>
 			<type>jar</type>
 			<scope>compile</scope>
-			<version>2.5.0-SNAPSHOT</version>
+			<version>${sesame.version}</version>
 		</dependency>
 <!-- 		<dependency>
 			<groupId>org.slf4j</groupId>
