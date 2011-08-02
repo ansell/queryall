@@ -114,7 +114,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     
     public ProfileImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
 	{
-    	boolean defaultProfileIncludeExcludeOrderValidationFailed = false;
+    	boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
 
     	// TODO: Remove these temporary collections and replace with .add methods instead of .set
         Collection<URI> tempProfileAdministrators = new HashSet<URI>();
@@ -163,9 +163,9 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             {
                 this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
                 
-                if(!this.getDefaultProfileIncludeExcludeOrder().equals(getProfileIncludeExcludeOrderUri()) && !this.getDefaultProfileIncludeExcludeOrder().equals(getProfileExcludeThenIncludeUri()))
+                if(this.getDefaultProfileIncludeExcludeOrder().equals(getProfileIncludeExcludeOrderUri()) || this.getDefaultProfileIncludeExcludeOrder().equals(getProfileExcludeThenIncludeUri()))
                 {
-                	defaultProfileIncludeExcludeOrderValidationFailed = true;
+                	defaultProfileIncludeExcludeOrderValidationFailed = false;
                 }
             }
             else if(nextStatement.getPredicate().equals(getProfileAllowImplicitQueryInclusionsUri()))

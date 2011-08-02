@@ -66,6 +66,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
 	private static URI sparqlruleSparqlWherePattern;
 	private static URI sparqlruleSparqlPrefixes;
 	private static URI sparqlruleSparqlConstructQuery;
+	private static URI OLDsparqlruleModeOnlyDeleteMatches;
     
     // public static String rdfruleNamespace;
     
@@ -87,6 +88,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "mode"));
         SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyDeleteMatches(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyDeleteMatchingTriples"));
+        OLDsparqlruleModeOnlyDeleteMatches = f.createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyDeleteMatches");
         SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyIncludeMatches(f
                 .createURI(SparqlNormalisationRuleImpl.rdfruleNamespace, "onlyIncludeMatchingTriples"));
         SparqlNormalisationRuleImpl.setSparqlRuleModeAddAllMatchingTriples(f
@@ -169,8 +171,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             }
             else if(nextStatement.getPredicate().equals(
                     SparqlNormalisationRuleImpl.getSparqlRuleMode()) 
-                && nextStatement.getObject().equals(
-                    SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()))
+                && (nextStatement.getObject().equals(
+                    SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()) 
+                    || nextStatement.getObject().equals(OLDsparqlruleModeOnlyDeleteMatches)))
             {
                 this.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches());
             }
@@ -535,7 +538,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             	con.add(keyUri, SparqlNormalisationRuleImpl.getOLDSparqlRuleSparqlConstructQuery(), f.createLiteral(getSparqlConstructQuery()), keyToUse);
             }
 
-            con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(), modeUri, keyToUse);
+            // the onlyDeleteMatches URI changed between versions 4 and 5, so check here and provide backwards compatibility as necessary
+            if(modelVersion < 5 && modeUri.equals(getSparqlRuleModeOnlyDeleteMatches()))
+            	con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(), OLDsparqlruleModeOnlyDeleteMatches, keyToUse);
+            else
+            	con.add(keyUri, SparqlNormalisationRuleImpl.getSparqlRuleMode(), modeUri, keyToUse);
 
             // If everything went as planned, we can commit the result
             con.commit();
