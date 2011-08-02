@@ -30,15 +30,18 @@ public class ConfigurationQueryOptions
     private boolean _hasExplicitFormat = false;
     private String _chosenFormat = "";
     private boolean _hasExplicitApiVersionValue = false;
-    private int _apiVersion = Settings.CONFIG_API_VERSION;
+    private int _apiVersion = -1;
     private boolean _isPlainNamespaceAndIdentifier = false;
 
     private String parsedRequestString = "";
     private Settings localSettings;
+	private boolean isRootContext = false;
 
     
-    public ConfigurationQueryOptions(String requestUri, Settings localSettings)
+    public ConfigurationQueryOptions(String requestUri, String contextPath, Settings localSettings)
     {
+    	_apiVersion = localSettings.CONFIG_API_VERSION;
+    	
         String requestString = requestUri;
         this.localSettings = localSettings;
         
@@ -48,6 +51,27 @@ public class ConfigurationQueryOptions
             log.error("ConfigurationQueryOptions: requestString was null");
         }
         
+        if(contextPath.equals(""))
+        {
+        	isRootContext  = true;
+        }
+        else
+        {
+        	isRootContext = false;
+        }
+        
+        if(!isRootContext)
+        {
+        	if(requestString.startsWith(contextPath))
+        	{
+        		if(_DEBUG)
+        			log.debug("requestUri before removing contextPath requestString="+requestString);
+        		requestString = requestString.substring(contextPath.length());
+        		if(_DEBUG)
+        			log.debug("removed contextPath from requestUri contextPath="+contextPath+" requestString="+requestString);
+        	}
+        }
+
         if(requestString.startsWith("/"))
         {
             if(_DEBUG)
@@ -94,10 +118,20 @@ public class ConfigurationQueryOptions
         
         if(matchesPrefixAndSuffix(requestString, adminUrlPrefix, ""))
         {
+        	if(_DEBUG)
+        	{
+        		log.debug("found admin prefix");
+        	}
+        	
             _adminPrefixMatch = true;
             
             requestString = takeOffPrefixAndSuffix(requestString, adminUrlPrefix, "");
         }
+        else if(_DEBUG)
+    	{
+    		log.debug("did not find admin prefix");
+    	}
+
         
         return requestString;
     }
@@ -325,7 +359,7 @@ public class ConfigurationQueryOptions
         String adminConfigurationApiClosingPrefix = localSettings.getStringPropertyFromConfig("adminConfigurationApiVersionClosingPrefix", "/");
         String adminConfigurationApiSuffix = localSettings.getStringPropertyFromConfig("adminConfigurationApiVersionSuffix", "");
 
-        // TODO: how do you escape these parameters so they don't interfere with the regular expression?
+        // FIXME: this does not work if there is no file format suffix, it will always call the current API version in these cases
         String apiVersionPatternString = "^"+adminConfigurationApiOpeningPrefix+"(\\d+)"+adminConfigurationApiClosingPrefix+"(.*)"+adminConfigurationApiSuffix+"$";
         
         if(_DEBUG)

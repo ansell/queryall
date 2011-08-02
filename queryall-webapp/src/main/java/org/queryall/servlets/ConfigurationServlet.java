@@ -57,7 +57,7 @@ public class ConfigurationServlet extends HttpServlet
             log.info("ConfigurationServlet: acceptHeader="+request.getHeader("Accept")+" userAgent="+request.getHeader("User-Agent"));
         }
         
-       ConfigurationQueryOptions requestConfigurationQueryOptions = new ConfigurationQueryOptions(request.getRequestURI(), localSettings);
+       ConfigurationQueryOptions requestConfigurationQueryOptions = new ConfigurationQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
         PrintWriter out = response.getWriter();
         
