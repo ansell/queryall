@@ -47,48 +47,38 @@ public class GeneralServlet extends HttpServlet
                     HttpServletResponse response)
         throws ServletException, IOException 
     {
-        Date queryStartTime = new Date();
+        long queryStartTime = System.currentTimeMillis();
         
     	Settings localSettings = Settings.getSettings();
     	BlacklistController localBlacklistController = BlacklistController.getDefaultController();
-
     	DefaultQueryOptions requestQueryOptions = new DefaultQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
         // TODO: should this be configurable or should it be removed?
         boolean useDefaultProviders = true;
-        
-        RDFFormat writerFormat = null;
-        
-        String realHostName = request.getScheme() + "://" + request.getServerName() + (request.getServerPort() == 80 && request.getScheme().equals("http") ? "" : ":"+ request.getServerPort())+"/";
-        
-        String serverName = request.getServerName();
-        
-        String queryString = requestQueryOptions.getParsedRequest();
-        
-        String requesterIpAddress = request.getRemoteAddr();
-        
-        String locale = request.getLocale().toString();
-        String userAgentHeader = request.getHeader("User-Agent");
-
         // TODO FIXME: The content type negotiator does not work with locales yet        
         // String preferredLocale = QueryallLanguageNegotiator.getResponseLanguage(locale, userAgentHeader);
         
+        String realHostName = request.getScheme() + "://" + request.getServerName() + (request.getServerPort() == 80 && request.getScheme().equals("http") ? "" : ":"+ request.getServerPort())+"/";
+        String serverName = request.getServerName();
+        String queryString = requestQueryOptions.getParsedRequest();
+        String requesterIpAddress = request.getRemoteAddr();
+        String locale = request.getLocale().toString();
         String characterEncoding = request.getCharacterEncoding();
-        
-        if(_INFO)
-        {
-            log.info("GeneralServlet: locale="+locale+" characterEncoding="+characterEncoding);
-        }
-        
+        String originalAcceptHeader = request.getHeader("Accept");
+        String userAgentHeader = request.getHeader("User-Agent");
+        String contextPath = request.getContextPath();
         // default to 200 for response...
         int responseCode = HttpServletResponse.SC_OK;
-        
         boolean isPretendQuery = requestQueryOptions.isQueryPlanRequest();
         int pageOffset = requestQueryOptions.getPageOffset();
-        
-        String originalAcceptHeader = request.getHeader("Accept");
         String acceptHeader = "";
+        RDFFormat writerFormat = null;
         
+        if(userAgentHeader == null)
+        {
+            userAgentHeader = "";
+        }
+
         if(originalAcceptHeader == null || originalAcceptHeader.equals(""))
         {
             acceptHeader = localSettings.getStringProperty(Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML);
@@ -98,40 +88,14 @@ public class GeneralServlet extends HttpServlet
             acceptHeader = originalAcceptHeader;
         }
         
-        if(userAgentHeader == null)
-        {
-            userAgentHeader = "";
-        }
-        
-        // if(!localSettings.USER_AGENT_BLACKLIST_REGEX.trim().equals(""))
-        // {
-            // Matcher userAgentBlacklistMatcher = localSettings.USER_AGENT_BLACKLIST_PATTERN.matcher(userAgentHeader);
-            // 
-            // if(userAgentBlacklistMatcher.find())
-            // {
-                // log.error("GeneralServlet: found blocked user-agent userAgentHeader="+userAgentHeader + " queryString="+queryString+" requesterIpAddress="+requesterIpAddress);
-                // 
-                // response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                // response.sendRedirect(localSettings.getStringPropertyFromConfig("blacklistRedirectPage"));
-                // return;
-            // }
-        // }
-        
         String originalRequestedContentType = QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
+        // If they defined their desired format in the URL, get it here
         if(requestQueryOptions.containsExplicitFormat())
         {
-            String explicitUrlContentType = requestQueryOptions.getExplicitFormat();
-            
-            if(_DEBUG)
-            {
-                log.debug("GeneralServlet: found explicitUrlContentType="+explicitUrlContentType);
-            }
-            
-            // override whatever was requested with the variable from the query options
-            requestedContentType = explicitUrlContentType;
+            requestedContentType = requestQueryOptions.getExplicitFormat();
         }
 
         // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using this method
@@ -140,41 +104,21 @@ public class GeneralServlet extends HttpServlet
         // this will be null if they chose text/html, but it will be a valid format in other cases due to the above method
 		writerFormat = RdfUtils.getWriterFormat(requestedContentType);
         
-        // allow for users to perform redirections if the query did not contain an explicit format
-        if(!requestQueryOptions.containsExplicitFormat())
-        {
-        	if(localSettings.getBooleanProperty("alwaysRedirectToExplicitFormatUrl", false))
-        	{
-        		int redirectCode = localSettings.getIntProperty("redirectToExplicitFormatHttpCode", 303);
-        		
-        		StringBuilder redirectString = new StringBuilder();
-        		boolean ignoreContextPath = false;
-        		
-        		getRedirectString(redirectString, request, localSettings, requestQueryOptions, requestedContentType, ignoreContextPath);
-        		
-        		log.warn("Sending redirect using redirectCode="+redirectCode+" to redirectString="+redirectString.toString());
-        		log.warn("contextPath="+request.getContextPath());
-        		response.setStatus(redirectCode);
-    			response.setHeader("Location",redirectString.toString());
-    			return;
-        	}
-        }
-        
-        
-        localSettings.configRefreshCheck(false);
-        
-        localBlacklistController.doBlacklistExpiry();
-        
         if(_INFO)
         {
-            log.info("GeneralServlet: query started on "+serverName+" requesterIpAddress="+requesterIpAddress+" queryString="+queryString+" explicitPageOffset="+requestQueryOptions.containsExplicitPageOffsetValue()+" pageOffset="+pageOffset+" isPretendQuery="+isPretendQuery+" useDefaultProviders="+useDefaultProviders);
-            log.info("GeneralServlet: requestedContentType="+requestedContentType+ " acceptHeader="+request.getHeader("Accept")+" userAgent="+request.getHeader("User-Agent"));
-            
-            if(!originalRequestedContentType.equals(requestedContentType))
-            {
-                log.info("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="+originalRequestedContentType+" requestedContentType="+requestedContentType);
-            }
+            logRequestDetails(request, requestQueryOptions, useDefaultProviders, serverName, queryString, requesterIpAddress, locale,
+					characterEncoding, isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType);
         }
+        
+        // allow for users to perform redirections if the query did not contain an explicit format
+        if(checkExplicitRedirect(response, localSettings, requestQueryOptions, contextPath, requestedContentType))
+        {
+        	// no more code necessary here
+        	return;
+        }
+        
+        localSettings.configRefreshCheck(false);
+        localBlacklistController.doBlacklistExpiry();
         
         if(localBlacklistController.isClientBlacklisted(requesterIpAddress))
         {
@@ -195,13 +139,14 @@ public class GeneralServlet extends HttpServlet
         
         Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size()+5);
         
+        // We do not use the default catalina writer as it may not be UTF-8 compliant depending on unchangeable environment variables
         Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
 
         try
         {
+        	// Create a new in memory repository for each request
             Repository myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
-            RepositoryConnection myRepositoryConnection = myRepository.getConnection();
             
             if(isPretendQuery)
             {
@@ -210,9 +155,11 @@ public class GeneralServlet extends HttpServlet
                     log.debug("GeneralServlet: Found pretend query");
                 }
                 
-                doQueryPretend(response, localSettings, queryString, responseCode, pageOffset, requestedContentType, multiProviderQueryBundles,
+        		sendBasicHeaders(response, responseCode, requestedContentType);
+        		
+                doQueryPretend(localSettings, queryString, responseCode, pageOffset, requestedContentType, multiProviderQueryBundles,
 						myRepository);
-            } // end isPretendQuery
+            }
             else if(!fetchController.queryKnown())
             {
                 if(_DEBUG)
@@ -220,12 +167,31 @@ public class GeneralServlet extends HttpServlet
                     log.debug("GeneralServlet: starting !fetchController.queryKnown() section");
                 }
                 
+        		// change response code to indicate that the query was in some way incorrect according to our current knowledge
+        		if(fetchController.anyNamespaceNotRecognised())
+        		{
+        			// 404 for document not found, as a query type matched somewhere without having the namespace recognised
+        			// There are still no results, but this is a more specific exception
+        		    responseCode = localSettings.getIntProperty("unknownNamespaceHttpResponseCode", 404);
+        		}
+        		else
+        		{
+        			// 400 for query completely unrecognised, even when not including namespace in each query type calculation
+        			responseCode = localSettings.getIntProperty("unknownQueryHttpResponseCode", 400);
+        		}
+        		
+        		sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                doQueryUnknown(response, localSettings, realHostName, queryString, pageOffset, requestedContentType, includedProfiles,
-						fetchController, debugStrings, myRepositoryConnection);
+                doQueryUnknown(localSettings, realHostName, queryString, pageOffset, requestedContentType, includedProfiles, fetchController,
+						debugStrings, myRepository);
             }
-            else // fetchController.queryKnown
+            else
             {
+                if(_DEBUG)
+                {
+                    log.debug("GeneralServlet: starting fetchController.queryKnown() and not pretend query section");
+                }
+                
                 // for now we redirect if we find any in the set that have redirect enabled as HTTP GET URL's, otherwise fall through to the POST SPARQL RDF/XML and GET URL fetching
                 for(QueryBundle nextScheduledQueryBundle : multiProviderQueryBundles)
                 {
@@ -245,33 +211,32 @@ public class GeneralServlet extends HttpServlet
                 	}
                 }
                 
-                doQueryNotPretend(response, localSettings, queryString, responseCode, requestedContentType, includedProfiles, fetchController,
-						multiProviderQueryBundles, debugStrings, myRepository, myRepositoryConnection);
-            } // end else !isPretendQuery
-            
-            if(myRepositoryConnection != null)
-            {
-                myRepositoryConnection.close();
+        		sendBasicHeaders(response, responseCode, requestedContentType);
+        		
+                doQueryNotPretend(localSettings, queryString, requestedContentType, includedProfiles, fetchController, multiProviderQueryBundles, debugStrings,
+						myRepository);
             }
             
+            
             // Normalisation Stage : after results to pool
-            
-            // For each of the providers, get the rules, and universally sort them and perform a single normalisation for this stage
-            
             Repository convertedPool = doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
             
-            resultsToWriter(out, request, localSettings, writerFormat, realHostName, queryString, pageOffset, requestedContentType, fetchController,
-					debugStrings, convertedPool);
+            resultsToWriter(out, localSettings, writerFormat, realHostName, queryString, pageOffset, requestedContentType, fetchController,
+					debugStrings, convertedPool, contextPath);
             
             out.flush();
             
-            Date queryEndTime = new Date();
+            long nextTotalTime = System.currentTimeMillis()-queryStartTime;
             
-            long nextTotalTime = queryEndTime.getTime()-queryStartTime.getTime();
-            
+            if(_INFO)
+            {
+                log.info("GeneralServlet: query complete requesterIpAddress="+requesterIpAddress+" queryString="+queryString + " pageOffset="+pageOffset+" totalTime="+nextTotalTime);
+                log.info("GeneralServlet: finished returning information to client requesterIpAddress="+requesterIpAddress+" queryString="+queryString + " pageOffset="+pageOffset+" totalTime="+nextTotalTime);
+           }    
+
             // Housekeeping
             
-            // update a static record of the blacklist
+            // update a the blacklist
             localBlacklistController.accumulateBlacklist(fetchController.getErrorResults(), localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 3600000), localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", false));
              
             if(localSettings.getBooleanProperty("blacklistResetEndpointFailuresOnSuccess", true))
@@ -279,46 +244,11 @@ public class GeneralServlet extends HttpServlet
             	localBlacklistController.removeEndpointsFromBlacklist(fetchController.getSuccessfulResults(), nextTotalTime, useDefaultProviders);
             }
             
-            
-            QueryDebug nextQueryDebug = null;
-            
             // Don't keep local error statistics if GeneralServlet debug level is higher than or equal to info and we aren't interested in using the client IP blacklist functionalities
              if(_INFO || localSettings.getBooleanProperty("automaticallyBlacklistClients", false))
              {
-                 nextQueryDebug = new QueryDebug();
-                 nextQueryDebug.clientIPAddress = requesterIpAddress;
-                 
-                 nextQueryDebug.totalTimeMilliseconds = nextTotalTime;
-                 nextQueryDebug.queryString = queryString;
-                 
-                 Collection<URI> queryTitles = new HashSet<URI>();
-                 
-                 for(QueryBundle nextInitialQueryBundle : multiProviderQueryBundles)
-                 {
-                     queryTitles.add(nextInitialQueryBundle.getQueryType().getKey());
-                 }
-                 
-                 nextQueryDebug.matchingQueryTitles = queryTitles;
-                 
-                 localBlacklistController.accumulateQueryDebug(nextQueryDebug, localSettings, 
-                		 localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L), 
-                		 localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
-                		 localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-                		 localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-                		 localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
-                 
-                 if(_INFO)
-                 {
-                     log.info("GeneralServlet: query complete requesterIpAddress="+requesterIpAddress+" queryString="+queryString + " pageOffset="+pageOffset+" totalTime="+nextTotalTime);
-                 }
+                 doQueryDebug(localSettings, localBlacklistController, queryString, requesterIpAddress, multiProviderQueryBundles, nextTotalTime);
              }
-             
-
-            
-            if(_INFO)
-            {
-                log.info("GeneralServlet: finished returning information to client requesterIpAddress="+requesterIpAddress+" queryString="+queryString + " pageOffset="+pageOffset+" totalTime="+nextTotalTime);
-            }    
         }
         catch(OpenRDFException ordfe)
         {
@@ -328,19 +258,137 @@ public class GeneralServlet extends HttpServlet
         catch(InterruptedException iex)
         {
             log.error("GeneralServlet.doGet: caught interrupted exception", iex);
-            throw new RuntimeException("GeneralServlet.doGet failed due to an exception. See log for details");
+            throw new RuntimeException("GeneralServlet.doGet failed due to an Interrupted exception. See log for details");
         }
         catch(RuntimeException rex)
         {
             log.error("GeneralServlet.doGet: caught runtime exception", rex);
-            
         }
-        
     }
 
 
 	/**
 	 * @param response
+	 * @param localSettings
+	 * @param requestQueryOptions
+	 * @param contextPath
+	 * @param requestedContentType
+	 * @return 
+	 */
+	private boolean checkExplicitRedirect(HttpServletResponse response, Settings localSettings, DefaultQueryOptions requestQueryOptions,
+			String contextPath, String requestedContentType)
+	{
+		if(!requestQueryOptions.containsExplicitFormat())
+        {
+        	if(localSettings.getBooleanProperty("alwaysRedirectToExplicitFormatUrl", false))
+        	{
+        		int redirectCode = localSettings.getIntProperty("redirectToExplicitFormatHttpCode", 303);
+        		
+        		StringBuilder redirectString = new StringBuilder();
+        		boolean ignoreContextPath = false;
+        		
+        		getRedirectString(redirectString, localSettings, requestQueryOptions, requestedContentType, ignoreContextPath, contextPath);
+        		
+        		if(_INFO)
+        			log.info("Sending redirect using redirectCode="+redirectCode+" to redirectString="+redirectString.toString());
+        		if(_DEBUG)
+        			log.debug("contextPath="+contextPath);
+        		response.setStatus(redirectCode);
+        		// Cannot use response.sendRedirect as it will change the status to 302, which may not be desired
+    			response.setHeader("Location",redirectString.toString());
+    			return true;
+        	}
+        }
+		return false;
+	}
+
+
+	/**
+	 * Sends the basic headers for each request to the client, including the final response code and the requested content type
+	 * 
+	 * @param response
+	 * @param responseCode
+	 * @param requestedContentType
+	 * @throws IOException
+	 */
+	private void sendBasicHeaders(HttpServletResponse response, int responseCode, String requestedContentType) throws IOException
+	{
+		response.setContentType(requestedContentType+"; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.setStatus(responseCode);
+		response.setHeader("Vary", "Accept");
+		response.flushBuffer();
+	}
+
+
+	/**
+	 * Encapsulates the basic logging details for a single request
+	 * 
+	 * @param request
+	 * @param requestQueryOptions
+	 * @param useDefaultProviders
+	 * @param serverName
+	 * @param queryString
+	 * @param requesterIpAddress
+	 * @param locale
+	 * @param characterEncoding
+	 * @param isPretendQuery
+	 * @param pageOffset
+	 * @param originalRequestedContentType
+	 * @param requestedContentType
+	 */
+	private void logRequestDetails(HttpServletRequest request, DefaultQueryOptions requestQueryOptions, boolean useDefaultProviders,
+			String serverName, String queryString, String requesterIpAddress, String locale, String characterEncoding, boolean isPretendQuery,
+			int pageOffset, String originalRequestedContentType, String requestedContentType)
+	{
+		log.info("GeneralServlet: query started on "+serverName+" requesterIpAddress="+requesterIpAddress+" queryString="+queryString+" explicitPageOffset="+requestQueryOptions.containsExplicitPageOffsetValue()+" pageOffset="+pageOffset+" isPretendQuery="+isPretendQuery+" useDefaultProviders="+useDefaultProviders);
+		log.info("GeneralServlet: requestedContentType="+requestedContentType+ " acceptHeader="+request.getHeader("Accept")+" userAgent="+request.getHeader("User-Agent"));
+		log.info("GeneralServlet: locale="+locale+" characterEncoding="+characterEncoding);
+		
+		if(!originalRequestedContentType.equals(requestedContentType))
+		{
+		    log.info("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="+originalRequestedContentType+" requestedContentType="+requestedContentType);
+		}
+	}
+
+
+	/**
+	 * @param localSettings
+	 * @param localBlacklistController
+	 * @param queryString
+	 * @param requesterIpAddress
+	 * @param multiProviderQueryBundles
+	 * @param nextTotalTime
+	 */
+	private void doQueryDebug(Settings localSettings, BlacklistController localBlacklistController, String queryString, String requesterIpAddress,
+			Collection<QueryBundle> multiProviderQueryBundles, long nextTotalTime)
+	{
+		QueryDebug nextQueryDebug;
+		nextQueryDebug = new QueryDebug();
+		 nextQueryDebug.setClientIPAddress(requesterIpAddress);
+		 
+		 nextQueryDebug.setTotalTimeMilliseconds(nextTotalTime);
+		 nextQueryDebug.setQueryString(queryString);
+		 
+		 Collection<URI> queryTitles = new HashSet<URI>();
+		 
+		 for(QueryBundle nextInitialQueryBundle : multiProviderQueryBundles)
+		 {
+		     queryTitles.add(nextInitialQueryBundle.getQueryType().getKey());
+		 }
+		 
+		 nextQueryDebug.setMatchingQueryTitles(queryTitles);
+		 
+		 localBlacklistController.accumulateQueryDebug(nextQueryDebug, localSettings, 
+				 localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L), 
+				 localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
+				 localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
+				 localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
+				 localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+	}
+
+
+	/**
 	 * @param localSettings
 	 * @param realHostName
 	 * @param queryString
@@ -349,92 +397,83 @@ public class GeneralServlet extends HttpServlet
 	 * @param includedProfiles
 	 * @param fetchController
 	 * @param debugStrings
-	 * @param myRepositoryConnection
+	 * @param myRepository
 	 * @throws IOException
 	 * @throws RepositoryException
 	 */
-	private void doQueryUnknown(HttpServletResponse response, Settings localSettings, String realHostName, String queryString, int pageOffset,
-			String requestedContentType, List<Profile> includedProfiles, RdfFetchController fetchController, Collection<String> debugStrings,
-			RepositoryConnection myRepositoryConnection) throws IOException, RepositoryException
+	private void doQueryUnknown(Settings localSettings, String realHostName, String queryString, int pageOffset, String requestedContentType,
+			List<Profile> includedProfiles, RdfFetchController fetchController, Collection<String> debugStrings, Repository myRepository) throws IOException, RepositoryException
 	{
-		int responseCode;
-		// change response code to indicate that the query was in some way incorrect according to our current knowledge
-		if(fetchController.anyNamespaceNotRecognised())
-		{
-			// 404 for document not found, as a query type matched somewhere without having the namespace recognised
-			// There are still no results, but this is a more specific exception
-		    responseCode = localSettings.getIntProperty("unknownNamespaceHttpResponseCode", 404);
-		}
-		else
-		{
-			// 400 for query completely unrecognised, even when not including namespace in each query type calculation
-			responseCode = localSettings.getIntProperty("unknownQueryHttpResponseCode", 400);
-		}
-		
-		response.setContentType(requestedContentType+"; charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
-		response.setStatus(responseCode);
-		response.setHeader("Vary", "Accept");
-		response.flushBuffer();
-		                
-		Collection<String> currentStaticStrings = new HashSet<String>();
-		
-		Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
-		
-		if(fetchController.anyNamespaceNotRecognised())
-		    staticQueryTypesForUnknown = localSettings.getURIProperties("unknownNamespaceStaticAdditions");
-		else
-			staticQueryTypesForUnknown = localSettings.getURIProperties("unknownQueryStaticAdditions");
-
-		for(URI nextStaticQueryTypeForUnknown : staticQueryTypesForUnknown)
-		{
-		    if(_DEBUG)
-		    {
-		        log.debug("GeneralServlet: nextStaticQueryTypeForUnknown="+nextStaticQueryTypeForUnknown);
-		    }
-		    
-		    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri(nextStaticQueryTypeForUnknown);
-		    
-		    // use the closest matches, even though they didn't eventuate into actual planned query bundles they matched the query string somehow
-		    for(QueryType nextQueryType : allCustomRdfXmlIncludeTypes)
-		    {
-		        Map<String, String> attributeList = QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString, localSettings.getStringProperty("hostName", ""), realHostName, pageOffset, localSettings);
-		        
-		        String nextBackupString = QueryCreator.createStaticRdfXmlString(nextQueryType, nextQueryType, new ProviderImpl(), attributeList, includedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), localSettings) + "\n";
-		        
-		        nextBackupString = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" + nextBackupString + "</rdf:RDF>";
-		        
-		        try
-		        {
-		            myRepositoryConnection.add(new java.io.StringReader(nextBackupString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextQueryType.getKey());
-		        }
-		        catch(org.openrdf.rio.RDFParseException rdfpe)
-		        {
-		            log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
-		            log.error("GeneralServlet: nextBackupString="+nextBackupString);
-		        }
-		    }
-		}
-		
-		if(currentStaticStrings.size() == 0)
-		{
-		    log.error("Could not find anything at all to match at query level queryString="+queryString);
-		    
-		    if(requestedContentType.equals("application/rdf+xml") || requestedContentType.equals("text/html"))
-		    {
-		        debugStrings.add("<!-- Could not find anything at all to match at query level -->");
-		    }
-		    else if(requestedContentType.equals("text/rdf+n3"))
-		    {
-		        debugStrings.add("# Could not find anything at all to match at query level");
-		    }
-		}
-		
-		
-		if(_TRACE)
-		{
-		    log.trace("GeneralServlet: ending !fetchController.queryKnown() section");
-		}
+        RepositoryConnection myRepositoryConnection = null;
+        try
+        {
+			myRepositoryConnection = myRepository.getConnection();
+			                
+			Collection<String> currentStaticStrings = new HashSet<String>();
+			
+			Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
+			
+			if(fetchController.anyNamespaceNotRecognised())
+			    staticQueryTypesForUnknown = localSettings.getURIProperties("unknownNamespaceStaticAdditions");
+			else
+				staticQueryTypesForUnknown = localSettings.getURIProperties("unknownQueryStaticAdditions");
+	
+			for(URI nextStaticQueryTypeForUnknown : staticQueryTypesForUnknown)
+			{
+			    if(_DEBUG)
+			    {
+			        log.debug("GeneralServlet: nextStaticQueryTypeForUnknown="+nextStaticQueryTypeForUnknown);
+			    }
+			    
+			    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri(nextStaticQueryTypeForUnknown);
+			    
+			    // use the closest matches, even though they didn't eventuate into actual planned query bundles they matched the query string somehow
+			    for(QueryType nextQueryType : allCustomRdfXmlIncludeTypes)
+			    {
+			        Map<String, String> attributeList = QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString, localSettings.getStringProperty("hostName", ""), realHostName, pageOffset, localSettings);
+			        
+			        String nextBackupString = QueryCreator.createStaticRdfXmlString(nextQueryType, nextQueryType, new ProviderImpl(), attributeList, includedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), localSettings) + "\n";
+			        
+			        nextBackupString = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" + nextBackupString + "</rdf:RDF>";
+			        
+			        try
+			        {
+			            myRepositoryConnection.add(new java.io.StringReader(nextBackupString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextQueryType.getKey());
+			        }
+			        catch(org.openrdf.rio.RDFParseException rdfpe)
+			        {
+			            log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
+			            log.error("GeneralServlet: nextBackupString="+nextBackupString);
+			        }
+			    }
+			}
+			
+			if(currentStaticStrings.size() == 0)
+			{
+			    log.error("Could not find anything at all to match at query level queryString="+queryString);
+			    
+			    if(requestedContentType.equals("application/rdf+xml") || requestedContentType.equals("text/html"))
+			    {
+			        debugStrings.add("<!-- Could not find anything at all to match at query level -->");
+			    }
+			    else if(requestedContentType.equals("text/rdf+n3"))
+			    {
+			        debugStrings.add("# Could not find anything at all to match at query level");
+			    }
+			}
+			
+			if(_TRACE)
+			{
+			    log.trace("GeneralServlet: ending !fetchController.queryKnown() section");
+			}
+        }
+        finally
+        {
+        	if(myRepositoryConnection != null)
+        	{
+        		myRepositoryConnection.close();
+        	}
+        }
 	}
 
 
@@ -450,52 +489,12 @@ public class GeneralServlet extends HttpServlet
 	 * @throws IOException
 	 * @throws OpenRDFException
 	 */
-	private void doQueryPretend(HttpServletResponse response, Settings localSettings, String queryString, int responseCode, int pageOffset,
+	private void doQueryPretend(Settings localSettings, String queryString, int responseCode, int pageOffset,
 			String requestedContentType, Collection<QueryBundle> multiProviderQueryBundles, Repository myRepository) throws IOException,
 			OpenRDFException
 	{
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType(requestedContentType);
-		response.setCharacterEncoding("UTF-8");
-		response.setStatus(responseCode);
-		response.setHeader("Vary", "Accept");
-		response.flushBuffer();
-		
-		// Start sending output before we fetch the rdf so the client doesn't decide to timeout or re-request
-		// version = RdfUtils.xmlEncodeString(version).replace("--","- -");
-		
-		if(requestedContentType.equals(Constants.APPLICATION_RDF_XML) || requestedContentType.equals(Constants.TEXT_HTML))
-		{
-		    // always print the version number out for debugging
-		    // debugStrings.add("<!-- bio2rdf sourceforge package version ("+ version +") -->");
-		    // debugStrings.add("<!-- active profiles="+RdfUtils.xmlEncodeString(localSettings.USER_PROFILE_LIST_STRING)+" -->\n");
-		    
-		    // if(_INFO)
-		    // {
-		        // subversionId = RdfUtils.xmlEncodeString(subversionId).replace("--","- -");
-		        // debugStrings.add("<!-- bio2rdf sourceforge subversion copy Id ("+ subversionId +") -->");
-		        // propertiesSubversionId = RdfUtils.xmlEncodeString(propertiesSubversionId).replace("--","- -");
-		        // debugStrings.add("<!-- bio2rdf sourceforge properties file subversion copy Id ("+ propertiesSubversionId +") -->");
-		    // }
-		}
-		else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
-		{
-		    // always print the version number out for debugging
-		    // debugStrings.add("# bio2rdf sourceforge package version ("+ version.replace("\n","").replace("\r","") +")");
-		    // debugStrings.add("# active profiles="+RdfUtils.xmlEncodeString(localSettings.USER_PROFILE_LIST_STRING)+"");
-		    // 
-		    // if(_INFO)
-		    // {
-		        // // debugStrings.add("# bio2rdf sourceforge subversion copy Id ("+ subversionId.replace("\n","").replace("\r","") +")");
-		        // 
-		        // // debugStrings.add("# bio2rdf sourceforge properties file subversion copy Id ("+ propertiesSubversionId.replace("\n","").replace("\r","") +")");
-		    // }
-		}
-		
 		for(QueryBundle nextScheduledQueryBundle : multiProviderQueryBundles)
 		{
-		    // log.trace("GeneralServlet: about to generate rdf for query bundle with key="+queryString+localSettings.getStringPropertyFromConfig("separator")+nextScheduledQueryBundle.originalProvider.getKey().toLowerCase()+localSettings.getStringPropertyFromConfig("separator")+nextScheduledQueryBundle.getQueryType().getKey().toLowerCase()+localSettings.getStringPropertyFromConfig("separator")+nextScheduledQueryBundle.queryEndpoint);
-		    
 		    nextScheduledQueryBundle.toRdf(
 		        myRepository, 
 		        StringUtils.createURI(StringUtils.percentEncode(queryString)
@@ -512,7 +511,6 @@ public class GeneralServlet extends HttpServlet
 		}
 	}
 
-
 	/**
 	 * @param out
 	 * @param request
@@ -525,15 +523,14 @@ public class GeneralServlet extends HttpServlet
 	 * @param fetchController
 	 * @param debugStrings
 	 * @param convertedPool
+	 * @param contextPath TODO
 	 * @throws IOException
 	 */
-	private void resultsToWriter(Writer out, HttpServletRequest request, Settings localSettings, RDFFormat writerFormat, String realHostName,
+	private void resultsToWriter(Writer out, Settings localSettings, RDFFormat writerFormat, String realHostName,
 			String queryString, int pageOffset, String requestedContentType, RdfFetchController fetchController, Collection<String> debugStrings,
-			Repository convertedPool) throws IOException
+			Repository convertedPool, String contextPath) throws IOException
 	{
 		java.io.StringWriter cleanOutput = new java.io.StringWriter();
-		
-		//java.io.StringWriter cleanOutput = new java.io.StringWriter(new BufferedWriter(new CharArrayWriter()));
 		
 		if(requestedContentType.equals(Constants.TEXT_HTML))
 		{
@@ -545,7 +542,7 @@ public class GeneralServlet extends HttpServlet
 		    
 		    try
 		    {
-		        HtmlPageRenderer.renderHtml(getServletContext(), convertedPool, cleanOutput, fetchController, debugStrings, queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, request.getContextPath(), pageOffset, localSettings);
+		        HtmlPageRenderer.renderHtml(getServletContext(), convertedPool, cleanOutput, fetchController, debugStrings, queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath, pageOffset, localSettings);
 		    }
 		    catch(OpenRDFException ordfe)
 		    {
@@ -566,13 +563,6 @@ public class GeneralServlet extends HttpServlet
 
 		    RdfUtils.toWriter(convertedPool, cleanOutput, writerFormat);
 		}
-		
-		//String actualRdfString = cleanOutput.toString();
-		
-//            if(_TRACE)
-//            {
-//                log.trace("GeneralServlet: actualRdfString="+actualRdfString);
-//            }
 		
 		if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
 		{
@@ -603,46 +593,28 @@ public class GeneralServlet extends HttpServlet
 		    StringBuffer buffer = cleanOutput.getBuffer();
 		    for(int i = 0; i < cleanOutput.getBuffer().length(); i++)
 		    	out.write(buffer.charAt(i));
-		    //out.write(actualRdfString);
 		}
 		else
 		{
-		    // log.error("entering UTF-8 conversion section");
-		    
-		    // try{
-		        // byte[] bytes = new byte[actualRdfString.length()];
-		        // for (int i = 0; i < actualRdfString.length(); i++) 
-		        // {
-		            // bytes[i] = (byte) actualRdfString.charAt(i);
-		        // }
-		        // 
-		        // actualRdfString = new String(bytes, "UTF-8");
-		    // }
-		    // catch(java.io.UnsupportedEncodingException 
-		    // {
-		        // log.error("GeneralServlet: unsupported encoding exception for UTF-8");
-		    // }
-		    
 		    StringBuffer buffer = cleanOutput.getBuffer();
 		    for(int i = 0; i < cleanOutput.getBuffer().length(); i++)
 		    	out.write(buffer.charAt(i));
-		    //out.write(actualRdfString);
 		}
 	}
 
-
 	/**
+	 * Encapsulates the call to the pool normalisation method
+	 * 
 	 * @param localSettings
 	 * @param includedProfiles
 	 * @param fetchController
-	 * @param myRepository
-	 * @return
+	 * @param myRepository The repository containing the unnormalised statements
+	 * @return The repository containing the normalised statements
 	 */
 	private Repository doPoolNormalisation(Settings localSettings, List<Profile> includedProfiles, RdfFetchController fetchController,
 			Repository myRepository)
 	{
-		Repository convertedPool;
-		convertedPool = (Repository)QueryCreator.normaliseByStage(
+		return (Repository)QueryCreator.normaliseByStage(
 		    NormalisationRuleImpl.getRdfruleStageAfterResultsToPool(),
 		    myRepository, 
 		    localSettings.getSortedRulesForProviders(fetchController.getAllUsedProviders(), 
@@ -650,15 +622,11 @@ public class GeneralServlet extends HttpServlet
 		    includedProfiles, 
 		    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), 
 		    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
-		return convertedPool;
 	}
 
-
 	/**
-	 * @param response
 	 * @param localSettings
 	 * @param queryString
-	 * @param responseCode
 	 * @param requestedContentType
 	 * @param includedProfiles
 	 * @param fetchController
@@ -671,135 +639,116 @@ public class GeneralServlet extends HttpServlet
 	 * @throws RepositoryException
 	 * @throws OpenRDFException
 	 */
-	private void doQueryNotPretend(HttpServletResponse response, Settings localSettings, String queryString, int responseCode,
-			String requestedContentType, List<Profile> includedProfiles, RdfFetchController fetchController,
-			Collection<QueryBundle> multiProviderQueryBundles, Collection<String> debugStrings, Repository myRepository,
-			RepositoryConnection myRepositoryConnection) throws InterruptedException, IOException, RepositoryException, OpenRDFException
+	private void doQueryNotPretend(Settings localSettings, String queryString, String requestedContentType, List<Profile> includedProfiles,
+			RdfFetchController fetchController, Collection<QueryBundle> multiProviderQueryBundles, Collection<String> debugStrings,
+			Repository myRepository) throws InterruptedException, IOException, RepositoryException, OpenRDFException
 	{
-		response.setContentType(requestedContentType+"; charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
 		
-		// 3. Attempt to fetch information as needed
-		fetchController.fetchRdfForQueries();
-		
-		// keep track of the strings so that we don't print multiples of exactly the same information more than once
-		Collection<String> currentStaticStrings = new HashSet<String>();
-		
-		response.setStatus(responseCode);
-		response.setHeader("Vary", "Accept");
-		response.flushBuffer();
-		
-		// version = RdfUtils.xmlEncodeString(version).replace("--","- -");
-		
-		if(requestedContentType.equals(Constants.APPLICATION_RDF_XML) || requestedContentType.equals(Constants.TEXT_HTML))
-		{
-		    // always print the version number out for debugging
-		    // debugStrings.add("<!-- bio2rdf sourceforge package version ("+ version +") -->\n");
-		    // debugStrings.add("<!-- active profiles="+RdfUtils.xmlEncodeString(localSettings.USER_PROFILE_LIST_STRING)+" -->\n");
-		    
+        RepositoryConnection myRepositoryConnection = null;
+
+        try
+        {
+	        myRepositoryConnection = myRepository.getConnection();
+	        
+			// Attempt to fetch information as needed
+			fetchController.fetchRdfForQueries();
+			
 		    if(_INFO)
 		    {
-		        // subversionId = RdfUtils.xmlEncodeString(subversionId).replace("--","- -");
-		        // debugStrings.add("<!-- bio2rdf sourceforge subversion copy Id ("+ subversionId +") -->\n");
-		        // propertiesSubversionId = RdfUtils.xmlEncodeString(propertiesSubversionId).replace("--","- -");
-		        // debugStrings.add("<!-- bio2rdf sourceforge properties file subversion copy Id ("+ propertiesSubversionId +") -->\n");
-		        debugStrings.add("<!-- result units="+fetchController.getResults().size()+" -->\n");
-		    }
-		}
-		else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
-		{
-		    // always print the version number out for debugging
-		    // debugStrings.add("# bio2rdf sourceforge package version ("+ version.replace("\n","").replace("\r","") +")\n");
-		    // debugStrings.add("# active profiles="+RdfUtils.xmlEncodeString(localSettings.USER_PROFILE_LIST_STRING)+"");
-		    
-		    if(_INFO)
-		    {
-		        // debugStrings.add("# bio2rdf sourceforge subversion copy Id ("+ subversionId.replace("\n","").replace("\r","") +")\n");
-		        // 
-		        // debugStrings.add("# bio2rdf sourceforge properties file subversion copy Id ("+ propertiesSubversionId.replace("\n","").replace("\r","") +")\n");
-		        debugStrings.add("# result units="+fetchController.getResults().size()+" \n");
-		    }
-		}
-		
-		for(RdfFetcherQueryRunnable nextResult : fetchController.getResults())
-		{
-		    if(requestedContentType.equals(Constants.APPLICATION_RDF_XML) || requestedContentType.equals(Constants.TEXT_HTML))
-		    {
-		        // only write out the debug strings to the document if we are at least at the info or debug levels
+				if(requestedContentType.equals(Constants.APPLICATION_RDF_XML) || requestedContentType.equals(Constants.TEXT_HTML))
+				{
+			        debugStrings.add("<!-- result units="+fetchController.getResults().size()+" -->\n");
+			    }
+				else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
+				{
+			        debugStrings.add("# result units="+fetchController.getResults().size()+" \n");
+			    }
+			}
+			
+			for(RdfFetcherQueryRunnable nextResult : fetchController.getResults())
+			{
 		        if(_INFO)
 		        {
-		            debugStrings.add("<!-- "+StringUtils.xmlEncodeString(nextResult.getResultDebugString()).replace("--","- -") + "-->");
-		        }
-		    }
-		    else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
-		    {
-		        if(_INFO)
-		        {
-		            debugStrings.add("# "+ nextResult.getResultDebugString().replace("\n","").replace("\r","") +")");
-		        }
-		    }
-		    
-		    if(_TRACE)
-		    {
-		        log.trace("GeneralServlet: normalised result string : " + nextResult.getNormalisedResult());
-		    }
-		    Repository tempRepository = new SailRepository(new MemoryStore());
-		    tempRepository.initialize();
-		    
-		    RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
-		    
-		    tempRepository = (Repository)QueryCreator.normaliseByStage(
-		        NormalisationRuleImpl.getRdfruleStageAfterResultsImport(),
-		        tempRepository, 
-		        localSettings.getNormalisationRulesForUris(nextResult.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
-		            Constants.HIGHEST_ORDER_FIRST ), 
-		        includedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
-		    
-		    RepositoryConnection tempRepositoryConnection = tempRepository.getConnection();
-		    
-		    if(_DEBUG)
-		    {
-		        log.debug("GeneralServlet: getAllStatementsFromRepository(tempRepository).size()="+RdfUtils.getAllStatementsFromRepository(tempRepository).size());
-		        log.debug("GeneralServlet: tempRepositoryConnection.size()=" + tempRepositoryConnection.size());
-		    }
-		    
-		    RdfUtils.copyAllStatementsToRepository(myRepository, tempRepository);
-		}
-		    
-		for(QueryBundle nextPotentialQueryBundle : multiProviderQueryBundles)
-		{
-		    String nextStaticString = nextPotentialQueryBundle.getStaticRdfXmlString();
-		    
-		    if(_TRACE)
-		    {
-		        log.trace("GeneralServlet: Adding static RDF/XML string nextPotentialQueryBundle.getQueryType().getKey()="+nextPotentialQueryBundle.getQueryType().getKey()+" nextStaticString="+nextStaticString);
-		    }
-		    
-		    nextStaticString = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" + nextStaticString + "</rdf:RDF>";
-		    
-		    try
-		    {
-		        myRepositoryConnection.add(new java.io.StringReader(nextStaticString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextPotentialQueryBundle.getOriginalProvider().getKey());
-		    }
-		    catch(org.openrdf.rio.RDFParseException rdfpe)
-		    {
-		        log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
-		        log.error("GeneralServlet: nextStaticString="+nextStaticString);
-		    }
-		}
+				    if(requestedContentType.equals(Constants.APPLICATION_RDF_XML) || requestedContentType.equals(Constants.TEXT_HTML))
+				    {
+			            debugStrings.add("<!-- "+StringUtils.xmlEncodeString(nextResult.getResultDebugString()).replace("--","- -") + "-->");
+			        }
+				    else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
+				    {
+			            debugStrings.add("# "+ nextResult.getResultDebugString().replace("\n","").replace("\r","") +")");
+			        }
+			    }
+			    
+			    if(_TRACE)
+			    {
+			        log.trace("GeneralServlet: normalised result string : " + nextResult.getNormalisedResult());
+			    }
+			    
+			    Repository tempRepository = new SailRepository(new MemoryStore());
+			    tempRepository.initialize();
+			    
+			    RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
+			    
+			    tempRepository = (Repository)QueryCreator.normaliseByStage(
+			        NormalisationRuleImpl.getRdfruleStageAfterResultsImport(),
+			        tempRepository, 
+			        localSettings.getNormalisationRulesForUris(nextResult.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
+			            Constants.HIGHEST_ORDER_FIRST ), 
+			        includedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
+			    
+			    if(_DEBUG)
+			    {
+				    RepositoryConnection tempRepositoryConnection = tempRepository.getConnection();
+				    
+			        log.debug("GeneralServlet: getAllStatementsFromRepository(tempRepository).size()="+RdfUtils.getAllStatementsFromRepository(tempRepository).size());
+			        log.debug("GeneralServlet: tempRepositoryConnection.size()=" + tempRepositoryConnection.size());
+			    }
+			    
+			    RdfUtils.copyAllStatementsToRepository(myRepository, tempRepository);
+			}
+			    
+			for(QueryBundle nextPotentialQueryBundle : multiProviderQueryBundles)
+			{
+			    String nextStaticString = nextPotentialQueryBundle.getStaticRdfXmlString();
+			    
+			    if(_TRACE)
+			    {
+			        log.trace("GeneralServlet: Adding static RDF/XML string nextPotentialQueryBundle.getQueryType().getKey()="+nextPotentialQueryBundle.getQueryType().getKey()+" nextStaticString="+nextStaticString);
+			    }
+			    
+			    nextStaticString = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" + nextStaticString + "</rdf:RDF>";
+			    
+			    try
+			    {
+			        myRepositoryConnection.add(new java.io.StringReader(nextStaticString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextPotentialQueryBundle.getOriginalProvider().getKey());
+			    }
+			    catch(org.openrdf.rio.RDFParseException rdfpe)
+			    {
+			        log.error("GeneralServlet: RDFParseException: static RDF "+rdfpe.getMessage());
+			        log.error("GeneralServlet: nextStaticString="+nextStaticString);
+			    }
+			}
+        }
+        finally
+        {
+        	if(myRepositoryConnection != null)
+        	{
+        		myRepositoryConnection.close();
+        	}
+        }
 	}
 
 
 	/**
 	 * @param redirectString The StringBuilder that will have the redirect String appended to it
-	 * @param request The request that was given by the user
 	 * @param localSettings The Settings object
 	 * @param requestQueryOptions The query options object
 	 * @param requestedContentType The requested content type
 	 * @param ignoreContextPath Whether we should ignore the context path or not
+	 * @param contextPath The context path from the request
 	 */
-	public static void getRedirectString(StringBuilder redirectString, HttpServletRequest request, Settings localSettings,
-			DefaultQueryOptions requestQueryOptions, String requestedContentType, boolean ignoreContextPath)
+	public static void getRedirectString(StringBuilder redirectString, Settings localSettings, DefaultQueryOptions requestQueryOptions,
+			String requestedContentType, boolean ignoreContextPath, String contextPath)
 	{
 		if(localSettings.getBooleanProperty("useHardcodedRequestHostname", false))
 		{
@@ -814,13 +763,13 @@ public class GeneralServlet extends HttpServlet
 		
 		if(!ignoreContextPath)
 		{
-			if(request.getContextPath().equals(""))
+			if(contextPath.equals(""))
 			{
 				redirectString.append("/");
 			}
 			else
 			{
-				redirectString.append(request.getContextPath());
+				redirectString.append(contextPath);
 				redirectString.append("/");
 			}
 			
@@ -946,6 +895,10 @@ public class GeneralServlet extends HttpServlet
 			}
 			
 			redirectString.append(localSettings.getStringProperty("jsonUrlSuffix", ""));
+		}
+		else
+		{
+			throw new IllegalArgumentException("GeneralServlet.getRedirectString: did not recognise requestedContentType="+requestedContentType);
 		}
 	}
   

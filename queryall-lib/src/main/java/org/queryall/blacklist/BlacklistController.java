@@ -227,21 +227,21 @@ public class BlacklistController
             {
                 BlacklistController.log
                         .debug("BlacklistController.accumulateQueryDebug: going to accumulate entry for clientIPAddress="
-                                + nextQueryObject.clientIPAddress);
+                                + nextQueryObject.getClientIPAddress());
             }
             
             this.doBlacklistExpiry();
             
             if(this.currentQueryDebugInformation
-                    .containsKey(nextQueryObject.clientIPAddress))
+                    .containsKey(nextQueryObject.getClientIPAddress()))
             {
                 final Collection<QueryDebug> previousQueries = this.currentQueryDebugInformation
-                        .get(nextQueryObject.clientIPAddress);
+                        .get(nextQueryObject.getClientIPAddress());
                 
                 previousQueries.add(nextQueryObject);
                 
                 this.currentQueryDebugInformation.put(
-                        nextQueryObject.clientIPAddress, previousQueries);
+                        nextQueryObject.getClientIPAddress(), previousQueries);
             }
             else
             {
@@ -249,7 +249,7 @@ public class BlacklistController
                 newQueries.add(nextQueryObject);
                 
                 this.currentQueryDebugInformation.put(
-                        nextQueryObject.clientIPAddress, newQueries);
+                        nextQueryObject.getClientIPAddress(), newQueries);
             }
             
             this.evaluateClientBlacklist(localSettings, automaticallyBlacklistClients, blacklistMinimumQueriesBeforeBlacklistRules, blacklistResetPeriodMilliseconds, blacklistClientMaxQueriesPerPeriod);
@@ -437,7 +437,7 @@ public class BlacklistController
                     {
                         boolean isQueryRobotsTxt = false;
                         
-                        for(final URI nextQueryDebugTitle : nextQueryDebug.matchingQueryTitles)
+                        for(final URI nextQueryDebugTitle : nextQueryDebug.getMatchingQueryTitles())
                         {
                             for(final QueryType nextQueryDebugType : localSettings.getQueryTypesByUri(nextQueryDebugTitle))
                             {

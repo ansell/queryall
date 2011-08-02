@@ -130,10 +130,10 @@ public class ServerStatsServlet extends HttpServlet
             
             for(QueryDebug nextQueryDebug : nextSetOfQueries)
             {
-                nextTotalQueryTime += nextQueryDebug.totalTimeMilliseconds;
+                nextTotalQueryTime += nextQueryDebug.getTotalTimeMilliseconds();
                 
-                overallQueryTimes.add(nextQueryDebug.totalTimeMilliseconds);
-                nextQueryTimes.add(nextQueryDebug.totalTimeMilliseconds);
+                overallQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
+                nextQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
                 
                 if(_DEBUG)
                 {
