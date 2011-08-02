@@ -358,9 +358,9 @@ public class BlacklistController
     // last time, even if there were no errors since then
     public boolean doBlacklistExpiry()
     {
-        long blacklistResetPeriodMilliseconds = localSettings.getLongPropertyFromConfig("blacklistResetPeriodMilliseconds", 60000L);
+        long blacklistResetPeriodMilliseconds = localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
         
-        boolean blacklistResetClientBlacklistWithEndpoints = localSettings.getBooleanPropertyFromConfig("blacklistResetClientBlacklistWithEndpoints", true);
+        boolean blacklistResetClientBlacklistWithEndpoints = localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
 
         // magic values for no expiry are <= 0
         
@@ -604,12 +604,12 @@ public class BlacklistController
             this.permanentServletLifetimeIPBlacklist = new HashSet<String>();
         }
         
-        this.currentIPBlacklist = localSettings.getStringCollectionPropertiesFromConfig("blacklistBaseClientIPAddresses");
+        this.currentIPBlacklist = localSettings.getStringProperties("blacklistBaseClientIPAddresses");
     }
     
     public void initialiseWhitelist()
     {
-        this.currentIPWhitelist = localSettings.getStringCollectionPropertiesFromConfig("whitelistBaseClientIPAddresses");
+        this.currentIPWhitelist = localSettings.getStringProperties("whitelistBaseClientIPAddresses");
     }
     
     public boolean isClientBlacklisted(String nextClientIPAddress)
@@ -660,7 +660,7 @@ public class BlacklistController
             final BlacklistEntry currentCount = this.accumulatedBlacklistStatistics
                     .get(nextEndpointUrl);
             
-            return (currentCount.numberOfFailures >= localSettings.getIntPropertyFromConfig("blacklistMaxAccumulatedFailures", 0));
+            return (currentCount.numberOfFailures >= localSettings.getIntProperty("blacklistMaxAccumulatedFailures", 0));
         }
         else
         {

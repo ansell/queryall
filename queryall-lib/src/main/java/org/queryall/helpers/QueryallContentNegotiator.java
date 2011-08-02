@@ -28,7 +28,7 @@ public class QueryallContentNegotiator
     {
         ContentTypeNegotiator newContentNegotiator = new ContentTypeNegotiator();
         
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.APPLICATION_RDF_XML))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.APPLICATION_RDF_XML))
         {
             newContentNegotiator.addVariant("application/rdf+xml;q=0.99");
         }
@@ -37,7 +37,7 @@ public class QueryallContentNegotiator
             newContentNegotiator.addVariant("application/rdf+xml;q=0.95");
         }
         
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_RDF_N3))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_RDF_N3))
         {
             newContentNegotiator.addVariant("text/rdf+n3;q=0.99")
             .addAliasMediaType("text/n3;q=0.5")
@@ -52,7 +52,7 @@ public class QueryallContentNegotiator
             .addAliasMediaType("application/n3;q=0.5");
         }
         
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_TURTLE))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_TURTLE))
         {
             // See http://www.w3.org/TeamSubmission/turtle/ for reasoning here
             newContentNegotiator.addVariant("text/turtle;q=0.99")
@@ -67,7 +67,7 @@ public class QueryallContentNegotiator
             .addAliasMediaType("application/x-turtle;q=0.5");
         }
         
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_HTML))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_HTML))
         {
             newContentNegotiator.addVariant("text/html;q=0.99")
             .addAliasMediaType("application/html;q=0.8")
@@ -80,7 +80,7 @@ public class QueryallContentNegotiator
             .addAliasMediaType("application/xhtml+xml;q=0.3");
         }
         
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.APPLICATION_JSON))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.APPLICATION_JSON))
         {
             newContentNegotiator.addVariant("application/json;q=0.99")
             .addAliasMediaType("application/rdf+json;q=0.8");
@@ -92,7 +92,7 @@ public class QueryallContentNegotiator
         }
         
         
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_X_NQUADS))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_X_NQUADS))
         {
             newContentNegotiator.addVariant("text/x-nquads;q=0.99")
             .addAliasMediaType("text/nquads;q=0.8");
@@ -105,7 +105,7 @@ public class QueryallContentNegotiator
         
         
         // NTriples content type was not intelligently defined, but we try to work with it anyway, basically, if they ask for anything else at the same time as NTriples, they will get it instead
-        if(localSettings.getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_PLAIN))
+        if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(Constants.TEXT_PLAIN))
         {
         	newContentNegotiator.addVariant("text/plain;q=0.99");
         }
@@ -117,15 +117,15 @@ public class QueryallContentNegotiator
         return newContentNegotiator;
     }
     
-    public static String getResponseContentType(String acceptHeader, String userAgent)
+    public static String getResponseContentType(String acceptHeader, String userAgent, String fallback)
     {
         ContentTypeNegotiator negotiator = QueryallContentNegotiator.getContentNegotiator();
     
-        return getResponseContentType(acceptHeader, userAgent, negotiator);
+        return getResponseContentType(acceptHeader, userAgent, negotiator, fallback);
     }
     
     
-    public static String getResponseContentType(String acceptHeader, String userAgent, ContentTypeNegotiator negotiator)
+    public static String getResponseContentType(String acceptHeader, String userAgent, ContentTypeNegotiator negotiator, String fallback)
     {
         if(_DEBUG)
         {
@@ -141,8 +141,7 @@ public class QueryallContentNegotiator
                 log.trace("QueryallContentNegotiator: bestMatch not found, returning Settings:preferredDisplayContentType instead");
             }
             
-            // TODO: change reference to Settings.getSettings() to match whichever instance was used to create the negotiator object
-            return Settings.getSettings().getStringPropertyFromConfig("preferredDisplayContentType", Constants.APPLICATION_RDF_XML);
+            return fallback;
         }
         
         return bestMatch.getMediaType();

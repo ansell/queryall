@@ -221,10 +221,10 @@ public class QueryCreator
         	replacedString = replacedString.replace(Constants.TEMPLATE_XML_ENCODED_INCLUDED_QUERY_TYPE, StringUtils.xmlEncodeString(includedQueryType.getKey().stringValue()));
         
         replacedString = replacedString.replace(Constants.TEMPLATE_LIMIT, "LIMIT "
-                + localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500));
+                + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
         
         normalisedQueryUri = normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT, "limit/"
-                + localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500));
+                + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {
@@ -244,7 +244,7 @@ public class QueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset = (pageOffset - 1)
-                        * localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 500);
+                        * localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500);
                 
                 replacedString = replacedString.replace(Constants.TEMPLATE_SPARQL_OFFSET,
                         "OFFSET " + actualPageOffset);
@@ -1175,9 +1175,9 @@ public class QueryCreator
         if(nextIncludedQueryType != null && nextIncludedQueryType.getKey() != null)
         	attributeList.put(Constants.TEMPLATE_KEY_INCLUDED_QUERY_TYPE, nextIncludedQueryType.getKey().stringValue());
         
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringPropertyFromConfig("hostName", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringProperty("hostName", ""));
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringPropertyFromConfig("separator", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringProperty("separator", ""));
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
         attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryString);
         if(nextProvider instanceof SparqlProvider)
@@ -1209,11 +1209,11 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_ENDPOINT_URL, nextEndpoint);
         
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                .percentEncode(localSettings.getStringPropertyFromConfig("hostName", "")));
+                .percentEncode(localSettings.getStringProperty("hostName", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
                 .percentEncode(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
-                .percentEncode(localSettings.getStringPropertyFromConfig("separator", "")));
+                .percentEncode(localSettings.getStringProperty("separator", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils
                 .percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils
@@ -1222,11 +1222,11 @@ public class QueryCreator
                 .percentEncode(queryString));
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                .xmlEncodeString(localSettings.getStringPropertyFromConfig("hostName", "")));
+                .xmlEncodeString(localSettings.getStringProperty("hostName", "")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
-                .xmlEncodeString("http://" + localSettings.getStringPropertyFromConfig("hostName", "") + "/"));
+                .xmlEncodeString("http://" + localSettings.getStringProperty("hostName", "") + "/"));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR, StringUtils
-                .xmlEncodeString(localSettings.getStringPropertyFromConfig("separator", ":")));
+                .xmlEncodeString(localSettings.getStringProperty("separator", ":")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils
                 .xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils
@@ -1236,13 +1236,13 @@ public class QueryCreator
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(localSettings.getStringPropertyFromConfig("hostName", ""))));
+                        .percentEncode(localSettings.getStringProperty("hostName", ""))));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode("http://"
-                        + localSettings.getStringPropertyFromConfig("hostName", "") + "/")));
+                        + localSettings.getStringProperty("hostName", "") + "/")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .xmlEncodeString(StringUtils
-                        .percentEncode(localSettings.getStringPropertyFromConfig("separator", ":"))));
+                        .percentEncode(localSettings.getStringProperty("separator", ":"))));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL, StringUtils
                 .xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME, StringUtils

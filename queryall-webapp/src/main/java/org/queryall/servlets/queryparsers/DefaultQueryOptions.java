@@ -51,23 +51,23 @@ public class DefaultQueryOptions
     {
         this.localSettings = nextSettings;
 
-        pageoffsetUrlOpeningPrefix = localSettings.getStringPropertyFromConfig("pageoffsetUrlOpeningPrefix", "pageoffset");
-        pageoffsetUrlClosingPrefix = localSettings.getStringPropertyFromConfig("pageoffsetUrlClosingPrefix", "/");
-        pageoffsetUrlSuffix = localSettings.getStringPropertyFromConfig("pageoffsetUrlSuffix", "");
-        htmlUrlPrefix = localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/");
-        htmlUrlSuffix = localSettings.getStringPropertyFromConfig("htmlUrlSuffix", "");
-        rdfXmlUrlPrefix = localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "rdfxml/");
-        rdfXmlUrlSuffix = localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", "");
-        n3UrlPrefix = localSettings.getStringPropertyFromConfig("n3UrlPrefix", "n3/");
-        n3UrlSuffix = localSettings.getStringPropertyFromConfig("n3UrlSuffix", "");
-        jsonUrlPrefix = localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "json/");
-        jsonUrlSuffix = localSettings.getStringPropertyFromConfig("jsonUrlSuffix", "");
-        ntriplesUrlPrefix = localSettings.getStringPropertyFromConfig("ntriplesUrlPrefix", "ntriples/");
-        ntriplesUrlSuffix = localSettings.getStringPropertyFromConfig("ntriplesUrlSuffix", "");
-        nquadsUrlPrefix = localSettings.getStringPropertyFromConfig("nquadsUrlPrefix", "nquads/");
-        nquadsUrlSuffix = localSettings.getStringPropertyFromConfig("nquadsUrlSuffix", "");
-        queryplanUrlPrefix = localSettings.getStringPropertyFromConfig("queryplanUrlPrefix", "queryplan/");
-        queryplanUrlSuffix = localSettings.getStringPropertyFromConfig("queryplanUrlSuffix", "");
+        pageoffsetUrlOpeningPrefix = localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset");
+        pageoffsetUrlClosingPrefix = localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/");
+        pageoffsetUrlSuffix = localSettings.getStringProperty("pageoffsetUrlSuffix", "");
+        htmlUrlPrefix = localSettings.getStringProperty("htmlUrlPrefix", "page/");
+        htmlUrlSuffix = localSettings.getStringProperty("htmlUrlSuffix", "");
+        rdfXmlUrlPrefix = localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
+        rdfXmlUrlSuffix = localSettings.getStringProperty("rdfXmlUrlSuffix", "");
+        n3UrlPrefix = localSettings.getStringProperty("n3UrlPrefix", "n3/");
+        n3UrlSuffix = localSettings.getStringProperty("n3UrlSuffix", "");
+        jsonUrlPrefix = localSettings.getStringProperty("jsonUrlPrefix", "json/");
+        jsonUrlSuffix = localSettings.getStringProperty("jsonUrlSuffix", "");
+        ntriplesUrlPrefix = localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
+        ntriplesUrlSuffix = localSettings.getStringProperty("ntriplesUrlSuffix", "");
+        nquadsUrlPrefix = localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
+        nquadsUrlSuffix = localSettings.getStringProperty("nquadsUrlSuffix", "");
+        queryplanUrlPrefix = localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/");
+        queryplanUrlSuffix = localSettings.getStringProperty("queryplanUrlSuffix", "");
         
         String pageOffsetPatternString = "^"+pageoffsetUrlOpeningPrefix+"(\\d+)"+pageoffsetUrlClosingPrefix+"(.+)"+pageoffsetUrlSuffix+"$";
 

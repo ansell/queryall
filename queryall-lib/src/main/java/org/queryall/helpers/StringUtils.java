@@ -387,7 +387,7 @@ public class StringUtils
 
     public static List<String> getNamespaceAndIdentifier(String nsAndId, Settings localSettings)
     {
-        return matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(), localSettings.getStringPropertyFromConfig("plainNamespaceAndIdentifierRegex", ""), nsAndId);
+        return matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(), localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", ""), nsAndId);
     }
 
     public static List<String> getNamespaceAndIdentifierFromUri(String nextUri, Settings localSettings)

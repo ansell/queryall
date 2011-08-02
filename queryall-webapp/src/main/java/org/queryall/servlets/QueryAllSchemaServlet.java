@@ -50,7 +50,9 @@ public class QueryAllSchemaServlet extends HttpServlet
 
 		String originalRequestedContentType = QueryallContentNegotiator
 				.getResponseContentType(request.getHeader("Accept"),
-						request.getHeader("User-Agent"));
+						request.getHeader("User-Agent"), 
+						localSettings.getStringProperty("preferredDisplayContentType", 
+								Constants.APPLICATION_RDF_XML));
 
 		String requestedContentType = originalRequestedContentType;
 
@@ -133,7 +135,7 @@ public class QueryAllSchemaServlet extends HttpServlet
 		if(writerFormat == null)
 		{
 			writerFormat = Rio.getWriterFormatForMIMEType(localSettings
-					.getStringPropertyFromConfig("preferredDisplayContentType",
+					.getStringProperty("preferredDisplayContentType",
 							Constants.APPLICATION_RDF_XML));
 
 			if(writerFormat == null)
@@ -150,12 +152,12 @@ public class QueryAllSchemaServlet extends HttpServlet
 			else if(!requestedContentType.equals(Constants.TEXT_HTML))
 			{
 				requestedContentType = localSettings
-						.getStringPropertyFromConfig(
+						.getStringProperty(
 								"preferredDisplayContentType",
 								Constants.APPLICATION_RDF_XML);
 
 				log.error("QueryAllSchemaServlet: content negotiation failed to find a suitable content type for results. Defaulting to localSettings.getStringPropertyFromConfig(\"preferredDisplayContentType\")="
-						+ localSettings.getStringPropertyFromConfig(
+						+ localSettings.getStringProperty(
 								"preferredDisplayContentType", ""));
 			}
 		}

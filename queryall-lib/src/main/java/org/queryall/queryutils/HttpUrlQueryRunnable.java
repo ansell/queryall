@@ -25,7 +25,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
     // public String url = "";
     // public String postInformation = "";
     // public String acceptHeader = "";
-    public int maxRowsParameter = getLocalSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
+    public int maxRowsParameter = getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
     // public String format = "";
     
     // public String rawResult = "";
