@@ -13,18 +13,18 @@ public class QueryDebug
     @SuppressWarnings("unused")
     private static final Logger log = Logger.getLogger(QueryDebug.class.getName());
 	
-	public long totalTimeMilliseconds = 0;
-	public String clientIPAddress = "";
-	public String queryString = "";
-	public Collection<URI> matchingQueryTitles = new HashSet<URI>();
+	private long totalTimeMilliseconds = 0;
+	private String clientIPAddress = "";
+	private String queryString = "";
+	private Collection<URI> matchingQueryTitles = new HashSet<URI>();
 	
 	public String toString()
 	{
-		String result = "Client IP Address = "+clientIPAddress+", Total query time = " + totalTimeMilliseconds + ", queryString = "+queryString + ", relevantQueryTitles=";
+		String result = "Client IP Address = "+getClientIPAddress()+", Total query time = " + getTotalTimeMilliseconds() + ", queryString = "+getQueryString() + ", relevantQueryTitles=";
 		
 		Collection<URI> uniqueTitles = new HashSet<URI>();
 		
-		for(URI nextQueryTitle : matchingQueryTitles)
+		for(URI nextQueryTitle : getMatchingQueryTitles())
 		{
 			if(!uniqueTitles.contains(nextQueryTitle))
 			{
@@ -38,6 +38,70 @@ public class QueryDebug
 		}
 		
 		return result;
+	}
+
+	/**
+	 * @return the matchingQueryTitles
+	 */
+	public Collection<URI> getMatchingQueryTitles()
+	{
+		return matchingQueryTitles;
+	}
+
+	/**
+	 * @param matchingQueryTitles the matchingQueryTitles to set
+	 */
+	public void setMatchingQueryTitles(Collection<URI> matchingQueryTitles)
+	{
+		this.matchingQueryTitles = matchingQueryTitles;
+	}
+
+	/**
+	 * @return the queryString
+	 */
+	public String getQueryString()
+	{
+		return queryString;
+	}
+
+	/**
+	 * @param queryString the queryString to set
+	 */
+	public void setQueryString(String queryString)
+	{
+		this.queryString = queryString;
+	}
+
+	/**
+	 * @return the clientIPAddress
+	 */
+	public String getClientIPAddress()
+	{
+		return clientIPAddress;
+	}
+
+	/**
+	 * @param clientIPAddress the clientIPAddress to set
+	 */
+	public void setClientIPAddress(String clientIPAddress)
+	{
+		this.clientIPAddress = clientIPAddress;
+	}
+
+	/**
+	 * @return the totalTimeMilliseconds
+	 */
+	public long getTotalTimeMilliseconds()
+	{
+		return totalTimeMilliseconds;
+	}
+
+	/**
+	 * @param totalTimeMilliseconds the totalTimeMilliseconds to set
+	 */
+	public void setTotalTimeMilliseconds(long totalTimeMilliseconds)
+	{
+		this.totalTimeMilliseconds = totalTimeMilliseconds;
 	}
 	
 }

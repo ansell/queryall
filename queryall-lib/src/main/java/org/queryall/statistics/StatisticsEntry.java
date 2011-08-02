@@ -768,7 +768,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 			BlacklistController localBlacklistController, int modelVersion)
 			throws OpenRDFException
 	{
-		if(localSettings.getURIPropertyFromConfig("statisticsServerMethod",
+		if(localSettings.getURIProperty("statisticsServerMethod",
 				HttpProviderImpl.getProviderHttpPostSparqlUri()).equals(
 				HttpProviderImpl.getProviderHttpPostSparqlUri()))
 		{
@@ -793,11 +793,11 @@ public class StatisticsEntry implements BaseQueryAllInterface
 
 			String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
 
-			if(localSettings.getBooleanPropertyFromConfig(
+			if(localSettings.getBooleanProperty(
 					"statisticsServerUseGraphUri", true))
 			{
 				sparqlInsertQuery += " INTO GRAPH <"
-						+ localSettings.getStringPropertyFromConfig(
+						+ localSettings.getStringProperty(
 								"statisticsServerGraphUri", "") + "> ";
 			}
 
@@ -810,15 +810,15 @@ public class StatisticsEntry implements BaseQueryAllInterface
 			}
 
 			return new HttpUrlQueryRunnable(
-					localSettings.getStringPropertyFromConfig(
+					localSettings.getStringProperty(
 							"statisticsServerMethod", ""),
-					localSettings.getStringPropertyFromConfig(
+					localSettings.getStringProperty(
 							"statisticsServerUrl", ""), sparqlInsertQuery,
-					"*/*", localSettings.getStringPropertyFromConfig(
+					"*/*", localSettings.getStringProperty(
 							"assumedResponseContentType", ""), localSettings,
 					localBlacklistController);
 		}
-		else if(localSettings.getURIPropertyFromConfig(
+		else if(localSettings.getURIProperty(
 				"statisticsServerMethod", HttpProviderImpl.getProviderHttpPostUrlUri()).equals(
 				HttpProviderImpl.getProviderHttpPostUrlUri()))
 		{
@@ -831,11 +831,11 @@ public class StatisticsEntry implements BaseQueryAllInterface
 			}
 
 			return new HttpUrlQueryRunnable(
-					localSettings.getStringPropertyFromConfig(
+					localSettings.getStringProperty(
 							"statisticsServerMethod", ""),
-					localSettings.getStringPropertyFromConfig(
+					localSettings.getStringProperty(
 							"statisticsServerUrl", ""), postInformation, "*/*",
-					localSettings.getStringPropertyFromConfig(
+					localSettings.getStringProperty(
 							"assumedResponseContentType", ""), localSettings,
 					localBlacklistController);
 		}
@@ -843,7 +843,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 		{
 			throw new RuntimeException(
 					"StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
-							+ localSettings.getStringPropertyFromConfig(
+							+ localSettings.getStringProperty(
 									"statisticsServerMethod", ""));
 		}
 	}

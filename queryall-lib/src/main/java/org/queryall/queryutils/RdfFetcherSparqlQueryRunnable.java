@@ -11,7 +11,7 @@ import org.queryall.helpers.*;
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
 	public String graphUri = "";
-	public int maxRowsParameter = getLocalSettings().getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0);
+	public int maxRowsParameter = getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
     
 	public RdfFetcherSparqlQueryRunnable
 	(

@@ -61,8 +61,8 @@ public class ServerStatsServlet extends HttpServlet
         out.write("Now : "+now+"<br />\n");
         out.write("Last error reset date: "+localBlacklistController.lastExpiryDate.toString()+"<br />\n");
         out.write("Server startup date: "+localBlacklistController.lastServerStartupDate.toString()+"<br />\n");
-        out.write("Reset period "+localSettings.getLongPropertyFromConfig("blacklistResetPeriodMilliseconds", 0L)+"<br />\n");
-        out.write("Client blacklist will reset in "+((localSettings.getLongPropertyFromConfig("blacklistResetPeriodMilliseconds", 0L)-differenceMilliseconds)/1000)+" seconds.<br /><br />\n");
+        out.write("Reset period "+localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L)+"<br />\n");
+        out.write("Client blacklist will reset in "+((localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L)-differenceMilliseconds)/1000)+" seconds.<br /><br />\n");
         
         if(localBlacklistController.allHttpErrorResponseCodesByServer != null)
         {
@@ -130,10 +130,10 @@ public class ServerStatsServlet extends HttpServlet
             
             for(QueryDebug nextQueryDebug : nextSetOfQueries)
             {
-                nextTotalQueryTime += nextQueryDebug.totalTimeMilliseconds;
+                nextTotalQueryTime += nextQueryDebug.getTotalTimeMilliseconds();
                 
-                overallQueryTimes.add(nextQueryDebug.totalTimeMilliseconds);
-                nextQueryTimes.add(nextQueryDebug.totalTimeMilliseconds);
+                overallQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
+                nextQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
                 
                 if(_DEBUG)
                 {

@@ -218,7 +218,7 @@ public class RdfFetchController
                 }
                 
                 Collection<QueryBundle> queryBundlesForQueryType = this.generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
-                        chosenProviders, localSettings.getBooleanPropertyFromConfig("useAllEndpointsForEachProvider", true), localSettings);
+                        chosenProviders, localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true), localSettings);
                 
                 if(_DEBUG)
                 {
@@ -267,7 +267,7 @@ public class RdfFetchController
         // queryBundles = multiProviderQueryBundles;
         // return multiProviderQueryBundles;
         
-        this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.queryBundles, localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0)));
+        this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.queryBundles, localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0)));
         
         if( _DEBUG )
         {
@@ -310,7 +310,7 @@ public class RdfFetchController
                         
                         // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
                         // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), localSettings);
                     }
                 }
                 
@@ -339,7 +339,7 @@ public class RdfFetchController
                 {
                     String replacedEndpoint = nextEndpoint
                                         .replace( Constants.TEMPLATE_REAL_HOST_NAME, realHostName )
-                                        .replace( Constants.TEMPLATE_DEFAULT_SEPARATOR, localSettings.getStringPropertyFromConfig("separator", ":") )
+                                        .replace( Constants.TEMPLATE_DEFAULT_SEPARATOR, localSettings.getStringProperty("separator", ":") )
                                         .replace( Constants.TEMPLATE_OFFSET, String.valueOf(pageOffset) );
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc replacements on nextEndpoint before using it in the attribute list
@@ -348,9 +348,9 @@ public class RdfFetchController
                     attributeList = QueryCreator.getAttributeListFor( nextQueryType, nextProvider, queryString, replacedEndpoint, realHostName, pageOffset, localSettings);
                     
                     // This step is needed in order to replace endpointSpecific related template elements on the provider URL
-                    replacedEndpoint = QueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                    replacedEndpoint = QueryCreator.replaceAttributesOnEndpointUrl( replacedEndpoint, nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), localSettings);
                     
-                    String nextEndpointQuery = QueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                    String nextEndpointQuery = QueryCreator.createQuery( nextQueryType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), localSettings);
                     
                     // replace the query on the endpoint URL if necessary
                     replacedEndpoint = replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY, StringUtils.percentEncode(nextEndpointQuery));
@@ -384,7 +384,7 @@ public class RdfFetchController
                     {
                         // then also create the statically defined rdf/xml string to go with this query based on the current attributes, we assume that both queries have been intelligently put into the configuration file so that they have an equivalent number of arguments as ${input_1} etc, in them.
                         // There is no general solution for determining how these should work other than naming them as ${namespace} and ${identifier} and ${searchTerm}, but these can be worked around by only offering compatible services as alternatives with the static rdf/xml portions
-                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true), localSettings);
+                        nextStaticRdfXmlString += QueryCreator.createStaticRdfXmlString( nextQueryType, nextCustomIncludeType, nextProvider, attributeList, sortedIncludedProfiles , localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true) , localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), localSettings);
                     }
                 }
                 
@@ -604,7 +604,7 @@ public class RdfFetchController
                     log.trace( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
                 }
                 
-                if( nextNamespaceSpecificProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions", true), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders", true) ) )
+                if( nextNamespaceSpecificProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true) ) )
                 {
                     if( _DEBUG )
                     {
@@ -634,7 +634,7 @@ public class RdfFetchController
                 log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
             }
             
-            if( nextAllProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions", true), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders", true) ) )
+            if( nextAllProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true) ) )
             {
                 if( _DEBUG )
                 {
@@ -660,7 +660,7 @@ public class RdfFetchController
 	            if(nextProvider.getIsDefaultSource()
 	                    && nextProvider.containsQueryTypeUri(queryType.getKey()))
 	            {
-	                    if( nextProvider.isUsedWithProfileList( profileList, localSettings.getBooleanPropertyFromConfig("recogniseImplicitProviderInclusions", true), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedProviders", true) ) )
+	                    if( nextProvider.isUsedWithProfileList( profileList, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true) ) )
 	                    {
 	                        if( _DEBUG )
 	                        {
@@ -767,7 +767,7 @@ public class RdfFetchController
                     localSettings.getNormalisationRulesForUris( 
                         nextThread.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
                         Constants.HIGHEST_ORDER_FIRST ), 
-                    sortedIncludedProfiles, localSettings.getBooleanPropertyFromConfig("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanPropertyFromConfig("includeNonProfileMatchedRdfRules", true) );
+                    sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
                 
                 nextThread.setNormalisedResult(convertedResult);
                 

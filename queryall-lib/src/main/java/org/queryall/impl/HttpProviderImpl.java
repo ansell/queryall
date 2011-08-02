@@ -203,7 +203,7 @@ public class HttpProviderImpl extends ProviderImpl implements
 		    
 		    if(getAcceptHeaderString() == null || getAcceptHeaderString().trim().equals(""))
 		    {
-		        acceptHeaderLiteral = f.createLiteral(Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader", ""));
+		        acceptHeaderLiteral = f.createLiteral(Settings.getSettings().getStringProperty("defaultAcceptHeader", ""));
 		    }
 		    else
 		    {
@@ -324,7 +324,7 @@ public class HttpProviderImpl extends ProviderImpl implements
         }
         else
         {
-            return Settings.getSettings().getStringPropertyFromConfig("defaultAcceptHeader", "");
+            return Settings.getSettings().getStringProperty("defaultAcceptHeader", "");
         }
     }
     

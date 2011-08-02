@@ -60,7 +60,7 @@ public class RdfFetcher
         // particular HTTP server or intermediate proxy
         String postQuery = "format="+StringUtils.percentEncode(format)+"&";
         
-        if(localSettings.getBooleanPropertyFromConfig("useVirtuosoMaxRowsParameter", false))
+        if(localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
             postQuery += "maxrows="+maxRowsParameter+"&";
         
         postQuery += "formatting=Raw&";
@@ -92,7 +92,7 @@ public class RdfFetcher
     {
         if(_DEBUG)
         {
-            log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl="+endpointUrl+" Settings.getStringPropertyFromConfig(\"connectTimeout\")="+localSettings.getIntPropertyFromConfig("connectTimeout", 0));
+            log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl="+endpointUrl+" Settings.getStringPropertyFromConfig(\"connectTimeout\")="+localSettings.getIntProperty("connectTimeout", 0));
         }
         
         final long start = System.currentTimeMillis();
@@ -127,16 +127,16 @@ public class RdfFetcher
             localBlacklistController.accumulateQueryTotal(url.getProtocol()+"://"+url.getHost());
             
             conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+localSettings.getStringPropertyFromConfig("userAgent", "queryall")+"/" + Settings.VERSION +" +"+localSettings.getStringPropertyFromConfig("robotHelpUrl", "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp")+")");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (compatible; "+localSettings.getStringProperty("userAgent", "queryall")+"/" + Settings.VERSION +" +"+localSettings.getStringProperty("robotHelpUrl", "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp")+")");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
                 conn.setRequestProperty("Accept", acceptHeader);
             }
             
-            conn.setUseCaches(localSettings.getBooleanPropertyFromConfig("useRequestCache", true));
-            conn.setConnectTimeout(localSettings.getIntPropertyFromConfig("connectTimeout", 2000));
-            conn.setReadTimeout(localSettings.getIntPropertyFromConfig("readTimeout", 30000));
+            conn.setUseCaches(localSettings.getBooleanProperty("useRequestCache", true));
+            conn.setConnectTimeout(localSettings.getIntProperty("connectTimeout", 2000));
+            conn.setReadTimeout(localSettings.getIntProperty("readTimeout", 30000));
             
             if(postInformation != null && !postInformation.trim().equals(""))
             {

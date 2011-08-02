@@ -69,14 +69,14 @@ public class HtmlPageRenderer
             contextPath = contextPath.substring(1)+"/";
         }
         
-        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestContext", true))
+        if(localSettings.getBooleanProperty("useHardcodedRequestContext", true))
         {
-            contextPath = localSettings.getStringPropertyFromConfig("hardcodedRequestContext", "");
+            contextPath = localSettings.getStringProperty("hardcodedRequestContext", "");
         }
         
-        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestHostname", true))
+        if(localSettings.getBooleanProperty("useHardcodedRequestHostname", true))
         {
-            realHostName = localSettings.getStringPropertyFromConfig("hardcodedRequestHostname", "");
+            realHostName = localSettings.getStringProperty("hardcodedRequestHostname", "");
         }
         
         if(_TRACE)
@@ -101,13 +101,13 @@ public class HtmlPageRenderer
         context.put("debug_level_trace", GeneralServlet._TRACE);
         
         
-        context.put("project_name", localSettings.getStringPropertyFromConfig("projectName", "queryall"));
-        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUri", "http://bio2rdf.org/"));
-        context.put("project_html_url_prefix", localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/"));
-        context.put("project_html_url_suffix", localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
-        context.put("project_link", localSettings.getStringPropertyFromConfig("projectHomeUrl", "http://bio2rdf.org/"));
-        context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "queryall")+ "/"+Settings.VERSION);
-        context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
+        context.put("project_name", localSettings.getStringProperty("projectName", "queryall"));
+        context.put("project_base_url", localSettings.getStringProperty("projectHomeUri", "http://bio2rdf.org/"));
+        context.put("project_html_url_prefix", localSettings.getStringProperty("htmlUrlPrefix", "page/"));
+        context.put("project_html_url_suffix", localSettings.getStringProperty("htmlUrlSuffix", ""));
+        context.put("project_link", localSettings.getStringProperty("projectHomeUrl", "http://bio2rdf.org/"));
+        context.put("application_name", localSettings.getStringProperty("userAgent", "queryall")+ "/"+Settings.VERSION);
+        context.put("application_help", localSettings.getStringProperty("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
         context.put("uri", resolvedUri);
         
         boolean is_plainnsid = false;
@@ -138,10 +138,10 @@ public class HtmlPageRenderer
         context.put("real_hostname", realHostName);
         context.put("context_path", contextPath);
         context.put("server_base", realHostName+contextPath);
-        context.put("rdfxml_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("rdfXmlUrlPrefix", "rdfxml/")+queryString+localSettings.getStringPropertyFromConfig("rdfXmlUrlSuffix", ""));
-        context.put("rdfn3_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("n3UrlPrefix", "n3/")+queryString+localSettings.getStringPropertyFromConfig("n3UrlSuffix", ""));
-        context.put("html_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/")+queryString+localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
-        context.put("json_link", realHostName+contextPath+localSettings.getStringPropertyFromConfig("jsonUrlPrefix", "json/")+queryString+localSettings.getStringPropertyFromConfig("jsonUrlSuffix", ""));
+        context.put("rdfxml_link", realHostName+contextPath+localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/")+queryString+localSettings.getStringProperty("rdfXmlUrlSuffix", ""));
+        context.put("rdfn3_link", realHostName+contextPath+localSettings.getStringProperty("n3UrlPrefix", "n3/")+queryString+localSettings.getStringProperty("n3UrlSuffix", ""));
+        context.put("html_link", realHostName+contextPath+localSettings.getStringProperty("htmlUrlPrefix", "page/")+queryString+localSettings.getStringProperty("htmlUrlSuffix", ""));
+        context.put("json_link", realHostName+contextPath+localSettings.getStringProperty("jsonUrlPrefix", "json/")+queryString+localSettings.getStringProperty("jsonUrlSuffix", ""));
         // context.put("disco_link", discoLink);
         // context.put("tabulator_link", tabulatorLink);
         // context.put("openlink_link", openLinkLink);
@@ -166,9 +166,9 @@ public class HtmlPageRenderer
         //Collection<Value> titles = new HashSet<Value>();
         //Collection<Value> comments = new HashSet<Value>();
         //Collection<Value> images = new HashSet<Value>();
-        Collection<Value> titles = RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository, localSettings.getURICollectionPropertiesFromConfig("titleProperties"));
-        Collection<Value> comments = RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository, localSettings.getURICollectionPropertiesFromConfig("commentProperties"));
-        Collection<Value> images = RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository, localSettings.getURICollectionPropertiesFromConfig("imageProperties"));
+        Collection<Value> titles = RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository, localSettings.getURIProperties("titleProperties"));
+        Collection<Value> comments = RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository, localSettings.getURIProperties("commentProperties"));
+        Collection<Value> images = RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository, localSettings.getURIProperties("imageProperties"));
         
         String chosenTitle = "";
         
@@ -184,7 +184,7 @@ public class HtmlPageRenderer
         
         if(chosenTitle.trim().equals(""))
         {
-            context.put("title", localSettings.getStringPropertyFromConfig("blankTitle", ""));
+            context.put("title", localSettings.getStringProperty("blankTitle", ""));
         }
         else
         {
@@ -195,11 +195,11 @@ public class HtmlPageRenderer
         context.put("comments", comments);
         context.put("images", images);
 
-        context.put("shortcut_icon", localSettings.getStringPropertyFromConfig("shortcutIconPath","static/includes-images/favicon.ico"));
-        context.put("scripts", localSettings.getStringCollectionPropertiesFromConfig("resultsPageScripts"));
-        context.put("local_scripts", localSettings.getStringCollectionPropertiesFromConfig("resultsPageScriptsLocal"));
-        context.put("stylesheets", localSettings.getStringCollectionPropertiesFromConfig("resultsPageStylesheets"));
-        context.put("local_stylesheets", localSettings.getStringCollectionPropertiesFromConfig("resultsPageStylesheetsLocal"));
+        context.put("shortcut_icon", localSettings.getStringProperty("shortcutIconPath","static/includes-images/favicon.ico"));
+        context.put("scripts", localSettings.getStringProperties("resultsPageScripts"));
+        context.put("local_scripts", localSettings.getStringProperties("resultsPageScriptsLocal"));
+        context.put("stylesheets", localSettings.getStringProperties("resultsPageStylesheets"));
+        context.put("local_stylesheets", localSettings.getStringProperties("resultsPageStylesheetsLocal"));
         
         // For each URI in localSettings.IMAGE_QUERY_TYPES
         // Make sure the URI is a valid QueryType
@@ -221,7 +221,7 @@ public class HtmlPageRenderer
         context.put("bio2rdfutil", new org.queryall.helpers.RdfUtils());
         
         // our only way of guessing if other pages are available without doing an explicit count
-        if(allStatements.size() >= localSettings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit", 0))
+        if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0))
         {
             nextpagelinkuseful = true;
         }
@@ -241,15 +241,15 @@ public class HtmlPageRenderer
         }
         
         // To prevent infinite or extended requests, we have a maximum value that we can go up to
-        if(pageoffset > localSettings.getIntPropertyFromConfig("pageoffsetMaxValue", 20))
+        if(pageoffset > localSettings.getIntProperty("pageoffsetMaxValue", 20))
         {
             // setup the pageoffset value so it artificially points to the limit so that non-conforming robots that don't follow robots.txt don't accidentally run into issues when people play around with links to very high page offsets
-            previouspageoffset = localSettings.getIntPropertyFromConfig("pageoffsetMaxValue", 20);
+            previouspageoffset = localSettings.getIntProperty("pageoffsetMaxValue", 20);
             nextpagelinkuseful = false;
         }
         
         // If configured to only show pageoffset for plain nsid's as opposed to the other queries then decide here whether to show it
-        if(localSettings.getBooleanPropertyFromConfig("pageoffsetOnlyShowForNsId", true) && !is_plainnsid)
+        if(localSettings.getBooleanProperty("pageoffsetOnlyShowForNsId", true) && !is_plainnsid)
         {
             nextpagelinkuseful = false;
         }
@@ -258,13 +258,13 @@ public class HtmlPageRenderer
         {
             context.put("nextpagelink", realHostName
                 +contextPath
-                +localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/")
-                +localSettings.getStringPropertyFromConfig("pageoffsetUrlOpeningPrefix", "pageoffset")
+                +localSettings.getStringProperty("htmlUrlPrefix", "page/")
+                +localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset")
                 +(pageoffset+1)
-                +localSettings.getStringPropertyFromConfig("pageoffsetUrlClosingPrefix", "/")
+                +localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/")
                 +queryString
-                +localSettings.getStringPropertyFromConfig("pageoffsetUrlSuffix", "")
-                +localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
+                +localSettings.getStringProperty("pageoffsetUrlSuffix", "")
+                +localSettings.getStringProperty("htmlUrlSuffix", ""));
             context.put("nextpagelabel", (pageoffset+1));
         }
         
@@ -272,13 +272,13 @@ public class HtmlPageRenderer
         {
             context.put("previouspagelink", realHostName
                 +contextPath
-                +localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "page/")
-                +localSettings.getStringPropertyFromConfig("pageoffsetUrlOpeningPrefix", "pageoffset")
+                +localSettings.getStringProperty("htmlUrlPrefix", "page/")
+                +localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset")
                 +(previouspageoffset)
-                +localSettings.getStringPropertyFromConfig("pageoffsetUrlClosingPrefix", "/")
+                +localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/")
                 +queryString
-                +localSettings.getStringPropertyFromConfig("pageoffsetUrlSuffix", "")
-                +localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
+                +localSettings.getStringProperty("pageoffsetUrlSuffix", "")
+                +localSettings.getStringProperty("htmlUrlSuffix", ""));
             context.put("previouspagelabel", previouspageoffset);
         }
         
@@ -357,14 +357,14 @@ public class HtmlPageRenderer
             contextPath = contextPath.substring(1)+"/";
         }
         
-        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestContext", false))
+        if(localSettings.getBooleanProperty("useHardcodedRequestContext", false))
         {
-            contextPath = localSettings.getStringPropertyFromConfig("hardcodedRequestContext", "");
+            contextPath = localSettings.getStringProperty("hardcodedRequestContext", "");
         }
         
-        if(localSettings.getBooleanPropertyFromConfig("useHardcodedRequestHostname", false))
+        if(localSettings.getBooleanProperty("useHardcodedRequestHostname", false))
         {
-            realHostName = localSettings.getStringPropertyFromConfig("hardcodedRequestHostname", "");
+            realHostName = localSettings.getStringProperty("hardcodedRequestHostname", "");
         }
         
         if(_TRACE)
@@ -385,30 +385,30 @@ public class HtmlPageRenderer
         context.put("debug_level_debug", GeneralServlet._DEBUG);
         context.put("debug_level_trace", GeneralServlet._TRACE);
         
-        context.put("title", localSettings.getStringPropertyFromConfig("projectName", "Bio2RDF"));
+        context.put("title", localSettings.getStringProperty("projectName", "Bio2RDF"));
 
-        context.put("project_name", localSettings.getStringPropertyFromConfig("projectName", "Bio2RDF"));
-        context.put("project_base_url", localSettings.getStringPropertyFromConfig("projectHomeUri", "http://bio2rdf.org/"));
-        context.put("project_html_url_prefix", localSettings.getStringPropertyFromConfig("htmlUrlPrefix", "html/"));
-        context.put("project_html_url_suffix", localSettings.getStringPropertyFromConfig("htmlUrlSuffix", ""));
-        context.put("project_link", localSettings.getStringPropertyFromConfig("projectHomeUrl", "http://bio2rdf.org/"));
-        context.put("application_name", localSettings.getStringPropertyFromConfig("userAgent", "queryall")+ "/"+Settings.VERSION);
-        context.put("application_help", localSettings.getStringPropertyFromConfig("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
+        context.put("project_name", localSettings.getStringProperty("projectName", "Bio2RDF"));
+        context.put("project_base_url", localSettings.getStringProperty("projectHomeUri", "http://bio2rdf.org/"));
+        context.put("project_html_url_prefix", localSettings.getStringProperty("htmlUrlPrefix", "html/"));
+        context.put("project_html_url_suffix", localSettings.getStringProperty("htmlUrlSuffix", ""));
+        context.put("project_link", localSettings.getStringProperty("projectHomeUrl", "http://bio2rdf.org/"));
+        context.put("application_name", localSettings.getStringProperty("userAgent", "queryall")+ "/"+Settings.VERSION);
+        context.put("application_help", localSettings.getStringProperty("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
 
-        context.put("index_banner_image", localSettings.getStringPropertyFromConfig("indexBannerImagePath","static/includes-images/merged-bio2rdf-banner.jpg"));
-        context.put("index_project_image", localSettings.getStringPropertyFromConfig("indexProjectImagePath","static/includes-images/Bio2RDF.jpg"));
+        context.put("index_banner_image", localSettings.getStringProperty("indexBannerImagePath","static/includes-images/merged-bio2rdf-banner.jpg"));
+        context.put("index_project_image", localSettings.getStringProperty("indexProjectImagePath","static/includes-images/Bio2RDF.jpg"));
         
-        context.put("shortcut_icon", localSettings.getStringPropertyFromConfig("shortcutIconPath","static/includes-images/favicon.ico"));
-        context.put("scripts", localSettings.getStringCollectionPropertiesFromConfig("indexPageScripts"));
-        context.put("local_scripts", localSettings.getStringCollectionPropertiesFromConfig("indexPageScriptsLocal"));
-        context.put("stylesheets", localSettings.getStringCollectionPropertiesFromConfig("indexPageStylesheets"));
-        context.put("local_stylesheets", localSettings.getStringCollectionPropertiesFromConfig("indexPageStylesheetsLocal"));
+        context.put("shortcut_icon", localSettings.getStringProperty("shortcutIconPath","static/includes-images/favicon.ico"));
+        context.put("scripts", localSettings.getStringProperties("indexPageScripts"));
+        context.put("local_scripts", localSettings.getStringProperties("indexPageScriptsLocal"));
+        context.put("stylesheets", localSettings.getStringProperties("indexPageStylesheets"));
+        context.put("local_stylesheets", localSettings.getStringProperties("indexPageStylesheetsLocal"));
         
         context.put("real_hostname", realHostName);
         context.put("context_path", contextPath);
         context.put("server_base", realHostName+contextPath);
 
-        String templateLocation = localSettings.getStringPropertyFromConfig("indexTemplate", "default-index.vm");
+        String templateLocation = localSettings.getStringProperty("indexTemplate", "default-index.vm");
 
 		try
 		{

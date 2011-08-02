@@ -218,16 +218,16 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringPropertyFromConfig("assumedResponseContentType", ""));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(Settings.getSettings().getStringProperty("assumedResponseContentType", ""));
                         
                         if(nextReaderFormat == null)
                         {
-                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedResponseContentType", ""));
+                            log.error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="+nextResult.getReturnedMIMEType()+" Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+Settings.getSettings().getStringProperty("assumedResponseContentType", ""));
                             continue;
                         }
                         else
                         {
-                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+Settings.getSettings().getStringPropertyFromConfig("assumedResponseContentType", ""));
+                            log.warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="+nextResult.getReturnedMIMEType()+" using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="+Settings.getSettings().getStringProperty("assumedResponseContentType", ""));
                         }
                     }
                     else if(log.isDebugEnabled())
