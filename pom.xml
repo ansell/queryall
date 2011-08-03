@@ -9,7 +9,7 @@
 		<module>queryall-api</module>
 		<module>queryall-lib</module>
 		<module>queryall-webapp</module>
-		<module>queryall-reasoner</module>
+		<!-- <module>queryall-reasoner</module> -->
 		<!-- <module>queryall-biomart</module> -->
 	</modules>
 	<name>Queryall RDF services</name>
@@ -48,7 +48,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<sesame.version>2.4.3-SNAPSHOT</sesame.version>
-		<sesametools.version>1.4</sesametools.version>
+		<sesametools.version>1.5-SNAPSHOT</sesametools.version>
 	</properties>
 	<build>
 		<plugins>
