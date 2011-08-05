@@ -14,6 +14,7 @@ import org.queryall.api.Provider;
 /**
  * Abstract unit test for Provider API
  * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractProviderTest 
 {

@@ -7,90 +7,90 @@ import org.openrdf.repository.Repository;
 
 public interface QueryAllConfiguration 
 {
-	public abstract String getNamespaceForStatistics();
+	String getNamespaceForStatistics();
 
-	public abstract void setNamespaceForStatistics(String currentRdfStatisticsNamespace);
+	void setNamespaceForStatistics(String currentRdfStatisticsNamespace);
 
-	public abstract String getNamespaceForProvenance();
+	String getNamespaceForProvenance();
 
-	public abstract void setNamespaceForProvenance(String currentRdfProvenanceNamespace);
+	void setNamespaceForProvenance(String currentRdfProvenanceNamespace);
 
-	public abstract String getNamespaceForProfile();
+	String getNamespaceForProfile();
 
-	public abstract void setNamespaceForProfile(String currentRdfProfileNamespace);
+	void setNamespaceForProfile(String currentRdfProfileNamespace);
 
-	public abstract String getNamespaceForNamespaceEntry();
+	String getNamespaceForNamespaceEntry();
 
-	public abstract void setNamespaceForNamespaceEntry(String currentRdfNamespaceNamespace);
+	void setNamespaceForNamespaceEntry(String currentRdfNamespaceNamespace);
 
-	public abstract String getNamespaceForRuleTest();
+	String getNamespaceForRuleTest();
 
-	public abstract void setNamespaceForRuleTest(String currentRdfRuleTestNamespace);
+	void setNamespaceForRuleTest(String currentRdfRuleTestNamespace);
 
-	public abstract String getNamespaceForNormalisationRule();
+	String getNamespaceForNormalisationRule();
 
-	public abstract void setNamespaceForNormalisationRule(String currentRdfNormalisationRuleNamespace);
+	void setNamespaceForNormalisationRule(String currentRdfNormalisationRuleNamespace);
 
-	public abstract String getNamespaceForQueryBundle();
+	String getNamespaceForQueryBundle();
 
-	public abstract void setNamespaceForQueryBundle(String currentRdfQueryBundleNamespace);
+	void setNamespaceForQueryBundle(String currentRdfQueryBundleNamespace);
 
-	public abstract String getNamespaceForQueryType();
+	String getNamespaceForQueryType();
 
-	public abstract void setNamespaceForQueryType(String currentRdfQueryNamespace);
+	void setNamespaceForQueryType(String currentRdfQueryNamespace);
 
-	public abstract String getNamespaceForTemplate();
+	String getNamespaceForTemplate();
 
-	public abstract void setNamespaceForTemplate(String currentRdfTemplateNamespace);
+	void setNamespaceForTemplate(String currentRdfTemplateNamespace);
 
-	public abstract String getNamespaceForProvider();
+	String getNamespaceForProvider();
 
-	public abstract void setNamespaceForProvider(String currentRdfProviderNamespace);
+	void setNamespaceForProvider(String currentRdfProviderNamespace);
 
-	public abstract String getNamespaceForProject();
+	String getNamespaceForProject();
 
-	public abstract void setNamespaceForProject(String currentRdfProjectNamespace);
+	void setNamespaceForProject(String currentRdfProjectNamespace);
 
-	public abstract String getNamespaceForWebappConfiguration();
+	String getNamespaceForWebappConfiguration();
 
-	public abstract void setNamespaceForWebappConfiguration(String currentRdfWebappConfigurationNamespace);
-
-	
-	
-	public abstract String getOntologyTermUriSuffix();
-
-	public abstract void setOntologyTermUriSuffix(String currentOntologyTermUriSuffix);
-
-	public abstract String getOntologyTermUriPrefix();
-
-	public abstract void setOntologyTermUriPrefix(String currentOntologyTermUriPrefix);
+	void setNamespaceForWebappConfiguration(String currentRdfWebappConfigurationNamespace);
 
 	
 	
-	public abstract Map<URI, NamespaceEntry> getAllNamespaceEntries();
+	String getOntologyTermUriSuffix();
 
-	public abstract Map<URI, NormalisationRule> getAllNormalisationRules();
+	void setOntologyTermUriSuffix(String currentOntologyTermUriSuffix);
 
-	public abstract Map<URI, Profile> getAllProfiles();
+	String getOntologyTermUriPrefix();
 
-	public abstract Map<URI, Provider> getAllProviders();
+	void setOntologyTermUriPrefix(String currentOntologyTermUriPrefix);
 
-	public abstract Map<URI, QueryType> getAllQueryTypes();
+	
+	
+	Map<URI, NamespaceEntry> getAllNamespaceEntries();
 
-	public abstract Map<URI, RuleTest> getAllRuleTests();
+	Map<URI, NormalisationRule> getAllNormalisationRules();
+
+	Map<URI, Profile> getAllProfiles();
+
+	Map<URI, Provider> getAllProviders();
+
+	Map<URI, QueryType> getAllQueryTypes();
+
+	Map<URI, RuleTest> getAllRuleTests();
 
 
 	
-	public abstract Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository);
+	Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository);
 
-	public abstract Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository);
+	Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository);
 
-	public abstract Map<URI, Profile> getProfiles(Repository myRepository);
+	Map<URI, Profile> getProfiles(Repository myRepository);
 
-    public abstract Map<URI, Provider> getProviders(Repository myRepository);
+    Map<URI, Provider> getProviders(Repository myRepository);
 
-	public abstract Map<URI, QueryType> getQueryTypes(Repository myRepository);
+	Map<URI, QueryType> getQueryTypes(Repository myRepository);
 
-	public abstract Map<URI, RuleTest> getRuleTests(Repository myRepository);
+	Map<URI, RuleTest> getRuleTests(Repository myRepository);
 
 }

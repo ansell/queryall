@@ -15,6 +15,8 @@ import org.queryall.api.Profile;
 
 /**
  * Abstract unit test for Profilable API
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractProfilableTest 
 {

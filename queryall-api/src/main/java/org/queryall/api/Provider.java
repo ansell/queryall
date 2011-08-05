@@ -6,54 +6,53 @@ import org.openrdf.model.URI;
 
 public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface
 {
-    public abstract boolean getIsDefaultSource();
+    boolean getIsDefaultSource();
 
-    public abstract void setIsDefaultSource(boolean isDefaultSource);
+    void setIsDefaultSource(boolean isDefaultSource);
 
-    public abstract Collection<URI> getNormalisationUris();
+    Collection<URI> getNormalisationUris();
     
     /**
      * Adds the normalisation to this current collection of normalisations
      * 
      * @param rdfNormalisationNeeded
      */
-    public abstract void addNormalisationUri(URI rdfNormalisationNeeded);
+    void addNormalisationUri(URI rdfNormalisationNeeded);
     
-    public abstract boolean containsNormalisationUri(URI normalisationKey);
+    boolean containsNormalisationUri(URI normalisationKey);
 
-    public abstract Collection<URI> getIncludedInQueryTypes();
+    Collection<URI> getIncludedInQueryTypes();
     
-    public abstract void setIncludedInQueryTypes(Collection<URI> includedInQueryTypes);
+    void setIncludedInQueryTypes(Collection<URI> includedInQueryTypes);
     
-    public abstract void addIncludedInQueryType(URI includedInQueryType);
+    void addIncludedInQueryType(URI includedInQueryType);
 
-    public abstract boolean containsQueryTypeUri(URI queryKey);
+    boolean containsQueryTypeUri(URI queryKey);
 
-    public abstract Collection<URI> getNamespaces();
+    Collection<URI> getNamespaces();
     
-    public abstract void setNamespaces(Collection<URI> namespaces);
+    void setNamespaces(Collection<URI> namespaces);
     
-    public abstract void addNamespace(URI namespace);
+    void addNamespace(URI namespace);
 
-    public abstract boolean containsNamespaceUri(URI namespaceKey);
+    boolean containsNamespaceUri(URI namespaceKey);
     
-	public abstract boolean containsNamespaceOrDefault(URI namespaceKey);
+	boolean containsNamespaceOrDefault(URI namespaceKey);
 	
-	public abstract URI getRedirectOrProxy();
+	URI getRedirectOrProxy();
 
-	public abstract void setRedirectOrProxy(URI redirectOrProxy);
+	void setRedirectOrProxy(URI redirectOrProxy);
 
-	public abstract boolean needsRedirect();
+	boolean needsRedirect();
 
-	public abstract boolean needsProxy();
+	boolean needsProxy();
 
-	public abstract URI getEndpointMethod();
+	URI getEndpointMethod();
 
-	public abstract void setEndpointMethod(URI endpointMethod);
+	void setEndpointMethod(URI endpointMethod);
 
-	public abstract String getAssumedContentType();
+	String getAssumedContentType();
 	
-	public abstract void setAssumedContentType(String assumedContentType);
-
+	void setAssumedContentType(String assumedContentType);
 }
 

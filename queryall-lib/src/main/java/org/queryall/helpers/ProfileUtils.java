@@ -16,7 +16,7 @@ import org.queryall.api.QueryType;
 import org.queryall.impl.ProfileImpl;
 
 /**
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProfileUtils
 {

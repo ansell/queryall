@@ -7,6 +7,10 @@ import org.queryall.api.Profile;
 
 import static org.junit.Assert.*;
 
+/**
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public final class ProfilableTestUtil
 {
     protected final static void testIsUsedWithProfileList(ProfilableInterface profilableObject, List<Profile> profileList, boolean test1Result, boolean test2Result, boolean test3Result, boolean test4Result)

@@ -11,8 +11,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 
 /**
- * @author peter
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public final class Constants
 {

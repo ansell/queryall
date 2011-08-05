@@ -56,8 +56,8 @@ import org.queryall.queryutils.RdfFetcherUriQueryRunnable;
 
 /**
  * A utility class to deal with RDF data and resolve RDF queries
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
- * @version $Id: $
  */
 public class RdfUtils
 {

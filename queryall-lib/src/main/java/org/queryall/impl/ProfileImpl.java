@@ -119,12 +119,12 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     	// TODO: Remove these temporary collections and replace with .add methods instead of .set
         Collection<URI> tempProfileAdministrators = new HashSet<URI>();
         
-        Collection<URI> tempIncludeProviders = new HashSet<URI>();
-        Collection<URI> tempExcludeProviders = new HashSet<URI>();
-        Collection<URI> tempIncludeQueries = new HashSet<URI>();
-        Collection<URI> tempExcludeQueries = new HashSet<URI>();
-        Collection<URI> tempIncludeRdfRules = new HashSet<URI>();
-        Collection<URI> tempExcludeRdfRules = new HashSet<URI>();
+//        Collection<URI> tempIncludeProviders = new HashSet<URI>();
+//        Collection<URI> tempExcludeProviders = new HashSet<URI>();
+//        Collection<URI> tempIncludeQueries = new HashSet<URI>();
+//        Collection<URI> tempExcludeQueries = new HashSet<URI>();
+//        Collection<URI> tempIncludeRdfRules = new HashSet<URI>();
+//        Collection<URI> tempExcludeRdfRules = new HashSet<URI>();
         
         for(Statement nextStatement : inputStatements)
         {
@@ -182,27 +182,27 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             }
             else if(nextStatement.getPredicate().equals(getProfileIncludeProviderInProfile()))
             {
-                tempIncludeProviders.add((URI)nextStatement.getObject());
+                this.addIncludeProvider((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProfileExcludeProviderFromProfile()))
             {
-                tempExcludeProviders.add((URI)nextStatement.getObject());
+                this.addExcludeProvider((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProfileIncludeQueryInProfile()))
             {
-                tempIncludeQueries.add((URI)nextStatement.getObject());
+                this.addIncludeQueryType((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProfileExcludeQueryFromProfile()))
             {
-                tempExcludeQueries.add((URI)nextStatement.getObject());
+                this.addExcludeQueryType((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProfileIncludeRdfRuleInProfile()))
             {
-                tempIncludeRdfRules.add((URI)nextStatement.getObject());
+                this.addIncludeRdfRule((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProfileExcludeRdfRuleFromProfile()))
             {
-                tempExcludeRdfRules.add((URI)nextStatement.getObject());
+                this.addExcludeRdfRule((URI)nextStatement.getObject());
             }
             else
             {
@@ -211,13 +211,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         }
         
         this.setProfileAdministrators(tempProfileAdministrators);
-        
-        this.setIncludeProviders(tempIncludeProviders);
-        this.setExcludeProviders(tempExcludeProviders);
-        this.setIncludeQueryTypes(tempIncludeQueries);
-        this.setExcludeQueryTypes(tempExcludeQueries);
-        this.setIncludeRdfRules(tempIncludeRdfRules);
-        this.setExcludeRdfRules(tempExcludeRdfRules);
         
         if(defaultProfileIncludeExcludeOrderValidationFailed)
         {
@@ -754,21 +747,9 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     }
     
     @Override
-    public void setIncludeProviders(Collection<URI> includeProviders)
-    {
-        this.includeProviders = includeProviders;
-    }
-    
-    @Override
     public Collection<URI> getIncludeProviders()
     {
         return includeProviders;
-    }
-    
-    @Override
-    public void setExcludeProviders(Collection<URI> excludeProviders)
-    {
-        this.excludeProviders = excludeProviders;
     }
     
     @Override
@@ -778,21 +759,9 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     }
     
     @Override
-    public void setIncludeQueryTypes(Collection<URI> includeQueries)
-    {
-        this.includeQueries = includeQueries;
-    }
-    
-    @Override
     public Collection<URI> getIncludeQueryTypes()
     {
         return includeQueries;
-    }
-    
-    @Override
-    public void setExcludeQueryTypes(Collection<URI> excludeQueries)
-    {
-        this.excludeQueries = excludeQueries;
     }
     
     @Override
@@ -802,21 +771,9 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     }    
     
     @Override
-    public void setIncludeRdfRules(Collection<URI> includeRdfRules)
-    {
-        this.includeRdfRules = includeRdfRules;
-    }
-    
-    @Override
     public Collection<URI> getIncludeRdfRules()
     {
         return includeRdfRules;
-    }
-    
-    @Override
-    public void setExcludeRdfRules(Collection<URI> excludeRdfRules)
-    {
-        this.excludeRdfRules = excludeRdfRules;
     }
     
     @Override

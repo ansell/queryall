@@ -40,7 +40,7 @@ public class ConfigurationQueryOptions
     
     public ConfigurationQueryOptions(String requestUri, String contextPath, Settings localSettings)
     {
-    	_apiVersion = localSettings.CONFIG_API_VERSION;
+    	_apiVersion = Settings.CONFIG_API_VERSION;
     	
         String requestString = requestUri;
         this.localSettings = localSettings;

@@ -7,6 +7,10 @@ import org.queryall.api.NormalisationRule;
 
 import static org.junit.Assert.*;
 
+/**
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public final class NormalisationRuleTestUtil
 {
     protected final static void testIsUsedInStage(NormalisationRule rule, URI stage, boolean expectedResult)

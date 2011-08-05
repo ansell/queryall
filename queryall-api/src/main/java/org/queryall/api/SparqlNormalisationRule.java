@@ -10,24 +10,24 @@ import org.openrdf.model.URI;
 public interface SparqlNormalisationRule extends NormalisationRule
 {
 
-	public abstract URI getMode();
+	URI getMode();
 
 	/**
 	 * @param mode the mode to set
 	 */
-	public abstract void setMode(URI mode);
+	void setMode(URI mode);
 
-	public abstract String getSparqlConstructQueryTarget();
+	String getSparqlConstructQueryTarget();
 
-	public abstract void setSparqlConstructQueryTarget(String sparqlConstructQueryTarget);
+	void setSparqlConstructQueryTarget(String sparqlConstructQueryTarget);
 
-	public abstract List<String> getSparqlWherePatterns();
+	List<String> getSparqlWherePatterns();
 
-	public abstract void addSparqlWherePattern(String sparqlWherePattern);
+	void addSparqlWherePattern(String sparqlWherePattern);
 
-	public abstract String getSparqlPrefixes();
+	String getSparqlPrefixes();
 
-	public abstract void setSparqlPrefixes(String sparqlPrefixes);
+	void setSparqlPrefixes(String sparqlPrefixes);
 
-	public abstract List<String> getSparqlConstructQueries();
+	List<String> getSparqlConstructQueries();
 }

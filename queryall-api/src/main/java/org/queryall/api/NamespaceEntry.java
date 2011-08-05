@@ -5,35 +5,35 @@ import java.util.Collection;
 
 public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
 {
-    public abstract String getPreferredPrefix();
+    String getPreferredPrefix();
     
-    public abstract void setPreferredPrefix(String preferredPrefix);
+    void setPreferredPrefix(String preferredPrefix);
     
-    public abstract Collection<String> getAlternativePrefixes();
+    Collection<String> getAlternativePrefixes();
     
-    public abstract void setAlternativePrefixes(Collection<String> alternativePrefixes);
+    void setAlternativePrefixes(Collection<String> alternativePrefixes);
     
-    public abstract void setAuthority(String authority);
+    void setAuthority(String authority);
     
-    public abstract String getAuthority();
+    String getAuthority();
     
-    public abstract void setDescription(String description);
+    void setDescription(String description);
     
-    public abstract String getDescription();
+    String getDescription();
     
-    public abstract void setIdentifierRegex(String identifierRegex);
+    void setIdentifierRegex(String identifierRegex);
     
-    public abstract String getIdentifierRegex();
+    String getIdentifierRegex();
 
-    public abstract void setUriTemplate(String uriTemplate);
+    void setUriTemplate(String uriTemplate);
     
-    public abstract String getUriTemplate();
+    String getUriTemplate();
     
-    public abstract void setSeparator(String separator);
+    void setSeparator(String separator);
     
-    public abstract String getSeparator();
+    String getSeparator();
     
-    public abstract void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
+    void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
     
-    public abstract boolean getConvertQueriesToPreferredPrefix();
+    boolean getConvertQueriesToPreferredPrefix();
 }

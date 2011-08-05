@@ -18,8 +18,8 @@ import org.openrdf.repository.RepositoryConnection;
 
 /**
  * A utility class that is used by multiple different Bio2RDF classes
- * @author peter
- * @version $Id: $
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class VoidUtility
 {

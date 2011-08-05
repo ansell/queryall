@@ -5,50 +5,50 @@ public interface RegexNormalisationRule extends NormalisationRule
 
 	// NOTE: it is quite okay to have an empty replace regex, but an empty match
 	// is not considered useful here
-	public abstract boolean hasInputRule();
+	boolean hasInputRule();
 
 	// NOTE: it is quite okay to have an empty replace regex, but an empty match
 	// is not considered useful here
-	public abstract boolean hasOutputRule();
+	boolean hasOutputRule();
 
 	/**
 	 * @param inputMatchRegex the inputMatchRegex to set
 	 */
-	public abstract void setInputMatchRegex(String inputMatchRegex);
+	void setInputMatchRegex(String inputMatchRegex);
 
 	/**
 	 * @return the inputMatchRegex
 	 */
-	public abstract String getInputMatchRegex();
+	String getInputMatchRegex();
 
 	/**
 	 * @param inputReplaceRegex the inputReplaceRegex to set
 	 */
-	public abstract void setInputReplaceRegex(String inputReplaceRegex);
+	void setInputReplaceRegex(String inputReplaceRegex);
 
 	/**
 	 * @return the inputReplaceRegex
 	 */
-	public abstract String getInputReplaceRegex();
+	String getInputReplaceRegex();
 
 	/**
 	 * @param outputMatchRegex the outputMatchRegex to set
 	 */
-	public abstract void setOutputMatchRegex(String outputMatchRegex);
+	void setOutputMatchRegex(String outputMatchRegex);
 
 	/**
 	 * @return the outputMatchRegex
 	 */
-	public abstract String getOutputMatchRegex();
+	String getOutputMatchRegex();
 
 	/**
 	 * @param outputReplaceRegex the outputReplaceRegex to set
 	 */
-	public abstract void setOutputReplaceRegex(String outputReplaceRegex);
+	void setOutputReplaceRegex(String outputReplaceRegex);
 
 	/**
 	 * @return the outputReplaceRegex
 	 */
-	public abstract String getOutputReplaceRegex();
+	String getOutputReplaceRegex();
 
 }

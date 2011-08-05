@@ -13,12 +13,12 @@ public interface ProfilableInterface extends BaseQueryAllInterface
 	/**
 	 * @return A URI indicating whether this object should have include or exclude instructions processed first
 	 */
-    public abstract URI getProfileIncludeExcludeOrder();
+    URI getProfileIncludeExcludeOrder();
 
     /**
      * @param profileIncludeExcludeOrder A URI indicating whether this object should have include or exclude instructions processed first
      */
-    public abstract void setProfileIncludeExcludeOrder(
+    void setProfileIncludeExcludeOrder(
             URI profileIncludeExcludeOrder);
     
     /**
@@ -31,6 +31,6 @@ public interface ProfilableInterface extends BaseQueryAllInterface
      * @param includeNonProfileMatched true if this object should be included even if no profiles matched, and false if there were no matches, including implicit inclusions if they are acceptable
      * @return true if this object should be used and false if it should not
      */
-    public abstract boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions, boolean includeNonProfileMatched);
+    boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions, boolean includeNonProfileMatched);
 
 }

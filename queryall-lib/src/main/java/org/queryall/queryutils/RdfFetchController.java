@@ -136,7 +136,8 @@ public class RdfFetchController
     	return namespaceNotRecognised;
     }
     
-    private void initialise()
+    // Synchronize access to this method to ensure that only one thread tries to setup queryBundles for each controller instance
+    private synchronized void initialise()
     {
         final long start = System.currentTimeMillis();
         
@@ -395,21 +396,25 @@ public class RdfFetchController
                 		Map<String, String> endpointEntries = replacedEndpoints.get(nextEndpoint);
                 		boolean foundAnEndpoint = false;
                 		
-                		for(String replacedEndpoint : endpointEntries.keySet())
+                		for(String nextReplacedEndpoint : endpointEntries.keySet())
                 		{
 			                QueryBundle nextProviderQueryBundle = new QueryBundle();
 			                
-			                nextProviderQueryBundle.setQuery(endpointEntries.get(replacedEndpoint));
+			                nextProviderQueryBundle.setQuery(endpointEntries.get(nextReplacedEndpoint));
 			                nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
-			                nextProviderQueryBundle.setQueryEndpoint(replacedEndpoint);
+			                nextProviderQueryBundle.setQueryEndpoint(nextReplacedEndpoint);
 			                nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
 			                nextProviderQueryBundle.setOriginalProvider(nextProvider);
 			                nextProviderQueryBundle.setQueryType(nextQueryType);
 			                nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
 			                
-			                // Then test whether the endpoint is blacklisted
-			                if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication()) || !localBlacklistController.isUrlBlacklisted(replacedEndpoint))
+			                // Then test whether the endpoint is blacklisted before accepting it
+			                if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication()) || !localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
 			                {
+			                	// setup all of the alternatives replaced endpoints and queries for those endpoints 
+			                	// that we know of as alternatives for this queryBundle so we can use them 
+			                	// if an error occurs with this query bundle
+			                	nextProviderQueryBundle.setAlternativeEndpointsAndQueries(endpointEntries);
 			                	results.add(nextProviderQueryBundle);
 			                	foundAnEndpoint = true;
 			                }

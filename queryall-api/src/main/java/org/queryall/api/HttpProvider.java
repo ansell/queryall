@@ -11,20 +11,20 @@ import java.util.Collection;
  */
 public interface HttpProvider extends Provider
 {
-	public abstract boolean isHttpGetUrl();
+	boolean isHttpGetUrl();
 
-	public abstract boolean hasEndpointUrl();
+	boolean hasEndpointUrl();
 
-	public abstract Collection<String> getEndpointUrls();
+	Collection<String> getEndpointUrls();
 
-	public abstract void setEndpointUrls(Collection<String> endpointUrls);
+	void setEndpointUrls(Collection<String> endpointUrls);
 
-	public abstract void addEndpointUrl(String endpointUrl);
+	void addEndpointUrl(String endpointUrl);
 
-	public abstract String getAcceptHeaderString();
+	String getAcceptHeaderString();
 
-	public abstract void setAcceptHeaderString(String acceptHeaderString);
+	void setAcceptHeaderString(String acceptHeaderString);
 
-	public abstract boolean isHttpPostSparql();
+	boolean isHttpPostSparql();
 
 }

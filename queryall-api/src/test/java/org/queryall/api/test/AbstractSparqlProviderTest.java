@@ -13,6 +13,8 @@ import org.queryall.api.SparqlProvider;
 
 /**
  * Abstract unit test for SparqlProvider API
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractSparqlProviderTest
 {

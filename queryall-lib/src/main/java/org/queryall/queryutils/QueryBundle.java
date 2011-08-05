@@ -1,8 +1,10 @@
 package org.queryall.queryutils;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -49,6 +51,7 @@ public class QueryBundle
 	private boolean redirectRequired = false;
 	
 	private Collection<Profile> relevantProfiles = new HashSet<Profile>();
+	private Map<String, String> alternativeEndpointsAndQueries;
 	
     public static String queryBundleNamespace;
     
@@ -425,4 +428,33 @@ public class QueryBundle
     {
         return relevantProfiles;
     }
+
+    /**
+     * Setup a list of alternative endpoints, along with the queries to use for each of the alternative endpoints
+     * 
+     * @param endpointEntries A map with alternative endpoints as keys and the queries to use as the entries on the map
+     */
+	public void setAlternativeEndpointsAndQueries(Map<String, String> endpointEntries)
+	{
+		this.alternativeEndpointsAndQueries = endpointEntries;
+		
+		// remove self-references here so we don't accidentally recursively call the same provider endpoint
+		if(this.alternativeEndpointsAndQueries.containsKey(this.getQueryEndpoint()) 
+				&& this.alternativeEndpointsAndQueries.get(this.queryEndpoint).equals(this.getQuery()))
+		{
+			this.alternativeEndpointsAndQueries.remove(this.getQueryEndpoint());
+		}
+		
+	}
+
+	/**
+	 * Get an unmodifiable Map containing alternative endpoints as keys and queries as values
+	 * 
+	 * @return An unmodifiable map containing the endpoints and queries that are known to be alternatives 
+	 * to this query bundle and could be used if there was an error with this query bundle
+	 */
+	public Map<String, String> getAlternativeEndpointsAndQueries()
+	{
+		return Collections.unmodifiableMap(alternativeEndpointsAndQueries);
+	}
 }

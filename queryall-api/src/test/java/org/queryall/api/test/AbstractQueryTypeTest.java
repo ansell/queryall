@@ -19,6 +19,7 @@ import org.queryall.api.QueryType;
 /**
  * Abstract unit test for QueryType API
  *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractQueryTypeTest
 {

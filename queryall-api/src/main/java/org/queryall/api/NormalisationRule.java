@@ -8,38 +8,38 @@ import org.queryall.exception.InvalidStageException;
 
 public interface NormalisationRule extends BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
 {
-    public abstract int getOrder();
+    int getOrder();
     
-    public abstract void setOrder(int order);
+    void setOrder(int order);
 
-    public abstract Collection<org.openrdf.model.URI> getValidStages();
+    Collection<org.openrdf.model.URI> getValidStages();
     
-    public abstract void setStages(Collection<org.openrdf.model.URI> stages) throws InvalidStageException;
+    void setStages(Collection<org.openrdf.model.URI> stages) throws InvalidStageException;
 
-    public abstract void addStage(org.openrdf.model.URI stage) throws InvalidStageException;
+    void addStage(org.openrdf.model.URI stage) throws InvalidStageException;
     
-    public abstract boolean validInStage(org.openrdf.model.URI stage);
+    boolean validInStage(org.openrdf.model.URI stage);
 
-    public abstract boolean usedInStage(org.openrdf.model.URI stage);
+    boolean usedInStage(org.openrdf.model.URI stage);
 
-    public abstract Collection<org.openrdf.model.URI> getStages();
+    Collection<org.openrdf.model.URI> getStages();
     
-    public abstract String getDescription();
+    String getDescription();
     
-    public abstract Object normaliseByStage(org.openrdf.model.URI stage, Object input);
+    Object normaliseByStage(org.openrdf.model.URI stage, Object input);
     
-    public abstract Object stageQueryVariables(Object input);
+    Object stageQueryVariables(Object input);
         
-    public abstract Object stageAfterQueryCreation(Object input);
+    Object stageAfterQueryCreation(Object input);
 
-    public abstract Object stageAfterQueryParsing(Object input);
+    Object stageAfterQueryParsing(Object input);
 
-    public abstract Object stageBeforeResultsImport(Object input);
+    Object stageBeforeResultsImport(Object input);
 
-    public abstract Object stageAfterResultsImport(Object input);
+    Object stageAfterResultsImport(Object input);
 
-    public abstract Object stageAfterResultsToPool(Object input);
+    Object stageAfterResultsToPool(Object input);
 
-    public abstract Object stageAfterResultsToDocument(Object input);
+    Object stageAfterResultsToDocument(Object input);
     
 }

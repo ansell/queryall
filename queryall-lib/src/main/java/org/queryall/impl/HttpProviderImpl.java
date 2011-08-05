@@ -25,8 +25,7 @@ import org.queryall.helpers.RdfUtils;
 import org.queryall.helpers.Settings;
 
 /**
- * @author karina
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class HttpProviderImpl extends ProviderImpl implements
 		HttpProvider , SparqlProvider

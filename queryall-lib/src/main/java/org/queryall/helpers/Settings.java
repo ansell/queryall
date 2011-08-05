@@ -58,7 +58,6 @@ import org.queryall.statistics.StatisticsEntry;
  * A class used to get access to settings
  * 
  * @author Peter Ansell p_ansell@yahoo.com
- * @version $Id: $
  */
 public class Settings implements QueryAllConfiguration
 {
