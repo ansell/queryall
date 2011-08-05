@@ -312,7 +312,38 @@ public abstract class AbstractQueryTypeTest
         testNamespaceUri5 = null;
         testFalseNamespaceUri = null;        
 
+        namespacesFalse = null;
+        namespaces12345AndFalse = null;
+        namespaces12345 = null;
+        namespaces123 = null;
+        namespaces1orFalse = null;
+        namespaces1and2orFalse = null;
+        namespaces12 = null;
+        namespaces34 = null;
+        namespaces45 = null;
+
         queryTypePublicIdentifiers = null;
+
+        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
+        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
+        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = null;
+        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = null;
+        
+        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
+        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
+        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = null;
+        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = null;
+        
+        queryType123NamespacesMatchMethodAll = null;
+        queryType12345NamespacesMatchMethodAll = null;
+        queryTypeNoNamespacesMatchMethodAll = null;
+
+        queryType123NamespacesMatchMethodAny = null;
+        queryType12345NamespacesMatchMethodAny = null;
+        queryTypeNoNamespacesMatchMethodAny = null;
+        
+        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = null;
+        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = null;
     }
 
     /**
