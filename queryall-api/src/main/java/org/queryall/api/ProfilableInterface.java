@@ -6,6 +6,7 @@ import org.openrdf.model.URI;
 
 /**
  * This interface provides the basis for profiles to be used to include or exclude objects
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface ProfilableInterface extends BaseQueryAllInterface

@@ -4,6 +4,9 @@ import java.util.Collection;
 
 import org.openrdf.model.URI;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface
 {
     boolean getIsDefaultSource();

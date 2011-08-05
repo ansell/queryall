@@ -2,7 +2,9 @@ package org.queryall.api;
 
 import java.util.Collection;
 
-
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
 {
     int getOrder();
@@ -25,7 +27,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
 
     boolean getAllowImplicitRdfRuleInclusions();
     
-    void setProfileAdministrators(Collection<org.openrdf.model.URI> profileAdministrators);
+    void addProfileAdministrator(org.openrdf.model.URI profileAdministrator);
     
     Collection<org.openrdf.model.URI> getProfileAdministrators();
     

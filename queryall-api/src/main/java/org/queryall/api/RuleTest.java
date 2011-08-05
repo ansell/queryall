@@ -2,6 +2,9 @@ package org.queryall.api;
 
 import java.util.Collection;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>
 {
     Collection<org.openrdf.model.URI> getRuleUris();

@@ -6,6 +6,9 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Statement;
 import java.util.Collection;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface BaseQueryAllInterface
 {
     /**

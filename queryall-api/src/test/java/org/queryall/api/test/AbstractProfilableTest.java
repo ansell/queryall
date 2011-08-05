@@ -180,7 +180,7 @@ public abstract class AbstractProfilableTest
     
     /**
      * This method must be overridden to return a new instance of 
-     * the implemented Provider class for each successive invocation
+     * the implemented ProfilableInterface for each successive invocation
      */
     public abstract ProfilableInterface getNewTestProfilable();
     

@@ -5,6 +5,9 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface QueryAllConfiguration 
 {
 	String getNamespaceForStatistics();

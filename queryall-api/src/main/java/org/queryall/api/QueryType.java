@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
     String getInputRegex();

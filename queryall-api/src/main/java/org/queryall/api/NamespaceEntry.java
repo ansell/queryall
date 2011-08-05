@@ -1,8 +1,10 @@
 package org.queryall.api;
 
-
 import java.util.Collection;
 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
 {
     String getPreferredPrefix();

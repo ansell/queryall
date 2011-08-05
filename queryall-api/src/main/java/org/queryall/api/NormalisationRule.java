@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import org.queryall.exception.InvalidStageException;
 
-
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface NormalisationRule extends BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
 {
     int getOrder();

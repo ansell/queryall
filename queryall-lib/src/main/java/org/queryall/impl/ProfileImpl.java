@@ -48,7 +48,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     private boolean allowImplicitProviderInclusions = false;
     private boolean allowImplicitRdfRuleInclusions = false;
     
-    private URI defaultProfileIncludeExcludeOrder = ProfileImpl.getProfileIncludeThenExcludeUri();
+    private URI defaultProfileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     
     private Collection<URI> profileAdministrators = new HashSet<URI>();
     
@@ -116,16 +116,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
 	{
     	boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
 
-    	// TODO: Remove these temporary collections and replace with .add methods instead of .set
-        Collection<URI> tempProfileAdministrators = new HashSet<URI>();
-        
-//        Collection<URI> tempIncludeProviders = new HashSet<URI>();
-//        Collection<URI> tempExcludeProviders = new HashSet<URI>();
-//        Collection<URI> tempIncludeQueries = new HashSet<URI>();
-//        Collection<URI> tempExcludeQueries = new HashSet<URI>();
-//        Collection<URI> tempIncludeRdfRules = new HashSet<URI>();
-//        Collection<URI> tempExcludeRdfRules = new HashSet<URI>();
-        
         for(Statement nextStatement : inputStatements)
         {
             if(_DEBUG)
@@ -157,7 +147,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             }
             else if(nextStatement.getPredicate().equals(getProfileAdministratorUri()))
             {
-                tempProfileAdministrators.add((URI)nextStatement.getObject());
+                this.addProfileAdministrator((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(getProfileDefaultIncludeExcludeOrderUri()))
             {
@@ -209,8 +199,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
-        
-        this.setProfileAdministrators(tempProfileAdministrators);
         
         if(defaultProfileIncludeExcludeOrderValidationFailed)
         {
@@ -615,6 +603,18 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         if (this.getOrder() > otherProfile.getOrder()) 
             return AFTER;
 
+        if(this.getKey() == null)
+        {
+            if(otherProfile.getKey() == null)
+            {
+                return EQUAL;
+            }
+            else
+            {
+                return BEFORE;
+            }
+        }
+        
         return this.getKey().stringValue().compareTo(otherProfile.getKey().stringValue());
     }
 
@@ -735,9 +735,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     }
     
     @Override
-    public void setProfileAdministrators(Collection<URI> profileAdministrators)
+    public void addProfileAdministrator(URI profileAdministrator)
     {
-        this.profileAdministrators = profileAdministrators;
+        if(this.profileAdministrators == null)
+        {
+            this.profileAdministrators = new LinkedList<URI>();
+        }
+        
+        this.profileAdministrators.add(profileAdministrator);
     }
     
     @Override

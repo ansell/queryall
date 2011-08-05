@@ -23,6 +23,7 @@ import org.queryall.exception.InvalidStageException;
 
 /**
  * Abstract unit test for NormalisationRule API
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractNormalisationRuleTest

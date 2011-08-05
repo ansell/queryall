@@ -6,8 +6,7 @@ package org.queryall.api;
 import java.util.Collection;
 
 /**
- * @author karina
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface HttpProvider extends Provider
 {
