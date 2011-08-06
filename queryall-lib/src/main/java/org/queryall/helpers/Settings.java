@@ -23,7 +23,6 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryConnection;
@@ -518,7 +517,7 @@ public class Settings implements QueryAllConfiguration
         
         try
         {
-            Map<URI, NamespaceEntry> results = getNamespaceEntries(getServerConfigurationRdf());
+            Map<URI, NamespaceEntry> results = RdfUtils.getNamespaceEntries(getServerConfigurationRdf());
             
             if(_INFO)
             {
@@ -604,7 +603,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Repository myRepository = getServerConfigurationRdf();
             
-            Map<URI, NormalisationRule> results = getNormalisationRules(myRepository);
+            Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(myRepository);
             
             if(_INFO)
             {
@@ -636,7 +635,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Repository myRepository = getServerConfigurationRdf();
             
-            Map<URI, Profile> results = getProfiles(myRepository);
+            Map<URI, Profile> results = RdfUtils.getProfiles(myRepository);
             
             if(_INFO)
             {
@@ -669,7 +668,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Repository myRepository = this.getServerConfigurationRdf();
             
-            results = getProviders(myRepository);
+            results = RdfUtils.getProviders(myRepository);
             
             if(results != null)
             {
@@ -703,7 +702,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Repository myRepository = getServerConfigurationRdf();
             
-            Map<URI, QueryType> results = getQueryTypes(myRepository);
+            Map<URI, QueryType> results = RdfUtils.getQueryTypes(myRepository);
             
             if(_INFO)
             {
@@ -734,7 +733,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Repository myRepository = getServerConfigurationRdf();
             
-            Map<URI, RuleTest> results = getRuleTests(myRepository);
+            Map<URI, RuleTest> results = RdfUtils.getRuleTests(myRepository);
             
             if(_INFO)
             {
@@ -966,55 +965,7 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
     
-    @Override
-	public Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
-    {
-        final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getNamespaceEntries: started parsing namespace entry configurations");
-        }
-        final long start = System.currentTimeMillis();
-
-        final URI namespaceEntryTypeUri = NamespaceEntryImpl.getNamespaceTypeUri();
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-
-            for(Statement nextNamespaceEntry : con.getStatements(null, RDF.TYPE, namespaceEntryTypeUri, true).asList())
-            {
-            	URI nextSubjectUri = (URI)nextNamespaceEntry.getSubject();
-            	results.put(nextSubjectUri, new NamespaceEntryImpl(
-            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-            			nextSubjectUri, 
-            			Settings.CONFIG_API_VERSION));
-            }                
-        }
-        catch (final OpenRDFException e)
-        {
-            // handle exception
-            Settings.log.fatal("Settings.getNamespaceEntries:", e);
-        }
-
-        
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getNamespaceEntries", (end - start)));
-        }
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getNamespaceEntries: finished getting namespace entry information");
-        }
-        
-        return results;
-    }
-    
-    /**
+	/**
 	 * @return the current_RDF_NAMESPACEENTRY_NAMESPACE
 	 */
 	@Override
@@ -1128,86 +1079,7 @@ public class Settings implements QueryAllConfiguration
         	return Collections.unmodifiableCollection(results);
     }
     
-    @Override
-	public Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository)
-    {
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getNormalisationRules: started parsing rdf normalisation rules");
-        }
-
-        final long start = System.currentTimeMillis();
-
-        final Map<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
-        try
-        {
-            final Repository configRepository = this.getServerConfigurationRdf();
-            
-            // TODO: use reflection and dynamic loading of rules classes to make this process generic and static to future additions
-            try
-            {
-                final RepositoryConnection con = configRepository.getConnection();
-
-                // Import Regular Expression Normalisation Rules first
-                final URI regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri();
-                for(Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri, true).asList())
-                {
-                	URI nextSubjectUri = (URI)nextRegexRule.getSubject();
-                	results.put(nextSubjectUri, new RegexNormalisationRuleImpl(
-                			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-                			nextSubjectUri, 
-                			Settings.CONFIG_API_VERSION));
-                }                
-
-        		// Then do the same thing for SPARQL Normalisation Rules
-                final URI sparqlRuleTypeUri = SparqlNormalisationRuleImpl.getSparqlRuleTypeUri();
-                for(Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri, true).asList())
-                {
-                	URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
-                	results.put(nextSubjectUri, new SparqlNormalisationRuleImpl(
-                			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-                			nextSubjectUri, 
-                			Settings.CONFIG_API_VERSION));
-                }                
-
-                // Then do the same thing for XSLT Normalisation Rules
-                final URI xsltRuleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri();
-                for(Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri, true).asList())
-                {
-                	URI nextSubjectUri = (URI)nextXsltRule.getSubject();
-                	results.put(nextSubjectUri, new XsltNormalisationRuleImpl(
-                			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-                			nextSubjectUri, 
-                			Settings.CONFIG_API_VERSION));
-                }
-            }
-            catch (final OpenRDFException e)
-            {
-                // handle exception
-                Settings.log.fatal("Settings.getNormalisationRules:", e);
-            }
-        }
-        catch(java.lang.InterruptedException ie)
-        {
-            Settings.log.fatal("Settings.getNormalisationRules: caught java.lang.InterruptedException: not throwing it.", ie);
-        }
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getNormalisationRules", (end - start)));
-        }
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getNormalisationRules: finished parsing normalisation rules");
-        }
-        
-        return results;
-    }
-    
-    public List<NormalisationRule> getNormalisationRulesForUris(
+	public List<NormalisationRule> getNormalisationRulesForUris(
             Collection<URI> rdfNormalisationsNeeded, int sortOrder)
     {
         final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
@@ -1357,104 +1229,7 @@ public class Settings implements QueryAllConfiguration
         return Pattern.compile(this.getStringProperty("plainNamespaceRegex", ""));
     }
     
-    @Override
-	public Map<URI, Profile> getProfiles(Repository myRepository)
-    {
-    	final Map<URI, Profile> results = new Hashtable<URI, Profile>();
-        
-    	if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getProfiles: started parsing profile configurations");
-        }
-        final long start = System.currentTimeMillis();
-
-        final URI profileTypeUri = ProfileImpl.getProfileTypeUri();
-
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, profileTypeUri, true).asList())
-            {
-            	URI nextSubjectUri = (URI)nextProvider.getSubject();
-            	results.put(nextSubjectUri, new ProfileImpl(
-            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-            			nextSubjectUri, 
-            			Settings.CONFIG_API_VERSION));
-            }                
-        }
-        catch (final OpenRDFException e)
-        {
-            // handle exception
-            Settings.log.fatal("Settings.getProviders:", e);
-        }
-
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getProfiles", (end - start)));
-        }
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getProfiles: finished parsing profiles");
-        }
-        
-        return results;
-    }
-
-    @Override
-	public Map<URI, Provider> getProviders(Repository myRepository)
-    {
-        final Map<URI, Provider> results = new Hashtable<URI, Provider>();
-
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getProviders: started parsing provider configurations");
-        }
-        final long start = System.currentTimeMillis();
-
-        // TODO: HACK: treat all providers as HttpProviderImpl for now
-        final URI providerTypeUri = ProviderImpl.getProviderTypeUri();
-        
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList())
-            {
-            	URI nextSubjectUri = (URI)nextProvider.getSubject();
-            	results.put(nextSubjectUri, new HttpProviderImpl(
-            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-            			nextSubjectUri, 
-            			Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch (final OpenRDFException e)
-        {
-            // handle exception
-            Settings.log.fatal("Settings.getProviders:", e);
-        }
-
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getProviders", (end - start)));
-        }
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getProviders: finished parsing provider configurations");
-        }
-        
-        return results;
-    }
-
-    public Collection<Provider> getProvidersForNamespaceUris(
+	public Collection<Provider> getProvidersForNamespaceUris(
             Collection<Collection<URI>> namespaceUris, URI namespaceMatchMethod)
     {
         if((namespaceUris == null) || (namespaceUris.size() == 0))
@@ -1602,54 +1377,7 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
 
-    @Override
-	public Map<URI, QueryType> getQueryTypes(Repository myRepository)
-    {
-        final Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
-        final long start = System.currentTimeMillis();
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getQueryTypes: started parsing query types");
-        }
-
-        final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
-
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-
-            for(Statement nextQueryType : con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList())
-            {
-            	URI nextSubjectUri = (URI)nextQueryType.getSubject();
-            	results.put(nextSubjectUri, new QueryTypeImpl(
-            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-            			nextSubjectUri, 
-            			Settings.CONFIG_API_VERSION));
-            }                
-        }
-        catch (final OpenRDFException e)
-        {
-            // handle exception
-            Settings.log.fatal("Settings.getQueryTypes:", e);
-        }
-
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getQueryTypes", (end - start)));
-        }
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getQueryTypes: finished parsing query types");
-        }
-        
-        return results;
-    }
-
-    public Collection<QueryType> getQueryTypesByUri(URI queryTypeUri)
+	public Collection<QueryType> getQueryTypesByUri(URI queryTypeUri)
     {
         final Collection<QueryType> results = new HashSet<QueryType>();
         for(final QueryType nextQueryType : this.getAllQueryTypes().values())
@@ -1716,54 +1444,6 @@ public class Settings implements QueryAllConfiguration
                 }
             }
         }
-        return results;
-    }
-        
-    @Override
-    public Map<URI, RuleTest> getRuleTests(Repository myRepository)
-    {
-        final Map<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getRuleTests: started parsing rule test configurations");
-        }
-        final long start = System.currentTimeMillis();
-        
-        final URI ruleTestTypeUri = RuleTestImpl.getRuletestTypeUri();
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
-            {
-            	URI nextSubjectUri = (URI)nextProvider.getSubject();
-            	results.put(nextSubjectUri, new RuleTestImpl(
-            			con.getStatements(nextSubjectUri, (URI) null, (Value) null, true).asList(), 
-            			nextSubjectUri, 
-            			Settings.CONFIG_API_VERSION));
-            }                
-        }
-        catch (final OpenRDFException e)
-        {
-            // handle exception
-            Settings.log.fatal("Settings.getRuleTests:", e);
-        }
-
-
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d",
-                    "Settings.getRuleTests", (end - start)));
-        }
-        if(Settings._DEBUG)
-        {
-            Settings.log
-                    .debug("Settings.getRuleTests: finished getting rdf rule tests");
-        }
-        
         return results;
     }
         

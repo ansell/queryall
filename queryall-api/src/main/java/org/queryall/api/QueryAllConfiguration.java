@@ -3,7 +3,6 @@ package org.queryall.api;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.openrdf.repository.Repository;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -81,19 +80,5 @@ public interface QueryAllConfiguration
 	Map<URI, QueryType> getAllQueryTypes();
 
 	Map<URI, RuleTest> getAllRuleTests();
-
-
-	
-	Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository);
-
-	Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository);
-
-	Map<URI, Profile> getProfiles(Repository myRepository);
-
-    Map<URI, Provider> getProviders(Repository myRepository);
-
-	Map<URI, QueryType> getQueryTypes(Repository myRepository);
-
-	Map<URI, RuleTest> getRuleTests(Repository myRepository);
 
 }
