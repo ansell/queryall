@@ -492,7 +492,12 @@ public class Settings implements QueryAllConfiguration
     @Override
 	public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
-        if(this.cachedNamespaceEntries != null)
+    	return getAllNamespaceEntries(true);
+    }
+    
+	public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries(boolean useCache)
+    {
+        if(useCache && this.cachedNamespaceEntries != null)
         {
             return this.cachedNamespaceEntries;
         }
@@ -578,7 +583,12 @@ public class Settings implements QueryAllConfiguration
     @Override
 	public synchronized Map<URI, NormalisationRule> getAllNormalisationRules()
     {
-        if(this.cachedNormalisationRules != null)
+    	return getAllNormalisationRules(true);
+    }
+    
+	public synchronized Map<URI, NormalisationRule> getAllNormalisationRules(boolean useCache)
+	{    
+        if(useCache && this.cachedNormalisationRules != null)
         {
             return this.cachedNormalisationRules;
         }
@@ -608,6 +618,11 @@ public class Settings implements QueryAllConfiguration
     
     @Override
 	public synchronized Map<URI, Profile> getAllProfiles()
+    {
+    	return getAllProfiles(true);
+    }
+    
+	public synchronized Map<URI, Profile> getAllProfiles(boolean useCache)
     {
         if(this.cachedProfiles != null)
         {
@@ -641,7 +656,12 @@ public class Settings implements QueryAllConfiguration
     @Override
 	public synchronized Map<URI, Provider> getAllProviders()
     {
-        if(this.cachedProviders != null)
+    	return getAllProviders(true);
+    }
+    
+	public synchronized Map<URI, Provider> getAllProviders(boolean useCache)
+    {
+        if(useCache && this.cachedProviders != null)
         {
             return this.cachedProviders;
         }
@@ -677,7 +697,12 @@ public class Settings implements QueryAllConfiguration
     @Override
 	public synchronized Map<URI, QueryType> getAllQueryTypes()
     {
-        if(this.cachedCustomQueries != null)
+    	return getAllQueryTypes(true);
+    }
+    
+	public synchronized Map<URI, QueryType> getAllQueryTypes(boolean useCache)
+    {
+        if(useCache && this.cachedCustomQueries != null)
         {
             return this.cachedCustomQueries;
         }
@@ -708,7 +733,12 @@ public class Settings implements QueryAllConfiguration
     @Override
 	public synchronized Map<URI, RuleTest> getAllRuleTests()
     {
-        if(this.cachedRuleTests != null)
+    	return getAllRuleTests(true);
+    }
+    
+	public synchronized Map<URI, RuleTest> getAllRuleTests(boolean useCache)
+    {
+        if(useCache && this.cachedRuleTests != null)
         {
             return this.cachedRuleTests;
         }
@@ -1973,7 +2003,7 @@ public class Settings implements QueryAllConfiguration
         {
             try
             {
-                results = getValueProperties(subjectUri, propertyUri, getWebAppConfigurationRdf());
+                results = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(getWebAppConfigurationRdf(), propertyUri, subjectUri);
             
                 if(results != null)
                 {
@@ -1984,22 +2014,10 @@ public class Settings implements QueryAllConfiguration
             {
                 throw new RuntimeException(ex);
             }
-        }
-        
-        return results;
-    }
-
-	private Collection<Value> getValueProperties(URI subjectUri, URI propertyUri, Repository nextRepository)
-    {
-        Collection<Value> results = new HashSet<Value>();
-        
-        try
-        {
-            results = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, propertyUri, subjectUri);
-        }
-        catch(Exception ex)
-        {
-            Settings.log.error("this.getValueCollectionPropertiesFromConfig: error", ex);
+			catch(OpenRDFException ex)
+			{
+				throw new RuntimeException(ex);
+			}
         }
         
         return results;
@@ -2049,11 +2067,9 @@ public class Settings implements QueryAllConfiguration
             
             URI activeWebappConfigsUri = f.createURI("http://purl.org/queryall/webapp_configuration:activeWebappConfigs");
             
-            Collection<Value> webappConfigFiles = getValueProperties(
-            		subjectConfigUri, webappConfigLocationsUri, nextBaseConfigurationRepository);
+            Collection<Value> webappConfigFiles = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository, webappConfigLocationsUri, subjectConfigUri);
 
-            Collection<Value> activeWebappConfigs = getValueProperties(
-            		subjectConfigUri, activeWebappConfigsUri, nextBaseConfigurationRepository);
+            Collection<Value> activeWebappConfigs = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository, activeWebappConfigsUri, subjectConfigUri);
             
             Collection<String> tempCollection = new HashSet<String>();
 			
