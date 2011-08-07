@@ -14,6 +14,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.SparqlProvider;
 import org.queryall.helpers.Constants;
@@ -71,7 +72,7 @@ public class QueryCreator
             List<Profile> includedProfiles, 
             boolean recogniseImplicitRdfRuleInclusions, 
             boolean includeNonProfileMatchedRdfRules,
-            Settings localSettings)
+            QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -109,7 +110,7 @@ public class QueryCreator
             List<Profile> includedProfiles, 
             boolean recogniseImplicitRdfRuleInclusions, 
             boolean includeNonProfileMatchedRdfRules,
-            Settings localSettings)
+            QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -143,7 +144,7 @@ public class QueryCreator
             List<Profile> includedProfiles, 
             boolean recogniseImplicitRdfRuleInclusions, 
             boolean includeNonProfileMatchedRdfRules,
-            Settings localSettings)
+            QueryAllConfiguration localSettings)
     {
         if(QueryCreator._DEBUG)
         {
@@ -156,11 +157,12 @@ public class QueryCreator
                             + normalisationUrisNeeded);
         }
         
-        if(!localSettings.getTagPattern().matcher(templateString).matches())
+        // FIXME: move tag pattern to another class to avoid the cast here
+        if(!((Settings) localSettings).getTagPattern().matcher(templateString).matches())
         {
         	if(_DEBUG)
             {
-            	log.debug("tag pattern " + localSettings.getTagPattern().toString() + " does not match template string=" + templateString);
+            	log.debug("tag pattern " + ((Settings) localSettings).getTagPattern().toString() + " does not match template string=" + templateString);
             	log.debug("returning templateString unchanged");
             }
         	
@@ -1155,7 +1157,7 @@ public class QueryCreator
      */
     public static Map<String, String> getAttributeListFor(
             QueryType nextIncludedQueryType, Provider nextProvider,
-            String queryString, String nextEndpoint, String realHostName, int pageOffset, Settings localSettings)
+            String queryString, String nextEndpoint, String realHostName, int pageOffset, QueryAllConfiguration localSettings)
     {
         if(QueryCreator._DEBUG)
         {
@@ -1178,7 +1180,8 @@ public class QueryCreator
         	attributeList.put(Constants.TEMPLATE_KEY_INCLUDED_QUERY_TYPE, nextIncludedQueryType.getKey().stringValue());
         
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringProperty("hostName", ""));
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
+        // TODO: avoid cast here
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, ((Settings) localSettings).getDefaultHostAddress());
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringProperty("separator", ""));
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
         attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryString);
@@ -1212,8 +1215,9 @@ public class QueryCreator
         
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
                 .percentEncode(localSettings.getStringProperty("hostName", "")));
+        // TODO: avoid cast here
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS, StringUtils
-                .percentEncode(localSettings.getDefaultHostAddress()));
+                .percentEncode(((Settings) localSettings).getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
                 .percentEncode(localSettings.getStringProperty("separator", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils
@@ -1630,7 +1634,7 @@ public class QueryCreator
             List<Profile> includedProfiles, 
             boolean recogniseImplicitRdfRuleInclusions, 
             boolean includeNonProfileMatchedRdfRules,
-            Settings localSettings)
+            QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         

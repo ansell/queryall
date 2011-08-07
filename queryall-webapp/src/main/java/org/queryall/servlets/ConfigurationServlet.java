@@ -12,6 +12,7 @@ import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.blacklist.*;
@@ -48,7 +49,7 @@ public class ConfigurationServlet extends HttpServlet
                         HttpServletResponse response)
         throws ServletException, IOException 
     {
-        Settings localSettings = Settings.getSettings();
+    	QueryAllConfiguration localSettings = Settings.getSettings();
         BlacklistController localBlacklistController = BlacklistController.getDefaultController();
         
         if(_INFO)
@@ -74,9 +75,10 @@ public class ConfigurationServlet extends HttpServlet
 
         if(requestConfigurationQueryOptions.isRefresh())
         {
-            if(localSettings.isManualRefreshAllowed())
+        	// TODO: avoid cast here
+            if(((Settings) localSettings).isManualRefreshAllowed())
             {
-                if(localSettings.configRefreshCheck(true))
+                if(((Settings) localSettings).configRefreshCheck(true))
                 {
                     localBlacklistController.doBlacklistExpiry();
                     
@@ -147,7 +149,8 @@ public class ConfigurationServlet extends HttpServlet
             writerFormat = Rio.getWriterFormatForMIMEType(writerFormatString);
         }
 
-        localSettings.configRefreshCheck(false);
+        // TODO: avoid cast here
+        ((Settings) localSettings).configRefreshCheck(false);
         
         response.setContentType(requestedContentType);
         response.setCharacterEncoding("UTF-8");

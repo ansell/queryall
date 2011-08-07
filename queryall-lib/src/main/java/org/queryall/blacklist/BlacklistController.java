@@ -17,8 +17,10 @@ import org.queryall.queryutils.RdfFetcherQueryRunnable;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.queryutils.QueryDebug;
 import org.queryall.statistics.StatisticsEntry;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.helpers.ListUtils;
+import org.queryall.helpers.QueryTypeUtils;
 import org.queryall.helpers.Settings;
 
 /**
@@ -219,7 +221,7 @@ public class BlacklistController
     }
     
     public synchronized void accumulateQueryDebug(
-            QueryDebug nextQueryObject, Settings localSettings, long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints, boolean automaticallyBlacklistClients, int blacklistMinimumQueriesBeforeBlacklistRules, int blacklistClientMaxQueriesPerPeriod)
+            QueryDebug nextQueryObject, QueryAllConfiguration localSettings, long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints, boolean automaticallyBlacklistClients, int blacklistMinimumQueriesBeforeBlacklistRules, int blacklistClientMaxQueriesPerPeriod)
     {
         if(automaticallyBlacklistClients)
         {
@@ -417,7 +419,7 @@ public class BlacklistController
         return neededToExpire;
     }
     
-    public void evaluateClientBlacklist(Settings localSettings, boolean automaticallyBlacklistClients, int blacklistMinimumQueriesBeforeBlacklistRules, float blacklistPercentageOfRobotTxtQueriesBeforeAutomatic, int blacklistClientMaxQueriesPerPeriod)
+    public void evaluateClientBlacklist(QueryAllConfiguration localSettings, boolean automaticallyBlacklistClients, int blacklistMinimumQueriesBeforeBlacklistRules, float blacklistPercentageOfRobotTxtQueriesBeforeAutomatic, int blacklistClientMaxQueriesPerPeriod)
     {
         if(automaticallyBlacklistClients)
         {
@@ -439,7 +441,7 @@ public class BlacklistController
                         
                         for(final URI nextQueryDebugTitle : nextQueryDebug.getMatchingQueryTitles())
                         {
-                            for(final QueryType nextQueryDebugType : localSettings.getQueryTypesByUri(nextQueryDebugTitle))
+                            for(final QueryType nextQueryDebugType : QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextQueryDebugTitle))
                             {
                                 if(nextQueryDebugType.getInRobotsTxt())
                                 {

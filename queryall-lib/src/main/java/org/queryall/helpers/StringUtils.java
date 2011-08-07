@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
+import org.queryall.api.QueryAllConfiguration;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -375,22 +376,22 @@ public class StringUtils
         }
     }
 
-    public static boolean isPlainNamespaceAndIdentifier(String queryString, Settings localSettings)
+    public static boolean isPlainNamespaceAndIdentifier(String queryString, QueryAllConfiguration localSettings)
     {
         return localSettings.getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
     }
 
-    public static boolean isPlainNamespace(String queryString, Settings localSettings)
+    public static boolean isPlainNamespace(String queryString, QueryAllConfiguration localSettings)
     {
         return localSettings.getPlainNamespacePattern().matcher(queryString).find();
     }
 
-    public static List<String> getNamespaceAndIdentifier(String nsAndId, Settings localSettings)
+    public static List<String> getNamespaceAndIdentifier(String nsAndId, QueryAllConfiguration localSettings)
     {
         return matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(), localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", ""), nsAndId);
     }
 
-    public static List<String> getNamespaceAndIdentifierFromUri(String nextUri, Settings localSettings)
+    public static List<String> getNamespaceAndIdentifierFromUri(String nextUri, QueryAllConfiguration localSettings)
     {
         if(nextUri.startsWith(localSettings.getDefaultHostAddress()))
         {

@@ -340,7 +340,7 @@ public class NamespaceProvidersServlet extends HttpServlet
         {
             for(URI nextUniqueQueryTitle : providersByQueryKey.keySet())
             {
-                Collection<QueryType> queriesForNextTitle = localSettings.getQueryTypesByUri(nextUniqueQueryTitle);
+                Collection<QueryType> queriesForNextTitle = QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextUniqueQueryTitle);
                 
                 if(queriesForNextTitle.size() == 0)
                 {

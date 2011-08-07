@@ -2,7 +2,9 @@ package org.queryall.api;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 
 /**
@@ -107,5 +109,17 @@ public interface QueryAllConfiguration
 	public abstract float getFloatProperty(String key, float defaultValue);
 
 	Map<String, Collection<URI>> getNamespacePrefixesToUris();
+
+	Collection<URI> getURIProperties(String string);
+
+	String getDefaultHostAddress();
+
+	Pattern getPlainNamespacePattern();
+
+	Pattern getPlainNamespaceAndIdentifierPattern();
+
+	Collection<String> getStringProperties(String string);
+
+	Collection<Statement> getStatementProperties(String string);
 	
 }

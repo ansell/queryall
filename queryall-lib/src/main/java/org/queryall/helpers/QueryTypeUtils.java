@@ -82,6 +82,19 @@ public final class QueryTypeUtils
 	    }
 	    return results;
 	}
+
+	public static Collection<QueryType> getQueryTypesByUri(Map<URI, QueryType> allQueryTypes, URI queryTypeUri)
+	{
+	    final Collection<QueryType> results = new HashSet<QueryType>();
+	    for(final QueryType nextQueryType : allQueryTypes.values())
+	    {
+	        if(nextQueryType.getKey().equals(queryTypeUri))
+	        {
+	            results.add(nextQueryType);
+	        }
+	    }
+	    return results;
+	}
 	
 	
 	

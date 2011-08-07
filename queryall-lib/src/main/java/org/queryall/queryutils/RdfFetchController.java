@@ -50,7 +50,7 @@ public class RdfFetchController
     private BlacklistController localBlacklistController;
 	private boolean namespaceNotRecognised = false;
     
-    public RdfFetchController(Settings settingsClass, BlacklistController localBlacklistController, Collection<QueryBundle> nextQueryBundles)
+    public RdfFetchController(QueryAllConfiguration settingsClass, BlacklistController localBlacklistController, Collection<QueryBundle> nextQueryBundles)
     {
         localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -59,7 +59,7 @@ public class RdfFetchController
         initialise();
     }
     
-    public RdfFetchController( Settings settingsClass, BlacklistController localBlacklistController, String nextQueryString, List<Profile> nextIncludedSortedProfiles, boolean nextUseDefaultProviders, String nextRealHostName, int nextPageOffset, String nextReturnFileFormat )
+    public RdfFetchController( QueryAllConfiguration settingsClass, BlacklistController localBlacklistController, String nextQueryString, List<Profile> nextIncludedSortedProfiles, boolean nextUseDefaultProviders, String nextRealHostName, int nextPageOffset, String nextReturnFileFormat )
     {
         localSettings  = settingsClass;
         this.localBlacklistController = localBlacklistController;        
@@ -220,7 +220,7 @@ public class RdfFetchController
                 }
                 
                 Collection<QueryBundle> queryBundlesForQueryType = this.generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
-                        chosenProviders, localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true), (Settings) localSettings);
+                        chosenProviders, localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true), localSettings);
                 
                 if(_DEBUG)
                 {
@@ -286,7 +286,7 @@ public class RdfFetchController
      * @param chosenProviders
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
-            QueryType nextQueryType, Collection<Provider> chosenProviders, boolean useAllEndpointsForEachProvider, Settings localSettings)
+            QueryType nextQueryType, Collection<Provider> chosenProviders, boolean useAllEndpointsForEachProvider, QueryAllConfiguration localSettings)
     {
         Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
@@ -304,7 +304,7 @@ public class RdfFetchController
                 for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
                 {
                     // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
+                    Collection<QueryType> allCustomRdfXmlIncludeTypes = QueryTypeUtils.getQueryTypesByUri( localSettings.getAllQueryTypes(), nextCustomInclude );
                     
                     for( QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes )
                     {
@@ -375,7 +375,7 @@ public class RdfFetchController
                 for( URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes() )
                 {
                     // pick out all of the QueryType's which have been delegated for this particular query as static includes
-                    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri( nextCustomInclude );
+                    Collection<QueryType> allCustomRdfXmlIncludeTypes = QueryTypeUtils.getQueryTypesByUri( localSettings.getAllQueryTypes(), nextCustomInclude );
                     
                     if( allCustomRdfXmlIncludeTypes.size()  == 0 )
                     {

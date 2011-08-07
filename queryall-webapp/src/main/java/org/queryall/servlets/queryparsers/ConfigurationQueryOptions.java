@@ -39,7 +39,7 @@ public class ConfigurationQueryOptions
 	private boolean isRootContext = false;
 
     
-    public ConfigurationQueryOptions(String requestUri, String contextPath, Settings localSettings)
+    public ConfigurationQueryOptions(String requestUri, String contextPath, QueryAllConfiguration localSettings)
     {
     	_apiVersion = Settings.CONFIG_API_VERSION;
     	

@@ -1093,20 +1093,7 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
 
-	public Collection<QueryType> getQueryTypesByUri(URI queryTypeUri)
-    {
-        final Collection<QueryType> results = new HashSet<QueryType>();
-        for(final QueryType nextQueryType : this.getAllQueryTypes().values())
-        {
-            if(nextQueryType.getKey().equals(queryTypeUri))
-            {
-                results.add(nextQueryType);
-            }
-        }
-        return results;
-    }
-        
-    public Collection<Statement> getStatementProperties(String key)
+	public Collection<Statement> getStatementProperties(String key)
     {
         if(_TRACE)
             log.trace("Settings.getStatementPropertiesFromConfig: key="+key);

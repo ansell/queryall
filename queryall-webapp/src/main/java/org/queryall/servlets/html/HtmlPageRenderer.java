@@ -3,6 +3,7 @@ package org.queryall.servlets.html;
 import org.queryall.servlets.GeneralServlet;
 import org.queryall.servlets.html.VelocityHelper;
 import org.queryall.queryutils.*;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.*;
 
 import java.io.IOException;
@@ -40,12 +41,12 @@ public class HtmlPageRenderer
     @SuppressWarnings("unused")
 	private static final boolean _INFO = log.isInfoEnabled();
     
-    public static void renderHtml(ServletContext servletContext, Repository nextRepository, java.io.Writer nextWriter, Collection<String> debugStrings, String queryString, String resolvedUri, String realHostName, String contextPath, int pageoffset, Settings localSettings) throws OpenRDFException
+    public static void renderHtml(ServletContext servletContext, Repository nextRepository, java.io.Writer nextWriter, Collection<String> debugStrings, String queryString, String resolvedUri, String realHostName, String contextPath, int pageoffset, QueryAllConfiguration localSettings) throws OpenRDFException
     {
         renderHtml(servletContext, nextRepository, nextWriter, null, debugStrings, queryString, resolvedUri, realHostName, contextPath, pageoffset, localSettings);
     }
     
-	public static void renderHtml(ServletContext servletContext, Repository nextRepository, java.io.Writer nextWriter, RdfFetchController fetchController, Collection<String> debugStrings, String queryString, String resolvedUri, String realHostName, String contextPath, int pageoffset, Settings localSettings) throws OpenRDFException
+	public static void renderHtml(ServletContext servletContext, Repository nextRepository, java.io.Writer nextWriter, RdfFetchController fetchController, Collection<String> debugStrings, String queryString, String resolvedUri, String realHostName, String contextPath, int pageoffset, QueryAllConfiguration localSettings) throws OpenRDFException
     {
         boolean nextpagelinkuseful = false;
         boolean previouspagelinkuseful = false;

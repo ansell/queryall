@@ -1292,7 +1292,7 @@ public final class RdfUtils
         return getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
     }
     
-    public static void insertResultIntoRepository(RdfFetcherQueryRunnable nextResult, Repository myRepository, Settings localSettings) throws RepositoryException, java.io.IOException
+    public static void insertResultIntoRepository(RdfFetcherQueryRunnable nextResult, Repository myRepository, QueryAllConfiguration localSettings) throws RepositoryException, java.io.IOException
     {
         if(_DEBUG)
         {
@@ -1353,7 +1353,8 @@ public final class RdfUtils
             
             if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
             {
-                myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), localSettings.getDefaultHostAddress(), nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider().getKey());
+            	// TODO: avoid cast here
+                myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()), ((Settings) localSettings).getDefaultHostAddress(), nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider().getKey());
                 
                 myRepositoryConnection.commit();
             }

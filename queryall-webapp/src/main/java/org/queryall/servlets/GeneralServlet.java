@@ -50,7 +50,7 @@ public class GeneralServlet extends HttpServlet
     {
         long queryStartTime = System.currentTimeMillis();
         
-    	Settings localSettings = Settings.getSettings();
+        QueryAllConfiguration localSettings = Settings.getSettings();
     	BlacklistController localBlacklistController = BlacklistController.getDefaultController();
     	DefaultQueryOptions requestQueryOptions = new DefaultQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
@@ -118,7 +118,8 @@ public class GeneralServlet extends HttpServlet
         	return;
         }
         
-        localSettings.configRefreshCheck(false);
+        // TODO: avoid cast here
+        ((Settings) localSettings).configRefreshCheck(false);
         localBlacklistController.doBlacklistExpiry();
         
         if(localBlacklistController.isClientBlacklisted(requesterIpAddress))
@@ -361,7 +362,7 @@ public class GeneralServlet extends HttpServlet
 	 * @param multiProviderQueryBundles
 	 * @param nextTotalTime
 	 */
-	private void doQueryDebug(Settings localSettings, BlacklistController localBlacklistController, String queryString, String requesterIpAddress,
+	private void doQueryDebug(QueryAllConfiguration localSettings, BlacklistController localBlacklistController, String queryString, String requesterIpAddress,
 			Collection<QueryBundle> multiProviderQueryBundles, long nextTotalTime)
 	{
 		QueryDebug nextQueryDebug;
@@ -402,7 +403,7 @@ public class GeneralServlet extends HttpServlet
 	 * @throws IOException
 	 * @throws RepositoryException
 	 */
-	private void doQueryUnknown(Settings localSettings, String realHostName, String queryString, int pageOffset, String requestedContentType,
+	private void doQueryUnknown(QueryAllConfiguration localSettings, String realHostName, String queryString, int pageOffset, String requestedContentType,
 			List<Profile> includedProfiles, RdfFetchController fetchController, Collection<String> debugStrings, Repository myRepository) throws IOException, RepositoryException
 	{
         RepositoryConnection myRepositoryConnection = null;
@@ -426,7 +427,7 @@ public class GeneralServlet extends HttpServlet
 			        log.debug("GeneralServlet: nextStaticQueryTypeForUnknown="+nextStaticQueryTypeForUnknown);
 			    }
 			    
-			    Collection<QueryType> allCustomRdfXmlIncludeTypes = localSettings.getQueryTypesByUri(nextStaticQueryTypeForUnknown);
+			    Collection<QueryType> allCustomRdfXmlIncludeTypes = QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextStaticQueryTypeForUnknown);
 			    
 			    // use the closest matches, even though they didn't eventuate into actual planned query bundles they matched the query string somehow
 			    for(QueryType nextQueryType : allCustomRdfXmlIncludeTypes)
@@ -439,7 +440,8 @@ public class GeneralServlet extends HttpServlet
 			        
 			        try
 			        {
-			            myRepositoryConnection.add(new java.io.StringReader(nextBackupString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextQueryType.getKey());
+			        	// TODO: avoid cast here
+			            myRepositoryConnection.add(new java.io.StringReader(nextBackupString), ((Settings) localSettings).getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextQueryType.getKey());
 			        }
 			        catch(org.openrdf.rio.RDFParseException rdfpe)
 			        {
@@ -527,7 +529,7 @@ public class GeneralServlet extends HttpServlet
 	 * @param contextPath TODO
 	 * @throws IOException
 	 */
-	private void resultsToWriter(Writer out, Settings localSettings, RDFFormat writerFormat, String realHostName,
+	private void resultsToWriter(Writer out, QueryAllConfiguration localSettings, RDFFormat writerFormat, String realHostName,
 			String queryString, int pageOffset, String requestedContentType, RdfFetchController fetchController, Collection<String> debugStrings,
 			Repository convertedPool, String contextPath) throws IOException
 	{
@@ -543,7 +545,8 @@ public class GeneralServlet extends HttpServlet
 		    
 		    try
 		    {
-		        HtmlPageRenderer.renderHtml(getServletContext(), convertedPool, cleanOutput, fetchController, debugStrings, queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath, pageOffset, localSettings);
+		    	// TODO: avoid cast here
+		        HtmlPageRenderer.renderHtml(getServletContext(), convertedPool, cleanOutput, fetchController, debugStrings, queryString, ((Settings) localSettings).getDefaultHostAddress() + queryString, realHostName, contextPath, pageOffset, localSettings);
 		    }
 		    catch(OpenRDFException ordfe)
 		    {
@@ -640,7 +643,7 @@ public class GeneralServlet extends HttpServlet
 	 * @throws RepositoryException
 	 * @throws OpenRDFException
 	 */
-	private void doQueryNotPretend(Settings localSettings, String queryString, String requestedContentType, List<Profile> includedProfiles,
+	private void doQueryNotPretend(QueryAllConfiguration localSettings, String queryString, String requestedContentType, List<Profile> includedProfiles,
 			RdfFetchController fetchController, Collection<QueryBundle> multiProviderQueryBundles, Collection<String> debugStrings,
 			Repository myRepository) throws InterruptedException, IOException, RepositoryException, OpenRDFException
 	{
@@ -721,7 +724,8 @@ public class GeneralServlet extends HttpServlet
 			    
 			    try
 			    {
-			        myRepositoryConnection.add(new java.io.StringReader(nextStaticString), localSettings.getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextPotentialQueryBundle.getOriginalProvider().getKey());
+			    	// TODO: avoid cast here
+			        myRepositoryConnection.add(new java.io.StringReader(nextStaticString), ((Settings) localSettings).getDefaultHostAddress()+queryString, RDFFormat.RDFXML, nextPotentialQueryBundle.getOriginalProvider().getKey());
 			    }
 			    catch(org.openrdf.rio.RDFParseException rdfpe)
 			    {
