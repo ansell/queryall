@@ -1,7 +1,7 @@
 package org.queryall.servlets.queryparsers;
 
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.Constants;
-import org.queryall.helpers.Settings;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -27,7 +27,7 @@ public class DefaultQueryOptions
     
     private String parsedRequestString = "";
     
-    private Settings localSettings;
+    private QueryAllConfiguration localSettings;
 	private Pattern queryPlanPattern;
 	private String queryplanUrlPrefix;
 	private String queryplanUrlSuffix;
@@ -47,7 +47,7 @@ public class DefaultQueryOptions
 	private String nquadsUrlPrefix;
 	private String nquadsUrlSuffix;
     
-    public DefaultQueryOptions(String requestUri, String contextPath, Settings nextSettings)
+    public DefaultQueryOptions(String requestUri, String contextPath, QueryAllConfiguration nextSettings)
     {
         this.localSettings = nextSettings;
 

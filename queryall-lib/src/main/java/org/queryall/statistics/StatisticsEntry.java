@@ -25,6 +25,7 @@ import org.openrdf.sail.memory.MemoryStore;
 
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
@@ -764,7 +765,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
 	 * @return
 	 * @throws OpenRDFException
 	 */
-	public HttpUrlQueryRunnable generateThread(Settings localSettings,
+	public HttpUrlQueryRunnable generateThread(QueryAllConfiguration localSettings,
 			BlacklistController localBlacklistController, int modelVersion)
 			throws OpenRDFException
 	{

@@ -9,6 +9,7 @@ import javax.servlet.http.*;
 
 import org.queryall.api.HttpProvider;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.*;
 
 import org.apache.log4j.Logger;
@@ -34,7 +35,7 @@ public class ProvidersIPListServlet extends HttpServlet
                         HttpServletResponse response)
         throws ServletException, IOException 
     {
-    	Settings localSettings = Settings.getSettings();
+    	QueryAllConfiguration localSettings = Settings.getSettings();
         
         PrintWriter out = response.getWriter();
         response.setContentType("text/plain");

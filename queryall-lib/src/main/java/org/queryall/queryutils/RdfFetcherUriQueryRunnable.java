@@ -2,8 +2,8 @@ package org.queryall.queryutils;
 
 import java.util.Date;
 
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -17,7 +17,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 		String nextQuery,
 		String nextDebug,
 		String nextAcceptHeader, 
-		Settings localSettings,
+		QueryAllConfiguration localSettings,
 		BlacklistController localBlacklistController,
 		QueryBundle nextOriginalQueryBundle
 	)

@@ -3,8 +3,8 @@ package org.queryall.queryutils;
 import org.apache.log4j.Logger;
 import java.util.Date;
 
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.Settings;
 import org.queryall.impl.HttpProviderImpl;
 
 /**
@@ -48,7 +48,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
         String nextPostInformation,
         String nextAcceptHeader,
         String nextFormat, 
-        Settings localSettings,
+        QueryAllConfiguration localSettings,
         BlacklistController localBlacklistController)
     {
         super(nextUrl, nextFormat, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);

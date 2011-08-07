@@ -22,6 +22,7 @@ import org.queryall.queryutils.*;
 import org.queryall.helpers.*;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.Profile;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.blacklist.*;
 
@@ -275,7 +276,7 @@ public class GeneralServlet extends HttpServlet
 	 * @param requestedContentType
 	 * @return 
 	 */
-	private boolean checkExplicitRedirect(HttpServletResponse response, Settings localSettings, DefaultQueryOptions requestQueryOptions,
+	private boolean checkExplicitRedirect(HttpServletResponse response, QueryAllConfiguration localSettings, DefaultQueryOptions requestQueryOptions,
 			String contextPath, String requestedContentType)
 	{
 		if(!requestQueryOptions.containsExplicitFormat())
@@ -489,7 +490,7 @@ public class GeneralServlet extends HttpServlet
 	 * @throws IOException
 	 * @throws OpenRDFException
 	 */
-	private void doQueryPretend(Settings localSettings, String queryString, int responseCode, int pageOffset,
+	private void doQueryPretend(QueryAllConfiguration localSettings, String queryString, int responseCode, int pageOffset,
 			String requestedContentType, Collection<QueryBundle> multiProviderQueryBundles, Repository myRepository) throws IOException,
 			OpenRDFException
 	{
@@ -611,7 +612,7 @@ public class GeneralServlet extends HttpServlet
 	 * @param myRepository The repository containing the unnormalised statements
 	 * @return The repository containing the normalised statements
 	 */
-	private Repository doPoolNormalisation(Settings localSettings, List<Profile> includedProfiles, RdfFetchController fetchController,
+	private Repository doPoolNormalisation(QueryAllConfiguration localSettings, List<Profile> includedProfiles, RdfFetchController fetchController,
 			Repository myRepository)
 	{
 		return (Repository)QueryCreator.normaliseByStage(
@@ -747,7 +748,7 @@ public class GeneralServlet extends HttpServlet
 	 * @param ignoreContextPath Whether we should ignore the context path or not
 	 * @param contextPath The context path from the request
 	 */
-	public static void getRedirectString(StringBuilder redirectString, Settings localSettings, DefaultQueryOptions requestQueryOptions,
+	public static void getRedirectString(StringBuilder redirectString, QueryAllConfiguration localSettings, DefaultQueryOptions requestQueryOptions,
 			String requestedContentType, boolean ignoreContextPath, String contextPath)
 	{
 		if(localSettings.getBooleanProperty("useHardcodedRequestHostname", false))

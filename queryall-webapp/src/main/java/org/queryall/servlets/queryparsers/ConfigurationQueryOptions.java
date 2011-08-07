@@ -1,5 +1,6 @@
 package org.queryall.servlets.queryparsers;
 
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.Constants;
 import org.queryall.helpers.Settings;
 import org.queryall.helpers.StringUtils;
@@ -34,7 +35,7 @@ public class ConfigurationQueryOptions
     private boolean _isPlainNamespaceAndIdentifier = false;
 
     private String parsedRequestString = "";
-    private Settings localSettings;
+    private QueryAllConfiguration localSettings;
 	private boolean isRootContext = false;
 
     

@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 
 import org.queryall.helpers.*;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.*;
 
 /**
@@ -27,10 +28,10 @@ public class RdfFetcher
     
     public String lastReturnedContentType = null;
     public String lastReturnedContentEncoding = null;
-    private Settings localSettings;
+    private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
-    public RdfFetcher(Settings localSettings, BlacklistController blacklistController)
+    public RdfFetcher(QueryAllConfiguration localSettings, BlacklistController blacklistController)
     {
         this.localSettings = localSettings;
         this.localBlacklistController = blacklistController;

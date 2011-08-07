@@ -2,6 +2,7 @@ package org.queryall.queryutils;
 
 import java.util.Date;
 
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.helpers.*;
 
@@ -22,7 +23,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 		String nextDebug,
 		String nextAcceptHeader,
         int nextMaxRowsParameter,
-        Settings localSettings,
+        QueryAllConfiguration localSettings,
         BlacklistController localBlacklistController,
 		QueryBundle nextOriginalQueryBundle
 	)

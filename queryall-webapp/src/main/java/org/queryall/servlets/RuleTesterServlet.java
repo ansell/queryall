@@ -6,6 +6,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.servlets.queryparsers.*;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.RuleTest;
 import org.queryall.helpers.*;
 
@@ -34,7 +35,7 @@ public class RuleTesterServlet extends HttpServlet
                         HttpServletResponse response)
         throws ServletException, IOException 
     {
-        Settings localSettings = Settings.getSettings();
+        QueryAllConfiguration localSettings = Settings.getSettings();
         // Settings.setServletContext(getServletConfig().getServletContext());
         
         log.debug("testUri parameter="+request.getAttribute("org.queryall.RuleTesterServlet.testUri"));

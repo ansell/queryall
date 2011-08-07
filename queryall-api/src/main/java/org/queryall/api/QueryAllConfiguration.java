@@ -1,5 +1,6 @@
 package org.queryall.api;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.openrdf.model.URI;
@@ -92,5 +93,19 @@ public interface QueryAllConfiguration
 	Map<URI, RuleTest> getAllRuleTests();
 
 	void addRuleTest(RuleTest nextRuleTest);
+
+	boolean getBooleanProperty(String propertyKey, boolean defaultValue);
+
+	public abstract String getStringProperty(String key, String defaultValue);
+
+	public abstract long getLongProperty(String key, long defaultValue);
+
+	public abstract URI getURIProperty(String key, URI defaultValue);
+
+	public abstract int getIntProperty(String key, int defaultValue);
+
+	public abstract float getFloatProperty(String key, float defaultValue);
+
+	Map<String, Collection<URI>> getNamespacePrefixesToUris();
 	
 }

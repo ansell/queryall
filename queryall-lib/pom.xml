@@ -12,7 +12,7 @@
 	<artifactId>queryall-lib</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.2-SNAPSHOT</version>
-	<name>queryall</name>
+	<name>queryall lib</name>
 	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
 	<inceptionYear>2007</inceptionYear>
 	<developers>

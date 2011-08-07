@@ -49,6 +49,7 @@ import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.blacklist.BlacklistController;
@@ -271,7 +272,7 @@ public final class RdfUtils
         String sparqlEndpointUrl,
         String acceptHeader, 
         String expectedReturnFormat,
-        Settings localSettings,
+        QueryAllConfiguration localSettings,
         BlacklistController localBlacklistController) 
     throws OpenRDFException
     {
@@ -296,7 +297,7 @@ public final class RdfUtils
         String sparqlEndpointUrl,
         String acceptHeader, 
         String expectedReturnFormat,
-        Settings localSettings,
+        QueryAllConfiguration localSettings,
         BlacklistController localBlacklistController) 
     throws OpenRDFException
     {
@@ -318,7 +319,7 @@ public final class RdfUtils
         String sparqlEndpointUrl,
         String acceptHeader, 
         String expectedReturnFormat,
-        Settings localSettings,
+        QueryAllConfiguration localSettings,
         BlacklistController localBlacklistController) 
     {
         return new HttpUrlQueryRunnable(

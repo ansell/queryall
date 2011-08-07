@@ -3,6 +3,7 @@ package org.queryall.queryutils;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.SparqlProvider;
 import org.queryall.blacklist.*;
@@ -36,7 +37,7 @@ public class RdfFetchController
     private Collection<RdfFetcherQueryRunnable> uncalledThreads = new HashSet<RdfFetcherQueryRunnable>( 4 );
     private Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new HashSet<RdfFetcherQueryRunnable>( 20 );
     
-    private Collection<QueryBundle> queryBundles = null;
+    private volatile Collection<QueryBundle> queryBundles = null;
     
     private String queryString;
     private List<Profile> sortedIncludedProfiles;
@@ -45,7 +46,7 @@ public class RdfFetchController
     private int pageOffset;
     private String returnFileFormat;
     private boolean includeNonPagedQueries = true;
-    private Settings localSettings;
+    private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
 	private boolean namespaceNotRecognised = false;
     
@@ -145,7 +146,7 @@ public class RdfFetchController
         {
             queryBundles = new LinkedList<QueryBundle>();
             
-            Collection<QueryType> allCustomQueries = localSettings.getQueryTypesMatchingQueryString( queryString, sortedIncludedProfiles );
+            Collection<QueryType> allCustomQueries = QueryTypeUtils.getQueryTypesMatchingQueryString( queryString, sortedIncludedProfiles, localSettings.getAllQueryTypes(), localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true), localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true) );
             
             // TODO: figure out how to also get back the NamespaceEntry objects that matched so we can log this information with the statistics for this query
             if( _DEBUG )
@@ -219,7 +220,7 @@ public class RdfFetchController
                 }
                 
                 Collection<QueryBundle> queryBundlesForQueryType = this.generateQueryBundlesForQueryTypeAndProviders(nextQueryType,
-                        chosenProviders, localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true), localSettings);
+                        chosenProviders, localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true), (Settings) localSettings);
                 
                 if(_DEBUG)
                 {

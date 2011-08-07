@@ -4,6 +4,7 @@ import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 
 import org.apache.log4j.Logger;
+import org.queryall.api.QueryAllConfiguration;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -27,7 +28,7 @@ public class QueryallContentNegotiator
     	return QueryallContentNegotiator.contentNegotiator;
     }
     
-    public static ContentTypeNegotiator getContentNegotiator(Settings localSettings)
+    public static ContentTypeNegotiator getContentNegotiator(QueryAllConfiguration localSettings)
     {
         ContentTypeNegotiator newContentNegotiator = new ContentTypeNegotiator();
         

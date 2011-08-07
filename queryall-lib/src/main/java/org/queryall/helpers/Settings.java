@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -826,7 +825,8 @@ public class Settings implements QueryAllConfiguration
         return this.getStringProperty("uriPrefix", "http://")+this.getStringProperty("hostName", "bio2rdf.org")+this.getStringProperty("uriSuffix", "/");
     }
     
-    public float getFloatProperty(String key, float defaultValue)
+    @Override
+	public float getFloatProperty(String key, float defaultValue)
     {
         float result = defaultValue;
         
@@ -852,7 +852,8 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
     
-    public int getIntProperty(String key, int defaultValue)
+    @Override
+	public int getIntProperty(String key, int defaultValue)
     {
         int result = defaultValue;
         
@@ -878,7 +879,8 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
     
-    public URI getURIProperty(String key, URI defaultValue)
+    @Override
+	public URI getURIProperty(String key, URI defaultValue)
     {
     	URI result = defaultValue;
     	
@@ -905,6 +907,7 @@ public class Settings implements QueryAllConfiguration
     	
     }
     
+	@Override
 	public long getLongProperty(String key, long defaultValue)
     {
         long result = defaultValue;
@@ -1103,63 +1106,6 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
         
-    public Collection<QueryType> getQueryTypesMatchingQueryString(String queryString, List<Profile> profileList)
-    {
-    	if(Settings._DEBUG)
-    	{
-    		log.debug("getQueryTypesMatchingQueryString: profileList.size()="+profileList.size());
-    		
-    		if(Settings._TRACE)
-    		{
-    			for(Profile nextProfile : profileList)
-		        {
-		            log.trace("getQueryTypesMatchingQueryString: nextProfile.getKey()="+nextProfile.getKey().stringValue());
-		        }
-    		}
-    	}
-    	
-        final Collection<QueryType> results = new HashSet<QueryType>();
-        
-        for(QueryType nextQuery : this.getAllQueryTypes().values())
-        {
-            if(nextQuery.matchesQueryString(queryString))
-            {
-                if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
-                                    + " nextQuery.getKey()="
-                                    + nextQuery.getKey().stringValue()
-                                    + " queryString="
-                                    + queryString);
-                }
-                if(nextQuery.isUsedWithProfileList(profileList, this.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true), this.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true)))
-                {
-                    if(Settings._DEBUG)
-                    {
-                        Settings.log
-                                .debug("getQueryTypesMatchingQueryString: profileList suitable for"
-                                        + " nextQuery.getKey()="
-                                        + nextQuery.getKey().stringValue()
-                                        + " queryString="
-                                        + queryString);
-                    }
-                    results.add(nextQuery);
-                }
-                else if(Settings._TRACE)
-                {
-                    Settings.log
-                            .trace("getQueryTypesMatchingQueryString: profileList not suitable for"
-                                    + " nextQuery.getKey()="
-                                    + nextQuery.getKey().stringValue()
-                                    + " queryString="
-                                    + queryString);
-                }
-            }
-        }
-        return results;
-    }
-        
     public Collection<Statement> getStatementProperties(String key)
     {
         if(_TRACE)
@@ -1215,6 +1161,7 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
 
+	@Override
 	public String getStringProperty(String key, String defaultValue)
     {
         String result = defaultValue;

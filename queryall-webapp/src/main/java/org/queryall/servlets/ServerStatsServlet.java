@@ -7,6 +7,7 @@ import javax.servlet.http.*;
 
 import org.queryall.queryutils.*;
 import org.queryall.helpers.*;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.*;
 
 import org.apache.log4j.Logger;
@@ -32,7 +33,7 @@ public class ServerStatsServlet extends HttpServlet
                         HttpServletResponse response)
         throws ServletException, IOException 
     {
-        Settings localSettings = Settings.getSettings();
+        QueryAllConfiguration localSettings = Settings.getSettings();
         BlacklistController localBlacklistController = BlacklistController.getDefaultController();
         
         PrintWriter out = response.getWriter();

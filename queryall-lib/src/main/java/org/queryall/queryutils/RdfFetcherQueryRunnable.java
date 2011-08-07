@@ -3,8 +3,8 @@ package org.queryall.queryutils;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -37,11 +37,11 @@ public class RdfFetcherQueryRunnable extends Thread
     
     private Date queryStartTime = null;
     private Date queryEndTime = null;
-    private Settings localSettings;
+    private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
     
-    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, Settings localSettings, BlacklistController localBlacklistController)
+    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, QueryAllConfiguration localSettings, BlacklistController localBlacklistController)
     {
         this.setEndpointUrl(nextEndpointUrl);
         this.setFormat(nextFormat);
@@ -52,7 +52,7 @@ public class RdfFetcherQueryRunnable extends Thread
         this.setBlacklistController(localBlacklistController);
     }
 
-    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, Settings localSettings, BlacklistController localBlacklistController, QueryBundle nextOriginalQueryBundle )
+    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, QueryAllConfiguration localSettings, BlacklistController localBlacklistController, QueryBundle nextOriginalQueryBundle )
     {
         this(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController);
         this.setOriginalQueryBundle(nextOriginalQueryBundle);
@@ -362,7 +362,7 @@ public class RdfFetcherQueryRunnable extends Thread
     /**
      * @param localSettings the localSettings to set
      */
-    public void setSettings(Settings localSettings)
+    public void setSettings(QueryAllConfiguration localSettings)
     {
         this.localSettings = localSettings;
     }
@@ -370,7 +370,7 @@ public class RdfFetcherQueryRunnable extends Thread
     /**
      * @return the localSettings
      */
-    public Settings getLocalSettings()
+    public QueryAllConfiguration getLocalSettings()
     {
         return localSettings;
     }
