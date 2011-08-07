@@ -301,13 +301,6 @@ public final class Constants
     public static final String URL_ENCODED = "urlEncoded";
     public static final String XML_ENCODED = "xmlEncoded";
     
-    public static final SimpleDateFormat ISO8601UTC()
-    {
-        final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);
-        result.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZOME));
-        return result;
-    }
-    
     public static final String TEXT_TURTLE = "text/turtle";
     
     public static final String INCLUDE_NON_PROFILE_MATCHED_QUERIES = "includeNonProfileMatchedQueries";
@@ -321,6 +314,13 @@ public final class Constants
     public static final String TEXT_PLAIN = "text/plain";
     
     public static final String TEXT_X_NQUADS = "text/x-nquads";
+    
+    public static final SimpleDateFormat ISO8601UTC()
+    {
+        final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);
+        result.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZOME));
+        return result;
+    }
     
     private Constants()
     {

@@ -15,14 +15,14 @@ import org.queryall.api.Profile;
 public abstract class BaseProfilableNormalisationRuleTest extends BaseProfilableTest
 {
     @Override
-    public void includeTrueUri(Profile profilable, URI uriToInclude)
+    public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {
-        profilable.addIncludeRdfRule(uriToInclude);
+        profilable.addExcludeRdfRule(uriToExclude);
     }
     
     @Override
-    public void includeFalseUri(Profile profilable, URI uriToExclude)
+    public void includeTrueUri(final Profile profilable, final URI uriToInclude)
     {
-        profilable.addExcludeRdfRule(uriToExclude);
+        profilable.addIncludeRdfRule(uriToInclude);
     }
 }

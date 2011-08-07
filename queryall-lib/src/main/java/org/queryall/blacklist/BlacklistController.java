@@ -62,11 +62,6 @@ public class BlacklistController
     
     private static BlacklistController defaultController = new BlacklistController(Settings.getSettings());
     
-    public BlacklistController(QueryAllConfiguration queryAllConfiguration)
-    {
-        localSettings = queryAllConfiguration;
-    }
-    
     /**
      * @return the defaultController
      */
@@ -75,8 +70,13 @@ public class BlacklistController
         return BlacklistController.defaultController;
     }
     
-    public void accumulateBlacklist(Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist,
-            long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public BlacklistController(final QueryAllConfiguration queryAllConfiguration)
+    {
+        this.localSettings = queryAllConfiguration;
+    }
+    
+    public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist,
+            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         synchronized(this.accumulatedBlacklistStatistics)
         {
@@ -121,7 +121,7 @@ public class BlacklistController
         }
     }
     
-    public synchronized void accumulateHttpResponseError(String endpointUrl, int errorResponseCode)
+    public synchronized void accumulateHttpResponseError(final String endpointUrl, final int errorResponseCode)
     {
         if(this.allHttpErrorResponseCodesByServer == null)
         {
@@ -201,10 +201,10 @@ public class BlacklistController
         this.allHttpErrorResponseCodesByServer.put(endpointUrl, nextErrorList);
     }
     
-    public synchronized void accumulateQueryDebug(QueryDebug nextQueryObject, QueryAllConfiguration localSettings,
-            long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints,
-            boolean automaticallyBlacklistClients, int blacklistMinimumQueriesBeforeBlacklistRules,
-            int blacklistClientMaxQueriesPerPeriod)
+    public synchronized void accumulateQueryDebug(final QueryDebug nextQueryObject,
+            final QueryAllConfiguration localSettings, final long blacklistResetPeriodMilliseconds,
+            final boolean blacklistResetClientBlacklistWithEndpoints, final boolean automaticallyBlacklistClients,
+            final int blacklistMinimumQueriesBeforeBlacklistRules, final int blacklistClientMaxQueriesPerPeriod)
     {
         if(automaticallyBlacklistClients)
         {
@@ -240,7 +240,7 @@ public class BlacklistController
         }
     }
     
-    public synchronized void accumulateQueryTotal(String endpointUrl)
+    public synchronized void accumulateQueryTotal(final String endpointUrl)
     {
         if(this.allServerQueryTotals == null)
         {
@@ -334,11 +334,11 @@ public class BlacklistController
     // last time, even if there were no errors since then
     public boolean doBlacklistExpiry()
     {
-        long blacklistResetPeriodMilliseconds =
-                localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+        final long blacklistResetPeriodMilliseconds =
+                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
         
-        boolean blacklistResetClientBlacklistWithEndpoints =
-                localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+        final boolean blacklistResetClientBlacklistWithEndpoints =
+                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
         
         // magic values for no expiry are <= 0
         
@@ -392,9 +392,10 @@ public class BlacklistController
         return neededToExpire;
     }
     
-    public void evaluateClientBlacklist(QueryAllConfiguration localSettings, boolean automaticallyBlacklistClients,
-            int blacklistMinimumQueriesBeforeBlacklistRules, float blacklistPercentageOfRobotTxtQueriesBeforeAutomatic,
-            int blacklistClientMaxQueriesPerPeriod)
+    public void evaluateClientBlacklist(final QueryAllConfiguration localSettings,
+            final boolean automaticallyBlacklistClients, final int blacklistMinimumQueriesBeforeBlacklistRules,
+            final float blacklistPercentageOfRobotTxtQueriesBeforeAutomatic,
+            final int blacklistClientMaxQueriesPerPeriod)
     {
         if(automaticallyBlacklistClients)
         {
@@ -497,7 +498,36 @@ public class BlacklistController
         }
     }
     
-    public Collection<QueryDebug> getCurrentDebugInformationFor(String nextIpAddress)
+    public String getAlternativeUrl(final String blacklistedUrl, List<String> urlList)
+    {
+        if(blacklistedUrl == null || blacklistedUrl == "" || urlList == null)
+        {
+            BlacklistController.log.error("BlacklistController.getAlternativeUrl: something was wrong blacklistedUrl="
+                    + blacklistedUrl + " urlList=" + urlList);
+            
+            return null;
+        }
+        
+        // try to avoid always returning the same alternative by randomising here
+        urlList = ListUtils.randomiseListLayout(urlList);
+        
+        for(final String nextEndpoint : urlList)
+        {
+            if(nextEndpoint.equals(blacklistedUrl))
+            {
+                continue;
+            }
+            
+            if(!this.isUrlBlacklisted(nextEndpoint))
+            {
+                return nextEndpoint;
+            }
+        }
+        
+        return null;
+    }
+    
+    public Collection<QueryDebug> getCurrentDebugInformationFor(final String nextIpAddress)
     {
         if(this.currentQueryDebugInformation.containsKey(nextIpAddress))
         {
@@ -533,8 +563,8 @@ public class BlacklistController
         return this.currentIPWhitelist;
     }
     
-    public Collection<String> getEndpointUrlsInBlacklist(long blacklistResetPeriodMilliseconds,
-            boolean blacklistResetClientBlacklistWithEndpoints)
+    public Collection<String> getEndpointUrlsInBlacklist(final long blacklistResetPeriodMilliseconds,
+            final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         this.doBlacklistExpiry();
         
@@ -567,15 +597,15 @@ public class BlacklistController
             this.permanentServletLifetimeIPBlacklist = new HashSet<String>();
         }
         
-        this.currentIPBlacklist = localSettings.getStringProperties("blacklistBaseClientIPAddresses");
+        this.currentIPBlacklist = this.localSettings.getStringProperties("blacklistBaseClientIPAddresses");
     }
     
     public void initialiseWhitelist()
     {
-        this.currentIPWhitelist = localSettings.getStringProperties("whitelistBaseClientIPAddresses");
+        this.currentIPWhitelist = this.localSettings.getStringProperties("whitelistBaseClientIPAddresses");
     }
     
-    public boolean isClientBlacklisted(String nextClientIPAddress)
+    public boolean isClientBlacklisted(final String nextClientIPAddress)
     {
         if(this.getCurrentIPWhitelist().contains(nextClientIPAddress))
         {
@@ -589,7 +619,7 @@ public class BlacklistController
         }
     }
     
-    public boolean isClientPermanentlyBlacklisted(String nextClientIPAddress)
+    public boolean isClientPermanentlyBlacklisted(final String nextClientIPAddress)
     {
         if(this.getCurrentIPWhitelist().contains(nextClientIPAddress))
         {
@@ -602,12 +632,12 @@ public class BlacklistController
         }
     }
     
-    public boolean isClientWhitelisted(String nextClientIPAddress)
+    public boolean isClientWhitelisted(final String nextClientIPAddress)
     {
         return this.getCurrentIPWhitelist().contains(nextClientIPAddress);
     }
     
-    public boolean isEndpointBlacklisted(String nextEndpointUrl)
+    public boolean isEndpointBlacklisted(final String nextEndpointUrl)
     {
         this.doBlacklistExpiry();
         
@@ -615,7 +645,8 @@ public class BlacklistController
         {
             final BlacklistEntry currentCount = this.accumulatedBlacklistStatistics.get(nextEndpointUrl);
             
-            return (currentCount.numberOfFailures >= localSettings.getIntProperty("blacklistMaxAccumulatedFailures", 0));
+            return (currentCount.numberOfFailures >= this.localSettings.getIntProperty(
+                    "blacklistMaxAccumulatedFailures", 0));
         }
         else
         {
@@ -623,7 +654,38 @@ public class BlacklistController
         }
     }
     
-    public void persistStatistics(Collection<StatisticsEntry> nextStatisticsEntries, int modelVersion)
+    public boolean isUrlBlacklisted(final String inputUrl)
+    {
+        URL url = null;
+        
+        try
+        {
+            url = new URL(inputUrl);
+        }
+        catch(final Exception ex)
+        {
+            // ignore it, the endpoint doesn't always have to be a URL, we just won't consult the
+            // blacklist controller in this case
+            return false;
+        }
+        
+        // we test both the full URL and the protocol://host subsection
+        if(this.isEndpointBlacklisted(inputUrl)
+                || this.isEndpointBlacklisted(url.getProtocol() + "://" + url.getAuthority()))
+        {
+            if(BlacklistController._DEBUG)
+            {
+                BlacklistController.log.debug("BlacklistController.isUrlBlacklisted: found blacklisted URL inputUrl="
+                        + url + " simple form=" + url.getProtocol() + "://" + url.getAuthority());
+            }
+            
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public void persistStatistics(final Collection<StatisticsEntry> nextStatisticsEntries, final int modelVersion)
     {
         final long start = System.currentTimeMillis();
         
@@ -636,7 +698,7 @@ public class BlacklistController
             try
             {
                 final HttpUrlQueryRunnable nextThread =
-                        nextStatisticsEntry.generateThread(localSettings, this, modelVersion);
+                        nextStatisticsEntry.generateThread(this.localSettings, this, modelVersion);
                 nextThread.start();
                 runnableThreads.add(nextThread);
             }
@@ -682,8 +744,8 @@ public class BlacklistController
         }
     }
     
-    public void removeEndpointsFromBlacklist(Collection<RdfFetcherQueryRunnable> successfulQueries,
-            long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public void removeEndpointsFromBlacklist(final Collection<RdfFetcherQueryRunnable> successfulQueries,
+            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         this.doBlacklistExpiry();
         
@@ -695,66 +757,6 @@ public class BlacklistController
                 this.accumulatedBlacklistStatistics.remove(nextQueryObject.getEndpointUrl());
             }
         }
-    }
-    
-    public boolean isUrlBlacklisted(String inputUrl)
-    {
-        URL url = null;
-        
-        try
-        {
-            url = new URL(inputUrl);
-        }
-        catch(Exception ex)
-        {
-            // ignore it, the endpoint doesn't always have to be a URL, we just won't consult the
-            // blacklist controller in this case
-            return false;
-        }
-        
-        // we test both the full URL and the protocol://host subsection
-        if(this.isEndpointBlacklisted(inputUrl)
-                || this.isEndpointBlacklisted(url.getProtocol() + "://" + url.getAuthority()))
-        {
-            if(BlacklistController._DEBUG)
-            {
-                BlacklistController.log.debug("BlacklistController.isUrlBlacklisted: found blacklisted URL inputUrl="
-                        + url + " simple form=" + url.getProtocol() + "://" + url.getAuthority());
-            }
-            
-            return true;
-        }
-        
-        return false;
-    }
-    
-    public String getAlternativeUrl(String blacklistedUrl, List<String> urlList)
-    {
-        if(blacklistedUrl == null || blacklistedUrl == "" || urlList == null)
-        {
-            BlacklistController.log.error("BlacklistController.getAlternativeUrl: something was wrong blacklistedUrl="
-                    + blacklistedUrl + " urlList=" + urlList);
-            
-            return null;
-        }
-        
-        // try to avoid always returning the same alternative by randomising here
-        urlList = ListUtils.randomiseListLayout(urlList);
-        
-        for(String nextEndpoint : urlList)
-        {
-            if(nextEndpoint.equals(blacklistedUrl))
-            {
-                continue;
-            }
-            
-            if(!this.isUrlBlacklisted(nextEndpoint))
-            {
-                return nextEndpoint;
-            }
-        }
-        
-        return null;
     }
     
 }

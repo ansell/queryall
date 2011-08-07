@@ -20,15 +20,15 @@ import org.queryall.impl.SparqlNormalisationRuleImpl;
 public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisationRuleTest
 {
     @Override
-    public SparqlNormalisationRule getNewTestSparqlRule()
-    {
-        return new SparqlNormalisationRuleImpl();
-    }
-    
-    @Override
     public Profile getNewTestProfile()
     {
         return new ProfileImpl();
+    }
+    
+    @Override
+    public SparqlNormalisationRule getNewTestSparqlRule()
+    {
+        return new SparqlNormalisationRuleImpl();
     }
     
     @Override
@@ -38,15 +38,57 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     }
     
     @Override
+    public URI getProfileIncludeExcludeOrderUndefinedUri()
+    {
+        return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    }
+    
+    @Override
     public URI getProfileIncludeThenExcludeURI()
     {
         return ProfileImpl.getIncludeThenExcludeUri();
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrderUndefinedUri()
+    public URI getRdfruleStageAfterQueryCreationURI()
     {
-        return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+        return NormalisationRuleImpl.getRdfruleStageAfterQueryCreation();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterQueryParsingURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterQueryParsing();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterResultsImportURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterResultsImport();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterResultsToDocumentURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterResultsToPoolURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterResultsToPool();
+    }
+    
+    @Override
+    public URI getRdfruleStageBeforeResultsImportURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageBeforeResultsImport();
+    }
+    
+    @Override
+    public URI getRdfruleStageQueryVariablesURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageQueryVariables();
     }
     
     @Override
@@ -65,48 +107,6 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     public URI getSparqlRuleModeOnlyIncludeMatchesURI()
     {
         return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
-    }
-    
-    @Override
-    public URI getRdfruleStageQueryVariablesURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageQueryVariables();
-    }
-    
-    @Override
-    public URI getRdfruleStageAfterQueryCreationURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageAfterQueryCreation();
-    }
-    
-    @Override
-    public URI getRdfruleStageAfterQueryParsingURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageAfterQueryParsing();
-    }
-    
-    @Override
-    public URI getRdfruleStageBeforeResultsImportURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageBeforeResultsImport();
-    }
-    
-    @Override
-    public URI getRdfruleStageAfterResultsImportURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageAfterResultsImport();
-    }
-    
-    @Override
-    public URI getRdfruleStageAfterResultsToPoolURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageAfterResultsToPool();
-    }
-    
-    @Override
-    public URI getRdfruleStageAfterResultsToDocumentURI()
-    {
-        return NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument();
     }
     
 }

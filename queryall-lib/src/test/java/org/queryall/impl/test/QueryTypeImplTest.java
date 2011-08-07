@@ -17,12 +17,6 @@ import org.queryall.impl.QueryTypeImpl;
 public class QueryTypeImplTest extends AbstractQueryTypeTest
 {
     @Override
-    public QueryType getNewTestQueryType()
-    {
-        return new QueryTypeImpl();
-    }
-    
-    @Override
     public URI getAllNamespaceMatchMethodUri()
     {
         return QueryTypeImpl.getQueryNamespaceMatchAll();
@@ -32,5 +26,11 @@ public class QueryTypeImplTest extends AbstractQueryTypeTest
     public URI getAnyNamespaceMatchMethodUri()
     {
         return QueryTypeImpl.getQueryNamespaceMatchAny();
+    }
+    
+    @Override
+    public QueryType getNewTestQueryType()
+    {
+        return new QueryTypeImpl();
     }
 }

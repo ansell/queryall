@@ -25,7 +25,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     // public String url = "";
     // public String postInformation = "";
     // public String acceptHeader = "";
-    public int maxRowsParameter = getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
+    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
     
     // public String format = "";
     
@@ -42,9 +42,9 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     // public boolean completed = false;
     // public boolean wasSuccessful = false;
     
-    public HttpUrlQueryRunnable(String nextHttpOperation, String nextUrl, String nextPostInformation,
-            String nextAcceptHeader, String nextFormat, QueryAllConfiguration localSettings,
-            BlacklistController localBlacklistController)
+    public HttpUrlQueryRunnable(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
+            final String nextAcceptHeader, final String nextFormat, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController)
     {
         super(nextUrl, nextFormat, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
         this.httpOperation = nextHttpOperation;
@@ -60,9 +60,9 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     {
         try
         {
-            setQueryStartTime(new Date());
+            this.setQueryStartTime(new Date());
             
-            RdfFetcher fetcher = new RdfFetcher(getLocalSettings(), getBlacklistController());
+            final RdfFetcher fetcher = new RdfFetcher(this.getLocalSettings(), this.getBlacklistController());
             
             if(HttpUrlQueryRunnable._TRACE)
             {
@@ -72,7 +72,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
             {
                 this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(), "",
-                        this.getQuery(), "", maxRowsParameter, this.getAcceptHeader()));
+                        this.getQuery(), "", this.maxRowsParameter, this.getAcceptHeader()));
             }
             else if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostUrlUri().stringValue())
                     || this.httpOperation.equals(HttpProviderImpl.getProviderHttpGetUrlUri().stringValue()))
@@ -83,7 +83,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             // make the normalised Result the same as the raw result unless people actually want to
             // normalise it
-            this.setNormalisedResult(getRawResult());
+            this.setNormalisedResult(this.getRawResult());
             
             this.setReturnedContentType(fetcher.lastReturnedContentType);
             
@@ -96,21 +96,21 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             this.setReturnedContentEncoding(fetcher.lastReturnedContentEncoding);
             
-            setWasSuccessful(true);
+            this.setWasSuccessful(true);
         }
-        catch(java.net.SocketTimeoutException ste)
+        catch(final java.net.SocketTimeoutException ste)
         {
-            setWasSuccessful(false);
-            setLastException(ste);
+            this.setWasSuccessful(false);
+            this.setLastException(ste);
         }
-        catch(Exception ex)
+        catch(final Exception ex)
         {
-            setWasSuccessful(false);
-            setLastException(ex);
+            this.setWasSuccessful(false);
+            this.setLastException(ex);
         }
         finally
         {
-            setQueryEndTime(new Date());
+            this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
     }

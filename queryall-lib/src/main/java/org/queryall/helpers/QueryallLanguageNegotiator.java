@@ -42,7 +42,7 @@ public class QueryallLanguageNegotiator
         return QueryallLanguageNegotiator.contentNegotiator;
     }
     
-    public static String getResponseLanguage(String acceptHeader, String userAgent)
+    public static String getResponseLanguage(final String acceptHeader, final String userAgent)
     {
         if(QueryallLanguageNegotiator._DEBUG)
         {
@@ -50,8 +50,8 @@ public class QueryallLanguageNegotiator
                     + " userAgent=" + userAgent);
         }
         
-        ContentTypeNegotiator negotiator = QueryallLanguageNegotiator.getLanguageNegotiator();
-        MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
+        final ContentTypeNegotiator negotiator = QueryallLanguageNegotiator.getLanguageNegotiator();
+        final MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
         
         if(bestMatch == null)
         {

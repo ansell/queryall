@@ -19,29 +19,12 @@ public class QueryDebug
     private String queryString = "";
     private Collection<URI> matchingQueryTitles = new HashSet<URI>();
     
-    @Override
-    public String toString()
+    /**
+     * @return the clientIPAddress
+     */
+    public String getClientIPAddress()
     {
-        String result =
-                "Client IP Address = " + getClientIPAddress() + ", Total query time = " + getTotalTimeMilliseconds()
-                        + ", queryString = " + getQueryString() + ", relevantQueryTitles=";
-        
-        Collection<URI> uniqueTitles = new HashSet<URI>();
-        
-        for(URI nextQueryTitle : getMatchingQueryTitles())
-        {
-            if(!uniqueTitles.contains(nextQueryTitle))
-            {
-                uniqueTitles.add(nextQueryTitle);
-            }
-        }
-        
-        for(URI nextUniqueQueryTitle : uniqueTitles)
-        {
-            result += nextUniqueQueryTitle.stringValue() + ",";
-        }
-        
-        return result;
+        return this.clientIPAddress;
     }
     
     /**
@@ -49,16 +32,7 @@ public class QueryDebug
      */
     public Collection<URI> getMatchingQueryTitles()
     {
-        return matchingQueryTitles;
-    }
-    
-    /**
-     * @param matchingQueryTitles
-     *            the matchingQueryTitles to set
-     */
-    public void setMatchingQueryTitles(Collection<URI> matchingQueryTitles)
-    {
-        this.matchingQueryTitles = matchingQueryTitles;
+        return this.matchingQueryTitles;
     }
     
     /**
@@ -66,33 +40,7 @@ public class QueryDebug
      */
     public String getQueryString()
     {
-        return queryString;
-    }
-    
-    /**
-     * @param queryString
-     *            the queryString to set
-     */
-    public void setQueryString(String queryString)
-    {
-        this.queryString = queryString;
-    }
-    
-    /**
-     * @return the clientIPAddress
-     */
-    public String getClientIPAddress()
-    {
-        return clientIPAddress;
-    }
-    
-    /**
-     * @param clientIPAddress
-     *            the clientIPAddress to set
-     */
-    public void setClientIPAddress(String clientIPAddress)
-    {
-        this.clientIPAddress = clientIPAddress;
+        return this.queryString;
     }
     
     /**
@@ -100,16 +48,69 @@ public class QueryDebug
      */
     public long getTotalTimeMilliseconds()
     {
-        return totalTimeMilliseconds;
+        return this.totalTimeMilliseconds;
+    }
+    
+    /**
+     * @param clientIPAddress
+     *            the clientIPAddress to set
+     */
+    public void setClientIPAddress(final String clientIPAddress)
+    {
+        this.clientIPAddress = clientIPAddress;
+    }
+    
+    /**
+     * @param matchingQueryTitles
+     *            the matchingQueryTitles to set
+     */
+    public void setMatchingQueryTitles(final Collection<URI> matchingQueryTitles)
+    {
+        this.matchingQueryTitles = matchingQueryTitles;
+    }
+    
+    /**
+     * @param queryString
+     *            the queryString to set
+     */
+    public void setQueryString(final String queryString)
+    {
+        this.queryString = queryString;
     }
     
     /**
      * @param totalTimeMilliseconds
      *            the totalTimeMilliseconds to set
      */
-    public void setTotalTimeMilliseconds(long totalTimeMilliseconds)
+    public void setTotalTimeMilliseconds(final long totalTimeMilliseconds)
     {
         this.totalTimeMilliseconds = totalTimeMilliseconds;
+    }
+    
+    @Override
+    public String toString()
+    {
+        String result =
+                "Client IP Address = " + this.getClientIPAddress() + ", Total query time = "
+                        + this.getTotalTimeMilliseconds() + ", queryString = " + this.getQueryString()
+                        + ", relevantQueryTitles=";
+        
+        final Collection<URI> uniqueTitles = new HashSet<URI>();
+        
+        for(final URI nextQueryTitle : this.getMatchingQueryTitles())
+        {
+            if(!uniqueTitles.contains(nextQueryTitle))
+            {
+                uniqueTitles.add(nextQueryTitle);
+            }
+        }
+        
+        for(final URI nextUniqueQueryTitle : uniqueTitles)
+        {
+            result += nextUniqueQueryTitle.stringValue() + ",";
+        }
+        
+        return result;
     }
     
 }

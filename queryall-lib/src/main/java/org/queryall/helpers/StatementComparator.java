@@ -17,7 +17,7 @@ public class StatementComparator implements Comparator<Statement>
     public final static int AFTER = 1;
     
     @Override
-    public int compare(Statement first, Statement second)
+    public int compare(final Statement first, final Statement second)
     {
         // Cannot use Statement.equals as it does not take Context into account,
         // but can check for reference equality (==)

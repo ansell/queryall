@@ -39,42 +39,303 @@ public class ProviderImpl implements Provider
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForProvider();
     
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    /**
+     * @return the providerAssumedContentType
+     */
+    public static URI getProviderAssumedContentType()
+    {
+        return ProviderImpl.providerAssumedContentType;
+    }
     
-    private URI key = null;
+    /**
+     * @return the providerGraphUri
+     */
+    public static URI getProviderGraphUri()
+    {
+        return ProviderImpl.providerGraphUri;
+    }
     
-    private String title = "";
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
-    private Collection<URI> namespaces = new HashSet<URI>();
-    private Collection<URI> includedInQueryTypes = new HashSet<URI>();
-    private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
-    private URI redirectOrProxy = ProviderImpl.getProviderRedirect();
-    private boolean isDefaultSourceVar = false;
-    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
-    // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue()
-    // and Provider.providerNoCommunication.stringValue()
-    private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
-    private String assumedContentType = "";
-    static URI providerNoCommunication;
+    /**
+     * @return the providerHandledNamespace
+     */
+    public static URI getProviderHandledNamespace()
+    {
+        return ProviderImpl.providerHandledNamespace;
+    }
+    
+    /**
+     * @return the providerIncludedInQuery
+     */
+    public static URI getProviderIncludedInQuery()
+    {
+        return ProviderImpl.providerIncludedInQuery;
+    }
+    
+    /**
+     * @return the providerIsDefaultSource
+     */
+    public static URI getProviderIsDefaultSource()
+    {
+        return ProviderImpl.providerIsDefaultSource;
+    }
+    
+    /**
+     * @return the providerNeedsRdfNormalisation
+     */
+    public static URI getProviderNeedsRdfNormalisation()
+    {
+        return ProviderImpl.providerNeedsRdfNormalisation;
+    }
+    
+    /**
+     * @return the providerNoCommunication
+     */
+    public static URI getProviderNoCommunication()
+    {
+        return ProviderImpl.providerNoCommunication;
+    }
+    
+    /**
+     * @return the providerProxy
+     */
+    public static URI getProviderProxy()
+    {
+        return ProviderImpl.providerProxy;
+    }
+    
+    /**
+     * @return the providerRedirect
+     */
+    public static URI getProviderRedirect()
+    {
+        return ProviderImpl.providerRedirect;
+    }
+    
+    /**
+     * @return the providerRequiresSparqlGraphURI
+     */
+    public static URI getProviderRequiresSparqlGraphURI()
+    {
+        return ProviderImpl.providerRequiresSparqlGraphURI;
+    }
+    
+    /**
+     * @return the providerResolutionMethod
+     */
+    public static URI getProviderResolutionMethod()
+    {
+        return ProviderImpl.providerResolutionMethod;
+    }
+    
+    /**
+     * @return the providerResolutionStrategy
+     */
+    public static URI getProviderResolutionStrategy()
+    {
+        return ProviderImpl.providerResolutionStrategy;
+    }
+    
+    /**
+     * @return the providerTitle
+     */
+    public static URI getProviderTitle()
+    {
+        return ProviderImpl.providerTitle;
+    }
     
     // Use these to include information based on whether or not the provider was actually used to
     // provide information for particular user queries
     // public Collection<String> providerQueryInclusions = new HashSet<String>();
     // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
+    /**
+     * @return the providerTypeUri
+     */
+    public static URI getProviderTypeUri()
+    {
+        return ProviderImpl.providerTypeUri;
+    }
+    
+    /**
+     * @param providerAssumedContentType
+     *            the providerAssumedContentType to set
+     */
+    public static void setProviderAssumedContentType(final URI providerAssumedContentType)
+    {
+        ProviderImpl.providerAssumedContentType = providerAssumedContentType;
+    }
+    
+    /**
+     * @param providerGraphUri
+     *            the providerGraphUri to set
+     */
+    public static void setProviderGraphUri(final URI providerGraphUri)
+    {
+        ProviderImpl.providerGraphUri = providerGraphUri;
+    }
+    
+    /**
+     * @param providerHandledNamespace
+     *            the providerHandledNamespace to set
+     */
+    public static void setProviderHandledNamespace(final URI providerHandledNamespace)
+    {
+        ProviderImpl.providerHandledNamespace = providerHandledNamespace;
+    }
+    
+    /**
+     * @param providerIncludedInQuery
+     *            the providerIncludedInQuery to set
+     */
+    public static void setProviderIncludedInQuery(final URI providerIncludedInQuery)
+    {
+        ProviderImpl.providerIncludedInQuery = providerIncludedInQuery;
+    }
+    
+    /**
+     * @param providerIsDefaultSource
+     *            the providerIsDefaultSource to set
+     */
+    public static void setProviderIsDefaultSource(final URI providerIsDefaultSource)
+    {
+        ProviderImpl.providerIsDefaultSource = providerIsDefaultSource;
+    }
+    
+    /**
+     * @param providerNeedsRdfNormalisation
+     *            the providerNeedsRdfNormalisation to set
+     */
+    public static void setProviderNeedsRdfNormalisation(final URI providerNeedsRdfNormalisation)
+    {
+        ProviderImpl.providerNeedsRdfNormalisation = providerNeedsRdfNormalisation;
+    }
+    
+    /**
+     * @param providerNoCommunication
+     *            the providerNoCommunication to set
+     */
+    public static void setProviderNoCommunication(final URI providerNoCommunication)
+    {
+        ProviderImpl.providerNoCommunication = providerNoCommunication;
+    }
+    
+    /**
+     * @param providerProxy
+     *            the providerProxy to set
+     */
+    public static void setProviderProxy(final URI providerProxy)
+    {
+        ProviderImpl.providerProxy = providerProxy;
+    }
+    
+    /**
+     * @param providerRedirect
+     *            the providerRedirect to set
+     */
+    public static void setProviderRedirect(final URI providerRedirect)
+    {
+        ProviderImpl.providerRedirect = providerRedirect;
+    }
+    
+    /**
+     * @param providerRequiresSparqlGraphURI
+     *            the providerRequiresSparqlGraphURI to set
+     */
+    public static void setProviderRequiresSparqlGraphURI(final URI providerRequiresSparqlGraphURI)
+    {
+        ProviderImpl.providerRequiresSparqlGraphURI = providerRequiresSparqlGraphURI;
+    }
+    
+    /**
+     * @param providerResolutionMethod
+     *            the providerResolutionMethod to set
+     */
+    public static void setProviderResolutionMethod(final URI providerResolutionMethod)
+    {
+        ProviderImpl.providerResolutionMethod = providerResolutionMethod;
+    }
+    
+    /**
+     * @param providerResolutionStrategy
+     *            the providerResolutionStrategy to set
+     */
+    public static void setProviderResolutionStrategy(final URI providerResolutionStrategy)
+    {
+        ProviderImpl.providerResolutionStrategy = providerResolutionStrategy;
+    }
+    
+    /**
+     * @param providerTitle
+     *            the providerTitle to set
+     */
+    public static void setProviderTitle(final URI providerTitle)
+    {
+        ProviderImpl.providerTitle = providerTitle;
+    }
+    
+    /**
+     * @param providerTypeUri
+     *            the providerTypeUri to set
+     */
+    public static void setProviderTypeUri(final URI providerTypeUri)
+    {
+        ProviderImpl.providerTypeUri = providerTypeUri;
+    }
+    
+    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    
+    private URI key = null;
+    
+    private String title = "";
+    
+    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    
+    private Collection<URI> namespaces = new HashSet<URI>();
+    
+    private Collection<URI> includedInQueryTypes = new HashSet<URI>();
+    
+    private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
+    
+    private URI redirectOrProxy = ProviderImpl.getProviderRedirect();
+    
+    private boolean isDefaultSourceVar = false;
+    
+    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    
+    // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue()
+    // and Provider.providerNoCommunication.stringValue()
+    private URI endpointMethod = ProviderImpl.getProviderNoCommunication();
+    
+    private String assumedContentType = "";
+    
+    static URI providerNoCommunication;
+    
     private static URI providerTypeUri;
+    
     private static URI providerTitle;
+    
     private static URI providerResolutionStrategy;
+    
     private static URI providerHandledNamespace;
+    
     private static URI providerResolutionMethod;
+    
     private static URI providerRequiresSparqlGraphURI;
+    
     private static URI providerGraphUri;
+    
     private static URI providerIncludedInQuery;
+    
     private static URI providerIsDefaultSource;
+    
     private static URI providerNeedsRdfNormalisation;
+    
     private static URI providerRedirect;
+    
     private static URI providerProxy;
+    
     public static String providerNamespace;
+    
     // public static String profileNamespace;
     private static URI providerAssumedContentType;
     
@@ -106,10 +367,10 @@ public class ProviderImpl implements Provider
         ProviderImpl.setProviderTitle(f.createURI(ProviderImpl.providerNamespace, "Title"));
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        RepositoryConnection con = myRepository.getConnection();
+        final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
         
@@ -202,7 +463,7 @@ public class ProviderImpl implements Provider
             
             return true;
         }
-        catch(RepositoryException re)
+        catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
@@ -224,34 +485,17 @@ public class ProviderImpl implements Provider
         return false;
     }
     
-    @Override
-    public URI getEndpointMethod()
-    {
-        return endpointMethod;
-    }
-    
-    @Override
-    public void setEndpointMethod(URI endpointMethod)
-    {
-        this.endpointMethod = endpointMethod;
-    }
-    
-    @Override
-    public boolean containsNamespaceOrDefault(URI namespaceKey)
-    {
-        return containsNamespaceUri(namespaceKey) || getIsDefaultSource();
-    }
-    
     public ProviderImpl()
     {
         super();
     }
     
-    public ProviderImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    public ProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         final ValueFactory f = Constants.valueFactory;
         
-        for(Statement nextStatement : inputStatements)
+        for(final Statement nextStatement : inputStatements)
         {
             if(ProviderImpl._TRACE)
             {
@@ -324,274 +568,46 @@ public class ProviderImpl implements Provider
     }
     
     @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public void addIncludedInQueryType(final URI includedInQueryType)
     {
-        RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
+        if(this.includedInQueryTypes == null)
         {
-            if(ProviderImpl._TRACE)
-            {
-                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + keyToUse);
-            }
-            
-            // create some resources and literals to make statements out of
-            URI providerInstanceUri = this.getKey();
-            
-            Literal titleLiteral;
-            
-            if(getTitle() == null)
-            {
-                titleLiteral = f.createLiteral("");
-            }
-            else
-            {
-                titleLiteral = f.createLiteral(getTitle());
-            }
-            
-            URI redirectOrProxyLiteral = getRedirectOrProxy();
-            URI endpointMethodLiteral = getEndpointMethod();
-            Literal isDefaultSourceLiteral = f.createLiteral(getIsDefaultSourceVar());
-            Literal assumedContentTypeLiteral = f.createLiteral(getAssumedContentType());
-            
-            URI curationStatusLiteral = null;
-            
-            if(getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = getCurationStatus();
-            }
-            
-            URI profileIncludeExcludeOrderLiteral = getProfileIncludeExcludeOrder();
-            
-            con.setAutoCommit(false);
-            
-            con.add(providerInstanceUri, RDF.TYPE, ProviderImpl.getProviderTypeUri(), keyToUse);
-            
-            con.add(providerInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, ProviderImpl.getProviderResolutionStrategy(), redirectOrProxyLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, ProviderImpl.getProviderResolutionMethod(), endpointMethodLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, ProviderImpl.getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(),
-                    profileIncludeExcludeOrderLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, ProviderImpl.getProviderAssumedContentType(), assumedContentTypeLiteral,
-                    keyToUse);
-            
-            if(getNamespaces() != null)
-            {
-                for(URI nextNamespace : getNamespaces())
-                {
-                    if(nextNamespace != null)
-                    {
-                        con.add(providerInstanceUri, ProviderImpl.getProviderHandledNamespace(), nextNamespace,
-                                keyToUse);
-                    }
-                }
-            }
-            
-            if(getIncludedInQueryTypes() != null)
-            {
-                for(URI nextIncludedInCustomQuery : getIncludedInQueryTypes())
-                {
-                    if(nextIncludedInCustomQuery != null)
-                    {
-                        con.add(providerInstanceUri, ProviderImpl.getProviderIncludedInQuery(),
-                                nextIncludedInCustomQuery, keyToUse);
-                    }
-                }
-            }
-            
-            if(getNormalisationUris() != null)
-            {
-                for(URI nextRdfNormalisationNeeded : getNormalisationUris())
-                {
-                    if(nextRdfNormalisationNeeded != null)
-                    {
-                        con.add(providerInstanceUri, ProviderImpl.getProviderNeedsRdfNormalisation(),
-                                nextRdfNormalisationNeeded, keyToUse);
-                    }
-                }
-            }
-            
-            if(unrecognisedStatements != null)
-            {
-                for(Statement nextUnrecognisedStatement : unrecognisedStatements)
-                {
-                    if(nextUnrecognisedStatement != null)
-                    {
-                        con.add(nextUnrecognisedStatement, keyToUse);
-                    }
-                }
-            }
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            con.rollback();
-            
-            ProviderImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        catch(Exception ex)
-        {
-            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + keyToUse, ex);
-        }
-        finally
-        {
-            con.close();
+            this.includedInQueryTypes = new LinkedList<URI>();
         }
         
-        return false;
+        this.includedInQueryTypes.add(includedInQueryType);
     }
     
     @Override
-    public int hashCode()
+    public void addNamespace(final URI namespace)
     {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((curationStatus == null) ? 0 : curationStatus.hashCode());
-        result = prime * result + ((includedInQueryTypes == null) ? 0 : includedInQueryTypes.hashCode());
-        result = prime * result + (isDefaultSourceVar ? 1231 : 1237);
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((namespaces == null) ? 0 : namespaces.hashCode());
-        result = prime * result + ((profileIncludeExcludeOrder == null) ? 0 : profileIncludeExcludeOrder.hashCode());
-        result = prime * result + ((rdfNormalisationsNeeded == null) ? 0 : rdfNormalisationsNeeded.hashCode());
-        result = prime * result + ((redirectOrProxy == null) ? 0 : redirectOrProxy.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        return result;
+        if(this.namespaces == null)
+        {
+            this.namespaces = new LinkedList<URI>();
+        }
+        
+        this.namespaces.add(namespace);
     }
     
     @Override
-    public boolean equals(Object obj)
+    public void addNormalisationUri(final URI rdfNormalisationNeeded)
     {
-        if(this == obj)
+        if(this.rdfNormalisationsNeeded == null)
         {
-            return true;
-        }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(getClass() != obj.getClass())
-        {
-            return false;
-        }
-        ProviderImpl other = (ProviderImpl)obj;
-        if(key == null)
-        {
-            if(other.key != null)
-            {
-                return false;
-            }
-        }
-        else if(!key.equals(other.key))
-        {
-            return false;
+            this.rdfNormalisationsNeeded = new LinkedList<URI>();
         }
         
-        if(curationStatus == null)
-        {
-            if(other.curationStatus != null)
-            {
-                return false;
-            }
-        }
-        else if(!curationStatus.equals(other.curationStatus))
-        {
-            return false;
-        }
-        if(includedInQueryTypes == null)
-        {
-            if(other.includedInQueryTypes != null)
-            {
-                return false;
-            }
-        }
-        else if(!includedInQueryTypes.equals(other.includedInQueryTypes))
-        {
-            return false;
-        }
-        if(isDefaultSourceVar != other.isDefaultSourceVar)
-        {
-            return false;
-        }
-        if(namespaces == null)
-        {
-            if(other.namespaces != null)
-            {
-                return false;
-            }
-        }
-        else if(!namespaces.equals(other.namespaces))
-        {
-            return false;
-        }
-        if(profileIncludeExcludeOrder == null)
-        {
-            if(other.profileIncludeExcludeOrder != null)
-            {
-                return false;
-            }
-        }
-        else if(!profileIncludeExcludeOrder.equals(other.profileIncludeExcludeOrder))
-        {
-            return false;
-        }
-        if(rdfNormalisationsNeeded == null)
-        {
-            if(other.rdfNormalisationsNeeded != null)
-            {
-                return false;
-            }
-        }
-        else if(!rdfNormalisationsNeeded.equals(other.rdfNormalisationsNeeded))
-        {
-            return false;
-        }
-        if(redirectOrProxy == null)
-        {
-            if(other.redirectOrProxy != null)
-            {
-                return false;
-            }
-        }
-        else if(!redirectOrProxy.equals(other.redirectOrProxy))
-        {
-            return false;
-        }
-        if(title == null)
-        {
-            if(other.title != null)
-            {
-                return false;
-            }
-        }
-        else if(!title.equals(other.title))
-        {
-            return false;
-        }
-        
-        return true;
+        this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
     }
     
     @Override
-    public int compareTo(Provider otherProvider)
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
+    {
+        this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    @Override
+    public int compareTo(final Provider otherProvider)
     {
         @SuppressWarnings("unused")
         final int BEFORE = -1;
@@ -608,7 +624,13 @@ public class ProviderImpl implements Provider
     }
     
     @Override
-    public boolean containsNamespaceUri(URI newNamespaceUri)
+    public boolean containsNamespaceOrDefault(final URI namespaceKey)
+    {
+        return this.containsNamespaceUri(namespaceKey) || this.getIsDefaultSource();
+    }
+    
+    @Override
+    public boolean containsNamespaceUri(final URI newNamespaceUri)
     {
         if(this.getNamespaces() != null && newNamespaceUri != null)
         {
@@ -619,7 +641,7 @@ public class ProviderImpl implements Provider
     }
     
     @Override
-    public boolean containsNormalisationUri(URI normalisationKey)
+    public boolean containsNormalisationUri(final URI normalisationKey)
     {
         if(this.getNormalisationUris() != null && normalisationKey != null)
         {
@@ -630,44 +652,360 @@ public class ProviderImpl implements Provider
     }
     
     @Override
-    public boolean needsRedirect()
+    public boolean containsQueryTypeUri(final URI queryKey)
     {
-        return getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect());
+        if(this.getIncludedInQueryTypes() != null && queryKey != null)
+        {
+            return this.getIncludedInQueryTypes().contains(queryKey);
+        }
+        
+        if(queryKey != null)
+        {
+            ProviderImpl.log
+                    .warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="
+                            + this.getKey());
+        }
+        
+        return false;
+    }
+    
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj == null)
+        {
+            return false;
+        }
+        if(this.getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final ProviderImpl other = (ProviderImpl)obj;
+        if(this.key == null)
+        {
+            if(other.key != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.key.equals(other.key))
+        {
+            return false;
+        }
+        
+        if(this.curationStatus == null)
+        {
+            if(other.curationStatus != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.curationStatus.equals(other.curationStatus))
+        {
+            return false;
+        }
+        if(this.includedInQueryTypes == null)
+        {
+            if(other.includedInQueryTypes != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.includedInQueryTypes.equals(other.includedInQueryTypes))
+        {
+            return false;
+        }
+        if(this.isDefaultSourceVar != other.isDefaultSourceVar)
+        {
+            return false;
+        }
+        if(this.namespaces == null)
+        {
+            if(other.namespaces != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.namespaces.equals(other.namespaces))
+        {
+            return false;
+        }
+        if(this.profileIncludeExcludeOrder == null)
+        {
+            if(other.profileIncludeExcludeOrder != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.profileIncludeExcludeOrder.equals(other.profileIncludeExcludeOrder))
+        {
+            return false;
+        }
+        if(this.rdfNormalisationsNeeded == null)
+        {
+            if(other.rdfNormalisationsNeeded != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.rdfNormalisationsNeeded.equals(other.rdfNormalisationsNeeded))
+        {
+            return false;
+        }
+        if(this.redirectOrProxy == null)
+        {
+            if(other.redirectOrProxy != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.redirectOrProxy.equals(other.redirectOrProxy))
+        {
+            return false;
+        }
+        if(this.title == null)
+        {
+            if(other.title != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.title.equals(other.title))
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public String getAssumedContentType()
+    {
+        return this.assumedContentType;
+    }
+    
+    @Override
+    public URI getCurationStatus()
+    {
+        return this.curationStatus;
+    }
+    
+    /**
+     * @return the namespace used to represent objects of this type by default
+     */
+    @Override
+    public String getDefaultNamespace()
+    {
+        return ProviderImpl.defaultNamespace;
+    }
+    
+    /**
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
+     */
+    @Override
+    public Collection<URI> getElementTypes()
+    {
+        final Collection<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProviderImpl.getProviderTypeUri());
+        
+        return results;
+    }
+    
+    @Override
+    public URI getEndpointMethod()
+    {
+        return this.endpointMethod;
+    }
+    
+    @Override
+    public Collection<URI> getIncludedInQueryTypes()
+    {
+        return this.includedInQueryTypes;
+    }
+    
+    @Override
+    public boolean getIsDefaultSource()
+    {
+        return this.getIsDefaultSourceVar();
+    }
+    
+    /**
+     * @return the isDefaultSourceVar
+     */
+    public boolean getIsDefaultSourceVar()
+    {
+        return this.isDefaultSourceVar;
+    }
+    
+    /**
+     * @return the key
+     */
+    @Override
+    public URI getKey()
+    {
+        return this.key;
+    }
+    
+    @Override
+    public Collection<URI> getNamespaces()
+    {
+        return this.namespaces;
+    }
+    
+    @Override
+    public Collection<URI> getNormalisationUris()
+    {
+        return this.rdfNormalisationsNeeded;
+    }
+    
+    @Override
+    public URI getProfileIncludeExcludeOrder()
+    {
+        return this.profileIncludeExcludeOrder;
+    }
+    
+    @Override
+    public URI getRedirectOrProxy()
+    {
+        return this.redirectOrProxy;
+    }
+    
+    @Override
+    public String getTitle()
+    {
+        return this.title;
+    }
+    
+    @Override
+    public Collection<Statement> getUnrecognisedStatements()
+    {
+        return this.unrecognisedStatements;
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.includedInQueryTypes == null) ? 0 : this.includedInQueryTypes.hashCode());
+        result = prime * result + (this.isDefaultSourceVar ? 1231 : 1237);
+        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.namespaces == null) ? 0 : this.namespaces.hashCode());
+        result =
+                prime * result
+                        + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
+        result =
+                prime * result + ((this.rdfNormalisationsNeeded == null) ? 0 : this.rdfNormalisationsNeeded.hashCode());
+        result = prime * result + ((this.redirectOrProxy == null) ? 0 : this.redirectOrProxy.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
+            final boolean includeNonProfileMatched)
+    {
+        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+                includeNonProfileMatched);
     }
     
     @Override
     public boolean needsProxy()
     {
-        return getRedirectOrProxy().equals(ProviderImpl.getProviderProxy());
+        return this.getRedirectOrProxy().equals(ProviderImpl.getProviderProxy());
     }
     
     @Override
-    public String toString()
+    public boolean needsRedirect()
     {
-        String result = "\n";
-        
-        result += "key=" + getKey() + "\n";
-        // result += "endpointUrls="+getEndpointUrls() + "\n";
-        result += "endpointMethod=" + getEndpointMethod() + "\n";
-        result += "namespaces=" + getNamespaces() + "\n";
-        result += "includedInCustomQueries=" + getIncludedInQueryTypes() + "\n";
-        result += "redirectOrProxy=" + getRedirectOrProxy() + "\n";
-        result += "isDefaultSource=" + getIsDefaultSourceVar() + "\n";
-        result += "profileIncludeExcludeOrder=" + getProfileIncludeExcludeOrder() + "\n";
-        // result += "acceptHeaderString="+getAcceptHeaderString() + "\n";
-        
-        return result;
+        return this.getRedirectOrProxy().equals(ProviderImpl.getProviderRedirect());
     }
     
     @Override
-    public String toHtmlFormBody()
+    public void setAssumedContentType(final String assumedContentType)
     {
-        StringBuilder sb = new StringBuilder();
+        this.assumedContentType = assumedContentType;
         
-        @SuppressWarnings("unused")
-        String prefix = "provider_";
-        
-        return sb.toString();
+    }
+    
+    @Override
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    @Override
+    public void setEndpointMethod(final URI endpointMethod)
+    {
+        this.endpointMethod = endpointMethod;
+    }
+    
+    @Override
+    public void setIncludedInQueryTypes(final Collection<URI> includedInCustomQueries)
+    {
+        this.includedInQueryTypes = includedInCustomQueries;
+    }
+    
+    @Override
+    public void setIsDefaultSource(final boolean isDefaultSourceVar)
+    {
+        this.setIsDefaultSourceVar(isDefaultSourceVar);
+    }
+    
+    /**
+     * @param isDefaultSourceVar
+     *            the isDefaultSourceVar to set
+     */
+    public void setIsDefaultSourceVar(final boolean isDefaultSourceVar)
+    {
+        this.isDefaultSourceVar = isDefaultSourceVar;
+    }
+    
+    /**
+     * @param key
+     *            the key to set
+     */
+    @Override
+    public void setKey(final String nextKey)
+    {
+        this.setKey(StringUtils.createURI(nextKey));
+    }
+    
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    @Override
+    public void setNamespaces(final Collection<URI> namespaces)
+    {
+        this.namespaces = namespaces;
+    }
+    
+    @Override
+    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    {
+        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+    }
+    
+    @Override
+    public void setRedirectOrProxy(final URI redirectOrProxy)
+    {
+        this.redirectOrProxy = redirectOrProxy;
+    }
+    
+    @Override
+    public void setTitle(final String title)
+    {
+        this.title = title;
     }
     
     @Override
@@ -691,22 +1029,22 @@ public class ProviderImpl implements Provider
         // "<div class=\"endpointmethod\">Retrieval Method: "+StringUtils.xmlEncodeString(getEndpointMethod().stringValue())
         // + "</div>\n";
         
-        if(getNamespaces() != null)
+        if(this.getNamespaces() != null)
         {
             result +=
-                    "<div class=\"namespaces\">Namespaces: " + StringUtils.xmlEncodeString(getNamespaces().toString())
-                            + "</div>\n";
+                    "<div class=\"namespaces\">Namespaces: "
+                            + StringUtils.xmlEncodeString(this.getNamespaces().toString()) + "</div>\n";
         }
         else
         {
             result += "<div class=\"endpointurl\">Endpoint URL's: <span class=\"error\">None specified!</span></div>\n";
         }
         
-        if(getIncludedInQueryTypes() != null)
+        if(this.getIncludedInQueryTypes() != null)
         {
             result +=
                     "<div class=\"includedInCustomQueries\">Use this provider for the following queries: "
-                            + StringUtils.xmlEncodeString(getIncludedInQueryTypes().toString()) + "</div>\n";
+                            + StringUtils.xmlEncodeString(this.getIncludedInQueryTypes().toString()) + "</div>\n";
         }
         else
         {
@@ -714,7 +1052,7 @@ public class ProviderImpl implements Provider
                     "<div class=\"includedInCustomQueries\"><span class=\"error\">This provider is not going to be used in any queries!</span></div>\n";
         }
         
-        if(needsRedirect())
+        if(this.needsRedirect())
         {
             result += "<div class=\"redirectOrProxy\">Redirect to this provider</div>\n";
         }
@@ -723,7 +1061,7 @@ public class ProviderImpl implements Provider
             result += "<div class=\"redirectOrProxy\">Proxy communications with this provider</div>\n";
         }
         
-        if(getIsDefaultSource())
+        if(this.getIsDefaultSource())
         {
             result += "<div class=\"defaultsource\">Use this provider for configured queries on all namespaces</div>\n";
         }
@@ -736,481 +1074,171 @@ public class ProviderImpl implements Provider
         return result;
     }
     
-    /**
-     * @return the key
-     */
     @Override
-    public URI getKey()
+    public String toHtmlFormBody()
     {
-        return key;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    /**
-     * @return the namespace used to represent objects of this type by default
-     */
-    @Override
-    public String getDefaultNamespace()
-    {
-        return ProviderImpl.defaultNamespace;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Collection<URI> getElementTypes()
-    {
-        Collection<URI> results = new ArrayList<URI>(1);
+        final StringBuilder sb = new StringBuilder();
         
-        results.add(ProviderImpl.getProviderTypeUri());
+        @SuppressWarnings("unused")
+        final String prefix = "provider_";
         
-        return results;
+        return sb.toString();
     }
     
     @Override
-    public boolean containsQueryTypeUri(URI queryKey)
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
-        if(this.getIncludedInQueryTypes() != null && queryKey != null)
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
         {
-            return this.getIncludedInQueryTypes().contains(queryKey);
+            if(ProviderImpl._TRACE)
+            {
+                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + keyToUse);
+            }
+            
+            // create some resources and literals to make statements out of
+            final URI providerInstanceUri = this.getKey();
+            
+            Literal titleLiteral;
+            
+            if(this.getTitle() == null)
+            {
+                titleLiteral = f.createLiteral("");
+            }
+            else
+            {
+                titleLiteral = f.createLiteral(this.getTitle());
+            }
+            
+            final URI redirectOrProxyLiteral = this.getRedirectOrProxy();
+            final URI endpointMethodLiteral = this.getEndpointMethod();
+            final Literal isDefaultSourceLiteral = f.createLiteral(this.getIsDefaultSourceVar());
+            final Literal assumedContentTypeLiteral = f.createLiteral(this.getAssumedContentType());
+            
+            URI curationStatusLiteral = null;
+            
+            if(this.getCurationStatus() == null)
+            {
+                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+            }
+            else
+            {
+                curationStatusLiteral = this.getCurationStatus();
+            }
+            
+            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
+            
+            con.setAutoCommit(false);
+            
+            con.add(providerInstanceUri, RDF.TYPE, ProviderImpl.getProviderTypeUri(), keyToUse);
+            
+            con.add(providerInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, ProviderImpl.getProviderResolutionStrategy(), redirectOrProxyLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, ProviderImpl.getProviderResolutionMethod(), endpointMethodLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, ProviderImpl.getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(),
+                    profileIncludeExcludeOrderLiteral, keyToUse);
+            
+            con.add(providerInstanceUri, ProviderImpl.getProviderAssumedContentType(), assumedContentTypeLiteral,
+                    keyToUse);
+            
+            if(this.getNamespaces() != null)
+            {
+                for(final URI nextNamespace : this.getNamespaces())
+                {
+                    if(nextNamespace != null)
+                    {
+                        con.add(providerInstanceUri, ProviderImpl.getProviderHandledNamespace(), nextNamespace,
+                                keyToUse);
+                    }
+                }
+            }
+            
+            if(this.getIncludedInQueryTypes() != null)
+            {
+                for(final URI nextIncludedInCustomQuery : this.getIncludedInQueryTypes())
+                {
+                    if(nextIncludedInCustomQuery != null)
+                    {
+                        con.add(providerInstanceUri, ProviderImpl.getProviderIncludedInQuery(),
+                                nextIncludedInCustomQuery, keyToUse);
+                    }
+                }
+            }
+            
+            if(this.getNormalisationUris() != null)
+            {
+                for(final URI nextRdfNormalisationNeeded : this.getNormalisationUris())
+                {
+                    if(nextRdfNormalisationNeeded != null)
+                    {
+                        con.add(providerInstanceUri, ProviderImpl.getProviderNeedsRdfNormalisation(),
+                                nextRdfNormalisationNeeded, keyToUse);
+                    }
+                }
+            }
+            
+            if(this.unrecognisedStatements != null)
+            {
+                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
+                {
+                    if(nextUnrecognisedStatement != null)
+                    {
+                        con.add(nextUnrecognisedStatement, keyToUse);
+                    }
+                }
+            }
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
         }
-        
-        if(queryKey != null)
+        catch(final RepositoryException re)
         {
-            ProviderImpl.log
-                    .warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="
-                            + this.getKey());
+            // Something went wrong during the transaction, so we roll it back
+            con.rollback();
+            
+            ProviderImpl.log.error("RepositoryException: " + re.getMessage());
+        }
+        catch(final Exception ex)
+        {
+            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + keyToUse, ex);
+        }
+        finally
+        {
+            con.close();
         }
         
         return false;
     }
     
     @Override
-    public boolean getIsDefaultSource()
+    public String toString()
     {
-        return getIsDefaultSourceVar();
-    }
-    
-    @Override
-    public void setIsDefaultSource(boolean isDefaultSourceVar)
-    {
-        this.setIsDefaultSourceVar(isDefaultSourceVar);
-    }
-    
-    @Override
-    public Collection<URI> getNormalisationUris()
-    {
-        return rdfNormalisationsNeeded;
-    }
-    
-    @Override
-    public Collection<URI> getIncludedInQueryTypes()
-    {
-        return includedInQueryTypes;
-    }
-    
-    @Override
-    public void setIncludedInQueryTypes(Collection<URI> includedInCustomQueries)
-    {
-        this.includedInQueryTypes = includedInCustomQueries;
-    }
-    
-    @Override
-    public URI getRedirectOrProxy()
-    {
-        return redirectOrProxy;
-    }
-    
-    @Override
-    public void setRedirectOrProxy(URI redirectOrProxy)
-    {
-        this.redirectOrProxy = redirectOrProxy;
-    }
-    
-    @Override
-    public URI getProfileIncludeExcludeOrder()
-    {
-        return profileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
-    {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public Collection<URI> getNamespaces()
-    {
-        return namespaces;
-    }
-    
-    @Override
-    public void setNamespaces(Collection<URI> namespaces)
-    {
-        this.namespaces = namespaces;
-    }
-    
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return curationStatus;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return title;
-    }
-    
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
-    {
-        unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return unrecognisedStatements;
-    }
-    
-    /**
-     * @param providerRedirect
-     *            the providerRedirect to set
-     */
-    public static void setProviderRedirect(URI providerRedirect)
-    {
-        ProviderImpl.providerRedirect = providerRedirect;
-    }
-    
-    /**
-     * @return the providerRedirect
-     */
-    public static URI getProviderRedirect()
-    {
-        return ProviderImpl.providerRedirect;
-    }
-    
-    /**
-     * @param isDefaultSourceVar
-     *            the isDefaultSourceVar to set
-     */
-    public void setIsDefaultSourceVar(boolean isDefaultSourceVar)
-    {
-        this.isDefaultSourceVar = isDefaultSourceVar;
-    }
-    
-    /**
-     * @return the isDefaultSourceVar
-     */
-    public boolean getIsDefaultSourceVar()
-    {
-        return isDefaultSourceVar;
-    }
-    
-    /**
-     * @param providerTypeUri
-     *            the providerTypeUri to set
-     */
-    public static void setProviderTypeUri(URI providerTypeUri)
-    {
-        ProviderImpl.providerTypeUri = providerTypeUri;
-    }
-    
-    /**
-     * @return the providerTypeUri
-     */
-    public static URI getProviderTypeUri()
-    {
-        return ProviderImpl.providerTypeUri;
-    }
-    
-    /**
-     * @param providerTitle
-     *            the providerTitle to set
-     */
-    public static void setProviderTitle(URI providerTitle)
-    {
-        ProviderImpl.providerTitle = providerTitle;
-    }
-    
-    /**
-     * @return the providerTitle
-     */
-    public static URI getProviderTitle()
-    {
-        return ProviderImpl.providerTitle;
-    }
-    
-    /**
-     * @param providerResolutionStrategy
-     *            the providerResolutionStrategy to set
-     */
-    public static void setProviderResolutionStrategy(URI providerResolutionStrategy)
-    {
-        ProviderImpl.providerResolutionStrategy = providerResolutionStrategy;
-    }
-    
-    /**
-     * @return the providerResolutionStrategy
-     */
-    public static URI getProviderResolutionStrategy()
-    {
-        return ProviderImpl.providerResolutionStrategy;
-    }
-    
-    /**
-     * @param providerHandledNamespace
-     *            the providerHandledNamespace to set
-     */
-    public static void setProviderHandledNamespace(URI providerHandledNamespace)
-    {
-        ProviderImpl.providerHandledNamespace = providerHandledNamespace;
-    }
-    
-    /**
-     * @return the providerHandledNamespace
-     */
-    public static URI getProviderHandledNamespace()
-    {
-        return ProviderImpl.providerHandledNamespace;
-    }
-    
-    /**
-     * @param providerResolutionMethod
-     *            the providerResolutionMethod to set
-     */
-    public static void setProviderResolutionMethod(URI providerResolutionMethod)
-    {
-        ProviderImpl.providerResolutionMethod = providerResolutionMethod;
-    }
-    
-    /**
-     * @return the providerResolutionMethod
-     */
-    public static URI getProviderResolutionMethod()
-    {
-        return ProviderImpl.providerResolutionMethod;
-    }
-    
-    /**
-     * @param providerRequiresSparqlGraphURI
-     *            the providerRequiresSparqlGraphURI to set
-     */
-    public static void setProviderRequiresSparqlGraphURI(URI providerRequiresSparqlGraphURI)
-    {
-        ProviderImpl.providerRequiresSparqlGraphURI = providerRequiresSparqlGraphURI;
-    }
-    
-    /**
-     * @return the providerRequiresSparqlGraphURI
-     */
-    public static URI getProviderRequiresSparqlGraphURI()
-    {
-        return ProviderImpl.providerRequiresSparqlGraphURI;
-    }
-    
-    /**
-     * @param providerGraphUri
-     *            the providerGraphUri to set
-     */
-    public static void setProviderGraphUri(URI providerGraphUri)
-    {
-        ProviderImpl.providerGraphUri = providerGraphUri;
-    }
-    
-    /**
-     * @return the providerGraphUri
-     */
-    public static URI getProviderGraphUri()
-    {
-        return ProviderImpl.providerGraphUri;
-    }
-    
-    /**
-     * @param providerIncludedInQuery
-     *            the providerIncludedInQuery to set
-     */
-    public static void setProviderIncludedInQuery(URI providerIncludedInQuery)
-    {
-        ProviderImpl.providerIncludedInQuery = providerIncludedInQuery;
-    }
-    
-    /**
-     * @return the providerIncludedInQuery
-     */
-    public static URI getProviderIncludedInQuery()
-    {
-        return ProviderImpl.providerIncludedInQuery;
-    }
-    
-    /**
-     * @param providerIsDefaultSource
-     *            the providerIsDefaultSource to set
-     */
-    public static void setProviderIsDefaultSource(URI providerIsDefaultSource)
-    {
-        ProviderImpl.providerIsDefaultSource = providerIsDefaultSource;
-    }
-    
-    /**
-     * @return the providerIsDefaultSource
-     */
-    public static URI getProviderIsDefaultSource()
-    {
-        return ProviderImpl.providerIsDefaultSource;
-    }
-    
-    /**
-     * @param providerNeedsRdfNormalisation
-     *            the providerNeedsRdfNormalisation to set
-     */
-    public static void setProviderNeedsRdfNormalisation(URI providerNeedsRdfNormalisation)
-    {
-        ProviderImpl.providerNeedsRdfNormalisation = providerNeedsRdfNormalisation;
-    }
-    
-    /**
-     * @return the providerNeedsRdfNormalisation
-     */
-    public static URI getProviderNeedsRdfNormalisation()
-    {
-        return ProviderImpl.providerNeedsRdfNormalisation;
-    }
-    
-    /**
-     * @param providerProxy
-     *            the providerProxy to set
-     */
-    public static void setProviderProxy(URI providerProxy)
-    {
-        ProviderImpl.providerProxy = providerProxy;
-    }
-    
-    /**
-     * @return the providerProxy
-     */
-    public static URI getProviderProxy()
-    {
-        return ProviderImpl.providerProxy;
-    }
-    
-    @Override
-    public void addNormalisationUri(URI rdfNormalisationNeeded)
-    {
-        if(this.rdfNormalisationsNeeded == null)
-        {
-            this.rdfNormalisationsNeeded = new LinkedList<URI>();
-        }
+        String result = "\n";
         
-        this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
-    }
-    
-    @Override
-    public void addIncludedInQueryType(URI includedInQueryType)
-    {
-        if(this.includedInQueryTypes == null)
-        {
-            this.includedInQueryTypes = new LinkedList<URI>();
-        }
+        result += "key=" + this.getKey() + "\n";
+        // result += "endpointUrls="+getEndpointUrls() + "\n";
+        result += "endpointMethod=" + this.getEndpointMethod() + "\n";
+        result += "namespaces=" + this.getNamespaces() + "\n";
+        result += "includedInCustomQueries=" + this.getIncludedInQueryTypes() + "\n";
+        result += "redirectOrProxy=" + this.getRedirectOrProxy() + "\n";
+        result += "isDefaultSource=" + this.getIsDefaultSourceVar() + "\n";
+        result += "profileIncludeExcludeOrder=" + this.getProfileIncludeExcludeOrder() + "\n";
+        // result += "acceptHeaderString="+getAcceptHeaderString() + "\n";
         
-        this.includedInQueryTypes.add(includedInQueryType);
-    }
-    
-    @Override
-    public void addNamespace(URI namespace)
-    {
-        if(this.namespaces == null)
-        {
-            this.namespaces = new LinkedList<URI>();
-        }
-        
-        this.namespaces.add(namespace);
-    }
-    
-    @Override
-    public boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,
-            boolean includeNonProfileMatched)
-    {
-        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
-                includeNonProfileMatched);
-    }
-    
-    /**
-     * @return the providerNoCommunication
-     */
-    public static URI getProviderNoCommunication()
-    {
-        return ProviderImpl.providerNoCommunication;
-    }
-    
-    /**
-     * @param providerNoCommunication
-     *            the providerNoCommunication to set
-     */
-    public static void setProviderNoCommunication(URI providerNoCommunication)
-    {
-        ProviderImpl.providerNoCommunication = providerNoCommunication;
-    }
-    
-    @Override
-    public String getAssumedContentType()
-    {
-        return assumedContentType;
-    }
-    
-    @Override
-    public void setAssumedContentType(String assumedContentType)
-    {
-        this.assumedContentType = assumedContentType;
-        
-    }
-    
-    /**
-     * @param providerAssumedContentType
-     *            the providerAssumedContentType to set
-     */
-    public static void setProviderAssumedContentType(URI providerAssumedContentType)
-    {
-        ProviderImpl.providerAssumedContentType = providerAssumedContentType;
-    }
-    
-    /**
-     * @return the providerAssumedContentType
-     */
-    public static URI getProviderAssumedContentType()
-    {
-        return ProviderImpl.providerAssumedContentType;
+        return result;
     }
     
 }

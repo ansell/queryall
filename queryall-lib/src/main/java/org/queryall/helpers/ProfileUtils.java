@@ -29,6 +29,124 @@ public class ProfileUtils
     private static final boolean _DEBUG = ProfileUtils.log.isDebugEnabled();
     private static final boolean _INFO = ProfileUtils.log.isInfoEnabled();
     
+    public static List<Profile> getAndSortProfileList(final Collection<URI> nextProfileUriList,
+            final SortOrder nextSortOrder, final Map<URI, Profile> allProfiles)
+    {
+        // Map<URI, Profile> allProfiles = this.getAllProfiles();
+        final List<Profile> results = new LinkedList<Profile>();
+        
+        if(nextProfileUriList == null)
+        {
+            ProfileUtils.log.error("getAndSortProfileList: nextProfileUriList was null!");
+            
+            throw new RuntimeException("getAndSortProfileList: nextProfileUriList was null!");
+        }
+        else
+        {
+            for(final URI nextProfileUri : nextProfileUriList)
+            {
+                // log.error("Settings.getAndSortProfileList: nextProfileUri="+nextProfileUri);
+                if(allProfiles.containsKey(nextProfileUri))
+                {
+                    final Profile nextProfileObject = allProfiles.get(nextProfileUri);
+                    results.add(nextProfileObject);
+                }
+                else if(ProfileUtils._INFO)
+                {
+                    ProfileUtils.log.info("getAndSortProfileList: Could not get profile by URI nextProfileUri="
+                            + nextProfileUri);
+                }
+            }
+        }
+        
+        if(nextSortOrder == SortOrder.LOWEST_ORDER_FIRST)
+        {
+            Collections.sort(results);
+        }
+        else if(nextSortOrder == SortOrder.HIGHEST_ORDER_FIRST)
+        {
+            Collections.sort(results, Collections.reverseOrder());
+        }
+        else
+        {
+            throw new RuntimeException("getAndSortProfileList: sortOrder unrecognised nextSortOrder=" + nextSortOrder);
+        }
+        return results;
+    }
+    
+    public static boolean isUsedWithProfileList(final ProfilableInterface profilableObject,
+            final List<Profile> nextSortedProfileList, final boolean recogniseImplicitInclusions,
+            final boolean includeNonProfileMatched)
+    {
+        for(final Profile nextProfile : nextSortedProfileList)
+        {
+            final ProfileMatch trueResult = ProfileUtils.usedWithProfilable(nextProfile, profilableObject);
+            if(trueResult == ProfileMatch.IMPLICIT_INCLUDE)
+            {
+                if(ProfileUtils._DEBUG)
+                {
+                    ProfileUtils.log.debug("isUsedWithProfileList: found implicit include for profilableObject="
+                            + profilableObject.getKey().stringValue() + " profile="
+                            + nextProfile.getKey().stringValue());
+                }
+                
+                if(recogniseImplicitInclusions)
+                {
+                    if(ProfileUtils._DEBUG)
+                    {
+                        ProfileUtils.log
+                                .debug("isUsedWithProfileList: returning implicit include true for profilableObject="
+                                        + profilableObject.getKey().stringValue() + " profile="
+                                        + nextProfile.getKey().stringValue());
+                    }
+                    return true;
+                }
+                else if(ProfileUtils._DEBUG)
+                {
+                    ProfileUtils.log
+                            .debug("isUsedWithProfileList: implicit include not recognised for profilableObject="
+                                    + profilableObject.getKey().stringValue() + " profile="
+                                    + nextProfile.getKey().stringValue());
+                }
+            }
+            else if(trueResult == ProfileMatch.SPECIFIC_INCLUDE)
+            {
+                if(ProfileUtils._DEBUG)
+                {
+                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific true for profilableObject="
+                            + profilableObject.getKey().stringValue() + " profile="
+                            + nextProfile.getKey().stringValue());
+                }
+                return true;
+            }
+            else if(trueResult == ProfileMatch.SPECIFIC_EXCLUDE)
+            {
+                if(ProfileUtils._DEBUG)
+                {
+                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific false for profilableObject="
+                            + profilableObject.getKey().stringValue() + " profile="
+                            + nextProfile.getKey().stringValue());
+                }
+                return false;
+            }
+            
+        }
+        
+        final boolean returnValue =
+                (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getExcludeThenIncludeUri()) || profilableObject
+                        .getProfileIncludeExcludeOrder()
+                        .equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
+                        && includeNonProfileMatched;
+        
+        if(ProfileUtils._DEBUG)
+        {
+            ProfileUtils.log.debug("ProfileImpl.isUsedWithProfileList: returning no matches found returnValue="
+                    + returnValue + " for profilableObject=" + profilableObject.getKey().stringValue());
+        }
+        
+        return returnValue;
+    }
+    
     /**
      * This method implements the main logic with reference to include/exclude decisions based on a
      * given includeExcludeOrder and the default profile include exclude order which overrides the
@@ -65,16 +183,17 @@ public class ProfileUtils
      *             includeOrExclude or excludeOrInclude and nextDefaultProfileIncludeExcludeOrder
      *             does not help resolve the nextIncludeExcludeOrder
      */
-    public static final ProfileMatch usedWithIncludeExcludeList(URI nextUri, URI nextIncludeExcludeOrder,
-            Collection<URI> includeList, Collection<URI> excludeList, URI nextDefaultProfileIncludeExcludeOrder)
+    public static final ProfileMatch usedWithIncludeExcludeList(final URI nextUri, URI nextIncludeExcludeOrder,
+            final Collection<URI> includeList, final Collection<URI> excludeList,
+            final URI nextDefaultProfileIncludeExcludeOrder)
     {
         if(includeList == null || excludeList == null)
         {
             throw new IllegalArgumentException("Profile.usedWithList: includeList or excludeList was null");
         }
         
-        boolean includeFound = includeList.contains(nextUri);
-        boolean excludeFound = excludeList.contains(nextUri);
+        final boolean includeFound = includeList.contains(nextUri);
+        final boolean excludeFound = excludeList.contains(nextUri);
         
         if(nextIncludeExcludeOrder == null
                 || nextIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
@@ -161,79 +280,7 @@ public class ProfileUtils
         }
     }
     
-    public static boolean isUsedWithProfileList(ProfilableInterface profilableObject,
-            List<Profile> nextSortedProfileList, boolean recogniseImplicitInclusions, boolean includeNonProfileMatched)
-    {
-        for(final Profile nextProfile : nextSortedProfileList)
-        {
-            final ProfileMatch trueResult = ProfileUtils.usedWithProfilable(nextProfile, profilableObject);
-            if(trueResult == ProfileMatch.IMPLICIT_INCLUDE)
-            {
-                if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log.debug("isUsedWithProfileList: found implicit include for profilableObject="
-                            + profilableObject.getKey().stringValue() + " profile="
-                            + nextProfile.getKey().stringValue());
-                }
-                
-                if(recogniseImplicitInclusions)
-                {
-                    if(ProfileUtils._DEBUG)
-                    {
-                        ProfileUtils.log
-                                .debug("isUsedWithProfileList: returning implicit include true for profilableObject="
-                                        + profilableObject.getKey().stringValue() + " profile="
-                                        + nextProfile.getKey().stringValue());
-                    }
-                    return true;
-                }
-                else if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log
-                            .debug("isUsedWithProfileList: implicit include not recognised for profilableObject="
-                                    + profilableObject.getKey().stringValue() + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
-            }
-            else if(trueResult == ProfileMatch.SPECIFIC_INCLUDE)
-            {
-                if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific true for profilableObject="
-                            + profilableObject.getKey().stringValue() + " profile="
-                            + nextProfile.getKey().stringValue());
-                }
-                return true;
-            }
-            else if(trueResult == ProfileMatch.SPECIFIC_EXCLUDE)
-            {
-                if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific false for profilableObject="
-                            + profilableObject.getKey().stringValue() + " profile="
-                            + nextProfile.getKey().stringValue());
-                }
-                return false;
-            }
-            
-        }
-        
-        boolean returnValue =
-                (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getExcludeThenIncludeUri()) || profilableObject
-                        .getProfileIncludeExcludeOrder()
-                        .equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
-                        && includeNonProfileMatched;
-        
-        if(ProfileUtils._DEBUG)
-        {
-            ProfileUtils.log.debug("ProfileImpl.isUsedWithProfileList: returning no matches found returnValue="
-                    + returnValue + " for profilableObject=" + profilableObject.getKey().stringValue());
-        }
-        
-        return returnValue;
-    }
-    
-    public static ProfileMatch usedWithProfilable(Profile profile, ProfilableInterface profilableObject)
+    public static ProfileMatch usedWithProfilable(final Profile profile, final ProfilableInterface profilableObject)
     {
         Collection<URI> includeList = null;
         Collection<URI> excludeList = null;
@@ -264,7 +311,7 @@ public class ProfileUtils
                             + profilableObject.toString());
         }
         
-        ProfileMatch trueResult =
+        final ProfileMatch trueResult =
                 ProfileUtils.usedWithIncludeExcludeList(profilableObject.getKey(),
                         profilableObject.getProfileIncludeExcludeOrder(), includeList, excludeList,
                         profile.getDefaultProfileIncludeExcludeOrder());
@@ -291,50 +338,5 @@ public class ProfileUtils
         }
         
         return trueResult;
-    }
-    
-    public static List<Profile> getAndSortProfileList(Collection<URI> nextProfileUriList, SortOrder nextSortOrder,
-            Map<URI, Profile> allProfiles)
-    {
-        // Map<URI, Profile> allProfiles = this.getAllProfiles();
-        final List<Profile> results = new LinkedList<Profile>();
-        
-        if(nextProfileUriList == null)
-        {
-            ProfileUtils.log.error("getAndSortProfileList: nextProfileUriList was null!");
-            
-            throw new RuntimeException("getAndSortProfileList: nextProfileUriList was null!");
-        }
-        else
-        {
-            for(final URI nextProfileUri : nextProfileUriList)
-            {
-                // log.error("Settings.getAndSortProfileList: nextProfileUri="+nextProfileUri);
-                if(allProfiles.containsKey(nextProfileUri))
-                {
-                    final Profile nextProfileObject = allProfiles.get(nextProfileUri);
-                    results.add(nextProfileObject);
-                }
-                else if(ProfileUtils._INFO)
-                {
-                    ProfileUtils.log.info("getAndSortProfileList: Could not get profile by URI nextProfileUri="
-                            + nextProfileUri);
-                }
-            }
-        }
-        
-        if(nextSortOrder == SortOrder.LOWEST_ORDER_FIRST)
-        {
-            Collections.sort(results);
-        }
-        else if(nextSortOrder == SortOrder.HIGHEST_ORDER_FIRST)
-        {
-            Collections.sort(results, Collections.reverseOrder());
-        }
-        else
-        {
-            throw new RuntimeException("getAndSortProfileList: sortOrder unrecognised nextSortOrder=" + nextSortOrder);
-        }
-        return results;
     }
 }

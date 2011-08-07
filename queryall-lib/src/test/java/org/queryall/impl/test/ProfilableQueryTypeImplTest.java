@@ -23,14 +23,14 @@ public class ProfilableQueryTypeImplTest extends BaseProfilableTest
     }
     
     @Override
-    public void includeTrueUri(Profile profilable, URI uriToInclude)
+    public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {
-        profilable.addIncludeQueryType(uriToInclude);
+        profilable.addExcludeQueryType(uriToExclude);
     }
     
     @Override
-    public void includeFalseUri(Profile profilable, URI uriToExclude)
+    public void includeTrueUri(final Profile profilable, final URI uriToInclude)
     {
-        profilable.addExcludeQueryType(uriToExclude);
+        profilable.addIncludeQueryType(uriToInclude);
     }
 }

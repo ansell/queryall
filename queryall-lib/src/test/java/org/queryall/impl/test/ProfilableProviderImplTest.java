@@ -23,14 +23,14 @@ public class ProfilableProviderImplTest extends BaseProfilableTest
     }
     
     @Override
-    public void includeTrueUri(Profile profilable, URI uriToInclude)
+    public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {
-        profilable.addIncludeProvider(uriToInclude);
+        profilable.addExcludeProvider(uriToExclude);
     }
     
     @Override
-    public void includeFalseUri(Profile profilable, URI uriToExclude)
+    public void includeTrueUri(final Profile profilable, final URI uriToInclude)
     {
-        profilable.addExcludeProvider(uriToExclude);
+        profilable.addIncludeProvider(uriToInclude);
     }
 }

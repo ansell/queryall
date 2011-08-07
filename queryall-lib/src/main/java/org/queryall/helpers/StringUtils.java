@@ -33,68 +33,51 @@ public class StringUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = StringUtils.log.isInfoEnabled();
     
-    /**
-     * @param stringToEncode
-     * @return
-     */
-    public static String percentEncode(String stringToEncode)
+    public static URI createURI(final String stringForm)
     {
-        String result = "";
-        
-        try
+        return Constants.valueFactory.createURI(stringForm);
+    }
+    
+    public static List<String> getNamespaceAndIdentifier(final String nsAndId, final QueryAllConfiguration localSettings)
+    {
+        return StringUtils.matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(),
+                localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", ""), nsAndId);
+    }
+    
+    public static List<String> getNamespaceAndIdentifierFromUri(final String nextUri,
+            final QueryAllConfiguration localSettings)
+    {
+        if(nextUri.startsWith(localSettings.getDefaultHostAddress()))
         {
-            result = URLEncoder.encode(stringToEncode, "utf-8").replace("+", "%20");
-        }
-        catch(final java.io.UnsupportedEncodingException uee)
-        {
-            StringUtils.log.fatal("RdfUtils.percentEncode: unable to find utf-8 encoder!");
+            return StringUtils.getNamespaceAndIdentifier(
+                    nextUri.substring(localSettings.getDefaultHostAddress().length()), localSettings);
         }
         
-        return result;
+        return null;
+    }
+    
+    public static boolean isPlainNamespace(final String queryString, final QueryAllConfiguration localSettings)
+    {
+        return localSettings.getPlainNamespacePattern().matcher(queryString).find();
+    }
+    
+    public static boolean isPlainNamespaceAndIdentifier(final String queryString,
+            final QueryAllConfiguration localSettings)
+    {
+        return localSettings.getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
     }
     
     /**
-     * @param stringToEncode
+     * @param stringsToJoin
+     * @param insertedCharacters
      * @return
      */
-    public static String plusPercentEncode(String stringToEncode)
+    public static String joinStringCollection(final Collection<String> stringsToJoin, final String insertedCharacters)
     {
-        String result = "";
+        final StringBuilder buffer =
+                StringUtils.joinStringCollectionHelper(stringsToJoin, insertedCharacters, new StringBuilder());
         
-        try
-        {
-            result = URLEncoder.encode(stringToEncode, "utf-8").replace("%2F", "/");
-        }
-        catch(final java.io.UnsupportedEncodingException uee)
-        {
-            StringUtils.log.fatal("RdfUtils.percentEncode: unable to find utf-8 encoder!");
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @param stringToEncode
-     * @return
-     */
-    public static String plusSpaceEncode(String stringToEncode)
-    {
-        String result = stringToEncode.replace(" ", "+");
-        
-        // log.info("RdfUtils.plusSpaceEncode: stringToEncode="+stringToEncode+" result="+result);
-        
-        return result;
-    }
-    
-    /**
-     * @param stringToEncode
-     * @return
-     */
-    public static String ntriplesEncode(String stringToEncode)
-    {
-        String resultString = NTriplesUtil.escapeString(stringToEncode);
-        
-        return resultString;
+        return buffer.toString();
     }
     
     /**
@@ -103,12 +86,12 @@ public class StringUtils
      * @param buffer
      * @return
      */
-    public static StringBuilder joinStringCollectionHelper(Collection<String> stringsToJoin, String insertedCharacters,
-            StringBuilder buffer)
+    public static StringBuilder joinStringCollectionHelper(final Collection<String> stringsToJoin,
+            final String insertedCharacters, final StringBuilder buffer)
     {
         boolean first = true;
         
-        for(String nextJoinString : stringsToJoin)
+        for(final String nextJoinString : stringsToJoin)
         {
             if(!first)
             {
@@ -123,77 +106,10 @@ public class StringUtils
         return buffer;
     }
     
-    /**
-     * @param stringsToJoin
-     * @param insertedCharacters
-     * @return
-     */
-    public static String joinStringCollection(Collection<String> stringsToJoin, String insertedCharacters)
+    public static List<String> matchesForRegexOnString(final Pattern nextRegexPattern, final String nextRegex,
+            final String nextQueryString)
     {
-        final StringBuilder buffer =
-                StringUtils.joinStringCollectionHelper(stringsToJoin, insertedCharacters, new StringBuilder());
-        
-        return buffer.toString();
-    }
-    
-    /**
-     * @param inputString
-     * @return
-     */
-    public static String xmlEncodeString(String inputString)
-    {
-        final StringBuilder encodedString = new StringBuilder();
-        final StringCharacterIterator characters = new StringCharacterIterator(inputString);
-        
-        char nextCharacter = characters.current();
-        
-        while(nextCharacter != CharacterIterator.DONE)
-        {
-            if(nextCharacter == '<')
-            {
-                encodedString.append("&lt;");
-            }
-            else if(nextCharacter == '>')
-            {
-                encodedString.append("&gt;");
-            }
-            else if(nextCharacter == '&')
-            {
-                encodedString.append("&amp;");
-            }
-            else if(nextCharacter == '\'')
-            {
-                encodedString.append("&#039;");
-            }
-            else if(nextCharacter == '\"')
-            {
-                encodedString.append("&quot;");
-            }
-            else
-            {
-                encodedString.append(nextCharacter);
-            }
-            
-            nextCharacter = characters.next();
-        }
-        
-        return encodedString.toString();
-    }
-    
-    public static boolean matchesRegexOnString(Pattern nextRegexPattern, String nextRegex, String nextQueryString)
-    {
-        if(nextRegex == null || nextRegex.trim().equals(""))
-        {
-            return false;
-        }
-        
-        return nextRegexPattern.matcher(nextQueryString).matches();
-    }
-    
-    public static List<String> matchesForRegexOnString(Pattern nextRegexPattern, String nextRegex,
-            String nextQueryString)
-    {
-        List<String> results = new ArrayList<String>();
+        final List<String> results = new ArrayList<String>();
         
         if(nextRegex == null || nextRegex.trim().equals(""))
         {
@@ -205,7 +121,7 @@ public class StringUtils
             throw new RuntimeException("RdfUtils.matchesForRegexOnString: nextRegexPattern was null");
         }
         
-        Matcher matcher = nextRegexPattern.matcher(nextQueryString);
+        final Matcher matcher = nextRegexPattern.matcher(nextQueryString);
         
         boolean found = false;
         
@@ -243,58 +159,123 @@ public class StringUtils
         return results;
     }
     
-    public static void replaceMatchesForRegexOnString(Pattern nextRegexPattern, String nextRegex,
-            StringBuilder nextQueryString, StringBuilder replaceStringBuilder)
+    public static boolean matchesRegexOnString(final Pattern nextRegexPattern, final String nextRegex,
+            final String nextQueryString)
     {
         if(nextRegex == null || nextRegex.trim().equals(""))
         {
-            // return nextQueryString;
-            return;
+            return false;
         }
         
-        if(nextRegexPattern == null)
-        {
-            throw new RuntimeException("RdfUtils.replaceMatchesForRegexOnString: nextRegexPattern was null");
-        }
-        
-        Matcher matcher = nextRegexPattern.matcher(nextQueryString);
-        
-        StringBuilder buffer = nextQueryString;
-        
-        while(matcher.find())
-        {
-            // Only do these if a match was found
-            buffer = new StringBuilder(nextQueryString);
-            
-            for(int i = 0; i < matcher.groupCount(); i++)
-            {
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log.debug("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
-                            + " Found the text \"" + matcher.group(i + 1) + "\" starting at " + "index="
-                            + matcher.start(i + 1) + " and ending at index=" + matcher.end(i + 1) + ".");
-                }
-                
-                // buffer.replace(matcher.start(i+1), matcher.end(i+1), replaceString);
-                buffer.replace(matcher.start(i + 1), matcher.end(i + 1), matcher.group(i + 1));
-                
-                if(RdfUtils._INFO)
-                {
-                    RdfUtils.log.info("Buffer after replacement=" + buffer.toString());
-                }
-                // results.add(matcher.group(i+1));
-                
-                // found = true;
-            }
-        }
-        
-        // return buffer;
+        return nextRegexPattern.matcher(nextQueryString).matches();
     }
     
-    public static StringBuilder replaceAll(StringBuilder buffer, String searchString, String replacement)
+    public static String md5(final String inputString)
+    {
+        try
+        {
+            final MessageDigest md5 = MessageDigest.getInstance("MD5");
+            
+            final byte[] messageDigest = md5.digest(inputString.getBytes("UTF-8"));
+            final BigInteger bigint = new BigInteger(1, messageDigest);
+            
+            String hash = bigint.toString(16);
+            
+            while(hash.length() < 32)
+            {
+                hash = "0" + hash;
+            }
+            
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("RdfUtils.md5: inputString=" + inputString + " hash=" + hash);
+            }
+            
+            return hash;
+        }
+        catch(final NoSuchAlgorithmException nsae)
+        {
+            RdfUtils.log.fatal("RdfUtils.md5: could not find md5 algorithm");
+            
+            throw new RuntimeException(nsae);
+        }
+        catch(final java.io.UnsupportedEncodingException uee)
+        {
+            RdfUtils.log.fatal("RdfUtils.md5: invalid JRE, does not support UTF-8");
+            
+            throw new RuntimeException(uee);
+        }
+    }
+    
+    /**
+     * @param stringToEncode
+     * @return
+     */
+    public static String ntriplesEncode(final String stringToEncode)
+    {
+        final String resultString = NTriplesUtil.escapeString(stringToEncode);
+        
+        return resultString;
+    }
+    
+    /**
+     * @param stringToEncode
+     * @return
+     */
+    public static String percentEncode(final String stringToEncode)
+    {
+        String result = "";
+        
+        try
+        {
+            result = URLEncoder.encode(stringToEncode, "utf-8").replace("+", "%20");
+        }
+        catch(final java.io.UnsupportedEncodingException uee)
+        {
+            StringUtils.log.fatal("RdfUtils.percentEncode: unable to find utf-8 encoder!");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @param stringToEncode
+     * @return
+     */
+    public static String plusPercentEncode(final String stringToEncode)
+    {
+        String result = "";
+        
+        try
+        {
+            result = URLEncoder.encode(stringToEncode, "utf-8").replace("%2F", "/");
+        }
+        catch(final java.io.UnsupportedEncodingException uee)
+        {
+            StringUtils.log.fatal("RdfUtils.percentEncode: unable to find utf-8 encoder!");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @param stringToEncode
+     * @return
+     */
+    public static String plusSpaceEncode(final String stringToEncode)
+    {
+        final String result = stringToEncode.replace(" ", "+");
+        
+        // log.info("RdfUtils.plusSpaceEncode: stringToEncode="+stringToEncode+" result="+result);
+        
+        return result;
+    }
+    
+    public static StringBuilder replaceAll(final StringBuilder buffer, final String searchString,
+            final String replacement)
     {
         int bufferPosition = buffer.length() - 1;
-        int offset = searchString.length();
+        final int offset = searchString.length();
         
         while(bufferPosition >= 0)
         {
@@ -338,73 +319,96 @@ public class StringUtils
         return buffer;
     }
     
-    public static URI createURI(String stringForm)
+    public static void replaceMatchesForRegexOnString(final Pattern nextRegexPattern, final String nextRegex,
+            final StringBuilder nextQueryString, final StringBuilder replaceStringBuilder)
     {
-        return Constants.valueFactory.createURI(stringForm);
-    }
-    
-    public static String md5(String inputString)
-    {
-        try
+        if(nextRegex == null || nextRegex.trim().equals(""))
         {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            
-            byte[] messageDigest = md5.digest(inputString.getBytes("UTF-8"));
-            BigInteger bigint = new BigInteger(1, messageDigest);
-            
-            String hash = bigint.toString(16);
-            
-            while(hash.length() < 32)
-            {
-                hash = "0" + hash;
-            }
-            
-            if(RdfUtils._DEBUG)
-            {
-                RdfUtils.log.debug("RdfUtils.md5: inputString=" + inputString + " hash=" + hash);
-            }
-            
-            return hash;
-        }
-        catch(NoSuchAlgorithmException nsae)
-        {
-            RdfUtils.log.fatal("RdfUtils.md5: could not find md5 algorithm");
-            
-            throw new RuntimeException(nsae);
-        }
-        catch(java.io.UnsupportedEncodingException uee)
-        {
-            RdfUtils.log.fatal("RdfUtils.md5: invalid JRE, does not support UTF-8");
-            
-            throw new RuntimeException(uee);
-        }
-    }
-    
-    public static boolean isPlainNamespaceAndIdentifier(String queryString, QueryAllConfiguration localSettings)
-    {
-        return localSettings.getPlainNamespaceAndIdentifierPattern().matcher(queryString).find();
-    }
-    
-    public static boolean isPlainNamespace(String queryString, QueryAllConfiguration localSettings)
-    {
-        return localSettings.getPlainNamespacePattern().matcher(queryString).find();
-    }
-    
-    public static List<String> getNamespaceAndIdentifier(String nsAndId, QueryAllConfiguration localSettings)
-    {
-        return StringUtils.matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(),
-                localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", ""), nsAndId);
-    }
-    
-    public static List<String> getNamespaceAndIdentifierFromUri(String nextUri, QueryAllConfiguration localSettings)
-    {
-        if(nextUri.startsWith(localSettings.getDefaultHostAddress()))
-        {
-            return StringUtils.getNamespaceAndIdentifier(
-                    nextUri.substring(localSettings.getDefaultHostAddress().length()), localSettings);
+            // return nextQueryString;
+            return;
         }
         
-        return null;
+        if(nextRegexPattern == null)
+        {
+            throw new RuntimeException("RdfUtils.replaceMatchesForRegexOnString: nextRegexPattern was null");
+        }
+        
+        final Matcher matcher = nextRegexPattern.matcher(nextQueryString);
+        
+        StringBuilder buffer = nextQueryString;
+        
+        while(matcher.find())
+        {
+            // Only do these if a match was found
+            buffer = new StringBuilder(nextQueryString);
+            
+            for(int i = 0; i < matcher.groupCount(); i++)
+            {
+                if(RdfUtils._DEBUG)
+                {
+                    RdfUtils.log.debug("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
+                            + " Found the text \"" + matcher.group(i + 1) + "\" starting at " + "index="
+                            + matcher.start(i + 1) + " and ending at index=" + matcher.end(i + 1) + ".");
+                }
+                
+                // buffer.replace(matcher.start(i+1), matcher.end(i+1), replaceString);
+                buffer.replace(matcher.start(i + 1), matcher.end(i + 1), matcher.group(i + 1));
+                
+                if(RdfUtils._INFO)
+                {
+                    RdfUtils.log.info("Buffer after replacement=" + buffer.toString());
+                }
+                // results.add(matcher.group(i+1));
+                
+                // found = true;
+            }
+        }
+        
+        // return buffer;
+    }
+    
+    /**
+     * @param inputString
+     * @return
+     */
+    public static String xmlEncodeString(final String inputString)
+    {
+        final StringBuilder encodedString = new StringBuilder();
+        final StringCharacterIterator characters = new StringCharacterIterator(inputString);
+        
+        char nextCharacter = characters.current();
+        
+        while(nextCharacter != CharacterIterator.DONE)
+        {
+            if(nextCharacter == '<')
+            {
+                encodedString.append("&lt;");
+            }
+            else if(nextCharacter == '>')
+            {
+                encodedString.append("&gt;");
+            }
+            else if(nextCharacter == '&')
+            {
+                encodedString.append("&amp;");
+            }
+            else if(nextCharacter == '\'')
+            {
+                encodedString.append("&#039;");
+            }
+            else if(nextCharacter == '\"')
+            {
+                encodedString.append("&quot;");
+            }
+            else
+            {
+                encodedString.append(nextCharacter);
+            }
+            
+            nextCharacter = characters.next();
+        }
+        
+        return encodedString.toString();
     }
     
 }

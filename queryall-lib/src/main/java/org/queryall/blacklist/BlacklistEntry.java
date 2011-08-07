@@ -20,15 +20,9 @@ public class BlacklistEntry
     private Collection<RdfFetcherQueryRunnable> errorRunnables = null;
     public Collection<String> errorMessages = new ArrayList<String>();
     
-    @Override
-    public String toString()
+    public void addErrorMessageForRunnable(final RdfFetcherQueryRunnable errorRunnable)
     {
-        return "Endpoint URL = " + endpointUrl + ", Number Of Failures = " + numberOfFailures;
-    }
-    
-    public void addErrorMessageForRunnable(RdfFetcherQueryRunnable errorRunnable)
-    {
-        StringBuilder resultBuffer = new StringBuilder();
+        final StringBuilder resultBuffer = new StringBuilder();
         
         resultBuffer.append("Failed query key : "
                 + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");
@@ -38,37 +32,43 @@ public class BlacklistEntry
                 + (errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime())
                 + " <br />\n");
         
-        errorMessages.add(resultBuffer.toString());
+        this.errorMessages.add(resultBuffer.toString());
         
-        totalTime += errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime();
+        this.totalTime += errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime();
         
-        numberOfFailures++;
+        this.numberOfFailures++;
     }
     
     public String errorMessageSummaryToString()
     {
-        return errorMessageSummaryToString(true);
+        return this.errorMessageSummaryToString(true);
     }
     
-    public String errorMessageSummaryToString(boolean includeSpecificQueries)
+    public String errorMessageSummaryToString(final boolean includeSpecificQueries)
     {
-        StringBuilder resultBuffer = new StringBuilder();
+        final StringBuilder resultBuffer = new StringBuilder();
         
         if(includeSpecificQueries)
         {
-            for(String nextErrorMessage : errorMessages)
+            for(final String nextErrorMessage : this.errorMessages)
             {
                 resultBuffer.append(nextErrorMessage);
             }
         }
         
-        resultBuffer.append("Total time taken for failed queries: ").append(Long.toString(totalTime))
+        resultBuffer.append("Total time taken for failed queries: ").append(Long.toString(this.totalTime))
                 .append("<br />\n");
-        resultBuffer.append("Total number of failed queries: ").append(Integer.toString(numberOfFailures))
+        resultBuffer.append("Total number of failed queries: ").append(Integer.toString(this.numberOfFailures))
                 .append("<br />\n");
-        resultBuffer.append("Average time: ").append(Double.toString((1.0 * totalTime) / numberOfFailures))
+        resultBuffer.append("Average time: ").append(Double.toString((1.0 * this.totalTime) / this.numberOfFailures))
                 .append("<br />\n");
         
         return resultBuffer.toString();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Endpoint URL = " + this.endpointUrl + ", Number Of Failures = " + this.numberOfFailures;
     }
 }

@@ -11,12 +11,12 @@ import org.queryall.blacklist.BlacklistController;
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
     public String graphUri = "";
-    public int maxRowsParameter = getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
+    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
     
-    public RdfFetcherSparqlQueryRunnable(String nextEndpointUrl, String nextGraphUri, String nextFormat,
-            String nextQuery, String nextDebug, String nextAcceptHeader, int nextMaxRowsParameter,
-            QueryAllConfiguration localSettings, BlacklistController localBlacklistController,
-            QueryBundle nextOriginalQueryBundle)
+    public RdfFetcherSparqlQueryRunnable(final String nextEndpointUrl, final String nextGraphUri,
+            final String nextFormat, final String nextQuery, final String nextDebug, final String nextAcceptHeader,
+            final int nextMaxRowsParameter, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
     {
         super(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings,
                 localBlacklistController, nextOriginalQueryBundle);
@@ -30,15 +30,15 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
     {
         try
         {
-            RdfFetcher fetcher = new RdfFetcher(getLocalSettings(), getBlacklistController());
+            final RdfFetcher fetcher = new RdfFetcher(this.getLocalSettings(), this.getBlacklistController());
             
-            setQueryStartTime(new Date());
+            this.setQueryStartTime(new Date());
             
             this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(),
             // this.originalQueryBundle.originalProvider.getSparqlGraphUri(),
                     this.graphUri, this.getQuery(), this.getDebug(), this.maxRowsParameter, this.getAcceptHeader()));
             
-            setQueryEndTime(new Date());
+            this.setQueryEndTime(new Date());
             
             this.setReturnedContentType(fetcher.lastReturnedContentType);
             
@@ -51,19 +51,19 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setReturnedContentEncoding(fetcher.lastReturnedContentEncoding);
             
-            setWasSuccessful(true);
+            this.setWasSuccessful(true);
         }
-        catch(java.net.SocketTimeoutException ste)
+        catch(final java.net.SocketTimeoutException ste)
         {
-            setQueryEndTime(new Date());
-            setWasSuccessful(false);
-            setLastException(ste);
+            this.setQueryEndTime(new Date());
+            this.setWasSuccessful(false);
+            this.setLastException(ste);
         }
-        catch(Exception ex)
+        catch(final Exception ex)
         {
-            setQueryEndTime(new Date());
-            setWasSuccessful(false);
-            setLastException(ex);
+            this.setQueryEndTime(new Date());
+            this.setWasSuccessful(false);
+            this.setLastException(ex);
         }
         finally
         {

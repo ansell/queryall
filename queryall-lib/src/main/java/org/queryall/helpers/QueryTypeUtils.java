@@ -23,17 +23,23 @@ public final class QueryTypeUtils
     public static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
     public static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
     
-    /**
-	 * 
-	 */
-    public QueryTypeUtils()
+    public static Collection<QueryType> getQueryTypesByUri(final Map<URI, QueryType> allQueryTypes,
+            final URI queryTypeUri)
     {
-        // TODO Auto-generated constructor stub
+        final Collection<QueryType> results = new HashSet<QueryType>();
+        for(final QueryType nextQueryType : allQueryTypes.values())
+        {
+            if(nextQueryType.getKey().equals(queryTypeUri))
+            {
+                results.add(nextQueryType);
+            }
+        }
+        return results;
     }
     
-    public static Collection<QueryType> getQueryTypesMatchingQueryString(String queryString, List<Profile> profileList,
-            Map<URI, QueryType> allQueryTypes, boolean recogniseImplicitQueryInclusions,
-            boolean includeNonProfileMatchedQueries)
+    public static Collection<QueryType> getQueryTypesMatchingQueryString(final String queryString,
+            final List<Profile> profileList, final Map<URI, QueryType> allQueryTypes,
+            final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
     {
         if(QueryTypeUtils._DEBUG)
         {
@@ -41,7 +47,7 @@ public final class QueryTypeUtils
             
             if(QueryTypeUtils._TRACE)
             {
-                for(Profile nextProfile : profileList)
+                for(final Profile nextProfile : profileList)
                 {
                     QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: nextProfile.getKey()="
                             + nextProfile.getKey().stringValue());
@@ -51,7 +57,7 @@ public final class QueryTypeUtils
         
         final Collection<QueryType> results = new HashSet<QueryType>();
         
-        for(QueryType nextQuery : allQueryTypes.values())
+        for(final QueryType nextQuery : allQueryTypes.values())
         {
             if(nextQuery.matchesQueryString(queryString))
             {
@@ -85,17 +91,12 @@ public final class QueryTypeUtils
         return results;
     }
     
-    public static Collection<QueryType> getQueryTypesByUri(Map<URI, QueryType> allQueryTypes, URI queryTypeUri)
+    /**
+	 * 
+	 */
+    public QueryTypeUtils()
     {
-        final Collection<QueryType> results = new HashSet<QueryType>();
-        for(final QueryType nextQueryType : allQueryTypes.values())
-        {
-            if(nextQueryType.getKey().equals(queryTypeUri))
-            {
-                results.add(nextQueryType);
-            }
-        }
-        return results;
+        // TODO Auto-generated constructor stub
     }
     
 }

@@ -43,12 +43,78 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @SuppressWarnings("unused")
     private static final boolean _INFO = XsltNormalisationRuleImpl.log.isInfoEnabled();
     
+    /**
+     * @return the xsltRuleStylesheetUri
+     */
+    public static URI getXsltRuleStylesheetUri()
+    {
+        return XsltNormalisationRuleImpl.xsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @return the xsltRuleTypeUri
+     */
+    public static URI getXsltRuleTypeUri()
+    {
+        return XsltNormalisationRuleImpl.xsltRuleTypeUri;
+    }
+    
+    /**
+     * @param args
+     */
+    public static void main(final String[] args)
+    {
+        final String input =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE test><test testAttr=\"test1234\"></test>";
+        final String testXsltStyleSheet =
+                "<xsl:stylesheet version=\"2.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:output method=\"text\" indent=\"no\" encoding=\"UTF-8\" omit-xml-declaration=\"yes\"></xsl:output><xsl:template match=\"/test\"><xsl:value-of select=\"@testAttr\"/></xsl:template></xsl:stylesheet>";
+        
+        final XsltNormalisationRuleImpl testRule = new XsltNormalisationRuleImpl();
+        testRule.setKey(StringUtils.createURI("http://example.org/test/xsltnormalisationrule/42"));
+        testRule.setXsltStylesheet(testXsltStyleSheet);
+        testRule.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
+        
+        try
+        {
+            testRule.addStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
+        }
+        catch(final InvalidStageException ise)
+        {
+            System.err.println("Found invalid stage exception");
+        }
+        
+        final String result = (String)testRule.stageBeforeResultsImport(input);
+        
+        System.out.println("input=\n" + input);
+        System.out.println("result=\n" + result);
+        
+    }
+    
+    // public static String rdfruleNamespace;
+    
+    /**
+     * @param xsltRuleStylesheetUri
+     *            the xsltRuleStylesheetUri to set
+     */
+    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
+    {
+        XsltNormalisationRuleImpl.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @param xsltRuleTypeUri
+     *            the xsltRuleTypeUri to set
+     */
+    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
+    {
+        XsltNormalisationRuleImpl.xsltRuleTypeUri = xsltRuleTypeUri;
+    }
+    
     private String xsltStylesheet;
     
     private static URI xsltRuleTypeUri;
-    private static URI xsltRuleStylesheetUri;
     
-    // public static String rdfruleNamespace;
+    private static URI xsltRuleStylesheetUri;
     
     static
     {
@@ -61,7 +127,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
@@ -132,8 +198,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public XsltNormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
+    public XsltNormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
         
@@ -142,13 +208,13 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
         this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
         
-        Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         
         currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
         
         this.unrecognisedStatements = new HashSet<Statement>();
         
-        for(Statement nextStatement : currentUnrecognisedStatements)
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(XsltNormalisationRuleImpl._DEBUG)
             {
@@ -189,8 +255,184 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         }
     }
     
+    /**
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
+     */
     @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public Collection<URI> getElementTypes()
+    {
+        final Collection<URI> results = super.getElementTypes();
+        
+        results.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri());
+        return results;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.XsltNormalisationRule#getXsltStylesheet()
+     */
+    @Override
+    public String getXsltStylesheet()
+    {
+        return this.xsltStylesheet;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.XsltNormalisationRule#setXsltStylesheet(java.lang.String)
+     */
+    @Override
+    public void setXsltStylesheet(final String xsltStylesheet)
+    {
+        this.xsltStylesheet = xsltStylesheet;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageAfterQueryCreation(java.lang.Object)
+     */
+    @Override
+    public Object stageAfterQueryCreation(final Object input)
+    {
+        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation())
+                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation()))
+        {
+            return this.transformString((String)input);
+        }
+        else
+        {
+            return input;
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageAfterQueryParsing(java.lang.Object)
+     */
+    @Override
+    public Object stageAfterQueryParsing(final Object input)
+    {
+        return input;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageAfterResultsImport(java.lang.Object)
+     */
+    @Override
+    public Object stageAfterResultsImport(final Object input)
+    {
+        return input;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageAfterResultsToDocument(java.lang.Object)
+     */
+    @Override
+    public Object stageAfterResultsToDocument(final Object input)
+    {
+        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument())
+                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument()))
+        {
+            return this.transformString((String)input);
+        }
+        else
+        {
+            return input;
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageAfterResultsToPool(java.lang.Object)
+     */
+    @Override
+    public Object stageAfterResultsToPool(final Object input)
+    {
+        return input;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageBeforeResultsImport(java.lang.Object)
+     */
+    @Override
+    public Object stageBeforeResultsImport(final Object input)
+    {
+        XsltNormalisationRuleImpl.log.info("stageBeforeResultsImport input=" + (String)input);
+        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())
+                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()))
+        {
+            return this.transformString((String)input);
+        }
+        else
+        {
+            XsltNormalisationRuleImpl.log
+                    .info("stageBeforeResultsImport returning input unchanged this.getValidStages="
+                            + this.getValidStages()
+                                    .contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())
+                            + " this.getStages()="
+                            + this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()));
+            return input;
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.NormalisationRule#stageQueryVariables(java.lang.Object)
+     */
+    @Override
+    public Object stageQueryVariables(final Object input)
+    {
+        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables())
+                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
+        {
+            return this.transformString((String)input);
+        }
+        else
+        {
+            return input;
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.BaseQueryAllInterface#toHtml()
+     */
+    @Override
+    public String toHtml()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.BaseQueryAllInterface#toHtmlFormBody()
+     */
+    @Override
+    public String toHtmlFormBody()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         super.toRdf(myRepository, keyToUse, modelVersion);
         
@@ -234,201 +476,26 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         return false;
     }
     
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Collection<URI> getElementTypes()
-    {
-        Collection<URI> results = super.getElementTypes();
-        
-        results.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri());
-        return results;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.XsltNormalisationRule#setXsltStylesheet(java.lang.String)
-     */
-    @Override
-    public void setXsltStylesheet(String xsltStylesheet)
-    {
-        this.xsltStylesheet = xsltStylesheet;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.XsltNormalisationRule#getXsltStylesheet()
-     */
-    @Override
-    public String getXsltStylesheet()
-    {
-        return xsltStylesheet;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.BaseQueryAllInterface#toHtmlFormBody()
-     */
-    @Override
-    public String toHtmlFormBody()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.BaseQueryAllInterface#toHtml()
-     */
-    @Override
-    public String toHtml()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageQueryVariables(java.lang.Object)
-     */
-    @Override
-    public Object stageQueryVariables(Object input)
-    {
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
-        {
-            return transformString((String)input);
-        }
-        else
-        {
-            return input;
-        }
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageAfterQueryCreation(java.lang.Object)
-     */
-    @Override
-    public Object stageAfterQueryCreation(Object input)
-    {
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation()))
-        {
-            return transformString((String)input);
-        }
-        else
-        {
-            return input;
-        }
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageAfterQueryParsing(java.lang.Object)
-     */
-    @Override
-    public Object stageAfterQueryParsing(Object input)
-    {
-        return input;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageBeforeResultsImport(java.lang.Object)
-     */
-    @Override
-    public Object stageBeforeResultsImport(Object input)
-    {
-        XsltNormalisationRuleImpl.log.info("stageBeforeResultsImport input=" + (String)input);
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()))
-        {
-            return transformString((String)input);
-        }
-        else
-        {
-            XsltNormalisationRuleImpl.log
-                    .info("stageBeforeResultsImport returning input unchanged this.getValidStages="
-                            + this.getValidStages()
-                                    .contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())
-                            + " this.getStages()="
-                            + this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()));
-            return input;
-        }
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageAfterResultsImport(java.lang.Object)
-     */
-    @Override
-    public Object stageAfterResultsImport(Object input)
-    {
-        return input;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageAfterResultsToPool(java.lang.Object)
-     */
-    @Override
-    public Object stageAfterResultsToPool(Object input)
-    {
-        return input;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.NormalisationRule#stageAfterResultsToDocument(java.lang.Object)
-     */
-    @Override
-    public Object stageAfterResultsToDocument(Object input)
-    {
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument()))
-        {
-            return transformString((String)input);
-        }
-        else
-        {
-            return input;
-        }
-    }
-    
-    private String transformString(String input)
+    private String transformString(final String input)
     {
         XsltNormalisationRuleImpl.log.info("input=" + input);
-        StringWriter outputWriter = new StringWriter();
+        final StringWriter outputWriter = new StringWriter();
         try
         {
-            TransformerFactory tFactory = TransformerFactory.newInstance();
+            final TransformerFactory tFactory = TransformerFactory.newInstance();
             // System.out.println("this.getXsltStyleSheet()="+this.getXsltStylesheet());
-            StringReader xsltReader = new StringReader(this.getXsltStylesheet());
-            StringReader inputReader = new StringReader(input);
+            final StringReader xsltReader = new StringReader(this.getXsltStylesheet());
+            final StringReader inputReader = new StringReader(input);
             
             // Get the XML input document and the stylesheet.
-            Source xmlSource = new StreamSource(inputReader);
-            Source xslSource = new StreamSource(xsltReader);
+            final Source xmlSource = new StreamSource(inputReader);
+            final Source xslSource = new StreamSource(xsltReader);
             // Generate the transformer.
-            Transformer transformer = tFactory.newTransformer(xslSource);
+            final Transformer transformer = tFactory.newTransformer(xslSource);
             // Perform the transformation, sending the output to the response.
             transformer.transform(xmlSource, new StreamResult(outputWriter));
         }
-        catch(Exception ex)
+        catch(final Exception ex)
         {
             XsltNormalisationRuleImpl.log
                     .error("XsltNormalisationRuleImpl.stageBeforeResultsImport: found exception, returning the original input",
@@ -440,70 +507,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         XsltNormalisationRuleImpl.log.info("output=" + outputWriter.toString());
         return outputWriter.toString();
-    }
-    
-    /**
-     * @param args
-     */
-    public static void main(String[] args)
-    {
-        String input = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE test><test testAttr=\"test1234\"></test>";
-        String testXsltStyleSheet =
-                "<xsl:stylesheet version=\"2.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:output method=\"text\" indent=\"no\" encoding=\"UTF-8\" omit-xml-declaration=\"yes\"></xsl:output><xsl:template match=\"/test\"><xsl:value-of select=\"@testAttr\"/></xsl:template></xsl:stylesheet>";
-        
-        XsltNormalisationRuleImpl testRule = new XsltNormalisationRuleImpl();
-        testRule.setKey(StringUtils.createURI("http://example.org/test/xsltnormalisationrule/42"));
-        testRule.setXsltStylesheet(testXsltStyleSheet);
-        testRule.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        
-        try
-        {
-            testRule.addStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        }
-        catch(InvalidStageException ise)
-        {
-            System.err.println("Found invalid stage exception");
-        }
-        
-        String result = (String)testRule.stageBeforeResultsImport(input);
-        
-        System.out.println("input=\n" + input);
-        System.out.println("result=\n" + result);
-        
-    }
-    
-    /**
-     * @param xsltRuleTypeUri
-     *            the xsltRuleTypeUri to set
-     */
-    public static void setXsltRuleTypeUri(URI xsltRuleTypeUri)
-    {
-        XsltNormalisationRuleImpl.xsltRuleTypeUri = xsltRuleTypeUri;
-    }
-    
-    /**
-     * @return the xsltRuleTypeUri
-     */
-    public static URI getXsltRuleTypeUri()
-    {
-        return XsltNormalisationRuleImpl.xsltRuleTypeUri;
-    }
-    
-    /**
-     * @param xsltRuleStylesheetUri
-     *            the xsltRuleStylesheetUri to set
-     */
-    public static void setXsltRuleStylesheetUri(URI xsltRuleStylesheetUri)
-    {
-        XsltNormalisationRuleImpl.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @return the xsltRuleStylesheetUri
-     */
-    public static URI getXsltRuleStylesheetUri()
-    {
-        return XsltNormalisationRuleImpl.xsltRuleStylesheetUri;
     }
     
 }

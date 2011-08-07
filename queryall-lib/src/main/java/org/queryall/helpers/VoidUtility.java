@@ -28,14 +28,12 @@ public class VoidUtility
     @SuppressWarnings("unused")
     private static final boolean _INFO = VoidUtility.log.isInfoEnabled();
     
-    private Map<String, Collection<String>> queryUriToVoidSparqlConstructQueries;
-    
-    public static void testMethod(Repository nextRepository) throws OpenRDFException
+    public static void testMethod(final Repository nextRepository) throws OpenRDFException
     {
-        String constructQueryUri = "http://bio2rdf.org/query:construct";
-        String linksQueryUri = "http://bio2rdf.org/query:links";
+        final String constructQueryUri = "http://bio2rdf.org/query:construct";
+        final String linksQueryUri = "http://bio2rdf.org/query:links";
         
-        String sparqlQuery =
+        final String sparqlQuery =
                 "CONSTRUCT { "
                         + "  <${resultProviderUri}> a <http://purl.org/queryall/provider:Provider> . "
                         + "  <${resultProviderUri}> <http://purl.org/queryall/provider:resolutionStrategy> <http://purl.org/queryall/provider:proxy> . "
@@ -47,50 +45,47 @@ public class VoidUtility
                         + " } " + " WHERE " + " { " + "  ?dataset a <http://rdfs.org/ns/void#Dataset> . "
                         + "  ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . " + " } ";
         
-        Map<String, Collection<String>> testMapping = new Hashtable<String, Collection<String>>();
+        final Map<String, Collection<String>> testMapping = new Hashtable<String, Collection<String>>();
         
-        Collection<String> constructQueries = new HashSet<String>();
+        final Collection<String> constructQueries = new HashSet<String>();
         constructQueries.add(sparqlQuery);
         
         testMapping.put(constructQueryUri, constructQueries);
         
-        Collection<String> linksQueries = new HashSet<String>();
+        final Collection<String> linksQueries = new HashSet<String>();
         linksQueries.add(sparqlQuery);
         
         testMapping.put(linksQueryUri, linksQueries);
         
-        VoidUtility testUtility = new VoidUtility();
+        final VoidUtility testUtility = new VoidUtility();
         
         testUtility.setQueryTypeMappings(testMapping);
         
         testUtility.parseFromVoidRepository(nextRepository);
     }
     
-    public void setQueryTypeMappings(Map<String, Collection<String>> nextMapping)
+    private Map<String, Collection<String>> queryUriToVoidSparqlConstructQueries;
+    
+    public VoidUtility()
     {
-        queryUriToVoidSparqlConstructQueries = nextMapping;
+        this.queryUriToVoidSparqlConstructQueries = new Hashtable<String, Collection<String>>();
     }
     
     public Map<String, Collection<String>> getQueryTypeMappings()
     {
-        if(queryUriToVoidSparqlConstructQueries == null)
+        if(this.queryUriToVoidSparqlConstructQueries == null)
         {
-            queryUriToVoidSparqlConstructQueries = new Hashtable<String, Collection<String>>();
+            this.queryUriToVoidSparqlConstructQueries = new Hashtable<String, Collection<String>>();
         }
         
-        return queryUriToVoidSparqlConstructQueries;
-    }
-    
-    public VoidUtility()
-    {
-        queryUriToVoidSparqlConstructQueries = new Hashtable<String, Collection<String>>();
+        return this.queryUriToVoidSparqlConstructQueries;
     }
     
     /**
      * @param nextRepository
      * @throws OpenRDFException
      */
-    public void parseFromVoidRepository(Repository nextRepository) throws OpenRDFException
+    public void parseFromVoidRepository(final Repository nextRepository) throws OpenRDFException
     {
         if(VoidUtility._DEBUG)
         {
@@ -98,20 +93,20 @@ public class VoidUtility
             VoidUtility.log.debug(nextRepository);
         }
         
-        RepositoryConnection con = nextRepository.getConnection();
+        final RepositoryConnection con = nextRepository.getConnection();
         
-        Map<String, Collection<String>> currentMappings = getQueryTypeMappings();
+        final Map<String, Collection<String>> currentMappings = this.getQueryTypeMappings();
         
-        Collection<String> queries = new HashSet<String>();
+        final Collection<String> queries = new HashSet<String>();
         
         int queryCount = 1;
-        for(String nextQueryUri : currentMappings.keySet())
+        for(final String nextQueryUri : currentMappings.keySet())
         {
             int subQueryCount = 1;
             
-            Collection<String> mappedQueries = currentMappings.get(nextQueryUri);
+            final Collection<String> mappedQueries = currentMappings.get(nextQueryUri);
             
-            for(String nextMappedQuery : mappedQueries)
+            for(final String nextMappedQuery : mappedQueries)
             {
                 String replacedQuery =
                         nextMappedQuery.replace("${resultProviderUri}", "http://testnamespace.org/provider:"
@@ -127,12 +122,12 @@ public class VoidUtility
             queryCount++;
         }
         
-        for(String nextQuery : queries)
+        for(final String nextQuery : queries)
         {
             VoidUtility.log.debug("VoidUtility.parseFromVoidRepository: nextQuery=" + nextQuery);
             
-            GraphQuery graphQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, nextQuery);
-            GraphQueryResult graphQueryResult = graphQuery.evaluate();
+            final GraphQuery graphQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, nextQuery);
+            final GraphQueryResult graphQueryResult = graphQuery.evaluate();
             
             VoidUtility.log.debug("VoidUtility.parseFromVoidRepository: query evaluated");
             
@@ -159,7 +154,7 @@ public class VoidUtility
                 // {
                 while(graphQueryResult.hasNext())
                 {
-                    Statement nextStatement = graphQueryResult.next();
+                    final Statement nextStatement = graphQueryResult.next();
                     
                     if(VoidUtility._DEBUG)
                     {
@@ -183,6 +178,11 @@ public class VoidUtility
             // }
             
         }
+    }
+    
+    public void setQueryTypeMappings(final Map<String, Collection<String>> nextMapping)
+    {
+        this.queryUriToVoidSparqlConstructQueries = nextMapping;
     }
     
 }

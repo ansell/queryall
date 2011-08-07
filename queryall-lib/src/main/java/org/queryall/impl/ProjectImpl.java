@@ -34,23 +34,170 @@ public class ProjectImpl implements Project
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForProject();
     
+    /**
+     * @return the projectAdminCuratedUri
+     */
+    public static URI getProjectAdminCuratedUri()
+    {
+        return ProjectImpl.projectAdminCuratedUri;
+    }
+    
+    /**
+     * @return the projectAuthority
+     */
+    public static URI getProjectAuthority()
+    {
+        return ProjectImpl.projectAuthority;
+    }
+    
+    /**
+     * @return the projectCurationStatusUri
+     */
+    public static URI getProjectCurationStatusUri()
+    {
+        return ProjectImpl.projectCurationStatusUri;
+    }
+    
+    /**
+     * @return the projectDescription
+     */
+    public static URI getProjectDescription()
+    {
+        return ProjectImpl.projectDescription;
+    }
+    
+    /**
+     * @return the projectNotCuratedUri
+     */
+    public static URI getProjectNotCuratedUri()
+    {
+        return ProjectImpl.projectNotCuratedUri;
+    }
+    
+    /**
+     * @return the projectTitle
+     */
+    public static URI getProjectTitle()
+    {
+        return ProjectImpl.projectTitle;
+    }
+    
+    /**
+     * @return the projectTypeUri
+     */
+    public static URI getProjectTypeUri()
+    {
+        return ProjectImpl.projectTypeUri;
+    }
+    
+    /**
+     * @return the projectUserCuratedUri
+     */
+    public static URI getProjectUserCuratedUri()
+    {
+        return ProjectImpl.projectUserCuratedUri;
+    }
+    
+    /**
+     * @param projectAdminCuratedUri
+     *            the projectAdminCuratedUri to set
+     */
+    public static void setProjectAdminCuratedUri(final URI projectAdminCuratedUri)
+    {
+        ProjectImpl.projectAdminCuratedUri = projectAdminCuratedUri;
+    }
+    
+    /**
+     * @param projectAuthority
+     *            the projectAuthority to set
+     */
+    public static void setProjectAuthority(final URI projectAuthority)
+    {
+        ProjectImpl.projectAuthority = projectAuthority;
+    }
+    
+    /**
+     * @param projectCurationStatusUri
+     *            the projectCurationStatusUri to set
+     */
+    public static void setProjectCurationStatusUri(final URI projectCurationStatusUri)
+    {
+        ProjectImpl.projectCurationStatusUri = projectCurationStatusUri;
+    }
+    
+    /**
+     * @param projectDescription
+     *            the projectDescription to set
+     */
+    public static void setProjectDescription(final URI projectDescription)
+    {
+        ProjectImpl.projectDescription = projectDescription;
+    }
+    
+    /**
+     * @param projectNotCuratedUri
+     *            the projectNotCuratedUri to set
+     */
+    public static void setProjectNotCuratedUri(final URI projectNotCuratedUri)
+    {
+        ProjectImpl.projectNotCuratedUri = projectNotCuratedUri;
+    }
+    
+    /**
+     * @param projectTitle
+     *            the projectTitle to set
+     */
+    public static void setProjectTitle(final URI projectTitle)
+    {
+        ProjectImpl.projectTitle = projectTitle;
+    }
+    
+    /**
+     * @param projectTypeUri
+     *            the projectTypeUri to set
+     */
+    public static void setProjectTypeUri(final URI projectTypeUri)
+    {
+        ProjectImpl.projectTypeUri = projectTypeUri;
+    }
+    
+    /**
+     * @param projectUserCuratedUri
+     *            the projectUserCuratedUri to set
+     */
+    public static void setProjectUserCuratedUri(final URI projectUserCuratedUri)
+    {
+        ProjectImpl.projectUserCuratedUri = projectUserCuratedUri;
+    }
+    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key = null;
+    
     private URI authority = null;
+    
     private String title = "";
+    
     private String description = "";
+    
     private URI curationStatus = null;
     
     private static URI projectTypeUri;
+    
     private static URI projectAuthority;
+    
     private static URI projectTitle;
+    
     private static URI projectDescription;
     
     private static URI projectCurationStatusUri;
+    
     private static URI projectAdminCuratedUri;
+    
     private static URI projectUserCuratedUri;
+    
     private static URI projectNotCuratedUri;
+    
     public static String projectNamespace;
     
     static
@@ -76,14 +223,14 @@ public class ProjectImpl implements Project
     // keyToUse is the URI of the next instance that can be found in myRepository
     // returns null if the URI is not in the repository or the information is not enough to create a
     // minimal provider configuration
-    public static Project fromRdf(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
+    public static Project fromRdf(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
-        Project result = new ProjectImpl();
+        final Project result = new ProjectImpl();
         
         boolean resultIsValid = false;
         
-        for(Statement nextStatement : inputStatements)
+        for(final Statement nextStatement : inputStatements)
         {
             if(ProjectImpl._DEBUG)
             {
@@ -138,15 +285,16 @@ public class ProjectImpl implements Project
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
-        RepositoryConnection con = myRepository.getConnection();
+        final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
         
         try
         {
-            URI contextKeyUri = keyToUse;
+            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
             con.add(ProjectImpl.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
@@ -193,7 +341,7 @@ public class ProjectImpl implements Project
             
             return true;
         }
-        catch(RepositoryException re)
+        catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
@@ -216,34 +364,181 @@ public class ProjectImpl implements Project
     }
     
     @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
-        RepositoryConnection con = myRepository.getConnection();
+        this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    @Override
+    public int compareTo(final Project otherProject)
+    {
+        @SuppressWarnings("unused")
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        @SuppressWarnings("unused")
+        final int AFTER = 1;
+        
+        if(this == otherProject)
+        {
+            return EQUAL;
+        }
+        
+        return this.getKey().stringValue().compareTo(otherProject.getKey().stringValue());
+    }
+    
+    @Override
+    public URI getAuthority()
+    {
+        return this.authority;
+    }
+    
+    @Override
+    public URI getCurationStatus()
+    {
+        return this.curationStatus;
+    }
+    
+    /**
+     * @return the namespace used to represent objects of this type by default
+     */
+    @Override
+    public String getDefaultNamespace()
+    {
+        return ProjectImpl.defaultNamespace;
+    }
+    
+    @Override
+    public String getDescription()
+    {
+        return this.description;
+    }
+    
+    /**
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
+     */
+    @Override
+    public Collection<URI> getElementTypes()
+    {
+        final Collection<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProjectImpl.getProjectTypeUri());
+        
+        return results;
+    }
+    
+    /**
+     * @return the key
+     */
+    @Override
+    public URI getKey()
+    {
+        return this.key;
+    }
+    
+    @Override
+    public String getTitle()
+    {
+        return this.title;
+    }
+    
+    @Override
+    public Collection<Statement> getUnrecognisedStatements()
+    {
+        return this.unrecognisedStatements;
+    }
+    
+    @Override
+    public void setAuthority(final URI authority)
+    {
+        this.authority = authority;
+    }
+    
+    @Override
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    @Override
+    public void setDescription(final String description)
+    {
+        this.description = description;
+    }
+    
+    /**
+     * @param key
+     *            the key to set
+     */
+    @Override
+    public void setKey(final String nextKey)
+    {
+        this.setKey(StringUtils.createURI(nextKey));
+    }
+    
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    @Override
+    public void setTitle(final String title)
+    {
+        this.title = title;
+    }
+    
+    @Override
+    public String toHtml()
+    {
+        return "";
+    }
+    
+    @Override
+    public String toHtmlFormBody()
+    {
+        final StringBuilder sb = new StringBuilder();
+        
+        @SuppressWarnings("unused")
+        final String prefix = "project_";
+        
+        // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+RdfUtils.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+RdfUtils.xmlEncodeString(description)+"\" /></div>\n");
+        // sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+RdfUtils.xmlEncodeString(identifierRegex)+"\" /></div>\n");
+        
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
         
         try
         {
-            URI projectInstanceUri = this.getKey();
+            final URI projectInstanceUri = this.getKey();
             
             if(ProjectImpl._DEBUG)
             {
                 ProjectImpl.log.debug("Project.toRdf: keyToUse=" + keyToUse);
             }
             
-            Literal titleLiteral = f.createLiteral(getTitle());
+            final Literal titleLiteral = f.createLiteral(this.getTitle());
             URI authorityLiteral = null;
             
-            if(getAuthority() == null)
+            if(this.getAuthority() == null)
             {
                 authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
             }
             else
             {
-                authorityLiteral = getAuthority();
+                authorityLiteral = this.getAuthority();
             }
             
-            Literal descriptionLiteral = f.createLiteral(getDescription());
+            final Literal descriptionLiteral = f.createLiteral(this.getDescription());
             
             if(ProjectImpl._TRACE)
             {
@@ -264,10 +559,10 @@ public class ProjectImpl implements Project
             }
             con.add(projectInstanceUri, ProjectImpl.getProjectDescription(), descriptionLiteral, keyToUse);
             
-            if(unrecognisedStatements != null)
+            if(this.unrecognisedStatements != null)
             {
                 
-                for(Statement nextUnrecognisedStatement : unrecognisedStatements)
+                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
                 {
                     con.add(nextUnrecognisedStatement, keyToUse);
                 }
@@ -278,7 +573,7 @@ public class ProjectImpl implements Project
             
             return true;
         }
-        catch(RepositoryException re)
+        catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
@@ -303,296 +598,14 @@ public class ProjectImpl implements Project
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + key + "\n");
-        sb.append("authority=" + getAuthority() + "\n");
-        sb.append("title=" + getTitle() + "\n");
-        sb.append("description=" + getDescription() + "\n");
-        
-        return sb.toString();
-    }
-    
-    @Override
-    public String toHtmlFormBody()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        @SuppressWarnings("unused")
-        String prefix = "project_";
-        
-        // sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+RdfUtils.xmlEncodeString(preferredPrefix)+"\" /></div>\n");
-        // sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+RdfUtils.xmlEncodeString(description)+"\" /></div>\n");
-        // sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+RdfUtils.xmlEncodeString(identifierRegex)+"\" /></div>\n");
+        sb.append("key=" + this.key + "\n");
+        sb.append("authority=" + this.getAuthority() + "\n");
+        sb.append("title=" + this.getTitle() + "\n");
+        sb.append("description=" + this.getDescription() + "\n");
         
         return sb.toString();
-    }
-    
-    @Override
-    public String toHtml()
-    {
-        return "";
-    }
-    
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return key;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    /**
-     * @return the namespace used to represent objects of this type by default
-     */
-    @Override
-    public String getDefaultNamespace()
-    {
-        return ProjectImpl.defaultNamespace;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Collection<URI> getElementTypes()
-    {
-        Collection<URI> results = new ArrayList<URI>(1);
-        
-        results.add(ProjectImpl.getProjectTypeUri());
-        
-        return results;
-    }
-    
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return curationStatus;
-    }
-    
-    @Override
-    public void setAuthority(URI authority)
-    {
-        this.authority = authority;
-    }
-    
-    @Override
-    public URI getAuthority()
-    {
-        return authority;
-    }
-    
-    @Override
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-    
-    @Override
-    public String getDescription()
-    {
-        return description;
-    }
-    
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return title;
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
-    {
-        unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return unrecognisedStatements;
-    }
-    
-    @Override
-    public int compareTo(Project otherProject)
-    {
-        @SuppressWarnings("unused")
-        final int BEFORE = -1;
-        final int EQUAL = 0;
-        @SuppressWarnings("unused")
-        final int AFTER = 1;
-        
-        if(this == otherProject)
-        {
-            return EQUAL;
-        }
-        
-        return this.getKey().stringValue().compareTo(otherProject.getKey().stringValue());
-    }
-    
-    /**
-     * @param projectNotCuratedUri
-     *            the projectNotCuratedUri to set
-     */
-    public static void setProjectNotCuratedUri(URI projectNotCuratedUri)
-    {
-        ProjectImpl.projectNotCuratedUri = projectNotCuratedUri;
-    }
-    
-    /**
-     * @return the projectNotCuratedUri
-     */
-    public static URI getProjectNotCuratedUri()
-    {
-        return ProjectImpl.projectNotCuratedUri;
-    }
-    
-    /**
-     * @param projectTypeUri
-     *            the projectTypeUri to set
-     */
-    public static void setProjectTypeUri(URI projectTypeUri)
-    {
-        ProjectImpl.projectTypeUri = projectTypeUri;
-    }
-    
-    /**
-     * @return the projectTypeUri
-     */
-    public static URI getProjectTypeUri()
-    {
-        return ProjectImpl.projectTypeUri;
-    }
-    
-    /**
-     * @param projectAuthority
-     *            the projectAuthority to set
-     */
-    public static void setProjectAuthority(URI projectAuthority)
-    {
-        ProjectImpl.projectAuthority = projectAuthority;
-    }
-    
-    /**
-     * @return the projectAuthority
-     */
-    public static URI getProjectAuthority()
-    {
-        return ProjectImpl.projectAuthority;
-    }
-    
-    /**
-     * @param projectTitle
-     *            the projectTitle to set
-     */
-    public static void setProjectTitle(URI projectTitle)
-    {
-        ProjectImpl.projectTitle = projectTitle;
-    }
-    
-    /**
-     * @return the projectTitle
-     */
-    public static URI getProjectTitle()
-    {
-        return ProjectImpl.projectTitle;
-    }
-    
-    /**
-     * @param projectDescription
-     *            the projectDescription to set
-     */
-    public static void setProjectDescription(URI projectDescription)
-    {
-        ProjectImpl.projectDescription = projectDescription;
-    }
-    
-    /**
-     * @return the projectDescription
-     */
-    public static URI getProjectDescription()
-    {
-        return ProjectImpl.projectDescription;
-    }
-    
-    /**
-     * @param projectCurationStatusUri
-     *            the projectCurationStatusUri to set
-     */
-    public static void setProjectCurationStatusUri(URI projectCurationStatusUri)
-    {
-        ProjectImpl.projectCurationStatusUri = projectCurationStatusUri;
-    }
-    
-    /**
-     * @return the projectCurationStatusUri
-     */
-    public static URI getProjectCurationStatusUri()
-    {
-        return ProjectImpl.projectCurationStatusUri;
-    }
-    
-    /**
-     * @param projectAdminCuratedUri
-     *            the projectAdminCuratedUri to set
-     */
-    public static void setProjectAdminCuratedUri(URI projectAdminCuratedUri)
-    {
-        ProjectImpl.projectAdminCuratedUri = projectAdminCuratedUri;
-    }
-    
-    /**
-     * @return the projectAdminCuratedUri
-     */
-    public static URI getProjectAdminCuratedUri()
-    {
-        return ProjectImpl.projectAdminCuratedUri;
-    }
-    
-    /**
-     * @param projectUserCuratedUri
-     *            the projectUserCuratedUri to set
-     */
-    public static void setProjectUserCuratedUri(URI projectUserCuratedUri)
-    {
-        ProjectImpl.projectUserCuratedUri = projectUserCuratedUri;
-    }
-    
-    /**
-     * @return the projectUserCuratedUri
-     */
-    public static URI getProjectUserCuratedUri()
-    {
-        return ProjectImpl.projectUserCuratedUri;
     }
     
 }

@@ -37,7 +37,7 @@ public class ValueComparator implements Comparator<Value>
      * BNode sorting is not specified across sessions
      */
     @Override
-    public int compare(Value first, Value second)
+    public int compare(final Value first, final Value second)
     {
         if(first == null)
         {

@@ -31,15 +31,107 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
+    /**
+     * @return the rdfruleInputMatchRegex
+     */
+    public static URI getRegexRuleInputMatchRegex()
+    {
+        return RegexNormalisationRuleImpl.regexruleInputMatchRegex;
+    }
+    
+    /**
+     * @return the rdfruleInputReplaceRegex
+     */
+    public static URI getRegexRuleInputReplaceRegex()
+    {
+        return RegexNormalisationRuleImpl.regexruleInputReplaceRegex;
+    }
+    
+    /**
+     * @return the rdfruleOutputMatchRegex
+     */
+    public static URI getRegexRuleOutputMatchRegex()
+    {
+        return RegexNormalisationRuleImpl.regexruleOutputMatchRegex;
+    }
+    
+    /**
+     * @return the rdfruleOutputReplaceRegex
+     */
+    public static URI getRegexRuleOutputReplaceRegex()
+    {
+        return RegexNormalisationRuleImpl.regexruleOutputReplaceRegex;
+    }
+    
+    /**
+     * @return the regexruleTypeUri
+     */
+    public static URI getRegexRuleTypeUri()
+    {
+        return RegexNormalisationRuleImpl.regexruleTypeUri;
+    }
+    
+    /**
+     * @param rdfruleInputMatchRegex
+     *            the rdfruleInputMatchRegex to set
+     */
+    public static void setRegexRuleInputMatchRegex(final URI rdfruleInputMatchRegex)
+    {
+        RegexNormalisationRuleImpl.regexruleInputMatchRegex = rdfruleInputMatchRegex;
+    }
+    
+    /**
+     * @param rdfruleInputReplaceRegex
+     *            the rdfruleInputReplaceRegex to set
+     */
+    public static void setRegexRuleInputReplaceRegex(final URI rdfruleInputReplaceRegex)
+    {
+        RegexNormalisationRuleImpl.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
+    }
+    
+    /**
+     * @param rdfruleOutputMatchRegex
+     *            the rdfruleOutputMatchRegex to set
+     */
+    public static void setRegexRuleOutputMatchRegex(final URI rdfruleOutputMatchRegex)
+    {
+        RegexNormalisationRuleImpl.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
+    }
+    
+    /**
+     * @param rdfruleOutputReplaceRegex
+     *            the rdfruleOutputReplaceRegex to set
+     */
+    public static void setRegexRuleOutputReplaceRegex(final URI rdfruleOutputReplaceRegex)
+    {
+        RegexNormalisationRuleImpl.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
+    }
+    
+    /**
+     * @param regexruleTypeUri
+     *            the regexruleTypeUri to set
+     */
+    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
+    {
+        RegexNormalisationRuleImpl.regexruleTypeUri = regexruleTypeUri;
+    }
+    
     private String inputMatchRegex = "";
+    
     private String inputReplaceRegex = "";
+    
     private String outputMatchRegex = "";
+    
     private String outputReplaceRegex = "";
     
     private static URI regexruleTypeUri;
+    
     private static URI regexruleInputMatchRegex;
+    
     private static URI regexruleInputReplaceRegex;
+    
     private static URI regexruleOutputMatchRegex;
+    
     private static URI regexruleOutputReplaceRegex;
     
     static
@@ -58,90 +150,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
                 "outputReplaceRegex"));
     }
     
-    public RegexNormalisationRuleImpl()
-    {
-        super();
-        
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
-    }
-    
-    // keyToUse is the URI of the next instance that can be found in
-    // myRepository
-    public RegexNormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
-    {
-        super(inputStatements, keyToUse, modelVersion);
-        
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
-        
-        Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
-        
-        for(Statement nextStatement : currentUnrecognisedStatements)
-        {
-            if(RegexNormalisationRuleImpl._TRACE)
-            {
-                RegexNormalisationRuleImpl.log.trace("RegexNormalisationRuleImpl: nextStatement: "
-                        + nextStatement.toString());
-            }
-            
-            if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && (nextStatement.getObject().equals(RegexNormalisationRuleImpl.getRegexRuleTypeUri()) || nextStatement
-                            .getObject().equals(RegexNormalisationRuleImpl.getRegexRuleTypeUri())))
-            {
-                if(RegexNormalisationRuleImpl._TRACE)
-                {
-                    RegexNormalisationRuleImpl.log
-                            .trace("RegexNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
-                }
-                
-                this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex()))
-            {
-                this.setInputMatchRegex(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex()))
-            {
-                this.setInputReplaceRegex(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex()))
-            {
-                this.setOutputMatchRegex(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex()))
-            {
-                this.setOutputReplaceRegex(nextStatement.getObject().stringValue());
-            }
-            else
-            {
-                if(RegexNormalisationRuleImpl._TRACE)
-                {
-                    RegexNormalisationRuleImpl.log
-                            .trace("RegexNormalisationRuleImpl: unrecognisedStatement nextStatement: "
-                                    + nextStatement.toString());
-                }
-                this.unrecognisedStatements.add(nextStatement);
-            }
-        }
-        
-        if(RegexNormalisationRuleImpl._TRACE)
-        {
-            RegexNormalisationRuleImpl.log.trace("RegexNormalisationRuleImpl.fromRdf: would have returned... result="
-                    + this.toString());
-        }
-    }
-    
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
@@ -235,130 +244,154 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         return false;
     }
     
-    public String applyInputRuleToString(String inputText)
+    public RegexNormalisationRuleImpl()
     {
-        return this.applyRegex(inputText, this.getInputMatchRegex(), this.getInputReplaceRegex());
+        super();
+        
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
     }
     
-    public String applyOutputRuleToString(String inputText)
+    // keyToUse is the URI of the next instance that can be found in
+    // myRepository
+    public RegexNormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
-        return this.applyRegex(inputText, this.getOutputMatchRegex(), this.getOutputReplaceRegex());
-    }
-    
-    private String applyRegex(String inputText, String matchRegex, String replaceRegex)
-    {
-        try
+        super(inputStatements, keyToUse, modelVersion);
+        
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
+        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
+        
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if((matchRegex == null) || (replaceRegex == null))
+            if(RegexNormalisationRuleImpl._TRACE)
+            {
+                RegexNormalisationRuleImpl.log.trace("RegexNormalisationRuleImpl: nextStatement: "
+                        + nextStatement.toString());
+            }
+            
+            if(nextStatement.getPredicate().equals(RDF.TYPE)
+                    && (nextStatement.getObject().equals(RegexNormalisationRuleImpl.getRegexRuleTypeUri()) || nextStatement
+                            .getObject().equals(RegexNormalisationRuleImpl.getRegexRuleTypeUri())))
             {
                 if(RegexNormalisationRuleImpl._TRACE)
                 {
                     RegexNormalisationRuleImpl.log
-                            .trace("RegexNormalisationRuleImpl.applyRegex: something was null matchRegex=" + matchRegex
-                                    + ", replaceRegex=" + replaceRegex);
+                            .trace("RegexNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
-                return inputText;
+                this.setKey(keyToUse);
             }
-            
-            if(RegexNormalisationRuleImpl._DEBUG)
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex()))
             {
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
-                        + ", replaceRegex=" + replaceRegex);
+                this.setInputMatchRegex(nextStatement.getObject().stringValue());
             }
-            
-            if(matchRegex.trim().equals(""))
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex()))
             {
-                if(RegexNormalisationRuleImpl._DEBUG)
+                this.setInputReplaceRegex(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex()))
+            {
+                this.setOutputMatchRegex(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex()))
+            {
+                this.setOutputReplaceRegex(nextStatement.getObject().stringValue());
+            }
+            else
+            {
+                if(RegexNormalisationRuleImpl._TRACE)
                 {
                     RegexNormalisationRuleImpl.log
-                            .debug("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
+                            .trace("RegexNormalisationRuleImpl: unrecognisedStatement nextStatement: "
+                                    + nextStatement.toString());
                 }
-                
-                return inputText;
+                this.unrecognisedStatements.add(nextStatement);
             }
-            
-            String debugInputText = "";
-            
-            // only take a copy of the string if we need it for debugging
-            if(RegexNormalisationRuleImpl._DEBUG)
-            {
-                debugInputText = inputText;
-            }
-            
-            inputText = inputText.replaceAll(matchRegex, replaceRegex);
-            
-            if(RegexNormalisationRuleImpl._DEBUG)
-            {
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete input="
-                        + debugInputText);
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete result="
-                        + inputText);
-            }
-        }
-        catch(final PatternSyntaxException pse)
-        {
-            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: PatternSyntaxException="
-                    + pse.getMessage());
-        }
-        catch(final IllegalArgumentException iae)
-        {
-            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IllegalArgumentException="
-                    + iae.getMessage());
-        }
-        catch(final IndexOutOfBoundsException ioobe)
-        {
-            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IndexOutOfBoundsException="
-                    + ioobe.getMessage());
         }
         
-        return inputText;
+        if(RegexNormalisationRuleImpl._TRACE)
+        {
+            RegexNormalisationRuleImpl.log.trace("RegexNormalisationRuleImpl.fromRdf: would have returned... result="
+                    + this.toString());
+        }
     }
     
-    @Override
-    public Object stageQueryVariables(Object input)
+    public String applyInputRuleToString(final String inputText)
     {
-        return stages.contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()) ? this
-                .applyInputRuleToString((String)input) : input;
+        return this.applyRegex(inputText, this.getInputMatchRegex(), this.getInputReplaceRegex());
     }
     
-    @Override
-    public Object stageAfterQueryCreation(Object input)
+    public String applyOutputRuleToString(final String inputText)
     {
-        return stages.contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation()) ? this
-                .applyInputRuleToString((String)input) : input;
+        return this.applyRegex(inputText, this.getOutputMatchRegex(), this.getOutputReplaceRegex());
     }
     
+    /**
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
+     */
     @Override
-    public Object stageAfterQueryParsing(Object input)
+    public Collection<URI> getElementTypes()
     {
-        return input;
+        final Collection<URI> results = super.getElementTypes();
+        
+        results.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri());
+        return results;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#getInputMatchRegex()
+     */
     @Override
-    public Object stageBeforeResultsImport(Object input)
+    public String getInputMatchRegex()
     {
-        return stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()) ? this
-                .applyOutputRuleToString((String)input) : input;
+        return this.inputMatchRegex;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#getInputReplaceRegex()
+     */
     @Override
-    public Object stageAfterResultsImport(Object input)
+    public String getInputReplaceRegex()
     {
-        return input;
+        return this.inputReplaceRegex;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#getOutputMatchRegex()
+     */
     @Override
-    public Object stageAfterResultsToPool(Object input)
+    public String getOutputMatchRegex()
     {
-        return input;
+        return this.outputMatchRegex;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#getOutputReplaceRegex()
+     */
     @Override
-    public Object stageAfterResultsToDocument(Object input)
+    public String getOutputReplaceRegex()
     {
-        return stages.contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument()) ? this
-                .applyOutputRuleToString((String)input) : input;
+        return this.outputReplaceRegex;
     }
     
     // NOTE: it is quite okay to have an empty replace regex, but an empty match
@@ -387,6 +420,96 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         return (this.getOutputMatchRegex() != null) && (this.getOutputReplaceRegex() != null)
                 && !this.getOutputMatchRegex().trim().equals("");
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#setInputMatchRegex(java.lang.String)
+     */
+    @Override
+    public void setInputMatchRegex(final String inputMatchRegex)
+    {
+        this.inputMatchRegex = inputMatchRegex;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#setInputReplaceRegex(java.lang.String)
+     */
+    @Override
+    public void setInputReplaceRegex(final String inputReplaceRegex)
+    {
+        this.inputReplaceRegex = inputReplaceRegex;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#setOutputMatchRegex(java.lang.String)
+     */
+    @Override
+    public void setOutputMatchRegex(final String outputMatchRegex)
+    {
+        this.outputMatchRegex = outputMatchRegex;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.impl.RegexNormalisationRule#setOutputReplaceRegex(java.lang.String)
+     */
+    @Override
+    public void setOutputReplaceRegex(final String outputReplaceRegex)
+    {
+        this.outputReplaceRegex = outputReplaceRegex;
+    }
+    
+    @Override
+    public Object stageAfterQueryCreation(final Object input)
+    {
+        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation()) ? this
+                .applyInputRuleToString((String)input) : input;
+    }
+    
+    @Override
+    public Object stageAfterQueryParsing(final Object input)
+    {
+        return input;
+    }
+    
+    @Override
+    public Object stageAfterResultsImport(final Object input)
+    {
+        return input;
+    }
+    
+    @Override
+    public Object stageAfterResultsToDocument(final Object input)
+    {
+        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument()) ? this
+                .applyOutputRuleToString((String)input) : input;
+    }
+    
+    @Override
+    public Object stageAfterResultsToPool(final Object input)
+    {
+        return input;
+    }
+    
+    @Override
+    public Object stageBeforeResultsImport(final Object input)
+    {
+        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()) ? this
+                .applyOutputRuleToString((String)input) : input;
+    }
+    
+    @Override
+    public Object stageQueryVariables(final Object input)
+    {
+        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()) ? this
+                .applyInputRuleToString((String)input) : input;
     }
     
     @Override
@@ -420,16 +543,17 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @Override
     public String toHtmlFormBody()
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         
         @SuppressWarnings("unused")
-        String prefix = "rdfrule_";
+        final String prefix = "rdfrule_";
         
         return sb.toString();
     }
     
     @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         super.toRdf(myRepository, keyToUse, modelVersion);
         
@@ -498,189 +622,73 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         return result;
     }
     
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Collection<URI> getElementTypes()
+    private String applyRegex(String inputText, final String matchRegex, final String replaceRegex)
     {
-        Collection<URI> results = super.getElementTypes();
+        try
+        {
+            if((matchRegex == null) || (replaceRegex == null))
+            {
+                if(RegexNormalisationRuleImpl._TRACE)
+                {
+                    RegexNormalisationRuleImpl.log
+                            .trace("RegexNormalisationRuleImpl.applyRegex: something was null matchRegex=" + matchRegex
+                                    + ", replaceRegex=" + replaceRegex);
+                }
+                
+                return inputText;
+            }
+            
+            if(RegexNormalisationRuleImpl._DEBUG)
+            {
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
+                        + ", replaceRegex=" + replaceRegex);
+            }
+            
+            if(matchRegex.trim().equals(""))
+            {
+                if(RegexNormalisationRuleImpl._DEBUG)
+                {
+                    RegexNormalisationRuleImpl.log
+                            .debug("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
+                }
+                
+                return inputText;
+            }
+            
+            String debugInputText = "";
+            
+            // only take a copy of the string if we need it for debugging
+            if(RegexNormalisationRuleImpl._DEBUG)
+            {
+                debugInputText = inputText;
+            }
+            
+            inputText = inputText.replaceAll(matchRegex, replaceRegex);
+            
+            if(RegexNormalisationRuleImpl._DEBUG)
+            {
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete input="
+                        + debugInputText);
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete result="
+                        + inputText);
+            }
+        }
+        catch(final PatternSyntaxException pse)
+        {
+            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: PatternSyntaxException="
+                    + pse.getMessage());
+        }
+        catch(final IllegalArgumentException iae)
+        {
+            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IllegalArgumentException="
+                    + iae.getMessage());
+        }
+        catch(final IndexOutOfBoundsException ioobe)
+        {
+            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IndexOutOfBoundsException="
+                    + ioobe.getMessage());
+        }
         
-        results.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri());
-        return results;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setInputMatchRegex(java.lang.String)
-     */
-    @Override
-    public void setInputMatchRegex(String inputMatchRegex)
-    {
-        this.inputMatchRegex = inputMatchRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#getInputMatchRegex()
-     */
-    @Override
-    public String getInputMatchRegex()
-    {
-        return inputMatchRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setInputReplaceRegex(java.lang.String)
-     */
-    @Override
-    public void setInputReplaceRegex(String inputReplaceRegex)
-    {
-        this.inputReplaceRegex = inputReplaceRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#getInputReplaceRegex()
-     */
-    @Override
-    public String getInputReplaceRegex()
-    {
-        return inputReplaceRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setOutputMatchRegex(java.lang.String)
-     */
-    @Override
-    public void setOutputMatchRegex(String outputMatchRegex)
-    {
-        this.outputMatchRegex = outputMatchRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#getOutputMatchRegex()
-     */
-    @Override
-    public String getOutputMatchRegex()
-    {
-        return outputMatchRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setOutputReplaceRegex(java.lang.String)
-     */
-    @Override
-    public void setOutputReplaceRegex(String outputReplaceRegex)
-    {
-        this.outputReplaceRegex = outputReplaceRegex;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#getOutputReplaceRegex()
-     */
-    @Override
-    public String getOutputReplaceRegex()
-    {
-        return outputReplaceRegex;
-    }
-    
-    /**
-     * @param regexruleTypeUri
-     *            the regexruleTypeUri to set
-     */
-    public static void setRegexRuleTypeUri(URI regexruleTypeUri)
-    {
-        RegexNormalisationRuleImpl.regexruleTypeUri = regexruleTypeUri;
-    }
-    
-    /**
-     * @return the regexruleTypeUri
-     */
-    public static URI getRegexRuleTypeUri()
-    {
-        return RegexNormalisationRuleImpl.regexruleTypeUri;
-    }
-    
-    /**
-     * @param rdfruleInputMatchRegex
-     *            the rdfruleInputMatchRegex to set
-     */
-    public static void setRegexRuleInputMatchRegex(URI rdfruleInputMatchRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleInputMatchRegex = rdfruleInputMatchRegex;
-    }
-    
-    /**
-     * @return the rdfruleInputMatchRegex
-     */
-    public static URI getRegexRuleInputMatchRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleInputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleInputReplaceRegex
-     *            the rdfruleInputReplaceRegex to set
-     */
-    public static void setRegexRuleInputReplaceRegex(URI rdfruleInputReplaceRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
-    }
-    
-    /**
-     * @return the rdfruleInputReplaceRegex
-     */
-    public static URI getRegexRuleInputReplaceRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleInputReplaceRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputMatchRegex
-     *            the rdfruleOutputMatchRegex to set
-     */
-    public static void setRegexRuleOutputMatchRegex(URI rdfruleOutputMatchRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
-    }
-    
-    /**
-     * @return the rdfruleOutputMatchRegex
-     */
-    public static URI getRegexRuleOutputMatchRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleOutputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputReplaceRegex
-     *            the rdfruleOutputReplaceRegex to set
-     */
-    public static void setRegexRuleOutputReplaceRegex(URI rdfruleOutputReplaceRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
-    }
-    
-    /**
-     * @return the rdfruleOutputReplaceRegex
-     */
-    public static URI getRegexRuleOutputReplaceRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleOutputReplaceRegex;
+        return inputText;
     }
 }

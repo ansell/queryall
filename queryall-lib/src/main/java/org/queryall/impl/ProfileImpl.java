@@ -36,16 +36,310 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForProfile();
     
+    /**
+     * @return the profileAdministratorUri
+     */
+    public static URI getProfileAdministratorUri()
+    {
+        return ProfileImpl.profileAdministratorUri;
+    }
+    
+    /**
+     * @return the profileAllowImplicitProviderInclusionsUri
+     */
+    public static URI getProfileAllowImplicitProviderInclusionsUri()
+    {
+        return ProfileImpl.profileAllowImplicitProviderInclusionsUri;
+    }
+    
+    /**
+     * @return the profileAllowImplicitQueryInclusionsUri
+     */
+    public static URI getProfileAllowImplicitQueryInclusionsUri()
+    {
+        return ProfileImpl.profileAllowImplicitQueryInclusionsUri;
+    }
+    
+    /**
+     * @return the profileAllowImplicitRdfRuleInclusionsUri
+     */
+    public static URI getProfileAllowImplicitRdfRuleInclusionsUri()
+    {
+        return ProfileImpl.profileAllowImplicitRdfRuleInclusionsUri;
+    }
+    
+    /**
+     * @return the profileDefaultIncludeExcludeOrderUri
+     */
+    public static URI getProfileDefaultIncludeExcludeOrderUri()
+    {
+        return ProfileImpl.profileDefaultIncludeExcludeOrderUri;
+    }
+    
+    /**
+     * @return the profileExcludeProviderFromProfile
+     */
+    public static URI getProfileExcludeProviderFromProfile()
+    {
+        return ProfileImpl.profileExcludeProviderFromProfile;
+    }
+    
+    /**
+     * @return the profileExcludeQueryFromProfile
+     */
+    public static URI getProfileExcludeQueryFromProfile()
+    {
+        return ProfileImpl.profileExcludeQueryFromProfile;
+    }
+    
+    /**
+     * @return the profileExcludeRdfRuleFromProfile
+     */
+    public static URI getProfileExcludeRdfRuleFromProfile()
+    {
+        return ProfileImpl.profileExcludeRdfRuleFromProfile;
+    }
+    
+    /**
+     * @return the profileExcludeThenIncludeUri
+     */
+    public static URI getProfileExcludeThenIncludeUri()
+    {
+        return ProfileImpl.profileExcludeThenIncludeUri;
+    }
+    
+    /**
+     * @return the profileIncludeProviderInProfile
+     */
+    public static URI getProfileIncludeProviderInProfile()
+    {
+        return ProfileImpl.profileIncludeProviderInProfile;
+    }
+    
+    /**
+     * @return the profileIncludeQueryInProfile
+     */
+    public static URI getProfileIncludeQueryInProfile()
+    {
+        return ProfileImpl.profileIncludeQueryInProfile;
+    }
+    
+    /**
+     * @return the profileIncludeRdfRuleInProfile
+     */
+    public static URI getProfileIncludeRdfRuleInProfile()
+    {
+        return ProfileImpl.profileIncludeRdfRuleInProfile;
+    }
+    
+    /**
+     * @return the profileIncludeThenExcludeUri
+     */
+    public static URI getProfileIncludeThenExcludeUri()
+    {
+        return ProfileImpl.profileIncludeThenExcludeUri;
+    }
+    
+    /**
+     * @return the profileOrderUri
+     */
+    public static URI getProfileOrderUri()
+    {
+        return ProfileImpl.profileOrderUri;
+    }
+    
+    /**
+     * @return the profileTitle
+     */
+    public static URI getProfileTitle()
+    {
+        return ProfileImpl.profileTitle;
+    }
+    
+    /**
+     * @return the profileTypeUri
+     */
+    public static URI getProfileTypeUri()
+    {
+        return ProfileImpl.profileTypeUri;
+    }
+    
+    /**
+     * @param profileAdministratorUri
+     *            the profileAdministratorUri to set
+     */
+    public static void setProfileAdministratorUri(final URI profileAdministratorUri)
+    {
+        ProfileImpl.profileAdministratorUri = profileAdministratorUri;
+    }
+    
+    /**
+     * @param profileAllowImplicitProviderInclusionsUri
+     *            the profileAllowImplicitProviderInclusionsUri to set
+     */
+    public static void setProfileAllowImplicitProviderInclusionsUri(final URI profileAllowImplicitProviderInclusionsUri)
+    {
+        ProfileImpl.profileAllowImplicitProviderInclusionsUri = profileAllowImplicitProviderInclusionsUri;
+    }
+    
+    /**
+     * @param profileAllowImplicitQueryInclusionsUri
+     *            the profileAllowImplicitQueryInclusionsUri to set
+     */
+    public static void setProfileAllowImplicitQueryInclusionsUri(final URI profileAllowImplicitQueryInclusionsUri)
+    {
+        ProfileImpl.profileAllowImplicitQueryInclusionsUri = profileAllowImplicitQueryInclusionsUri;
+    }
+    
+    /**
+     * @param profileAllowImplicitRdfRuleInclusionsUri
+     *            the profileAllowImplicitRdfRuleInclusionsUri to set
+     */
+    public static void setProfileAllowImplicitRdfRuleInclusionsUri(final URI profileAllowImplicitRdfRuleInclusionsUri)
+    {
+        ProfileImpl.profileAllowImplicitRdfRuleInclusionsUri = profileAllowImplicitRdfRuleInclusionsUri;
+    }
+    
+    /**
+     * @param profileDefaultIncludeExcludeOrderUri
+     *            the profileDefaultIncludeExcludeOrderUri to set
+     */
+    public static void setProfileDefaultIncludeExcludeOrderUri(final URI profileDefaultIncludeExcludeOrderUri)
+    {
+        ProfileImpl.profileDefaultIncludeExcludeOrderUri = profileDefaultIncludeExcludeOrderUri;
+    }
+    
+    /**
+     * @param profileExcludeProviderFromProfile
+     *            the profileExcludeProviderFromProfile to set
+     */
+    public static void setProfileExcludeProviderFromProfile(final URI profileExcludeProviderFromProfile)
+    {
+        ProfileImpl.profileExcludeProviderFromProfile = profileExcludeProviderFromProfile;
+    }
+    
+    /**
+     * @param profileExcludeQueryFromProfile
+     *            the profileExcludeQueryFromProfile to set
+     */
+    public static void setProfileExcludeQueryFromProfile(final URI profileExcludeQueryFromProfile)
+    {
+        ProfileImpl.profileExcludeQueryFromProfile = profileExcludeQueryFromProfile;
+    }
+    
+    /**
+     * @param profileExcludeRdfRuleFromProfile
+     *            the profileExcludeRdfRuleFromProfile to set
+     */
+    public static void setProfileExcludeRdfRuleFromProfile(final URI profileExcludeRdfRuleFromProfile)
+    {
+        ProfileImpl.profileExcludeRdfRuleFromProfile = profileExcludeRdfRuleFromProfile;
+    }
+    
+    /**
+     * @param profileExcludeThenIncludeUri
+     *            the profileExcludeThenIncludeUri to set
+     */
+    public static void setProfileExcludeThenIncludeUri(final URI profileExcludeThenIncludeUri)
+    {
+        ProfileImpl.profileExcludeThenIncludeUri = profileExcludeThenIncludeUri;
+    }
+    
+    /**
+     * @param profileIncludeExcludeOrderUndefinedUri
+     *            the profileIncludeExcludeOrderUndefinedUri to set
+     */
+    public static void setProfileIncludeExcludeOrderUndefinedUri(final URI profileIncludeExcludeOrderUndefinedUri)
+    {
+        ProfileImpl.profileIncludeExcludeOrderUndefinedUri = profileIncludeExcludeOrderUndefinedUri;
+    }
+    
+    /**
+     * @param profileIncludeExcludeOrderUri
+     *            the profileIncludeExcludeOrderUri to set
+     */
+    public static void setProfileIncludeExcludeOrderUri(final URI profileIncludeExcludeOrderUri)
+    {
+        ProfileImpl.profileIncludeExcludeOrderUri = profileIncludeExcludeOrderUri;
+    }
+    
+    /**
+     * @param profileIncludeProviderInProfile
+     *            the profileIncludeProviderInProfile to set
+     */
+    public static void setProfileIncludeProviderInProfile(final URI profileIncludeProviderInProfile)
+    {
+        ProfileImpl.profileIncludeProviderInProfile = profileIncludeProviderInProfile;
+    }
+    
+    /**
+     * @param profileIncludeQueryInProfile
+     *            the profileIncludeQueryInProfile to set
+     */
+    public static void setProfileIncludeQueryInProfile(final URI profileIncludeQueryInProfile)
+    {
+        ProfileImpl.profileIncludeQueryInProfile = profileIncludeQueryInProfile;
+    }
+    
+    /**
+     * @param profileIncludeRdfRuleInProfile
+     *            the profileIncludeRdfRuleInProfile to set
+     */
+    public static void setProfileIncludeRdfRuleInProfile(final URI profileIncludeRdfRuleInProfile)
+    {
+        ProfileImpl.profileIncludeRdfRuleInProfile = profileIncludeRdfRuleInProfile;
+    }
+    
+    /**
+     * @param profileIncludeThenExcludeUri
+     *            the profileIncludeThenExcludeUri to set
+     */
+    public static void setProfileIncludeThenExcludeUri(final URI profileIncludeThenExcludeUri)
+    {
+        ProfileImpl.profileIncludeThenExcludeUri = profileIncludeThenExcludeUri;
+    }
+    
+    /**
+     * @param profileOrderUri
+     *            the profileOrderUri to set
+     */
+    public static void setProfileOrderUri(final URI profileOrderUri)
+    {
+        ProfileImpl.profileOrderUri = profileOrderUri;
+    }
+    
+    /**
+     * @param profileTitle
+     *            the profileTitle to set
+     */
+    public static void setProfileTitle(final URI profileTitle)
+    {
+        ProfileImpl.profileTitle = profileTitle;
+    }
+    
+    /**
+     * @param profileTypeUri
+     *            the profileTypeUri to set
+     */
+    public static void setProfileTypeUri(final URI profileTypeUri)
+    {
+        ProfileImpl.profileTypeUri = profileTypeUri;
+    }
+    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
+    
     private String title = "";
+    
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
     private int order = 100;
     
     private boolean allowImplicitQueryInclusions = false;
+    
     private boolean allowImplicitProviderInclusions = false;
+    
     private boolean allowImplicitRdfRuleInclusions = false;
     
     private URI defaultProfileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
@@ -53,30 +347,51 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     private Collection<URI> profileAdministrators = new HashSet<URI>();
     
     private Collection<URI> includeProviders = new HashSet<URI>();
+    
     private Collection<URI> excludeProviders = new HashSet<URI>();
+    
     private Collection<URI> includeQueries = new HashSet<URI>();
+    
     private Collection<URI> excludeQueries = new HashSet<URI>();
+    
     private Collection<URI> includeRdfRules = new HashSet<URI>();
+    
     private Collection<URI> excludeRdfRules = new HashSet<URI>();
     
     private static URI profileTypeUri;
+    
     private static URI profileTitle;
+    
     private static URI profileAdministratorUri;
+    
     private static URI profileOrderUri;
+    
     private static URI profileAllowImplicitQueryInclusionsUri;
+    
     private static URI profileAllowImplicitProviderInclusionsUri;
+    
     private static URI profileAllowImplicitRdfRuleInclusionsUri;
+    
     private static URI profileDefaultIncludeExcludeOrderUri;
+    
     private static URI profileIncludeExcludeOrderUri;
+    
     private static URI profileIncludeProviderInProfile;
+    
     private static URI profileExcludeProviderFromProfile;
+    
     private static URI profileIncludeQueryInProfile;
+    
     private static URI profileExcludeQueryFromProfile;
+    
     private static URI profileIncludeRdfRuleInProfile;
+    
     private static URI profileExcludeRdfRuleFromProfile;
     
     private static URI profileExcludeThenIncludeUri;
+    
     private static URI profileIncludeThenExcludeUri;
+    
     private static URI profileIncludeExcludeOrderUndefinedUri;
     
     public static String profileNamespace;
@@ -117,119 +432,30 @@ public class ProfileImpl implements Profile, Comparable<Profile>
                 "includeExcludeOrderUndefined"));
     }
     
-    public ProfileImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
+    public static URI getExcludeThenIncludeUri()
     {
-        boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
-        
-        for(Statement nextStatement : inputStatements)
-        {
-            if(ProfileImpl._DEBUG)
-            {
-                ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
-            }
-            
-            if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(ProfileImpl.getProfileTypeUri()))
-            {
-                if(ProfileImpl._TRACE)
-                {
-                    ProfileImpl.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
-                }
-                
-                // resultIsValid = true;
-                this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileTitle())
-                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileOrderUri()))
-            {
-                this.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAdministratorUri()))
-            {
-                this.addProfileAdministrator((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileDefaultIncludeExcludeOrderUri()))
-            {
-                this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
-                
-                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileIncludeExcludeOrderUri())
-                        || this.getDefaultProfileIncludeExcludeOrder().equals(
-                                ProfileImpl.getProfileExcludeThenIncludeUri()))
-                {
-                    defaultProfileIncludeExcludeOrderValidationFailed = false;
-                }
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAllowImplicitQueryInclusionsUri()))
-            {
-                this.setAllowImplicitQueryTypeInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAllowImplicitProviderInclusionsUri()))
-            {
-                this.setAllowImplicitProviderInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAllowImplicitRdfRuleInclusionsUri()))
-            {
-                this.setAllowImplicitRdfRuleInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeProviderInProfile()))
-            {
-                this.addIncludeProvider((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileExcludeProviderFromProfile()))
-            {
-                this.addExcludeProvider((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeQueryInProfile()))
-            {
-                this.addIncludeQueryType((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileExcludeQueryFromProfile()))
-            {
-                this.addExcludeQueryType((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeRdfRuleInProfile()))
-            {
-                this.addIncludeRdfRule((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileExcludeRdfRuleFromProfile()))
-            {
-                this.addExcludeRdfRule((URI)nextStatement.getObject());
-            }
-            else
-            {
-                this.addUnrecognisedStatement(nextStatement);
-            }
-        }
-        
-        if(defaultProfileIncludeExcludeOrderValidationFailed)
-        {
-            ProfileImpl.log
-                    .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey());
-        }
-        
-        if(ProfileImpl._TRACE)
-        {
-            ProfileImpl.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
-        }
+        return ProfileImpl.getProfileExcludeThenIncludeUri();
     }
     
-    public ProfileImpl()
+    public static URI getIncludeThenExcludeUri()
     {
+        return ProfileImpl.getProfileIncludeThenExcludeUri();
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
+    public static URI getProfileIncludeExcludeOrderUndefinedUri()
+    {
+        return ProfileImpl.profileIncludeExcludeOrderUndefinedUri;
+    }
+    
+    public static URI getProfileIncludeExcludeOrderUri()
+    {
+        return ProfileImpl.profileIncludeExcludeOrderUri;
+    }
+    
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        RepositoryConnection con = myRepository.getConnection();
+        final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
         
@@ -353,7 +579,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             return true;
         }
-        catch(RepositoryException re)
+        catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
@@ -375,43 +601,670 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         return false;
     }
     
-    @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public ProfileImpl()
     {
-        RepositoryConnection con = myRepository.getConnection();
+    }
+    
+    public ProfileImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
+    {
+        boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
+        
+        for(final Statement nextStatement : inputStatements)
+        {
+            if(ProfileImpl._DEBUG)
+            {
+                ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
+            }
+            
+            if(nextStatement.getPredicate().equals(RDF.TYPE)
+                    && nextStatement.getObject().equals(ProfileImpl.getProfileTypeUri()))
+            {
+                if(ProfileImpl._TRACE)
+                {
+                    ProfileImpl.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
+                }
+                
+                // resultIsValid = true;
+                this.setKey(keyToUse);
+            }
+            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            {
+                this.setCurationStatus((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileTitle())
+                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
+            {
+                this.setTitle(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileOrderUri()))
+            {
+                this.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAdministratorUri()))
+            {
+                this.addProfileAdministrator((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileDefaultIncludeExcludeOrderUri()))
+            {
+                this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                
+                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileIncludeExcludeOrderUri())
+                        || this.getDefaultProfileIncludeExcludeOrder().equals(
+                                ProfileImpl.getProfileExcludeThenIncludeUri()))
+                {
+                    defaultProfileIncludeExcludeOrderValidationFailed = false;
+                }
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAllowImplicitQueryInclusionsUri()))
+            {
+                this.setAllowImplicitQueryTypeInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAllowImplicitProviderInclusionsUri()))
+            {
+                this.setAllowImplicitProviderInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileAllowImplicitRdfRuleInclusionsUri()))
+            {
+                this.setAllowImplicitRdfRuleInclusions(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeProviderInProfile()))
+            {
+                this.addIncludeProvider((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileExcludeProviderFromProfile()))
+            {
+                this.addExcludeProvider((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeQueryInProfile()))
+            {
+                this.addIncludeQueryType((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileExcludeQueryFromProfile()))
+            {
+                this.addExcludeQueryType((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeRdfRuleInProfile()))
+            {
+                this.addIncludeRdfRule((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileExcludeRdfRuleFromProfile()))
+            {
+                this.addExcludeRdfRule((URI)nextStatement.getObject());
+            }
+            else
+            {
+                this.addUnrecognisedStatement(nextStatement);
+            }
+        }
+        
+        if(defaultProfileIncludeExcludeOrderValidationFailed)
+        {
+            ProfileImpl.log
+                    .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
+                            + this.getKey());
+        }
+        
+        if(ProfileImpl._TRACE)
+        {
+            ProfileImpl.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
+        }
+    }
+    
+    @Override
+    public void addExcludeProvider(final URI excludeProvider)
+    {
+        if(this.excludeProviders == null)
+        {
+            this.excludeProviders = new LinkedList<URI>();
+        }
+        
+        this.excludeProviders.add(excludeProvider);
+    }
+    
+    @Override
+    public void addExcludeQueryType(final URI excludeQuery)
+    {
+        if(this.excludeQueries == null)
+        {
+            this.excludeQueries = new LinkedList<URI>();
+        }
+        
+        this.excludeQueries.add(excludeQuery);
+    }
+    
+    @Override
+    public void addExcludeRdfRule(final URI excludeRdfRule)
+    {
+        if(this.excludeRdfRules == null)
+        {
+            this.excludeRdfRules = new LinkedList<URI>();
+        }
+        
+        this.excludeRdfRules.add(excludeRdfRule);
+    }
+    
+    @Override
+    public void addIncludeProvider(final URI includeProvider)
+    {
+        if(this.includeProviders == null)
+        {
+            this.includeProviders = new LinkedList<URI>();
+        }
+        
+        this.includeProviders.add(includeProvider);
+    }
+    
+    @Override
+    public void addIncludeQueryType(final URI includeQuery)
+    {
+        if(this.includeQueries == null)
+        {
+            this.includeQueries = new LinkedList<URI>();
+        }
+        
+        this.includeQueries.add(includeQuery);
+    }
+    
+    @Override
+    public void addIncludeRdfRule(final URI includeRdfRule)
+    {
+        if(this.includeRdfRules == null)
+        {
+            this.includeRdfRules = new LinkedList<URI>();
+        }
+        
+        this.includeRdfRules.add(includeRdfRule);
+    }
+    
+    @Override
+    public void addProfileAdministrator(final URI profileAdministrator)
+    {
+        if(this.profileAdministrators == null)
+        {
+            this.profileAdministrators = new LinkedList<URI>();
+        }
+        
+        this.profileAdministrators.add(profileAdministrator);
+    }
+    
+    @Override
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
+    {
+        this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    @Override
+    public int compareTo(final Profile otherProfile)
+    {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+        
+        if(this == otherProfile)
+        {
+            return EQUAL;
+        }
+        
+        if(this.getOrder() < otherProfile.getOrder())
+        {
+            return BEFORE;
+        }
+        
+        if(this.getOrder() > otherProfile.getOrder())
+        {
+            return AFTER;
+        }
+        
+        if(this.getKey() == null)
+        {
+            if(otherProfile.getKey() == null)
+            {
+                return EQUAL;
+            }
+            else
+            {
+                return BEFORE;
+            }
+        }
+        
+        return this.getKey().stringValue().compareTo(otherProfile.getKey().stringValue());
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj == null)
+        {
+            return false;
+        }
+        if(!(obj instanceof ProfileImpl))
+        {
+            return false;
+        }
+        final ProfileImpl other = (ProfileImpl)obj;
+        if(this.allowImplicitProviderInclusions != other.allowImplicitProviderInclusions)
+        {
+            return false;
+        }
+        if(this.allowImplicitQueryInclusions != other.allowImplicitQueryInclusions)
+        {
+            return false;
+        }
+        if(this.allowImplicitRdfRuleInclusions != other.allowImplicitRdfRuleInclusions)
+        {
+            return false;
+        }
+        if(this.curationStatus == null)
+        {
+            if(other.curationStatus != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.curationStatus.equals(other.curationStatus))
+        {
+            return false;
+        }
+        if(this.defaultProfileIncludeExcludeOrder == null)
+        {
+            if(other.defaultProfileIncludeExcludeOrder != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.defaultProfileIncludeExcludeOrder.equals(other.defaultProfileIncludeExcludeOrder))
+        {
+            return false;
+        }
+        if(this.excludeProviders == null)
+        {
+            if(other.excludeProviders != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.excludeProviders.equals(other.excludeProviders))
+        {
+            return false;
+        }
+        if(this.excludeQueries == null)
+        {
+            if(other.excludeQueries != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.excludeQueries.equals(other.excludeQueries))
+        {
+            return false;
+        }
+        if(this.excludeRdfRules == null)
+        {
+            if(other.excludeRdfRules != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.excludeRdfRules.equals(other.excludeRdfRules))
+        {
+            return false;
+        }
+        if(this.includeProviders == null)
+        {
+            if(other.includeProviders != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.includeProviders.equals(other.includeProviders))
+        {
+            return false;
+        }
+        if(this.includeQueries == null)
+        {
+            if(other.includeQueries != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.includeQueries.equals(other.includeQueries))
+        {
+            return false;
+        }
+        if(this.includeRdfRules == null)
+        {
+            if(other.includeRdfRules != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.includeRdfRules.equals(other.includeRdfRules))
+        {
+            return false;
+        }
+        if(this.key == null)
+        {
+            if(other.key != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.key.equals(other.key))
+        {
+            return false;
+        }
+        if(this.order != other.order)
+        {
+            return false;
+        }
+        if(this.profileAdministrators == null)
+        {
+            if(other.profileAdministrators != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.profileAdministrators.equals(other.profileAdministrators))
+        {
+            return false;
+        }
+        if(this.title == null)
+        {
+            if(other.title != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.title.equals(other.title))
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean getAllowImplicitProviderInclusions()
+    {
+        return this.allowImplicitProviderInclusions;
+    }
+    
+    @Override
+    public boolean getAllowImplicitQueryTypeInclusions()
+    {
+        return this.allowImplicitQueryInclusions;
+    }
+    
+    @Override
+    public boolean getAllowImplicitRdfRuleInclusions()
+    {
+        return this.allowImplicitRdfRuleInclusions;
+    }
+    
+    @Override
+    public URI getCurationStatus()
+    {
+        return this.curationStatus;
+    }
+    
+    /**
+     * @return the namespace used to represent objects of this type by default
+     */
+    @Override
+    public String getDefaultNamespace()
+    {
+        return ProfileImpl.defaultNamespace;
+    }
+    
+    @Override
+    public URI getDefaultProfileIncludeExcludeOrder()
+    {
+        return this.defaultProfileIncludeExcludeOrder;
+    }
+    
+    /**
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
+     */
+    @Override
+    public Collection<URI> getElementTypes()
+    {
+        final Collection<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProfileImpl.getProfileTypeUri());
+        
+        return results;
+    }
+    
+    @Override
+    public Collection<URI> getExcludeProviders()
+    {
+        return this.excludeProviders;
+    }
+    
+    @Override
+    public Collection<URI> getExcludeQueryTypes()
+    {
+        return this.excludeQueries;
+    }
+    
+    @Override
+    public Collection<URI> getExcludeRdfRules()
+    {
+        return this.excludeRdfRules;
+    }
+    
+    @Override
+    public Collection<URI> getIncludeProviders()
+    {
+        return this.includeProviders;
+    }
+    
+    @Override
+    public Collection<URI> getIncludeQueryTypes()
+    {
+        return this.includeQueries;
+    }
+    
+    @Override
+    public Collection<URI> getIncludeRdfRules()
+    {
+        return this.includeRdfRules;
+    }
+    
+    /**
+     * @return the key
+     */
+    @Override
+    public URI getKey()
+    {
+        return this.key;
+    }
+    
+    @Override
+    public int getOrder()
+    {
+        return this.order;
+    }
+    
+    @Override
+    public Collection<URI> getProfileAdministrators()
+    {
+        return this.profileAdministrators;
+    }
+    
+    @Override
+    public String getTitle()
+    {
+        return this.title;
+    }
+    
+    @Override
+    public Collection<Statement> getUnrecognisedStatements()
+    {
+        return this.unrecognisedStatements;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.allowImplicitProviderInclusions ? 1231 : 1237);
+        result = prime * result + (this.allowImplicitQueryInclusions ? 1231 : 1237);
+        result = prime * result + (this.allowImplicitRdfRuleInclusions ? 1231 : 1237);
+        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result =
+                prime
+                        * result
+                        + ((this.defaultProfileIncludeExcludeOrder == null) ? 0
+                                : this.defaultProfileIncludeExcludeOrder.hashCode());
+        result = prime * result + ((this.excludeProviders == null) ? 0 : this.excludeProviders.hashCode());
+        result = prime * result + ((this.excludeQueries == null) ? 0 : this.excludeQueries.hashCode());
+        result = prime * result + ((this.excludeRdfRules == null) ? 0 : this.excludeRdfRules.hashCode());
+        result = prime * result + ((this.includeProviders == null) ? 0 : this.includeProviders.hashCode());
+        result = prime * result + ((this.includeQueries == null) ? 0 : this.includeQueries.hashCode());
+        result = prime * result + ((this.includeRdfRules == null) ? 0 : this.includeRdfRules.hashCode());
+        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + this.order;
+        result = prime * result + ((this.profileAdministrators == null) ? 0 : this.profileAdministrators.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        return result;
+    }
+    
+    @Override
+    public void setAllowImplicitProviderInclusions(final boolean allowImplicitProviderInclusions)
+    {
+        this.allowImplicitProviderInclusions = allowImplicitProviderInclusions;
+    }
+    
+    @Override
+    public void setAllowImplicitQueryTypeInclusions(final boolean allowImplicitQueryInclusions)
+    {
+        this.allowImplicitQueryInclusions = allowImplicitQueryInclusions;
+    }
+    
+    @Override
+    public void setAllowImplicitRdfRuleInclusions(final boolean allowImplicitRdfRuleInclusions)
+    {
+        this.allowImplicitRdfRuleInclusions = allowImplicitRdfRuleInclusions;
+    }
+    
+    @Override
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    @Override
+    public void setDefaultProfileIncludeExcludeOrder(final URI defaultProfileIncludeExcludeOrder)
+    {
+        this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
+    }
+    
+    /**
+     * @param key
+     *            the key to set
+     */
+    @Override
+    public void setKey(final String nextKey)
+    {
+        this.setKey(StringUtils.createURI(nextKey));
+    }
+    
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    @Override
+    public void setOrder(final int order)
+    {
+        this.order = order;
+    }
+    
+    @Override
+    public void setTitle(final String title)
+    {
+        this.title = title;
+    }
+    
+    @Override
+    public String toHtml()
+    {
+        final StringBuilder sb = new StringBuilder();
+        
+        @SuppressWarnings("unused")
+        final String prefix = "profile_";
+        
+        return sb.toString();
+    }
+    
+    @Override
+    public String toHtmlFormBody()
+    {
+        final StringBuilder sb = new StringBuilder();
+        
+        @SuppressWarnings("unused")
+        final String prefix = "profile_";
+        
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
         
         try
         {
-            URI profileInstanceUri = this.getKey();
+            final URI profileInstanceUri = this.getKey();
             
             Literal titleLiteral;
             
-            if(title == null)
+            if(this.title == null)
             {
                 titleLiteral = f.createLiteral("");
             }
             else
             {
-                titleLiteral = f.createLiteral(title);
+                titleLiteral = f.createLiteral(this.title);
             }
             
-            Literal orderLiteral = f.createLiteral(order);
-            Literal allowImplicitQueryInclusionsLiteral = f.createLiteral(allowImplicitQueryInclusions);
-            Literal allowImplicitProviderInclusionsLiteral = f.createLiteral(allowImplicitProviderInclusions);
-            Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(allowImplicitRdfRuleInclusions);
-            URI defaultProfileIncludeExcludeOrderLiteral = defaultProfileIncludeExcludeOrder;
+            final Literal orderLiteral = f.createLiteral(this.order);
+            final Literal allowImplicitQueryInclusionsLiteral = f.createLiteral(this.allowImplicitQueryInclusions);
+            final Literal allowImplicitProviderInclusionsLiteral =
+                    f.createLiteral(this.allowImplicitProviderInclusions);
+            final Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(this.allowImplicitRdfRuleInclusions);
+            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder;
             
             URI curationStatusLiteral = null;
             
-            if(curationStatus == null)
+            if(this.curationStatus == null)
             {
                 curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
             }
             else
             {
-                curationStatusLiteral = curationStatus;
+                curationStatusLiteral = this.curationStatus;
             }
             
             // log.info("About to add to the repository");
@@ -453,40 +1306,40 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             // log.info("About to add array based information");
             
-            if(includeProviders != null)
+            if(this.includeProviders != null)
             {
                 
-                for(URI nextIncludeProviders : includeProviders)
+                for(final URI nextIncludeProviders : this.includeProviders)
                 {
                     con.add(profileInstanceUri, ProfileImpl.getProfileIncludeProviderInProfile(), nextIncludeProviders,
                             keyToUse);
                 }
             }
             
-            if(excludeProviders != null)
+            if(this.excludeProviders != null)
             {
                 
-                for(URI nextExcludeProviders : excludeProviders)
+                for(final URI nextExcludeProviders : this.excludeProviders)
                 {
                     con.add(profileInstanceUri, ProfileImpl.getProfileExcludeProviderFromProfile(),
                             nextExcludeProviders, keyToUse);
                 }
             }
             
-            if(profileAdministrators != null)
+            if(this.profileAdministrators != null)
             {
                 
-                for(URI nextProfileAdministrator : profileAdministrators)
+                for(final URI nextProfileAdministrator : this.profileAdministrators)
                 {
                     con.add(profileInstanceUri, ProfileImpl.getProfileAdministratorUri(), nextProfileAdministrator,
                             keyToUse);
                 }
             }
             
-            if(includeQueries != null)
+            if(this.includeQueries != null)
             {
                 
-                for(URI nextIncludeQuery : includeQueries)
+                for(final URI nextIncludeQuery : this.includeQueries)
                 {
                     if(ProfileImpl._TRACE)
                     {
@@ -498,10 +1351,10 @@ public class ProfileImpl implements Profile, Comparable<Profile>
                 }
             }
             
-            if(excludeQueries != null)
+            if(this.excludeQueries != null)
             {
                 
-                for(URI nextExcludeQuery : excludeQueries)
+                for(final URI nextExcludeQuery : this.excludeQueries)
                 {
                     if(ProfileImpl._TRACE)
                     {
@@ -513,30 +1366,30 @@ public class ProfileImpl implements Profile, Comparable<Profile>
                 }
             }
             
-            if(includeRdfRules != null)
+            if(this.includeRdfRules != null)
             {
                 
-                for(URI nextIncludeRdfRules : includeRdfRules)
+                for(final URI nextIncludeRdfRules : this.includeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileImpl.getProfileIncludeRdfRuleInProfile(), nextIncludeRdfRules,
                             keyToUse);
                 }
             }
             
-            if(excludeRdfRules != null)
+            if(this.excludeRdfRules != null)
             {
                 
-                for(URI nextExcludeRdfRules : excludeRdfRules)
+                for(final URI nextExcludeRdfRules : this.excludeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileImpl.getProfileExcludeRdfRuleFromProfile(), nextExcludeRdfRules,
                             keyToUse);
                 }
             }
             
-            if(unrecognisedStatements != null)
+            if(this.unrecognisedStatements != null)
             {
                 
-                for(Statement nextUnrecognisedStatement : unrecognisedStatements)
+                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
                 {
                     con.add(nextUnrecognisedStatement, keyToUse);
                 }
@@ -547,7 +1400,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             return true;
         }
-        catch(RepositoryException re)
+        catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
@@ -565,836 +1418,11 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     @Override
     public String toString()
     {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         
-        result.append("key=").append(getKey().stringValue());
-        result.append("order=").append(getOrder());
+        result.append("key=").append(this.getKey().stringValue());
+        result.append("order=").append(this.getOrder());
         
         return result.toString();
-    }
-    
-    @Override
-    public String toHtmlFormBody()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        @SuppressWarnings("unused")
-        String prefix = "profile_";
-        
-        return sb.toString();
-    }
-    
-    @Override
-    public String toHtml()
-    {
-        StringBuilder sb = new StringBuilder();
-        
-        @SuppressWarnings("unused")
-        String prefix = "profile_";
-        
-        return sb.toString();
-    }
-    
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return key;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    /**
-     * @return the namespace used to represent objects of this type by default
-     */
-    @Override
-    public String getDefaultNamespace()
-    {
-        return ProfileImpl.defaultNamespace;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Collection<URI> getElementTypes()
-    {
-        Collection<URI> results = new ArrayList<URI>(1);
-        
-        results.add(ProfileImpl.getProfileTypeUri());
-        
-        return results;
-    }
-    
-    @Override
-    public int compareTo(Profile otherProfile)
-    {
-        final int BEFORE = -1;
-        final int EQUAL = 0;
-        final int AFTER = 1;
-        
-        if(this == otherProfile)
-        {
-            return EQUAL;
-        }
-        
-        if(this.getOrder() < otherProfile.getOrder())
-        {
-            return BEFORE;
-        }
-        
-        if(this.getOrder() > otherProfile.getOrder())
-        {
-            return AFTER;
-        }
-        
-        if(this.getKey() == null)
-        {
-            if(otherProfile.getKey() == null)
-            {
-                return EQUAL;
-            }
-            else
-            {
-                return BEFORE;
-            }
-        }
-        
-        return this.getKey().stringValue().compareTo(otherProfile.getKey().stringValue());
-    }
-    
-    public static URI getExcludeThenIncludeUri()
-    {
-        return ProfileImpl.getProfileExcludeThenIncludeUri();
-    }
-    
-    public static URI getIncludeThenExcludeUri()
-    {
-        return ProfileImpl.getProfileIncludeThenExcludeUri();
-    }
-    
-    public static URI getProfileIncludeExcludeOrderUri()
-    {
-        return ProfileImpl.profileIncludeExcludeOrderUri;
-    }
-    
-    public static URI getProfileIncludeExcludeOrderUndefinedUri()
-    {
-        return ProfileImpl.profileIncludeExcludeOrderUndefinedUri;
-    }
-    
-    @Override
-    public int getOrder()
-    {
-        return order;
-    }
-    
-    @Override
-    public void setOrder(int order)
-    {
-        this.order = order;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return title;
-    }
-    
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    @Override
-    public URI getDefaultProfileIncludeExcludeOrder()
-    {
-        return defaultProfileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public void setDefaultProfileIncludeExcludeOrder(URI defaultProfileIncludeExcludeOrder)
-    {
-        this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return curationStatus;
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
-    {
-        unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return unrecognisedStatements;
-    }
-    
-    @Override
-    public boolean getAllowImplicitQueryTypeInclusions()
-    {
-        return allowImplicitQueryInclusions;
-    }
-    
-    @Override
-    public void setAllowImplicitQueryTypeInclusions(boolean allowImplicitQueryInclusions)
-    {
-        this.allowImplicitQueryInclusions = allowImplicitQueryInclusions;
-    }
-    
-    @Override
-    public boolean getAllowImplicitProviderInclusions()
-    {
-        return allowImplicitProviderInclusions;
-    }
-    
-    @Override
-    public void setAllowImplicitProviderInclusions(boolean allowImplicitProviderInclusions)
-    {
-        this.allowImplicitProviderInclusions = allowImplicitProviderInclusions;
-    }
-    
-    @Override
-    public boolean getAllowImplicitRdfRuleInclusions()
-    {
-        return allowImplicitRdfRuleInclusions;
-    }
-    
-    @Override
-    public void setAllowImplicitRdfRuleInclusions(boolean allowImplicitRdfRuleInclusions)
-    {
-        this.allowImplicitRdfRuleInclusions = allowImplicitRdfRuleInclusions;
-    }
-    
-    @Override
-    public void addProfileAdministrator(URI profileAdministrator)
-    {
-        if(this.profileAdministrators == null)
-        {
-            this.profileAdministrators = new LinkedList<URI>();
-        }
-        
-        this.profileAdministrators.add(profileAdministrator);
-    }
-    
-    @Override
-    public Collection<URI> getProfileAdministrators()
-    {
-        return profileAdministrators;
-    }
-    
-    @Override
-    public Collection<URI> getIncludeProviders()
-    {
-        return includeProviders;
-    }
-    
-    @Override
-    public Collection<URI> getExcludeProviders()
-    {
-        return excludeProviders;
-    }
-    
-    @Override
-    public Collection<URI> getIncludeQueryTypes()
-    {
-        return includeQueries;
-    }
-    
-    @Override
-    public Collection<URI> getExcludeQueryTypes()
-    {
-        return excludeQueries;
-    }
-    
-    @Override
-    public Collection<URI> getIncludeRdfRules()
-    {
-        return includeRdfRules;
-    }
-    
-    @Override
-    public Collection<URI> getExcludeRdfRules()
-    {
-        return excludeRdfRules;
-    }
-    
-    /**
-     * @param profileTypeUri
-     *            the profileTypeUri to set
-     */
-    public static void setProfileTypeUri(URI profileTypeUri)
-    {
-        ProfileImpl.profileTypeUri = profileTypeUri;
-    }
-    
-    /**
-     * @return the profileTypeUri
-     */
-    public static URI getProfileTypeUri()
-    {
-        return ProfileImpl.profileTypeUri;
-    }
-    
-    /**
-     * @param profileTitle
-     *            the profileTitle to set
-     */
-    public static void setProfileTitle(URI profileTitle)
-    {
-        ProfileImpl.profileTitle = profileTitle;
-    }
-    
-    /**
-     * @return the profileTitle
-     */
-    public static URI getProfileTitle()
-    {
-        return ProfileImpl.profileTitle;
-    }
-    
-    /**
-     * @param profileAdministratorUri
-     *            the profileAdministratorUri to set
-     */
-    public static void setProfileAdministratorUri(URI profileAdministratorUri)
-    {
-        ProfileImpl.profileAdministratorUri = profileAdministratorUri;
-    }
-    
-    /**
-     * @return the profileAdministratorUri
-     */
-    public static URI getProfileAdministratorUri()
-    {
-        return ProfileImpl.profileAdministratorUri;
-    }
-    
-    /**
-     * @param profileOrderUri
-     *            the profileOrderUri to set
-     */
-    public static void setProfileOrderUri(URI profileOrderUri)
-    {
-        ProfileImpl.profileOrderUri = profileOrderUri;
-    }
-    
-    /**
-     * @return the profileOrderUri
-     */
-    public static URI getProfileOrderUri()
-    {
-        return ProfileImpl.profileOrderUri;
-    }
-    
-    /**
-     * @param profileAllowImplicitQueryInclusionsUri
-     *            the profileAllowImplicitQueryInclusionsUri to set
-     */
-    public static void setProfileAllowImplicitQueryInclusionsUri(URI profileAllowImplicitQueryInclusionsUri)
-    {
-        ProfileImpl.profileAllowImplicitQueryInclusionsUri = profileAllowImplicitQueryInclusionsUri;
-    }
-    
-    /**
-     * @return the profileAllowImplicitQueryInclusionsUri
-     */
-    public static URI getProfileAllowImplicitQueryInclusionsUri()
-    {
-        return ProfileImpl.profileAllowImplicitQueryInclusionsUri;
-    }
-    
-    /**
-     * @param profileAllowImplicitProviderInclusionsUri
-     *            the profileAllowImplicitProviderInclusionsUri to set
-     */
-    public static void setProfileAllowImplicitProviderInclusionsUri(URI profileAllowImplicitProviderInclusionsUri)
-    {
-        ProfileImpl.profileAllowImplicitProviderInclusionsUri = profileAllowImplicitProviderInclusionsUri;
-    }
-    
-    /**
-     * @return the profileAllowImplicitProviderInclusionsUri
-     */
-    public static URI getProfileAllowImplicitProviderInclusionsUri()
-    {
-        return ProfileImpl.profileAllowImplicitProviderInclusionsUri;
-    }
-    
-    /**
-     * @param profileAllowImplicitRdfRuleInclusionsUri
-     *            the profileAllowImplicitRdfRuleInclusionsUri to set
-     */
-    public static void setProfileAllowImplicitRdfRuleInclusionsUri(URI profileAllowImplicitRdfRuleInclusionsUri)
-    {
-        ProfileImpl.profileAllowImplicitRdfRuleInclusionsUri = profileAllowImplicitRdfRuleInclusionsUri;
-    }
-    
-    /**
-     * @return the profileAllowImplicitRdfRuleInclusionsUri
-     */
-    public static URI getProfileAllowImplicitRdfRuleInclusionsUri()
-    {
-        return ProfileImpl.profileAllowImplicitRdfRuleInclusionsUri;
-    }
-    
-    /**
-     * @param profileDefaultIncludeExcludeOrderUri
-     *            the profileDefaultIncludeExcludeOrderUri to set
-     */
-    public static void setProfileDefaultIncludeExcludeOrderUri(URI profileDefaultIncludeExcludeOrderUri)
-    {
-        ProfileImpl.profileDefaultIncludeExcludeOrderUri = profileDefaultIncludeExcludeOrderUri;
-    }
-    
-    /**
-     * @return the profileDefaultIncludeExcludeOrderUri
-     */
-    public static URI getProfileDefaultIncludeExcludeOrderUri()
-    {
-        return ProfileImpl.profileDefaultIncludeExcludeOrderUri;
-    }
-    
-    /**
-     * @param profileIncludeExcludeOrderUri
-     *            the profileIncludeExcludeOrderUri to set
-     */
-    public static void setProfileIncludeExcludeOrderUri(URI profileIncludeExcludeOrderUri)
-    {
-        ProfileImpl.profileIncludeExcludeOrderUri = profileIncludeExcludeOrderUri;
-    }
-    
-    /**
-     * @param profileIncludeProviderInProfile
-     *            the profileIncludeProviderInProfile to set
-     */
-    public static void setProfileIncludeProviderInProfile(URI profileIncludeProviderInProfile)
-    {
-        ProfileImpl.profileIncludeProviderInProfile = profileIncludeProviderInProfile;
-    }
-    
-    /**
-     * @return the profileIncludeProviderInProfile
-     */
-    public static URI getProfileIncludeProviderInProfile()
-    {
-        return ProfileImpl.profileIncludeProviderInProfile;
-    }
-    
-    /**
-     * @param profileExcludeProviderFromProfile
-     *            the profileExcludeProviderFromProfile to set
-     */
-    public static void setProfileExcludeProviderFromProfile(URI profileExcludeProviderFromProfile)
-    {
-        ProfileImpl.profileExcludeProviderFromProfile = profileExcludeProviderFromProfile;
-    }
-    
-    /**
-     * @return the profileExcludeProviderFromProfile
-     */
-    public static URI getProfileExcludeProviderFromProfile()
-    {
-        return ProfileImpl.profileExcludeProviderFromProfile;
-    }
-    
-    /**
-     * @param profileIncludeQueryInProfile
-     *            the profileIncludeQueryInProfile to set
-     */
-    public static void setProfileIncludeQueryInProfile(URI profileIncludeQueryInProfile)
-    {
-        ProfileImpl.profileIncludeQueryInProfile = profileIncludeQueryInProfile;
-    }
-    
-    /**
-     * @return the profileIncludeQueryInProfile
-     */
-    public static URI getProfileIncludeQueryInProfile()
-    {
-        return ProfileImpl.profileIncludeQueryInProfile;
-    }
-    
-    /**
-     * @param profileExcludeQueryFromProfile
-     *            the profileExcludeQueryFromProfile to set
-     */
-    public static void setProfileExcludeQueryFromProfile(URI profileExcludeQueryFromProfile)
-    {
-        ProfileImpl.profileExcludeQueryFromProfile = profileExcludeQueryFromProfile;
-    }
-    
-    /**
-     * @return the profileExcludeQueryFromProfile
-     */
-    public static URI getProfileExcludeQueryFromProfile()
-    {
-        return ProfileImpl.profileExcludeQueryFromProfile;
-    }
-    
-    /**
-     * @param profileIncludeRdfRuleInProfile
-     *            the profileIncludeRdfRuleInProfile to set
-     */
-    public static void setProfileIncludeRdfRuleInProfile(URI profileIncludeRdfRuleInProfile)
-    {
-        ProfileImpl.profileIncludeRdfRuleInProfile = profileIncludeRdfRuleInProfile;
-    }
-    
-    /**
-     * @return the profileIncludeRdfRuleInProfile
-     */
-    public static URI getProfileIncludeRdfRuleInProfile()
-    {
-        return ProfileImpl.profileIncludeRdfRuleInProfile;
-    }
-    
-    /**
-     * @param profileExcludeRdfRuleFromProfile
-     *            the profileExcludeRdfRuleFromProfile to set
-     */
-    public static void setProfileExcludeRdfRuleFromProfile(URI profileExcludeRdfRuleFromProfile)
-    {
-        ProfileImpl.profileExcludeRdfRuleFromProfile = profileExcludeRdfRuleFromProfile;
-    }
-    
-    /**
-     * @return the profileExcludeRdfRuleFromProfile
-     */
-    public static URI getProfileExcludeRdfRuleFromProfile()
-    {
-        return ProfileImpl.profileExcludeRdfRuleFromProfile;
-    }
-    
-    /**
-     * @param profileExcludeThenIncludeUri
-     *            the profileExcludeThenIncludeUri to set
-     */
-    public static void setProfileExcludeThenIncludeUri(URI profileExcludeThenIncludeUri)
-    {
-        ProfileImpl.profileExcludeThenIncludeUri = profileExcludeThenIncludeUri;
-    }
-    
-    /**
-     * @return the profileExcludeThenIncludeUri
-     */
-    public static URI getProfileExcludeThenIncludeUri()
-    {
-        return ProfileImpl.profileExcludeThenIncludeUri;
-    }
-    
-    /**
-     * @param profileIncludeThenExcludeUri
-     *            the profileIncludeThenExcludeUri to set
-     */
-    public static void setProfileIncludeThenExcludeUri(URI profileIncludeThenExcludeUri)
-    {
-        ProfileImpl.profileIncludeThenExcludeUri = profileIncludeThenExcludeUri;
-    }
-    
-    /**
-     * @return the profileIncludeThenExcludeUri
-     */
-    public static URI getProfileIncludeThenExcludeUri()
-    {
-        return ProfileImpl.profileIncludeThenExcludeUri;
-    }
-    
-    /**
-     * @param profileIncludeExcludeOrderUndefinedUri
-     *            the profileIncludeExcludeOrderUndefinedUri to set
-     */
-    public static void setProfileIncludeExcludeOrderUndefinedUri(URI profileIncludeExcludeOrderUndefinedUri)
-    {
-        ProfileImpl.profileIncludeExcludeOrderUndefinedUri = profileIncludeExcludeOrderUndefinedUri;
-    }
-    
-    @Override
-    public void addIncludeProvider(URI includeProvider)
-    {
-        if(this.includeProviders == null)
-        {
-            this.includeProviders = new LinkedList<URI>();
-        }
-        
-        this.includeProviders.add(includeProvider);
-    }
-    
-    @Override
-    public void addExcludeProvider(URI excludeProvider)
-    {
-        if(this.excludeProviders == null)
-        {
-            this.excludeProviders = new LinkedList<URI>();
-        }
-        
-        this.excludeProviders.add(excludeProvider);
-    }
-    
-    @Override
-    public void addIncludeQueryType(URI includeQuery)
-    {
-        if(this.includeQueries == null)
-        {
-            this.includeQueries = new LinkedList<URI>();
-        }
-        
-        this.includeQueries.add(includeQuery);
-    }
-    
-    @Override
-    public void addExcludeQueryType(URI excludeQuery)
-    {
-        if(this.excludeQueries == null)
-        {
-            this.excludeQueries = new LinkedList<URI>();
-        }
-        
-        this.excludeQueries.add(excludeQuery);
-    }
-    
-    @Override
-    public void addIncludeRdfRule(URI includeRdfRule)
-    {
-        if(this.includeRdfRules == null)
-        {
-            this.includeRdfRules = new LinkedList<URI>();
-        }
-        
-        this.includeRdfRules.add(includeRdfRule);
-    }
-    
-    @Override
-    public void addExcludeRdfRule(URI excludeRdfRule)
-    {
-        if(this.excludeRdfRules == null)
-        {
-            this.excludeRdfRules = new LinkedList<URI>();
-        }
-        
-        this.excludeRdfRules.add(excludeRdfRule);
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (allowImplicitProviderInclusions ? 1231 : 1237);
-        result = prime * result + (allowImplicitQueryInclusions ? 1231 : 1237);
-        result = prime * result + (allowImplicitRdfRuleInclusions ? 1231 : 1237);
-        result = prime * result + ((curationStatus == null) ? 0 : curationStatus.hashCode());
-        result =
-                prime
-                        * result
-                        + ((defaultProfileIncludeExcludeOrder == null) ? 0 : defaultProfileIncludeExcludeOrder
-                                .hashCode());
-        result = prime * result + ((excludeProviders == null) ? 0 : excludeProviders.hashCode());
-        result = prime * result + ((excludeQueries == null) ? 0 : excludeQueries.hashCode());
-        result = prime * result + ((excludeRdfRules == null) ? 0 : excludeRdfRules.hashCode());
-        result = prime * result + ((includeProviders == null) ? 0 : includeProviders.hashCode());
-        result = prime * result + ((includeQueries == null) ? 0 : includeQueries.hashCode());
-        result = prime * result + ((includeRdfRules == null) ? 0 : includeRdfRules.hashCode());
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + order;
-        result = prime * result + ((profileAdministrators == null) ? 0 : profileAdministrators.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        return result;
-    }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj)
-    {
-        if(this == obj)
-        {
-            return true;
-        }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(!(obj instanceof ProfileImpl))
-        {
-            return false;
-        }
-        ProfileImpl other = (ProfileImpl)obj;
-        if(allowImplicitProviderInclusions != other.allowImplicitProviderInclusions)
-        {
-            return false;
-        }
-        if(allowImplicitQueryInclusions != other.allowImplicitQueryInclusions)
-        {
-            return false;
-        }
-        if(allowImplicitRdfRuleInclusions != other.allowImplicitRdfRuleInclusions)
-        {
-            return false;
-        }
-        if(curationStatus == null)
-        {
-            if(other.curationStatus != null)
-            {
-                return false;
-            }
-        }
-        else if(!curationStatus.equals(other.curationStatus))
-        {
-            return false;
-        }
-        if(defaultProfileIncludeExcludeOrder == null)
-        {
-            if(other.defaultProfileIncludeExcludeOrder != null)
-            {
-                return false;
-            }
-        }
-        else if(!defaultProfileIncludeExcludeOrder.equals(other.defaultProfileIncludeExcludeOrder))
-        {
-            return false;
-        }
-        if(excludeProviders == null)
-        {
-            if(other.excludeProviders != null)
-            {
-                return false;
-            }
-        }
-        else if(!excludeProviders.equals(other.excludeProviders))
-        {
-            return false;
-        }
-        if(excludeQueries == null)
-        {
-            if(other.excludeQueries != null)
-            {
-                return false;
-            }
-        }
-        else if(!excludeQueries.equals(other.excludeQueries))
-        {
-            return false;
-        }
-        if(excludeRdfRules == null)
-        {
-            if(other.excludeRdfRules != null)
-            {
-                return false;
-            }
-        }
-        else if(!excludeRdfRules.equals(other.excludeRdfRules))
-        {
-            return false;
-        }
-        if(includeProviders == null)
-        {
-            if(other.includeProviders != null)
-            {
-                return false;
-            }
-        }
-        else if(!includeProviders.equals(other.includeProviders))
-        {
-            return false;
-        }
-        if(includeQueries == null)
-        {
-            if(other.includeQueries != null)
-            {
-                return false;
-            }
-        }
-        else if(!includeQueries.equals(other.includeQueries))
-        {
-            return false;
-        }
-        if(includeRdfRules == null)
-        {
-            if(other.includeRdfRules != null)
-            {
-                return false;
-            }
-        }
-        else if(!includeRdfRules.equals(other.includeRdfRules))
-        {
-            return false;
-        }
-        if(key == null)
-        {
-            if(other.key != null)
-            {
-                return false;
-            }
-        }
-        else if(!key.equals(other.key))
-        {
-            return false;
-        }
-        if(order != other.order)
-        {
-            return false;
-        }
-        if(profileAdministrators == null)
-        {
-            if(other.profileAdministrators != null)
-            {
-                return false;
-            }
-        }
-        else if(!profileAdministrators.equals(other.profileAdministrators))
-        {
-            return false;
-        }
-        if(title == null)
-        {
-            if(other.title != null)
-            {
-                return false;
-            }
-        }
-        else if(!title.equals(other.title))
-        {
-            return false;
-        }
-        return true;
     }
 }

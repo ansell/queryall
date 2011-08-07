@@ -29,14 +29,14 @@ public abstract class BaseProfilableTest extends AbstractProfilableTest
     }
     
     @Override
-    public URI getProfileIncludeThenExcludeURI()
-    {
-        return ProfileImpl.getIncludeThenExcludeUri();
-    }
-    
-    @Override
     public URI getProfileIncludeExcludeOrderUndefinedUri()
     {
         return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    }
+    
+    @Override
+    public URI getProfileIncludeThenExcludeURI()
+    {
+        return ProfileImpl.getIncludeThenExcludeUri();
     }
 }

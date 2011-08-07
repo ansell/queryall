@@ -41,13 +41,237 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private static final String defaultNamespace = Settings.getSettings().getNamespaceForNormalisationRule();
     
+    /**
+     * @return the normalisationRuleTypeUri
+     */
+    public static URI getNormalisationRuleTypeUri()
+    {
+        return NormalisationRuleImpl.normalisationRuleTypeUri;
+    }
+    
+    /**
+     * @return the rdfruleDescription
+     */
+    public static URI getRdfruleDescription()
+    {
+        return NormalisationRuleImpl.rdfruleDescription;
+    }
+    
+    /**
+     * @return the rdfruleHasRelatedNamespace
+     */
+    public static URI getRdfruleHasRelatedNamespace()
+    {
+        return NormalisationRuleImpl.rdfruleHasRelatedNamespace;
+    }
+    
+    /**
+     * @return the rdfruleOrder
+     */
+    public static URI getRdfruleOrder()
+    {
+        return NormalisationRuleImpl.rdfruleOrder;
+    }
+    
+    /**
+     * @return the rdfruleStage
+     */
+    public static URI getRdfruleStage()
+    {
+        return NormalisationRuleImpl.rdfruleStage;
+    }
+    
+    /**
+     * @return the rdfruleStageAfterQueryCreation
+     */
+    public static URI getRdfruleStageAfterQueryCreation()
+    {
+        return NormalisationRuleImpl.rdfruleStageAfterQueryCreation;
+    }
+    
+    /**
+     * @return the rdfruleStageAfterQueryParsing
+     */
+    public static URI getRdfruleStageAfterQueryParsing()
+    {
+        return NormalisationRuleImpl.rdfruleStageAfterQueryParsing;
+    }
+    
+    /**
+     * @return the rdfruleStageAfterResultsImport
+     */
+    public static URI getRdfruleStageAfterResultsImport()
+    {
+        return NormalisationRuleImpl.rdfruleStageAfterResultsImport;
+    }
+    
+    /**
+     * @return the rdfruleStageAfterResultsToDocument
+     */
+    public static URI getRdfruleStageAfterResultsToDocument()
+    {
+        return NormalisationRuleImpl.rdfruleStageAfterResultsToDocument;
+    }
+    
+    /**
+     * @return the rdfruleStageAfterResultsToPool
+     */
+    public static URI getRdfruleStageAfterResultsToPool()
+    {
+        return NormalisationRuleImpl.rdfruleStageAfterResultsToPool;
+    }
+    
+    /**
+     * @return the rdfruleStageBeforeResultsImport
+     */
+    public static URI getRdfruleStageBeforeResultsImport()
+    {
+        return NormalisationRuleImpl.rdfruleStageBeforeResultsImport;
+    }
+    
+    /**
+     * @return the rdfruleStageQueryVariables
+     */
+    public static URI getRdfruleStageQueryVariables()
+    {
+        return NormalisationRuleImpl.rdfruleStageQueryVariables;
+    }
+    
+    /**
+     * @return the rdfruleTypeValidForStage
+     */
+    public static URI getRdfruleTypeValidForStage()
+    {
+        return NormalisationRuleImpl.rdfruleTypeValidForStage;
+    }
+    
+    /**
+     * @param normalisationRuleTypeUri
+     *            the normalisationRuleTypeUri to set
+     */
+    public static void setNormalisationRuleTypeUri(final URI normalisationRuleTypeUri)
+    {
+        NormalisationRuleImpl.normalisationRuleTypeUri = normalisationRuleTypeUri;
+    }
+    
+    /**
+     * @param rdfruleDescription
+     *            the rdfruleDescription to set
+     */
+    public static void setRdfruleDescription(final URI rdfruleDescription)
+    {
+        NormalisationRuleImpl.rdfruleDescription = rdfruleDescription;
+    }
+    
+    /**
+     * @param rdfruleHasRelatedNamespace
+     *            the rdfruleHasRelatedNamespace to set
+     */
+    public static void setRdfruleHasRelatedNamespace(final URI rdfruleHasRelatedNamespace)
+    {
+        NormalisationRuleImpl.rdfruleHasRelatedNamespace = rdfruleHasRelatedNamespace;
+    }
+    
+    /**
+     * @param rdfruleOrder
+     *            the rdfruleOrder to set
+     */
+    public static void setRdfruleOrder(final URI rdfruleOrder)
+    {
+        NormalisationRuleImpl.rdfruleOrder = rdfruleOrder;
+    }
+    
+    /**
+     * @param rdfruleStage
+     *            the rdfruleStage to set
+     */
+    public static void setRdfruleStage(final URI rdfruleStage)
+    {
+        NormalisationRuleImpl.rdfruleStage = rdfruleStage;
+    }
+    
+    /**
+     * @param rdfruleStageAfterQueryCreation
+     *            the rdfruleStageAfterQueryCreation to set
+     */
+    public static void setRdfruleStageAfterQueryCreation(final URI rdfruleStageAfterQueryCreation)
+    {
+        NormalisationRuleImpl.rdfruleStageAfterQueryCreation = rdfruleStageAfterQueryCreation;
+    }
+    
+    /**
+     * @param rdfruleStageAfterQueryParsing
+     *            the rdfruleStageAfterQueryParsing to set
+     */
+    public static void setRdfruleStageAfterQueryParsing(final URI rdfruleStageAfterQueryParsing)
+    {
+        NormalisationRuleImpl.rdfruleStageAfterQueryParsing = rdfruleStageAfterQueryParsing;
+    }
+    
+    /**
+     * @param rdfruleStageAfterResultsImport
+     *            the rdfruleStageAfterResultsImport to set
+     */
+    public static void setRdfruleStageAfterResultsImport(final URI rdfruleStageAfterResultsImport)
+    {
+        NormalisationRuleImpl.rdfruleStageAfterResultsImport = rdfruleStageAfterResultsImport;
+    }
+    
+    /**
+     * @param rdfruleStageAfterResultsToDocument
+     *            the rdfruleStageAfterResultsToDocument to set
+     */
+    public static void setRdfruleStageAfterResultsToDocument(final URI rdfruleStageAfterResultsToDocument)
+    {
+        NormalisationRuleImpl.rdfruleStageAfterResultsToDocument = rdfruleStageAfterResultsToDocument;
+    }
+    
+    /**
+     * @param rdfruleStageAfterResultsToPool
+     *            the rdfruleStageAfterResultsToPool to set
+     */
+    public static void setRdfruleStageAfterResultsToPool(final URI rdfruleStageAfterResultsToPool)
+    {
+        NormalisationRuleImpl.rdfruleStageAfterResultsToPool = rdfruleStageAfterResultsToPool;
+    }
+    
+    /**
+     * @param rdfruleStageBeforeResultsImport
+     *            the rdfruleStageBeforeResultsImport to set
+     */
+    public static void setRdfruleStageBeforeResultsImport(final URI rdfruleStageBeforeResultsImport)
+    {
+        NormalisationRuleImpl.rdfruleStageBeforeResultsImport = rdfruleStageBeforeResultsImport;
+    }
+    
+    /**
+     * @param rdfruleStageQueryVariables
+     *            the rdfruleStageQueryVariables to set
+     */
+    public static void setRdfruleStageQueryVariables(final URI rdfruleStageQueryVariables)
+    {
+        NormalisationRuleImpl.rdfruleStageQueryVariables = rdfruleStageQueryVariables;
+    }
+    
+    /**
+     * @param rdfruleTypeValidForStage
+     *            the rdfruleTypeValidForStage to set
+     */
+    public static void setRdfruleTypeValidForStage(final URI rdfruleTypeValidForStage)
+    {
+        NormalisationRuleImpl.rdfruleTypeValidForStage = rdfruleTypeValidForStage;
+    }
+    
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
+    
     private String description;
+    
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    
     private Collection<URI> relatedNamespaces;
     
     protected Collection<URI> stages = new ArrayList<URI>(3);
@@ -55,21 +279,35 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     private Collection<URI> validStages = new ArrayList<URI>(7);
     
     private int order = 100;
+    
     private String title;
     
     private static URI normalisationRuleTypeUri;
+    
     public static URI version2NormalisationRuleTypeUri;
+    
     private static URI rdfruleDescription;
+    
     private static URI rdfruleOrder;
+    
     private static URI rdfruleStage;
+    
     private static URI rdfruleHasRelatedNamespace;
+    
     private static URI rdfruleStageQueryVariables;
+    
     private static URI rdfruleStageAfterQueryCreation;
+    
     private static URI rdfruleStageAfterQueryParsing;
+    
     private static URI rdfruleStageBeforeResultsImport;
+    
     private static URI rdfruleStageAfterResultsImport;
+    
     private static URI rdfruleStageAfterResultsToPool;
+    
     private static URI rdfruleStageAfterResultsToDocument;
+    
     private static URI rdfruleTypeValidForStage;
     
     public static String rdfruleNamespace;
@@ -120,14 +358,84 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 "typeValidForStage"));
     }
     
-    protected NormalisationRuleImpl()
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+        throws OpenRDFException
     {
+        final RepositoryConnection con = myRepository.getConnection();
         
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            
+            con.add(NormalisationRuleImpl.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            
+            con.add(NormalisationRuleImpl.getNormalisationRuleTypeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
+                    contextUri);
+            
+            if(modelVersion == 1)
+            {
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.DOMAIN,
+                        NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.LABEL,
+                        f.createLiteral("The description of a normalisation rule."), contextUri);
+                
+            }
+            
+            con.add(NormalisationRuleImpl.getRdfruleOrder(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.DOMAIN,
+                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+            con.add(NormalisationRuleImpl.getRdfruleOrder(),
+                    RDFS.LABEL,
+                    f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
+                    contextUri);
+            
+            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextUri);
+            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
+                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(),
+                    RDFS.LABEL,
+                    f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
+                    contextUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            NormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
     }
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public NormalisationRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
+    public NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final Collection<URI> tempRelatedNamespaces = new HashSet<URI>();
@@ -192,10 +500,160 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         }
     }
     
-    @Override
-    public Object normaliseByStage(URI stage, Object input)
+    protected NormalisationRuleImpl()
     {
-        if(!validStages.contains(stage))
+        
+    }
+    
+    /**
+     * @return the Stages
+     */
+    @Override
+    public void addStage(final URI stage) throws InvalidStageException
+    {
+        if(this.stages == null)
+        {
+            this.stages = new ArrayList<URI>();
+        }
+        
+        if(this.validInStage(stage))
+        {
+            this.stages.add(stage);
+        }
+        else
+        {
+            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages");
+        }
+    }
+    
+    @Override
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
+    {
+        this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    @Override
+    public int compareTo(final NormalisationRule otherRule)
+    {
+        final int BEFORE = -1;
+        final int EQUAL = 0;
+        final int AFTER = 1;
+        
+        if(this == otherRule)
+        {
+            return EQUAL;
+        }
+        
+        if(this.getOrder() < otherRule.getOrder())
+        {
+            return BEFORE;
+        }
+        
+        if(this.getOrder() > otherRule.getOrder())
+        {
+            return AFTER;
+        }
+        
+        return this.getKey().stringValue().compareTo(otherRule.getKey().stringValue());
+    }
+    
+    @Override
+    public URI getCurationStatus()
+    {
+        return this.curationStatus;
+    }
+    
+    /**
+     * @return the namespace used to represent objects of this type by default
+     */
+    @Override
+    public String getDefaultNamespace()
+    {
+        return NormalisationRuleImpl.defaultNamespace;
+    }
+    
+    @Override
+    public String getDescription()
+    {
+        return this.description;
+    }
+    
+    /**
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
+     */
+    @Override
+    public Collection<URI> getElementTypes()
+    {
+        final Collection<URI> ruleTypes = new ArrayList<URI>(2);
+        ruleTypes.add(NormalisationRuleImpl.getNormalisationRuleTypeUri());
+        
+        return ruleTypes;
+    }
+    
+    /**
+     * @return the key
+     */
+    @Override
+    public URI getKey()
+    {
+        return this.key;
+    }
+    
+    @Override
+    public int getOrder()
+    {
+        return this.order;
+    }
+    
+    @Override
+    public URI getProfileIncludeExcludeOrder()
+    {
+        return this.profileIncludeExcludeOrder;
+    }
+    
+    /**
+     * @return the Stages
+     */
+    @Override
+    public Collection<URI> getStages()
+    {
+        return Collections.unmodifiableCollection(this.stages);
+    }
+    
+    @Override
+    public String getTitle()
+    {
+        return this.title;
+    }
+    
+    @Override
+    public Collection<Statement> getUnrecognisedStatements()
+    {
+        return this.unrecognisedStatements;
+    }
+    
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        return Collections.unmodifiableCollection(this.validStages);
+    }
+    
+    @Override
+    public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
+            final boolean includeNonProfileMatched)
+    {
+        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+                includeNonProfileMatched);
+    }
+    
+    @Override
+    public Object normaliseByStage(final URI stage, final Object input)
+    {
+        if(!this.validStages.contains(stage))
         {
             if(NormalisationRuleImpl._TRACE)
             {
@@ -207,13 +665,13 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             return input;
         }
         
-        if(!stages.contains(stage))
+        if(!this.stages.contains(stage))
         {
             if(NormalisationRuleImpl._DEBUG)
             {
                 NormalisationRuleImpl.log
                         .debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="
-                                + getKey().stringValue() + " stage=" + stage);
+                                + this.getKey().stringValue() + " stage=" + stage);
             }
             
             return input;
@@ -252,7 +710,74 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     }
     
     @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    public void setDescription(final String description)
+    {
+        this.description = description;
+    }
+    
+    /**
+     * @param key
+     *            the key to set
+     */
+    @Override
+    public void setKey(final String nextKey)
+    {
+        this.setKey(StringUtils.createURI(nextKey));
+    }
+    
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    @Override
+    public void setOrder(final int order)
+    {
+        this.order = order;
+    }
+    
+    @Override
+    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    {
+        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+    }
+    
+    /**
+     * @param Stages
+     *            the Stages to set
+     */
+    @Override
+    public void setStages(final Collection<URI> nextStages) throws InvalidStageException
+    {
+        try
+        {
+            for(final URI nextStage : nextStages)
+            {
+                this.addStage(nextStage);
+            }
+        }
+        catch(final InvalidStageException ise)
+        {
+            this.stages = new ArrayList<URI>();
+            throw ise;
+        }
+    }
+    
+    @Override
+    public void setTitle(final String title)
+    {
+        this.title = title;
+    }
+    
+    @Override
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -350,544 +875,37 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         return false;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(NormalisationRuleImpl.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            
-            con.add(NormalisationRuleImpl.getNormalisationRuleTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
-                    contextUri);
-            
-            if(modelVersion == 1)
-            {
-                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
-                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
-                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.DOMAIN,
-                        NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
-                con.add(NormalisationRuleImpl.getRdfruleDescription(), RDFS.LABEL,
-                        f.createLiteral("The description of a normalisation rule."), contextUri);
-                
-            }
-            
-            con.add(NormalisationRuleImpl.getRdfruleOrder(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(NormalisationRuleImpl.getRdfruleOrder(), RDFS.DOMAIN,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
-            con.add(NormalisationRuleImpl.getRdfruleOrder(),
-                    RDFS.LABEL,
-                    f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
-                    contextUri);
-            
-            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
-                    NamespaceEntryImpl.getNamespaceTypeUri(), contextUri);
-            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
-            con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(),
-                    RDFS.LABEL,
-                    f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
-                    contextUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            NormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * @return the key
-     */
     @Override
-    public URI getKey()
+    public boolean usedInStage(final org.openrdf.model.URI stage)
     {
-        return key;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
+        return this.stages.contains(stage);
     }
     
     @Override
-    public void setKey(URI nextKey)
+    public boolean validInStage(final org.openrdf.model.URI stage)
     {
-        this.key = nextKey;
-    }
-    
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return this.title;
+        return this.validStages.contains(stage);
     }
     
     /**
      * @return the validStages
      */
-    @Override
-    public Collection<URI> getValidStages()
+    protected void addValidStage(final URI validStage)
     {
-        return Collections.unmodifiableCollection(validStages);
+        if(this.validStages == null)
+        {
+            this.validStages = new ArrayList<URI>();
+        }
+        
+        this.validStages.add(validStage);
     }
     
     /**
      * @param validStages
      *            the validStages to set
      */
-    protected void setValidStages(Collection<URI> nextValidStages)
+    protected void setValidStages(final Collection<URI> nextValidStages)
     {
         this.validStages = nextValidStages;
-    }
-    
-    /**
-     * @return the validStages
-     */
-    protected void addValidStage(URI validStage)
-    {
-        if(validStages == null)
-        {
-            validStages = new ArrayList<URI>();
-        }
-        
-        validStages.add(validStage);
-    }
-    
-    /**
-     * @return the Stages
-     */
-    @Override
-    public Collection<URI> getStages()
-    {
-        return Collections.unmodifiableCollection(stages);
-    }
-    
-    /**
-     * @param Stages
-     *            the Stages to set
-     */
-    @Override
-    public void setStages(Collection<URI> nextStages) throws InvalidStageException
-    {
-        try
-        {
-            for(URI nextStage : nextStages)
-            {
-                addStage(nextStage);
-            }
-        }
-        catch(InvalidStageException ise)
-        {
-            this.stages = new ArrayList<URI>();
-            throw ise;
-        }
-    }
-    
-    /**
-     * @return the Stages
-     */
-    @Override
-    public void addStage(URI stage) throws InvalidStageException
-    {
-        if(stages == null)
-        {
-            stages = new ArrayList<URI>();
-        }
-        
-        if(validInStage(stage))
-        {
-            stages.add(stage);
-        }
-        else
-        {
-            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages");
-        }
-    }
-    
-    @Override
-    public boolean validInStage(org.openrdf.model.URI stage)
-    {
-        return this.validStages.contains(stage);
-    }
-    
-    @Override
-    public boolean usedInStage(org.openrdf.model.URI stage)
-    {
-        return this.stages.contains(stage);
-    }
-    
-    /**
-     * @return the namespace used to represent objects of this type by default
-     */
-    @Override
-    public String getDefaultNamespace()
-    {
-        return NormalisationRuleImpl.defaultNamespace;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Collection<URI> getElementTypes()
-    {
-        Collection<URI> ruleTypes = new ArrayList<URI>(2);
-        ruleTypes.add(NormalisationRuleImpl.getNormalisationRuleTypeUri());
-        
-        return ruleTypes;
-    }
-    
-    @Override
-    public int getOrder()
-    {
-        return order;
-    }
-    
-    @Override
-    public void setOrder(int order)
-    {
-        this.order = order;
-    }
-    
-    @Override
-    public String getDescription()
-    {
-        return description;
-    }
-    
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-    
-    @Override
-    public int compareTo(NormalisationRule otherRule)
-    {
-        final int BEFORE = -1;
-        final int EQUAL = 0;
-        final int AFTER = 1;
-        
-        if(this == otherRule)
-        {
-            return EQUAL;
-        }
-        
-        if(this.getOrder() < otherRule.getOrder())
-        {
-            return BEFORE;
-        }
-        
-        if(this.getOrder() > otherRule.getOrder())
-        {
-            return AFTER;
-        }
-        
-        return this.getKey().stringValue().compareTo(otherRule.getKey().stringValue());
-    }
-    
-    @Override
-    public URI getProfileIncludeExcludeOrder()
-    {
-        return profileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
-    {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
-    {
-        unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return unrecognisedStatements;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return curationStatus;
-    }
-    
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,
-            boolean includeNonProfileMatched)
-    {
-        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
-                includeNonProfileMatched);
-    }
-    
-    /**
-     * @param normalisationRuleTypeUri
-     *            the normalisationRuleTypeUri to set
-     */
-    public static void setNormalisationRuleTypeUri(URI normalisationRuleTypeUri)
-    {
-        NormalisationRuleImpl.normalisationRuleTypeUri = normalisationRuleTypeUri;
-    }
-    
-    /**
-     * @return the normalisationRuleTypeUri
-     */
-    public static URI getNormalisationRuleTypeUri()
-    {
-        return NormalisationRuleImpl.normalisationRuleTypeUri;
-    }
-    
-    /**
-     * @param rdfruleDescription
-     *            the rdfruleDescription to set
-     */
-    public static void setRdfruleDescription(URI rdfruleDescription)
-    {
-        NormalisationRuleImpl.rdfruleDescription = rdfruleDescription;
-    }
-    
-    /**
-     * @return the rdfruleDescription
-     */
-    public static URI getRdfruleDescription()
-    {
-        return NormalisationRuleImpl.rdfruleDescription;
-    }
-    
-    /**
-     * @param rdfruleOrder
-     *            the rdfruleOrder to set
-     */
-    public static void setRdfruleOrder(URI rdfruleOrder)
-    {
-        NormalisationRuleImpl.rdfruleOrder = rdfruleOrder;
-    }
-    
-    /**
-     * @return the rdfruleOrder
-     */
-    public static URI getRdfruleOrder()
-    {
-        return NormalisationRuleImpl.rdfruleOrder;
-    }
-    
-    /**
-     * @param rdfruleStage
-     *            the rdfruleStage to set
-     */
-    public static void setRdfruleStage(URI rdfruleStage)
-    {
-        NormalisationRuleImpl.rdfruleStage = rdfruleStage;
-    }
-    
-    /**
-     * @return the rdfruleStage
-     */
-    public static URI getRdfruleStage()
-    {
-        return NormalisationRuleImpl.rdfruleStage;
-    }
-    
-    /**
-     * @param rdfruleHasRelatedNamespace
-     *            the rdfruleHasRelatedNamespace to set
-     */
-    public static void setRdfruleHasRelatedNamespace(URI rdfruleHasRelatedNamespace)
-    {
-        NormalisationRuleImpl.rdfruleHasRelatedNamespace = rdfruleHasRelatedNamespace;
-    }
-    
-    /**
-     * @return the rdfruleHasRelatedNamespace
-     */
-    public static URI getRdfruleHasRelatedNamespace()
-    {
-        return NormalisationRuleImpl.rdfruleHasRelatedNamespace;
-    }
-    
-    /**
-     * @param rdfruleStageQueryVariables
-     *            the rdfruleStageQueryVariables to set
-     */
-    public static void setRdfruleStageQueryVariables(URI rdfruleStageQueryVariables)
-    {
-        NormalisationRuleImpl.rdfruleStageQueryVariables = rdfruleStageQueryVariables;
-    }
-    
-    /**
-     * @return the rdfruleStageQueryVariables
-     */
-    public static URI getRdfruleStageQueryVariables()
-    {
-        return NormalisationRuleImpl.rdfruleStageQueryVariables;
-    }
-    
-    /**
-     * @param rdfruleStageAfterQueryCreation
-     *            the rdfruleStageAfterQueryCreation to set
-     */
-    public static void setRdfruleStageAfterQueryCreation(URI rdfruleStageAfterQueryCreation)
-    {
-        NormalisationRuleImpl.rdfruleStageAfterQueryCreation = rdfruleStageAfterQueryCreation;
-    }
-    
-    /**
-     * @return the rdfruleStageAfterQueryCreation
-     */
-    public static URI getRdfruleStageAfterQueryCreation()
-    {
-        return NormalisationRuleImpl.rdfruleStageAfterQueryCreation;
-    }
-    
-    /**
-     * @param rdfruleStageAfterQueryParsing
-     *            the rdfruleStageAfterQueryParsing to set
-     */
-    public static void setRdfruleStageAfterQueryParsing(URI rdfruleStageAfterQueryParsing)
-    {
-        NormalisationRuleImpl.rdfruleStageAfterQueryParsing = rdfruleStageAfterQueryParsing;
-    }
-    
-    /**
-     * @return the rdfruleStageAfterQueryParsing
-     */
-    public static URI getRdfruleStageAfterQueryParsing()
-    {
-        return NormalisationRuleImpl.rdfruleStageAfterQueryParsing;
-    }
-    
-    /**
-     * @param rdfruleStageBeforeResultsImport
-     *            the rdfruleStageBeforeResultsImport to set
-     */
-    public static void setRdfruleStageBeforeResultsImport(URI rdfruleStageBeforeResultsImport)
-    {
-        NormalisationRuleImpl.rdfruleStageBeforeResultsImport = rdfruleStageBeforeResultsImport;
-    }
-    
-    /**
-     * @return the rdfruleStageBeforeResultsImport
-     */
-    public static URI getRdfruleStageBeforeResultsImport()
-    {
-        return NormalisationRuleImpl.rdfruleStageBeforeResultsImport;
-    }
-    
-    /**
-     * @param rdfruleStageAfterResultsImport
-     *            the rdfruleStageAfterResultsImport to set
-     */
-    public static void setRdfruleStageAfterResultsImport(URI rdfruleStageAfterResultsImport)
-    {
-        NormalisationRuleImpl.rdfruleStageAfterResultsImport = rdfruleStageAfterResultsImport;
-    }
-    
-    /**
-     * @return the rdfruleStageAfterResultsImport
-     */
-    public static URI getRdfruleStageAfterResultsImport()
-    {
-        return NormalisationRuleImpl.rdfruleStageAfterResultsImport;
-    }
-    
-    /**
-     * @param rdfruleStageAfterResultsToPool
-     *            the rdfruleStageAfterResultsToPool to set
-     */
-    public static void setRdfruleStageAfterResultsToPool(URI rdfruleStageAfterResultsToPool)
-    {
-        NormalisationRuleImpl.rdfruleStageAfterResultsToPool = rdfruleStageAfterResultsToPool;
-    }
-    
-    /**
-     * @return the rdfruleStageAfterResultsToPool
-     */
-    public static URI getRdfruleStageAfterResultsToPool()
-    {
-        return NormalisationRuleImpl.rdfruleStageAfterResultsToPool;
-    }
-    
-    /**
-     * @param rdfruleStageAfterResultsToDocument
-     *            the rdfruleStageAfterResultsToDocument to set
-     */
-    public static void setRdfruleStageAfterResultsToDocument(URI rdfruleStageAfterResultsToDocument)
-    {
-        NormalisationRuleImpl.rdfruleStageAfterResultsToDocument = rdfruleStageAfterResultsToDocument;
-    }
-    
-    /**
-     * @return the rdfruleStageAfterResultsToDocument
-     */
-    public static URI getRdfruleStageAfterResultsToDocument()
-    {
-        return NormalisationRuleImpl.rdfruleStageAfterResultsToDocument;
-    }
-    
-    /**
-     * @param rdfruleTypeValidForStage
-     *            the rdfruleTypeValidForStage to set
-     */
-    public static void setRdfruleTypeValidForStage(URI rdfruleTypeValidForStage)
-    {
-        NormalisationRuleImpl.rdfruleTypeValidForStage = rdfruleTypeValidForStage;
-    }
-    
-    /**
-     * @return the rdfruleTypeValidForStage
-     */
-    public static URI getRdfruleTypeValidForStage()
-    {
-        return NormalisationRuleImpl.rdfruleTypeValidForStage;
     }
 }

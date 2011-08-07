@@ -16,16 +16,8 @@ import org.openrdf.model.URI;
 public class NamespaceUtils
 {
     
-    /**
-	 * 
-	 */
-    public NamespaceUtils()
-    {
-        // TODO Auto-generated constructor stub
-    }
-    
-    public static Collection<URI> getNamespaceUrisForTitle(Map<String, Collection<URI>> allNamespacesByPrefix,
-            String namespacePrefix)
+    public static Collection<URI> getNamespaceUrisForTitle(final Map<String, Collection<URI>> allNamespacesByPrefix,
+            final String namespacePrefix)
     {
         Collection<URI> results = new HashSet<URI>();
         
@@ -39,6 +31,14 @@ public class NamespaceUtils
         {
             return Collections.unmodifiableCollection(results);
         }
+    }
+    
+    /**
+	 * 
+	 */
+    public NamespaceUtils()
+    {
+        // TODO Auto-generated constructor stub
     }
     
 }

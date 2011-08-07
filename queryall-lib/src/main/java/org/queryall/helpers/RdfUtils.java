@@ -81,7 +81,7 @@ public final class RdfUtils
     public static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
     public static final boolean _INFO = RdfUtils.log.isInfoEnabled();
     
-    public static void copyAllStatementsToRepository(Repository destination, Repository source)
+    public static void copyAllStatementsToRepository(final Repository destination, final Repository source)
     {
         RepositoryConnection mySourceConnection = null;
         RepositoryConnection myDestinationConnection = null;
@@ -104,7 +104,7 @@ public final class RdfUtils
                         + myDestinationConnection.size());
             }
         }
-        catch(Exception ex)
+        catch(final Exception ex)
         {
             RdfUtils.log.error("RdfUtils.copyAllStatementsToRepository", ex);
         }
@@ -116,7 +116,7 @@ public final class RdfUtils
                 {
                     mySourceConnection.close();
                 }
-                catch(Exception ex)
+                catch(final Exception ex)
                 {
                     RdfUtils.log.error("mySourceConnection", ex);
                 }
@@ -127,7 +127,7 @@ public final class RdfUtils
                 {
                     myDestinationConnection.close();
                 }
-                catch(Exception ex)
+                catch(final Exception ex)
                 {
                     RdfUtils.log.error("myDestinationConnection", ex);
                 }
@@ -136,21 +136,21 @@ public final class RdfUtils
         
     }
     
-    public static Collection<QueryType> fetchQueryTypeByKey(String hostToUse, URI nextQueryKey, int modelVersion,
-            QueryAllConfiguration localSettings) throws InterruptedException
+    public static Collection<QueryType> fetchQueryTypeByKey(final String hostToUse, final URI nextQueryKey,
+            final int modelVersion, final QueryAllConfiguration localSettings) throws InterruptedException
     {
-        QueryBundle nextQueryBundle = new QueryBundle();
+        final QueryBundle nextQueryBundle = new QueryBundle();
         
-        HttpProviderImpl dummyProvider = new HttpProviderImpl();
+        final HttpProviderImpl dummyProvider = new HttpProviderImpl();
         
-        Collection<String> endpointUrls = new HashSet<String>();
+        final Collection<String> endpointUrls = new HashSet<String>();
         
         // if(nextQueryKey.startsWith(localSettings.getDefaultHostAddress()))
         // {
-        String namespaceAndIdentifier =
+        final String namespaceAndIdentifier =
                 nextQueryKey.stringValue().substring(localSettings.getDefaultHostAddress().length());
         
-        List<String> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
+        final List<String> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
         
         if(nsAndIdList.size() == 2)
         {
@@ -183,7 +183,7 @@ public final class RdfUtils
         
         nextQueryBundle.setProvider(dummyProvider);
         
-        QueryType dummyQuery = new QueryTypeImpl();
+        final QueryType dummyQuery = new QueryTypeImpl();
         
         dummyQuery
                 .setKey(hostToUse + localSettings.getNamespaceForQueryType()
@@ -194,23 +194,25 @@ public final class RdfUtils
         
         nextQueryBundle.setQueryType(dummyQuery);
         
-        Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
+        final Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
         
         queryBundles.add(nextQueryBundle);
         
         return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
     }
     
-    public static Collection<QueryType> fetchQueryTypeByKey(URI nextQueryKey, boolean useSparqlGraph,
-            String sparqlGraphUri, String sparqlEndpointUrl, int modelVersion, QueryAllConfiguration localSettings)
+    public static Collection<QueryType> fetchQueryTypeByKey(final URI nextQueryKey, final boolean useSparqlGraph,
+            final String sparqlGraphUri, final String sparqlEndpointUrl, final int modelVersion,
+            final QueryAllConfiguration localSettings)
     {
-        String constructQueryString = RdfUtils.getConstructQueryForKey(nextQueryKey, useSparqlGraph, sparqlGraphUri);
+        final String constructQueryString =
+                RdfUtils.getConstructQueryForKey(nextQueryKey, useSparqlGraph, sparqlGraphUri);
         
-        QueryBundle nextQueryBundle = new QueryBundle();
+        final QueryBundle nextQueryBundle = new QueryBundle();
         
-        HttpProviderImpl dummyProvider = new HttpProviderImpl();
+        final HttpProviderImpl dummyProvider = new HttpProviderImpl();
         
-        Collection<String> endpointUrls = new HashSet<String>();
+        final Collection<String> endpointUrls = new HashSet<String>();
         
         endpointUrls.add(sparqlEndpointUrl);
         
@@ -226,7 +228,7 @@ public final class RdfUtils
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
         
-        QueryType dummyQuery = new QueryTypeImpl();
+        final QueryType dummyQuery = new QueryTypeImpl();
         
         dummyQuery.setKey(localSettings.getDefaultHostAddress() + localSettings.getNamespaceForQueryType()
                 + localSettings.getStringProperty("separator", ":")
@@ -238,25 +240,15 @@ public final class RdfUtils
         
         nextQueryBundle.setQuery(constructQueryString);
         
-        Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
+        final Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
         
         queryBundles.add(nextQueryBundle);
         
         return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
     }
     
-    public static RDFFormat getWriterFormat(String requestedContentType)
-    {
-        if(requestedContentType.equals(Constants.TEXT_HTML))
-        {
-            return null;
-        }
-        
-        return Rio.getWriterFormatForMIMEType(requestedContentType, RDFFormat.RDFXML);
-    }
-    
-    public static String findBestContentType(String requestedContentType, String preferredDisplayContentType,
-            String fallback)
+    public static String findBestContentType(final String requestedContentType,
+            final String preferredDisplayContentType, final String fallback)
     {
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
@@ -286,33 +278,36 @@ public final class RdfUtils
         }
     }
     
-    public static HttpUrlQueryRunnable generateHttpUrlSparqlDeleteThread(BaseQueryAllInterface rdfObject,
-            boolean useSparqlGraph, String sparqlGraphUri, String sparqlEndpointMethod, String sparqlEndpointUrl,
-            String acceptHeader, String expectedReturnFormat, QueryAllConfiguration localSettings,
-            BlacklistController localBlacklistController) throws OpenRDFException
+    public static HttpUrlQueryRunnable generateHttpUrlSparqlDeleteThread(final BaseQueryAllInterface rdfObject,
+            final boolean useSparqlGraph, final String sparqlGraphUri, final String sparqlEndpointMethod,
+            final String sparqlEndpointUrl, final String acceptHeader, final String expectedReturnFormat,
+            final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController)
+        throws OpenRDFException
     {
-        String sparqlInsertQuery =
+        final String sparqlInsertQuery =
                 RdfUtils.getSparulQueryForObject(rdfObject, false, true, useSparqlGraph, sparqlGraphUri);
         
         return RdfUtils.generateHttpUrlSparqlThread(sparqlInsertQuery, sparqlEndpointMethod, sparqlEndpointUrl,
                 acceptHeader, expectedReturnFormat, localSettings, localBlacklistController);
     }
     
-    public static HttpUrlQueryRunnable generateHttpUrlSparqlInsertThread(BaseQueryAllInterface rdfObject,
-            boolean isDelete, boolean useSparqlGraph, String sparqlGraphUri, String sparqlEndpointMethod,
-            String sparqlEndpointUrl, String acceptHeader, String expectedReturnFormat,
-            QueryAllConfiguration localSettings, BlacklistController localBlacklistController) throws OpenRDFException
+    public static HttpUrlQueryRunnable generateHttpUrlSparqlInsertThread(final BaseQueryAllInterface rdfObject,
+            final boolean isDelete, final boolean useSparqlGraph, final String sparqlGraphUri,
+            final String sparqlEndpointMethod, final String sparqlEndpointUrl, final String acceptHeader,
+            final String expectedReturnFormat, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController) throws OpenRDFException
     {
-        String sparqlInsertQuery =
+        final String sparqlInsertQuery =
                 RdfUtils.getSparulQueryForObject(rdfObject, true, isDelete, useSparqlGraph, sparqlGraphUri);
         
         return RdfUtils.generateHttpUrlSparqlThread(sparqlInsertQuery, sparqlEndpointMethod, sparqlEndpointUrl,
                 acceptHeader, expectedReturnFormat, localSettings, localBlacklistController);
     }
     
-    public static HttpUrlQueryRunnable generateHttpUrlSparqlThread(String sparqlQuery, String sparqlEndpointMethod,
-            String sparqlEndpointUrl, String acceptHeader, String expectedReturnFormat,
-            QueryAllConfiguration localSettings, BlacklistController localBlacklistController)
+    public static HttpUrlQueryRunnable generateHttpUrlSparqlThread(final String sparqlQuery,
+            final String sparqlEndpointMethod, final String sparqlEndpointUrl, final String acceptHeader,
+            final String expectedReturnFormat, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController)
     {
         return new HttpUrlQueryRunnable(sparqlEndpointMethod, sparqlEndpointUrl, sparqlQuery, acceptHeader,
                 expectedReturnFormat, localSettings, localBlacklistController);
@@ -323,7 +318,8 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static List<Statement> getAllStatementsFromRepository(Repository nextRepository) throws OpenRDFException
+    public static List<Statement> getAllStatementsFromRepository(final Repository nextRepository)
+        throws OpenRDFException
     {
         List<Statement> results = new ArrayList<Statement>(1);
         
@@ -353,7 +349,7 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static boolean getBooleanFromValue(Value nextValue)
+    public static boolean getBooleanFromValue(final Value nextValue)
     {
         boolean result;
         
@@ -373,7 +369,7 @@ public final class RdfUtils
                 // integers instead of booleans
                 if(nextValue instanceof org.openrdf.sail.memory.model.IntegerMemLiteral)
                 {
-                    int tempValue = ((IntegerMemLiteral)nextValue).intValue();
+                    final int tempValue = ((IntegerMemLiteral)nextValue).intValue();
                     if(tempValue == 0)
                     {
                         return false;
@@ -399,26 +395,27 @@ public final class RdfUtils
         return result;
     }
     
-    public static String getConstructQueryByType(BaseQueryAllInterface nextObject, int offset, int limit,
-            boolean useSparqlGraph, String sparqlGraphUri, QueryAllConfiguration localSettings)
+    public static String getConstructQueryByType(final BaseQueryAllInterface nextObject, final int offset,
+            final int limit, final boolean useSparqlGraph, final String sparqlGraphUri,
+            final QueryAllConfiguration localSettings)
     {
         return RdfUtils.getConstructQueryByType(nextObject.getElementTypes(), offset, limit, useSparqlGraph,
                 sparqlGraphUri, localSettings);
     }
     
-    public static String getConstructQueryByType(Collection<URI> nextTypes, int offset, int limit,
-            boolean useSparqlGraph, String sparqlGraphUri, QueryAllConfiguration localSettings)
+    public static String getConstructQueryByType(final Collection<URI> nextTypes, final int offset, final int limit,
+            final boolean useSparqlGraph, final String sparqlGraphUri, final QueryAllConfiguration localSettings)
     {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         
         result.append("CONSTRUCT { ?s a ?type . ");
         
         int counter = 0;
         
         // TODO: change this to List<String> when titleProperties are ordered in the configuration
-        Collection<URI> titleProperties = localSettings.getURIProperties("titleProperties");
+        final Collection<URI> titleProperties = localSettings.getURIProperties("titleProperties");
         
-        for(URI nextTitleUri : titleProperties)
+        for(final URI nextTitleUri : titleProperties)
         {
             result.append(" ?s <" + nextTitleUri.stringValue() + "> ?o" + counter + " . ");
             
@@ -429,7 +426,7 @@ public final class RdfUtils
         
         boolean firstType = true;
         
-        for(URI nextTypeUri : nextTypes)
+        for(final URI nextTypeUri : nextTypes)
         {
             if(!firstType)
             {
@@ -452,7 +449,7 @@ public final class RdfUtils
             
             counter = 0;
             
-            for(URI nextTitleUri : titleProperties)
+            for(final URI nextTitleUri : titleProperties)
             {
                 result.append("OPTIONAL{ ?s <" + nextTitleUri.stringValue() + "> ?o" + counter + " . }");
                 
@@ -472,9 +469,10 @@ public final class RdfUtils
         return result.toString();
     }
     
-    public static String getConstructQueryForKey(URI nextKey, boolean useSparqlGraph, String sparqlGraphUri)
+    public static String getConstructQueryForKey(final URI nextKey, final boolean useSparqlGraph,
+            final String sparqlGraphUri)
     {
-        StringBuilder result = new StringBuilder();
+        final StringBuilder result = new StringBuilder();
         
         result.append("CONSTRUCT { <" + nextKey.stringValue() + "> ?p ?o . } WHERE { ");
         
@@ -495,8 +493,8 @@ public final class RdfUtils
         return result.toString();
     }
     
-    public static String getConstructQueryForObject(BaseQueryAllInterface nextObject, boolean useSparqlGraph,
-            String sparqlGraphUri)
+    public static String getConstructQueryForObject(final BaseQueryAllInterface nextObject,
+            final boolean useSparqlGraph, final String sparqlGraphUri)
     {
         return RdfUtils.getConstructQueryForKey(nextObject.getKey(), useSparqlGraph, sparqlGraphUri);
     }
@@ -505,7 +503,7 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static Date getDateTimeFromValue(Value nextValue) throws java.text.ParseException
+    public static Date getDateTimeFromValue(final Value nextValue) throws java.text.ParseException
     {
         Date result;
         
@@ -531,7 +529,7 @@ public final class RdfUtils
                 {
                     result = Constants.ISO8601UTC().parse(nextValue.toString());
                 }
-                catch(java.text.ParseException pe)
+                catch(final java.text.ParseException pe)
                 {
                     RdfUtils.log.error("Could not parse date: nextValue.toString=" + nextValue.toString());
                     throw pe;
@@ -548,9 +546,9 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<String> getDistinctObjectUrisFromRepository(Repository nextRepository)// ,
-                                                                                                   // Collection<String>
-                                                                                                   // predicateUris)
+    public static Collection<String> getDistinctObjectUrisFromRepository(final Repository nextRepository)// ,
+        // Collection<String>
+        // predicateUris)
         throws OpenRDFException
     {
         final Collection<String> results = new HashSet<String>();
@@ -646,9 +644,9 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<String> getDistinctSubjectsFromRepository(Repository nextRepository)// ,
-                                                                                                 // Collection<String>
-                                                                                                 // predicateUris)
+    public static Collection<String> getDistinctSubjectsFromRepository(final Repository nextRepository)// ,
+        // Collection<String>
+        // predicateUris)
         throws OpenRDFException
     {
         final Collection<String> results = new HashSet<String>();
@@ -738,13 +736,206 @@ public final class RdfUtils
     }
     
     /**
+     * @param nextValue
+     * @return
+     */
+    public static float getFloatFromValue(final Value nextValue)
+    {
+        float result = 0.0f;
+        
+        try
+        {
+            result = ((NumericLiteralImpl)nextValue).floatValue();
+        }
+        catch(final ClassCastException cce)
+        {
+            result = Float.parseFloat(nextValue.toString());
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @param nextValue
+     * @return
+     */
+    public static int getIntegerFromValue(final Value nextValue)
+    {
+        int result = 0;
+        
+        try
+        {
+            result = ((IntegerLiteralImpl)nextValue).intValue();
+        }
+        catch(final ClassCastException cce)
+        {
+            try
+            {
+                result = ((IntegerMemLiteral)nextValue).intValue();
+            }
+            catch(final ClassCastException cce2)
+            {
+                if(RdfUtils._DEBUG)
+                {
+                    RdfUtils.log
+                            .debug("RdfUtils.getIntegerFromValue: nextValue was not a typed integer literal. Trying to parse it as a string... type="
+                                    + nextValue.getClass().getName());
+                }
+                
+                result = Integer.parseInt(nextValue.toString());
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @param nextValue
+     * @return
+     */
+    public static long getLongFromValue(final Value nextValue)
+    {
+        long result = 0L;
+        
+        try
+        {
+            result = ((IntegerMemLiteral)nextValue).longValue();
+        }
+        catch(final ClassCastException cce)
+        {
+            RdfUtils.log
+                    .error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="
+                            + nextValue.getClass().getName());
+            try
+            {
+                result = Long.parseLong(nextValue.stringValue());
+            }
+            catch(final NumberFormatException nfe)
+            {
+                RdfUtils.log
+                        .error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="
+                                + nextValue.getClass().getName());
+            }
+        }
+        
+        return result;
+    }
+    
+    public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
+    {
+        final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getNamespaceEntries: started parsing namespace entry configurations");
+        }
+        final long start = System.currentTimeMillis();
+        
+        final URI namespaceEntryTypeUri = NamespaceEntryImpl.getNamespaceTypeUri();
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+            
+            for(final Statement nextNamespaceEntry : con.getStatements(null, RDF.TYPE, namespaceEntryTypeUri, true)
+                    .asList())
+            {
+                final URI nextSubjectUri = (URI)nextNamespaceEntry.getSubject();
+                results.put(nextSubjectUri,
+                        new NamespaceEntryImpl(
+                                con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.fatal("Settings.getNamespaceEntries:", e);
+        }
+        
+        if(RdfUtils._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getNamespaceEntries", (end - start)));
+        }
+        
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getNamespaceEntries: finished getting namespace entry information");
+        }
+        
+        return results;
+    }
+    
+    public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
+    {
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getNormalisationRules: started parsing rdf normalisation rules");
+        }
+        
+        final long start = System.currentTimeMillis();
+        
+        final Map<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
+        
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+            
+            // Import Regular Expression Normalisation Rules first
+            final URI regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri();
+            for(final Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextRegexRule.getSubject();
+                results.put(nextSubjectUri,
+                        new RegexNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
+                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+            
+            // Then do the same thing for SPARQL Normalisation Rules
+            final URI sparqlRuleTypeUri = SparqlNormalisationRuleImpl.getSparqlRuleTypeUri();
+            for(final Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
+                results.put(nextSubjectUri,
+                        new SparqlNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
+                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+            
+            // Then do the same thing for XSLT Normalisation Rules
+            final URI xsltRuleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri();
+            for(final Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextXsltRule.getSubject();
+                results.put(nextSubjectUri,
+                        new XsltNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
+                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.fatal("Settings.getNormalisationRules:", e);
+        }
+        if(RdfUtils._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getNormalisationRules", (end - start)));
+        }
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getNormalisationRules: finished parsing normalisation rules");
+        }
+        
+        return results;
+    }
+    
+    /**
      * @param nextRepository
      * @param predicateUris
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<String> getObjectUrisFromRepositoryByPredicateUris(Repository nextRepository,
-            Collection<String> predicateUris) throws OpenRDFException
+    public static Collection<String> getObjectUrisFromRepositoryByPredicateUris(final Repository nextRepository,
+            final Collection<String> predicateUris) throws OpenRDFException
     {
         final Collection<String> results = new HashSet<String>();
         
@@ -835,23 +1026,152 @@ public final class RdfUtils
         return results;
     }
     
-    public static Collection<QueryType> getQueryTypesForQueryBundles(Collection<QueryBundle> queryBundles,
-            int modelVersion, QueryAllConfiguration localSettings)
+    public static Map<URI, Profile> getProfiles(final Repository myRepository)
     {
-        RdfFetchController fetchController =
+        final Map<URI, Profile> results = new Hashtable<URI, Profile>();
+        
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getProfiles: started parsing profile configurations");
+        }
+        final long start = System.currentTimeMillis();
+        
+        final URI profileTypeUri = ProfileImpl.getProfileTypeUri();
+        
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+            
+            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, profileTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextProvider.getSubject();
+                results.put(nextSubjectUri,
+                        new ProfileImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.fatal("Settings.getProviders:", e);
+        }
+        
+        if(RdfUtils._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getProfiles", (end - start)));
+        }
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getProfiles: finished parsing profiles");
+        }
+        
+        return results;
+    }
+    
+    public static Map<URI, Provider> getProviders(final Repository myRepository)
+    {
+        final Map<URI, Provider> results = new Hashtable<URI, Provider>();
+        
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getProviders: started parsing provider configurations");
+        }
+        final long start = System.currentTimeMillis();
+        
+        // TODO: HACK: treat all providers as HttpProviderImpl for now
+        final URI providerTypeUri = ProviderImpl.getProviderTypeUri();
+        
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+            
+            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextProvider.getSubject();
+                results.put(nextSubjectUri,
+                        new HttpProviderImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.fatal("Settings.getProviders:", e);
+        }
+        
+        if(RdfUtils._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getProviders", (end - start)));
+        }
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getProviders: finished parsing provider configurations");
+        }
+        
+        return results;
+    }
+    
+    public static Map<URI, QueryType> getQueryTypes(final Repository myRepository)
+    {
+        final Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
+        final long start = System.currentTimeMillis();
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getQueryTypes: started parsing query types");
+        }
+        
+        final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
+        
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+            
+            for(final Statement nextQueryType : con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextQueryType.getSubject();
+                results.put(nextSubjectUri,
+                        new QueryTypeImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.fatal("Settings.getQueryTypes:", e);
+        }
+        
+        if(RdfUtils._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getQueryTypes", (end - start)));
+        }
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getQueryTypes: finished parsing query types");
+        }
+        
+        return results;
+    }
+    
+    public static Collection<QueryType> getQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
+            final int modelVersion, final QueryAllConfiguration localSettings)
+    {
+        final RdfFetchController fetchController =
                 new RdfFetchController(localSettings, BlacklistController.getDefaultController(), queryBundles);
         
         try
         {
             fetchController.fetchRdfForQueries();
         }
-        catch(InterruptedException ie)
+        catch(final InterruptedException ie)
         {
             RdfUtils.log.fatal("RdfUtils.getQueryTypesForQueryBundles: interrupted exception", ie);
             // throw ie;
         }
         
-        Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
+        final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
         
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;
@@ -861,7 +1181,7 @@ public final class RdfUtils
             myRepository.initialize();
             myRepositoryConnection = myRepository.getConnection();
             
-            for(RdfFetcherQueryRunnable nextResult : rdfResults)
+            for(final RdfFetcherQueryRunnable nextResult : rdfResults)
             {
                 try
                 {
@@ -911,21 +1231,21 @@ public final class RdfUtils
                                 localSettings.getDefaultHostAddress(), nextReaderFormat);
                     }
                 }
-                catch(org.openrdf.rio.RDFParseException rdfpe)
+                catch(final org.openrdf.rio.RDFParseException rdfpe)
                 {
                     RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: RDFParseException", rdfpe);
                 }
-                catch(org.openrdf.repository.RepositoryException re)
+                catch(final org.openrdf.repository.RepositoryException re)
                 {
                     RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: RepositoryException inner", re);
                 }
-                catch(java.io.IOException ioe)
+                catch(final java.io.IOException ioe)
                 {
                     RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: IOException", ioe);
                 }
             } // end for(RdfFetcherQueryRunnable nextResult : rdfResults)
         }
-        catch(org.openrdf.repository.RepositoryException re)
+        catch(final org.openrdf.repository.RepositoryException re)
         {
             RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: RepositoryException outer", re);
         }
@@ -938,7 +1258,7 @@ public final class RdfUtils
                     myRepositoryConnection.close();
                 }
             }
-            catch(org.openrdf.repository.RepositoryException re2)
+            catch(final org.openrdf.repository.RepositoryException re2)
             {
                 RdfUtils.log.fatal("RdfUtils.getQueryTypesForQueryBundles: failed to close repository connection", re2);
             }
@@ -951,13 +1271,259 @@ public final class RdfUtils
         return results.values();
     }
     
+    public static Map<URI, RuleTest> getRuleTests(final Repository myRepository)
+    {
+        final Map<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
+        
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getRuleTests: started parsing rule test configurations");
+        }
+        final long start = System.currentTimeMillis();
+        
+        final URI ruleTestTypeUri = RuleTestImpl.getRuletestTypeUri();
+        try
+        {
+            final RepositoryConnection con = myRepository.getConnection();
+            
+            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
+            {
+                final URI nextSubjectUri = (URI)nextProvider.getSubject();
+                results.put(nextSubjectUri,
+                        new RuleTestImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+            }
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.fatal("Settings.getRuleTests:", e);
+        }
+        
+        if(RdfUtils._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getRuleTests", (end - start)));
+        }
+        if(RdfUtils._DEBUG)
+        {
+            RdfUtils.log.debug("Settings.getRuleTests: finished getting rdf rule tests");
+        }
+        
+        return results;
+    }
+    
+    public static Repository getSchemas()
+    {
+        return RdfUtils.getSchemas(null);
+    }
+    
+    public static Repository getSchemas(final URI contextUri)
+    {
+        // Repository myRepository = new SailRepository(new ForwardChainingRDFSInferencer(new
+        // MemoryStore()));
+        final Repository myRepository = new SailRepository(new MemoryStore());
+        
+        try
+        {
+            myRepository.initialize();
+        }
+        catch(final RepositoryException e)
+        {
+            RdfUtils.log.fatal("Could not initialise repository for schemas");
+            throw new RuntimeException(e);
+        }
+        
+        try
+        {
+            if(!ProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log.error("QueryAllSchemaServlet: Provider schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Provider schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!HttpProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: HttpProviderImpl schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating HttpProviderImpl schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!ProjectImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log.error("QueryAllSchemaServlet: Project schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Project schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!QueryTypeImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log.error("QueryAllSchemaServlet: QueryType schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating QueryType schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!RegexNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: RegexNormalisationRuleImpl schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error(
+                    "QueryAllSchemaServlet: Problem generating RegexNormalisationRuleImpl schema RDF with type="
+                            + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!SparqlNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: SparqlNormalisationRuleImpl schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error(
+                    "QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
+                            + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!XsltNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: XsltNormalisationRuleImpl schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error(
+                    "QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
+                            + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!RuleTestImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log.error("QueryAllSchemaServlet: RuleTest schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating RuleTest schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!NamespaceEntryImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: NamespaceEntry schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating NamespaceEntry schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!ProfileImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log.error("QueryAllSchemaServlet: Profile schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Profile schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!StatisticsEntry.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: Statistics schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Statistics schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!ProvenanceRecord.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: Provenance schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Provenance schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!QueryBundle.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            {
+                RdfUtils.log
+                        .error("QueryAllSchemaServlet: QueryBundle schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating QueryBundle schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        return myRepository;
+    }
+    
     /**
      * @return a SPARQL Update language query that will either insert or delete triples about
      *         rdfObject
      * @throws OpenRDFException
      */
-    public static String getSparulQueryForObject(BaseQueryAllInterface rdfObject, boolean isInsert, boolean isDelete,
-            boolean useSparqlGraph, String sparqlGraphUri) throws OpenRDFException
+    public static String getSparulQueryForObject(final BaseQueryAllInterface rdfObject, final boolean isInsert,
+            final boolean isDelete, final boolean useSparqlGraph, final String sparqlGraphUri) throws OpenRDFException
     {
         final Repository myRepository = new SailRepository(new MemoryStore());
         myRepository.initialize();
@@ -1032,8 +1598,8 @@ public final class RdfUtils
         return sparqlInsertQuery;
     }
     
-    public static Collection<Statement> getStatementsFromRepositoryByPredicateUris(Repository nextRepository,
-            Collection<URI> predicateUris) throws OpenRDFException
+    public static Collection<Statement> getStatementsFromRepositoryByPredicateUris(final Repository nextRepository,
+            final Collection<URI> predicateUris) throws OpenRDFException
     {
         final Collection<Statement> results = new HashSet<Statement>();
         if(RdfUtils._DEBUG)
@@ -1078,8 +1644,9 @@ public final class RdfUtils
         return results;
     }
     
-    public static Collection<Statement> getStatementsFromRepositoryByPredicateUrisAndSubject(Repository nextRepository,
-            Collection<URI> predicateUris, URI subjectUri) throws OpenRDFException
+    public static Collection<Statement> getStatementsFromRepositoryByPredicateUrisAndSubject(
+            final Repository nextRepository, final Collection<URI> predicateUris, final URI subjectUri)
+        throws OpenRDFException
     {
         final Collection<Statement> results = new HashSet<Statement>();
         if(RdfUtils._DEBUG)
@@ -1124,23 +1691,23 @@ public final class RdfUtils
         return results;
     }
     
-    public static Collection<Statement> getStatementsFromRepositoryByPredicateUrisAndSubject(Repository nextRepository,
-            URI predicateUri, URI subjectUri) throws OpenRDFException
+    public static Collection<Statement> getStatementsFromRepositoryByPredicateUrisAndSubject(
+            final Repository nextRepository, final URI predicateUri, final URI subjectUri) throws OpenRDFException
     {
-        Collection<URI> predicateUris = new HashSet<URI>();
+        final Collection<URI> predicateUris = new HashSet<URI>();
         predicateUris.add(predicateUri);
         
         return RdfUtils.getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
     }
     
     // make sure that we are using UTF-8 to decode to item
-    public static String getUTF8StringValueFromSesameValue(Value nextValue)
+    public static String getUTF8StringValueFromSesameValue(final Value nextValue)
     {
         try
         {
             return new String(nextValue.stringValue().getBytes("utf-8"), "utf-8");
         }
-        catch(java.io.UnsupportedEncodingException uee)
+        catch(final java.io.UnsupportedEncodingException uee)
         {
             RdfUtils.log.fatal("RdfUtils: UTF-8 is not supported by this java vm!!!", uee);
             throw new RuntimeException("RdfUtils: UTF-8 is not supported by this java vm!!!", uee);
@@ -1153,15 +1720,15 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<Value> getValuesFromRepositoryByPredicateUris(Repository nextRepository,
-            Collection<URI> predicateUris) throws OpenRDFException
+    public static Collection<Value> getValuesFromRepositoryByPredicateUris(final Repository nextRepository,
+            final Collection<URI> predicateUris) throws OpenRDFException
     {
         final Collection<Value> results = new HashSet<Value>();
         
-        Collection<Statement> relevantStatements =
+        final Collection<Statement> relevantStatements =
                 RdfUtils.getStatementsFromRepositoryByPredicateUris(nextRepository, predicateUris);
         
-        for(Statement nextStatement : relevantStatements)
+        for(final Statement nextStatement : relevantStatements)
         {
             results.add(nextStatement.getObject());
         }
@@ -1171,8 +1738,8 @@ public final class RdfUtils
     }
     
     // TODO: make me more efficient
-    public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(Repository nextRepository,
-            Collection<URI> predicateUris, URI subjectUri) throws OpenRDFException
+    public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(final Repository nextRepository,
+            final Collection<URI> predicateUris, final URI subjectUri) throws OpenRDFException
     {
         final Collection<Value> results = new HashSet<Value>();
         
@@ -1274,18 +1841,29 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(Repository nextRepository,
-            URI predicateUri, URI subjectUri) throws OpenRDFException
+    public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(final Repository nextRepository,
+            final URI predicateUri, final URI subjectUri) throws OpenRDFException
     {
-        Collection<URI> predicateUris = new HashSet<URI>();
+        final Collection<URI> predicateUris = new HashSet<URI>();
         
         predicateUris.add(predicateUri);
         
         return RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
     }
     
-    public static void insertResultIntoRepository(RdfFetcherQueryRunnable nextResult, Repository myRepository,
-            QueryAllConfiguration localSettings) throws RepositoryException, java.io.IOException
+    public static RDFFormat getWriterFormat(final String requestedContentType)
+    {
+        if(requestedContentType.equals(Constants.TEXT_HTML))
+        {
+            return null;
+        }
+        
+        return Rio.getWriterFormatForMIMEType(requestedContentType, RDFFormat.RDFXML);
+    }
+    
+    public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult,
+            final Repository myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
+        java.io.IOException
     {
         if(RdfUtils._DEBUG)
         {
@@ -1308,7 +1886,8 @@ public final class RdfUtils
             
             if(nextReaderFormat == null)
             {
-                String assumedContentType = nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
+                final String assumedContentType =
+                        nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
                 
                 if(assumedContentType != null && assumedContentType.trim().length() > 0)
                 {
@@ -1374,7 +1953,7 @@ public final class RdfUtils
                         + myRepositoryConnection.size());
             }
         }
-        catch(org.openrdf.rio.RDFParseException rdfpe)
+        catch(final org.openrdf.rio.RDFParseException rdfpe)
         {
             RdfUtils.log.error("RdfUtils.insertResultIntoRepository: RDFParseException result: nextResult.endpointUrl="
                     + nextResult.getEndpointUrl() + " message=" + rdfpe.getMessage());
@@ -1393,7 +1972,7 @@ public final class RdfUtils
                 {
                     myRepositoryConnection.close();
                 }
-                catch(Exception ex)
+                catch(final Exception ex)
                 {
                     RdfUtils.log.error("RdfUtils.insertResultIntoRepository: finally section, caught exception", ex);
                 }
@@ -1401,64 +1980,40 @@ public final class RdfUtils
         }
     }
     
-    public static void insertResultsIntoRepository(Collection<RdfFetcherQueryRunnable> results,
-            Repository myRepository, QueryAllConfiguration localSettings) throws RepositoryException,
+    public static void insertResultsIntoRepository(final Collection<RdfFetcherQueryRunnable> results,
+            final Repository myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
         java.io.IOException
     {
-        for(RdfFetcherQueryRunnable nextResult : results)
+        for(final RdfFetcherQueryRunnable nextResult : results)
         {
             RdfUtils.insertResultIntoRepository(nextResult, myRepository, localSettings);
         }
     }
     
-    public static Collection<Statement> retrieveUrlsToStatements(Collection<String> retrievalUrls,
-            String defaultResultFormat, QueryAllConfiguration localSettings,
-            BlacklistController localBlacklistController) throws InterruptedException
-    {
-        Collection<Statement> results = new HashSet<Statement>();
-        
-        try
-        {
-            Repository resultsRepository = new SailRepository(new MemoryStore());
-            resultsRepository.initialize();
-            
-            RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, localSettings,
-                    localBlacklistController, true);
-            
-            results = RdfUtils.getAllStatementsFromRepository(resultsRepository);
-        }
-        catch(OpenRDFException e)
-        {
-            RdfUtils.log.error("RdfUtils.retrieveUrlsToStatements: caught OpenRDFException", e);
-        }
-        
-        return results;
-    }
-    
-    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat,
-            Repository myRepository, QueryAllConfiguration localSettings, BlacklistController localBlacklistController)
-        throws InterruptedException
+    public static void retrieveUrls(final Collection<String> retrievalUrls, final String defaultResultFormat,
+            final Repository myRepository, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController) throws InterruptedException
     {
         RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, myRepository, localSettings,
                 localBlacklistController, true);
     }
     
-    public static void retrieveUrls(Collection<String> retrievalUrls, String defaultResultFormat,
-            Repository myRepository, QueryAllConfiguration localSettings, BlacklistController localBlacklistController,
-            boolean inParallel) throws InterruptedException
+    public static void retrieveUrls(final Collection<String> retrievalUrls, final String defaultResultFormat,
+            final Repository myRepository, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController, final boolean inParallel) throws InterruptedException
     {
-        Collection<RdfFetcherQueryRunnable> retrievalThreads = new HashSet<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> retrievalThreads = new HashSet<RdfFetcherQueryRunnable>();
         
-        for(String nextLocation : retrievalUrls)
+        for(final String nextLocation : retrievalUrls)
         {
-            RdfFetcherQueryRunnable nextThread =
+            final RdfFetcherQueryRunnable nextThread =
                     new RdfFetcherUriQueryRunnable(nextLocation, defaultResultFormat, "", "", defaultResultFormat,
                             localSettings, localBlacklistController, new QueryBundle());
             
             retrievalThreads.add(nextThread);
         }
         
-        for(RdfFetcherQueryRunnable nextThread : retrievalThreads)
+        for(final RdfFetcherQueryRunnable nextThread : retrievalThreads)
         {
             nextThread.start();
             
@@ -1469,7 +2024,7 @@ public final class RdfUtils
                 {
                     nextThread.join();
                 }
-                catch(InterruptedException ie)
+                catch(final InterruptedException ie)
                 {
                     RdfUtils.log.error("RdfFetchController.fetchRdfForQuery: caught interrupted exception message="
                             + ie.getMessage());
@@ -1480,13 +2035,13 @@ public final class RdfUtils
         
         if(inParallel)
         {
-            for(RdfFetcherQueryRunnable nextThread : retrievalThreads)
+            for(final RdfFetcherQueryRunnable nextThread : retrievalThreads)
             {
                 try
                 {
                     nextThread.join();
                 }
-                catch(InterruptedException ie)
+                catch(final InterruptedException ie)
                 {
                     RdfUtils.log.error("RdfFetchController.fetchRdfForQuery: caught interrupted exception message="
                             + ie.getMessage());
@@ -1499,12 +2054,12 @@ public final class RdfUtils
         {
             RdfUtils.insertResultsIntoRepository(retrievalThreads, myRepository, localSettings);
         }
-        catch(RepositoryException e)
+        catch(final RepositoryException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        catch(IOException e)
+        catch(final IOException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1512,22 +2067,47 @@ public final class RdfUtils
         
     }
     
-    public static void retrieveUrls(String retrievalUrl, String defaultResultFormat, Repository myRepository,
-            QueryAllConfiguration localSettings, BlacklistController localBlacklistController)
-        throws RepositoryException, java.io.IOException, InterruptedException
+    public static void retrieveUrls(final String retrievalUrl, final String defaultResultFormat,
+            final Repository myRepository, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController) throws RepositoryException, java.io.IOException,
+        InterruptedException
     {
-        Collection<String> retrievalList = new LinkedList<String>();
+        final Collection<String> retrievalList = new LinkedList<String>();
         retrievalList.add(retrievalUrl);
         
         RdfUtils.retrieveUrls(retrievalList, defaultResultFormat, myRepository, localSettings,
                 localBlacklistController, true);
     }
     
+    public static Collection<Statement> retrieveUrlsToStatements(final Collection<String> retrievalUrls,
+            final String defaultResultFormat, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController) throws InterruptedException
+    {
+        Collection<Statement> results = new HashSet<Statement>();
+        
+        try
+        {
+            final Repository resultsRepository = new SailRepository(new MemoryStore());
+            resultsRepository.initialize();
+            
+            RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, localSettings,
+                    localBlacklistController, true);
+            
+            results = RdfUtils.getAllStatementsFromRepository(resultsRepository);
+        }
+        catch(final OpenRDFException e)
+        {
+            RdfUtils.log.error("RdfUtils.retrieveUrlsToStatements: caught OpenRDFException", e);
+        }
+        
+        return results;
+    }
+    
     /**
      * @param nextRepository
      * @param outputStream
      */
-    public static void toOutputStream(Repository nextRepository, java.io.OutputStream outputStream)
+    public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream)
     {
         RdfUtils.toOutputStream(nextRepository, outputStream, RDFFormat.RDFXML);
     }
@@ -1537,7 +2117,8 @@ public final class RdfUtils
      * @param outputStream
      * @param format
      */
-    public static void toOutputStream(Repository nextRepository, java.io.OutputStream outputStream, RDFFormat format)
+    public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream,
+            final RDFFormat format)
     {
         RepositoryConnection nextConnection = null;
         
@@ -1564,7 +2145,7 @@ public final class RdfUtils
                     nextConnection.close();
                 }
             }
-            catch(RepositoryException rex)
+            catch(final RepositoryException rex)
             {
                 RdfUtils.log.error("RdfUtils.toWriter: connection didn't close correctly", rex);
             }
@@ -1575,7 +2156,7 @@ public final class RdfUtils
      * @param nextConnection
      * @return
      */
-    public static String toString(Repository nextRepository)
+    public static String toString(final Repository nextRepository)
     {
         final java.io.StringWriter stBuff = new java.io.StringWriter();
         
@@ -1604,7 +2185,7 @@ public final class RdfUtils
                     nextConnection.close();
                 }
             }
-            catch(RepositoryException rex)
+            catch(final RepositoryException rex)
             {
                 RdfUtils.log.error("RdfUtils.toWriter: connection didn't close correctly", rex);
             }
@@ -1617,7 +2198,7 @@ public final class RdfUtils
      * @param nextRepository
      * @param nextWriter
      */
-    public static void toWriter(Repository nextRepository, java.io.Writer nextWriter)
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter)
     {
         RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML);
     }
@@ -1627,7 +2208,7 @@ public final class RdfUtils
      * @param nextWriter
      * @param format
      */
-    public static void toWriter(Repository nextRepository, java.io.Writer nextWriter, RDFFormat format)
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter, final RDFFormat format)
     {
         RepositoryConnection nextConnection = null;
         
@@ -1654,7 +2235,7 @@ public final class RdfUtils
                     nextConnection.close();
                 }
             }
-            catch(RepositoryException rex)
+            catch(final RepositoryException rex)
             {
                 RdfUtils.log.error("RdfUtils.toWriter: connection didn't close correctly", rex);
             }
@@ -1664,10 +2245,10 @@ public final class RdfUtils
     // from http://java.sun.com/developer/technicalArticles/ThirdParty/WebCrawler/WebCrawler.java
     // License at http://developers.sun.com/license/berkeley_license.html
     @SuppressWarnings("unused")
-    public boolean robotSafe(URL url)
+    public boolean robotSafe(final URL url)
     {
         final String DISALLOW = "Disallow:";
-        String strHost = url.getHost();
+        final String strHost = url.getHost();
         
         // TODO: Implement me!!!
         return true;
@@ -1701,573 +2282,6 @@ public final class RdfUtils
          * 
          * return true;
          *****/
-    }
-    
-    public static Repository getSchemas()
-    {
-        return RdfUtils.getSchemas(null);
-    }
-    
-    public static Repository getSchemas(URI contextUri)
-    {
-        // Repository myRepository = new SailRepository(new ForwardChainingRDFSInferencer(new
-        // MemoryStore()));
-        Repository myRepository = new SailRepository(new MemoryStore());
-        
-        try
-        {
-            myRepository.initialize();
-        }
-        catch(RepositoryException e)
-        {
-            RdfUtils.log.fatal("Could not initialise repository for schemas");
-            throw new RuntimeException(e);
-        }
-        
-        try
-        {
-            if(!ProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log.error("QueryAllSchemaServlet: Provider schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Provider schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!HttpProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: HttpProviderImpl schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating HttpProviderImpl schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!ProjectImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log.error("QueryAllSchemaServlet: Project schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Project schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!QueryTypeImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log.error("QueryAllSchemaServlet: QueryType schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating QueryType schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!RegexNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: RegexNormalisationRuleImpl schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error(
-                    "QueryAllSchemaServlet: Problem generating RegexNormalisationRuleImpl schema RDF with type="
-                            + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!SparqlNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: SparqlNormalisationRuleImpl schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error(
-                    "QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
-                            + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!XsltNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: XsltNormalisationRuleImpl schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error(
-                    "QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
-                            + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!RuleTestImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log.error("QueryAllSchemaServlet: RuleTest schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating RuleTest schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!NamespaceEntryImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: NamespaceEntry schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating NamespaceEntry schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!ProfileImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log.error("QueryAllSchemaServlet: Profile schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Profile schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!StatisticsEntry.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: Statistics schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Statistics schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!ProvenanceRecord.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: Provenance schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Provenance schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        try
-        {
-            if(!QueryBundle.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
-            {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: QueryBundle schema was not placed correctly in the rdf store");
-            }
-        }
-        catch(Exception ex)
-        {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating QueryBundle schema RDF with type="
-                    + ex.getClass().getName(), ex);
-        }
-        
-        return myRepository;
-    }
-    
-    public static Map<URI, RuleTest> getRuleTests(Repository myRepository)
-    {
-        final Map<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getRuleTests: started parsing rule test configurations");
-        }
-        final long start = System.currentTimeMillis();
-        
-        final URI ruleTestTypeUri = RuleTestImpl.getRuletestTypeUri();
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new RuleTestImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch(final OpenRDFException e)
-        {
-            // handle exception
-            RdfUtils.log.fatal("Settings.getRuleTests:", e);
-        }
-        
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getRuleTests", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getRuleTests: finished getting rdf rule tests");
-        }
-        
-        return results;
-    }
-    
-    public static Map<URI, QueryType> getQueryTypes(Repository myRepository)
-    {
-        final Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
-        final long start = System.currentTimeMillis();
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getQueryTypes: started parsing query types");
-        }
-        
-        final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
-        
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(Statement nextQueryType : con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextQueryType.getSubject();
-                results.put(nextSubjectUri,
-                        new QueryTypeImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch(final OpenRDFException e)
-        {
-            // handle exception
-            RdfUtils.log.fatal("Settings.getQueryTypes:", e);
-        }
-        
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getQueryTypes", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getQueryTypes: finished parsing query types");
-        }
-        
-        return results;
-    }
-    
-    public static Map<URI, Provider> getProviders(Repository myRepository)
-    {
-        final Map<URI, Provider> results = new Hashtable<URI, Provider>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getProviders: started parsing provider configurations");
-        }
-        final long start = System.currentTimeMillis();
-        
-        // TODO: HACK: treat all providers as HttpProviderImpl for now
-        final URI providerTypeUri = ProviderImpl.getProviderTypeUri();
-        
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new HttpProviderImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch(final OpenRDFException e)
-        {
-            // handle exception
-            RdfUtils.log.fatal("Settings.getProviders:", e);
-        }
-        
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getProviders", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getProviders: finished parsing provider configurations");
-        }
-        
-        return results;
-    }
-    
-    public static Map<URI, Profile> getProfiles(Repository myRepository)
-    {
-        final Map<URI, Profile> results = new Hashtable<URI, Profile>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getProfiles: started parsing profile configurations");
-        }
-        final long start = System.currentTimeMillis();
-        
-        final URI profileTypeUri = ProfileImpl.getProfileTypeUri();
-        
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(Statement nextProvider : con.getStatements(null, RDF.TYPE, profileTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new ProfileImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch(final OpenRDFException e)
-        {
-            // handle exception
-            RdfUtils.log.fatal("Settings.getProviders:", e);
-        }
-        
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getProfiles", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getProfiles: finished parsing profiles");
-        }
-        
-        return results;
-    }
-    
-    public static Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository)
-    {
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getNormalisationRules: started parsing rdf normalisation rules");
-        }
-        
-        final long start = System.currentTimeMillis();
-        
-        final Map<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
-        
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            // Import Regular Expression Normalisation Rules first
-            final URI regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri();
-            for(Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextRegexRule.getSubject();
-                results.put(nextSubjectUri,
-                        new RegexNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-            
-            // Then do the same thing for SPARQL Normalisation Rules
-            final URI sparqlRuleTypeUri = SparqlNormalisationRuleImpl.getSparqlRuleTypeUri();
-            for(Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
-                results.put(nextSubjectUri,
-                        new SparqlNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-            
-            // Then do the same thing for XSLT Normalisation Rules
-            final URI xsltRuleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri();
-            for(Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextXsltRule.getSubject();
-                results.put(nextSubjectUri,
-                        new XsltNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch(final OpenRDFException e)
-        {
-            // handle exception
-            RdfUtils.log.fatal("Settings.getNormalisationRules:", e);
-        }
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getNormalisationRules", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getNormalisationRules: finished parsing normalisation rules");
-        }
-        
-        return results;
-    }
-    
-    public static Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
-    {
-        final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getNamespaceEntries: started parsing namespace entry configurations");
-        }
-        final long start = System.currentTimeMillis();
-        
-        final URI namespaceEntryTypeUri = NamespaceEntryImpl.getNamespaceTypeUri();
-        try
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(Statement nextNamespaceEntry : con.getStatements(null, RDF.TYPE, namespaceEntryTypeUri, true).asList())
-            {
-                URI nextSubjectUri = (URI)nextNamespaceEntry.getSubject();
-                results.put(nextSubjectUri,
-                        new NamespaceEntryImpl(
-                                con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
-            }
-        }
-        catch(final OpenRDFException e)
-        {
-            // handle exception
-            RdfUtils.log.fatal("Settings.getNamespaceEntries:", e);
-        }
-        
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getNamespaceEntries", (end - start)));
-        }
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("Settings.getNamespaceEntries: finished getting namespace entry information");
-        }
-        
-        return results;
-    }
-    
-    /**
-     * @param nextValue
-     * @return
-     */
-    public static long getLongFromValue(Value nextValue)
-    {
-        long result = 0L;
-        
-        try
-        {
-            result = ((IntegerMemLiteral)nextValue).longValue();
-        }
-        catch(final ClassCastException cce)
-        {
-            RdfUtils.log
-                    .error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="
-                            + nextValue.getClass().getName());
-            try
-            {
-                result = Long.parseLong(nextValue.stringValue());
-            }
-            catch(NumberFormatException nfe)
-            {
-                RdfUtils.log
-                        .error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="
-                                + nextValue.getClass().getName());
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @param nextValue
-     * @return
-     */
-    public static int getIntegerFromValue(Value nextValue)
-    {
-        int result = 0;
-        
-        try
-        {
-            result = ((IntegerLiteralImpl)nextValue).intValue();
-        }
-        catch(final ClassCastException cce)
-        {
-            try
-            {
-                result = ((IntegerMemLiteral)nextValue).intValue();
-            }
-            catch(final ClassCastException cce2)
-            {
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log
-                            .debug("RdfUtils.getIntegerFromValue: nextValue was not a typed integer literal. Trying to parse it as a string... type="
-                                    + nextValue.getClass().getName());
-                }
-                
-                result = Integer.parseInt(nextValue.toString());
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @param nextValue
-     * @return
-     */
-    public static float getFloatFromValue(Value nextValue)
-    {
-        float result = 0.0f;
-        
-        try
-        {
-            result = ((NumericLiteralImpl)nextValue).floatValue();
-        }
-        catch(final ClassCastException cce)
-        {
-            result = Float.parseFloat(nextValue.toString());
-        }
-        
-        return result;
     }
     
 }

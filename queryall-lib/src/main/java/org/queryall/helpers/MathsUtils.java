@@ -24,69 +24,7 @@ public class MathsUtils
      * @param inputValues
      * @return
      */
-    public static double getStandardDeviationFromLongs(long[] inputValues)
-    {
-        double sumOfSquares = 0.0;
-        double sum = 0;
-        double mean = 0.0;
-        final int count = inputValues.length;
-        
-        if(count < 2)
-        {
-            return 0.0;
-        }
-        
-        for(final long nextInputValue : inputValues)
-        {
-            sum += nextInputValue;
-        }
-        
-        mean = sum / count;
-        
-        for(final double nextInputValue : inputValues)
-        {
-            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
-        }
-        
-        return Math.sqrt(sumOfSquares / (count - 1));
-    }
-    
-    /**
-     * @param inputValues
-     * @return
-     */
-    public static double getStandardDeviationFromLongs(Collection<Long> inputValues)
-    {
-        double sumOfSquares = 0.0;
-        double sum = 0;
-        double mean = 0.0;
-        final int count = inputValues.size();
-        
-        if(count < 2)
-        {
-            return 0.0;
-        }
-        
-        for(final long nextInputValue : inputValues)
-        {
-            sum += nextInputValue;
-        }
-        
-        mean = sum / count;
-        
-        for(final double nextInputValue : inputValues)
-        {
-            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
-        }
-        
-        return Math.sqrt(sumOfSquares / (count - 1));
-    }
-    
-    /**
-     * @param inputValues
-     * @return
-     */
-    public static double getStandardDeviationFromDoubles(Collection<Double> inputValues)
+    public static double getStandardDeviationFromDoubles(final Collection<Double> inputValues)
     {
         double sumOfSquares = 0.0;
         double sum = 0;
@@ -117,7 +55,7 @@ public class MathsUtils
      * @param inputValues
      * @return
      */
-    public static double getStandardDeviationFromDoubles(double[] inputValues)
+    public static double getStandardDeviationFromDoubles(final double[] inputValues)
     {
         double sumOfSquares = 0.0;
         double sum = 0;
@@ -130,6 +68,68 @@ public class MathsUtils
         }
         
         for(final double nextInputValue : inputValues)
+        {
+            sum += nextInputValue;
+        }
+        
+        mean = sum / count;
+        
+        for(final double nextInputValue : inputValues)
+        {
+            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
+        }
+        
+        return Math.sqrt(sumOfSquares / (count - 1));
+    }
+    
+    /**
+     * @param inputValues
+     * @return
+     */
+    public static double getStandardDeviationFromLongs(final Collection<Long> inputValues)
+    {
+        double sumOfSquares = 0.0;
+        double sum = 0;
+        double mean = 0.0;
+        final int count = inputValues.size();
+        
+        if(count < 2)
+        {
+            return 0.0;
+        }
+        
+        for(final long nextInputValue : inputValues)
+        {
+            sum += nextInputValue;
+        }
+        
+        mean = sum / count;
+        
+        for(final double nextInputValue : inputValues)
+        {
+            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
+        }
+        
+        return Math.sqrt(sumOfSquares / (count - 1));
+    }
+    
+    /**
+     * @param inputValues
+     * @return
+     */
+    public static double getStandardDeviationFromLongs(final long[] inputValues)
+    {
+        double sumOfSquares = 0.0;
+        double sum = 0;
+        double mean = 0.0;
+        final int count = inputValues.length;
+        
+        if(count < 2)
+        {
+            return 0.0;
+        }
+        
+        for(final long nextInputValue : inputValues)
         {
             sum += nextInputValue;
         }

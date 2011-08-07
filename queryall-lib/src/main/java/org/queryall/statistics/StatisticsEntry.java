@@ -327,10 +327,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
         return StatisticsEntry.statisticsuserHostAddressUri;
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        RepositoryConnection con = myRepository.getConnection();
+        final RepositoryConnection con = myRepository.getConnection();
         
         try
         {
@@ -372,7 +372,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             return true;
         }
-        catch(RepositoryException re)
+        catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
@@ -481,15 +481,16 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param nextacceptHeader
      *            ;
      */
-    public StatisticsEntry(String nextKey, Collection<String> nextprofileUris,
-            Collection<String> nextsuccessfulproviderUris, Collection<String> nexterrorproviderUris,
-            Collection<String> nextconfigLocations, Collection<String> nextquerytypeUris,
-            Collection<String> nextnamespaceUris, String nextconfigVersion, int nextreadtimeout,
-            int nextconnecttimeout, String nextuserHostAddress, String nextuserAgent, String nextrealHostName,
-            String nextqueryString, long nextresponseTime, long nextsumLatency, int nextsumQueries,
-            double nextstdevlatency, int nextsumerrors, long nextsumerrorlatency, double nextstdeverrorlatency,
-            String nextlastServerRestart, String nextserverSoftwareVersion, String nextacceptHeader,
-            String nextrequestedContentType)
+    public StatisticsEntry(final String nextKey, final Collection<String> nextprofileUris,
+            final Collection<String> nextsuccessfulproviderUris, final Collection<String> nexterrorproviderUris,
+            final Collection<String> nextconfigLocations, final Collection<String> nextquerytypeUris,
+            final Collection<String> nextnamespaceUris, final String nextconfigVersion, final int nextreadtimeout,
+            final int nextconnecttimeout, final String nextuserHostAddress, final String nextuserAgent,
+            final String nextrealHostName, final String nextqueryString, final long nextresponseTime,
+            final long nextsumLatency, final int nextsumQueries, final double nextstdevlatency,
+            final int nextsumerrors, final long nextsumerrorlatency, final double nextstdeverrorlatency,
+            final String nextlastServerRestart, final String nextserverSoftwareVersion, final String nextacceptHeader,
+            final String nextrequestedContentType)
     {
         this.setKey(nextKey);
         this.profileUris = nextprofileUris;
@@ -520,13 +521,13 @@ public class StatisticsEntry implements BaseQueryAllInterface
     }
     
     @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
-        unrecognisedStatements.add(unrecognisedStatement);
+        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if(this == obj)
         {
@@ -540,172 +541,172 @@ public class StatisticsEntry implements BaseQueryAllInterface
         {
             return false;
         }
-        StatisticsEntry other = (StatisticsEntry)obj;
-        if(configLocations == null)
+        final StatisticsEntry other = (StatisticsEntry)obj;
+        if(this.configLocations == null)
         {
             if(other.configLocations != null)
             {
                 return false;
             }
         }
-        else if(!configLocations.equals(other.configLocations))
+        else if(!this.configLocations.equals(other.configLocations))
         {
             return false;
         }
-        if(configVersion == null)
+        if(this.configVersion == null)
         {
             if(other.configVersion != null)
             {
                 return false;
             }
         }
-        else if(!configVersion.equals(other.configVersion))
+        else if(!this.configVersion.equals(other.configVersion))
         {
             return false;
         }
-        if(connecttimeout != other.connecttimeout)
+        if(this.connecttimeout != other.connecttimeout)
         {
             return false;
         }
-        if(errorproviderUris == null)
+        if(this.errorproviderUris == null)
         {
             if(other.errorproviderUris != null)
             {
                 return false;
             }
         }
-        else if(!errorproviderUris.equals(other.errorproviderUris))
+        else if(!this.errorproviderUris.equals(other.errorproviderUris))
         {
             return false;
         }
-        if(key == null)
+        if(this.key == null)
         {
             if(other.getKey() != null)
             {
                 return false;
             }
         }
-        else if(!key.equals(other.getKey()))
+        else if(!this.key.equals(other.getKey()))
         {
             return false;
         }
-        if(namespaceUris == null)
+        if(this.namespaceUris == null)
         {
             if(other.namespaceUris != null)
             {
                 return false;
             }
         }
-        else if(!namespaceUris.equals(other.namespaceUris))
+        else if(!this.namespaceUris.equals(other.namespaceUris))
         {
             return false;
         }
-        if(profileUris == null)
+        if(this.profileUris == null)
         {
             if(other.profileUris != null)
             {
                 return false;
             }
         }
-        else if(!profileUris.equals(other.profileUris))
+        else if(!this.profileUris.equals(other.profileUris))
         {
             return false;
         }
-        if(queryString == null)
+        if(this.queryString == null)
         {
             if(other.queryString != null)
             {
                 return false;
             }
         }
-        else if(!queryString.equals(other.queryString))
+        else if(!this.queryString.equals(other.queryString))
         {
             return false;
         }
-        if(querytypeUris == null)
+        if(this.querytypeUris == null)
         {
             if(other.querytypeUris != null)
             {
                 return false;
             }
         }
-        else if(!querytypeUris.equals(other.querytypeUris))
+        else if(!this.querytypeUris.equals(other.querytypeUris))
         {
             return false;
         }
-        if(readtimeout != other.readtimeout)
+        if(this.readtimeout != other.readtimeout)
         {
             return false;
         }
-        if(realHostName == null)
+        if(this.realHostName == null)
         {
             if(other.realHostName != null)
             {
                 return false;
             }
         }
-        else if(!realHostName.equals(other.realHostName))
+        else if(!this.realHostName.equals(other.realHostName))
         {
             return false;
         }
-        if(responseTime != other.responseTime)
+        if(this.responseTime != other.responseTime)
         {
             return false;
         }
-        if(Double.doubleToLongBits(stdeverrorlatency) != Double.doubleToLongBits(other.stdeverrorlatency))
+        if(Double.doubleToLongBits(this.stdeverrorlatency) != Double.doubleToLongBits(other.stdeverrorlatency))
         {
             return false;
         }
-        if(Double.doubleToLongBits(stdevlatency) != Double.doubleToLongBits(other.stdevlatency))
+        if(Double.doubleToLongBits(this.stdevlatency) != Double.doubleToLongBits(other.stdevlatency))
         {
             return false;
         }
-        if(successfulproviderUris == null)
+        if(this.successfulproviderUris == null)
         {
             if(other.successfulproviderUris != null)
             {
                 return false;
             }
         }
-        else if(!successfulproviderUris.equals(other.successfulproviderUris))
+        else if(!this.successfulproviderUris.equals(other.successfulproviderUris))
         {
             return false;
         }
-        if(sumLatency != other.sumLatency)
+        if(this.sumLatency != other.sumLatency)
         {
             return false;
         }
-        if(sumQueries != other.sumQueries)
+        if(this.sumQueries != other.sumQueries)
         {
             return false;
         }
-        if(sumerrorlatency != other.sumerrorlatency)
+        if(this.sumerrorlatency != other.sumerrorlatency)
         {
             return false;
         }
-        if(sumerrors != other.sumerrors)
+        if(this.sumerrors != other.sumerrors)
         {
             return false;
         }
-        if(userAgent == null)
+        if(this.userAgent == null)
         {
             if(other.userAgent != null)
             {
                 return false;
             }
         }
-        else if(!userAgent.equals(other.userAgent))
+        else if(!this.userAgent.equals(other.userAgent))
         {
             return false;
         }
-        if(userHostAddress == null)
+        if(this.userHostAddress == null)
         {
             if(other.userHostAddress != null)
             {
                 return false;
             }
         }
-        else if(!userHostAddress.equals(other.userHostAddress))
+        else if(!this.userHostAddress.equals(other.userHostAddress))
         {
             return false;
         }
@@ -716,8 +717,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @return
      * @throws OpenRDFException
      */
-    public HttpUrlQueryRunnable generateThread(QueryAllConfiguration localSettings,
-            BlacklistController localBlacklistController, int modelVersion) throws OpenRDFException
+    public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
         if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderImpl.getProviderHttpPostSparqlUri())
                 .equals(HttpProviderImpl.getProviderHttpPostSparqlUri()))
@@ -786,7 +787,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public Collection<String> getConfigLocations()
     {
-        return configLocations;
+        return this.configLocations;
     }
     
     /**
@@ -794,7 +795,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public String getConfigVersion()
     {
-        return configVersion;
+        return this.configVersion;
     }
     
     /**
@@ -802,13 +803,13 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public int getConnecttimeout()
     {
-        return connecttimeout;
+        return this.connecttimeout;
     }
     
     @Override
     public URI getCurationStatus()
     {
-        return curationStatus;
+        return this.curationStatus;
     }
     
     /**
@@ -828,7 +829,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @Override
     public Collection<URI> getElementTypes()
     {
-        Collection<URI> results = new ArrayList<URI>(1);
+        final Collection<URI> results = new ArrayList<URI>(1);
         
         results.add(StatisticsEntry.statisticsTypeUri);
         
@@ -840,7 +841,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public Collection<String> getErrorproviderUris()
     {
-        return errorproviderUris;
+        return this.errorproviderUris;
     }
     
     /**
@@ -850,7 +851,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @Override
     public URI getKey()
     {
-        return key;
+        return this.key;
     }
     
     /**
@@ -858,7 +859,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public Collection<String> getNamespaceUris()
     {
-        return namespaceUris;
+        return this.namespaceUris;
     }
     
     /**
@@ -866,7 +867,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public Collection<String> getProfileUris()
     {
-        return profileUris;
+        return this.profileUris;
     }
     
     /**
@@ -874,7 +875,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public String getQueryString()
     {
-        return queryString;
+        return this.queryString;
     }
     
     /**
@@ -882,7 +883,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public Collection<String> getQuerytypeUris()
     {
-        return querytypeUris;
+        return this.querytypeUris;
     }
     
     /**
@@ -890,7 +891,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public int getReadtimeout()
     {
-        return readtimeout;
+        return this.readtimeout;
     }
     
     /**
@@ -898,7 +899,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public String getRealHostName()
     {
-        return realHostName;
+        return this.realHostName;
     }
     
     /**
@@ -906,7 +907,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public long getResponseTime()
     {
-        return responseTime;
+        return this.responseTime;
     }
     
     /**
@@ -914,7 +915,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public double getStdeverrorlatency()
     {
-        return stdeverrorlatency;
+        return this.stdeverrorlatency;
     }
     
     /**
@@ -922,7 +923,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public double getStdevlatency()
     {
-        return stdevlatency;
+        return this.stdevlatency;
     }
     
     /**
@@ -930,7 +931,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public Collection<String> getSuccessfulproviderUris()
     {
-        return successfulproviderUris;
+        return this.successfulproviderUris;
     }
     
     /**
@@ -938,7 +939,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public long getSumerrorlatency()
     {
-        return sumerrorlatency;
+        return this.sumerrorlatency;
     }
     
     /**
@@ -946,7 +947,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public int getSumerrors()
     {
-        return sumerrors;
+        return this.sumerrors;
     }
     
     /**
@@ -954,7 +955,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public long getSumLatency()
     {
-        return sumLatency;
+        return this.sumLatency;
     }
     
     /**
@@ -962,7 +963,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public int getSumQueries()
     {
-        return sumQueries;
+        return this.sumQueries;
     }
     
     @Override
@@ -974,7 +975,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
-        return unrecognisedStatements;
+        return this.unrecognisedStatements;
     }
     
     /**
@@ -982,7 +983,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public String getUserAgent()
     {
-        return userAgent;
+        return this.userAgent;
     }
     
     /**
@@ -990,7 +991,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public String getUserHostAddress()
     {
-        return userHostAddress;
+        return this.userHostAddress;
     }
     
     @Override
@@ -998,30 +999,30 @@ public class StatisticsEntry implements BaseQueryAllInterface
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((configLocations == null) ? 0 : configLocations.hashCode());
-        result = prime * result + ((configVersion == null) ? 0 : configVersion.hashCode());
-        result = prime * result + connecttimeout;
-        result = prime * result + ((errorproviderUris == null) ? 0 : errorproviderUris.hashCode());
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((namespaceUris == null) ? 0 : namespaceUris.hashCode());
-        result = prime * result + ((profileUris == null) ? 0 : profileUris.hashCode());
-        result = prime * result + ((queryString == null) ? 0 : queryString.hashCode());
-        result = prime * result + ((querytypeUris == null) ? 0 : querytypeUris.hashCode());
-        result = prime * result + readtimeout;
-        result = prime * result + ((realHostName == null) ? 0 : realHostName.hashCode());
-        result = prime * result + (int)(responseTime ^ (responseTime >>> 32));
+        result = prime * result + ((this.configLocations == null) ? 0 : this.configLocations.hashCode());
+        result = prime * result + ((this.configVersion == null) ? 0 : this.configVersion.hashCode());
+        result = prime * result + this.connecttimeout;
+        result = prime * result + ((this.errorproviderUris == null) ? 0 : this.errorproviderUris.hashCode());
+        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.namespaceUris == null) ? 0 : this.namespaceUris.hashCode());
+        result = prime * result + ((this.profileUris == null) ? 0 : this.profileUris.hashCode());
+        result = prime * result + ((this.queryString == null) ? 0 : this.queryString.hashCode());
+        result = prime * result + ((this.querytypeUris == null) ? 0 : this.querytypeUris.hashCode());
+        result = prime * result + this.readtimeout;
+        result = prime * result + ((this.realHostName == null) ? 0 : this.realHostName.hashCode());
+        result = prime * result + (int)(this.responseTime ^ (this.responseTime >>> 32));
         long temp;
-        temp = Double.doubleToLongBits(stdeverrorlatency);
+        temp = Double.doubleToLongBits(this.stdeverrorlatency);
         result = prime * result + (int)(temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(stdevlatency);
+        temp = Double.doubleToLongBits(this.stdevlatency);
         result = prime * result + (int)(temp ^ (temp >>> 32));
-        result = prime * result + ((successfulproviderUris == null) ? 0 : successfulproviderUris.hashCode());
-        result = prime * result + (int)(sumLatency ^ (sumLatency >>> 32));
-        result = prime * result + sumQueries;
-        result = prime * result + (int)(sumerrorlatency ^ (sumerrorlatency >>> 32));
-        result = prime * result + sumerrors;
-        result = prime * result + ((userAgent == null) ? 0 : userAgent.hashCode());
-        result = prime * result + ((userHostAddress == null) ? 0 : userHostAddress.hashCode());
+        result = prime * result + ((this.successfulproviderUris == null) ? 0 : this.successfulproviderUris.hashCode());
+        result = prime * result + (int)(this.sumLatency ^ (this.sumLatency >>> 32));
+        result = prime * result + this.sumQueries;
+        result = prime * result + (int)(this.sumerrorlatency ^ (this.sumerrorlatency >>> 32));
+        result = prime * result + this.sumerrors;
+        result = prime * result + ((this.userAgent == null) ? 0 : this.userAgent.hashCode());
+        result = prime * result + ((this.userHostAddress == null) ? 0 : this.userHostAddress.hashCode());
         return result;
     }
     
@@ -1029,7 +1030,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param configLocations
      *            the configLocations to set
      */
-    public void setConfigLocations(Collection<String> configLocations)
+    public void setConfigLocations(final Collection<String> configLocations)
     {
         this.configLocations = configLocations;
     }
@@ -1038,7 +1039,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param configVersion
      *            the configVersion to set
      */
-    public void setConfigVersion(String configVersion)
+    public void setConfigVersion(final String configVersion)
     {
         this.configVersion = configVersion;
     }
@@ -1047,13 +1048,13 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param connecttimeout
      *            the connecttimeout to set
      */
-    public void setConnecttimeout(int connecttimeout)
+    public void setConnecttimeout(final int connecttimeout)
     {
         this.connecttimeout = connecttimeout;
     }
     
     @Override
-    public void setCurationStatus(URI curationStatus)
+    public void setCurationStatus(final URI curationStatus)
     {
         this.curationStatus = curationStatus;
     }
@@ -1062,7 +1063,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param errorproviderUris
      *            the errorproviderUris to set
      */
-    public void setErrorproviderUris(Collection<String> errorproviderUris)
+    public void setErrorproviderUris(final Collection<String> errorproviderUris)
     {
         this.errorproviderUris = errorproviderUris;
     }
@@ -1073,13 +1074,13 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     
     @Override
-    public void setKey(String nextKey)
+    public void setKey(final String nextKey)
     {
         this.setKey(StringUtils.createURI(nextKey));
     }
     
     @Override
-    public void setKey(URI nextKey)
+    public void setKey(final URI nextKey)
     {
         this.key = nextKey;
     }
@@ -1088,7 +1089,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param namespaceUris
      *            the namespaceUris to set
      */
-    public void setNamespaceUris(Collection<String> namespaceUris)
+    public void setNamespaceUris(final Collection<String> namespaceUris)
     {
         this.namespaceUris = namespaceUris;
     }
@@ -1097,7 +1098,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param profileUris
      *            the profileUris to set
      */
-    public void setProfileUris(Collection<String> profileUris)
+    public void setProfileUris(final Collection<String> profileUris)
     {
         this.profileUris = profileUris;
     }
@@ -1106,7 +1107,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param queryString
      *            the queryString to set
      */
-    public void setQueryString(String queryString)
+    public void setQueryString(final String queryString)
     {
         this.queryString = queryString;
     }
@@ -1115,7 +1116,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param querytypeUris
      *            the querytypeUris to set
      */
-    public void setQuerytypeUris(Collection<String> querytypeUris)
+    public void setQuerytypeUris(final Collection<String> querytypeUris)
     {
         this.querytypeUris = querytypeUris;
     }
@@ -1124,7 +1125,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param readtimeout
      *            the readtimeout to set
      */
-    public void setReadtimeout(int readtimeout)
+    public void setReadtimeout(final int readtimeout)
     {
         this.readtimeout = readtimeout;
     }
@@ -1133,7 +1134,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param realHostName
      *            the realHostName to set
      */
-    public void setRealHostName(String realHostName)
+    public void setRealHostName(final String realHostName)
     {
         this.realHostName = realHostName;
     }
@@ -1142,7 +1143,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param responseTime
      *            the responseTime to set
      */
-    public void setResponseTime(long responseTime)
+    public void setResponseTime(final long responseTime)
     {
         this.responseTime = responseTime;
     }
@@ -1151,7 +1152,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param stdeverrorlatency
      *            the stdeverrorlatency to set
      */
-    public void setStdeverrorlatency(double stdeverrorlatency)
+    public void setStdeverrorlatency(final double stdeverrorlatency)
     {
         this.stdeverrorlatency = stdeverrorlatency;
     }
@@ -1160,7 +1161,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param stdevlatency
      *            the stdevlatency to set
      */
-    public void setStdevlatency(double stdevlatency)
+    public void setStdevlatency(final double stdevlatency)
     {
         this.stdevlatency = stdevlatency;
     }
@@ -1169,7 +1170,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param successfulproviderUris
      *            the successfulproviderUris to set
      */
-    public void setSuccessfulproviderUris(Collection<String> successfulproviderUris)
+    public void setSuccessfulproviderUris(final Collection<String> successfulproviderUris)
     {
         this.successfulproviderUris = successfulproviderUris;
     }
@@ -1178,7 +1179,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param sumerrorlatency
      *            the sumerrorlatency to set
      */
-    public void setSumerrorlatency(long sumerrorlatency)
+    public void setSumerrorlatency(final long sumerrorlatency)
     {
         this.sumerrorlatency = sumerrorlatency;
     }
@@ -1193,7 +1194,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param sumerrors
      *            the sumerrors to set
      */
-    public void setSumerrors(int sumerrors)
+    public void setSumerrors(final int sumerrors)
     {
         this.sumerrors = sumerrors;
     }
@@ -1208,7 +1209,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param sumLatency
      *            the sumLatency to set
      */
-    public void setSumLatency(long sumLatency)
+    public void setSumLatency(final long sumLatency)
     {
         this.sumLatency = sumLatency;
     }
@@ -1217,13 +1218,13 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param sumQueries
      *            the sumQueries to set
      */
-    public void setSumQueries(int sumQueries)
+    public void setSumQueries(final int sumQueries)
     {
         this.sumQueries = sumQueries;
     }
     
     @Override
-    public void setTitle(String title)
+    public void setTitle(final String title)
     {
     }
     
@@ -1231,7 +1232,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param userAgent
      *            the userAgent to set
      */
-    public void setUserAgent(String userAgent)
+    public void setUserAgent(final String userAgent)
     {
         this.userAgent = userAgent;
     }
@@ -1240,7 +1241,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      * @param userHostAddress
      *            the userHostAddress to set
      */
-    public void setUserHostAddress(String userHostAddress)
+    public void setUserHostAddress(final String userHostAddress)
     {
         this.userHostAddress = userHostAddress;
     }
@@ -1248,10 +1249,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @Override
     public String toHtml()
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         
         @SuppressWarnings("unused")
-        String prefix = "statistics_";
+        final String prefix = "statistics_";
         
         return sb.toString();
     }
@@ -1259,10 +1260,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @Override
     public String toHtmlFormBody()
     {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         
         @SuppressWarnings("unused")
-        String prefix = "statistics_";
+        final String prefix = "statistics_";
         
         return sb.toString();
     }
@@ -1317,7 +1318,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
     }
     
     @Override
-    public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
+    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         // String nTriplesInsertString = "";
         
@@ -1338,12 +1340,12 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             final URI keyUri = keyToUse;
             
-            if(currentDate == null)
+            if(this.currentDate == null)
             {
-                currentDate = new Date();
+                this.currentDate = new Date();
             }
             
-            final String currentDateString = Constants.ISO8601UTC().format(currentDate);
+            final String currentDateString = Constants.ISO8601UTC().format(this.currentDate);
             
             final Literal currentDateLiteral = f.createLiteral(currentDateString, XMLSchema.DATETIME);
             

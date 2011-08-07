@@ -31,9 +31,9 @@ public class QueryallContentNegotiator
         return QueryallContentNegotiator.contentNegotiator;
     }
     
-    public static ContentTypeNegotiator getContentNegotiator(QueryAllConfiguration localSettings)
+    public static ContentTypeNegotiator getContentNegotiator(final QueryAllConfiguration localSettings)
     {
-        ContentTypeNegotiator newContentNegotiator = new ContentTypeNegotiator();
+        final ContentTypeNegotiator newContentNegotiator = new ContentTypeNegotiator();
         
         if(localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML).equals(
                 Constants.APPLICATION_RDF_XML))
@@ -119,15 +119,8 @@ public class QueryallContentNegotiator
         return newContentNegotiator;
     }
     
-    public static String getResponseContentType(String acceptHeader, String userAgent, String fallback)
-    {
-        ContentTypeNegotiator negotiator = QueryallContentNegotiator.getContentNegotiator();
-        
-        return QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgent, negotiator, fallback);
-    }
-    
-    public static String getResponseContentType(String acceptHeader, String userAgent,
-            ContentTypeNegotiator negotiator, String fallback)
+    public static String getResponseContentType(final String acceptHeader, final String userAgent,
+            final ContentTypeNegotiator negotiator, final String fallback)
     {
         if(QueryallContentNegotiator._DEBUG)
         {
@@ -135,7 +128,7 @@ public class QueryallContentNegotiator
                     + " userAgent=" + userAgent);
         }
         
-        MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
+        final MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
         
         if(bestMatch == null)
         {
@@ -149,5 +142,12 @@ public class QueryallContentNegotiator
         }
         
         return bestMatch.getMediaType();
+    }
+    
+    public static String getResponseContentType(final String acceptHeader, final String userAgent, final String fallback)
+    {
+        final ContentTypeNegotiator negotiator = QueryallContentNegotiator.getContentNegotiator();
+        
+        return QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgent, negotiator, fallback);
     }
 }

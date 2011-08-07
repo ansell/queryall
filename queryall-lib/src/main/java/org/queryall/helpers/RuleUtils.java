@@ -27,16 +27,8 @@ public final class RuleUtils
     public static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
     public static final boolean _INFO = RuleUtils.log.isInfoEnabled();
     
-    /**
-	 * 
-	 */
-    public RuleUtils()
-    {
-        // TODO Auto-generated constructor stub
-    }
-    
-    public static List<NormalisationRule> getSortedRulesByUris(Map<URI, NormalisationRule> allNormalisationRules,
-            Collection<URI> rdfNormalisationsNeeded, SortOrder sortOrder)
+    public static List<NormalisationRule> getSortedRulesByUris(final Map<URI, NormalisationRule> allNormalisationRules,
+            final Collection<URI> rdfNormalisationsNeeded, final SortOrder sortOrder)
     {
         final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         // final List<NormalisationRule> intermediateResults = new ArrayList<NormalisationRule>();
@@ -147,14 +139,41 @@ public final class RuleUtils
         return results;
     }
     
+    public static List<NormalisationRule> getSortedRulesForProviders(final Collection<Provider> providers,
+            final Map<URI, NormalisationRule> allNormalisationRules, final SortOrder sortOrder)
+    {
+        final List<NormalisationRule> results = new LinkedList<NormalisationRule>();
+        
+        for(final Provider nextProvider : providers)
+        {
+            results.addAll(RuleUtils.getSortedRulesByUris(allNormalisationRules, nextProvider.getNormalisationUris(),
+                    sortOrder));
+        }
+        
+        if(sortOrder == SortOrder.HIGHEST_ORDER_FIRST)
+        {
+            Collections.sort(results, Collections.reverseOrder());
+        }
+        else if(sortOrder == SortOrder.LOWEST_ORDER_FIRST)
+        {
+            Collections.sort(results);
+        }
+        else
+        {
+            RuleUtils.log.error("sortOrder unrecognised sortOrder=" + sortOrder);
+        }
+        
+        return results;
+    }
+    
     /**
      * Runs rule tests over the stages "QueryVariables" and "BeforeResultsImport"
      * 
      * @param myRuleTests
      * @return true if all of the tests passed, otherwise it returns false
      */
-    public static boolean runRuleTests(Collection<RuleTest> myRuleTests,
-            Map<URI, NormalisationRule> allNormalisationRules)
+    public static boolean runRuleTests(final Collection<RuleTest> myRuleTests,
+            final Map<URI, NormalisationRule> allNormalisationRules)
     {
         boolean allPassed = true;
         
@@ -244,31 +263,12 @@ public final class RuleUtils
         return allPassed;
     }
     
-    public static List<NormalisationRule> getSortedRulesForProviders(Collection<Provider> providers,
-            Map<URI, NormalisationRule> allNormalisationRules, SortOrder sortOrder)
+    /**
+	 * 
+	 */
+    public RuleUtils()
     {
-        List<NormalisationRule> results = new LinkedList<NormalisationRule>();
-        
-        for(Provider nextProvider : providers)
-        {
-            results.addAll(RuleUtils.getSortedRulesByUris(allNormalisationRules, nextProvider.getNormalisationUris(),
-                    sortOrder));
-        }
-        
-        if(sortOrder == SortOrder.HIGHEST_ORDER_FIRST)
-        {
-            Collections.sort(results, Collections.reverseOrder());
-        }
-        else if(sortOrder == SortOrder.LOWEST_ORDER_FIRST)
-        {
-            Collections.sort(results);
-        }
-        else
-        {
-            RuleUtils.log.error("sortOrder unrecognised sortOrder=" + sortOrder);
-        }
-        
-        return results;
+        // TODO Auto-generated constructor stub
     }
     
 }

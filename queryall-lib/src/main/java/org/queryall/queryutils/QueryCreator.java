@@ -61,9 +61,10 @@ public class QueryCreator
      * @param includedProfiles
      * @return
      */
-    public static String createQuery(QueryType queryType, Provider nextProvider, Map<String, String> attributeList,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions,
-            boolean includeNonProfileMatchedRdfRules, QueryAllConfiguration localSettings)
+    public static String createQuery(final QueryType queryType, final Provider nextProvider,
+            final Map<String, String> attributeList, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
+            final QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -91,10 +92,10 @@ public class QueryCreator
      * @param includedProfiles
      * @return
      */
-    public static String createStaticRdfXmlString(QueryType originalQueryType, QueryType includedQueryType,
-            Provider nextProvider, Map<String, String> attributeList, List<Profile> includedProfiles,
-            boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules,
-            QueryAllConfiguration localSettings)
+    public static String createStaticRdfXmlString(final QueryType originalQueryType, final QueryType includedQueryType,
+            final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
+            final QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -116,10 +117,11 @@ public class QueryCreator
                 includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }
     
-    public static String doReplacementsOnString(String queryString, String templateString, QueryType originalQueryType,
-            QueryType includedQueryType, Collection<URI> normalisationUrisNeeded, Map<String, String> attributeList,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions,
-            boolean includeNonProfileMatchedRdfRules, QueryAllConfiguration localSettings)
+    public static String doReplacementsOnString(final String queryString, final String templateString,
+            final QueryType originalQueryType, final QueryType includedQueryType,
+            final Collection<URI> normalisationUrisNeeded, final Map<String, String> attributeList,
+            final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
+            final boolean includeNonProfileMatchedRdfRules, final QueryAllConfiguration localSettings)
     {
         if(QueryCreator._DEBUG)
         {
@@ -1034,9 +1036,9 @@ public class QueryCreator
      * @param pageOffset
      * @return
      */
-    public static Map<String, String> getAttributeListFor(QueryType nextIncludedQueryType, Provider nextProvider,
-            String queryString, String nextEndpoint, String realHostName, int pageOffset,
-            QueryAllConfiguration localSettings)
+    public static Map<String, String> getAttributeListFor(final QueryType nextIncludedQueryType,
+            final Provider nextProvider, final String queryString, final String nextEndpoint,
+            final String realHostName, final int pageOffset, final QueryAllConfiguration localSettings)
     {
         if(QueryCreator._DEBUG)
         {
@@ -1061,7 +1063,7 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryString);
         if(nextProvider instanceof SparqlProvider)
         {
-            SparqlProvider nextSparqlProvider = (SparqlProvider)nextProvider;
+            final SparqlProvider nextSparqlProvider = (SparqlProvider)nextProvider;
             
             attributeList.put(Constants.TEMPLATE_KEY_GRAPH_URI, nextSparqlProvider.getSparqlGraphUri());
             attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, nextSparqlProvider.getUseSparqlGraph() + "");
@@ -1133,8 +1135,8 @@ public class QueryCreator
      * @param specialInstructions
      * @return
      */
-    public static String matchAndReplaceInputVariablesForQueryType(QueryType originalQueryType, String queryString,
-            String templateString, List<String> specialInstructions)
+    public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
+            final String queryString, final String templateString, final List<String> specialInstructions)
     {
         if(QueryCreator._DEBUG)
         {
@@ -1146,7 +1148,7 @@ public class QueryCreator
         
         String replacedString = templateString;
         
-        List<String> allMatches = originalQueryType.matchesForQueryString(queryString);
+        final List<String> allMatches = originalQueryType.matchesForQueryString(queryString);
         
         int nextMatch = 0;
         
@@ -1396,9 +1398,9 @@ public class QueryCreator
      * @param basicRdfXml
      * @return
      */
-    public static Object normaliseByStage(URI stage, Object input, List<NormalisationRule> normalisationRules,
-            List<Profile> includedProfiles, boolean recogniseImplicitRdfRuleInclusions,
-            boolean includeNonProfileMatchedRdfRules)
+    public static Object normaliseByStage(final URI stage, Object input,
+            final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
     {
         if(QueryCreator._TRACE)
         {
@@ -1445,10 +1447,10 @@ public class QueryCreator
      * @param includedProfiles
      * @return
      */
-    public static String replaceAttributesOnEndpointUrl(String replacementString, QueryType queryType,
-            Provider nextProvider, Map<String, String> attributeList, List<Profile> includedProfiles,
-            boolean recogniseImplicitRdfRuleInclusions, boolean includeNonProfileMatchedRdfRules,
-            QueryAllConfiguration localSettings)
+    public static String replaceAttributesOnEndpointUrl(final String replacementString, final QueryType queryType,
+            final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
+            final QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -1474,7 +1476,8 @@ public class QueryCreator
      * @param tags
      * @return
      */
-    public static String replaceTags(String inputString, Map<String, String> tags, QueryAllConfiguration localSettings)
+    public static String replaceTags(String inputString, final Map<String, String> tags,
+            final QueryAllConfiguration localSettings)
     {
         final Matcher m = localSettings.getTagPattern().matcher(inputString);
         boolean result = m.find();
@@ -1513,7 +1516,7 @@ public class QueryCreator
         return inputString;
     }
     
-    public static String testReplaceMethod(String inputString)
+    public static String testReplaceMethod(final String inputString)
     {
         final Map<String, String> myTestHashtable = new TreeMap<String, String>();
         
