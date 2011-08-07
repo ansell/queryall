@@ -1,9 +1,9 @@
 package org.queryall.helpers;
 
+import org.apache.log4j.Logger;
+
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -11,10 +11,10 @@ import org.apache.log4j.Logger;
 public class QueryallLanguageNegotiator
 {
     private static final Logger log = Logger.getLogger(QueryallLanguageNegotiator.class.getName());
-    private static final boolean _TRACE = log.isTraceEnabled();
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    private static final boolean _TRACE = QueryallLanguageNegotiator.log.isTraceEnabled();
+    private static final boolean _DEBUG = QueryallLanguageNegotiator.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = log.isInfoEnabled();
+    private static final boolean _INFO = QueryallLanguageNegotiator.log.isInfoEnabled();
     
     private final static ContentTypeNegotiator contentNegotiator;
     
@@ -22,21 +22,19 @@ public class QueryallLanguageNegotiator
     {
         contentNegotiator = new ContentTypeNegotiator();
         
-        if(Settings.getSettings().getStringProperty("preferredDisplayLanguage", "") != null 
-            && !Settings.getSettings().getStringProperty("preferredDisplayLanguage", "").trim().equals(""))
+        if(Settings.getSettings().getStringProperty("preferredDisplayLanguage", "") != null
+                && !Settings.getSettings().getStringProperty("preferredDisplayLanguage", "").trim().equals(""))
         {
-            contentNegotiator.addVariant(Settings.getSettings().getStringProperty("preferredDisplayLanguage", ""));
+            QueryallLanguageNegotiator.contentNegotiator.addVariant(Settings.getSettings().getStringProperty(
+                    "preferredDisplayLanguage", ""));
         }
         
-        contentNegotiator.addVariant("en;q=0.9")
-            .addAliasMediaType("en_GB;q=0.9")
-            .addAliasMediaType("en_AU;q=0.9")
-            .addAliasMediaType("en_CA;q=0.9")
-            .addAliasMediaType("en_US;q=0.9");
+        QueryallLanguageNegotiator.contentNegotiator.addVariant("en;q=0.9").addAliasMediaType("en_GB;q=0.9")
+                .addAliasMediaType("en_AU;q=0.9").addAliasMediaType("en_CA;q=0.9").addAliasMediaType("en_US;q=0.9");
         
-        contentNegotiator.addVariant("de;q=0.85");
+        QueryallLanguageNegotiator.contentNegotiator.addVariant("de;q=0.85");
         
-        contentNegotiator.addVariant("nl;q=0.85");
+        QueryallLanguageNegotiator.contentNegotiator.addVariant("nl;q=0.85");
     }
     
     public static ContentTypeNegotiator getLanguageNegotiator()
@@ -46,29 +44,32 @@ public class QueryallLanguageNegotiator
     
     public static String getResponseLanguage(String acceptHeader, String userAgent)
     {
-        if(_DEBUG)
+        if(QueryallLanguageNegotiator._DEBUG)
         {
-            log.debug("QueryallLanguageNegotiator: acceptHeader="+acceptHeader+" userAgent="+userAgent);
+            QueryallLanguageNegotiator.log.debug("QueryallLanguageNegotiator: acceptHeader=" + acceptHeader
+                    + " userAgent=" + userAgent);
         }
         
-        ContentTypeNegotiator negotiator = getLanguageNegotiator();
+        ContentTypeNegotiator negotiator = QueryallLanguageNegotiator.getLanguageNegotiator();
         MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
         
-        if (bestMatch == null)
+        if(bestMatch == null)
         {
-            if(_TRACE)
+            if(QueryallLanguageNegotiator._TRACE)
             {
-                log.trace("QueryallLanguageNegotiator: bestMatch not found, returning en instead");
+                QueryallLanguageNegotiator.log
+                        .trace("QueryallLanguageNegotiator: bestMatch not found, returning en instead");
             }
             
             return Settings.getSettings().getStringProperty("preferredDisplayLanguage", "");
         }
         
-        if(_TRACE)
+        if(QueryallLanguageNegotiator._TRACE)
         {
-            log.trace("QueryallLanguageNegotiator: bestMatch found, returning "+bestMatch.getMediaType());
+            QueryallLanguageNegotiator.log.trace("QueryallLanguageNegotiator: bestMatch found, returning "
+                    + bestMatch.getMediaType());
         }
-
+        
         return bestMatch.getMediaType();
     }
 }

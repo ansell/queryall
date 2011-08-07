@@ -10,7 +10,5 @@ package org.queryall.helpers;
  */
 public enum SortOrder
 {
-	LOWEST_ORDER_FIRST, 
-			
-	HIGHEST_ORDER_FIRST;
+    LOWEST_ORDER_FIRST, HIGHEST_ORDER_FIRST;
 }

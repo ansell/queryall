@@ -185,7 +185,7 @@ public class QueryAllSchemaServlet extends HttpServlet
 
 		try
 		{
-			Repository myRepository = Settings.getSchemas();
+			Repository myRepository = RdfUtils.getSchemas();
 
 			java.io.StringWriter stBuff = new java.io.StringWriter();
 

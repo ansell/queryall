@@ -8,9 +8,6 @@ package org.queryall.helpers;
  */
 public enum ProfileMatch
 {
-	SPECIFIC_INCLUDE,
-	SPECIFIC_EXCLUDE,
-	IMPLICIT_INCLUDE,
-	NO_MATCH;
-
+    SPECIFIC_INCLUDE, SPECIFIC_EXCLUDE, IMPLICIT_INCLUDE, NO_MATCH;
+    
 }

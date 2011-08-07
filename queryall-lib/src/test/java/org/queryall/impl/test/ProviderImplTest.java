@@ -8,8 +8,8 @@ import org.queryall.api.test.AbstractProviderTest;
 import org.queryall.impl.HttpProviderImpl;
 
 /**
- * Provides the implementation of the Provider class 
- * for the Abstract test class provided with queryall-api-tests.jar
+ * Provides the implementation of the Provider class for the Abstract test class provided with
+ * queryall-api-tests.jar
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

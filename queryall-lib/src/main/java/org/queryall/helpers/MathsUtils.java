@@ -7,22 +7,19 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class MathsUtils
 {
-    private static final Logger log = Logger.getLogger(StringUtils.class
-            .getName());
+    private static final Logger log = Logger.getLogger(StringUtils.class.getName());
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = log.isTraceEnabled();
+    private static final boolean _TRACE = MathsUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    private static final boolean _DEBUG = MathsUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = log.isInfoEnabled();
+    private static final boolean _INFO = MathsUtils.log.isInfoEnabled();
     
-
     /**
      * @param inputValues
      * @return
@@ -48,13 +45,12 @@ public class MathsUtils
         
         for(final double nextInputValue : inputValues)
         {
-            sumOfSquares = sumOfSquares
-                    + ((mean - nextInputValue) * (mean - nextInputValue));
+            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
         }
         
         return Math.sqrt(sumOfSquares / (count - 1));
     }
-
+    
     /**
      * @param inputValues
      * @return
@@ -80,13 +76,12 @@ public class MathsUtils
         
         for(final double nextInputValue : inputValues)
         {
-            sumOfSquares = sumOfSquares
-                    + ((mean - nextInputValue) * (mean - nextInputValue));
+            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
         }
         
         return Math.sqrt(sumOfSquares / (count - 1));
     }
-
+    
     /**
      * @param inputValues
      * @return
@@ -112,13 +107,12 @@ public class MathsUtils
         
         for(final double nextInputValue : inputValues)
         {
-            sumOfSquares = sumOfSquares
-                    + ((mean - nextInputValue) * (mean - nextInputValue));
+            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
         }
         
         return Math.sqrt(sumOfSquares / (count - 1));
     }
-
+    
     /**
      * @param inputValues
      * @return
@@ -144,11 +138,10 @@ public class MathsUtils
         
         for(final double nextInputValue : inputValues)
         {
-            sumOfSquares = sumOfSquares
-                    + ((mean - nextInputValue) * (mean - nextInputValue));
+            sumOfSquares = sumOfSquares + ((mean - nextInputValue) * (mean - nextInputValue));
         }
         
         return Math.sqrt(sumOfSquares / (count - 1));
     }
-
+    
 }

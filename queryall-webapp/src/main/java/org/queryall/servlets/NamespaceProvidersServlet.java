@@ -119,7 +119,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 nextQueryTypesByNamespaces.add(nextNamespace);
                                 nextQueryTypesByNamespacesList.add(nextQueryTypesByNamespaces);
                                 
-                                Map<URI, Provider> queryTypesByNamespace = Settings.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryKey, nextQueryTypesByNamespacesList, QueryTypeImpl.getQueryNamespaceMatchAny());
+                                Map<URI, Provider> queryTypesByNamespace = ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryKey, nextQueryTypesByNamespacesList, QueryTypeImpl.getQueryNamespaceMatchAny());
                                 
                                 allQueryTypesByNamespace.put(nextQueryKey.stringValue() + " " + nextNamespace.stringValue(), queryTypesByNamespace.values());
                                 

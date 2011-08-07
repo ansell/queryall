@@ -14,22 +14,21 @@ import org.apache.log4j.Logger;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ListUtils 
+public class ListUtils
 {
-    private static final Logger log = Logger.getLogger(StringUtils.class
-            .getName());
+    private static final Logger log = Logger.getLogger(StringUtils.class.getName());
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = log.isTraceEnabled();
+    private static final boolean _TRACE = ListUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    private static final boolean _DEBUG = ListUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = log.isInfoEnabled();
+    private static final boolean _INFO = ListUtils.log.isInfoEnabled();
     
     /**
      * A prng that can be used in this class to generate random numbers
      */
     public static final Random prng = new Random();
-
+    
     /**
      * @param newList
      * @return
@@ -56,7 +55,7 @@ public class ListUtils
         
         return resultList;
     }
-
+    
     /**
      * @param <T>
      * @param newList
@@ -76,9 +75,9 @@ public class ListUtils
             resultList.add(nextItem);
         }
         
-        return randomiseListLayout(resultList);
+        return ListUtils.randomiseListLayout(resultList);
     }
-
+    
     /**
      * @param nextArray
      * @return
@@ -94,7 +93,7 @@ public class ListUtils
         
         return results;
     }
-
+    
     /**
      * @param nextInputIntegers
      * @return
@@ -110,7 +109,7 @@ public class ListUtils
         
         return result;
     }
-
+    
     /**
      * @param <T>
      * @param newList
@@ -134,7 +133,7 @@ public class ListUtils
         
         return null;
     }
-
+    
     /**
      * @param <T>
      * @param newList
@@ -155,7 +154,9 @@ public class ListUtils
             for(T nextThing : newList)
             {
                 if(index == tempPosition)
+                {
                     return nextThing;
+                }
                 
                 tempPosition++;
             }
@@ -163,7 +164,7 @@ public class ListUtils
         
         return null;
     }
-
+    
     /**
      * @param <T>
      * @param newArray
@@ -193,21 +194,21 @@ public class ListUtils
      */
     public static boolean collectionContainsStringIgnoreCase(Collection<String> stringCollection, String searchString)
     {
-    	searchString = searchString.toLowerCase(Locale.ENGLISH);
-
-    	if(stringCollection == null)
-    	{
-    		return false;
-    	}
-    	
-    	for(String nextString : stringCollection)
-    	{
-    		if(nextString.toLowerCase(Locale.ENGLISH).contains(searchString))
-    		{
-    			return true;
-    		}
-    	}
-    	
-    	return false;
+        searchString = searchString.toLowerCase(Locale.ENGLISH);
+        
+        if(stringCollection == null)
+        {
+            return false;
+        }
+        
+        for(String nextString : stringCollection)
+        {
+            if(nextString.toLowerCase(Locale.ENGLISH).contains(searchString))
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

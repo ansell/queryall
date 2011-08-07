@@ -12,8 +12,8 @@ import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.SparqlNormalisationRuleImpl;
 
 /**
- * Provides the implementation of the Provider class 
- * for the Abstract test class provided with queryall-api-tests.jar
+ * Provides the implementation of the Provider class for the Abstract test class provided with
+ * queryall-api-tests.jar
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -24,89 +24,89 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     {
         return new SparqlNormalisationRuleImpl();
     }
-
+    
     @Override
     public Profile getNewTestProfile()
     {
         return new ProfileImpl();
     }
-
+    
     @Override
     public URI getProfileExcludeThenIncludeURI()
     {
         return ProfileImpl.getExcludeThenIncludeUri();
     }
-
+    
     @Override
     public URI getProfileIncludeThenExcludeURI()
     {
         return ProfileImpl.getIncludeThenExcludeUri();
     }
-
+    
     @Override
     public URI getProfileIncludeExcludeOrderUndefinedUri()
     {
         return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     }
-
-	@Override
-	public URI getSparqlRuleModeAddAllMatchingTriplesURI() 
-	{
-		return SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples();
-	}
-
-	@Override
-	public URI getSparqlRuleModeOnlyDeleteMatchesURI() 
-	{
-		return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
-	}
-
-	@Override
-	public URI getSparqlRuleModeOnlyIncludeMatchesURI() 
-	{
-		return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
-	}
-
-	@Override
-	public URI getRdfruleStageQueryVariablesURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageQueryVariables();
-	}
-
-	@Override
-	public URI getRdfruleStageAfterQueryCreationURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageAfterQueryCreation();
-	}
-
-	@Override
-	public URI getRdfruleStageAfterQueryParsingURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageAfterQueryParsing();
-	}
-
-	@Override
-	public URI getRdfruleStageBeforeResultsImportURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageBeforeResultsImport();
-	}
-
-	@Override
-	public URI getRdfruleStageAfterResultsImportURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageAfterResultsImport();
-	}
-
-	@Override
-	public URI getRdfruleStageAfterResultsToPoolURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageAfterResultsToPool();
-	}
-
-	@Override
-	public URI getRdfruleStageAfterResultsToDocumentURI() 
-	{
-		return NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument();
-	}
-
+    
+    @Override
+    public URI getSparqlRuleModeAddAllMatchingTriplesURI()
+    {
+        return SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples();
+    }
+    
+    @Override
+    public URI getSparqlRuleModeOnlyDeleteMatchesURI()
+    {
+        return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
+    }
+    
+    @Override
+    public URI getSparqlRuleModeOnlyIncludeMatchesURI()
+    {
+        return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
+    }
+    
+    @Override
+    public URI getRdfruleStageQueryVariablesURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageQueryVariables();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterQueryCreationURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterQueryCreation();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterQueryParsingURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterQueryParsing();
+    }
+    
+    @Override
+    public URI getRdfruleStageBeforeResultsImportURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageBeforeResultsImport();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterResultsImportURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterResultsImport();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterResultsToPoolURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterResultsToPool();
+    }
+    
+    @Override
+    public URI getRdfruleStageAfterResultsToDocumentURI()
+    {
+        return NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument();
+    }
+    
 }

@@ -1,29 +1,26 @@
 package org.queryall.impl;
 
-import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
-import org.openrdf.model.vocabulary.OWL;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.Literal;
-import org.openrdf.model.ValueFactory;
-
-import org.openrdf.OpenRDFException;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.RepositoryConnection;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.log4j.Logger;
+import org.openrdf.OpenRDFException;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.vocabulary.OWL;
+import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.helpers.Constants;
-import org.queryall.helpers.StringUtils;
 import org.queryall.helpers.RdfUtils;
 import org.queryall.helpers.Settings;
-
-import org.apache.log4j.Logger;
+import org.queryall.helpers.StringUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -31,10 +28,10 @@ import org.apache.log4j.Logger;
 public class NamespaceEntryImpl implements NamespaceEntry
 {
     private static final Logger log = Logger.getLogger(NamespaceEntry.class.getName());
-    private static final boolean _TRACE = log.isTraceEnabled();
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = NamespaceEntryImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = log.isInfoEnabled();
+    private static final boolean _INFO = NamespaceEntryImpl.log.isInfoEnabled();
     
     private static URI namespaceTypeUri;
     private static URI namespaceAuthority;
@@ -53,22 +50,27 @@ public class NamespaceEntryImpl implements NamespaceEntry
     {
         final ValueFactory f = Constants.valueFactory;
         
-        namespaceNamespace = Settings.getSettings().getOntologyTermUriPrefix()
-                             +Settings.getSettings().getNamespaceForNamespaceEntry()
-                             +Settings.getSettings().getOntologyTermUriSuffix();
+        NamespaceEntryImpl.namespaceNamespace =
+                Settings.getSettings().getOntologyTermUriPrefix()
+                        + Settings.getSettings().getNamespaceForNamespaceEntry()
+                        + Settings.getSettings().getOntologyTermUriSuffix();
         
-        setNamespaceTypeUri(f.createURI(namespaceNamespace,"Namespace"));
-        setNamespaceAuthority(f.createURI(namespaceNamespace,"authority"));
-        setNamespaceIdentifierRegex(f.createURI(namespaceNamespace,"identifierRegex"));
-        setNamespacePreferredPrefix(f.createURI(namespaceNamespace,"preferredPrefix"));
-        setNamespaceAlternativePrefix(f.createURI(namespaceNamespace,"alternativePrefix"));
-        setNamespaceConvertQueriesToPreferredPrefix(f.createURI(namespaceNamespace,"convertToPreferred"));
-        setNamespaceDescription(f.createURI(namespaceNamespace,"description"));
-        setNamespaceUriTemplate(f.createURI(namespaceNamespace,"uriTemplate"));
-        setNamespaceSeparator(f.createURI(namespaceNamespace,"separator"));
-        oldNamespaceTitle = f.createURI(namespaceNamespace,"title");
+        NamespaceEntryImpl.setNamespaceTypeUri(f.createURI(NamespaceEntryImpl.namespaceNamespace, "Namespace"));
+        NamespaceEntryImpl.setNamespaceAuthority(f.createURI(NamespaceEntryImpl.namespaceNamespace, "authority"));
+        NamespaceEntryImpl.setNamespaceIdentifierRegex(f.createURI(NamespaceEntryImpl.namespaceNamespace,
+                "identifierRegex"));
+        NamespaceEntryImpl.setNamespacePreferredPrefix(f.createURI(NamespaceEntryImpl.namespaceNamespace,
+                "preferredPrefix"));
+        NamespaceEntryImpl.setNamespaceAlternativePrefix(f.createURI(NamespaceEntryImpl.namespaceNamespace,
+                "alternativePrefix"));
+        NamespaceEntryImpl.setNamespaceConvertQueriesToPreferredPrefix(f.createURI(
+                NamespaceEntryImpl.namespaceNamespace, "convertToPreferred"));
+        NamespaceEntryImpl.setNamespaceDescription(f.createURI(NamespaceEntryImpl.namespaceNamespace, "description"));
+        NamespaceEntryImpl.setNamespaceUriTemplate(f.createURI(NamespaceEntryImpl.namespaceNamespace, "uriTemplate"));
+        NamespaceEntryImpl.setNamespaceSeparator(f.createURI(NamespaceEntryImpl.namespaceNamespace, "separator"));
+        NamespaceEntryImpl.oldNamespaceTitle = f.createURI(NamespaceEntryImpl.namespaceNamespace, "title");
     }
-
+    
     private String defaultNamespace = Settings.getSettings().getNamespaceForNamespaceEntry();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -84,32 +86,36 @@ public class NamespaceEntryImpl implements NamespaceEntry
     private String uriTemplate = "";
     private String separator = Settings.getSettings().getStringProperty("separator", ":");
     
-    // This setting determines whether input namespace prefixes in the alternatives list should be converted to the preferred prefix
-    // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of the alternative prefixes
+    // This setting determines whether input namespace prefixes in the alternatives list should be
+    // converted to the preferred prefix
+    // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of
+    // the alternative prefixes
     private boolean convertQueriesToPreferredPrefix = true;
     private String title;
     
     public NamespaceEntryImpl()
     {
-    	
+        
     }
-
-    public NamespaceEntryImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion) throws OpenRDFException
-	{
+    
+    public NamespaceEntryImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
+        throws OpenRDFException
+    {
         Collection<String> tempAlternativePrefixes = new HashSet<String>();
         
         for(Statement nextStatement : inputStatements)
         {
-            if(_DEBUG)
+            if(NamespaceEntryImpl._DEBUG)
             {
-                log.debug("NamespaceEntry: nextStatement: "+nextStatement.toString());
+                NamespaceEntryImpl.log.debug("NamespaceEntry: nextStatement: " + nextStatement.toString());
             }
             
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getObject().equals(getNamespaceTypeUri()))
+            if(nextStatement.getPredicate().equals(RDF.TYPE)
+                    && nextStatement.getObject().equals(NamespaceEntryImpl.getNamespaceTypeUri()))
             {
-                if(_TRACE)
+                if(NamespaceEntryImpl._TRACE)
                 {
-                    log.trace("NamespaceEntry: found valid type predicate for URI: "+keyToUse);
+                    NamespaceEntryImpl.log.trace("NamespaceEntry: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -118,11 +124,12 @@ public class NamespaceEntryImpl implements NamespaceEntry
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceAuthority()))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceAuthority()))
             {
                 this.setAuthority(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(getNamespacePreferredPrefix()) || nextStatement.getPredicate().equals(oldNamespaceTitle))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespacePreferredPrefix())
+                    || nextStatement.getPredicate().equals(NamespaceEntryImpl.oldNamespaceTitle))
             {
                 if(this.getPreferredPrefix().trim().equals(""))
                 {
@@ -130,30 +137,34 @@ public class NamespaceEntryImpl implements NamespaceEntry
                 }
                 else
                 {
-                    log.error("NamespaceEntry.fromRdf: found two preferred prefixes keyToUse="+keyToUse+" .... chosen="+this.getPreferredPrefix()+" other="+nextStatement.getObject().stringValue());
+                    NamespaceEntryImpl.log.error("NamespaceEntry.fromRdf: found two preferred prefixes keyToUse="
+                            + keyToUse + " .... chosen=" + this.getPreferredPrefix() + " other="
+                            + nextStatement.getObject().stringValue());
                 }
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceAlternativePrefix()))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceAlternativePrefix()))
             {
                 tempAlternativePrefixes.add(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceDescription()) || nextStatement.getPredicate().equals(RDFS.COMMENT))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceDescription())
+                    || nextStatement.getPredicate().equals(RDFS.COMMENT))
             {
                 this.setDescription(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceIdentifierRegex()))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceIdentifierRegex()))
             {
                 this.setIdentifierRegex(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceUriTemplate()))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceUriTemplate()))
             {
                 this.setUriTemplate(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceSeparator()))
+            else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceSeparator()))
             {
                 this.setSeparator(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(getNamespaceConvertQueriesToPreferredPrefix()))
+            else if(nextStatement.getPredicate().equals(
+                    NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix()))
             {
                 this.setConvertQueriesToPreferredPrefix(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
@@ -165,13 +176,14 @@ public class NamespaceEntryImpl implements NamespaceEntry
         
         this.setAlternativePrefixes(tempAlternativePrefixes);
         
-        if(_TRACE)
+        if(NamespaceEntryImpl._TRACE)
         {
-            log.trace("NamespaceEntry.fromRdf: would have returned... result="+this.toString());
+            NamespaceEntryImpl.log.trace("NamespaceEntry.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
-    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException
+    public static boolean schemaToRdf(Repository myRepository, URI contextUri, int modelVersion)
+        throws OpenRDFException
     {
         RepositoryConnection con = myRepository.getConnection();
         
@@ -182,65 +194,71 @@ public class NamespaceEntryImpl implements NamespaceEntry
             URI contextKeyUri = contextUri;
             con.setAutoCommit(false);
             
-            con.add(getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-
-            // TODO: Add description
-            con.add(getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_PREFLABEL, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespacePreferredPrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-
-            // TODO: Add description
-            con.add(getNamespaceAlternativePrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespaceAlternativePrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_ALTLABEL, contextKeyUri);
-            con.add(getNamespaceAlternativePrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getNamespaceAlternativePrefix(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespaceAlternativePrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-
-            // TODO: Add description
-            con.add(getNamespaceAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(getNamespaceAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(getNamespaceAuthority(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespaceAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
+            con.add(NamespaceEntryImpl.getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             
             // TODO: Add description
-            con.add(getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getNamespaceIdentifierRegex(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespaceIdentifierRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-
-            // TODO: Add description
-            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespaceConvertQueriesToPreferredPrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
-
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE,
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_PREFLABEL,
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDFS.DOMAIN,
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespacePreferredPrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // TODO: Add description
-            con.add(getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespaceUriTemplate(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getNamespaceUriTemplate(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespaceUriTemplate(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
+            con.add(NamespaceEntryImpl.getNamespaceAlternativePrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAlternativePrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_ALTLABEL,
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAlternativePrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAlternativePrefix(), RDFS.DOMAIN,
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAlternativePrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
             // TODO: Add description
-            con.add(getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(getNamespaceSeparator(), RDFS.DOMAIN, getNamespaceTypeUri(), contextKeyUri);
-            con.add(getNamespaceSeparator(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-
+            con.add(NamespaceEntryImpl.getNamespaceAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAuthority(), RDFS.DOMAIN, NamespaceEntryImpl.getNamespaceTypeUri(),
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            // TODO: Add description
+            con.add(NamespaceEntryImpl.getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceIdentifierRegex(), RDFS.DOMAIN,
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceIdentifierRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            // TODO: Add description
+            con.add(NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.RANGE, RDFS.LITERAL,
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.DOMAIN,
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.LABEL, f.createLiteral("."),
+                    contextKeyUri);
+            
+            // TODO: Add description
+            con.add(NamespaceEntryImpl.getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceUriTemplate(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceUriTemplate(), RDFS.DOMAIN,
+                    NamespaceEntryImpl.getNamespaceTypeUri(), contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceUriTemplate(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            // TODO: Add description
+            con.add(NamespaceEntryImpl.getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceSeparator(), RDFS.DOMAIN, NamespaceEntryImpl.getNamespaceTypeUri(),
+                    contextKeyUri);
+            con.add(NamespaceEntryImpl.getNamespaceSeparator(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             if(modelVersion == 1)
             {
-                con.add(getNamespaceDescription(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-                con.add(getNamespaceDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
+                con.add(NamespaceEntryImpl.getNamespaceDescription(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+                con.add(NamespaceEntryImpl.getNamespaceDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
             }
             
             // If everything went as planned, we can commit the result
@@ -248,19 +266,23 @@ public class NamespaceEntryImpl implements NamespaceEntry
             
             return true;
         }
-        catch (RepositoryException re)
+        catch(RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
             if(con != null)
+            {
                 con.rollback();
-                
-            log.error("RepositoryException: "+re.getMessage());
+            }
+            
+            NamespaceEntryImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
             if(con != null)
+            {
                 con.close();
+            }
         }
         
         return false;
@@ -280,9 +302,11 @@ public class NamespaceEntryImpl implements NamespaceEntry
         final int EQUAL = 0;
         @SuppressWarnings("unused")
         final int AFTER = 1;
-    
-        if ( this == otherNamespace ) 
+        
+        if(this == otherNamespace)
+        {
             return EQUAL;
+        }
         
         return this.getPreferredPrefix().compareTo(otherNamespace.getPreferredPrefix());
     }
@@ -292,13 +316,13 @@ public class NamespaceEntryImpl implements NamespaceEntry
     {
         this.title = title;
     }
-
+    
     @Override
     public String getTitle()
     {
         return this.title;
     }
-
+    
     @Override
     public Collection<String> getAlternativePrefixes()
     {
@@ -316,13 +340,13 @@ public class NamespaceEntryImpl implements NamespaceEntry
     {
         return convertQueriesToPreferredPrefix;
     }
-
+    
     @Override
     public URI getCurationStatus()
     {
         return curationStatus;
     }
-
+    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -339,15 +363,16 @@ public class NamespaceEntryImpl implements NamespaceEntry
     }
     
     /**
-     * @return a collection of the relevant element types that are implemented by this class, including abstract implementations
+     * @return a collection of the relevant element types that are implemented by this class,
+     *         including abstract implementations
      */
     @Override
     public Collection<URI> getElementTypes()
     {
         Collection<URI> results = new ArrayList<URI>(1);
-		results.add(getNamespaceTypeUri());
-		
-		return results;
+        results.add(NamespaceEntryImpl.getNamespaceTypeUri());
+        
+        return results;
     }
     
     @Override
@@ -382,7 +407,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     {
         return unrecognisedStatements;
     }
-
+    
     @Override
     public String getUriTemplate()
     {
@@ -417,7 +442,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     public void setDescription(String description)
     {
         this.description = description;
-    }    
+    }
     
     @Override
     public void setIdentifierRegex(String identifierRegex)
@@ -426,7 +451,8 @@ public class NamespaceEntryImpl implements NamespaceEntry
     }
     
     /**
-     * @param key the key to set
+     * @param key
+     *            the key to set
      */
     @Override
     public void setKey(String nextKey)
@@ -445,7 +471,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     {
         this.preferredPrefix = preferredPrefix;
     }
-
+    
     @Override
     public void setSeparator(String separator)
     {
@@ -456,7 +482,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     public void setUriTemplate(String uriTemplate)
     {
         this.uriTemplate = uriTemplate;
-    }    
+    }
     
     @Override
     public String toHtml()
@@ -471,12 +497,19 @@ public class NamespaceEntryImpl implements NamespaceEntry
         
         String prefix = "namespace_";
         
-        sb.append("<div class=\""+prefix+"preferredPrefix_div\"><span class=\""+prefix+"preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\""+prefix+"preferredPrefix\" value=\""+StringUtils.xmlEncodeString(getPreferredPrefix())+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"description_div\"><span class=\""+prefix+"description_span\">Description:</span><input type=\"text\" name=\""+prefix+"description\" value=\""+StringUtils.xmlEncodeString(getDescription())+"\" /></div>\n");
-        sb.append("<div class=\""+prefix+"identifierRegex_div\"><span class=\""+prefix+"identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""+prefix+"identifierRegex\" value=\""+StringUtils.xmlEncodeString(getIdentifierRegex())+"\" /></div>\n");
+        sb.append("<div class=\"" + prefix + "preferredPrefix_div\"><span class=\"" + prefix
+                + "preferredPrefix_span\">Prefix:</span><input type=\"text\" name=\"" + prefix
+                + "preferredPrefix\" value=\"" + StringUtils.xmlEncodeString(getPreferredPrefix()) + "\" /></div>\n");
+        sb.append("<div class=\"" + prefix + "description_div\"><span class=\"" + prefix
+                + "description_span\">Description:</span><input type=\"text\" name=\"" + prefix
+                + "description\" value=\"" + StringUtils.xmlEncodeString(getDescription()) + "\" /></div>\n");
+        sb.append("<div class=\"" + prefix + "identifierRegex_div\"><span class=\"" + prefix
+                + "identifierRegex_span\">Namespace identifier regular expression:</span><input type=\"text\" name=\""
+                + prefix + "identifierRegex\" value=\"" + StringUtils.xmlEncodeString(getIdentifierRegex())
+                + "\" /></div>\n");
         
         return sb.toString();
-    }    
+    }
     
     @Override
     public boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException
@@ -489,11 +522,11 @@ public class NamespaceEntryImpl implements NamespaceEntry
         {
             URI namespaceInstanceUri = this.getKey();
             
-            if(_DEBUG)
+            if(NamespaceEntryImpl._DEBUG)
             {
-                log.debug("NamespaceEntry.toRdf: about create instance URI");
-//                log.debug("NamespaceEntry.toRdf: keyToUse="+keyToUse);
-//                log.debug("NamespaceEntry.toRdf: preferredPrefix="+getPreferredPrefix());
+                NamespaceEntryImpl.log.debug("NamespaceEntry.toRdf: about create instance URI");
+                // log.debug("NamespaceEntry.toRdf: keyToUse="+keyToUse);
+                // log.debug("NamespaceEntry.toRdf: preferredPrefix="+getPreferredPrefix());
             }
             
             Literal preferredPrefixLiteral = f.createLiteral(getPreferredPrefix());
@@ -501,17 +534,25 @@ public class NamespaceEntryImpl implements NamespaceEntry
             URI authorityLiteral = null;
             
             if(getAuthority() == null || getAuthority().trim().equals(""))
+            {
                 authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
+            }
             else
+            {
                 authorityLiteral = f.createURI(getAuthority());
-                
+            }
+            
             URI curationStatusLiteral = null;
             
             if(curationStatus == null)
+            {
                 curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+            }
             else
+            {
                 curationStatusLiteral = curationStatus;
-                
+            }
+            
             Literal descriptionLiteral = f.createLiteral(getDescription());
             
             Literal identifierRegexLiteral = f.createLiteral(getIdentifierRegex());
@@ -520,25 +561,29 @@ public class NamespaceEntryImpl implements NamespaceEntry
             
             Literal uriTemplateLiteral = f.createLiteral(getUriTemplate());
             Literal separatorLiteral = f.createLiteral(getSeparator());
-
-            if(_TRACE)
+            
+            if(NamespaceEntryImpl._TRACE)
             {
-                log.trace("NamespaceEntry.toRdf: about to add URI's to connection");
+                NamespaceEntryImpl.log.trace("NamespaceEntry.toRdf: about to add URI's to connection");
             }
             
             con.setAutoCommit(false);
             
-            con.add(namespaceInstanceUri, RDF.TYPE, getNamespaceTypeUri(), keyToUse);
-            con.add(namespaceInstanceUri, getNamespaceAuthority(), authorityLiteral, keyToUse);
-            con.add(namespaceInstanceUri, getNamespacePreferredPrefix(), preferredPrefixLiteral, keyToUse);
-            con.add(namespaceInstanceUri, getNamespaceConvertQueriesToPreferredPrefix(), convertQueriesToPreferredPrefixLiteral, keyToUse);
-            con.add(namespaceInstanceUri, getNamespaceIdentifierRegex(), identifierRegexLiteral, keyToUse);
-            con.add(namespaceInstanceUri, getNamespaceSeparator(), separatorLiteral, keyToUse);
-            con.add(namespaceInstanceUri, getNamespaceUriTemplate(), uriTemplateLiteral, keyToUse);
+            con.add(namespaceInstanceUri, RDF.TYPE, NamespaceEntryImpl.getNamespaceTypeUri(), keyToUse);
+            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceAuthority(), authorityLiteral, keyToUse);
+            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespacePreferredPrefix(), preferredPrefixLiteral,
+                    keyToUse);
+            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix(),
+                    convertQueriesToPreferredPrefixLiteral, keyToUse);
+            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceIdentifierRegex(), identifierRegexLiteral,
+                    keyToUse);
+            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceSeparator(), separatorLiteral, keyToUse);
+            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceUriTemplate(), uriTemplateLiteral, keyToUse);
             con.add(namespaceInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             if(modelVersion == 1)
             {
-                con.add(namespaceInstanceUri, getNamespaceDescription(), descriptionLiteral, keyToUse);
+                con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceDescription(), descriptionLiteral,
+                        keyToUse);
             }
             else
             {
@@ -549,13 +594,14 @@ public class NamespaceEntryImpl implements NamespaceEntry
             {
                 for(String nextAlternativePrefix : getAlternativePrefixes())
                 {
-                    con.add(namespaceInstanceUri, getNamespaceAlternativePrefix(), f.createLiteral(nextAlternativePrefix), keyToUse);
+                    con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceAlternativePrefix(),
+                            f.createLiteral(nextAlternativePrefix), keyToUse);
                 }
             }
             
             if(unrecognisedStatements != null)
             {
-            
+                
                 for(Statement nextUnrecognisedStatement : unrecognisedStatements)
                 {
                     con.add(nextUnrecognisedStatement);
@@ -567,24 +613,28 @@ public class NamespaceEntryImpl implements NamespaceEntry
             
             return true;
         }
-        catch (RepositoryException re)
+        catch(RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
             
             if(con != null)
+            {
                 con.rollback();
-                
-            log.error("RepositoryException: "+re.getMessage());
+            }
+            
+            NamespaceEntryImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
             if(con != null)
+            {
                 con.close();
+            }
         }
         
         return false;
     }
-
+    
     @Override
     public String toString()
     {
@@ -597,136 +647,158 @@ public class NamespaceEntryImpl implements NamespaceEntry
         
         return sb.toString();
     }
-
-	/**
-	 * @param namespaceTypeUri the namespaceTypeUri to set
-	 */
-	public static void setNamespaceTypeUri(URI namespaceTypeUri) {
-		NamespaceEntryImpl.namespaceTypeUri = namespaceTypeUri;
-	}
-
-	/**
-	 * @return the namespaceTypeUri
-	 */
-	public static URI getNamespaceTypeUri() {
-		return namespaceTypeUri;
-	}
-
-	/**
-	 * @param namespaceAuthority the namespaceAuthority to set
-	 */
-	public static void setNamespaceAuthority(URI namespaceAuthority) {
-		NamespaceEntryImpl.namespaceAuthority = namespaceAuthority;
-	}
-
-	/**
-	 * @return the namespaceAuthority
-	 */
-	public static URI getNamespaceAuthority() {
-		return namespaceAuthority;
-	}
-
-	/**
-	 * @param namespaceIdentifierRegex the namespaceIdentifierRegex to set
-	 */
-	public static void setNamespaceIdentifierRegex(
-			URI namespaceIdentifierRegex) {
-		NamespaceEntryImpl.namespaceIdentifierRegex = namespaceIdentifierRegex;
-	}
-
-	/**
-	 * @return the namespaceIdentifierRegex
-	 */
-	public static URI getNamespaceIdentifierRegex() {
-		return namespaceIdentifierRegex;
-	}
-
-	/**
-	 * @param namespacePreferredPrefix the namespacePreferredPrefix to set
-	 */
-	public static void setNamespacePreferredPrefix(
-			URI namespacePreferredPrefix) {
-		NamespaceEntryImpl.namespacePreferredPrefix = namespacePreferredPrefix;
-	}
-
-	/**
-	 * @return the namespacePreferredPrefix
-	 */
-	public static URI getNamespacePreferredPrefix() {
-		return namespacePreferredPrefix;
-	}
-
-	/**
-	 * @param namespaceAlternativePrefix the namespaceAlternativePrefix to set
-	 */
-	public static void setNamespaceAlternativePrefix(
-			URI namespaceAlternativePrefix) {
-		NamespaceEntryImpl.namespaceAlternativePrefix = namespaceAlternativePrefix;
-	}
-
-	/**
-	 * @return the namespaceAlternativePrefix
-	 */
-	public static URI getNamespaceAlternativePrefix() {
-		return namespaceAlternativePrefix;
-	}
-
-	/**
-	 * @param namespaceDescription the namespaceDescription to set
-	 */
-	public static void setNamespaceDescription(URI namespaceDescription) {
-		NamespaceEntryImpl.namespaceDescription = namespaceDescription;
-	}
-
-	/**
-	 * @return the namespaceDescription
-	 */
-	public static URI getNamespaceDescription() {
-		return namespaceDescription;
-	}
-
-	/**
-	 * @param namespaceConvertQueriesToPreferredPrefix the namespaceConvertQueriesToPreferredPrefix to set
-	 */
-	public static void setNamespaceConvertQueriesToPreferredPrefix(
-			URI namespaceConvertQueriesToPreferredPrefix) {
-		NamespaceEntryImpl.namespaceConvertQueriesToPreferredPrefix = namespaceConvertQueriesToPreferredPrefix;
-	}
-
-	/**
-	 * @return the namespaceConvertQueriesToPreferredPrefix
-	 */
-	public static URI getNamespaceConvertQueriesToPreferredPrefix() {
-		return namespaceConvertQueriesToPreferredPrefix;
-	}
-
-	/**
-	 * @param namespaceUriTemplate the namespaceUriTemplate to set
-	 */
-	public static void setNamespaceUriTemplate(URI namespaceUriTemplate) {
-		NamespaceEntryImpl.namespaceUriTemplate = namespaceUriTemplate;
-	}
-
-	/**
-	 * @return the namespaceUriTemplate
-	 */
-	public static URI getNamespaceUriTemplate() {
-		return namespaceUriTemplate;
-	}
-
-	/**
-	 * @param namespaceSeparator the namespaceSeparator to set
-	 */
-	public static void setNamespaceSeparator(URI namespaceSeparator) {
-		NamespaceEntryImpl.namespaceSeparator = namespaceSeparator;
-	}
-
-	/**
-	 * @return the namespaceSeparator
-	 */
-	public static URI getNamespaceSeparator() {
-		return namespaceSeparator;
-	}
-
+    
+    /**
+     * @param namespaceTypeUri
+     *            the namespaceTypeUri to set
+     */
+    public static void setNamespaceTypeUri(URI namespaceTypeUri)
+    {
+        NamespaceEntryImpl.namespaceTypeUri = namespaceTypeUri;
+    }
+    
+    /**
+     * @return the namespaceTypeUri
+     */
+    public static URI getNamespaceTypeUri()
+    {
+        return NamespaceEntryImpl.namespaceTypeUri;
+    }
+    
+    /**
+     * @param namespaceAuthority
+     *            the namespaceAuthority to set
+     */
+    public static void setNamespaceAuthority(URI namespaceAuthority)
+    {
+        NamespaceEntryImpl.namespaceAuthority = namespaceAuthority;
+    }
+    
+    /**
+     * @return the namespaceAuthority
+     */
+    public static URI getNamespaceAuthority()
+    {
+        return NamespaceEntryImpl.namespaceAuthority;
+    }
+    
+    /**
+     * @param namespaceIdentifierRegex
+     *            the namespaceIdentifierRegex to set
+     */
+    public static void setNamespaceIdentifierRegex(URI namespaceIdentifierRegex)
+    {
+        NamespaceEntryImpl.namespaceIdentifierRegex = namespaceIdentifierRegex;
+    }
+    
+    /**
+     * @return the namespaceIdentifierRegex
+     */
+    public static URI getNamespaceIdentifierRegex()
+    {
+        return NamespaceEntryImpl.namespaceIdentifierRegex;
+    }
+    
+    /**
+     * @param namespacePreferredPrefix
+     *            the namespacePreferredPrefix to set
+     */
+    public static void setNamespacePreferredPrefix(URI namespacePreferredPrefix)
+    {
+        NamespaceEntryImpl.namespacePreferredPrefix = namespacePreferredPrefix;
+    }
+    
+    /**
+     * @return the namespacePreferredPrefix
+     */
+    public static URI getNamespacePreferredPrefix()
+    {
+        return NamespaceEntryImpl.namespacePreferredPrefix;
+    }
+    
+    /**
+     * @param namespaceAlternativePrefix
+     *            the namespaceAlternativePrefix to set
+     */
+    public static void setNamespaceAlternativePrefix(URI namespaceAlternativePrefix)
+    {
+        NamespaceEntryImpl.namespaceAlternativePrefix = namespaceAlternativePrefix;
+    }
+    
+    /**
+     * @return the namespaceAlternativePrefix
+     */
+    public static URI getNamespaceAlternativePrefix()
+    {
+        return NamespaceEntryImpl.namespaceAlternativePrefix;
+    }
+    
+    /**
+     * @param namespaceDescription
+     *            the namespaceDescription to set
+     */
+    public static void setNamespaceDescription(URI namespaceDescription)
+    {
+        NamespaceEntryImpl.namespaceDescription = namespaceDescription;
+    }
+    
+    /**
+     * @return the namespaceDescription
+     */
+    public static URI getNamespaceDescription()
+    {
+        return NamespaceEntryImpl.namespaceDescription;
+    }
+    
+    /**
+     * @param namespaceConvertQueriesToPreferredPrefix
+     *            the namespaceConvertQueriesToPreferredPrefix to set
+     */
+    public static void setNamespaceConvertQueriesToPreferredPrefix(URI namespaceConvertQueriesToPreferredPrefix)
+    {
+        NamespaceEntryImpl.namespaceConvertQueriesToPreferredPrefix = namespaceConvertQueriesToPreferredPrefix;
+    }
+    
+    /**
+     * @return the namespaceConvertQueriesToPreferredPrefix
+     */
+    public static URI getNamespaceConvertQueriesToPreferredPrefix()
+    {
+        return NamespaceEntryImpl.namespaceConvertQueriesToPreferredPrefix;
+    }
+    
+    /**
+     * @param namespaceUriTemplate
+     *            the namespaceUriTemplate to set
+     */
+    public static void setNamespaceUriTemplate(URI namespaceUriTemplate)
+    {
+        NamespaceEntryImpl.namespaceUriTemplate = namespaceUriTemplate;
+    }
+    
+    /**
+     * @return the namespaceUriTemplate
+     */
+    public static URI getNamespaceUriTemplate()
+    {
+        return NamespaceEntryImpl.namespaceUriTemplate;
+    }
+    
+    /**
+     * @param namespaceSeparator
+     *            the namespaceSeparator to set
+     */
+    public static void setNamespaceSeparator(URI namespaceSeparator)
+    {
+        NamespaceEntryImpl.namespaceSeparator = namespaceSeparator;
+    }
+    
+    /**
+     * @return the namespaceSeparator
+     */
+    public static URI getNamespaceSeparator()
+    {
+        return NamespaceEntryImpl.namespaceSeparator;
+    }
     
 }

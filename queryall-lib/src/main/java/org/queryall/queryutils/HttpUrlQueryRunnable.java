@@ -1,8 +1,8 @@
 package org.queryall.queryutils;
 
-import org.apache.log4j.Logger;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.HttpProviderImpl;
@@ -10,22 +10,23 @@ import org.queryall.impl.HttpProviderImpl;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thread
+public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thread
 {
     private static final Logger log = Logger.getLogger(HttpUrlQueryRunnable.class.getName());
-    private static final boolean _TRACE = log.isTraceEnabled();
+    private static final boolean _TRACE = HttpUrlQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
-	private static final boolean _DEBUG = log.isDebugEnabled();
+    private static final boolean _DEBUG = HttpUrlQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = log.isInfoEnabled();
+    private static final boolean _INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
     
-//    private Settings localSettings = Settings.getSettings();
+    // private Settings localSettings = Settings.getSettings();
     
     public String httpOperation = "GET";
     // public String url = "";
     // public String postInformation = "";
     // public String acceptHeader = "";
     public int maxRowsParameter = getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
+    
     // public String format = "";
     
     // public String rawResult = "";
@@ -41,15 +42,9 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
     // public boolean completed = false;
     // public boolean wasSuccessful = false;
     
-    public HttpUrlQueryRunnable
-    (
-        String nextHttpOperation,
-        String nextUrl,
-        String nextPostInformation,
-        String nextAcceptHeader,
-        String nextFormat, 
-        QueryAllConfiguration localSettings,
-        BlacklistController localBlacklistController)
+    public HttpUrlQueryRunnable(String nextHttpOperation, String nextUrl, String nextPostInformation,
+            String nextAcceptHeader, String nextFormat, QueryAllConfiguration localSettings,
+            BlacklistController localBlacklistController)
     {
         super(nextUrl, nextFormat, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
         this.httpOperation = nextHttpOperation;
@@ -60,6 +55,7 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
         
     }
     
+    @Override
     public void run()
     {
         try
@@ -68,28 +64,33 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
             
             RdfFetcher fetcher = new RdfFetcher(getLocalSettings(), getBlacklistController());
             
-            if(_TRACE)
+            if(HttpUrlQueryRunnable._TRACE)
             {
-                log.trace("HttpUrlQueryRunnable.run: about to fetch");
+                HttpUrlQueryRunnable.log.trace("HttpUrlQueryRunnable.run: about to fetch");
             }
             
             if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
             {
-                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(), "", this.getQuery(), "", maxRowsParameter, this.getAcceptHeader()));
+                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(), "",
+                        this.getQuery(), "", maxRowsParameter, this.getAcceptHeader()));
             }
-            else if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostUrlUri().stringValue()) || this.httpOperation.equals(HttpProviderImpl.getProviderHttpGetUrlUri().stringValue()))
+            else if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostUrlUri().stringValue())
+                    || this.httpOperation.equals(HttpProviderImpl.getProviderHttpGetUrlUri().stringValue()))
             {
-                this.setRawResult(fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(), this.getAcceptHeader()));
+                this.setRawResult(fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(),
+                        this.getAcceptHeader()));
             }
             
-            // make the normalised Result the same as the raw result unless people actually want to normalise it
+            // make the normalised Result the same as the raw result unless people actually want to
+            // normalise it
             this.setNormalisedResult(getRawResult());
             
             this.setReturnedContentType(fetcher.lastReturnedContentType);
             
             if(this.getReturnedContentType() != null)
             {
-                // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it through the conn neg code
+                // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it
+                // through the conn neg code
                 this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
             }
             
@@ -114,4 +115,3 @@ public class HttpUrlQueryRunnable  extends RdfFetcherQueryRunnable //extends Thr
         }
     }
 }
-

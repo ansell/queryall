@@ -11,11 +11,10 @@ import org.queryall.blacklist.BlacklistController;
  */
 public class RdfFetcherQueryRunnable extends Thread
 {
-    static final Logger log = Logger.getLogger(RdfFetcherQueryRunnable.class
-            .getName());
-    static final boolean _TRACE = log.isTraceEnabled();
-    static final boolean _DEBUG = log.isDebugEnabled();
-    static final boolean _INFO = log.isInfoEnabled();
+    static final Logger log = Logger.getLogger(RdfFetcherQueryRunnable.class.getName());
+    static final boolean _TRACE = RdfFetcherQueryRunnable.log.isTraceEnabled();
+    static final boolean _DEBUG = RdfFetcherQueryRunnable.log.isDebugEnabled();
+    static final boolean _INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
     
     private String endpointUrl = "";
     private String format = "";
@@ -40,8 +39,8 @@ public class RdfFetcherQueryRunnable extends Thread
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
-    
-    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, QueryAllConfiguration localSettings, BlacklistController localBlacklistController)
+    public RdfFetcherQueryRunnable(String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug,
+            String nextAcceptHeader, QueryAllConfiguration localSettings, BlacklistController localBlacklistController)
     {
         this.setEndpointUrl(nextEndpointUrl);
         this.setFormat(nextFormat);
@@ -51,13 +50,15 @@ public class RdfFetcherQueryRunnable extends Thread
         this.setSettings(localSettings);
         this.setBlacklistController(localBlacklistController);
     }
-
-    public RdfFetcherQueryRunnable( String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug, String nextAcceptHeader, QueryAllConfiguration localSettings, BlacklistController localBlacklistController, QueryBundle nextOriginalQueryBundle )
+    
+    public RdfFetcherQueryRunnable(String nextEndpointUrl, String nextFormat, String nextQuery, String nextDebug,
+            String nextAcceptHeader, QueryAllConfiguration localSettings, BlacklistController localBlacklistController,
+            QueryBundle nextOriginalQueryBundle)
     {
-        this(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController);
+        this(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings,
+                localBlacklistController);
         this.setOriginalQueryBundle(nextOriginalQueryBundle);
     }
-    
     
     public boolean wasError()
     {
@@ -66,7 +67,7 @@ public class RdfFetcherQueryRunnable extends Thread
     
     public boolean notExecuted()
     {
-        return ! getCompleted();
+        return !getCompleted();
     }
     
     public boolean wasSuccessfulQuery()
@@ -76,13 +77,13 @@ public class RdfFetcherQueryRunnable extends Thread
     
     public boolean wasEmptySuccessQuery()
     {
-        return getWasSuccessful() && ! getRawResult().trim().equals("") && getNormalisedResult().trim().equals("");
+        return getWasSuccessful() && !getRawResult().trim().equals("") && getNormalisedResult().trim().equals("");
     }
     
     @Override
     public String toString()
     {
-        return "endpointUrl="+getEndpointUrl()+" query="+getQuery();
+        return "endpointUrl=" + getEndpointUrl() + " query=" + getQuery();
     }
     
     public String getEndpointUrl()
@@ -94,23 +95,25 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return query;
     }
-
+    
     /**
-     * @param endpointUrl the endpointUrl to set
+     * @param endpointUrl
+     *            the endpointUrl to set
      */
     public void setEndpointUrl(String endpointUrl)
     {
         this.endpointUrl = endpointUrl;
     }
-
+    
     /**
-     * @param format the format to set
+     * @param format
+     *            the format to set
      */
     public void setFormat(String format)
     {
         this.format = format;
     }
-
+    
     /**
      * @return the format
      */
@@ -118,23 +121,25 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return format;
     }
-
+    
     /**
-     * @param query the query to set
+     * @param query
+     *            the query to set
      */
     public void setQuery(String query)
     {
         this.query = query;
     }
-
+    
     /**
-     * @param debug the debug to set
+     * @param debug
+     *            the debug to set
      */
     public void setDebug(String debug)
     {
         this.debug = debug;
     }
-
+    
     /**
      * @return the debug
      */
@@ -142,15 +147,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return debug;
     }
-
+    
     /**
-     * @param acceptHeader the acceptHeader to set
+     * @param acceptHeader
+     *            the acceptHeader to set
      */
     public void setAcceptHeader(String acceptHeader)
     {
         this.acceptHeader = acceptHeader;
     }
-
+    
     /**
      * @return the acceptHeader
      */
@@ -158,15 +164,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return acceptHeader;
     }
-
+    
     /**
-     * @param returnedContentType the returnedContentType to set
+     * @param returnedContentType
+     *            the returnedContentType to set
      */
     public void setReturnedContentType(String returnedContentType)
     {
         this.returnedContentType = returnedContentType;
     }
-
+    
     /**
      * @return the returnedContentType
      */
@@ -174,15 +181,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return returnedContentType;
     }
-
+    
     /**
-     * @param returnedMIMEType the returnedMIMEType to set
+     * @param returnedMIMEType
+     *            the returnedMIMEType to set
      */
     public void setReturnedMIMEType(String returnedMIMEType)
     {
         this.returnedMIMEType = returnedMIMEType;
     }
-
+    
     /**
      * @return the returnedMIMEType
      */
@@ -190,15 +198,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return returnedMIMEType;
     }
-
+    
     /**
-     * @param returnedContentEncoding the returnedContentEncoding to set
+     * @param returnedContentEncoding
+     *            the returnedContentEncoding to set
      */
     public void setReturnedContentEncoding(String returnedContentEncoding)
     {
         this.returnedContentEncoding = returnedContentEncoding;
     }
-
+    
     /**
      * @return the returnedContentEncoding
      */
@@ -206,15 +215,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return returnedContentEncoding;
     }
-
+    
     /**
-     * @param originalQueryBundle the originalQueryBundle to set
+     * @param originalQueryBundle
+     *            the originalQueryBundle to set
      */
     public void setOriginalQueryBundle(QueryBundle originalQueryBundle)
     {
         this.originalQueryBundle = originalQueryBundle;
     }
-
+    
     /**
      * @return the originalQueryBundle
      */
@@ -222,15 +232,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return originalQueryBundle;
     }
-
+    
     /**
-     * @param wasSuccessful the wasSuccessful to set
+     * @param wasSuccessful
+     *            the wasSuccessful to set
      */
     public void setWasSuccessful(boolean wasSuccessful)
     {
         this.wasSuccessful = wasSuccessful;
     }
-
+    
     /**
      * @return the wasSuccessful
      */
@@ -238,15 +249,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return wasSuccessful;
     }
-
+    
     /**
-     * @param completed the completed to set
+     * @param completed
+     *            the completed to set
      */
     public void setCompleted(boolean completed)
     {
         this.completed = completed;
     }
-
+    
     /**
      * @return the completed
      */
@@ -254,15 +266,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return completed;
     }
-
+    
     /**
-     * @param lastException the lastException to set
+     * @param lastException
+     *            the lastException to set
      */
     public void setLastException(Exception lastException)
     {
         this.lastException = lastException;
     }
-
+    
     /**
      * @return the lastException
      */
@@ -270,15 +283,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return lastException;
     }
-
+    
     /**
-     * @param resultDebugString the resultDebugString to set
+     * @param resultDebugString
+     *            the resultDebugString to set
      */
     public void setResultDebugString(String resultDebugString)
     {
         this.resultDebugString = resultDebugString;
     }
-
+    
     /**
      * @return the resultDebugString
      */
@@ -286,15 +300,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return resultDebugString;
     }
-
+    
     /**
-     * @param rawResult the rawResult to set
+     * @param rawResult
+     *            the rawResult to set
      */
     public void setRawResult(String rawResult)
     {
         this.rawResult = rawResult;
     }
-
+    
     /**
      * @return the rawResult
      */
@@ -302,15 +317,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return rawResult;
     }
-
+    
     /**
-     * @param normalisedResult the normalisedResult to set
+     * @param normalisedResult
+     *            the normalisedResult to set
      */
     public void setNormalisedResult(String normalisedResult)
     {
         this.normalisedResult = normalisedResult;
     }
-
+    
     /**
      * @return the normalisedResult
      */
@@ -318,7 +334,8 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         if(normalisedResult == null || normalisedResult.trim().length() == 0)
         {
-            log.info("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
+            RdfFetcherQueryRunnable.log
+                    .info("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
             return rawResult;
         }
         else
@@ -326,15 +343,16 @@ public class RdfFetcherQueryRunnable extends Thread
             return normalisedResult;
         }
     }
-
+    
     /**
-     * @param queryStartTime the queryStartTime to set
+     * @param queryStartTime
+     *            the queryStartTime to set
      */
     public void setQueryStartTime(Date queryStartTime)
     {
         this.queryStartTime = queryStartTime;
     }
-
+    
     /**
      * @return the queryStartTime
      */
@@ -342,15 +360,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return queryStartTime;
     }
-
+    
     /**
-     * @param queryEndTime the queryEndTime to set
+     * @param queryEndTime
+     *            the queryEndTime to set
      */
     public void setQueryEndTime(Date queryEndTime)
     {
         this.queryEndTime = queryEndTime;
     }
-
+    
     /**
      * @return the queryEndTime
      */
@@ -358,15 +377,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return queryEndTime;
     }
-
+    
     /**
-     * @param localSettings the localSettings to set
+     * @param localSettings
+     *            the localSettings to set
      */
     public void setSettings(QueryAllConfiguration localSettings)
     {
         this.localSettings = localSettings;
     }
-
+    
     /**
      * @return the localSettings
      */
@@ -374,15 +394,16 @@ public class RdfFetcherQueryRunnable extends Thread
     {
         return localSettings;
     }
-
+    
     /**
-     * @param localBlacklistController the localBlacklistController to set
+     * @param localBlacklistController
+     *            the localBlacklistController to set
      */
     public void setBlacklistController(BlacklistController localBlacklistController)
     {
         this.localBlacklistController = localBlacklistController;
     }
-
+    
     /**
      * @return the localBlacklistController
      */

@@ -9,8 +9,8 @@ import org.queryall.api.test.AbstractProfilableTest;
 import org.queryall.impl.ProfileImpl;
 
 /**
- * Provides the implementation of the Provider class 
- * for the Abstract test class provided with queryall-api-tests.jar
+ * Provides the implementation of the Provider class for the Abstract test class provided with
+ * queryall-api-tests.jar
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -21,19 +21,19 @@ public abstract class BaseProfilableTest extends AbstractProfilableTest
     {
         return new ProfileImpl();
     }
-
+    
     @Override
     public URI getProfileExcludeThenIncludeURI()
     {
         return ProfileImpl.getExcludeThenIncludeUri();
     }
-
+    
     @Override
     public URI getProfileIncludeThenExcludeURI()
     {
         return ProfileImpl.getIncludeThenExcludeUri();
     }
-
+    
     @Override
     public URI getProfileIncludeExcludeOrderUndefinedUri()
     {

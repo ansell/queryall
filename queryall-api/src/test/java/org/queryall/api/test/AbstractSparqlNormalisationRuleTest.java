@@ -36,7 +36,8 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     /**
      * @throws java.lang.Exception
      */
-    @Before
+    @Override
+	@Before
     public void setUp() throws Exception
     {
         super.setUp();
@@ -70,7 +71,8 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     /**
      * @throws java.lang.Exception
      */
-    @After
+    @Override
+	@After
     public void tearDown() throws Exception
     {
         super.tearDown();

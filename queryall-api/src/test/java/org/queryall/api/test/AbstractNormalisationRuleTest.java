@@ -116,7 +116,7 @@ public abstract class AbstractNormalisationRuleTest
 		
 		assertTrue(queryallRule instanceof NormalisationRule);
 		
-		NormalisationRule normalisationRule = (NormalisationRule)queryallRule;
+		NormalisationRule normalisationRule = queryallRule;
 		
 		normalisationRule.setKey(testStageInvalidInclusionSparqlNormalisationRuleUri);
 
@@ -171,7 +171,7 @@ public abstract class AbstractNormalisationRuleTest
 		
 		assertTrue(queryallRule instanceof NormalisationRule);
 
-		NormalisationRule normalisationRule = (NormalisationRule)queryallRule;
+		NormalisationRule normalisationRule = queryallRule;
 		
 		normalisationRule.setKey(testStageAllValidAndInvalidSparqlNormalisationRuleUri);
 		

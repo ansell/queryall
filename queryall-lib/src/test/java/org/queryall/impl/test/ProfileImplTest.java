@@ -24,13 +24,13 @@ public class ProfileImplTest extends AbstractProfileTest
     {
         return ProfileImpl.getExcludeThenIncludeUri();
     }
-
+    
     @Override
     public URI getProfileIncludeThenExcludeURI()
     {
         return ProfileImpl.getIncludeThenExcludeUri();
     }
-
+    
     @Override
     public URI getProfileIncludeExcludeOrderUndefinedUri()
     {

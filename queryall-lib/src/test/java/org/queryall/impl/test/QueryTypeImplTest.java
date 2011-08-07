@@ -9,8 +9,8 @@ import org.queryall.api.test.AbstractQueryTypeTest;
 import org.queryall.impl.QueryTypeImpl;
 
 /**
- * Provides the implementation of the Provider class 
- * for the Abstract test class provided with queryall-api-tests.jar
+ * Provides the implementation of the Provider class for the Abstract test class provided with
+ * queryall-api-tests.jar
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -21,13 +21,13 @@ public class QueryTypeImplTest extends AbstractQueryTypeTest
     {
         return new QueryTypeImpl();
     }
-
+    
     @Override
     public URI getAllNamespaceMatchMethodUri()
     {
         return QueryTypeImpl.getQueryNamespaceMatchAll();
     }
-
+    
     @Override
     public URI getAnyNamespaceMatchMethodUri()
     {
