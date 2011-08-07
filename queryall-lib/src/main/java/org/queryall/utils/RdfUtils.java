@@ -63,13 +63,13 @@ import org.queryall.impl.RegexNormalisationRuleImpl;
 import org.queryall.impl.RuleTestImpl;
 import org.queryall.impl.SparqlNormalisationRuleImpl;
 import org.queryall.impl.XsltNormalisationRuleImpl;
-import org.queryall.queryutils.HttpUrlQueryRunnable;
-import org.queryall.queryutils.ProvenanceRecord;
-import org.queryall.queryutils.QueryBundle;
-import org.queryall.queryutils.RdfFetchController;
-import org.queryall.queryutils.RdfFetcherQueryRunnable;
-import org.queryall.queryutils.RdfFetcherUriQueryRunnable;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.HttpUrlQueryRunnable;
+import org.queryall.query.ProvenanceRecord;
+import org.queryall.query.QueryBundle;
+import org.queryall.query.RdfFetchController;
+import org.queryall.query.RdfFetcherQueryRunnable;
+import org.queryall.query.RdfFetcherUriQueryRunnable;
+import org.queryall.query.Settings;
 import org.queryall.statistics.StatisticsEntry;
 
 /**

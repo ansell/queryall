@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.queryall.queryutils.RdfFetcherQueryRunnable;
+import org.queryall.query.RdfFetcherQueryRunnable;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

@@ -5,7 +5,7 @@ import org.queryall.servlets.html.VelocityHelper;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
-import org.queryall.queryutils.*;
+import org.queryall.query.*;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.*;
 

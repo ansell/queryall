@@ -24,7 +24,7 @@ import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
 import org.queryall.utils.StringUtils;
 import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.queryutils.*;
+import org.queryall.query.*;
 import org.queryall.enumerations.*;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.Profile;

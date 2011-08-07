@@ -21,7 +21,7 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.SparqlProvider;
 import org.queryall.enumerations.Constants;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 
 /**

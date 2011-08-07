@@ -1,4 +1,4 @@
-package org.queryall.queryutils;
+package org.queryall.query;
 
 import java.util.Date;
 
@@ -8,21 +8,14 @@ import org.queryall.blacklist.BlacklistController;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
+public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 {
-    public String graphUri = "";
-    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
-    
-    public RdfFetcherSparqlQueryRunnable(final String nextEndpointUrl, final String nextGraphUri,
-            final String nextFormat, final String nextQuery, final String nextDebug, final String nextAcceptHeader,
-            final int nextMaxRowsParameter, final QueryAllConfiguration localSettings,
+    public RdfFetcherUriQueryRunnable(final String nextEndpointUrl, final String nextFormat, final String nextQuery,
+            final String nextDebug, final String nextAcceptHeader, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
     {
         super(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings,
                 localBlacklistController, nextOriginalQueryBundle);
-        
-        this.graphUri = nextGraphUri;
-        this.maxRowsParameter = nextMaxRowsParameter;
     }
     
     @Override
@@ -34,9 +27,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setQueryStartTime(new Date());
             
-            this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(),
-            // this.originalQueryBundle.originalProvider.getSparqlGraphUri(),
-                    this.graphUri, this.getQuery(), this.getDebug(), this.maxRowsParameter, this.getAcceptHeader()));
+            this.setRawResult(fetcher.getDocumentFromUrl(this.getEndpointUrl(), "", this.getAcceptHeader()));
             
             this.setQueryEndTime(new Date());
             

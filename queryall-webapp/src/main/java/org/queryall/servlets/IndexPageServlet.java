@@ -7,7 +7,7 @@ import javax.servlet.http.*;
 
 import org.apache.log4j.Logger;
 
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.servlets.html.HtmlPageRenderer;
 
 import org.openrdf.OpenRDFException;

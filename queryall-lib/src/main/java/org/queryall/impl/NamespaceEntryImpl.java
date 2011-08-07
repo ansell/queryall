@@ -18,7 +18,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.enumerations.Constants;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 

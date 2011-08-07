@@ -7,7 +7,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.impl.*;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
 import org.queryall.utils.StringUtils;

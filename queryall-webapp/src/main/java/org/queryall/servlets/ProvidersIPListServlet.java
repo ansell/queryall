@@ -11,7 +11,7 @@ import org.queryall.api.HttpProvider;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.*;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 
 import org.apache.log4j.Logger;
 

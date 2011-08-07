@@ -22,7 +22,7 @@ import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.enumerations.Constants;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;

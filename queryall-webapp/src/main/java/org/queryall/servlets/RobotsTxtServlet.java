@@ -5,7 +5,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 
 import org.apache.log4j.Logger;
 

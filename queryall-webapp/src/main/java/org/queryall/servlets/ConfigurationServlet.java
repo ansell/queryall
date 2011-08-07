@@ -6,7 +6,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.servlets.queryparsers.*;
 import org.queryall.servlets.html.*;
 import org.queryall.utils.RdfUtils;

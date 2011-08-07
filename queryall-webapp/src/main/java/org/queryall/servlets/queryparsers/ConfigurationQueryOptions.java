@@ -2,7 +2,7 @@ package org.queryall.servlets.queryparsers;
 
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.utils.StringUtils;
 
 import java.util.regex.Pattern;

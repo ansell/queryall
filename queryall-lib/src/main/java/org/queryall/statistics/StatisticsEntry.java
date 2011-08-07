@@ -28,8 +28,8 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProjectImpl;
-import org.queryall.queryutils.HttpUrlQueryRunnable;
-import org.queryall.queryutils.Settings;
+import org.queryall.query.HttpUrlQueryRunnable;
+import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 

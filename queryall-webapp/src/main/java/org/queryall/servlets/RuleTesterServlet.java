@@ -5,7 +5,7 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.queryall.queryutils.Settings;
+import org.queryall.query.Settings;
 import org.queryall.servlets.queryparsers.*;
 import org.queryall.utils.RuleUtils;
 import org.queryall.api.QueryAllConfiguration;

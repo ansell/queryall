@@ -17,7 +17,7 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.impl.QueryTypeImpl;
-import org.queryall.queryutils.RdfFetchController;
+import org.queryall.query.RdfFetchController;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
