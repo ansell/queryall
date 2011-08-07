@@ -3,6 +3,7 @@ package org.queryall.utils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -353,45 +354,33 @@ public final class RdfUtils
      */
     public static boolean getBooleanFromValue(final Value nextValue)
     {
-        boolean result;
+        boolean result = false;
         
-        try
+        if(nextValue instanceof BooleanLiteralImpl)
         {
             result = ((BooleanLiteralImpl)nextValue).booleanValue();
         }
-        catch(final ClassCastException cce)
+        else if(nextValue instanceof BooleanMemLiteral)
         {
-            try
+            result = ((BooleanMemLiteral)nextValue).booleanValue();
+        }
+        else if(nextValue instanceof IntegerMemLiteral)
+        {
+            final int tempValue = ((IntegerMemLiteral)nextValue).intValue();
+
+            if(tempValue == 0)
             {
-                result = ((BooleanMemLiteral)nextValue).booleanValue();
+                return false;
             }
-            catch(final ClassCastException cce2)
+            
+            if(tempValue == 1)
             {
-                // HACK for a Virtuoso bug where booleans are transformed into 0 and 1 and typed as
-                // integers instead of booleans
-                if(nextValue instanceof org.openrdf.sail.memory.model.IntegerMemLiteral)
-                {
-                    final int tempValue = ((IntegerMemLiteral)nextValue).intValue();
-                    if(tempValue == 0)
-                    {
-                        return false;
-                    }
-                    
-                    if(tempValue == 1)
-                    {
-                        return true;
-                    }
-                }
-                
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log
-                            .debug("RdfUtils.getBooleanFromValue: nextValue was not a typed boolean literal. Trying to parse it as a string... type="
-                                    + nextValue.getClass().getName());
-                }
-                
-                result = Boolean.parseBoolean(nextValue.toString());
+                return true;
             }
+        }
+        else
+        {
+            result = Boolean.parseBoolean(nextValue.stringValue());
         }
         
         return result;
@@ -509,35 +498,35 @@ public final class RdfUtils
     {
         Date result;
         
-        try
-        {
-            result = ((CalendarLiteralImpl)nextValue).calendarValue().toGregorianCalendar().getTime();
-        }
-        catch(final ClassCastException cce)
-        {
+//        if(nextValue instanceof CalendarLiteralImpl)
+//        {
+//            result = ((CalendarLiteralImpl)nextValue).calendarValue().toGregorianCalendar().getTime();
+//        }
+//        else if(nextValue instanceof CalendarMemLiteral)
+//        {
+//            result = ((CalendarMemLiteral)nextValue).calendarValue().toGregorianCalendar().getTime();
+//        }
+//        else
+//        {
             try
             {
-                result = ((CalendarMemLiteral)nextValue).calendarValue().toGregorianCalendar().getTime();
+                result = Constants.ISO8601UTC().parse(nextValue.stringValue());
             }
-            catch(final ClassCastException cce2)
+            catch(final java.text.ParseException pe)
             {
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log
-                            .debug("RdfUtils.getDateTimeFromValue: nextValue was not a typed date time literal. Trying to parse it as a string... type="
-                                    + nextValue.getClass().getName());
-                }
+                RdfUtils.log.error("Could not parse date using ISO8601UTC: nextValue.stringValue=" + nextValue.stringValue());
                 try
                 {
-                    result = Constants.ISO8601UTC().parse(nextValue.toString());
+                    result = DateFormat.getDateInstance().parse(nextValue.stringValue());
                 }
-                catch(final java.text.ParseException pe)
+                catch(final java.text.ParseException pe2)
                 {
-                    RdfUtils.log.error("Could not parse date: nextValue.toString=" + nextValue.toString());
-                    throw pe;
+                    RdfUtils.log.error("Could not parse date using default date format: nextValue.stringValue=" + nextValue.stringValue());
+                    
+                    throw pe2;
                 }
             }
-        }
+//        }
         
         return result;
     }
@@ -751,7 +740,7 @@ public final class RdfUtils
         }
         catch(final ClassCastException cce)
         {
-            result = Float.parseFloat(nextValue.toString());
+            result = Float.parseFloat(nextValue.stringValue());
         }
         
         return result;
@@ -784,7 +773,7 @@ public final class RdfUtils
                                     + nextValue.getClass().getName());
                 }
                 
-                result = Integer.parseInt(nextValue.toString());
+                result = Integer.parseInt(nextValue.stringValue());
             }
         }
         
