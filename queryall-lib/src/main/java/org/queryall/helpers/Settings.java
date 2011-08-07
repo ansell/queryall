@@ -401,11 +401,11 @@ public class Settings implements QueryAllConfiguration
                         this.cachedNamespaceEntries = null;
                     }
                 }
-                if(this.cachedNamespacePrefixToUriEntries != null)
+                if(this.getNamespacePrefixesToUris() != null)
                 {
-                    synchronized(this.cachedNamespacePrefixToUriEntries)
+                    synchronized(this.getNamespacePrefixesToUris())
                     {
-                        this.cachedNamespacePrefixToUriEntries = null;
+                        this.setNamespacePrefixesToUris(null);
                     }
                 }
                 this.getAllNamespaceEntries();
@@ -562,7 +562,7 @@ public class Settings implements QueryAllConfiguration
                 }
             }
             
-            this.cachedNamespacePrefixToUriEntries = tempNamespacePrefixToUriEntries;
+            this.setNamespacePrefixesToUris(tempNamespacePrefixToUriEntries);
             this.cachedNamespaceEntries = results;
             
             return results;
@@ -996,25 +996,7 @@ public class Settings implements QueryAllConfiguration
 		return currentRdfWebappConfigurationNamespace;
 	}
     
-    public Collection<URI> getNamespaceUrisForTitle(String namespacePrefix)
-    {
-        Collection<URI> results = new HashSet<URI>();
-        
-        if(this.cachedNamespacePrefixToUriEntries == null)
-        {
-            // this function initialises the namespace prefix to URI cache
-            this.getAllNamespaceEntries();
-        }
-        
-        results = this.cachedNamespacePrefixToUriEntries.get(namespacePrefix);
-        
-        if(results == null)
-        	return null;
-        else
-        	return Collections.unmodifiableCollection(results);
-    }
-    
-	/**
+    /**
 	 * @return the dEFAULT_ONTOLOGYTERMURI_PREFIX
 	 */
 	@Override
@@ -2491,5 +2473,27 @@ public class Settings implements QueryAllConfiguration
 	{
 		// TODO Auto-generated method stub
 		throw new RuntimeException("TODO: Implement me!");
+	}
+
+	/**
+	 * @return the cachedNamespacePrefixToUriEntries
+	 */
+	public Map<String, Collection<URI>> getNamespacePrefixesToUris()
+	{
+		if(this.cachedNamespacePrefixToUriEntries == null)
+		{
+			this.getAllNamespaceEntries();
+		}
+		
+		return this.cachedNamespacePrefixToUriEntries;
+	}
+
+	/**
+	 * @param cachedNamespacePrefixToUriEntries the cachedNamespacePrefixToUriEntries to set
+	 */
+	public void setNamespacePrefixesToUris(
+			Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries)
+	{
+		this.cachedNamespacePrefixToUriEntries = cachedNamespacePrefixToUriEntries;
 	}
 }

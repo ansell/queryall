@@ -21,10 +21,9 @@ import org.apache.log4j.Logger;
 
 import org.openrdf.model.URI;
 
-/** 
- * 
+/**
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class NamespaceProvidersServlet extends HttpServlet 
 {
     /**

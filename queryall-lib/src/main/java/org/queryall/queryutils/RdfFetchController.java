@@ -26,9 +26,9 @@ import java.util.HashSet;
  */
 public class RdfFetchController
 {
-    private static final Logger log = Logger.getLogger( RdfFetchController.class.getName() );
-    private static final boolean _TRACE = log.isTraceEnabled();
-    private static final boolean _DEBUG = log.isDebugEnabled();
+    public static final Logger log = Logger.getLogger( RdfFetchController.class.getName() );
+    public static final boolean _TRACE = log.isTraceEnabled();
+    public static final boolean _DEBUG = log.isDebugEnabled();
     private static final boolean _INFO = log.isInfoEnabled();
     
     private Collection<RdfFetcherQueryRunnable> errorResults = new HashSet<RdfFetcherQueryRunnable>( 10 );
@@ -174,21 +174,21 @@ public class RdfFetchController
                 
                 if( !nextQueryType.getIsNamespaceSpecific() )
                 {
-                    chosenProviders.addAll(getProvidersForQueryNonNamespaceSpecific(localSettings.getAllProviders(), nextQueryType));
+                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(localSettings.getAllProviders(), nextQueryType, sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
                 }
                 else
                 {
-                    chosenProviders.addAll(getProvidersForQueryNamespaceSpecific(localSettings.getAllProviders(), nextQueryType));
+                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(localSettings.getAllProviders(), sortedIncludedProfiles, nextQueryType, localSettings.getNamespacePrefixesToUris(), queryString, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
                 }
                 
                 if( nextQueryType.getIncludeDefaults() && useDefaultProviders )
                 {
                     if( _DEBUG )
                     {
-                        log.debug( "RdfFetchController.initialise: including defaults for nextQueryType.title="+nextQueryType.getTitle()+" nextQueryType.getKey()="+nextQueryType.getKey() );
+                        log.debug( "RdfFetchController.initialise: including defaults for nextQueryType.title="+nextQueryType.getTitle()+" nextQueryType.getKey()="+nextQueryType.getKey());
                     }
                     
-                    chosenProviders.addAll(getDefaultProviders(nextQueryType, this.sortedIncludedProfiles));
+                    chosenProviders.addAll(ProviderUtils.getDefaultProviders(localSettings.getAllProviders(), nextQueryType, this.sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
                 }
                 
                 if( _DEBUG )
@@ -239,7 +239,7 @@ public class RdfFetchController
                 // if there are still no query bundles check for the non-namespace specific version of the query type to flag any instances of the namespace not being recognised
                 if(queryBundlesForQueryType.size() == 0)
                 {
-                	if(nextQueryType.getIsNamespaceSpecific() && getProvidersForQueryNonNamespaceSpecific(localSettings.getAllProviders(), nextQueryType).size() > 0)
+                	if(nextQueryType.getIsNamespaceSpecific() && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(localSettings.getAllProviders(), nextQueryType, sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)).size() > 0)
                 	{
                 		namespaceNotRecognised = true;
                 	}
@@ -551,136 +551,6 @@ public class RdfFetchController
         return results;
     }
 
-    private Collection<Provider> getProvidersForQueryNamespaceSpecific(Map<URI, Provider> allProviders, QueryType nextQueryType)
-    {
-        Collection<Provider> results = new LinkedList<Provider>();
-        
-        List<String> queryStringMatches = nextQueryType.matchesForQueryString( queryString );
-        
-        int queryStringMatchesSize = queryStringMatches.size();
-        
-        // Collection<String> nextQueryNamespacePrefixes = new HashSet<String>();
-        Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
-        
-        for( int nextNamespaceInputIndex : nextQueryType.getNamespaceInputIndexes() )
-        {
-            if( queryStringMatchesSize  >= nextNamespaceInputIndex && nextNamespaceInputIndex > 0 )
-            {
-                String nextTitle = queryStringMatches.get( nextNamespaceInputIndex-1 );
-                
-                Collection<URI> nextUriFromTitleNamespaceList = localSettings.getNamespaceUrisForTitle( nextTitle );
-                
-                if( nextUriFromTitleNamespaceList != null )
-                {
-                    nextQueryNamespaceUris.add( nextUriFromTitleNamespaceList );
-                }
-                else if(_DEBUG)
-                {
-            		log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="+nextTitle + " nextQueryType.getKey()="+nextQueryType.getKey());
-                }
-            }
-            else
-            {
-                log.error( "RdfFetchController.getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
-                
-                throw new RuntimeException( "Could not match the namespace because the input index was invalid nextNamespaceInputIndex="+nextNamespaceInputIndex+" queryStringMatches.size()="+queryStringMatches.size() );
-            }
-        }
-        
-        if( _DEBUG )
-        {
-            // log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes );
-            log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryNamespaceUris="+nextQueryNamespaceUris );
-        }
-        
-        if( nextQueryType.handlesNamespaceUris( nextQueryNamespaceUris ) )
-        {
-            if( _DEBUG )
-            {
-                log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
-            }
-            
-            Map<URI, Provider> namespaceSpecificProviders = Settings.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
-            
-            for( Provider nextNamespaceSpecificProvider : namespaceSpecificProviders.values() )
-            {
-                if( _TRACE )
-                {
-                    log.trace( "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="+nextNamespaceSpecificProvider.getKey() );
-                }
-                
-                if( nextNamespaceSpecificProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true) ) )
-                {
-                    if( _DEBUG )
-                    {
-                        log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: profileList suitable for nextNamespaceSpecificProvider.getKey()="+nextNamespaceSpecificProvider.getKey()+" queryString="+queryString );
-                    }
-                    
-                    results.add( nextNamespaceSpecificProvider );
-                }
-            }
-        }
-        
-        return results;
-    }
-
-    private Collection<Provider> getProvidersForQueryNonNamespaceSpecific(Map<URI, Provider> allProviders, 
-            QueryType nextQueryType)
-    {
-        Collection<Provider> results = new LinkedList<Provider>();
-        
-        // if we aren't specific to namespace we simply find all providers for this type of custom query
-        Map<URI, Provider> relevantProviders = ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey() );
-        
-        for( Provider nextAllProvider : relevantProviders.values() )
-        {
-            if( _DEBUG )
-            {
-                log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="+nextAllProvider.toString() );
-            }
-            
-            if( nextAllProvider.isUsedWithProfileList( sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true) ) )
-            {
-                if( _DEBUG )
-                {
-                    log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="+nextAllProvider.getKey()+" queryString="+queryString );
-                }
-                
-                results.add( nextAllProvider );
-            }
-        }
-        
-        return results;
-    }
-    
-    public Collection<Provider> getDefaultProviders(QueryType queryType, List<Profile> profileList)
-    {
-        final Collection<Provider> results = new HashSet<Provider>();
-
-        // Return an empty collection if this query type does not include defaults
-    	if(queryType.getIncludeDefaults())
-    	{
-	        for(final Provider nextProvider : localSettings.getAllProviders().values())
-	        {
-	            if(nextProvider.getIsDefaultSource()
-	                    && nextProvider.containsQueryTypeUri(queryType.getKey()))
-	            {
-	                    if( nextProvider.isUsedWithProfileList( profileList, localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true) ) )
-	                    {
-	                        if( _DEBUG )
-	                        {
-	                            log.debug( "RdfFetchController.getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="+nextProvider.getKey()+" queryString=" +queryString);
-	                        }
-	                        
-	                        results.add( nextProvider );
-	                    }
-	            }
-	        }
-    	}
-        
-        return results;
-    }
-    
     public void fetchRdfForQueries() throws InterruptedException
     {
         fetchRdfForQueries(getFetchThreadGroup());

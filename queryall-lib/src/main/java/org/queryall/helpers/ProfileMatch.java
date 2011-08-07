@@ -4,8 +4,7 @@
 package org.queryall.helpers;
 
 /**
- * @author karina
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public enum ProfileMatch
 {
