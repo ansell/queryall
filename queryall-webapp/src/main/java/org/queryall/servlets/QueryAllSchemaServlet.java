@@ -7,6 +7,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.servlets.html.*;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.*;
 
 import org.openrdf.*;
@@ -16,9 +17,8 @@ import org.openrdf.repository.*;
 import org.apache.log4j.Logger;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class QueryAllSchemaServlet extends HttpServlet
 {
 	/**
@@ -37,7 +37,7 @@ public class QueryAllSchemaServlet extends HttpServlet
 	{
 		Date queryStartTime = new Date();
 
-		Settings localSettings = Settings.getSettings();
+		QueryAllConfiguration localSettings = Settings.getSettings();
 
 		PrintWriter out = response.getWriter();
 
@@ -178,7 +178,7 @@ public class QueryAllSchemaServlet extends HttpServlet
 					+ requestedContentType);
 		}
 
-		localSettings.configRefreshCheck(false);
+		((Settings) localSettings).configRefreshCheck(false);
 
 		response.setContentType(requestedContentType);
 		response.setCharacterEncoding("UTF-8");

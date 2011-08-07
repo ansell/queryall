@@ -8,6 +8,7 @@ import javax.servlet.http.*;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.helpers.*;
 
@@ -16,9 +17,8 @@ import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class ProfilesServlet extends HttpServlet 
 {
     /**
@@ -36,7 +36,7 @@ public class ProfilesServlet extends HttpServlet
                         HttpServletResponse response)
         throws ServletException, IOException 
     {
-    	Settings localSettings = Settings.getSettings();
+    	QueryAllConfiguration localSettings = Settings.getSettings();
         
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");

@@ -27,9 +27,8 @@ import org.queryall.api.QueryType;
 import org.queryall.blacklist.*;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class GeneralServlet extends HttpServlet 
 {
     /**

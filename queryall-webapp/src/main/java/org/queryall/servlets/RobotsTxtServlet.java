@@ -4,14 +4,15 @@ import java.util.Collection;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.Settings;
 
 import org.apache.log4j.Logger;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class RobotsTxtServlet extends HttpServlet 
 {
     /**
@@ -38,7 +39,7 @@ public class RobotsTxtServlet extends HttpServlet
         
         PrintWriter out = response.getWriter();
     
-        Collection<String> robotsList = Settings.getSettings().getStringProperties("blacklistBaseUserAgents");
+        Collection<String> robotsList = ((QueryAllConfiguration)Settings.getSettings()).getStringProperties("blacklistBaseUserAgents");
         
         if(robotsList != null)
         {

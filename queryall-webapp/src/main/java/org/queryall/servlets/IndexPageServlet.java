@@ -11,12 +11,12 @@ import org.queryall.servlets.html.HtmlPageRenderer;
 
 import org.openrdf.OpenRDFException;
 
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.helpers.Settings;;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class IndexPageServlet extends HttpServlet 
 {
 	private static final long serialVersionUID = -6472769738354082954L;
@@ -31,7 +31,7 @@ public class IndexPageServlet extends HttpServlet
                         HttpServletResponse response)
         throws ServletException, IOException 
     {
-    	Settings localSettings = Settings.getSettings();
+    	QueryAllConfiguration localSettings = Settings.getSettings();
         
         PrintWriter out = response.getWriter();
         response.setContentType("text/html");

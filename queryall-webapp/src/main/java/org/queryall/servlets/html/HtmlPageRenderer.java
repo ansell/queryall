@@ -346,7 +346,7 @@ public class HtmlPageRenderer
         }
     }
 	
-	public static void renderIndexPage(Settings localSettings, ServletContext servletContext, java.io.Writer nextWriter, Collection<String> debugStrings, String realHostName, String contextPath) throws OpenRDFException
+	public static void renderIndexPage(QueryAllConfiguration localSettings, ServletContext servletContext, java.io.Writer nextWriter, Collection<String> debugStrings, String realHostName, String contextPath) throws OpenRDFException
 	{
         if(contextPath == null || contextPath.equals("/"))
         {

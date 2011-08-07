@@ -15,9 +15,8 @@ import org.queryall.helpers.*;
 import org.apache.log4j.Logger;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class ProvidersIPListServlet extends HttpServlet 
 {
     /**

@@ -28,9 +28,8 @@ import org.openrdf.sail.memory.*;
 import org.apache.log4j.Logger;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class ConfigurationServlet extends HttpServlet 
 {
     /**

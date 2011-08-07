@@ -121,5 +121,7 @@ public interface QueryAllConfiguration
 	Collection<String> getStringProperties(String string);
 
 	Collection<Statement> getStatementProperties(String string);
+
+	Pattern getTagPattern();
 	
 }

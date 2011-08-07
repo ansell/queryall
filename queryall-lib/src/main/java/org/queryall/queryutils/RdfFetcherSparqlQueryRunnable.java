@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.*;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

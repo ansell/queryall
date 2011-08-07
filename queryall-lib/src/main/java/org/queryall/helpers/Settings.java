@@ -1130,6 +1130,7 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
 
+	@Override
     public Collection<String> getStringProperties(String key)
     {
         if(_TRACE)
@@ -1175,6 +1176,7 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
 
+	@Override
     public Pattern getTagPattern()
     {
     	if(this.cachedTagPattern != null)
@@ -1190,6 +1192,7 @@ public class Settings implements QueryAllConfiguration
         return tempPattern;
     }
 
+	@Override
     public Collection<URI> getURIProperties(String key)
     {
         if(_TRACE)
@@ -1212,7 +1215,7 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
 
-	public Collection<Value> getValueProperties(String key)
+	private Collection<Value> getValueProperties(String key)
     {
         if(_TRACE)
             log.trace("Settings.getValueCollectionPropertiesFromConfig: key="+key);

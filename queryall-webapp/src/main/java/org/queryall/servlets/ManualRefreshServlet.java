@@ -5,14 +5,14 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.helpers.*;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.*;
 
 import org.apache.log4j.Logger;
 
 /** 
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-
 public class ManualRefreshServlet extends HttpServlet 
 {
     /**
@@ -29,16 +29,16 @@ public class ManualRefreshServlet extends HttpServlet
                     HttpServletResponse response)
       throws ServletException, IOException 
     {
-        Settings localSettings = Settings.getSettings();
+    	QueryAllConfiguration localSettings = Settings.getSettings();
         BlacklistController localBlacklistController = BlacklistController.getDefaultController();
         
         PrintWriter out = response.getWriter();
         
-        boolean refreshAllowed = localSettings.isManualRefreshAllowed();
+        boolean refreshAllowed = ((Settings) localSettings).isManualRefreshAllowed();
         
         if(refreshAllowed)
         {
-            if(localSettings.configRefreshCheck(true))
+            if(((Settings) localSettings).configRefreshCheck(true))
             {
                 localBlacklistController.doBlacklistExpiry();
                 
