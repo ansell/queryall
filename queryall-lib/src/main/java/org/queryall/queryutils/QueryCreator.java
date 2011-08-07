@@ -17,7 +17,9 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.api.SparqlProvider;
 import org.queryall.helpers.Constants;
+import org.queryall.helpers.RuleUtils;
 import org.queryall.helpers.Settings;
+import org.queryall.helpers.SortOrder;
 import org.queryall.helpers.StringUtils;
 
 import org.apache.log4j.Logger;
@@ -805,8 +807,8 @@ public class QueryCreator
                                     .xmlEncodeString(inputUrlEncoded_normalisedQueryUri));
         }
         
-        final Collection<NormalisationRule> normalisationsNeeded = localSettings.getNormalisationRulesForUris(normalisationUrisNeeded,
-                        Constants.LOWEST_ORDER_FIRST);
+        final Collection<NormalisationRule> normalisationsNeeded = RuleUtils.getSortedRulesByUris(localSettings.getAllNormalisationRules(), normalisationUrisNeeded,
+                        SortOrder.LOWEST_ORDER_FIRST);
         
         String endpointSpecificUri = normalisedStandardUri;
         String endpointSpecificQueryUri = normalisedQueryUri;

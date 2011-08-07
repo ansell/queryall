@@ -131,7 +131,7 @@ public class GeneralServlet extends HttpServlet
         
         response.setHeader("X-Application", localSettings.getStringProperty("userAgent", "queryall") + "/"+Settings.VERSION);
         
-        List<Profile> includedProfiles = localSettings.getAndSortProfileList(localSettings.getURIProperties("activeProfiles"), Constants.LOWEST_ORDER_FIRST);
+        List<Profile> includedProfiles = ProfileUtils.getAndSortProfileList(localSettings.getURIProperties("activeProfiles"), SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
         
         RdfFetchController fetchController = new RdfFetchController(localSettings, localBlacklistController, queryString, includedProfiles, useDefaultProviders, realHostName, pageOffset, requestedContentType);
         
@@ -617,8 +617,8 @@ public class GeneralServlet extends HttpServlet
 		return (Repository)QueryCreator.normaliseByStage(
 		    NormalisationRuleImpl.getRdfruleStageAfterResultsToPool(),
 		    myRepository, 
-		    localSettings.getSortedRulesForProviders(fetchController.getAllUsedProviders(), 
-		        Constants.HIGHEST_ORDER_FIRST ), 
+		    RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(), 
+		        localSettings.getAllNormalisationRules(), SortOrder.HIGHEST_ORDER_FIRST ), 
 		    includedProfiles, 
 		    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), 
 		    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
@@ -692,8 +692,8 @@ public class GeneralServlet extends HttpServlet
 			    tempRepository = (Repository)QueryCreator.normaliseByStage(
 			        NormalisationRuleImpl.getRdfruleStageAfterResultsImport(),
 			        tempRepository, 
-			        localSettings.getNormalisationRulesForUris(nextResult.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
-			            Constants.HIGHEST_ORDER_FIRST ), 
+			        RuleUtils.getSortedRulesByUris(localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
+			            SortOrder.HIGHEST_ORDER_FIRST ), 
 			        includedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
 			    
 			    if(_DEBUG)

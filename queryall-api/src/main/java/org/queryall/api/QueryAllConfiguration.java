@@ -70,15 +70,27 @@ public interface QueryAllConfiguration
 	
 	
 	Map<URI, NamespaceEntry> getAllNamespaceEntries();
-
+	
+	void addNamespaceEntry(NamespaceEntry nextNamespaceEntry);
+	
 	Map<URI, NormalisationRule> getAllNormalisationRules();
 
+	void addNormalisationRule(NormalisationRule nextNormalisationRule);
+	
 	Map<URI, Profile> getAllProfiles();
 
+	void addProfile(Profile nextProfile);
+	
 	Map<URI, Provider> getAllProviders();
 
+	void addProvider(Provider nextProvider);
+	
 	Map<URI, QueryType> getAllQueryTypes();
 
+	void addQueryType(QueryType nextQueryType);
+	
 	Map<URI, RuleTest> getAllRuleTests();
 
+	void addRuleTest(RuleTest nextRuleTest);
+	
 }

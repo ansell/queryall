@@ -2,6 +2,7 @@ package org.queryall.servlets;
 
 import java.io.*;
 import java.util.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -87,9 +88,9 @@ public class NamespaceProvidersServlet extends HttpServlet
             {
                 if(!providersByQueryKey.containsKey(nextQueryKey))
                 {
-                    Collection<Provider> queryProviders = localSettings.getProvidersForQueryType(nextQueryKey);
+                    Map<URI, Provider> queryProviders = ProviderUtils.getProvidersForQueryType(allProviders, nextQueryKey);
                                         
-                    providersByQueryKey.put(nextQueryKey, queryProviders);
+                    providersByQueryKey.put(nextQueryKey, queryProviders.values());
                     
                     overallQueryTypeProviders += queryProviders.size();
                 }
@@ -104,13 +105,13 @@ public class NamespaceProvidersServlet extends HttpServlet
                     nextNamespaces.add(nextNamespace);
                     nextNamespacesList.add(nextNamespaces);
                     
-                    Collection<Provider> namespaceProviders = localSettings.getProvidersForNamespaceUris(nextNamespacesList, QueryTypeImpl.getQueryNamespaceMatchAny());
+                    Map<URI, Provider> namespaceProviders = ProviderUtils.getProvidersForNamespaceUris(allProviders, nextNamespacesList, QueryTypeImpl.getQueryNamespaceMatchAny());
                     
-                    providersByNamespace.put(nextNamespace, namespaceProviders);
+                    providersByNamespace.put(nextNamespace, namespaceProviders.values());
                     
                     overallNamespaceProviders += namespaceProviders.size();
                     
-                    for(Provider nextNamespaceProvider : namespaceProviders)
+                    for(Provider nextNamespaceProvider : namespaceProviders.values())
                     {
                         for(URI nextQueryKey : nextNamespaceProvider.getIncludedInQueryTypes())
                         {
@@ -121,9 +122,9 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 nextQueryTypesByNamespaces.add(nextNamespace);
                                 nextQueryTypesByNamespacesList.add(nextQueryTypesByNamespaces);
                                 
-                                Collection<Provider> queryTypesByNamespace = localSettings.getProvidersForQueryTypeForNamespaceUris(nextQueryKey, nextQueryTypesByNamespacesList, QueryTypeImpl.getQueryNamespaceMatchAny());
+                                Map<URI, Provider> queryTypesByNamespace = Settings.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryKey, nextQueryTypesByNamespacesList, QueryTypeImpl.getQueryNamespaceMatchAny());
                                 
-                                allQueryTypesByNamespace.put(nextQueryKey.stringValue() + " " + nextNamespace.stringValue(), queryTypesByNamespace);
+                                allQueryTypesByNamespace.put(nextQueryKey.stringValue() + " " + nextNamespace.stringValue(), queryTypesByNamespace.values());
                                 
                                 overallQueryTypeByNamespaceProviders += queryTypesByNamespace.size();
                             }
@@ -349,9 +350,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                 }
                 else if(queriesForNextTitle.size() == 1)
                 {
-                    Collection<Provider> queryTypesForNamespace;
-                    
-                    queryTypesForNamespace = localSettings.getProvidersForQueryType(nextUniqueQueryTitle);
+                    Map<URI, Provider> queryTypesForNamespace = ProviderUtils.getProvidersForQueryType(allProviders, nextUniqueQueryTitle);
                     
                     // We use QueryType.handleAllNamespaces to detect whether we are conceivably missing query type providers for any of the discovered namespaces
                     // if(queriesForNextTitle.get(0).handleAllNamespaces && queryTypesForNamespace.size() == 0)
@@ -371,7 +370,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                             // log.debug("Provider found for namespace and query : nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
                         }
                         
-                        for(Provider nextQueryNamespaceProvider : queryTypesForNamespace)
+                        for(Provider nextQueryNamespaceProvider : queryTypesForNamespace.values())
                         {
                             if(nextQueryNamespaceProvider instanceof HttpProvider)
                             {

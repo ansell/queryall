@@ -24,7 +24,9 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.helpers.Constants;
+import org.queryall.helpers.RuleUtils;
 import org.queryall.helpers.Settings;
+import org.queryall.helpers.SortOrder;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -268,7 +270,7 @@ public class QueryBundle
 			
 			getOriginalProvider().toRdf(myRepository, keyToUse, modelVersion);
 			
-			for(NormalisationRule nextRelevantRdfRule : Settings.getSettings().getNormalisationRulesForUris(getOriginalProvider().getNormalisationUris(), Constants.LOWEST_ORDER_FIRST))
+			for(NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(Settings.getSettings().getAllNormalisationRules(), getOriginalProvider().getNormalisationUris(), SortOrder.LOWEST_ORDER_FIRST))
 			{
 				nextRelevantRdfRule.toRdf(myRepository, keyToUse, modelVersion);
 			}

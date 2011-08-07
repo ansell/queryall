@@ -25,10 +25,6 @@ public final class Constants
     public static final String SKOS_NAMESPACE = "http://www.w3.org/2004/02/skos/core#";
     
     
-    // These are used for sorting
-    public static final int LOWEST_ORDER_FIRST = 1;
-    public static final int HIGHEST_ORDER_FIRST = 2;
-
     public static final String INPUT_NTRIPLES_ENCODED = "inputNTriplesEncoded";
     public static final String INPUT_PLUS_URL_ENCODED = "inputPlusUrlEncoded";
     public static final String INPUT_URL_ENCODED = "inputUrlEncoded";

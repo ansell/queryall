@@ -174,11 +174,11 @@ public class RdfFetchController
                 
                 if( !nextQueryType.getIsNamespaceSpecific() )
                 {
-                    chosenProviders.addAll(getProvidersForQueryNonNamespaceSpecific(nextQueryType));
+                    chosenProviders.addAll(getProvidersForQueryNonNamespaceSpecific(localSettings.getAllProviders(), nextQueryType));
                 }
                 else
                 {
-                    chosenProviders.addAll(getProvidersForQueryNamespaceSpecific(nextQueryType));
+                    chosenProviders.addAll(getProvidersForQueryNamespaceSpecific(localSettings.getAllProviders(), nextQueryType));
                 }
                 
                 if( nextQueryType.getIncludeDefaults() && useDefaultProviders )
@@ -239,7 +239,7 @@ public class RdfFetchController
                 // if there are still no query bundles check for the non-namespace specific version of the query type to flag any instances of the namespace not being recognised
                 if(queryBundlesForQueryType.size() == 0)
                 {
-                	if(nextQueryType.getIsNamespaceSpecific() && getProvidersForQueryNonNamespaceSpecific(nextQueryType).size() > 0)
+                	if(nextQueryType.getIsNamespaceSpecific() && getProvidersForQueryNonNamespaceSpecific(localSettings.getAllProviders(), nextQueryType).size() > 0)
                 	{
                 		namespaceNotRecognised = true;
                 	}
@@ -551,7 +551,7 @@ public class RdfFetchController
         return results;
     }
 
-    private Collection<Provider> getProvidersForQueryNamespaceSpecific(QueryType nextQueryType)
+    private Collection<Provider> getProvidersForQueryNamespaceSpecific(Map<URI, Provider> allProviders, QueryType nextQueryType)
     {
         Collection<Provider> results = new LinkedList<Provider>();
         
@@ -600,9 +600,9 @@ public class RdfFetchController
                 log.debug( "RdfFetchController.getProvidersForQueryNamespaceSpecific: confirmed to handle namespaces nextQueryType.getKey()="+nextQueryType.getKey() +" nextQueryNamespaceUris="+nextQueryNamespaceUris );
             }
             
-            Collection<Provider> namespaceSpecificProviders = localSettings.getProvidersForQueryTypeForNamespaceUris( nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
+            Map<URI, Provider> namespaceSpecificProviders = Settings.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryType.getKey(), nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod() );
             
-            for( Provider nextNamespaceSpecificProvider : namespaceSpecificProviders )
+            for( Provider nextNamespaceSpecificProvider : namespaceSpecificProviders.values() )
             {
                 if( _TRACE )
                 {
@@ -624,15 +624,15 @@ public class RdfFetchController
         return results;
     }
 
-    private Collection<Provider> getProvidersForQueryNonNamespaceSpecific(
+    private Collection<Provider> getProvidersForQueryNonNamespaceSpecific(Map<URI, Provider> allProviders, 
             QueryType nextQueryType)
     {
         Collection<Provider> results = new LinkedList<Provider>();
         
         // if we aren't specific to namespace we simply find all providers for this type of custom query
-        Collection<Provider> allProviders = localSettings.getProvidersForQueryType( nextQueryType.getKey() );
+        Map<URI, Provider> relevantProviders = ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey() );
         
-        for( Provider nextAllProvider : allProviders )
+        for( Provider nextAllProvider : relevantProviders.values() )
         {
             if( _DEBUG )
             {
@@ -769,9 +769,9 @@ public class RdfFetchController
                 String convertedResult = (String)QueryCreator.normaliseByStage(
                     NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(),
                     nextResult, 
-                    localSettings.getNormalisationRulesForUris( 
+                    RuleUtils.getSortedRulesByUris(localSettings.getAllNormalisationRules(),  
                         nextThread.getOriginalQueryBundle().getProvider().getNormalisationUris(), 
-                        Constants.HIGHEST_ORDER_FIRST ), 
+                        SortOrder.HIGHEST_ORDER_FIRST ), 
                     sortedIncludedProfiles, localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true) );
                 
                 nextThread.setNormalisedResult(convertedResult);

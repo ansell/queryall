@@ -4,7 +4,10 @@
 package org.queryall.helpers;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
@@ -27,11 +30,6 @@ public class ProfileUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = log.isInfoEnabled();
     
-	public static final int SPECIFIC_INCLUDE = 1;
-	public static final int SPECIFIC_EXCLUDE = 2;
-	public static final int IMPLICIT_INCLUDE = 3;
-	public static final int NO_MATCH = 4;
-
 	/**
 	 * This method implements the main logic with reference to include/exclude decisions
 	 * based on a given includeExcludeOrder and the default profile include exclude 
@@ -59,7 +57,7 @@ public class ProfileUtils
 	 * @return One of the following constants, ProfileImpl.SPECIFIC_EXCLUDE, ProfileImpl.SPECIFIC_INCLUDE, ProfileImpl.IMPLICIT_INCLUDE or ProfileImpl.NO_MATCH
 	 * @throws IllegalArgumentException if the include or exclude lists are null, or nextIncludeExcludeOrder is not includeOrExclude or excludeOrInclude and nextDefaultProfileIncludeExcludeOrder does not help resolve the nextIncludeExcludeOrder
 	 */
-	public static final int usedWithIncludeExcludeList(URI nextUri, URI nextIncludeExcludeOrder, Collection<URI> includeList, Collection<URI> excludeList, URI nextDefaultProfileIncludeExcludeOrder)
+	public static final ProfileMatch usedWithIncludeExcludeList(URI nextUri, URI nextIncludeExcludeOrder, Collection<URI> includeList, Collection<URI> excludeList, URI nextDefaultProfileIncludeExcludeOrder)
 	{
 	    if(includeList == null || excludeList == null)
 	    {
@@ -88,7 +86,7 @@ public class ProfileUtils
 	                log.debug("Profile.usedWithList: excludeFound=true, returning false");
 	            }
 	            
-	            return ProfileUtils.SPECIFIC_EXCLUDE;
+	            return ProfileMatch.SPECIFIC_EXCLUDE;
 	        }
 	        else if(includeFound)
 	        {
@@ -97,7 +95,7 @@ public class ProfileUtils
 	                log.debug("Profile.usedWithList: includeFound=true, returning true");
 	            }
 	            
-	            return ProfileUtils.SPECIFIC_INCLUDE;
+	            return ProfileMatch.SPECIFIC_INCLUDE;
 	        }
 	        else
 	        {
@@ -106,7 +104,7 @@ public class ProfileUtils
 	                log.debug("Profile.usedWithList: includeFound=false and excludeFound=false, returning true");
 	            }
 	            
-	            return ProfileUtils.IMPLICIT_INCLUDE;
+	            return ProfileMatch.IMPLICIT_INCLUDE;
 	        }
 	    }
 	    else if(nextIncludeExcludeOrder.equals(ProfileImpl.getIncludeThenExcludeUri()))
@@ -123,7 +121,7 @@ public class ProfileUtils
 	                log.debug("Profile.usedWithList: includeFound=true, returning true");
 	            }
 	            
-	            return ProfileUtils.SPECIFIC_INCLUDE;
+	            return ProfileMatch.SPECIFIC_INCLUDE;
 	        }
 	        else if(excludeFound)
 	        {
@@ -132,7 +130,7 @@ public class ProfileUtils
 	                log.debug("Profile.usedWithList: excludeFound=true, returning false");
 	            }
 	            
-	            return ProfileUtils.SPECIFIC_EXCLUDE;
+	            return ProfileMatch.SPECIFIC_EXCLUDE;
 	        }
 	        else
 	        {
@@ -141,7 +139,7 @@ public class ProfileUtils
 	                log.debug("Profile.usedWithList: includeFound=false and excludeFound=false, returning false");
 	            }
 	            
-	            return ProfileUtils.NO_MATCH;
+	            return ProfileMatch.NO_MATCH;
 	        }
 	    }
 	    else
@@ -155,8 +153,8 @@ public class ProfileUtils
 	{
 	    for(final Profile nextProfile : nextSortedProfileList)
 	    {
-	        final int trueResult = ProfileUtils.usedWithProfilable(nextProfile, profilableObject);
-	        if(trueResult == ProfileUtils.IMPLICIT_INCLUDE)
+	        final ProfileMatch trueResult = ProfileUtils.usedWithProfilable(nextProfile, profilableObject);
+	        if(trueResult == ProfileMatch.IMPLICIT_INCLUDE)
 	        {
 	            if(ProfileUtils._DEBUG)
 	            {
@@ -185,7 +183,7 @@ public class ProfileUtils
 	                                + nextProfile.getKey().stringValue());
 	            }
 	        }
-	        else if(trueResult == ProfileUtils.SPECIFIC_INCLUDE)
+	        else if(trueResult == ProfileMatch.SPECIFIC_INCLUDE)
 	        {
 	            if(ProfileUtils._DEBUG)
 	            {
@@ -196,7 +194,7 @@ public class ProfileUtils
 	            }
 	            return true;
 	        }
-	        else if(trueResult == ProfileUtils.SPECIFIC_EXCLUDE)
+	        else if(trueResult == ProfileMatch.SPECIFIC_EXCLUDE)
 	        {
 	            if(ProfileUtils._DEBUG)
 	            {
@@ -226,7 +224,7 @@ public class ProfileUtils
 	}
 
 
-	public static int usedWithProfilable(Profile profile, ProfilableInterface profilableObject)
+	public static ProfileMatch usedWithProfilable(Profile profile, ProfilableInterface profilableObject)
 	{
 	    Collection<URI> includeList = null;
 	    Collection<URI> excludeList = null;
@@ -256,10 +254,10 @@ public class ProfileUtils
 	    }
 	    
 	    
-	    int trueResult = usedWithIncludeExcludeList(profilableObject.getKey(), profilableObject.getProfileIncludeExcludeOrder(), includeList, excludeList, profile.getDefaultProfileIncludeExcludeOrder());
+	    ProfileMatch trueResult = usedWithIncludeExcludeList(profilableObject.getKey(), profilableObject.getProfileIncludeExcludeOrder(), includeList, excludeList, profile.getDefaultProfileIncludeExcludeOrder());
 	    
 	    
-	    if(trueResult == ProfileUtils.IMPLICIT_INCLUDE)
+	    if(trueResult == ProfileMatch.IMPLICIT_INCLUDE)
 	    {
 	        if(ProfileUtils._DEBUG)
 	        {
@@ -268,14 +266,64 @@ public class ProfileUtils
 	        
 	        if(allowImplicitInclusions)
 	        {
-	            return ProfileUtils.IMPLICIT_INCLUDE;
+	            return ProfileMatch.IMPLICIT_INCLUDE;
 	        }
 	        else
 	        {
-	            return ProfileUtils.NO_MATCH;
+	            return ProfileMatch.NO_MATCH;
 	        }
 	    }
 	
 	    return trueResult;
 	}
+
+
+	public static List<Profile> getAndSortProfileList(Collection<URI> nextProfileUriList, SortOrder nextSortOrder, Map<URI, Profile> allProfiles)
+	    {
+	//        Map<URI, Profile> allProfiles = this.getAllProfiles();
+	        final List<Profile> results = new LinkedList<Profile>();
+	        
+	        if(nextProfileUriList == null)
+	        {
+	        	Settings.log
+	                    .error("Settings.getAndSortProfileList: nextProfileUriList was null!");
+	
+	        	throw new RuntimeException("Settings.getAndSortProfileList: nextProfileUriList was null!");
+	        }
+	        else
+	        {
+	            for(final URI nextProfileUri : nextProfileUriList)
+	            {
+	                // log.error("Settings.getAndSortProfileList: nextProfileUri="+nextProfileUri);
+	                if(allProfiles.containsKey(nextProfileUri))
+	                {
+	                    final Profile nextProfileObject = allProfiles
+	                            .get(nextProfileUri);
+	                    results.add(nextProfileObject);
+	                }
+	                else if(Settings._INFO)
+	                {
+	                    Settings.log
+	                            .info("Settings.getAndSortProfileList: Could not get profile by URI nextProfileUri="
+	                                    + nextProfileUri);
+	                }
+	            }
+	        }
+	        
+	        if(nextSortOrder == SortOrder.LOWEST_ORDER_FIRST)
+	        {
+	            Collections.sort(results);
+	        }
+	        else if(nextSortOrder == SortOrder.HIGHEST_ORDER_FIRST)
+	        {
+	            Collections.sort(results, Collections.reverseOrder());
+	        }
+	        else
+	        {
+	            throw new RuntimeException(
+	                    "Settings.getAndSortProfileList: sortOrder unrecognised nextSortOrder="
+	                            + nextSortOrder);
+	        }
+	        return results;
+	    }
 }

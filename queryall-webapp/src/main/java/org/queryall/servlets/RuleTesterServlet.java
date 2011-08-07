@@ -59,7 +59,7 @@ public class RuleTesterServlet extends HttpServlet
         @SuppressWarnings("unused")
         List<String> automatedTestResults = new ArrayList<String>();
         
-        if(!localSettings.runRuleTests(allRuleTests.values()))
+        if(!RuleUtils.runRuleTests(allRuleTests.values(), localSettings.getAllNormalisationRules()))
         {
             allTestsPassed = false;
         }

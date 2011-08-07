@@ -73,13 +73,13 @@ import org.queryall.queryutils.RdfFetcherUriQueryRunnable;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfUtils
+public final class RdfUtils
 {
-    static final Logger log = Logger.getLogger(RdfUtils.class
+    public static final Logger log = Logger.getLogger(RdfUtils.class
             .getName());
-    static final boolean _TRACE = RdfUtils.log.isTraceEnabled();
-    static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
-    static final boolean _INFO = RdfUtils.log.isInfoEnabled();
+    public static final boolean _TRACE = RdfUtils.log.isTraceEnabled();
+    public static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
+    public static final boolean _INFO = RdfUtils.log.isInfoEnabled();
     
     
     public static void copyAllStatementsToRepository(Repository destination, Repository source)
@@ -1721,9 +1721,9 @@ public class RdfUtils
 	{
 	    final Map<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
 	    
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getRuleTests: started parsing rule test configurations");
 	    }
 	    final long start = System.currentTimeMillis();
@@ -1745,19 +1745,19 @@ public class RdfUtils
 	    catch (final OpenRDFException e)
 	    {
 	        // handle exception
-	        Settings.log.fatal("Settings.getRuleTests:", e);
+	        log.fatal("Settings.getRuleTests:", e);
 	    }
 	
 	
-	    if(Settings._INFO)
+	    if(_INFO)
 	    {
 	        final long end = System.currentTimeMillis();
-	        Settings.log.info(String.format("%s: timing=%10d",
+	        log.info(String.format("%s: timing=%10d",
 	                "Settings.getRuleTests", (end - start)));
 	    }
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getRuleTests: finished getting rdf rule tests");
 	    }
 	    
@@ -1768,9 +1768,9 @@ public class RdfUtils
 	{
 	    final Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
 	    final long start = System.currentTimeMillis();
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getQueryTypes: started parsing query types");
 	    }
 	
@@ -1792,18 +1792,18 @@ public class RdfUtils
 	    catch (final OpenRDFException e)
 	    {
 	        // handle exception
-	        Settings.log.fatal("Settings.getQueryTypes:", e);
+	        log.fatal("Settings.getQueryTypes:", e);
 	    }
 	
-	    if(Settings._INFO)
+	    if(_INFO)
 	    {
 	        final long end = System.currentTimeMillis();
-	        Settings.log.info(String.format("%s: timing=%10d",
+	        log.info(String.format("%s: timing=%10d",
 	                "Settings.getQueryTypes", (end - start)));
 	    }
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getQueryTypes: finished parsing query types");
 	    }
 	    
@@ -1814,9 +1814,9 @@ public class RdfUtils
 	{
 	    final Map<URI, Provider> results = new Hashtable<URI, Provider>();
 	
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getProviders: started parsing provider configurations");
 	    }
 	    final long start = System.currentTimeMillis();
@@ -1840,18 +1840,18 @@ public class RdfUtils
 	    catch (final OpenRDFException e)
 	    {
 	        // handle exception
-	        Settings.log.fatal("Settings.getProviders:", e);
+	        log.fatal("Settings.getProviders:", e);
 	    }
 	
-	    if(Settings._INFO)
+	    if(_INFO)
 	    {
 	        final long end = System.currentTimeMillis();
-	        Settings.log.info(String.format("%s: timing=%10d",
+	        log.info(String.format("%s: timing=%10d",
 	                "Settings.getProviders", (end - start)));
 	    }
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getProviders: finished parsing provider configurations");
 	    }
 	    
@@ -1862,9 +1862,9 @@ public class RdfUtils
 	{
 		final Map<URI, Profile> results = new Hashtable<URI, Profile>();
 	    
-		if(Settings._DEBUG)
+		if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getProfiles: started parsing profile configurations");
 	    }
 	    final long start = System.currentTimeMillis();
@@ -1887,18 +1887,18 @@ public class RdfUtils
 	    catch (final OpenRDFException e)
 	    {
 	        // handle exception
-	        Settings.log.fatal("Settings.getProviders:", e);
+	        log.fatal("Settings.getProviders:", e);
 	    }
 	
-	    if(Settings._INFO)
+	    if(_INFO)
 	    {
 	        final long end = System.currentTimeMillis();
-	        Settings.log.info(String.format("%s: timing=%10d",
+	        log.info(String.format("%s: timing=%10d",
 	                "Settings.getProfiles", (end - start)));
 	    }
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getProfiles: finished parsing profiles");
 	    }
 	    
@@ -1907,9 +1907,9 @@ public class RdfUtils
 
 	public static Map<URI, NormalisationRule> getNormalisationRules(Repository myRepository)
 	{
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getNormalisationRules: started parsing rdf normalisation rules");
 	    }
 	
@@ -1957,17 +1957,17 @@ public class RdfUtils
         catch (final OpenRDFException e)
         {
             // handle exception
-            Settings.log.fatal("Settings.getNormalisationRules:", e);
+            log.fatal("Settings.getNormalisationRules:", e);
         }
-	    if(Settings._INFO)
+	    if(_INFO)
 	    {
 	        final long end = System.currentTimeMillis();
-	        Settings.log.info(String.format("%s: timing=%10d",
+	        log.info(String.format("%s: timing=%10d",
 	                "Settings.getNormalisationRules", (end - start)));
 	    }
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getNormalisationRules: finished parsing normalisation rules");
 	    }
 	    
@@ -1977,9 +1977,9 @@ public class RdfUtils
 	public static Map<URI, NamespaceEntry> getNamespaceEntries(Repository myRepository)
 	{
 	    final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getNamespaceEntries: started parsing namespace entry configurations");
 	    }
 	    final long start = System.currentTimeMillis();
@@ -2001,20 +2001,20 @@ public class RdfUtils
 	    catch (final OpenRDFException e)
 	    {
 	        // handle exception
-	        Settings.log.fatal("Settings.getNamespaceEntries:", e);
+	        log.fatal("Settings.getNamespaceEntries:", e);
 	    }
 	
 	    
-	    if(Settings._INFO)
+	    if(_INFO)
 	    {
 	        final long end = System.currentTimeMillis();
-	        Settings.log.info(String.format("%s: timing=%10d",
+	        log.info(String.format("%s: timing=%10d",
 	                "Settings.getNamespaceEntries", (end - start)));
 	    }
 	    
-	    if(Settings._DEBUG)
+	    if(_DEBUG)
 	    {
-	        Settings.log
+	        log
 	                .debug("Settings.getNamespaceEntries: finished getting namespace entry information");
 	    }
 	    
