@@ -189,7 +189,7 @@ public class Settings implements QueryAllConfiguration
 	private Pattern cachedTagPattern = null;
 
     // TODO: monitor this for size and see whether we should be resetting it regularly
-    private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
+    private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
     
     private long initialisedTimestamp = System.currentTimeMillis();
     
@@ -1248,7 +1248,7 @@ public class Settings implements QueryAllConfiguration
     		return this.cachedTagPattern;
     	}
     	
-        Pattern tempPattern = Pattern.compile(this.getStringProperty("tagPatternRegex", ""));
+        Pattern tempPattern = Pattern.compile(this.getStringProperty("tagPatternRegex", ".*(\\$\\{[\\w_-]+\\}).*"));
         
         if(tempPattern != null)
         	this.cachedTagPattern = tempPattern;
@@ -1505,7 +1505,13 @@ public class Settings implements QueryAllConfiguration
         {
             throw new RuntimeException("Cannot cache null property items subjectKey="+subjectKey+" propertyKey="+propertyKey);            
         }
-        else if(cachedWebAppConfigSearches.containsKey(subjectKey))
+        
+        if(this.cachedWebAppConfigSearches == null)
+        {
+        	this.cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
+        }
+        
+        if(cachedWebAppConfigSearches.containsKey(subjectKey))
         {
             Map<URI, Collection<Value>> currentCache = cachedWebAppConfigSearches.get(subjectKey);
 
@@ -1714,7 +1720,7 @@ public class Settings implements QueryAllConfiguration
 
 	private Collection<Value> getConfigKeyCached(URI subjectKey, URI propertyKey)
     {
-        if(cachedWebAppConfigSearches.containsKey(subjectKey))
+        if(cachedWebAppConfigSearches != null && cachedWebAppConfigSearches.containsKey(subjectKey))
         {
             Map<URI, Collection<Value>> currentCache = cachedWebAppConfigSearches.get(subjectKey);
 
@@ -2043,6 +2049,10 @@ public class Settings implements QueryAllConfiguration
         {
             return this.currentWebAppConfigurationRepository;
         }
+        
+        // null out this optimisation cached property
+        this.cachedTagPattern = null;
+        this.cachedWebAppConfigSearches = null;
         
         if(_DEBUG)
             Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
