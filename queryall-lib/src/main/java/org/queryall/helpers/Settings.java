@@ -186,6 +186,7 @@ public class Settings implements QueryAllConfiguration
     private Map<URI, Profile> cachedProfiles = null;
     private Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
     private Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
+	private Pattern cachedTagPattern = null;
 
     // TODO: monitor this for size and see whether we should be resetting it regularly
     private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
@@ -1242,7 +1243,17 @@ public class Settings implements QueryAllConfiguration
 
     public Pattern getTagPattern()
     {
-        return Pattern.compile(this.getStringProperty("tagPatternRegex", ""));
+    	if(this.cachedTagPattern != null)
+    	{
+    		return this.cachedTagPattern;
+    	}
+    	
+        Pattern tempPattern = Pattern.compile(this.getStringProperty("tagPatternRegex", ""));
+        
+        if(tempPattern != null)
+        	this.cachedTagPattern = tempPattern;
+        
+        return tempPattern;
     }
 
     public Collection<URI> getURIProperties(String key)
