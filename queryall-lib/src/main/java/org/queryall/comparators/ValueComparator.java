@@ -1,4 +1,4 @@
-package org.queryall.helpers;
+package org.queryall.comparators;
 
 import java.util.Comparator;
 

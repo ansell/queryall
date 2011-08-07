@@ -1,4 +1,4 @@
-package org.queryall.helpers;
+package org.queryall.queryutils;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -34,6 +34,7 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
+import org.queryall.utils.RdfUtils;
 
 /**
  * A class used to get access to settings

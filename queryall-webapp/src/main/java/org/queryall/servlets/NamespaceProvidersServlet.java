@@ -7,6 +7,10 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.impl.*;
+import org.queryall.queryutils.Settings;
+import org.queryall.utils.ProviderUtils;
+import org.queryall.utils.QueryTypeUtils;
+import org.queryall.utils.StringUtils;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
@@ -16,7 +20,7 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.api.SparqlProvider;
-import org.queryall.helpers.*;
+import org.queryall.enumerations.*;
 
 import org.apache.log4j.Logger;
 

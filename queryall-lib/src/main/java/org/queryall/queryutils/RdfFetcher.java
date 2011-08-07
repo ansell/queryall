@@ -10,8 +10,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.Settings;
-import org.queryall.helpers.StringUtils;
+import org.queryall.utils.StringUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

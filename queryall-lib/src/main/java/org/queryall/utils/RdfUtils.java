@@ -1,4 +1,4 @@
-package org.queryall.helpers;
+package org.queryall.utils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -51,6 +51,7 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.NamespaceEntryImpl;
 import org.queryall.impl.ProfileImpl;
@@ -67,6 +68,7 @@ import org.queryall.queryutils.QueryBundle;
 import org.queryall.queryutils.RdfFetchController;
 import org.queryall.queryutils.RdfFetcherQueryRunnable;
 import org.queryall.queryutils.RdfFetcherUriQueryRunnable;
+import org.queryall.queryutils.Settings;
 import org.queryall.statistics.StatisticsEntry;
 
 /**
@@ -329,7 +331,7 @@ public final class RdfUtils
         {
             results = con.getStatements((Resource)null, (URI)null, (Value)null, true).asList();
             
-            Collections.sort(results, new org.queryall.helpers.StatementComparator());
+            Collections.sort(results, new org.queryall.comparators.StatementComparator());
         }
         catch(final OpenRDFException ordfe)
         {

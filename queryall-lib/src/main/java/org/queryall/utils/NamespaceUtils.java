@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.helpers;
+package org.queryall.utils;
 
 import java.util.Collection;
 import java.util.Collections;

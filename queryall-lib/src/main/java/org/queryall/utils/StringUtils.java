@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.helpers;
+package org.queryall.utils;
 
 import java.math.BigInteger;
 import java.net.URLEncoder;
@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.enumerations.Constants;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

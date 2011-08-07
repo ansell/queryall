@@ -4,7 +4,8 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import org.queryall.helpers.*;
+import org.queryall.enumerations.*;
+import org.queryall.queryutils.Settings;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.*;
 

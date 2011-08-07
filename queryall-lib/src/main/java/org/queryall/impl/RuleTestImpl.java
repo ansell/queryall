@@ -17,9 +17,9 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.RuleTest;
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.Settings;
-import org.queryall.helpers.StringUtils;
+import org.queryall.enumerations.Constants;
+import org.queryall.queryutils.Settings;
+import org.queryall.utils.StringUtils;
 
 /**
  * An implementation of the RuleTest class

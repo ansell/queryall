@@ -2,9 +2,12 @@ package org.queryall.servlets.html;
 
 import org.queryall.servlets.GeneralServlet;
 import org.queryall.servlets.html.VelocityHelper;
+import org.queryall.utils.ListUtils;
+import org.queryall.utils.RdfUtils;
+import org.queryall.utils.StringUtils;
 import org.queryall.queryutils.*;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.helpers.*;
+import org.queryall.enumerations.*;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -219,7 +222,7 @@ public class HtmlPageRenderer
         context.put("statements", allStatements);
         
         context.put("xmlutil", new info.aduna.xml.XMLUtil());
-        context.put("bio2rdfutil", new org.queryall.helpers.RdfUtils());
+        context.put("bio2rdfutil", new org.queryall.utils.RdfUtils());
         
         // our only way of guessing if other pages are available without doing an explicit count
         if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0))

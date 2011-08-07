@@ -5,9 +5,13 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.queryall.negotiation.QueryallContentNegotiator;
+import org.queryall.queryutils.Settings;
 import org.queryall.servlets.queryparsers.*;
 import org.queryall.servlets.html.*;
-import org.queryall.helpers.*;
+import org.queryall.utils.RdfUtils;
+import org.queryall.utils.StringUtils;
+import org.queryall.enumerations.*;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;

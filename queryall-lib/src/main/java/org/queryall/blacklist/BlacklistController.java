@@ -13,13 +13,13 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
-import org.queryall.helpers.ListUtils;
-import org.queryall.helpers.QueryTypeUtils;
-import org.queryall.helpers.Settings;
 import org.queryall.queryutils.HttpUrlQueryRunnable;
 import org.queryall.queryutils.QueryDebug;
 import org.queryall.queryutils.RdfFetcherQueryRunnable;
+import org.queryall.queryutils.Settings;
 import org.queryall.statistics.StatisticsEntry;
+import org.queryall.utils.ListUtils;
+import org.queryall.utils.QueryTypeUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

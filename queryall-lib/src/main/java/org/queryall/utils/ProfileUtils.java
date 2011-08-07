@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.helpers;
+package org.queryall.utils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +16,8 @@ import org.queryall.api.ProfilableInterface;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
+import org.queryall.enumerations.ProfileMatch;
+import org.queryall.enumerations.SortOrder;
 import org.queryall.impl.ProfileImpl;
 
 /**

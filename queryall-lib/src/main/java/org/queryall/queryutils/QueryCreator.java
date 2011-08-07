@@ -16,11 +16,10 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.SparqlProvider;
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.RuleUtils;
-import org.queryall.helpers.Settings;
-import org.queryall.helpers.SortOrder;
-import org.queryall.helpers.StringUtils;
+import org.queryall.enumerations.Constants;
+import org.queryall.enumerations.SortOrder;
+import org.queryall.utils.RuleUtils;
+import org.queryall.utils.StringUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

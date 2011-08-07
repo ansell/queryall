@@ -21,10 +21,9 @@ import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.RuleUtils;
-import org.queryall.helpers.Settings;
-import org.queryall.helpers.SortOrder;
+import org.queryall.enumerations.Constants;
+import org.queryall.enumerations.SortOrder;
+import org.queryall.utils.RuleUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

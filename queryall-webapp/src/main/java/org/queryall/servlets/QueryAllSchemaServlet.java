@@ -6,9 +6,12 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import org.queryall.negotiation.QueryallContentNegotiator;
+import org.queryall.queryutils.Settings;
 import org.queryall.servlets.html.*;
+import org.queryall.utils.RdfUtils;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.helpers.*;
+import org.queryall.enumerations.*;
 
 import org.openrdf.*;
 import org.openrdf.rio.*;

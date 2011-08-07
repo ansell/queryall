@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.helpers;
+package org.queryall.enumerations;
 
 /**
  * Sort constants for use in sorting based on the order attribute on some queryall objects

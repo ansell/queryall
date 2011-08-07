@@ -23,8 +23,8 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.RuleTest;
 import org.queryall.api.SparqlNormalisationRule;
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.StringUtils;
+import org.queryall.enumerations.Constants;
+import org.queryall.utils.StringUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

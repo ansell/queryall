@@ -26,12 +26,11 @@ import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.RdfUtils;
-import org.queryall.helpers.Settings;
-import org.queryall.helpers.StringUtils;
+import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProjectImpl;
+import org.queryall.utils.RdfUtils;
+import org.queryall.utils.StringUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

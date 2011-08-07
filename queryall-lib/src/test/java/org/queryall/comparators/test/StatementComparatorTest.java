@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl.test;
+package org.queryall.comparators.test;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -14,7 +14,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
-import org.queryall.helpers.StatementComparator;
+import org.queryall.comparators.StatementComparator;
 
 /**
  * Tests StatementComparator to make sure it complies with its contract, and the equals contract for

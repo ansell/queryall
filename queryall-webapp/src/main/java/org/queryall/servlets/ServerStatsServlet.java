@@ -6,7 +6,8 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import org.queryall.queryutils.*;
-import org.queryall.helpers.*;
+import org.queryall.utils.MathsUtils;
+import org.queryall.enumerations.*;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.*;
 

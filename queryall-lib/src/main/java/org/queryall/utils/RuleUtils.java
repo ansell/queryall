@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.helpers;
+package org.queryall.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +15,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Provider;
 import org.queryall.api.RuleTest;
+import org.queryall.enumerations.SortOrder;
 import org.queryall.impl.NormalisationRuleImpl;
 
 /**

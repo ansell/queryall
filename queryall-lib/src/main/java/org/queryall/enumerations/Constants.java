@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.helpers;
+package org.queryall.enumerations;
 
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;

@@ -17,16 +17,16 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.SparqlProvider;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.helpers.Constants;
-import org.queryall.helpers.ListUtils;
-import org.queryall.helpers.ProviderUtils;
-import org.queryall.helpers.QueryTypeUtils;
-import org.queryall.helpers.RuleUtils;
-import org.queryall.helpers.SortOrder;
-import org.queryall.helpers.StringUtils;
+import org.queryall.enumerations.Constants;
+import org.queryall.enumerations.SortOrder;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProviderImpl;
+import org.queryall.utils.ListUtils;
+import org.queryall.utils.ProviderUtils;
+import org.queryall.utils.QueryTypeUtils;
+import org.queryall.utils.RuleUtils;
+import org.queryall.utils.StringUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
