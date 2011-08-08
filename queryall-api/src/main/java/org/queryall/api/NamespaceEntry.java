@@ -2,6 +2,8 @@ package org.queryall.api;
 
 import java.util.Collection;
 
+import org.openrdf.model.URI;
+
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -9,7 +11,7 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
 {
     Collection<String> getAlternativePrefixes();
     
-    String getAuthority();
+    URI getAuthority();
     
     boolean getConvertQueriesToPreferredPrefix();
     
@@ -25,7 +27,7 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
     
     void setAlternativePrefixes(Collection<String> alternativePrefixes);
     
-    void setAuthority(String authority);
+    void setAuthority(URI authority);
     
     void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
     

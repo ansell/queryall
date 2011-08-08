@@ -33,6 +33,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.NamespaceEntry;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.RdfUtils;
 
@@ -383,6 +384,36 @@ public class RdfUtilsTest
             {
                 Assert.assertEquals("Results did not contain correct namespace entry URI",
                         this.testValueFactory.createURI("http://example.org/ns:abc"), nextNamespaceEntryUri);
+                
+                final NamespaceEntry nextNamespaceEntry = results.get(nextNamespaceEntryUri);
+                
+                Assert.assertNotNull("Namespace entry was null", nextNamespaceEntry);
+                
+                Assert.assertEquals("Namespace entry key was not the same as its map URI", nextNamespaceEntryUri,
+                        nextNamespaceEntry.getKey());
+                
+                Assert.assertEquals("Authority was not parsed correctly",
+                        this.testValueFactory.createURI("http://example.org/"), nextNamespaceEntry.getAuthority());
+                
+                Assert.assertEquals("URI template was not parsed correctly",
+                        "${authority}${namespace}${separator}${identifier}", nextNamespaceEntry.getUriTemplate());
+                
+                Assert.assertEquals("Separator was not parsed correctly", ":", nextNamespaceEntry.getSeparator());
+                
+                Assert.assertEquals("Preferred prefix was not parsed correctly", "abc",
+                        nextNamespaceEntry.getPreferredPrefix());
+                
+                Assert.assertTrue("Convert queries to preferred prefix setting was not parsed correctly",
+                        nextNamespaceEntry.getConvertQueriesToPreferredPrefix());
+                
+                Assert.assertEquals("Identifier regex was not parsed correctly", "[zyx][qrs][tuv]",
+                        nextNamespaceEntry.getIdentifierRegex());
+                
+                Assert.assertEquals("Description was not parsed correctly", "ABC Example Database",
+                        nextNamespaceEntry.getDescription());
+                
+                Assert.assertEquals("QueryAllNamespace was not implemented correctly for this object",
+                        QueryAllNamespaces.NAMESPACEENTRY, nextNamespaceEntry.getDefaultNamespace());
             }
         }
         catch(final RDFParseException ex)

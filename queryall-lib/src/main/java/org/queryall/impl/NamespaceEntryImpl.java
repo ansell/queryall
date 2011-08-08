@@ -333,7 +333,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     
     private URI key;
     
-    private String authority = "";
+    private URI authority;
     
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
@@ -390,7 +390,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
             }
             else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespaceAuthority()))
             {
-                this.setAuthority(nextStatement.getObject().stringValue());
+                this.setAuthority((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(NamespaceEntryImpl.getNamespacePreferredPrefix())
                     || nextStatement.getPredicate().equals(NamespaceEntryImpl.oldNamespaceTitle))
@@ -476,7 +476,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     }
     
     @Override
-    public String getAuthority()
+    public URI getAuthority()
     {
         return this.authority;
     }
@@ -573,7 +573,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     }
     
     @Override
-    public void setAuthority(final String authority)
+    public void setAuthority(final URI authority)
     {
         this.authority = authority;
     }
@@ -693,13 +693,13 @@ public class NamespaceEntryImpl implements NamespaceEntry
             
             URI authorityLiteral = null;
             
-            if(this.getAuthority() == null || this.getAuthority().trim().equals(""))
+            if(this.getAuthority() == null || this.getAuthority().stringValue().trim().equals(""))
             {
                 authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
             }
             else
             {
-                authorityLiteral = f.createURI(this.getAuthority());
+                authorityLiteral = this.getAuthority();
             }
             
             URI curationStatusLiteral = null;
@@ -802,7 +802,6 @@ public class NamespaceEntryImpl implements NamespaceEntry
         final StringBuilder sb = new StringBuilder();
         
         sb.append("key=" + this.key + "\n");
-        sb.append("authority=" + this.getAuthority() + "\n");
         sb.append("preferredPrefix=" + this.getPreferredPrefix() + "\n");
         sb.append("description=" + this.getDescription() + "\n");
         
