@@ -178,8 +178,8 @@ public class ProfileUtils
      * @param includeList
      * @param excludeList
      * @param nextDefaultProfileIncludeExcludeOrder
-     * @return One of the following constants, ProfileImpl.SPECIFIC_EXCLUDE,
-     *         ProfileImpl.SPECIFIC_INCLUDE, ProfileImpl.IMPLICIT_INCLUDE or ProfileImpl.NO_MATCH
+     * @return One of the following constants, ProfileMatch.SPECIFIC_EXCLUDE,
+     *         ProfileMatch.SPECIFIC_INCLUDE, ProfileMatch.IMPLICIT_INCLUDE or ProfileMatch.NO_MATCH
      * @throws IllegalArgumentException
      *             if the include or exclude lists are null, or nextIncludeExcludeOrder is not
      *             includeOrExclude or excludeOrInclude and nextDefaultProfileIncludeExcludeOrder
