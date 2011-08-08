@@ -345,6 +345,7 @@ public class HtmlPageRenderer
             HtmlPageRenderer.log.trace("renderHtml: about to render XHTML to nextWriter=" + nextWriter);
         }
         
+        
         try
         {
             if(fetchController == null || fetchController.queryKnown())
@@ -353,8 +354,9 @@ public class HtmlPageRenderer
                 {
                     HtmlPageRenderer.log.debug("renderHtml: fetchController.queryKnown(), using page.vm template");
                 }
+                final String templateLocation = localSettings.getStringProperty("resultsTemplate", "page.vm");
                 
-                template.renderXHTML("page.vm", nextWriter);
+                template.renderXHTML(templateLocation, nextWriter);
             }
             else
             {
@@ -366,7 +368,9 @@ public class HtmlPageRenderer
                 context.put("namespaceRecognised", !fetchController.anyNamespaceNotRecognised());
                 context.put("queryKnown", fetchController.queryKnown());
                 
-                template.renderXHTML("error.vm", nextWriter);
+                final String templateLocation = localSettings.getStringProperty("errorTemplate", "error.vm");
+
+                template.renderXHTML(templateLocation, nextWriter);
             }
         }
         catch(final VelocityException ex)
