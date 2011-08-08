@@ -98,15 +98,15 @@ public interface QueryAllConfiguration
 
 	boolean getBooleanProperty(String propertyKey, boolean defaultValue);
 
-	public abstract String getStringProperty(String key, String defaultValue);
+	String getStringProperty(String key, String defaultValue);
 
-	public abstract long getLongProperty(String key, long defaultValue);
+	long getLongProperty(String key, long defaultValue);
 
-	public abstract URI getURIProperty(String key, URI defaultValue);
+	URI getURIProperty(String key, URI defaultValue);
 
-	public abstract int getIntProperty(String key, int defaultValue);
+	int getIntProperty(String key, int defaultValue);
 
-	public abstract float getFloatProperty(String key, float defaultValue);
+	float getFloatProperty(String key, float defaultValue);
 
 	Map<String, Collection<URI>> getNamespacePrefixesToUris();
 
