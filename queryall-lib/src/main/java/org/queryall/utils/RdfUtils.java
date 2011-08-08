@@ -93,7 +93,7 @@ public final class RdfUtils
             mySourceConnection = source.getConnection();
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.copyAllStatementsToRepository: mySourceConnection.size()="
+                RdfUtils.log.debug("copyAllStatementsToRepository: mySourceConnection.size()="
                         + mySourceConnection.size());
             }
             myDestinationConnection = destination.getConnection();
@@ -102,13 +102,13 @@ public final class RdfUtils
             myDestinationConnection.commit();
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.copyAllStatementsToRepository: myDestinationConnection.size()="
+                RdfUtils.log.debug("copyAllStatementsToRepository: myDestinationConnection.size()="
                         + myDestinationConnection.size());
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("RdfUtils.copyAllStatementsToRepository", ex);
+            RdfUtils.log.error("copyAllStatementsToRepository", ex);
         }
         finally
         {
@@ -335,7 +335,7 @@ public final class RdfUtils
         }
         catch(final OpenRDFException ordfe)
         {
-            RdfUtils.log.error("RdfUtils.getAllStatementsFromRepository: outer caught exception ", ordfe);
+            RdfUtils.log.error("getAllStatementsFromRepository: outer caught exception ", ordfe);
             
             throw ordfe;
         }
@@ -548,7 +548,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getDistinctObjectsFromRepository: entering method");
+            RdfUtils.log.debug("getDistinctObjectsFromRepository: entering method");
             RdfUtils.log.debug(nextRepository);
             // RdfUtils.log.debug(predicateUris);
         }
@@ -568,7 +568,7 @@ public final class RdfUtils
         // if(RdfUtils._DEBUG)
         // {
         // RdfUtils.log
-        // .debug("RdfUtils.getDistinctObjectsFromRepository: nextInputPredicate was null or empty");
+        // .debug("getDistinctObjectsFromRepository: nextInputPredicate was null or empty");
         // }
         //
         // continue;
@@ -606,18 +606,18 @@ public final class RdfUtils
         }
         catch(final OpenRDFException ordfe)
         {
-            RdfUtils.log.error("RdfUtils.getDistinctObjectsFromRepository: RDF exception", ordfe);
+            RdfUtils.log.error("getDistinctObjectsFromRepository: RDF exception", ordfe);
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("RdfUtils.getDistinctObjectsFromRepository: general exception", ex);
+            RdfUtils.log.error("getDistinctObjectsFromRepository: general exception", ex);
         }
         // }
         // }
         
         // catch(OpenRDFException ordfe)
         // {
-        // log.error("RdfUtils.getDistinctObjectsFromRepository: error found");
+        // log.error("getDistinctObjectsFromRepository: error found");
         // throw ordfe;
         // }
         // finally
@@ -646,7 +646,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getDistinctSubjectsFromRepository: entering method");
+            RdfUtils.log.debug("getDistinctSubjectsFromRepository: entering method");
             RdfUtils.log.debug(nextRepository);
             // RdfUtils.log.debug(predicateUris);
         }
@@ -666,7 +666,7 @@ public final class RdfUtils
         // if(RdfUtils._DEBUG)
         // {
         // RdfUtils.log
-        // .debug("RdfUtils.getDistinctSubjectsFromRepository: nextInputPredicate was null or empty");
+        // .debug("getDistinctSubjectsFromRepository: nextInputPredicate was null or empty");
         // }
         //
         // continue;
@@ -703,18 +703,18 @@ public final class RdfUtils
         }
         catch(final OpenRDFException ordfe)
         {
-            RdfUtils.log.error("RdfUtils.getDistinctSubjectsFromRepository: RDF exception", ordfe);
+            RdfUtils.log.error("getDistinctSubjectsFromRepository: RDF exception", ordfe);
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("RdfUtils.getDistinctSubjectsFromRepository: general exception", ex);
+            RdfUtils.log.error("getDistinctSubjectsFromRepository: general exception", ex);
         }
         // }
         // }
         
         // catch(OpenRDFException ordfe)
         // {
-        // log.error("RdfUtils.getDistinctSubjectsFromRepository: error found");
+        // log.error("getDistinctSubjectsFromRepository: error found");
         // throw ordfe;
         // }
         // finally
@@ -792,7 +792,7 @@ public final class RdfUtils
             }
             catch(final NumberFormatException nfe)
             {
-                RdfUtils.log.error("RdfUtils.getLongFromValue: failed to parse value using Long.parseLong type="
+                RdfUtils.log.error("getLongFromValue: failed to parse value using Long.parseLong type="
                         + nextValue.getClass().getName() + " nextValue.stringValue=" + nextValue.stringValue());
                 
                 throw nfe;
@@ -807,7 +807,7 @@ public final class RdfUtils
         final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getNamespaceEntries: started parsing namespace entry configurations");
+            RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entry configurations");
         }
         final long start = System.currentTimeMillis();
         
@@ -829,18 +829,18 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("Settings.getNamespaceEntries:", e);
+            RdfUtils.log.fatal("getNamespaceEntries:", e);
         }
         
         if(RdfUtils._INFO)
         {
             final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getNamespaceEntries", (end - start)));
+            RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntries", (end - start)));
         }
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getNamespaceEntries: finished getting namespace entry information");
+            RdfUtils.log.debug("getNamespaceEntries: finished getting namespace entry information");
         }
         
         return results;
@@ -850,7 +850,7 @@ public final class RdfUtils
     {
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getNormalisationRules: started parsing rdf normalisation rules");
+            RdfUtils.log.debug("getNormalisationRules: started parsing rdf normalisation rules");
         }
         
         final long start = System.currentTimeMillis();
@@ -894,16 +894,16 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("Settings.getNormalisationRules:", e);
+            RdfUtils.log.fatal("getNormalisationRules:", e);
         }
         if(RdfUtils._INFO)
         {
             final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getNormalisationRules", (end - start)));
+            RdfUtils.log.info(String.format("%s: timing=%10d", "getNormalisationRules", (end - start)));
         }
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getNormalisationRules: finished parsing normalisation rules");
+            RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
         }
         
         return results;
@@ -922,7 +922,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getObjectUrisFromRepositoryByPredicateUris: entering method");
+            RdfUtils.log.debug("getObjectUrisFromRepositoryByPredicateUris: entering method");
             RdfUtils.log.debug(nextRepository);
             RdfUtils.log.debug(predicateUris);
         }
@@ -940,7 +940,7 @@ public final class RdfUtils
                     if(RdfUtils._DEBUG)
                     {
                         RdfUtils.log
-                                .debug("RdfUtils.getObjectUrisFromRepositoryByPredicateUris: nextInputPredicate was null or empty");
+                                .debug("getObjectUrisFromRepositoryByPredicateUris: nextInputPredicate was null or empty");
                     }
                     
                     continue;
@@ -979,13 +979,13 @@ public final class RdfUtils
                 catch(final OpenRDFException ordfe)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getObjectUrisFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
+                            .error("getObjectUrisFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
                                     + nextInputPredicate);
                 }
                 catch(final Exception ex)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getObjectUrisFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
+                            .error("getObjectUrisFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
                                     + nextInputPredicate);
                 }
             }
@@ -993,7 +993,7 @@ public final class RdfUtils
         
         // catch(OpenRDFException ordfe)
         // {
-        // log.error("RdfUtils.getObjectUrisFromRepositoryByPredicateUris: error found");
+        // log.error("getObjectUrisFromRepositoryByPredicateUris: error found");
         // throw ordfe;
         // }
         finally
@@ -1013,7 +1013,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getProfiles: started parsing profile configurations");
+            RdfUtils.log.debug("getProfiles: started parsing profile configurations");
         }
         final long start = System.currentTimeMillis();
         
@@ -1034,17 +1034,17 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("Settings.getProviders:", e);
+            RdfUtils.log.fatal("getProviders:", e);
         }
         
         if(RdfUtils._INFO)
         {
             final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getProfiles", (end - start)));
+            RdfUtils.log.info(String.format("%s: timing=%10d", "getProfiles", (end - start)));
         }
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getProfiles: finished parsing profiles");
+            RdfUtils.log.debug("getProfiles: finished parsing profiles");
         }
         
         return results;
@@ -1056,7 +1056,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getProviders: started parsing provider configurations");
+            RdfUtils.log.debug("getProviders: started parsing provider configurations");
         }
         final long start = System.currentTimeMillis();
         
@@ -1078,17 +1078,17 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("Settings.getProviders:", e);
+            RdfUtils.log.fatal("getProviders:", e);
         }
         
         if(RdfUtils._INFO)
         {
             final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getProviders", (end - start)));
+            RdfUtils.log.info(String.format("%s: timing=%10d", "getProviders", (end - start)));
         }
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getProviders: finished parsing provider configurations");
+            RdfUtils.log.debug("getProviders: finished parsing provider configurations");
         }
         
         return results;
@@ -1100,7 +1100,7 @@ public final class RdfUtils
         final long start = System.currentTimeMillis();
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getQueryTypes: started parsing query types");
+            RdfUtils.log.debug("getQueryTypes: started parsing query types");
         }
         
         final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
@@ -1120,17 +1120,17 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("Settings.getQueryTypes:", e);
+            RdfUtils.log.fatal("getQueryTypes:", e);
         }
         
         if(RdfUtils._INFO)
         {
             final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getQueryTypes", (end - start)));
+            RdfUtils.log.info(String.format("%s: timing=%10d", "getQueryTypes", (end - start)));
         }
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getQueryTypes: finished parsing query types");
+            RdfUtils.log.debug("getQueryTypes: finished parsing query types");
         }
         
         return results;
@@ -1148,7 +1148,7 @@ public final class RdfUtils
         }
         catch(final InterruptedException ie)
         {
-            RdfUtils.log.fatal("RdfUtils.getQueryTypesForQueryBundles: interrupted exception", ie);
+            RdfUtils.log.fatal("getQueryTypesForQueryBundles: interrupted exception", ie);
             // throw ie;
         }
         
@@ -1170,9 +1170,8 @@ public final class RdfUtils
                     
                     if(RdfUtils.log.isDebugEnabled())
                     {
-                        RdfUtils.log
-                                .debug("RdfUtils.getQueryTypesForQueryBundles: nextReaderFormat for returnedContentType="
-                                        + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
+                        RdfUtils.log.debug("getQueryTypesForQueryBundles: nextReaderFormat for returnedContentType="
+                                + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
                     }
                     
                     if(nextReaderFormat == null)
@@ -1184,7 +1183,7 @@ public final class RdfUtils
                         if(nextReaderFormat == null)
                         {
                             RdfUtils.log
-                                    .error("RdfUtils.getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
+                                    .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
                                             + localSettings.getStringProperty("assumedResponseContentType", ""));
@@ -1193,7 +1192,7 @@ public final class RdfUtils
                         else
                         {
                             RdfUtils.log
-                                    .warn("RdfUtils.getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
+                                    .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
                                             + localSettings.getStringProperty("assumedResponseContentType", ""));
@@ -1201,9 +1200,8 @@ public final class RdfUtils
                     }
                     else if(RdfUtils.log.isDebugEnabled())
                     {
-                        RdfUtils.log
-                                .debug("RdfUtils.getQueryTypesForQueryBundles: readerFormat matched for returnedMIMEType="
-                                        + nextResult.getReturnedMIMEType());
+                        RdfUtils.log.debug("getQueryTypesForQueryBundles: readerFormat matched for returnedMIMEType="
+                                + nextResult.getReturnedMIMEType());
                     }
                     
                     if(nextResult.getNormalisedResult().length() > 0)
@@ -1214,21 +1212,21 @@ public final class RdfUtils
                 }
                 catch(final org.openrdf.rio.RDFParseException rdfpe)
                 {
-                    RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: RDFParseException", rdfpe);
+                    RdfUtils.log.error("getQueryTypesForQueryBundles: RDFParseException", rdfpe);
                 }
                 catch(final org.openrdf.repository.RepositoryException re)
                 {
-                    RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: RepositoryException inner", re);
+                    RdfUtils.log.error("getQueryTypesForQueryBundles: RepositoryException inner", re);
                 }
                 catch(final java.io.IOException ioe)
                 {
-                    RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: IOException", ioe);
+                    RdfUtils.log.error("getQueryTypesForQueryBundles: IOException", ioe);
                 }
             } // end for(RdfFetcherQueryRunnable nextResult : rdfResults)
         }
         catch(final org.openrdf.repository.RepositoryException re)
         {
-            RdfUtils.log.error("RdfUtils.getQueryTypesForQueryBundles: RepositoryException outer", re);
+            RdfUtils.log.error("getQueryTypesForQueryBundles: RepositoryException outer", re);
         }
         finally
         {
@@ -1241,7 +1239,7 @@ public final class RdfUtils
             }
             catch(final org.openrdf.repository.RepositoryException re2)
             {
-                RdfUtils.log.fatal("RdfUtils.getQueryTypesForQueryBundles: failed to close repository connection", re2);
+                RdfUtils.log.fatal("getQueryTypesForQueryBundles: failed to close repository connection", re2);
             }
         }
         
@@ -1258,7 +1256,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getRuleTests: started parsing rule test configurations");
+            RdfUtils.log.debug("getRuleTests: started parsing rule test configurations");
         }
         final long start = System.currentTimeMillis();
         
@@ -1278,17 +1276,17 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("Settings.getRuleTests:", e);
+            RdfUtils.log.fatal("getRuleTests:", e);
         }
         
         if(RdfUtils._INFO)
         {
             final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "Settings.getRuleTests", (end - start)));
+            RdfUtils.log.info(String.format("%s: timing=%10d", "getRuleTests", (end - start)));
         }
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("Settings.getRuleTests: finished getting rdf rule tests");
+            RdfUtils.log.debug("getRuleTests: finished getting rdf rule tests");
         }
         
         return results;
@@ -1319,180 +1317,160 @@ public final class RdfUtils
         {
             if(!ProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log.error("QueryAllSchemaServlet: Provider schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("Provider schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Provider schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating Provider schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!HttpProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: HttpProviderImpl schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("HttpProviderImpl schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating HttpProviderImpl schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating HttpProviderImpl schema RDF with type=" + ex.getClass().getName(),
+                    ex);
         }
         
         try
         {
             if(!ProjectImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log.error("QueryAllSchemaServlet: Project schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("Project schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Project schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating Project schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!QueryTypeImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log.error("QueryAllSchemaServlet: QueryType schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("QueryType schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating QueryType schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating QueryType schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!RegexNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: RegexNormalisationRuleImpl schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("RegexNormalisationRuleImpl schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error(
-                    "QueryAllSchemaServlet: Problem generating RegexNormalisationRuleImpl schema RDF with type="
-                            + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating RegexNormalisationRuleImpl schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!SparqlNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: SparqlNormalisationRuleImpl schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("SparqlNormalisationRuleImpl schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error(
-                    "QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
-                            + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating SparqlNormalisationRuleImpl schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!XsltNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: XsltNormalisationRuleImpl schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("XsltNormalisationRuleImpl schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error(
-                    "QueryAllSchemaServlet: Problem generating SparqlNormalisationRuleImpl schema RDF with type="
-                            + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating SparqlNormalisationRuleImpl schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!RuleTestImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log.error("QueryAllSchemaServlet: RuleTest schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("RuleTest schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating RuleTest schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating RuleTest schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!NamespaceEntryImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: NamespaceEntry schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("NamespaceEntry schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating NamespaceEntry schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating NamespaceEntry schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!ProfileImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log.error("QueryAllSchemaServlet: Profile schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("Profile schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Profile schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating Profile schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!StatisticsEntry.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: Statistics schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("Statistics schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Statistics schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating Statistics schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!ProvenanceRecord.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: Provenance schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("Provenance schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating Provenance schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating Provenance schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
         {
             if(!QueryBundle.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
-                RdfUtils.log
-                        .error("QueryAllSchemaServlet: QueryBundle schema was not placed correctly in the rdf store");
+                RdfUtils.log.error("QueryBundle schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            RdfUtils.log.error("QueryAllSchemaServlet: Problem generating QueryBundle schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            RdfUtils.log.error("Problem generating QueryBundle schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         return myRepository;
@@ -1517,7 +1495,7 @@ public final class RdfUtils
         {
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.getSparulQueryForObject: could not convert to RDF");
+                RdfUtils.log.debug("getSparulQueryForObject: could not convert to RDF");
             }
             
             return "";
@@ -1533,12 +1511,11 @@ public final class RdfUtils
         {
             RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
             
-            RdfUtils.log
-                    .debug("RdfUtils.getSparulQueryForObject: insertTriples.toString()=" + insertTriples.toString());
+            RdfUtils.log.debug("getSparulQueryForObject: insertTriples.toString()=" + insertTriples.toString());
         }
         else if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getSparulQueryForObject: isInsert was false");
+            RdfUtils.log.debug("getSparulQueryForObject: isInsert was false");
         }
         
         // NOTE: this looks messy because it is.
@@ -1573,7 +1550,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getInsertQueryForObject: sparqlInsertQuery=" + sparqlInsertQuery);
+            RdfUtils.log.debug("getInsertQueryForObject: sparqlInsertQuery=" + sparqlInsertQuery);
         }
         
         return sparqlInsertQuery;
@@ -1585,7 +1562,7 @@ public final class RdfUtils
         final Collection<Statement> results = new HashSet<Statement>();
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getStatementsFromRepositoryByPredicateUris: entering method");
+            RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
             RdfUtils.log.debug(nextRepository);
             RdfUtils.log.debug(predicateUris);
         }
@@ -1603,13 +1580,13 @@ public final class RdfUtils
                 catch(final OpenRDFException ordfe)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getValuesFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
+                            .error("getValuesFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
                                     + nextInputPredicateUri.stringValue());
                 }
                 catch(final Exception ex)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getValuesFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
+                            .error("getValuesFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
                                     + nextInputPredicateUri.stringValue());
                 }
             }
@@ -1632,7 +1609,7 @@ public final class RdfUtils
         final Collection<Statement> results = new HashSet<Statement>();
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getStatementsFromRepositoryByPredicateUris: entering method");
+            RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
             RdfUtils.log.debug(nextRepository);
             RdfUtils.log.debug(predicateUris);
         }
@@ -1650,13 +1627,13 @@ public final class RdfUtils
                 catch(final OpenRDFException ordfe)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getValuesFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
+                            .error("getValuesFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
                                     + nextInputPredicateUri.stringValue());
                 }
                 catch(final Exception ex)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getValuesFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
+                            .error("getValuesFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
                                     + nextInputPredicateUri.stringValue());
                 }
             }
@@ -1690,8 +1667,8 @@ public final class RdfUtils
         }
         catch(final java.io.UnsupportedEncodingException uee)
         {
-            RdfUtils.log.fatal("RdfUtils: UTF-8 is not supported by this java vm!!!", uee);
-            throw new RuntimeException("RdfUtils: UTF-8 is not supported by this java vm!!!", uee);
+            RdfUtils.log.fatal("UTF-8 is not supported by this java vm!!!", uee);
+            throw new RuntimeException("UTF-8 is not supported by this java vm!!!", uee);
         }
     }
     
@@ -1726,7 +1703,7 @@ public final class RdfUtils
         
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject: entering method");
+            RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: entering method");
             RdfUtils.log.debug(nextRepository);
             RdfUtils.log.debug(predicateUris);
         }
@@ -1748,7 +1725,7 @@ public final class RdfUtils
                     
                     if(RdfUtils._DEBUG)
                     {
-                        RdfUtils.log.debug("RdfUtils: queryString=" + queryString);
+                        RdfUtils.log.debug("queryString=" + queryString);
                     }
                     
                     try
@@ -1759,9 +1736,8 @@ public final class RdfUtils
                             
                             if(RdfUtils._DEBUG)
                             {
-                                RdfUtils.log
-                                        .debug("RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject: nextStatement="
-                                                + nextStatement);
+                                RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: nextStatement="
+                                        + nextStatement);
                             }
                             
                             results.add(nextStatement.getObject());
@@ -1786,14 +1762,14 @@ public final class RdfUtils
                 catch(final OpenRDFException ordfe)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject: RDF exception found for nextInputPredicate="
+                            .error("getValuesFromRepositoryByPredicateUrisAndSubject: RDF exception found for nextInputPredicate="
                                     + nextInputPredicateUri.stringValue() + " ordfe.class" + ordfe.getClass().getName(),
                                     ordfe);
                 }
                 catch(final Exception ex)
                 {
                     RdfUtils.log.error(
-                            "RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject: general exception found for nextInputPredicate="
+                            "getValuesFromRepositoryByPredicateUrisAndSubject: general exception found for nextInputPredicate="
                                     + nextInputPredicateUri.stringValue(), ex);
                 }
             }
@@ -1801,7 +1777,7 @@ public final class RdfUtils
         
         // catch(OpenRDFException ordfe)
         // {
-        // log.error("RdfUtils.getValuesFromRepositoryByPredicateUris: error found");
+        // log.error("getValuesFromRepositoryByPredicateUris: error found");
         // throw ordfe;
         // }
         finally
@@ -1811,7 +1787,7 @@ public final class RdfUtils
                 con.close();
             }
         }
-        // log.info("RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject: results.size()="+results.size());
+        // log.info("getValuesFromRepositoryByPredicateUrisAndSubject: results.size()="+results.size());
         return results;
         
     }
@@ -1848,7 +1824,7 @@ public final class RdfUtils
     {
         if(RdfUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
+            RdfUtils.log.debug("insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
         }
         
         RepositoryConnection myRepositoryConnection = null;
@@ -1861,7 +1837,7 @@ public final class RdfUtils
             
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.insertResultIntoRepository: nextReaderFormat for returnedContentType="
+                RdfUtils.log.debug("insertResultIntoRepository: nextReaderFormat for returnedContentType="
                         + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
             }
             
@@ -1885,7 +1861,7 @@ public final class RdfUtils
                 if(nextReaderFormat == null)
                 {
                     RdfUtils.log
-                            .error("RdfUtils.insertResultIntoRepository: Not attempting to parse result because assumedResponseContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
+                            .error("insertResultIntoRepository: Not attempting to parse result because assumedResponseContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                     + nextResult.getReturnedMIMEType()
                                     + " nextResult.assumedContentType="
                                     + assumedContentType
@@ -1897,25 +1873,25 @@ public final class RdfUtils
                 else if(nextResult.getWasSuccessful())
                 {
                     RdfUtils.log
-                            .warn("RdfUtils.insertResultIntoRepository: successful query, but readerFormat NOT matched for returnedMIMEType="
+                            .warn("insertResultIntoRepository: successful query, but readerFormat NOT matched for returnedMIMEType="
                                     + nextResult.getReturnedMIMEType());
                 }
             }
             else if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.insertResultIntoRepository: readerFormat matched for returnedMIMEType="
+                RdfUtils.log.debug("insertResultIntoRepository: readerFormat matched for returnedMIMEType="
                         + nextResult.getReturnedMIMEType());
             }
             
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.insertResultIntoRepository: nextResult.normalisedResult.length()="
+                RdfUtils.log.debug("insertResultIntoRepository: nextResult.normalisedResult.length()="
                         + nextResult.getNormalisedResult().length());
             }
             
             if(RdfUtils._TRACE)
             {
-                RdfUtils.log.trace("RdfUtils.insertResultIntoRepository: nextResult.normalisedResult="
+                RdfUtils.log.trace("insertResultIntoRepository: nextResult.normalisedResult="
                         + nextResult.getNormalisedResult());
             }
             
@@ -1930,18 +1906,18 @@ public final class RdfUtils
             
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.insertResultIntoRepository: myRepositoryConnection.size()="
+                RdfUtils.log.debug("insertResultIntoRepository: myRepositoryConnection.size()="
                         + myRepositoryConnection.size());
             }
         }
         catch(final org.openrdf.rio.RDFParseException rdfpe)
         {
-            RdfUtils.log.error("RdfUtils.insertResultIntoRepository: RDFParseException result: nextResult.endpointUrl="
+            RdfUtils.log.error("insertResultIntoRepository: RDFParseException result: nextResult.endpointUrl="
                     + nextResult.getEndpointUrl() + " message=" + rdfpe.getMessage());
             
             if(RdfUtils._TRACE)
             {
-                RdfUtils.log.debug("RdfUtils.insertResultIntoRepository: RDFParseException result: normalisedResult="
+                RdfUtils.log.debug("insertResultIntoRepository: RDFParseException result: normalisedResult="
                         + nextResult.getNormalisedResult());
             }
         }
@@ -1955,7 +1931,7 @@ public final class RdfUtils
                 }
                 catch(final Exception ex)
                 {
-                    RdfUtils.log.error("RdfUtils.insertResultIntoRepository: finally section, caught exception", ex);
+                    RdfUtils.log.error("insertResultIntoRepository: finally section, caught exception", ex);
                 }
             }
         }
@@ -2007,8 +1983,7 @@ public final class RdfUtils
                 }
                 catch(final InterruptedException ie)
                 {
-                    RdfUtils.log.error("RdfFetchController.fetchRdfForQuery: caught interrupted exception message="
-                            + ie.getMessage());
+                    RdfUtils.log.error("fetchRdfForQuery: caught interrupted exception message=" + ie.getMessage());
                     throw ie;
                 }
             }
@@ -2024,8 +1999,7 @@ public final class RdfUtils
                 }
                 catch(final InterruptedException ie)
                 {
-                    RdfUtils.log.error("RdfFetchController.fetchRdfForQuery: caught interrupted exception message="
-                            + ie.getMessage());
+                    RdfUtils.log.error("fetchRdfForQuery: caught interrupted exception message=" + ie.getMessage());
                     throw ie;
                 }
             }
@@ -2078,7 +2052,7 @@ public final class RdfUtils
         }
         catch(final OpenRDFException e)
         {
-            RdfUtils.log.error("RdfUtils.retrieveUrlsToStatements: caught OpenRDFException", e);
+            RdfUtils.log.error("retrieveUrlsToStatements: caught OpenRDFException", e);
         }
         
         return results;
@@ -2128,7 +2102,7 @@ public final class RdfUtils
             }
             catch(final RepositoryException rex)
             {
-                RdfUtils.log.error("RdfUtils.toWriter: connection didn't close correctly", rex);
+                RdfUtils.log.error("toWriter: connection didn't close correctly", rex);
             }
         }
     }
@@ -2168,7 +2142,7 @@ public final class RdfUtils
             }
             catch(final RepositoryException rex)
             {
-                RdfUtils.log.error("RdfUtils.toWriter: connection didn't close correctly", rex);
+                RdfUtils.log.error("toWriter: connection didn't close correctly", rex);
             }
         }
         
@@ -2218,7 +2192,7 @@ public final class RdfUtils
             }
             catch(final RepositoryException rex)
             {
-                RdfUtils.log.error("RdfUtils.toWriter: connection didn't close correctly", rex);
+                RdfUtils.log.error("toWriter: connection didn't close correctly", rex);
             }
         }
     }

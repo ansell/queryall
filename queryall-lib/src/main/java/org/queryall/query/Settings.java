@@ -73,11 +73,11 @@ public class Settings implements QueryAllConfiguration
     }
     
     // These properties are pulled out of the queryall.properties file
-    private String baseConfigLocation = null;
-    private String baseConfigUri = null;
-    private String baseConfigMimeFormat = null;
+    private volatile String baseConfigLocation = Settings.getDefaultBaseConfigLocationProperty();;
+    private volatile String baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
+    private volatile String baseConfigMimeFormat = Settings.getDefaultBaseConfigMimeFormatProperty();
     
-    private Collection<String> webappConfigUriList = new HashSet<String>();
+    private volatile Collection<String> webappConfigUriList = new HashSet<String>();
     
     private volatile Repository currentBaseConfigurationRepository = null;
     private volatile Repository currentWebAppConfigurationRepository = null;
@@ -85,16 +85,16 @@ public class Settings implements QueryAllConfiguration
     
     private volatile Map<URI, Provider> cachedProviders = null;
     private volatile Map<URI, NormalisationRule> cachedNormalisationRules = null;
-    private Map<URI, RuleTest> cachedRuleTests = null;
-    private Map<URI, QueryType> cachedCustomQueries = null;
-    private Map<URI, Profile> cachedProfiles = null;
-    private Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
-    private Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
-    private Pattern cachedTagPattern = null;
+    private volatile Map<URI, RuleTest> cachedRuleTests = null;
+    private volatile Map<URI, QueryType> cachedCustomQueries = null;
+    private volatile Map<URI, Profile> cachedProfiles = null;
+    private volatile Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
+    private volatile Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
+    private volatile Pattern cachedTagPattern = null;
     
     // TODO: monitor this for size and see whether we should be resetting it
     // regularly
-    private Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
+    private volatile Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
     
     private long initialisedTimestamp = System.currentTimeMillis();
     
@@ -746,11 +746,6 @@ public class Settings implements QueryAllConfiguration
     
     public String getBaseConfigLocation()
     {
-        if(this.baseConfigLocation == null)
-        {
-            this.baseConfigLocation = Settings.getDefaultBaseConfigLocationProperty();
-        }
-        
         return this.baseConfigLocation;
     }
     
@@ -762,11 +757,6 @@ public class Settings implements QueryAllConfiguration
      */
     public String getBaseConfigMimeFormat()
     {
-        if(this.baseConfigMimeFormat == null)
-        {
-            this.baseConfigMimeFormat = Settings.getDefaultBaseConfigMimeFormatProperty();
-        }
-        
         return this.baseConfigMimeFormat;
     }
     
@@ -920,11 +910,6 @@ public class Settings implements QueryAllConfiguration
     
     private String getBaseConfigUri()
     {
-        if(this.baseConfigUri == null)
-        {
-            this.baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
-        }
-        
         return this.baseConfigUri;
     }
     
@@ -1604,15 +1589,15 @@ public class Settings implements QueryAllConfiguration
                 results.addAll(this.getValueProperties(configUri, propertyUri));
             }
         }
-        catch(final Exception ex)
+        catch(final InterruptedException ex)
         {
-            Settings.log.error("Settings.getValueCollectionPropertiesFromConfig: error", ex);
+            Settings.log.error("Settings.getValueCollectionPropertiesFromConfig: InterruptedException", ex);
         }
         
         return results;
     }
     
-    private Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri)
+    private synchronized Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri) throws InterruptedException
     {
         if(Settings._TRACE)
         {
@@ -1649,7 +1634,7 @@ public class Settings implements QueryAllConfiguration
             }
             catch(final InterruptedException ex)
             {
-                throw new RuntimeException(ex);
+                throw ex;
             }
             catch(final OpenRDFException ex)
             {
