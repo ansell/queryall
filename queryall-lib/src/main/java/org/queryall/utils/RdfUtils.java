@@ -22,7 +22,6 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.BooleanLiteralImpl;
-import org.openrdf.model.impl.CalendarLiteralImpl;
 import org.openrdf.model.impl.IntegerLiteralImpl;
 import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.vocabulary.RDF;
@@ -41,7 +40,6 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.memory.model.BooleanMemLiteral;
-import org.openrdf.sail.memory.model.CalendarMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.api.NamespaceEntry;
@@ -754,27 +752,17 @@ public final class RdfUtils
     {
         int result = 0;
         
-        try
+        if(nextValue instanceof IntegerLiteralImpl)
         {
             result = ((IntegerLiteralImpl)nextValue).intValue();
         }
-        catch(final ClassCastException cce)
+        else if(nextValue instanceof IntegerMemLiteral)
         {
-            try
-            {
-                result = ((IntegerMemLiteral)nextValue).intValue();
-            }
-            catch(final ClassCastException cce2)
-            {
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log
-                            .debug("RdfUtils.getIntegerFromValue: nextValue was not a typed integer literal. Trying to parse it as a string... type="
-                                    + nextValue.getClass().getName());
-                }
-                
-                result = Integer.parseInt(nextValue.stringValue());
-            }
+            result = ((IntegerMemLiteral)nextValue).intValue();
+        }
+        else
+        {
+            result = Integer.parseInt(nextValue.stringValue());
         }
         
         return result;
@@ -788,15 +776,12 @@ public final class RdfUtils
     {
         long result = 0L;
         
-        try
+        if(nextValue instanceof IntegerMemLiteral)
         {
             result = ((IntegerMemLiteral)nextValue).longValue();
         }
-        catch(final ClassCastException cce)
+        else
         {
-            RdfUtils.log
-                    .error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="
-                            + nextValue.getClass().getName());
             try
             {
                 result = Long.parseLong(nextValue.stringValue());
@@ -804,8 +789,10 @@ public final class RdfUtils
             catch(final NumberFormatException nfe)
             {
                 RdfUtils.log
-                        .error("RdfUtils.getLongFromValue: nextValue was not a long numeric literal. Trying to parse it as a string... type="
-                                + nextValue.getClass().getName());
+                        .error("RdfUtils.getLongFromValue: failed to parse value using Long.parseLong type="
+                                + nextValue.getClass().getName()+" nextValue.stringValue="+nextValue.stringValue());
+
+                throw nfe;
             }
         }
         
