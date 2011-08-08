@@ -17,6 +17,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.RegexNormalisationRule;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.StringUtils;
 
@@ -138,15 +139,17 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         final ValueFactory f = Constants.valueFactory;
         
-        RegexNormalisationRuleImpl.setRegexRuleTypeUri(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
+        
+        RegexNormalisationRuleImpl.setRegexRuleTypeUri(f.createURI(baseUri,
                 "RegexNormalisationRule"));
-        RegexNormalisationRuleImpl.setRegexRuleInputMatchRegex(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        RegexNormalisationRuleImpl.setRegexRuleInputMatchRegex(f.createURI(baseUri,
                 "inputMatchRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleInputReplaceRegex(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        RegexNormalisationRuleImpl.setRegexRuleInputReplaceRegex(f.createURI(baseUri,
                 "inputReplaceRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleOutputMatchRegex(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        RegexNormalisationRuleImpl.setRegexRuleOutputMatchRegex(f.createURI(baseUri,
                 "outputMatchRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleOutputReplaceRegex(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        RegexNormalisationRuleImpl.setRegexRuleOutputReplaceRegex(f.createURI(baseUri,
                 "outputReplaceRegex"));
     }
     

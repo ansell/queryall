@@ -308,8 +308,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private static URI rdfruleTypeValidForStage;
     
-    public static String rdfruleNamespace;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;

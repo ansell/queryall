@@ -27,6 +27,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.XsltNormalisationRule;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.StringUtils;
@@ -120,9 +121,11 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     {
         final ValueFactory f = Constants.valueFactory;
         
-        XsltNormalisationRuleImpl.setXsltRuleTypeUri(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
+        
+        XsltNormalisationRuleImpl.setXsltRuleTypeUri(f.createURI(baseUri,
                 "XsltNormalisationRule"));
-        XsltNormalisationRuleImpl.setXsltRuleStylesheetUri(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
+        XsltNormalisationRuleImpl.setXsltRuleStylesheetUri(f.createURI(baseUri,
                 "xsltStylesheet"));
         
     }
