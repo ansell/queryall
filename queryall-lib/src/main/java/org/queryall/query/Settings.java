@@ -73,14 +73,6 @@ public class Settings implements QueryAllConfiguration
     }
     
     // These properties are pulled out of the queryall.properties file
-    private final String defaultOntologyTermUriPrefix = PropertyUtils.getSystemOrPropertyString(
-            "queryall.ontologyTermUriPrefix", "http://purl.org/queryall/");
-    private final String defaultOntologyTermUriSuffix = PropertyUtils.getSystemOrPropertyString(
-            "queryall.ontologyTermUriSuffix", ":");
-    
-    private String currentOntologyTermUriPrefix = this.defaultOntologyTermUriPrefix;
-    private String currentOntologyTermUriSuffix = this.defaultOntologyTermUriSuffix;
-    
     private String baseConfigLocation = null;
     private String baseConfigUri = null;
     private String baseConfigMimeFormat = null;

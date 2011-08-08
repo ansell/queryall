@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -26,7 +25,6 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.api.SparqlProvider;
-import org.queryall.enumerations.Constants;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.QueryTypeImpl;
 import org.queryall.query.Settings;
@@ -56,8 +54,8 @@ public class NamespaceProvidersServlet extends HttpServlet
         final PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         
-        final Date currentDate = new Date();
-        final String now = Constants.ISO8601UTC().format(currentDate);
+//        final Date currentDate = new Date();
+//        final String now = Constants.ISO8601UTC().format(currentDate);
         
         @SuppressWarnings("unused")
         final String realHostName =
