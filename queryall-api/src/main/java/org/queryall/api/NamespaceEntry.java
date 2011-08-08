@@ -7,35 +7,35 @@ import java.util.Collection;
  */
 public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
 {
+    Collection<String> getAlternativePrefixes();
+    
+    String getAuthority();
+    
+    boolean getConvertQueriesToPreferredPrefix();
+    
+    String getDescription();
+    
+    String getIdentifierRegex();
+    
     String getPreferredPrefix();
     
-    void setPreferredPrefix(String preferredPrefix);
+    String getSeparator();
     
-    Collection<String> getAlternativePrefixes();
+    String getUriTemplate();
     
     void setAlternativePrefixes(Collection<String> alternativePrefixes);
     
     void setAuthority(String authority);
     
-    String getAuthority();
+    void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
     
     void setDescription(String description);
     
-    String getDescription();
-    
     void setIdentifierRegex(String identifierRegex);
     
-    String getIdentifierRegex();
-
-    void setUriTemplate(String uriTemplate);
-    
-    String getUriTemplate();
+    void setPreferredPrefix(String preferredPrefix);
     
     void setSeparator(String separator);
     
-    String getSeparator();
-    
-    void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
-    
-    boolean getConvertQueriesToPreferredPrefix();
+    void setUriTemplate(String uriTemplate);
 }

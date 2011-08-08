@@ -20,9 +20,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryType;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.ProvenanceRecord;
-import org.queryall.query.Settings;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
@@ -38,8 +38,6 @@ public class QueryTypeImpl implements QueryType
     private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForQueryType();
     
     /**
      * @return the queryHandleAllNamespaces
@@ -558,44 +556,35 @@ public class QueryTypeImpl implements QueryType
     
     private static URI queryNamespaceMatchAll;
     
-    public static String queryNamespace;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
-        QueryTypeImpl.queryNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForQueryType()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
+        final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
-        QueryTypeImpl.setQueryTypeUri(f.createURI(QueryTypeImpl.queryNamespace, "Query"));
-        QueryTypeImpl.setQueryTitle(f.createURI(QueryTypeImpl.queryNamespace, "title"));
-        QueryTypeImpl.setQueryHandleAllNamespaces(f.createURI(QueryTypeImpl.queryNamespace, "handleAllNamespaces"));
-        QueryTypeImpl.setQueryNamespaceToHandle(f.createURI(QueryTypeImpl.queryNamespace, "namespaceToHandle"));
-        QueryTypeImpl.setQueryPublicIdentifierIndex(f.createURI(QueryTypeImpl.queryNamespace,
-                "hasPublicIdentifierIndex"));
-        QueryTypeImpl.setQueryNamespaceInputIndex(f.createURI(QueryTypeImpl.queryNamespace, "hasNamespaceInputIndex"));
-        QueryTypeImpl.setQueryNamespaceMatchMethod(f.createURI(QueryTypeImpl.queryNamespace, "namespaceMatchMethod"));
-        QueryTypeImpl.setQueryNamespaceSpecific(f.createURI(QueryTypeImpl.queryNamespace, "isNamespaceSpecific"));
-        QueryTypeImpl.setQueryIncludeDefaults(f.createURI(QueryTypeImpl.queryNamespace, "includeDefaults"));
-        QueryTypeImpl.setQueryIncludeQueryType(f.createURI(QueryTypeImpl.queryNamespace, "includeQueryType"));
-        QueryTypeImpl.setQueryInputRegex(f.createURI(QueryTypeImpl.queryNamespace, "inputRegex"));
-        QueryTypeImpl.setQueryTemplateString(f.createURI(QueryTypeImpl.queryNamespace, "templateString"));
-        QueryTypeImpl.setQueryQueryUriTemplateString(f
-                .createURI(QueryTypeImpl.queryNamespace, "queryUriTemplateString"));
-        QueryTypeImpl.setQueryStandardUriTemplateString(f.createURI(QueryTypeImpl.queryNamespace,
-                "standardUriTemplateString"));
-        QueryTypeImpl.setQueryOutputRdfXmlString(f.createURI(QueryTypeImpl.queryNamespace, "outputRdfXmlString"));
-        QueryTypeImpl.setQueryInRobotsTxt(f.createURI(QueryTypeImpl.queryNamespace, "inRobotsTxt"));
-        QueryTypeImpl.setQueryIsPageable(f.createURI(QueryTypeImpl.queryNamespace, "isPageable"));
-        QueryTypeImpl.setQueryNamespaceMatchAny(f.createURI(QueryTypeImpl.queryNamespace, "namespaceMatchAny"));
-        QueryTypeImpl.setQueryNamespaceMatchAll(f.createURI(QueryTypeImpl.queryNamespace, "namespaceMatchAll"));
-        QueryTypeImpl.setQueryTemplateTerm(f.createURI(QueryTypeImpl.queryNamespace, "includedQueryTemplate"));
-        QueryTypeImpl.setQueryParameterTemplateTerm(f.createURI(QueryTypeImpl.queryNamespace,
-                "includedQueryParameterTemplate"));
-        QueryTypeImpl.setQueryStaticOutputTemplateTerm(f.createURI(QueryTypeImpl.queryNamespace,
-                "includedStaticOutputTemplate"));
-        QueryTypeImpl.setQueryIsDummyQueryType(f.createURI(QueryTypeImpl.queryNamespace, "isDummyQueryType"));
+        QueryTypeImpl.setQueryTypeUri(f.createURI(baseUri, "Query"));
+        QueryTypeImpl.setQueryTitle(f.createURI(baseUri, "title"));
+        QueryTypeImpl.setQueryHandleAllNamespaces(f.createURI(baseUri, "handleAllNamespaces"));
+        QueryTypeImpl.setQueryNamespaceToHandle(f.createURI(baseUri, "namespaceToHandle"));
+        QueryTypeImpl.setQueryPublicIdentifierIndex(f.createURI(baseUri, "hasPublicIdentifierIndex"));
+        QueryTypeImpl.setQueryNamespaceInputIndex(f.createURI(baseUri, "hasNamespaceInputIndex"));
+        QueryTypeImpl.setQueryNamespaceMatchMethod(f.createURI(baseUri, "namespaceMatchMethod"));
+        QueryTypeImpl.setQueryNamespaceSpecific(f.createURI(baseUri, "isNamespaceSpecific"));
+        QueryTypeImpl.setQueryIncludeDefaults(f.createURI(baseUri, "includeDefaults"));
+        QueryTypeImpl.setQueryIncludeQueryType(f.createURI(baseUri, "includeQueryType"));
+        QueryTypeImpl.setQueryInputRegex(f.createURI(baseUri, "inputRegex"));
+        QueryTypeImpl.setQueryTemplateString(f.createURI(baseUri, "templateString"));
+        QueryTypeImpl.setQueryQueryUriTemplateString(f.createURI(baseUri, "queryUriTemplateString"));
+        QueryTypeImpl.setQueryStandardUriTemplateString(f.createURI(baseUri, "standardUriTemplateString"));
+        QueryTypeImpl.setQueryOutputRdfXmlString(f.createURI(baseUri, "outputRdfXmlString"));
+        QueryTypeImpl.setQueryInRobotsTxt(f.createURI(baseUri, "inRobotsTxt"));
+        QueryTypeImpl.setQueryIsPageable(f.createURI(baseUri, "isPageable"));
+        QueryTypeImpl.setQueryNamespaceMatchAny(f.createURI(baseUri, "namespaceMatchAny"));
+        QueryTypeImpl.setQueryNamespaceMatchAll(f.createURI(baseUri, "namespaceMatchAll"));
+        QueryTypeImpl.setQueryTemplateTerm(f.createURI(baseUri, "includedQueryTemplate"));
+        QueryTypeImpl.setQueryParameterTemplateTerm(f.createURI(baseUri, "includedQueryParameterTemplate"));
+        QueryTypeImpl.setQueryStaticOutputTemplateTerm(f.createURI(baseUri, "includedStaticOutputTemplate"));
+        QueryTypeImpl.setQueryIsDummyQueryType(f.createURI(baseUri, "isDummyQueryType"));
     }
     
     public static URI getNamespaceMatchAllUri()
@@ -922,9 +911,9 @@ public class QueryTypeImpl implements QueryType
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return QueryTypeImpl.defaultNamespace;
+        return QueryAllNamespaces.QUERY;
     }
     
     /**

@@ -20,6 +20,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.SparqlProvider;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
@@ -254,13 +255,15 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     {
         final ValueFactory f = Constants.valueFactory;
         
-        HttpProviderImpl.setProviderHttpProviderUri(f.createURI(ProviderImpl.providerNamespace, "HttpProvider"));
-        HttpProviderImpl.setProviderSparqlProviderUri(f.createURI(ProviderImpl.providerNamespace, "SparqlProvider"));
-        HttpProviderImpl.setProviderEndpointUrl(f.createURI(ProviderImpl.providerNamespace, "endpointUrl"));
-        HttpProviderImpl.setProviderAcceptHeader(f.createURI(ProviderImpl.providerNamespace, "acceptHeader"));
-        HttpProviderImpl.setProviderHttpPostSparql(f.createURI(ProviderImpl.providerNamespace, "httppostsparql"));
-        HttpProviderImpl.setProviderHttpGetUrl(f.createURI(ProviderImpl.providerNamespace, "httpgeturl"));
-        HttpProviderImpl.setProviderHttpPostUrl(f.createURI(ProviderImpl.providerNamespace, "httpposturl"));
+        final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
+        
+        HttpProviderImpl.setProviderHttpProviderUri(f.createURI(baseUri, "HttpProvider"));
+        HttpProviderImpl.setProviderSparqlProviderUri(f.createURI(baseUri, "SparqlProvider"));
+        HttpProviderImpl.setProviderEndpointUrl(f.createURI(baseUri, "endpointUrl"));
+        HttpProviderImpl.setProviderAcceptHeader(f.createURI(baseUri, "acceptHeader"));
+        HttpProviderImpl.setProviderHttpPostSparql(f.createURI(baseUri, "httppostsparql"));
+        HttpProviderImpl.setProviderHttpGetUrl(f.createURI(baseUri, "httpgeturl"));
+        HttpProviderImpl.setProviderHttpPostUrl(f.createURI(baseUri, "httpposturl"));
     }
     
     public HttpProviderImpl()

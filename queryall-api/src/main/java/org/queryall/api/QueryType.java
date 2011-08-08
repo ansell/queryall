@@ -1,7 +1,7 @@
 package org.queryall.api;
 
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
@@ -11,82 +11,82 @@ import org.openrdf.model.URI;
  */
 public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
+    void addNamespaceToHandle(URI namespaceToHandle);
+    
+    boolean getHandleAllNamespaces();
+    
+    boolean getIncludeDefaults();
+    
     String getInputRegex();
     
-    void setInputRegex(String nextInputRegex);
-
     Pattern getInputRegexPattern();
     
     boolean getInRobotsTxt();
     
-    void setInRobotsTxt(boolean inRobotsTxt);
-
-    boolean getHandleAllNamespaces();
+    boolean getIsDummyQueryType();
     
-    void setHandleAllNamespaces(boolean handleAllNamespaces);
-
-    boolean matchesQueryString(String queryString);
-    
-    List<String> matchesForQueryString(String queryString);
-    
-    String getTemplateString();
-    
-    void setTemplateString(String templateString);
-    
-    String getOutputRdfXmlString();
-    
-    void setOutputRdfXmlString(String outputRdfXmlString);
-    
-    String getStandardUriTemplateString();
-    
-    void setStandardUriTemplateString(String standardUriTemplateString);
-    
-    String getQueryUriTemplateString();
-    
-    void setQueryUriTemplateString(String queryUriTemplateString);
-    
-    boolean isInputVariablePublic(int inputVariableIndex);
-
-    void setIncludeDefaults(boolean includeDefaults);
-    
-    boolean getIncludeDefaults();
-
-    void setIsNamespaceSpecific(boolean isNamespaceSpecific);
-
     boolean getIsNamespaceSpecific();
-
-    void setIsPageable(boolean isPageable);
-
+    
     boolean getIsPageable();
-
-    boolean getIsDummyQueryType();    
     
-    void setIsDummyQueryType(boolean isDummyQueryType);    
-
-    Collection<URI> getSemanticallyLinkedQueryTypes();
-    
-    void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedQueryTypes);
-    
-    Collection<URI> getNamespacesToHandle();
-    
-    void setNamespacesToHandle(Collection<URI> namespacesToHandle);
-    
-    void addNamespaceToHandle(URI namespaceToHandle);
+    int[] getNamespaceInputIndexes();
     
     URI getNamespaceMatchMethod();
     
-    void setNamespaceMatchMethod(URI namespaceMatchMethod);
+    Collection<URI> getNamespacesToHandle();
+    
+    String getOutputRdfXmlString();
+    
+    int[] getPublicIdentifierIndexes();
+    
+    String getQueryUriTemplateString();
+    
+    Collection<URI> getSemanticallyLinkedQueryTypes();
+    
+    String getStandardUriTemplateString();
+    
+    String getTemplateString();
+    
+    boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
     
     boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
     
-    boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
-
-    void setPublicIdentifierIndexes(int[] publicIdentifierIndexes);
-
-    int[] getPublicIdentifierIndexes();
-
+    boolean isInputVariablePublic(int inputVariableIndex);
+    
+    List<String> matchesForQueryString(String queryString);
+    
+    boolean matchesQueryString(String queryString);
+    
+    void setHandleAllNamespaces(boolean handleAllNamespaces);
+    
+    void setIncludeDefaults(boolean includeDefaults);
+    
+    void setInputRegex(String nextInputRegex);
+    
+    void setInRobotsTxt(boolean inRobotsTxt);
+    
+    void setIsDummyQueryType(boolean isDummyQueryType);
+    
+    void setIsNamespaceSpecific(boolean isNamespaceSpecific);
+    
+    void setIsPageable(boolean isPageable);
+    
     void setNamespaceInputIndexes(int[] namespaceInputIndexes);
-
-    int[] getNamespaceInputIndexes();
-
+    
+    void setNamespaceMatchMethod(URI namespaceMatchMethod);
+    
+    void setNamespacesToHandle(Collection<URI> namespacesToHandle);
+    
+    void setOutputRdfXmlString(String outputRdfXmlString);
+    
+    void setPublicIdentifierIndexes(int[] publicIdentifierIndexes);
+    
+    void setQueryUriTemplateString(String queryUriTemplateString);
+    
+    void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedQueryTypes);
+    
+    void setStandardUriTemplateString(String standardUriTemplateString);
+    
+    void setTemplateString(String templateString);
+    
 }

@@ -16,6 +16,7 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.rio.RDFFormat;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.utils.PropertyUtils;
 import org.queryall.enumerations.Constants;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.Settings;
@@ -173,10 +174,16 @@ public class QueryAllSchemaServlet extends HttpServlet
                 
                 try
                 {
-                    HtmlPageRenderer.renderHtml(this.getServletContext(), myRepository, stBuff, debugStrings,
-                            localSettings.getOntologyTermUriPrefix() + queryString,
-                            localSettings.getOntologyTermUriPrefix() + queryString, realHostName,
-                            request.getContextPath(), -1, localSettings);
+                    HtmlPageRenderer.renderHtml(
+                            this.getServletContext(),
+                            myRepository,
+                            stBuff,
+                            debugStrings,
+                            PropertyUtils.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX",
+                                    "http://purl.org/queryall/") + queryString,
+                            PropertyUtils.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX",
+                                    "http://purl.org/queryall/") + queryString, realHostName, request.getContextPath(),
+                            -1, localSettings);
                 }
                 catch(final OpenRDFException ordfe)
                 {

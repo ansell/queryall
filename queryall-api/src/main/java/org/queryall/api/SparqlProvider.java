@@ -14,6 +14,11 @@ public interface SparqlProvider extends Provider
     String getSparqlGraphUri();
     
     /**
+     * @return true if this provider requires the use of a sparql graph URI
+     */
+    boolean getUseSparqlGraph();
+    
+    /**
      * Set the sparql graph URI using a string The graph URI may contain template elements, so it
      * cannot be directly verified as a URI
      * 
@@ -22,11 +27,6 @@ public interface SparqlProvider extends Provider
      *            a URI until replaced by a query
      */
     void setSparqlGraphUri(String sparqlGraphUri);
-    
-    /**
-     * @return true if this provider requires the use of a sparql graph URI
-     */
-    boolean getUseSparqlGraph();
     
     /**
      * @param useSparqlGraph

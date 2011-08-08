@@ -17,6 +17,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Project;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
 import org.queryall.utils.StringUtils;
@@ -31,8 +32,6 @@ public class ProjectImpl implements Project
     private static final boolean _DEBUG = ProjectImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProjectImpl.log.isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProject();
     
     /**
      * @return the projectAdminCuratedUri
@@ -198,25 +197,21 @@ public class ProjectImpl implements Project
     
     private static URI projectNotCuratedUri;
     
-    public static String projectNamespace;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
-        ProjectImpl.projectNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForProject()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
+        final String baseUri = QueryAllNamespaces.PROJECT.getBaseURI();
         
-        ProjectImpl.setProjectTypeUri(f.createURI(ProjectImpl.projectNamespace, "Project"));
-        ProjectImpl.setProjectAuthority(f.createURI(ProjectImpl.projectNamespace, "authority"));
-        ProjectImpl.setProjectTitle(f.createURI(ProjectImpl.projectNamespace, "title"));
-        ProjectImpl.setProjectDescription(f.createURI(ProjectImpl.projectNamespace, "description"));
+        ProjectImpl.setProjectTypeUri(f.createURI(baseUri, "Project"));
+        ProjectImpl.setProjectAuthority(f.createURI(baseUri, "authority"));
+        ProjectImpl.setProjectTitle(f.createURI(baseUri, "title"));
+        ProjectImpl.setProjectDescription(f.createURI(baseUri, "description"));
         
-        ProjectImpl.setProjectCurationStatusUri(f.createURI(ProjectImpl.projectNamespace, "hasCurationStatus"));
-        ProjectImpl.setProjectAdminCuratedUri(f.createURI(ProjectImpl.projectNamespace, "adminCurated"));
-        ProjectImpl.setProjectUserCuratedUri(f.createURI(ProjectImpl.projectNamespace, "userCurated"));
-        ProjectImpl.setProjectNotCuratedUri(f.createURI(ProjectImpl.projectNamespace, "notCurated"));
+        ProjectImpl.setProjectCurationStatusUri(f.createURI(baseUri, "hasCurationStatus"));
+        ProjectImpl.setProjectAdminCuratedUri(f.createURI(baseUri, "adminCurated"));
+        ProjectImpl.setProjectUserCuratedUri(f.createURI(baseUri, "userCurated"));
+        ProjectImpl.setProjectNotCuratedUri(f.createURI(baseUri, "notCurated"));
         
     }
     
@@ -402,9 +397,9 @@ public class ProjectImpl implements Project
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return ProjectImpl.defaultNamespace;
+        return QueryAllNamespaces.PROJECT;
     }
     
     @Override

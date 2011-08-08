@@ -44,6 +44,11 @@ public class MediaRangeSpec
         qValuePattern = Pattern.compile(qualityValue);
     }
     
+    private static String escape(final String s)
+    {
+        return s.replaceAll("[\\\\\"]", "\\\\$0");
+    }
+    
     /**
      * Parses an HTTP Accept header into a List of MediaRangeSpecs
      * 
@@ -122,11 +127,6 @@ public class MediaRangeSpec
         return m;
     }
     
-    private static String escape(final String s)
-    {
-        return s.replaceAll("[\\\\\"]", "\\\\$0");
-    }
-    
     private static String unescape(final String s)
     {
         return s.replaceAll("\\\\(.)", "$1");
@@ -148,6 +148,32 @@ public class MediaRangeSpec
         this.parameterValues = parameterValues;
         this.mediaType = this.buildMediaType();
         this.quality = quality;
+    }
+    
+    private String buildMediaType()
+    {
+        final StringBuffer result = new StringBuffer();
+        result.append(this.type);
+        result.append("/");
+        result.append(this.subtype);
+        for(int i = 0; i < this.parameterNames.size(); i++)
+        {
+            result.append(";");
+            result.append(this.parameterNames.get(i));
+            result.append("=");
+            final String value = this.parameterValues.get(i);
+            if(MediaRangeSpec.tokenPattern.matcher(value).matches())
+            {
+                result.append(value);
+            }
+            else
+            {
+                result.append("\"");
+                result.append(MediaRangeSpec.escape(value));
+                result.append("\"");
+            }
+        }
+        return result.toString();
     }
     
     public MediaRangeSpec getBestMatch(final List<MediaRangeSpec> mediaRanges)
@@ -254,31 +280,5 @@ public class MediaRangeSpec
     public String toString()
     {
         return this.mediaType + ";q=" + this.quality;
-    }
-    
-    private String buildMediaType()
-    {
-        final StringBuffer result = new StringBuffer();
-        result.append(this.type);
-        result.append("/");
-        result.append(this.subtype);
-        for(int i = 0; i < this.parameterNames.size(); i++)
-        {
-            result.append(";");
-            result.append(this.parameterNames.get(i));
-            result.append("=");
-            final String value = this.parameterValues.get(i);
-            if(MediaRangeSpec.tokenPattern.matcher(value).matches())
-            {
-                result.append(value);
-            }
-            else
-            {
-                result.append("\"");
-                result.append(MediaRangeSpec.escape(value));
-                result.append("\"");
-            }
-        }
-        return result.toString();
     }
 }

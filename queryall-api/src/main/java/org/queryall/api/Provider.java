@@ -9,11 +9,9 @@ import org.openrdf.model.URI;
  */
 public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface
 {
-    boolean getIsDefaultSource();
-
-    void setIsDefaultSource(boolean isDefaultSource);
-
-    Collection<URI> getNormalisationUris();
+    void addIncludedInQueryType(URI includedInQueryType);
+    
+    void addNamespace(URI namespace);
     
     /**
      * Adds the normalisation to this current collection of normalisations
@@ -22,40 +20,41 @@ public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, P
      */
     void addNormalisationUri(URI rdfNormalisationNeeded);
     
+    boolean containsNamespaceOrDefault(URI namespaceKey);
+    
+    boolean containsNamespaceUri(URI namespaceKey);
+    
     boolean containsNormalisationUri(URI normalisationKey);
-
+    
+    boolean containsQueryTypeUri(URI queryKey);
+    
+    String getAssumedContentType();
+    
+    URI getEndpointMethod();
+    
     Collection<URI> getIncludedInQueryTypes();
+    
+    boolean getIsDefaultSource();
+    
+    Collection<URI> getNamespaces();
+    
+    Collection<URI> getNormalisationUris();
+    
+    URI getRedirectOrProxy();
+    
+    boolean needsProxy();
+    
+    boolean needsRedirect();
+    
+    void setAssumedContentType(String assumedContentType);
+    
+    void setEndpointMethod(URI endpointMethod);
     
     void setIncludedInQueryTypes(Collection<URI> includedInQueryTypes);
     
-    void addIncludedInQueryType(URI includedInQueryType);
-
-    boolean containsQueryTypeUri(URI queryKey);
-
-    Collection<URI> getNamespaces();
+    void setIsDefaultSource(boolean isDefaultSource);
     
     void setNamespaces(Collection<URI> namespaces);
     
-    void addNamespace(URI namespace);
-
-    boolean containsNamespaceUri(URI namespaceKey);
-    
-	boolean containsNamespaceOrDefault(URI namespaceKey);
-	
-	URI getRedirectOrProxy();
-
-	void setRedirectOrProxy(URI redirectOrProxy);
-
-	boolean needsRedirect();
-
-	boolean needsProxy();
-
-	URI getEndpointMethod();
-
-	void setEndpointMethod(URI endpointMethod);
-
-	String getAssumedContentType();
-	
-	void setAssumedContentType(String assumedContentType);
+    void setRedirectOrProxy(URI redirectOrProxy);
 }
-

@@ -3,12 +3,11 @@
  */
 package org.queryall.api.test;
 
-import static org.junit.Assert.*;
-
 import java.util.Collection;
 import java.util.LinkedList;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
@@ -18,7 +17,7 @@ import org.queryall.api.QueryType;
 
 /**
  * Abstract unit test for QueryType API
- *
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractQueryTypeTest
@@ -42,7 +41,6 @@ public abstract class AbstractQueryTypeTest
     private Collection<Collection<URI>> namespaces34;
     private Collection<Collection<URI>> namespaces45;
     
-    
     private QueryType queryTypePublicIdentifiers;
     
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll;
@@ -58,39 +56,37 @@ public abstract class AbstractQueryTypeTest
     private QueryType queryType123NamespacesMatchMethodAll;
     private QueryType queryType12345NamespacesMatchMethodAll;
     private QueryType queryTypeNoNamespacesMatchMethodAll;
-
+    
     private QueryType queryType123NamespacesMatchMethodAny;
     private QueryType queryType12345NamespacesMatchMethodAny;
     private QueryType queryTypeNoNamespacesMatchMethodAny;
     
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll;
-
-
-    /**
-     * This method must be overridden to return a new instance of 
-     * the implemented QueryType class for each successive invocation
-     * @return A new instance of the QueryType implementation
-     */
-    public abstract QueryType getNewTestQueryType();
     
     /**
-     * This method must return the URI used by the implementation 
-     * to indicate that all namespaces must match for the 
-     * namespace test to be satisfied
+     * This method must return the URI used by the implementation to indicate that all namespaces
+     * must match for the namespace test to be satisfied
+     * 
      * @return A URI designating that all namespaces need to match
      */
     public abstract URI getAllNamespaceMatchMethodUri();
-
+    
     /**
-     * This method must return the URI used by the implementation 
-     * to indicate that only one (1) or more namespaces need 
-     * to match for the namespace test to be satisfied
+     * This method must return the URI used by the implementation to indicate that only one (1) or
+     * more namespaces need to match for the namespace test to be satisfied
+     * 
      * @return A URI designating that any namespace matches are sufficient
      */
     public abstract URI getAnyNamespaceMatchMethodUri();
-
     
+    /**
+     * This method must be overridden to return a new instance of the implemented QueryType class
+     * for each successive invocation
+     * 
+     * @return A new instance of the QueryType implementation
+     */
+    public abstract QueryType getNewTestQueryType();
     
     /**
      * @throws java.lang.Exception
@@ -98,604 +94,823 @@ public abstract class AbstractQueryTypeTest
     @Before
     public void setUp() throws Exception
     {
-        ValueFactory f = new MemValueFactory();
-
-        testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
-        testFalseQueryTypeUri = f.createURI("http://example.org/test/excludedQueryType");
-        testNamespaceUri1 = f.createURI("http://example.org/test/includedNamespace-1");
-        testNamespaceUri2 = f.createURI("http://example.org/test/includedNamespace-2");
-        testNamespaceUri3 = f.createURI("http://example.org/test/includedNamespace-3");
-        testNamespaceUri4 = f.createURI("http://example.org/test/includedNamespace-4");
-        testNamespaceUri5 = f.createURI("http://example.org/test/includedNamespace-5");
-        testFalseNamespaceUri = f.createURI("http://example.org/test/excludedNamespace");
-
-        LinkedList<URI> namespaceFalseInner = new LinkedList<URI>();
-        namespaceFalseInner.add(testFalseNamespaceUri);
-
-        LinkedList<URI> namespace1Inner = new LinkedList<URI>();
-        namespace1Inner.add(testNamespaceUri1);
-
-        LinkedList<URI> namespace2Inner = new LinkedList<URI>();
-        namespace2Inner.add(testNamespaceUri2);
-
-        LinkedList<URI> namespace3Inner = new LinkedList<URI>();
-        namespace3Inner.add(testNamespaceUri3);
-
-        LinkedList<URI> namespace4Inner = new LinkedList<URI>();
-        namespace4Inner.add(testNamespaceUri4);
-
-        LinkedList<URI> namespace5Inner = new LinkedList<URI>();
-        namespace5Inner.add(testNamespaceUri5);
-
-        LinkedList<URI> namespace1OrFalseInner = new LinkedList<URI>();
-        namespace1OrFalseInner.add(testNamespaceUri1);
-        namespace1OrFalseInner.add(testFalseNamespaceUri);
-
-        LinkedList<URI> namespace2OrFalseInner = new LinkedList<URI>();
-        namespace2OrFalseInner.add(testNamespaceUri2);
-        namespace2OrFalseInner.add(testFalseNamespaceUri);
-
-        namespacesFalse = new LinkedList<Collection<URI>>();
-        namespacesFalse.add(namespaceFalseInner);
+        final ValueFactory f = new MemValueFactory();
         
-        namespaces12345AndFalse = new LinkedList<Collection<URI>>();
-        namespaces12345AndFalse.add(namespace1Inner);
-        namespaces12345AndFalse.add(namespace2Inner);
-        namespaces12345AndFalse.add(namespace3Inner);
-        namespaces12345AndFalse.add(namespace4Inner);
-        namespaces12345AndFalse.add(namespace5Inner);
-        namespaces12345AndFalse.add(namespaceFalseInner);
+        this.testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
+        this.testFalseQueryTypeUri = f.createURI("http://example.org/test/excludedQueryType");
+        this.testNamespaceUri1 = f.createURI("http://example.org/test/includedNamespace-1");
+        this.testNamespaceUri2 = f.createURI("http://example.org/test/includedNamespace-2");
+        this.testNamespaceUri3 = f.createURI("http://example.org/test/includedNamespace-3");
+        this.testNamespaceUri4 = f.createURI("http://example.org/test/includedNamespace-4");
+        this.testNamespaceUri5 = f.createURI("http://example.org/test/includedNamespace-5");
+        this.testFalseNamespaceUri = f.createURI("http://example.org/test/excludedNamespace");
         
-        namespaces12345 = new LinkedList<Collection<URI>>();
-        namespaces12345.add(namespace1Inner);
-        namespaces12345.add(namespace2Inner);
-        namespaces12345.add(namespace3Inner);
-        namespaces12345.add(namespace4Inner);
-        namespaces12345.add(namespace5Inner);
+        final LinkedList<URI> namespaceFalseInner = new LinkedList<URI>();
+        namespaceFalseInner.add(this.testFalseNamespaceUri);
         
-        namespaces123 = new LinkedList<Collection<URI>>();
-        namespaces123.add(namespace1Inner);
-        namespaces123.add(namespace2Inner);
-        namespaces123.add(namespace3Inner);
+        final LinkedList<URI> namespace1Inner = new LinkedList<URI>();
+        namespace1Inner.add(this.testNamespaceUri1);
         
-        namespaces1orFalse = new LinkedList<Collection<URI>>();
-        namespaces1orFalse.add(namespace1OrFalseInner);
+        final LinkedList<URI> namespace2Inner = new LinkedList<URI>();
+        namespace2Inner.add(this.testNamespaceUri2);
         
-        namespaces1and2orFalse = new LinkedList<Collection<URI>>();
-        namespaces1and2orFalse.add(namespace1Inner);
-        namespaces1and2orFalse.add(namespace2OrFalseInner);
+        final LinkedList<URI> namespace3Inner = new LinkedList<URI>();
+        namespace3Inner.add(this.testNamespaceUri3);
         
-        namespaces12 = new LinkedList<Collection<URI>>();
-        namespaces12.add(namespace1Inner);
-        namespaces12.add(namespace2Inner);
+        final LinkedList<URI> namespace4Inner = new LinkedList<URI>();
+        namespace4Inner.add(this.testNamespaceUri4);
         
-        namespaces34 = new LinkedList<Collection<URI>>();
-        namespaces34.add(namespace3Inner);
-        namespaces34.add(namespace4Inner);
+        final LinkedList<URI> namespace5Inner = new LinkedList<URI>();
+        namespace5Inner.add(this.testNamespaceUri5);
         
-        namespaces45 = new LinkedList<Collection<URI>>();
-        namespaces45.add(namespace4Inner);
-        namespaces45.add(namespace5Inner);
+        final LinkedList<URI> namespace1OrFalseInner = new LinkedList<URI>();
+        namespace1OrFalseInner.add(this.testNamespaceUri1);
+        namespace1OrFalseInner.add(this.testFalseNamespaceUri);
         
+        final LinkedList<URI> namespace2OrFalseInner = new LinkedList<URI>();
+        namespace2OrFalseInner.add(this.testNamespaceUri2);
+        namespace2OrFalseInner.add(this.testFalseNamespaceUri);
         
+        this.namespacesFalse = new LinkedList<Collection<URI>>();
+        this.namespacesFalse.add(namespaceFalseInner);
         
-        int[] testPublicIdentifierIndexes = new int[1];
+        this.namespaces12345AndFalse = new LinkedList<Collection<URI>>();
+        this.namespaces12345AndFalse.add(namespace1Inner);
+        this.namespaces12345AndFalse.add(namespace2Inner);
+        this.namespaces12345AndFalse.add(namespace3Inner);
+        this.namespaces12345AndFalse.add(namespace4Inner);
+        this.namespaces12345AndFalse.add(namespace5Inner);
+        this.namespaces12345AndFalse.add(namespaceFalseInner);
+        
+        this.namespaces12345 = new LinkedList<Collection<URI>>();
+        this.namespaces12345.add(namespace1Inner);
+        this.namespaces12345.add(namespace2Inner);
+        this.namespaces12345.add(namespace3Inner);
+        this.namespaces12345.add(namespace4Inner);
+        this.namespaces12345.add(namespace5Inner);
+        
+        this.namespaces123 = new LinkedList<Collection<URI>>();
+        this.namespaces123.add(namespace1Inner);
+        this.namespaces123.add(namespace2Inner);
+        this.namespaces123.add(namespace3Inner);
+        
+        this.namespaces1orFalse = new LinkedList<Collection<URI>>();
+        this.namespaces1orFalse.add(namespace1OrFalseInner);
+        
+        this.namespaces1and2orFalse = new LinkedList<Collection<URI>>();
+        this.namespaces1and2orFalse.add(namespace1Inner);
+        this.namespaces1and2orFalse.add(namespace2OrFalseInner);
+        
+        this.namespaces12 = new LinkedList<Collection<URI>>();
+        this.namespaces12.add(namespace1Inner);
+        this.namespaces12.add(namespace2Inner);
+        
+        this.namespaces34 = new LinkedList<Collection<URI>>();
+        this.namespaces34.add(namespace3Inner);
+        this.namespaces34.add(namespace4Inner);
+        
+        this.namespaces45 = new LinkedList<Collection<URI>>();
+        this.namespaces45.add(namespace4Inner);
+        this.namespaces45.add(namespace5Inner);
+        
+        final int[] testPublicIdentifierIndexes = new int[1];
         testPublicIdentifierIndexes[0] = 2;
-
-        queryTypePublicIdentifiers = getNewTestQueryType();
-        queryTypePublicIdentifiers.setPublicIdentifierIndexes(testPublicIdentifierIndexes);
         
-        queryType123NamespacesMatchMethodAll = getNewTestQueryType();
-        queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryType123NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
-        queryType123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
-        queryType123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri1);
-        queryType123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri2);
-        queryType123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri3);
+        this.queryTypePublicIdentifiers = this.getNewTestQueryType();
+        this.queryTypePublicIdentifiers.setPublicIdentifierIndexes(testPublicIdentifierIndexes);
         
-        queryType12345NamespacesMatchMethodAll = getNewTestQueryType();
-        queryType12345NamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryType12345NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
-        queryType12345NamespacesMatchMethodAll.setHandleAllNamespaces(false);
-        queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri1);
-        queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri2);
-        queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri3);
-        queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri4);
-        queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri5);
+        this.queryType123NamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
+        this.queryType123NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
+        this.queryType123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
+        this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri3);
         
-        queryTypeNoNamespacesMatchMethodAll = getNewTestQueryType();
-        queryTypeNoNamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryTypeNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
-        queryTypeNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
-
-        queryType123NamespacesMatchMethodAny = getNewTestQueryType();
-        queryType123NamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryType123NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
-        queryType123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
-        queryType123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri1);
-        queryType123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri2);
-        queryType123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri3);
+        this.queryType12345NamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryType12345NamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
+        this.queryType12345NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
+        this.queryType12345NamespacesMatchMethodAll.setHandleAllNamespaces(false);
+        this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri3);
+        this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri4);
+        this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri5);
         
-        queryType12345NamespacesMatchMethodAny = getNewTestQueryType();
-        queryType12345NamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryType12345NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
-        queryType12345NamespacesMatchMethodAny.setHandleAllNamespaces(false);
-        queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri1);
-        queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri2);
-        queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri3);
-        queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri4);
-        queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri5);
+        this.queryTypeNoNamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryTypeNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
+        this.queryTypeNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
+        this.queryTypeNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
         
-        queryTypeNoNamespacesMatchMethodAny = getNewTestQueryType();
-        queryTypeNoNamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryTypeNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
-        queryTypeNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
-
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = getNewTestQueryType();
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
-
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = getNewTestQueryType();
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
-
+        this.queryType123NamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryType123NamespacesMatchMethodAny.setNamespaceMatchMethod(this.getAnyNamespaceMatchMethodUri());
+        this.queryType123NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
+        this.queryType123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
+        this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
         
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = getNewTestQueryType();
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri1);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri2);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri3);
-
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = getNewTestQueryType();
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri1);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri2);
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri3);
+        this.queryType12345NamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryType12345NamespacesMatchMethodAny.setNamespaceMatchMethod(this.getAnyNamespaceMatchMethodUri());
+        this.queryType12345NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
+        this.queryType12345NamespacesMatchMethodAny.setHandleAllNamespaces(false);
+        this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
+        this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri4);
+        this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri5);
         
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = getNewTestQueryType();
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
-
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = getNewTestQueryType();
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
-
+        this.queryTypeNoNamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryTypeNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this.getAnyNamespaceMatchMethodUri());
+        this.queryTypeNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
+        this.queryTypeNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
         
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = getNewTestQueryType();
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(true);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri1);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri2);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(testNamespaceUri3);
-
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = getNewTestQueryType();
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(true);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri1);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri2);
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(testNamespaceUri3);
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this
+                .getAllNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
         
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = getNewTestQueryType();
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setNamespaceMatchMethod(getAnyNamespaceMatchMethodUri());
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
-
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = getNewTestQueryType();
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setNamespaceMatchMethod(getAllNamespaceMatchMethodUri());
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
-
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this
+                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
+        
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(this
+                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
+        
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(this
+                .getAllNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri3);
+        
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this
+                .getAllNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
+        
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this
+                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
+        
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(this
+                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(true);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .addNamespaceToHandle(this.testNamespaceUri3);
+        
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(this
+                .getAllNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(true);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .addNamespaceToHandle(this.testNamespaceUri1);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .addNamespaceToHandle(this.testNamespaceUri2);
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .addNamespaceToHandle(this.testNamespaceUri3);
+        
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = this.getNewTestQueryType();
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this
+                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
+        
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = this.getNewTestQueryType();
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this
+                .getAllNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
+        
     }
-
+    
     /**
      * @throws java.lang.Exception
      */
     @After
     public void tearDown() throws Exception
     {
-        testTrueQueryTypeUri = null;
-        testFalseQueryTypeUri = null;
-        testNamespaceUri1 = null;
-        testNamespaceUri2 = null;
-        testNamespaceUri3 = null;
-        testNamespaceUri4 = null;
-        testNamespaceUri5 = null;
-        testFalseNamespaceUri = null;        
-
-        namespacesFalse = null;
-        namespaces12345AndFalse = null;
-        namespaces12345 = null;
-        namespaces123 = null;
-        namespaces1orFalse = null;
-        namespaces1and2orFalse = null;
-        namespaces12 = null;
-        namespaces34 = null;
-        namespaces45 = null;
-
-        queryTypePublicIdentifiers = null;
-
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
-        queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = null;
-        queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = null;
+        this.testTrueQueryTypeUri = null;
+        this.testFalseQueryTypeUri = null;
+        this.testNamespaceUri1 = null;
+        this.testNamespaceUri2 = null;
+        this.testNamespaceUri3 = null;
+        this.testNamespaceUri4 = null;
+        this.testNamespaceUri5 = null;
+        this.testFalseNamespaceUri = null;
         
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
-        queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = null;
-        queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = null;
+        this.namespacesFalse = null;
+        this.namespaces12345AndFalse = null;
+        this.namespaces12345 = null;
+        this.namespaces123 = null;
+        this.namespaces1orFalse = null;
+        this.namespaces1and2orFalse = null;
+        this.namespaces12 = null;
+        this.namespaces34 = null;
+        this.namespaces45 = null;
         
-        queryType123NamespacesMatchMethodAll = null;
-        queryType12345NamespacesMatchMethodAll = null;
-        queryTypeNoNamespacesMatchMethodAll = null;
-
-        queryType123NamespacesMatchMethodAny = null;
-        queryType12345NamespacesMatchMethodAny = null;
-        queryTypeNoNamespacesMatchMethodAny = null;
+        this.queryTypePublicIdentifiers = null;
         
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = null;
-        queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = null;
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = null;
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = null;
+        
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = null;
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = null;
+        
+        this.queryType123NamespacesMatchMethodAll = null;
+        this.queryType12345NamespacesMatchMethodAll = null;
+        this.queryTypeNoNamespacesMatchMethodAll = null;
+        
+        this.queryType123NamespacesMatchMethodAny = null;
+        this.queryType12345NamespacesMatchMethodAny = null;
+        this.queryTypeNoNamespacesMatchMethodAny = null;
+        
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = null;
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = null;
     }
-
+    
     /**
-     * Test method for {@link org.queryall.api.QueryType#isInputVariablePublic(int)}.
+     * Test method for
+     * {@link org.queryall.api.QueryType#handlesNamespacesSpecifically(java.util.Collection)}.
+     * 
+     * This test requires the namespaces to be specifically declared for the test to succeed
      */
     @Test
-    public void testIsInputVariablePublic()
+    public void testHandlesNamespacesSpecifically()
     {
-        assertTrue(queryTypePublicIdentifiers.isInputVariablePublic(2));
-        assertFalse(queryTypePublicIdentifiers.isInputVariablePublic(1));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryType12345NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryType12345NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryType12345NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespacesSpecifically(this.namespaces12345AndFalse));
+        
     }
-
+    
     /**
-     * Test method for {@link org.queryall.api.QueryType#handlesNamespaceUris(java.util.Collection)}.
+     * Test method for {@link org.queryall.api.QueryType#handlesNamespaceUris(java.util.Collection)}
+     * .
      * 
      * This test does not require the namespaces to be specifically declared for the test to succeed
      */
     @Test
     public void testHandlesNamespaceUris()
     {
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-    
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces123));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12345AndFalse));
         
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertFalse(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
-    
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces123));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1and2orFalse));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces1orFalse));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces34));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces45));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespacesFalse));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespaceUris(namespaces12345AndFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12345AndFalse));
         
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces123));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1and2orFalse));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces1orFalse));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces34));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces45));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespacesFalse));
-        assertTrue(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespaceUris(namespaces12345AndFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces123));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces12345));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces34));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryType12345NamespacesMatchMethodAll.handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryType12345NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces123));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12345));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertTrue(this.queryType123NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNoNamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces123));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces12345));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces34));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryType12345NamespacesMatchMethodAny.handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertTrue(this.queryType12345NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertFalse(this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
+        
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces123));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1and2orFalse));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces1orFalse));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces34));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces45));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespacesFalse));
+        Assert.assertTrue(this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll
+                .handlesNamespaceUris(this.namespaces12345AndFalse));
         
     }
-
+    
     /**
-     * Test method for {@link org.queryall.api.QueryType#handlesNamespacesSpecifically(java.util.Collection)}.
-     *
-     * This test requires the namespaces to be specifically declared for the test to succeed
+     * Test method for {@link org.queryall.api.QueryType#isInputVariablePublic(int)}.
      */
     @Test
-    public void testHandlesNamespacesSpecifically()
+    public void testIsInputVariablePublic()
     {
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertTrue(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryType123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertTrue(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryType12345NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertTrue(queryType123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertTrue(queryType12345NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-        
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-    
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.handlesNamespacesSpecifically(namespaces12345AndFalse));
-        
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces123));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1and2orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces1orFalse));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces34));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces45));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespacesFalse));
-        assertFalse(queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.handlesNamespacesSpecifically(namespaces12345AndFalse));
-        
+        Assert.assertTrue(this.queryTypePublicIdentifiers.isInputVariablePublic(2));
+        Assert.assertFalse(this.queryTypePublicIdentifiers.isInputVariablePublic(1));
     }
-
+    
 }

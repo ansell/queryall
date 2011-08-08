@@ -1,11 +1,9 @@
 package org.queryall.api.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
@@ -16,7 +14,7 @@ import org.queryall.api.Provider;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractProviderTest 
+public abstract class AbstractProviderTest
 {
     protected URI testTrueQueryTypeUri = null;
     protected URI testFalseQueryTypeUri = null;
@@ -30,50 +28,49 @@ public abstract class AbstractProviderTest
     private Provider providerNonDefault = null;
     private Provider providerSpecificDefault = null;
     private Provider providerNoNamespacesDefault = null;
-
+    
     /**
-     * This method performs the following actions:
-     * - Creates new Providers for the Provider type fields using multiple calls to getNewTestProvider
-     * - Create org.openrdf.model.URI instances for the test URIs
-     * - Add testTrue*'s using the relevant methods from the API
+     * This method must be overridden to return a new instance of the implemented Provider class for
+     * each successive invocation
+     */
+    public abstract Provider getNewTestProvider();
+    
+    /**
+     * This method performs the following actions: - Creates new Providers for the Provider type
+     * fields using multiple calls to getNewTestProvider - Create org.openrdf.model.URI instances
+     * for the test URIs - Add testTrue*'s using the relevant methods from the API
      */
     @Before
     public void setUp() throws Exception
     {
-        ValueFactory f = new MemValueFactory();
-
-        testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
-        testFalseQueryTypeUri = f.createURI("http://example.org/test/excludedQueryType");
-        testTrueRuleUri = f.createURI("http://example.org/test/includedRule");
-        testFalseRuleUri = f.createURI("http://example.org/test/excludedRule");
-        testTrueNamespaceUri = f.createURI("http://example.org/test/includedNamespace");
-        testFalseNamespaceUri = f.createURI("http://example.org/test/excludedNamespace");
-        testTrueProviderUri = f.createURI("http://example.org/test/includedProvider");
-        testFalseProviderUri = f.createURI("http://example.org/test/excludedProvider");
-
-        providerNonDefault = getNewTestProvider();
-        providerNonDefault.setIsDefaultSource(false);
-        providerNonDefault.addIncludedInQueryType(testTrueQueryTypeUri);
-        providerNonDefault.addNormalisationUri(testTrueRuleUri);
-        providerNonDefault.addNamespace(testTrueNamespaceUri);
+        final ValueFactory f = new MemValueFactory();
         
-        providerSpecificDefault = getNewTestProvider();
-        providerSpecificDefault.setIsDefaultSource(true);
-        providerSpecificDefault.addIncludedInQueryType(testTrueQueryTypeUri);
-        providerSpecificDefault.addNormalisationUri(testTrueRuleUri);
-        providerSpecificDefault.addNamespace(testTrueNamespaceUri);
+        this.testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
+        this.testFalseQueryTypeUri = f.createURI("http://example.org/test/excludedQueryType");
+        this.testTrueRuleUri = f.createURI("http://example.org/test/includedRule");
+        this.testFalseRuleUri = f.createURI("http://example.org/test/excludedRule");
+        this.testTrueNamespaceUri = f.createURI("http://example.org/test/includedNamespace");
+        this.testFalseNamespaceUri = f.createURI("http://example.org/test/excludedNamespace");
+        this.testTrueProviderUri = f.createURI("http://example.org/test/includedProvider");
+        this.testFalseProviderUri = f.createURI("http://example.org/test/excludedProvider");
         
-        providerNoNamespacesDefault = getNewTestProvider();
-        providerNoNamespacesDefault.setIsDefaultSource(true);
-        providerNoNamespacesDefault.addIncludedInQueryType(testTrueQueryTypeUri);
-        providerNoNamespacesDefault.addNormalisationUri(testTrueRuleUri);
+        this.providerNonDefault = this.getNewTestProvider();
+        this.providerNonDefault.setIsDefaultSource(false);
+        this.providerNonDefault.addIncludedInQueryType(this.testTrueQueryTypeUri);
+        this.providerNonDefault.addNormalisationUri(this.testTrueRuleUri);
+        this.providerNonDefault.addNamespace(this.testTrueNamespaceUri);
+        
+        this.providerSpecificDefault = this.getNewTestProvider();
+        this.providerSpecificDefault.setIsDefaultSource(true);
+        this.providerSpecificDefault.addIncludedInQueryType(this.testTrueQueryTypeUri);
+        this.providerSpecificDefault.addNormalisationUri(this.testTrueRuleUri);
+        this.providerSpecificDefault.addNamespace(this.testTrueNamespaceUri);
+        
+        this.providerNoNamespacesDefault = this.getNewTestProvider();
+        this.providerNoNamespacesDefault.setIsDefaultSource(true);
+        this.providerNoNamespacesDefault.addIncludedInQueryType(this.testTrueQueryTypeUri);
+        this.providerNoNamespacesDefault.addNormalisationUri(this.testTrueRuleUri);
     }
-    
-    /**
-     * This method must be overridden to return a new instance of 
-     * the implemented Provider class for each successive invocation
-     */
-    public abstract Provider getNewTestProvider();
     
     /**
      * @throws java.lang.Exception
@@ -81,59 +78,62 @@ public abstract class AbstractProviderTest
     @After
     public void tearDown() throws Exception
     {
-        testTrueQueryTypeUri = null;
-        testFalseQueryTypeUri = null;
-        testTrueRuleUri = null;
-        testFalseRuleUri = null;
-        testTrueNamespaceUri = null;
-        testFalseNamespaceUri = null;
-        testTrueProviderUri = null;
-        testFalseProviderUri = null;
+        this.testTrueQueryTypeUri = null;
+        this.testFalseQueryTypeUri = null;
+        this.testTrueRuleUri = null;
+        this.testFalseRuleUri = null;
+        this.testTrueNamespaceUri = null;
+        this.testFalseNamespaceUri = null;
+        this.testTrueProviderUri = null;
+        this.testFalseProviderUri = null;
         
-        providerNonDefault = null;
-        providerSpecificDefault = null;
-        providerNoNamespacesDefault = null;
-    }
-
-    /**
-     * Test method for {@link org.queryall.api.Provider#containsQueryTypeUri(org.openrdf.model.URI)}.
-     */
-    @Test
-    public void testHandlesQueryTypes()
-    {
-        assertTrue(providerSpecificDefault.containsQueryTypeUri(testTrueQueryTypeUri));
-        assertFalse(providerSpecificDefault.containsQueryTypeUri(testFalseQueryTypeUri));
-        assertTrue(providerNonDefault.containsQueryTypeUri(testTrueQueryTypeUri));
-        assertFalse(providerNonDefault.containsQueryTypeUri(testFalseQueryTypeUri));
-        assertTrue(providerNoNamespacesDefault.containsQueryTypeUri(testTrueQueryTypeUri));
-        assertFalse(providerNoNamespacesDefault.containsQueryTypeUri(testFalseQueryTypeUri));
-    }
-
-    /**
-     * Test method for {@link org.queryall.api.Provider#containsNamespaceUri(org.openrdf.model.URI)}.
-     */
-    @Test
-    public void testContainsNamespaceUri()
-    {
-        assertTrue(providerSpecificDefault.containsNamespaceUri(testTrueNamespaceUri));
-        assertFalse(providerSpecificDefault.containsNamespaceUri(testFalseNamespaceUri));
-        assertTrue(providerNonDefault.containsNamespaceUri(testTrueNamespaceUri));
-        assertFalse(providerNonDefault.containsNamespaceUri(testFalseNamespaceUri));
-        assertFalse(providerNoNamespacesDefault.containsNamespaceUri(testTrueNamespaceUri));
-        assertFalse(providerNoNamespacesDefault.containsNamespaceUri(testFalseNamespaceUri));
+        this.providerNonDefault = null;
+        this.providerSpecificDefault = null;
+        this.providerNoNamespacesDefault = null;
     }
     
     /**
-     * Test method for {@link org.queryall.api.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}.
      */
     @Test
     public void testContainsNamespaceOrDefault()
     {
-        assertTrue(providerSpecificDefault.containsNamespaceOrDefault(testTrueNamespaceUri));
-        assertTrue(providerSpecificDefault.containsNamespaceOrDefault(testFalseNamespaceUri));
-        assertTrue(providerNonDefault.containsNamespaceOrDefault(testTrueNamespaceUri));
-        assertFalse(providerNonDefault.containsNamespaceOrDefault(testFalseNamespaceUri));
-        assertTrue(providerNoNamespacesDefault.containsNamespaceOrDefault(testTrueNamespaceUri));
-        assertTrue(providerNoNamespacesDefault.containsNamespaceOrDefault(testFalseNamespaceUri));
+        Assert.assertTrue(this.providerSpecificDefault.containsNamespaceOrDefault(this.testTrueNamespaceUri));
+        Assert.assertTrue(this.providerSpecificDefault.containsNamespaceOrDefault(this.testFalseNamespaceUri));
+        Assert.assertTrue(this.providerNonDefault.containsNamespaceOrDefault(this.testTrueNamespaceUri));
+        Assert.assertFalse(this.providerNonDefault.containsNamespaceOrDefault(this.testFalseNamespaceUri));
+        Assert.assertTrue(this.providerNoNamespacesDefault.containsNamespaceOrDefault(this.testTrueNamespaceUri));
+        Assert.assertTrue(this.providerNoNamespacesDefault.containsNamespaceOrDefault(this.testFalseNamespaceUri));
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.Provider#containsNamespaceUri(org.openrdf.model.URI)}
+     * .
+     */
+    @Test
+    public void testContainsNamespaceUri()
+    {
+        Assert.assertTrue(this.providerSpecificDefault.containsNamespaceUri(this.testTrueNamespaceUri));
+        Assert.assertFalse(this.providerSpecificDefault.containsNamespaceUri(this.testFalseNamespaceUri));
+        Assert.assertTrue(this.providerNonDefault.containsNamespaceUri(this.testTrueNamespaceUri));
+        Assert.assertFalse(this.providerNonDefault.containsNamespaceUri(this.testFalseNamespaceUri));
+        Assert.assertFalse(this.providerNoNamespacesDefault.containsNamespaceUri(this.testTrueNamespaceUri));
+        Assert.assertFalse(this.providerNoNamespacesDefault.containsNamespaceUri(this.testFalseNamespaceUri));
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.Provider#containsQueryTypeUri(org.openrdf.model.URI)}
+     * .
+     */
+    @Test
+    public void testHandlesQueryTypes()
+    {
+        Assert.assertTrue(this.providerSpecificDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
+        Assert.assertFalse(this.providerSpecificDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
+        Assert.assertTrue(this.providerNonDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
+        Assert.assertFalse(this.providerNonDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
+        Assert.assertTrue(this.providerNoNamespacesDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
+        Assert.assertFalse(this.providerNoNamespacesDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
     }
 }

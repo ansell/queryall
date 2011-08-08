@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -34,6 +32,8 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
+import org.queryall.api.utils.PropertyUtils;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.utils.RdfUtils;
 
 /**
@@ -48,10 +48,6 @@ public class Settings implements QueryAllConfiguration
     private static final boolean _DEBUG = Settings.log.isDebugEnabled();
     private static final boolean _INFO = Settings.log.isInfoEnabled();
     
-    // This matches the queryall.properties file where
-    // the generally static API specific section of the configuration settings
-    // are stored
-    public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
     public static final int CONFIG_API_VERSION = 5;
     public static final String VERSION = Settings.getVersion();
     
@@ -66,54 +62,6 @@ public class Settings implements QueryAllConfiguration
     }
     
     /**
-     * Checks for the key first in the system vm properties, then in the localisation properties
-     * file, by default, "queryall.properties", then uses the defaultValue if the location is still
-     * unknown
-     * 
-     * @param key
-     *            The key to check for first in system vm properties and then in the localisation
-     *            properties file
-     * @param defaultValue
-     *            The value to return if the key does not match any configured value
-     * @return the string matching the key
-     */
-    public static String getSystemOrPropertyString(final String key, final String defaultValue)
-    {
-        String result = System.getProperty(key);
-        
-        if(result == null)
-        {
-            try
-            {
-                result = ResourceBundle.getBundle(Settings.DEFAULT_PROPERTIES_BUNDLE_NAME).getString(key);
-            }
-            catch(final MissingResourceException mre)
-            {
-                if(Settings._TRACE)
-                {
-                    Settings.log.trace(mre, mre);
-                }
-            }
-            catch(final Exception ex)
-            {
-                if(Settings._DEBUG)
-                {
-                    Settings.log.debug(ex, ex);
-                }
-            }
-        }
-        
-        if(result == null)
-        {
-            return defaultValue;
-        }
-        else
-        {
-            return result;
-        }
-    }
-    
-    /**
      * Checks for the configured version first in the system vm properties, then in the localisation
      * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
      * 
@@ -121,67 +69,17 @@ public class Settings implements QueryAllConfiguration
      */
     private static String getVersion()
     {
-        return Settings.getSystemOrPropertyString("queryall.Version", "0.0.1");
+        return PropertyUtils.getSystemOrPropertyString("queryall.Version", "0.0.1");
     }
     
     // These properties are pulled out of the queryall.properties file
-    private final String defaultOntologyTermUriPrefix = Settings.getSystemOrPropertyString(
+    private final String defaultOntologyTermUriPrefix = PropertyUtils.getSystemOrPropertyString(
             "queryall.ontologyTermUriPrefix", "http://purl.org/queryall/");
-    private final String defaultOntologyTermUriSuffix = Settings.getSystemOrPropertyString(
+    private final String defaultOntologyTermUriSuffix = PropertyUtils.getSystemOrPropertyString(
             "queryall.ontologyTermUriSuffix", ":");
-    private final String defaultRdfWebappConfigurationNamespace = Settings.getSystemOrPropertyString(
-            "queryall.WebappConfigurationNamespace", "webapp_configuration");
-    private final String defaultRdfProjectNamespace = Settings.getSystemOrPropertyString("queryall.ProjectNamespace",
-            "project");
-    private final String defaultRdfProviderNamespace = Settings.getSystemOrPropertyString("queryall.ProviderNamespace",
-            "provider");
-    private final String defaultRdfTemplateNamespace = Settings.getSystemOrPropertyString("queryall.TemplateNamespace",
-            "template");
-    private final String defaultRdfQueryNamespace = Settings.getSystemOrPropertyString("queryall.QueryNamespace",
-            "query");
-    private final String defaultRdfQuerybundleNamespace = Settings.getSystemOrPropertyString(
-            "queryall.QueryBundleNamespace", "querybundle");
-    private final String defaultRdfRuleNamespace = Settings.getSystemOrPropertyString("queryall.RuleNamespace",
-            "rdfrule");
-    private final String defaultRdfRuleTestNamespace = Settings.getSystemOrPropertyString("queryall.RuleTestNamespace",
-            "ruletest");
-    private final String defaultRdfNamespaceEntryNamespace = Settings.getSystemOrPropertyString(
-            "queryall.NamespaceEntryNamespace", "ns");
-    private final String defaultRdfProfileNamespace = Settings.getSystemOrPropertyString("queryall.ProfileNamespace",
-            "profile");
-    private final String defaultRdfProvenanceNamespace = Settings.getSystemOrPropertyString(
-            "queryall.ProvenanceNamespace", "provenance");
-    private final String defaultRdfStatisticsNamespace = Settings.getSystemOrPropertyString(
-            "queryall.StatisticsNamespace", "statistics");
     
     private String currentOntologyTermUriPrefix = this.defaultOntologyTermUriPrefix;
     private String currentOntologyTermUriSuffix = this.defaultOntologyTermUriSuffix;
-    private String currentRdfWebappConfigurationNamespace = this.defaultRdfWebappConfigurationNamespace;
-    private String currentRdfProjectNamespace = this.defaultRdfProjectNamespace;
-    private String currentRdfProviderNamespace = this.defaultRdfProviderNamespace;
-    private String currentRdfTemplateNamespace = this.defaultRdfTemplateNamespace;
-    private String currentRdfQueryNamespace = this.defaultRdfQueryNamespace;
-    private String currentRdfQuerybundleNamespace = this.defaultRdfQuerybundleNamespace;
-    private String currentRdfRuleNamespace = this.defaultRdfRuleNamespace;
-    private String currentRdfRuleTestNamespace = this.defaultRdfRuleTestNamespace;
-    private String currentRdfNamespaceEntryNamespace = this.defaultRdfNamespaceEntryNamespace;
-    private String currentRdfProfileNamespace = this.defaultRdfProfileNamespace;
-    private String currentRdfProvenanceNamespace = this.defaultRdfProvenanceNamespace;
-    private String currentRdfStatisticsNamespace = this.defaultRdfStatisticsNamespace;
-    
-    private final String defaultAutogeneratedQueryPrefix = Settings.getSystemOrPropertyString(
-            "queryall.AutogeneratedQueryPrefix", "autogen-");
-    private final String defaultAutogeneratedQuerySuffix = Settings.getSystemOrPropertyString(
-            "queryall.AutogeneratedQuerySuffix", "");
-    private final String defaultAutogeneratedProviderPrefix = Settings.getSystemOrPropertyString(
-            "queryall.AutogeneratedProviderPrefix", "autogen-");
-    private final String defaultAutogeneratedProviderSuffix = Settings.getSystemOrPropertyString(
-            "queryall.AutogeneratedProviderSuffix", "");
-    
-    private String currentAutogeneratedQueryPrefix = this.defaultAutogeneratedQueryPrefix;
-    private String currentAutogeneratedQuerySuffix = this.defaultAutogeneratedQuerySuffix;
-    private String currentAutogeneratedProviderPrefix = this.defaultAutogeneratedProviderPrefix;
-    private String currentAutogeneratedProviderSuffix = this.defaultAutogeneratedProviderSuffix;
     
     private String baseConfigLocation = null;
     private String baseConfigUri = null;
@@ -219,7 +117,7 @@ public class Settings implements QueryAllConfiguration
      */
     private static String getDefaultBaseConfigLocationProperty()
     {
-        return Settings.getSystemOrPropertyString("queryall.BaseConfigLocation", "/queryallBaseConfig.n3");
+        return PropertyUtils.getSystemOrPropertyString("queryall.BaseConfigLocation", "/queryallBaseConfig.n3");
     }
     
     /**
@@ -229,7 +127,7 @@ public class Settings implements QueryAllConfiguration
      */
     private static String getDefaultBaseConfigMimeFormatProperty()
     {
-        return Settings.getSystemOrPropertyString("queryall.BaseConfigMimeFormat", "text/rdf+n3");
+        return PropertyUtils.getSystemOrPropertyString("queryall.BaseConfigMimeFormat", "text/rdf+n3");
     }
     
     /**
@@ -241,7 +139,7 @@ public class Settings implements QueryAllConfiguration
      */
     private static String getDefaultBaseConfigUriProperty()
     {
-        return Settings.getSystemOrPropertyString("queryall.BaseConfigUri",
+        return PropertyUtils.getSystemOrPropertyString("queryall.BaseConfigUri",
                 "http://purl.org/queryall/webapp_configuration:theBaseConfig");
     }
     
@@ -545,6 +443,48 @@ public class Settings implements QueryAllConfiguration
         return false;
     }
     
+    private void doConfigKeyCache(final URI subjectKey, final URI propertyKey, final Collection<Value> newObject)
+    {
+        if(newObject == null)
+        {
+            throw new RuntimeException("Cannot cache null property items subjectKey=" + subjectKey + " propertyKey="
+                    + propertyKey);
+        }
+        
+        if(this.cachedWebAppConfigSearches == null)
+        {
+            this.cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
+        }
+        
+        if(this.cachedWebAppConfigSearches.containsKey(subjectKey))
+        {
+            final Map<URI, Collection<Value>> currentCache = this.cachedWebAppConfigSearches.get(subjectKey);
+            
+            if(currentCache == null)
+            {
+                throw new RuntimeException("Found a null cache item for subjectKey=" + subjectKey);
+            }
+            else if(!currentCache.containsKey(propertyKey))
+            {
+                currentCache.put(propertyKey, newObject);
+                // log.trace("Settings.doConfigKeyCache: Added new cache property item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
+            }
+            else if(Settings._TRACE)
+            {
+                Settings.log.trace("Settings.doConfigKeyCache: Already cached item for subjectKey=" + subjectKey
+                        + " propertyKey=" + propertyKey);
+            }
+        }
+        else
+        {
+            final Map<URI, Collection<Value>> newCache =
+                    Collections.synchronizedMap(new HashMap<URI, Collection<Value>>());
+            newCache.put(propertyKey, newObject);
+            this.cachedWebAppConfigSearches.put(subjectKey, newCache);
+            // log.trace("Settings.doConfigKeyCache: New cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
+        }
+    }
+    
     @Override
     public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
@@ -812,38 +752,6 @@ public class Settings implements QueryAllConfiguration
         }
     }
     
-    /**
-     * @return the aUTOGENERATED_PROVIDER_PREFIX
-     */
-    public String getAutogeneratedProviderPrefix()
-    {
-        return this.currentAutogeneratedProviderPrefix;
-    }
-    
-    /**
-     * @return the aUTOGENERATED_PROVIDER_SUFFIX
-     */
-    public String getAutogeneratedProviderSuffix()
-    {
-        return this.currentAutogeneratedProviderSuffix;
-    }
-    
-    /**
-     * @return the aUTOGENERATED_QUERY_PREFIX
-     */
-    public String getAutogeneratedQueryPrefix()
-    {
-        return this.currentAutogeneratedQueryPrefix;
-    }
-    
-    /**
-     * @return the aUTOGENERATED_QUERY_SUFFIX
-     */
-    public String getAutogeneratedQuerySuffix()
-    {
-        return this.currentAutogeneratedQuerySuffix;
-    }
-    
     public String getBaseConfigLocation()
     {
         if(this.baseConfigLocation == null)
@@ -868,743 +776,6 @@ public class Settings implements QueryAllConfiguration
         }
         
         return this.baseConfigMimeFormat;
-    }
-    
-    @Override
-    public boolean getBooleanProperty(final String key, final boolean defaultValue)
-    {
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getBooleanPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        boolean result = defaultValue;
-        
-        final Collection<Value> values = this.getValueProperties(key);
-        
-        if(values.size() != 1)
-        {
-            Settings.log.error("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final Value nextValue : values)
-        {
-            result = RdfUtils.getBooleanFromValue(nextValue);
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getBooleanPropertyFromConfig: key=" + key + " result=" + result);
-        }
-        
-        return result;
-    }
-    
-    @Override
-    public String getDefaultHostAddress()
-    {
-        return this.getStringProperty("uriPrefix", "http://") + this.getStringProperty("hostName", "bio2rdf.org")
-                + this.getStringProperty("uriSuffix", "/");
-    }
-    
-    @Override
-    public float getFloatProperty(final String key, final float defaultValue)
-    {
-        float result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getFloatPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<Value> values = this.getValueProperties(key);
-        
-        if(values.size() != 1)
-        {
-            Settings.log.error("Settings.getFloatPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final Value nextValue : values)
-        {
-            result = RdfUtils.getFloatFromValue(nextValue);
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getFloatPropertyFromConfig: key=" + key + " result=" + result);
-        }
-        
-        return result;
-    }
-    
-    @Override
-    public int getIntProperty(final String key, final int defaultValue)
-    {
-        int result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getIntPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<Value> values = this.getValueProperties(key);
-        
-        if(values.size() != 1)
-        {
-            Settings.log.error("Settings.getIntPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final Value nextValue : values)
-        {
-            result = RdfUtils.getIntegerFromValue(nextValue);
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getIntPropertyFromConfig: key=" + key + " result=" + result);
-        }
-        
-        return result;
-    }
-    
-    @Override
-    public long getLongProperty(final String key, final long defaultValue)
-    {
-        long result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getLongPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<Value> values = this.getValueProperties(key);
-        
-        if(values.size() != 1)
-        {
-            Settings.log.error("Settings.getLongPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final Value nextValue : values)
-        {
-            result = RdfUtils.getLongFromValue(nextValue);
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getLongPropertyFromConfig: key=" + key + " result=" + result);
-        }
-        
-        return result;
-    }
-    
-    /**
-     * @return the current_RDF_NAMESPACEENTRY_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForNamespaceEntry()
-    {
-        return this.currentRdfNamespaceEntryNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_RDFRULE_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForNormalisationRule()
-    {
-        return this.currentRdfRuleNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_PROFILE_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForProfile()
-    {
-        return this.currentRdfProfileNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_PROJECT_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForProject()
-    {
-        return this.currentRdfProjectNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_PROVENANCE_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForProvenance()
-    {
-        return this.currentRdfProvenanceNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_PROVIDER_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForProvider()
-    {
-        return this.currentRdfProviderNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_QUERYBUNDLE_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForQueryBundle()
-    {
-        return this.currentRdfQuerybundleNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_QUERY_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForQueryType()
-    {
-        return this.currentRdfQueryNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_RULETEST_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForRuleTest()
-    {
-        return this.currentRdfRuleTestNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_STATISTICS_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForStatistics()
-    {
-        return this.currentRdfStatisticsNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_TEMPLATE_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForTemplate()
-    {
-        return this.currentRdfTemplateNamespace;
-    }
-    
-    /**
-     * @return the current_RDF_WEBAPP_CONFIGURATION_NAMESPACE
-     */
-    @Override
-    public String getNamespaceForWebappConfiguration()
-    {
-        return this.currentRdfWebappConfigurationNamespace;
-    }
-    
-    /**
-     * @return the cachedNamespacePrefixToUriEntries
-     */
-    @Override
-    public Map<String, Collection<URI>> getNamespacePrefixesToUris()
-    {
-        if(this.cachedNamespacePrefixToUriEntries == null)
-        {
-            this.getAllNamespaceEntries();
-        }
-        
-        return this.cachedNamespacePrefixToUriEntries;
-    }
-    
-    /**
-     * @return the dEFAULT_ONTOLOGYTERMURI_PREFIX
-     */
-    @Override
-    public String getOntologyTermUriPrefix()
-    {
-        return this.currentOntologyTermUriPrefix;
-    }
-    
-    /**
-     * @return the current_ONTOLOGYTERMURI_SUFFIX
-     */
-    @Override
-    public String getOntologyTermUriSuffix()
-    {
-        return this.currentOntologyTermUriSuffix;
-    }
-    
-    @Override
-    public Pattern getPlainNamespaceAndIdentifierPattern()
-    {
-        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", ""));
-    }
-    
-    @Override
-    public Pattern getPlainNamespacePattern()
-    {
-        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", ""));
-    }
-    
-    @Override
-    public Collection<Statement> getStatementProperties(final String key)
-    {
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getStatementPropertiesFromConfig: key=" + key);
-        }
-        
-        final Collection<Statement> results = new HashSet<Statement>();
-        
-        try
-        {
-            final Repository webappConfig = this.getWebAppConfigurationRdf();
-            
-            final ValueFactory f = webappConfig.getValueFactory();
-            
-            // TODO: in future should reform this to accept a full URI as the
-            // key so properties outside of the queryall vocabulary can be used
-            // for properties
-            final URI propertyUri =
-                    f.createURI(
-                            this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration()
-                                    + this.getOntologyTermUriSuffix(), key);
-            
-            if(Settings._TRACE)
-            {
-                Settings.log.trace("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="
-                        + this.getWebappConfigUriList().size());
-            }
-            
-            for(final String nextConfigUri : this.getWebappConfigUriList())
-            {
-                final URI configUri = f.createURI(nextConfigUri);
-                
-                if(Settings._TRACE)
-                {
-                    Settings.log.trace("Settings.getStatementPropertiesFromConfig: configUri="
-                            + configUri.stringValue() + " propertyUri=" + propertyUri.stringValue());
-                }
-                
-                results.addAll(this.getStatementProperties(configUri, propertyUri, webappConfig));
-            }
-        }
-        catch(final Exception ex)
-        {
-            Settings.log.error("Settings.getStatementPropertiesFromConfig: error", ex);
-        }
-        
-        return results;
-    }
-    
-    @Override
-    public Collection<String> getStringProperties(final String key)
-    {
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getStringCollectionPropertiesFromConfig: key=" + key);
-        }
-        
-        final Collection<String> results = new LinkedList<String>();
-        
-        final Collection<Value> values = this.getValueProperties(key);
-        
-        for(final Value nextValue : values)
-        {
-            results.add(nextValue.stringValue());
-            // results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
-        }
-        
-        return results;
-    }
-    
-    @Override
-    public String getStringProperty(final String key, final String defaultValue)
-    {
-        String result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<String> values = this.getStringProperties(key);
-        
-        if(values.size() != 1)
-        {
-            Settings.log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final String nextValue : values)
-        {
-            result = nextValue;
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue
-                    + " returning result=" + result);
-        }
-        
-        return result;
-    }
-    
-    @Override
-    public Pattern getTagPattern()
-    {
-        if(this.cachedTagPattern != null)
-        {
-            return this.cachedTagPattern;
-        }
-        
-        final Pattern tempPattern =
-                Pattern.compile(this.getStringProperty("tagPatternRegex", ".*(\\$\\{[\\w_-]+\\}).*"));
-        
-        if(tempPattern != null)
-        {
-            this.cachedTagPattern = tempPattern;
-        }
-        
-        return tempPattern;
-    }
-    
-    @Override
-    public Collection<URI> getURIProperties(final String key)
-    {
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getURICollectionPropertiesFromConfig: key=" + key);
-        }
-        
-        final Collection<URI> results = new HashSet<URI>();
-        
-        for(final Value nextValue : this.getValueProperties(key))
-        {
-            if(nextValue instanceof URI)
-            {
-                results.add((URI)nextValue);
-            }
-            else
-            {
-                Settings.log
-                        .fatal("Settings.getURICollectionPropertiesFromConfig: nextValue was not an instance of URI key="
-                                + key + " nextValue=" + nextValue);
-            }
-        }
-        
-        return results;
-    }
-    
-    @Override
-    public URI getURIProperty(final String key, final URI defaultValue)
-    {
-        URI result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getUriPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<URI> values = this.getURIProperties(key);
-        
-        if(values.size() != 1)
-        {
-            Settings.log.error("Settings.getUriPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final URI nextValue : values)
-        {
-            result = nextValue;
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("Settings.getUriPropertyFromConfig: key=" + key + " result=" + result);
-        }
-        
-        return result;
-        
-    }
-    
-    /**
-     * @return the webappConfigUriList
-     */
-    public Collection<String> getWebappConfigUriList()
-    {
-        return this.webappConfigUriList;
-    }
-    
-    public boolean isManualRefreshAllowed()
-    {
-        final boolean manualRefresh = this.getBooleanProperty("enableManualConfigurationRefresh", true);
-        final long timestampDiff = (System.currentTimeMillis() - this.initialisedTimestamp);
-        final long manualRefreshMinimum = this.getLongProperty("manualConfigurationMinimumMilliseconds", 60000L);
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log.debug("isManualRefreshAllowed: manualRefresh=" + manualRefresh);
-            Settings.log.debug("isManualRefreshAllowed: timestampDiff=" + timestampDiff);
-            Settings.log.debug("isManualRefreshAllowed: manualRefreshMinimum=" + manualRefreshMinimum);
-            
-        }
-        
-        if(manualRefreshMinimum < 0)
-        {
-            Settings.log.error("isManualRefreshAllowed: manualRefreshMinimum was less than 0");
-        }
-        
-        return manualRefresh && (timestampDiff > manualRefreshMinimum);
-    }
-    
-    /**
-     * @param aUTOGENERATED_PROVIDER_PREFIX
-     *            the aUTOGENERATED_PROVIDER_PREFIX to set
-     */
-    public void setAutogeneratedProviderPrefix(final String aUTOGENERATED_PROVIDER_PREFIX)
-    {
-        this.currentAutogeneratedProviderPrefix = aUTOGENERATED_PROVIDER_PREFIX;
-    }
-    
-    /**
-     * @param aUTOGENERATED_PROVIDER_SUFFIX
-     *            the aUTOGENERATED_PROVIDER_SUFFIX to set
-     */
-    public void setAutogeneratedProviderSuffix(final String aUTOGENERATED_PROVIDER_SUFFIX)
-    {
-        this.currentAutogeneratedProviderSuffix = aUTOGENERATED_PROVIDER_SUFFIX;
-    }
-    
-    /**
-     * @param autogeneratedQueryPrefix
-     *            the aUTOGENERATED_QUERY_PREFIX to set
-     */
-    public void setAutogeneratedQueryPrefix(final String autogeneratedQueryPrefix)
-    {
-        this.currentAutogeneratedQueryPrefix = autogeneratedQueryPrefix;
-    }
-    
-    /**
-     * @param aUTOGENERATED_QUERY_SUFFIX
-     *            the aUTOGENERATED_QUERY_SUFFIX to set
-     */
-    public void setAutogeneratedQuerySuffix(final String aUTOGENERATED_QUERY_SUFFIX)
-    {
-        this.currentAutogeneratedQuerySuffix = aUTOGENERATED_QUERY_SUFFIX;
-    }
-    
-    /**
-     * @param current_RDF_NAMESPACEENTRY_NAMESPACE
-     *            the current_RDF_NAMESPACEENTRY_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForNamespaceEntry(final String current_RDF_NAMESPACEENTRY_NAMESPACE)
-    {
-        this.currentRdfNamespaceEntryNamespace = current_RDF_NAMESPACEENTRY_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_RDFRULE_NAMESPACE
-     *            the current_RDF_RDFRULE_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForNormalisationRule(final String current_RDF_RDFRULE_NAMESPACE)
-    {
-        this.currentRdfRuleNamespace = current_RDF_RDFRULE_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_PROFILE_NAMESPACE
-     *            the current_RDF_PROFILE_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForProfile(final String current_RDF_PROFILE_NAMESPACE)
-    {
-        this.currentRdfProfileNamespace = current_RDF_PROFILE_NAMESPACE;
-    }
-    
-    /**
-     * @param rdfProjectNamespace
-     *            the current_RDF_PROJECT_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForProject(final String rdfProjectNamespace)
-    {
-        this.currentRdfProjectNamespace = rdfProjectNamespace;
-    }
-    
-    /**
-     * @param current_RDF_PROVENANCE_NAMESPACE
-     *            the current_RDF_PROVENANCE_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForProvenance(final String current_RDF_PROVENANCE_NAMESPACE)
-    {
-        this.currentRdfProvenanceNamespace = current_RDF_PROVENANCE_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_PROVIDER_NAMESPACE
-     *            the current_RDF_PROVIDER_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForProvider(final String current_RDF_PROVIDER_NAMESPACE)
-    {
-        this.currentRdfProviderNamespace = current_RDF_PROVIDER_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_QUERYBUNDLE_NAMESPACE
-     *            the current_RDF_QUERYBUNDLE_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForQueryBundle(final String current_RDF_QUERYBUNDLE_NAMESPACE)
-    {
-        this.currentRdfQuerybundleNamespace = current_RDF_QUERYBUNDLE_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_QUERY_NAMESPACE
-     *            the current_RDF_QUERY_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForQueryType(final String current_RDF_QUERY_NAMESPACE)
-    {
-        this.currentRdfQueryNamespace = current_RDF_QUERY_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_RULETEST_NAMESPACE
-     *            the current_RDF_RULETEST_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForRuleTest(final String current_RDF_RULETEST_NAMESPACE)
-    {
-        this.currentRdfRuleTestNamespace = current_RDF_RULETEST_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_STATISTICS_NAMESPACE
-     *            the current_RDF_STATISTICS_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForStatistics(final String current_RDF_STATISTICS_NAMESPACE)
-    {
-        this.currentRdfStatisticsNamespace = current_RDF_STATISTICS_NAMESPACE;
-    }
-    
-    /**
-     * @param current_RDF_TEMPLATE_NAMESPACE
-     *            the current_RDF_TEMPLATE_NAMESPACE to set
-     */
-    @Override
-    public void setNamespaceForTemplate(final String current_RDF_TEMPLATE_NAMESPACE)
-    {
-        this.currentRdfTemplateNamespace = current_RDF_TEMPLATE_NAMESPACE;
-    }
-    
-    /**
-     * @param rdfWebappConfigurationNamespace
-     *            the currentRdfWebappConfigurationNamespace to set
-     */
-    @Override
-    public void setNamespaceForWebappConfiguration(final String rdfWebappConfigurationNamespace)
-    {
-        this.currentRdfWebappConfigurationNamespace = rdfWebappConfigurationNamespace;
-    }
-    
-    /**
-     * @param cachedNamespacePrefixToUriEntries
-     *            the cachedNamespacePrefixToUriEntries to set
-     */
-    public void setNamespacePrefixesToUris(final Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries)
-    {
-        this.cachedNamespacePrefixToUriEntries = cachedNamespacePrefixToUriEntries;
-    }
-    
-    /**
-     * @param ontologyTermUriPrefix
-     *            the dEFAULT_ONTOLOGYTERMURI_PREFIX to set
-     */
-    @Override
-    public void setOntologyTermUriPrefix(final String ontologyTermUriPrefix)
-    {
-        this.currentOntologyTermUriPrefix = ontologyTermUriPrefix;
-    }
-    
-    /**
-     * @param current_ONTOLOGYTERMURI_SUFFIX
-     *            the current_ONTOLOGYTERMURI_SUFFIX to set
-     */
-    @Override
-    public void setOntologyTermUriSuffix(final String current_ONTOLOGYTERMURI_SUFFIX)
-    {
-        this.currentOntologyTermUriSuffix = current_ONTOLOGYTERMURI_SUFFIX;
-    }
-    
-    /**
-     * @param webappConfigUriList
-     *            the webappConfigUriList to set
-     */
-    public void setWebappConfigUriList(final Collection<String> webappConfigUriList)
-    {
-        this.webappConfigUriList = webappConfigUriList;
-    }
-    
-    private void doConfigKeyCache(final URI subjectKey, final URI propertyKey, final Collection<Value> newObject)
-    {
-        if(newObject == null)
-        {
-            throw new RuntimeException("Cannot cache null property items subjectKey=" + subjectKey + " propertyKey="
-                    + propertyKey);
-        }
-        
-        if(this.cachedWebAppConfigSearches == null)
-        {
-            this.cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
-        }
-        
-        if(this.cachedWebAppConfigSearches.containsKey(subjectKey))
-        {
-            final Map<URI, Collection<Value>> currentCache = this.cachedWebAppConfigSearches.get(subjectKey);
-            
-            if(currentCache == null)
-            {
-                throw new RuntimeException("Found a null cache item for subjectKey=" + subjectKey);
-            }
-            else if(!currentCache.containsKey(propertyKey))
-            {
-                currentCache.put(propertyKey, newObject);
-                // log.trace("Settings.doConfigKeyCache: Added new cache property item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
-            }
-            else if(Settings._TRACE)
-            {
-                Settings.log.trace("Settings.doConfigKeyCache: Already cached item for subjectKey=" + subjectKey
-                        + " propertyKey=" + propertyKey);
-            }
-        }
-        else
-        {
-            final Map<URI, Collection<Value>> newCache =
-                    Collections.synchronizedMap(new HashMap<URI, Collection<Value>>());
-            newCache.put(propertyKey, newObject);
-            this.cachedWebAppConfigSearches.put(subjectKey, newCache);
-            // log.trace("Settings.doConfigKeyCache: New cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
-        }
     }
     
     private synchronized Repository getBaseConfigurationRdf() throws java.lang.InterruptedException
@@ -1765,6 +936,38 @@ public class Settings implements QueryAllConfiguration
         return this.baseConfigUri;
     }
     
+    @Override
+    public boolean getBooleanProperty(final String key, final boolean defaultValue)
+    {
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getBooleanPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+        }
+        
+        boolean result = defaultValue;
+        
+        final Collection<Value> values = this.getValueProperties(key);
+        
+        if(values.size() != 1)
+        {
+            Settings.log.error("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            return defaultValue;
+        }
+        
+        for(final Value nextValue : values)
+        {
+            result = RdfUtils.getBooleanFromValue(nextValue);
+        }
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getBooleanPropertyFromConfig: key=" + key + " result=" + result);
+        }
+        
+        return result;
+    }
+    
     private Collection<Value> getConfigKeyCached(final URI subjectKey, final URI propertyKey)
     {
         if(this.cachedWebAppConfigSearches != null && this.cachedWebAppConfigSearches.containsKey(subjectKey))
@@ -1793,6 +996,135 @@ public class Settings implements QueryAllConfiguration
         }
         
         return null;
+    }
+    
+    @Override
+    public String getDefaultHostAddress()
+    {
+        return this.getStringProperty("uriPrefix", "http://") + this.getStringProperty("hostName", "bio2rdf.org")
+                + this.getStringProperty("uriSuffix", "/");
+    }
+    
+    @Override
+    public float getFloatProperty(final String key, final float defaultValue)
+    {
+        float result = defaultValue;
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getFloatPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+        }
+        
+        final Collection<Value> values = this.getValueProperties(key);
+        
+        if(values.size() != 1)
+        {
+            Settings.log.error("Settings.getFloatPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            return defaultValue;
+        }
+        
+        for(final Value nextValue : values)
+        {
+            result = RdfUtils.getFloatFromValue(nextValue);
+        }
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getFloatPropertyFromConfig: key=" + key + " result=" + result);
+        }
+        
+        return result;
+    }
+    
+    @Override
+    public int getIntProperty(final String key, final int defaultValue)
+    {
+        int result = defaultValue;
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getIntPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+        }
+        
+        final Collection<Value> values = this.getValueProperties(key);
+        
+        if(values.size() != 1)
+        {
+            Settings.log.error("Settings.getIntPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            return defaultValue;
+        }
+        
+        for(final Value nextValue : values)
+        {
+            result = RdfUtils.getIntegerFromValue(nextValue);
+        }
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getIntPropertyFromConfig: key=" + key + " result=" + result);
+        }
+        
+        return result;
+    }
+    
+    @Override
+    public long getLongProperty(final String key, final long defaultValue)
+    {
+        long result = defaultValue;
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getLongPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+        }
+        
+        final Collection<Value> values = this.getValueProperties(key);
+        
+        if(values.size() != 1)
+        {
+            Settings.log.error("Settings.getLongPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            return defaultValue;
+        }
+        
+        for(final Value nextValue : values)
+        {
+            result = RdfUtils.getLongFromValue(nextValue);
+        }
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getLongPropertyFromConfig: key=" + key + " result=" + result);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @return the cachedNamespacePrefixToUriEntries
+     */
+    @Override
+    public Map<String, Collection<URI>> getNamespacePrefixesToUris()
+    {
+        if(this.cachedNamespacePrefixToUriEntries == null)
+        {
+            this.getAllNamespaceEntries();
+        }
+        
+        return this.cachedNamespacePrefixToUriEntries;
+    }
+    
+    @Override
+    public Pattern getPlainNamespaceAndIdentifierPattern()
+    {
+        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", ""));
+    }
+    
+    @Override
+    public Pattern getPlainNamespacePattern()
+    {
+        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", ""));
     }
     
     private synchronized Repository getServerConfigurationRdf() throws java.lang.InterruptedException
@@ -2039,6 +1371,54 @@ public class Settings implements QueryAllConfiguration
         return this.currentConfigurationRepository;
     }
     
+    @Override
+    public Collection<Statement> getStatementProperties(final String key)
+    {
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getStatementPropertiesFromConfig: key=" + key);
+        }
+        
+        final Collection<Statement> results = new HashSet<Statement>();
+        
+        try
+        {
+            final Repository webappConfig = this.getWebAppConfigurationRdf();
+            
+            final ValueFactory f = webappConfig.getValueFactory();
+            
+            // TODO: in future should reform this to accept a full URI as the
+            // key so properties outside of the queryall vocabulary can be used
+            // for properties
+            final URI propertyUri = f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), key);
+            
+            if(Settings._TRACE)
+            {
+                Settings.log.trace("Settings.getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="
+                        + this.getWebappConfigUriList().size());
+            }
+            
+            for(final String nextConfigUri : this.getWebappConfigUriList())
+            {
+                final URI configUri = f.createURI(nextConfigUri);
+                
+                if(Settings._TRACE)
+                {
+                    Settings.log.trace("Settings.getStatementPropertiesFromConfig: configUri="
+                            + configUri.stringValue() + " propertyUri=" + propertyUri.stringValue());
+                }
+                
+                results.addAll(this.getStatementProperties(configUri, propertyUri, webappConfig));
+            }
+        }
+        catch(final Exception ex)
+        {
+            Settings.log.error("Settings.getStatementPropertiesFromConfig: error", ex);
+        }
+        
+        return results;
+    }
+    
     private Collection<Statement> getStatementProperties(final URI subjectUri, final URI propertyUri,
             final Repository nextRepository)
     {
@@ -2062,6 +1442,139 @@ public class Settings implements QueryAllConfiguration
         return new HashSet<Statement>();
     }
     
+    @Override
+    public Collection<String> getStringProperties(final String key)
+    {
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getStringCollectionPropertiesFromConfig: key=" + key);
+        }
+        
+        final Collection<String> results = new LinkedList<String>();
+        
+        final Collection<Value> values = this.getValueProperties(key);
+        
+        for(final Value nextValue : values)
+        {
+            results.add(nextValue.stringValue());
+            // results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
+        }
+        
+        return results;
+    }
+    
+    @Override
+    public String getStringProperty(final String key, final String defaultValue)
+    {
+        String result = defaultValue;
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+        }
+        
+        final Collection<String> values = this.getStringProperties(key);
+        
+        if(values.size() != 1)
+        {
+            Settings.log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            return defaultValue;
+        }
+        
+        for(final String nextValue : values)
+        {
+            result = nextValue;
+        }
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue
+                    + " returning result=" + result);
+        }
+        
+        return result;
+    }
+    
+    @Override
+    public Pattern getTagPattern()
+    {
+        if(this.cachedTagPattern != null)
+        {
+            return this.cachedTagPattern;
+        }
+        
+        final Pattern tempPattern =
+                Pattern.compile(this.getStringProperty("tagPatternRegex", ".*(\\$\\{[\\w_-]+\\}).*"));
+        
+        if(tempPattern != null)
+        {
+            this.cachedTagPattern = tempPattern;
+        }
+        
+        return tempPattern;
+    }
+    
+    @Override
+    public Collection<URI> getURIProperties(final String key)
+    {
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getURICollectionPropertiesFromConfig: key=" + key);
+        }
+        
+        final Collection<URI> results = new HashSet<URI>();
+        
+        for(final Value nextValue : this.getValueProperties(key))
+        {
+            if(nextValue instanceof URI)
+            {
+                results.add((URI)nextValue);
+            }
+            else
+            {
+                Settings.log
+                        .fatal("Settings.getURICollectionPropertiesFromConfig: nextValue was not an instance of URI key="
+                                + key + " nextValue=" + nextValue);
+            }
+        }
+        
+        return results;
+    }
+    
+    @Override
+    public URI getURIProperty(final String key, final URI defaultValue)
+    {
+        URI result = defaultValue;
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getUriPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+        }
+        
+        final Collection<URI> values = this.getURIProperties(key);
+        
+        if(values.size() != 1)
+        {
+            Settings.log.error("Settings.getUriPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            return defaultValue;
+        }
+        
+        for(final URI nextValue : values)
+        {
+            result = nextValue;
+        }
+        
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("Settings.getUriPropertyFromConfig: key=" + key + " result=" + result);
+        }
+        
+        return result;
+        
+    }
+    
     private Collection<Value> getValueProperties(final String key)
     {
         if(Settings._TRACE)
@@ -2078,10 +1591,7 @@ public class Settings implements QueryAllConfiguration
             // XXX: in future should reform this to accept a full URI as the key
             // so properties outside of the queryall vocabulary can be used for
             // properties
-            final URI propertyUri =
-                    f.createURI(
-                            this.getOntologyTermUriPrefix() + this.getNamespaceForWebappConfiguration()
-                                    + this.getOntologyTermUriSuffix(), key);
+            final URI propertyUri = f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), key);
             
             if(Settings._TRACE)
             {
@@ -2413,5 +1923,53 @@ public class Settings implements QueryAllConfiguration
         }
         
         return this.currentWebAppConfigurationRepository;
+    }
+    
+    /**
+     * @return the webappConfigUriList
+     */
+    public Collection<String> getWebappConfigUriList()
+    {
+        return this.webappConfigUriList;
+    }
+    
+    public boolean isManualRefreshAllowed()
+    {
+        final boolean manualRefresh = this.getBooleanProperty("enableManualConfigurationRefresh", true);
+        final long timestampDiff = (System.currentTimeMillis() - this.initialisedTimestamp);
+        final long manualRefreshMinimum = this.getLongProperty("manualConfigurationMinimumMilliseconds", 60000L);
+        
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("isManualRefreshAllowed: manualRefresh=" + manualRefresh);
+            Settings.log.debug("isManualRefreshAllowed: timestampDiff=" + timestampDiff);
+            Settings.log.debug("isManualRefreshAllowed: manualRefreshMinimum=" + manualRefreshMinimum);
+            
+        }
+        
+        if(manualRefreshMinimum < 0)
+        {
+            Settings.log.error("isManualRefreshAllowed: manualRefreshMinimum was less than 0");
+        }
+        
+        return manualRefresh && (timestampDiff > manualRefreshMinimum);
+    }
+    
+    /**
+     * @param cachedNamespacePrefixToUriEntries
+     *            the cachedNamespacePrefixToUriEntries to set
+     */
+    public void setNamespacePrefixesToUris(final Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries)
+    {
+        this.cachedNamespacePrefixToUriEntries = cachedNamespacePrefixToUriEntries;
+    }
+    
+    /**
+     * @param webappConfigUriList
+     *            the webappConfigUriList to set
+     */
+    public void setWebappConfigUriList(final Collection<String> webappConfigUriList)
+    {
+        this.webappConfigUriList = webappConfigUriList;
     }
 }

@@ -17,6 +17,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.NamespaceEntry;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
@@ -36,7 +37,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     private static URI namespaceTypeUri;
     private static URI namespaceAuthority;
     private static URI namespaceIdentifierRegex;
-    public static URI oldNamespaceTitle;
+    private static URI oldNamespaceTitle;
     private static URI namespacePreferredPrefix;
     private static URI namespaceAlternativePrefix;
     private static URI namespaceDescription;
@@ -44,31 +45,29 @@ public class NamespaceEntryImpl implements NamespaceEntry
     private static URI namespaceUriTemplate;
     private static URI namespaceSeparator;
     
-    public static String namespaceNamespace;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
-        NamespaceEntryImpl.namespaceNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix()
-                        + Settings.getSettings().getNamespaceForNamespaceEntry()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
-        
-        NamespaceEntryImpl.setNamespaceTypeUri(f.createURI(NamespaceEntryImpl.namespaceNamespace, "Namespace"));
-        NamespaceEntryImpl.setNamespaceAuthority(f.createURI(NamespaceEntryImpl.namespaceNamespace, "authority"));
-        NamespaceEntryImpl.setNamespaceIdentifierRegex(f.createURI(NamespaceEntryImpl.namespaceNamespace,
+        NamespaceEntryImpl
+                .setNamespaceTypeUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "Namespace"));
+        NamespaceEntryImpl.setNamespaceAuthority(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
+                "authority"));
+        NamespaceEntryImpl.setNamespaceIdentifierRegex(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "identifierRegex"));
-        NamespaceEntryImpl.setNamespacePreferredPrefix(f.createURI(NamespaceEntryImpl.namespaceNamespace,
+        NamespaceEntryImpl.setNamespacePreferredPrefix(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "preferredPrefix"));
-        NamespaceEntryImpl.setNamespaceAlternativePrefix(f.createURI(NamespaceEntryImpl.namespaceNamespace,
+        NamespaceEntryImpl.setNamespaceAlternativePrefix(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "alternativePrefix"));
         NamespaceEntryImpl.setNamespaceConvertQueriesToPreferredPrefix(f.createURI(
-                NamespaceEntryImpl.namespaceNamespace, "convertToPreferred"));
-        NamespaceEntryImpl.setNamespaceDescription(f.createURI(NamespaceEntryImpl.namespaceNamespace, "description"));
-        NamespaceEntryImpl.setNamespaceUriTemplate(f.createURI(NamespaceEntryImpl.namespaceNamespace, "uriTemplate"));
-        NamespaceEntryImpl.setNamespaceSeparator(f.createURI(NamespaceEntryImpl.namespaceNamespace, "separator"));
-        NamespaceEntryImpl.oldNamespaceTitle = f.createURI(NamespaceEntryImpl.namespaceNamespace, "title");
+                QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "convertToPreferred"));
+        NamespaceEntryImpl.setNamespaceDescription(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
+                "description"));
+        NamespaceEntryImpl.setNamespaceUriTemplate(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
+                "uriTemplate"));
+        NamespaceEntryImpl.setNamespaceSeparator(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
+                "separator"));
+        NamespaceEntryImpl.oldNamespaceTitle = f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "title");
     }
     
     /**
@@ -330,8 +329,6 @@ public class NamespaceEntryImpl implements NamespaceEntry
         NamespaceEntryImpl.namespaceUriTemplate = namespaceUriTemplate;
     }
     
-    private String defaultNamespace = Settings.getSettings().getNamespaceForNamespaceEntry();
-    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
@@ -350,7 +347,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     
     private String uriTemplate = "";
     
-    private String separator = Settings.getSettings().getStringProperty("separator", ":");
+    private String separator = "";
     
     // This setting determines whether input namespace prefixes in the alternatives list should be
     // converted to the preferred prefix
@@ -500,9 +497,9 @@ public class NamespaceEntryImpl implements NamespaceEntry
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return this.defaultNamespace;
+        return QueryAllNamespaces.NAMESPACEENTRY;
     }
     
     @Override

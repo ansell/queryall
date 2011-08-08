@@ -18,8 +18,8 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
-import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 
@@ -33,8 +33,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     private static final boolean _DEBUG = ProfileImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProfileImpl.log.isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProfile();
     
     /**
      * @return the profileAdministratorUri
@@ -394,42 +392,33 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     
     private static URI profileIncludeExcludeOrderUndefinedUri;
     
-    public static String profileNamespace;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
-        ProfileImpl.profileNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForProfile()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
+        final String baseUri = QueryAllNamespaces.PROFILE.getBaseURI();
         
-        ProfileImpl.setProfileTypeUri(f.createURI(ProfileImpl.profileNamespace, "Profile"));
-        ProfileImpl.setProfileTitle(f.createURI(ProfileImpl.profileNamespace, "Title"));
-        ProfileImpl.setProfileOrderUri(f.createURI(ProfileImpl.profileNamespace, "order"));
-        ProfileImpl.setProfileAdministratorUri(f.createURI(ProfileImpl.profileNamespace, "hasProfileAdministrator"));
+        ProfileImpl.setProfileTypeUri(f.createURI(baseUri, "Profile"));
+        ProfileImpl.setProfileTitle(f.createURI(baseUri, "Title"));
+        ProfileImpl.setProfileOrderUri(f.createURI(baseUri, "order"));
+        ProfileImpl.setProfileAdministratorUri(f.createURI(baseUri, "hasProfileAdministrator"));
         
-        ProfileImpl.setProfileAllowImplicitQueryInclusionsUri(f.createURI(ProfileImpl.profileNamespace,
-                "allowImplicitQueryInclusions"));
-        ProfileImpl.setProfileAllowImplicitProviderInclusionsUri(f.createURI(ProfileImpl.profileNamespace,
-                "allowImplicitProviderInclusions"));
-        ProfileImpl.setProfileAllowImplicitRdfRuleInclusionsUri(f.createURI(ProfileImpl.profileNamespace,
-                "allowImplicitRdfRuleInclusions"));
-        ProfileImpl.setProfileDefaultIncludeExcludeOrderUri(f.createURI(ProfileImpl.profileNamespace,
-                "defaultProfileIncludeExcludeOrder"));
-        ProfileImpl.setProfileIncludeExcludeOrderUri(f.createURI(ProfileImpl.profileNamespace,
-                "profileIncludeExcludeOrder"));
-        ProfileImpl.setProfileIncludeProviderInProfile(f.createURI(ProfileImpl.profileNamespace, "includesProvider"));
-        ProfileImpl.setProfileExcludeProviderFromProfile(f.createURI(ProfileImpl.profileNamespace, "excludesProvider"));
-        ProfileImpl.setProfileIncludeQueryInProfile(f.createURI(ProfileImpl.profileNamespace, "includesQuery"));
-        ProfileImpl.setProfileExcludeQueryFromProfile(f.createURI(ProfileImpl.profileNamespace, "excludesQuery"));
-        ProfileImpl.setProfileIncludeRdfRuleInProfile(f.createURI(ProfileImpl.profileNamespace, "includesRdfRule"));
-        ProfileImpl.setProfileExcludeRdfRuleFromProfile(f.createURI(ProfileImpl.profileNamespace, "excludesRdfRule"));
+        ProfileImpl.setProfileAllowImplicitQueryInclusionsUri(f.createURI(baseUri, "allowImplicitQueryInclusions"));
+        ProfileImpl.setProfileAllowImplicitProviderInclusionsUri(f
+                .createURI(baseUri, "allowImplicitProviderInclusions"));
+        ProfileImpl.setProfileAllowImplicitRdfRuleInclusionsUri(f.createURI(baseUri, "allowImplicitRdfRuleInclusions"));
+        ProfileImpl.setProfileDefaultIncludeExcludeOrderUri(f.createURI(baseUri, "defaultProfileIncludeExcludeOrder"));
+        ProfileImpl.setProfileIncludeExcludeOrderUri(f.createURI(baseUri, "profileIncludeExcludeOrder"));
+        ProfileImpl.setProfileIncludeProviderInProfile(f.createURI(baseUri, "includesProvider"));
+        ProfileImpl.setProfileExcludeProviderFromProfile(f.createURI(baseUri, "excludesProvider"));
+        ProfileImpl.setProfileIncludeQueryInProfile(f.createURI(baseUri, "includesQuery"));
+        ProfileImpl.setProfileExcludeQueryFromProfile(f.createURI(baseUri, "excludesQuery"));
+        ProfileImpl.setProfileIncludeRdfRuleInProfile(f.createURI(baseUri, "includesRdfRule"));
+        ProfileImpl.setProfileExcludeRdfRuleFromProfile(f.createURI(baseUri, "excludesRdfRule"));
         
-        ProfileImpl.setProfileExcludeThenIncludeUri(f.createURI(ProfileImpl.profileNamespace, "excludeThenInclude"));
-        ProfileImpl.setProfileIncludeThenExcludeUri(f.createURI(ProfileImpl.profileNamespace, "includeThenExclude"));
-        ProfileImpl.setProfileIncludeExcludeOrderUndefinedUri(f.createURI(ProfileImpl.profileNamespace,
-                "includeExcludeOrderUndefined"));
+        ProfileImpl.setProfileExcludeThenIncludeUri(f.createURI(baseUri, "excludeThenInclude"));
+        ProfileImpl.setProfileIncludeThenExcludeUri(f.createURI(baseUri, "includeThenExclude"));
+        ProfileImpl.setProfileIncludeExcludeOrderUndefinedUri(f.createURI(baseUri, "includeExcludeOrderUndefined"));
     }
     
     public static URI getExcludeThenIncludeUri()
@@ -1020,9 +1009,9 @@ public class ProfileImpl implements Profile, Comparable<Profile>
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return ProfileImpl.defaultNamespace;
+        return QueryAllNamespaces.PROFILE;
     }
     
     @Override

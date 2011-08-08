@@ -49,6 +49,7 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
@@ -177,7 +178,7 @@ public final class RdfUtils
         dummyProvider.setEndpointUrls(endpointUrls);
         dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpGetUrl());
         dummyProvider
-                .setKey(hostToUse + localSettings.getNamespaceForProvider()
+                .setKey(hostToUse + QueryAllNamespaces.PROVIDER.getNamespace()
                         + localSettings.getStringProperty("separator", ":")
                         + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
@@ -187,7 +188,7 @@ public final class RdfUtils
         final QueryType dummyQuery = new QueryTypeImpl();
         
         dummyQuery
-                .setKey(hostToUse + localSettings.getNamespaceForQueryType()
+                .setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
                         + localSettings.getStringProperty("separator", ":")
                         + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyQuery.setTitle("$$__queryfetch__$$");
@@ -222,7 +223,7 @@ public final class RdfUtils
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
         dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpPostSparql());
-        dummyProvider.setKey(localSettings.getDefaultHostAddress() + localSettings.getNamespaceForProvider()
+        dummyProvider.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getStringProperty("separator", ":")
                 + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
@@ -231,7 +232,7 @@ public final class RdfUtils
         
         final QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery.setKey(localSettings.getDefaultHostAddress() + localSettings.getNamespaceForQueryType()
+        dummyQuery.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getStringProperty("separator", ":")
                 + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyQuery.setTitle("$$__queryfetch__$$");
@@ -365,7 +366,7 @@ public final class RdfUtils
         else if(nextValue instanceof IntegerMemLiteral)
         {
             final int tempValue = ((IntegerMemLiteral)nextValue).intValue();
-
+            
             if(tempValue == 0)
             {
                 return false;
@@ -496,35 +497,38 @@ public final class RdfUtils
     {
         Date result;
         
-//        if(nextValue instanceof CalendarLiteralImpl)
-//        {
-//            result = ((CalendarLiteralImpl)nextValue).calendarValue().toGregorianCalendar().getTime();
-//        }
-//        else if(nextValue instanceof CalendarMemLiteral)
-//        {
-//            result = ((CalendarMemLiteral)nextValue).calendarValue().toGregorianCalendar().getTime();
-//        }
-//        else
-//        {
+        // if(nextValue instanceof CalendarLiteralImpl)
+        // {
+        // result =
+        // ((CalendarLiteralImpl)nextValue).calendarValue().toGregorianCalendar().getTime();
+        // }
+        // else if(nextValue instanceof CalendarMemLiteral)
+        // {
+        // result = ((CalendarMemLiteral)nextValue).calendarValue().toGregorianCalendar().getTime();
+        // }
+        // else
+        // {
+        try
+        {
+            result = Constants.ISO8601UTC().parse(nextValue.stringValue());
+        }
+        catch(final java.text.ParseException pe)
+        {
+            RdfUtils.log.error("Could not parse date using ISO8601UTC: nextValue.stringValue="
+                    + nextValue.stringValue());
             try
             {
-                result = Constants.ISO8601UTC().parse(nextValue.stringValue());
+                result = DateFormat.getDateInstance().parse(nextValue.stringValue());
             }
-            catch(final java.text.ParseException pe)
+            catch(final java.text.ParseException pe2)
             {
-                RdfUtils.log.error("Could not parse date using ISO8601UTC: nextValue.stringValue=" + nextValue.stringValue());
-                try
-                {
-                    result = DateFormat.getDateInstance().parse(nextValue.stringValue());
-                }
-                catch(final java.text.ParseException pe2)
-                {
-                    RdfUtils.log.error("Could not parse date using default date format: nextValue.stringValue=" + nextValue.stringValue());
-                    
-                    throw pe2;
-                }
+                RdfUtils.log.error("Could not parse date using default date format: nextValue.stringValue="
+                        + nextValue.stringValue());
+                
+                throw pe2;
             }
-//        }
+        }
+        // }
         
         return result;
     }
@@ -788,10 +792,9 @@ public final class RdfUtils
             }
             catch(final NumberFormatException nfe)
             {
-                RdfUtils.log
-                        .error("RdfUtils.getLongFromValue: failed to parse value using Long.parseLong type="
-                                + nextValue.getClass().getName()+" nextValue.stringValue="+nextValue.stringValue());
-
+                RdfUtils.log.error("RdfUtils.getLongFromValue: failed to parse value using Long.parseLong type="
+                        + nextValue.getClass().getName() + " nextValue.stringValue=" + nextValue.stringValue());
+                
                 throw nfe;
             }
         }

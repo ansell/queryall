@@ -24,12 +24,12 @@ import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProjectImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
-import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 
@@ -45,10 +45,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
     @SuppressWarnings("unused")
     private static final boolean _TRACE = StatisticsEntry.log.isTraceEnabled();
     
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForStatistics();
-    
     public static final int IMPLEMENTED_STATISTICS_VERSION = 1;
-    public static String statisticsNamespace = "";
     
     public static URI statisticsacceptHeaderUri;
     public static URI statisticsconfigLocationsUri;
@@ -87,52 +84,39 @@ public class StatisticsEntry implements BaseQueryAllInterface
     
     static
     {
-        StatisticsEntry.statisticsNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForStatistics()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
-        
         final ValueFactory f = Constants.valueFactory;
         
-        StatisticsEntry.statisticsTypeUri = f.createURI(StatisticsEntry.statisticsNamespace, "Statistics");
-        StatisticsEntry.statisticskeyUri = f.createURI(StatisticsEntry.statisticsNamespace, "key");
+        final String baseUri = QueryAllNamespaces.STATISTICS.getBaseURI();
         
-        StatisticsEntry.statisticscurrentdatetimeUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "submissionDate");
-        StatisticsEntry.statisticsprofileUrisUri = f.createURI(StatisticsEntry.statisticsNamespace, "profileUri");
-        StatisticsEntry.statisticssuccessfulproviderUrisUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "successfulProviderUri");
-        StatisticsEntry.statisticserrorproviderUrisUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "errorProviderUri");
-        StatisticsEntry.statisticsconfigLocationsUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "configLocation");
-        StatisticsEntry.statisticsquerytypeUrisUri = f.createURI(StatisticsEntry.statisticsNamespace, "querytypeUri");
-        StatisticsEntry.statisticsnamespaceUrisUri = f.createURI(StatisticsEntry.statisticsNamespace, "namespaceUri");
-        StatisticsEntry.statisticsconfigVersionUri = f.createURI(StatisticsEntry.statisticsNamespace, "configVersion");
-        StatisticsEntry.statisticsreadtimeoutUri = f.createURI(StatisticsEntry.statisticsNamespace, "readtimeout");
-        StatisticsEntry.statisticsconnecttimeoutUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "connecttimeout");
-        StatisticsEntry.statisticsuserHostAddressUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "userHostAddress");
-        StatisticsEntry.statisticsuserAgentUri = f.createURI(StatisticsEntry.statisticsNamespace, "userAgent");
-        StatisticsEntry.statisticsrealHostNameUri = f.createURI(StatisticsEntry.statisticsNamespace, "realHostName");
-        StatisticsEntry.statisticsqueryStringUri = f.createURI(StatisticsEntry.statisticsNamespace, "queryString");
-        StatisticsEntry.statisticsresponseTimeUri = f.createURI(StatisticsEntry.statisticsNamespace, "responseTime");
-        StatisticsEntry.statisticssumLatencyUri = f.createURI(StatisticsEntry.statisticsNamespace, "sumLatency");
-        StatisticsEntry.statisticssumQueriesUri = f.createURI(StatisticsEntry.statisticsNamespace, "sumQueries");
-        StatisticsEntry.statisticsstdevlatencyUri = f.createURI(StatisticsEntry.statisticsNamespace, "stdevlatency");
-        StatisticsEntry.statisticssumerrorsUri = f.createURI(StatisticsEntry.statisticsNamespace, "sumerrors");
-        StatisticsEntry.statisticssumerrorlatencyUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "sumerrorlatency");
-        StatisticsEntry.statisticsstdeverrorlatencyUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "stdeverrorlatency");
+        StatisticsEntry.statisticsTypeUri = f.createURI(baseUri, "Statistics");
+        StatisticsEntry.statisticskeyUri = f.createURI(baseUri, "key");
         
-        StatisticsEntry.statisticslastServerRestartUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "lastServerRestart");
-        StatisticsEntry.statisticsserverSoftwareVersionUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "serverSoftwareVersion");
-        StatisticsEntry.statisticsacceptHeaderUri = f.createURI(StatisticsEntry.statisticsNamespace, "acceptHeader");
-        StatisticsEntry.statisticsrequestedContentTypeUri =
-                f.createURI(StatisticsEntry.statisticsNamespace, "requestedContentType");
+        StatisticsEntry.statisticscurrentdatetimeUri = f.createURI(baseUri, "submissionDate");
+        StatisticsEntry.statisticsprofileUrisUri = f.createURI(baseUri, "profileUri");
+        StatisticsEntry.statisticssuccessfulproviderUrisUri = f.createURI(baseUri, "successfulProviderUri");
+        StatisticsEntry.statisticserrorproviderUrisUri = f.createURI(baseUri, "errorProviderUri");
+        StatisticsEntry.statisticsconfigLocationsUri = f.createURI(baseUri, "configLocation");
+        StatisticsEntry.statisticsquerytypeUrisUri = f.createURI(baseUri, "querytypeUri");
+        StatisticsEntry.statisticsnamespaceUrisUri = f.createURI(baseUri, "namespaceUri");
+        StatisticsEntry.statisticsconfigVersionUri = f.createURI(baseUri, "configVersion");
+        StatisticsEntry.statisticsreadtimeoutUri = f.createURI(baseUri, "readtimeout");
+        StatisticsEntry.statisticsconnecttimeoutUri = f.createURI(baseUri, "connecttimeout");
+        StatisticsEntry.statisticsuserHostAddressUri = f.createURI(baseUri, "userHostAddress");
+        StatisticsEntry.statisticsuserAgentUri = f.createURI(baseUri, "userAgent");
+        StatisticsEntry.statisticsrealHostNameUri = f.createURI(baseUri, "realHostName");
+        StatisticsEntry.statisticsqueryStringUri = f.createURI(baseUri, "queryString");
+        StatisticsEntry.statisticsresponseTimeUri = f.createURI(baseUri, "responseTime");
+        StatisticsEntry.statisticssumLatencyUri = f.createURI(baseUri, "sumLatency");
+        StatisticsEntry.statisticssumQueriesUri = f.createURI(baseUri, "sumQueries");
+        StatisticsEntry.statisticsstdevlatencyUri = f.createURI(baseUri, "stdevlatency");
+        StatisticsEntry.statisticssumerrorsUri = f.createURI(baseUri, "sumerrors");
+        StatisticsEntry.statisticssumerrorlatencyUri = f.createURI(baseUri, "sumerrorlatency");
+        StatisticsEntry.statisticsstdeverrorlatencyUri = f.createURI(baseUri, "stdeverrorlatency");
+        
+        StatisticsEntry.statisticslastServerRestartUri = f.createURI(baseUri, "lastServerRestart");
+        StatisticsEntry.statisticsserverSoftwareVersionUri = f.createURI(baseUri, "serverSoftwareVersion");
+        StatisticsEntry.statisticsacceptHeaderUri = f.createURI(baseUri, "acceptHeader");
+        StatisticsEntry.statisticsrequestedContentTypeUri = f.createURI(baseUri, "requestedContentType");
     }
     
     /**
@@ -188,7 +172,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
      */
     public static String getStatisticsNamespace()
     {
-        return StatisticsEntry.statisticsNamespace;
+        return QueryAllNamespaces.STATISTICS.getBaseURI();
     }
     
     /**
@@ -815,11 +799,10 @@ public class StatisticsEntry implements BaseQueryAllInterface
     /**
      * @return the namespace used to represent objects of this type by default
      */
-    
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return StatisticsEntry.defaultNamespace;
+        return QueryAllNamespaces.STATISTICS;
     }
     
     /**

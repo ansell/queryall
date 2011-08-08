@@ -20,8 +20,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
-import org.queryall.query.Settings;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -36,8 +36,6 @@ public class ProviderImpl implements Provider
     private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProvider();
     
     /**
      * @return the providerAssumedContentType
@@ -334,37 +332,31 @@ public class ProviderImpl implements Provider
     
     private static URI providerProxy;
     
-    public static String providerNamespace;
-    
-    // public static String profileNamespace;
     private static URI providerAssumedContentType;
     
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
-        ProviderImpl.providerNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForProvider()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
+        final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
-        ProviderImpl.setProviderTypeUri(f.createURI(ProviderImpl.providerNamespace, "Provider"));
+        ProviderImpl.setProviderTypeUri(f.createURI(baseUri, "Provider"));
         
-        ProviderImpl.setProviderResolutionStrategy(f.createURI(ProviderImpl.providerNamespace, "resolutionStrategy"));
-        ProviderImpl.setProviderHandledNamespace(f.createURI(ProviderImpl.providerNamespace, "handlesNamespace"));
-        ProviderImpl.setProviderResolutionMethod(f.createURI(ProviderImpl.providerNamespace, "resolutionMethod"));
-        ProviderImpl.setProviderRequiresSparqlGraphURI(f.createURI(ProviderImpl.providerNamespace, "requiresGraphUri"));
-        ProviderImpl.setProviderGraphUri(f.createURI(ProviderImpl.providerNamespace, "graphUri"));
-        ProviderImpl.setProviderIncludedInQuery(f.createURI(ProviderImpl.providerNamespace, "includedInQuery"));
-        ProviderImpl.setProviderIsDefaultSource(f.createURI(ProviderImpl.providerNamespace, "isDefaultSource"));
-        ProviderImpl.setProviderNeedsRdfNormalisation(f.createURI(ProviderImpl.providerNamespace,
-                "needsRdfNormalisation"));
-        ProviderImpl.setProviderRedirect(f.createURI(ProviderImpl.providerNamespace, "redirect"));
-        ProviderImpl.setProviderProxy(f.createURI(ProviderImpl.providerNamespace, "proxy"));
-        ProviderImpl.setProviderNoCommunication(f.createURI(ProviderImpl.providerNamespace, "nocommunication"));
-        ProviderImpl.setProviderAssumedContentType(f.createURI(ProviderImpl.providerNamespace, "assumedContentType"));
+        ProviderImpl.setProviderResolutionStrategy(f.createURI(baseUri, "resolutionStrategy"));
+        ProviderImpl.setProviderHandledNamespace(f.createURI(baseUri, "handlesNamespace"));
+        ProviderImpl.setProviderResolutionMethod(f.createURI(baseUri, "resolutionMethod"));
+        ProviderImpl.setProviderRequiresSparqlGraphURI(f.createURI(baseUri, "requiresGraphUri"));
+        ProviderImpl.setProviderGraphUri(f.createURI(baseUri, "graphUri"));
+        ProviderImpl.setProviderIncludedInQuery(f.createURI(baseUri, "includedInQuery"));
+        ProviderImpl.setProviderIsDefaultSource(f.createURI(baseUri, "isDefaultSource"));
+        ProviderImpl.setProviderNeedsRdfNormalisation(f.createURI(baseUri, "needsRdfNormalisation"));
+        ProviderImpl.setProviderRedirect(f.createURI(baseUri, "redirect"));
+        ProviderImpl.setProviderProxy(f.createURI(baseUri, "proxy"));
+        ProviderImpl.setProviderNoCommunication(f.createURI(baseUri, "nocommunication"));
+        ProviderImpl.setProviderAssumedContentType(f.createURI(baseUri, "assumedContentType"));
         
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
-        ProviderImpl.setProviderTitle(f.createURI(ProviderImpl.providerNamespace, "Title"));
+        ProviderImpl.setProviderTitle(f.createURI(baseUri, "Title"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -798,9 +790,9 @@ public class ProviderImpl implements Provider
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return ProviderImpl.defaultNamespace;
+        return QueryAllNamespaces.PROVIDER;
     }
     
     /**

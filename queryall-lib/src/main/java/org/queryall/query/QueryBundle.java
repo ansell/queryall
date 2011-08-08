@@ -21,6 +21,7 @@ import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.utils.RuleUtils;
@@ -54,8 +55,6 @@ public class QueryBundle
     private Collection<Profile> relevantProfiles = new HashSet<Profile>();
     private Map<String, String> alternativeEndpointsAndQueries;
     
-    public static String queryBundleNamespace;
-    
     public static URI queryBundleTypeUri;
     public static URI queryLiteralUri;
     public static URI queryBundleEndpointUriTerm;
@@ -71,24 +70,18 @@ public class QueryBundle
     {
         final ValueFactory f = Constants.valueFactory;
         
-        QueryBundle.queryBundleNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForQueryBundle()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
+        final String baseUri = QueryAllNamespaces.QUERYBUNDLE.getBaseURI();
         
-        QueryBundle.queryBundleTypeUri = f.createURI(QueryBundle.queryBundleNamespace, "QueryBundle");
-        QueryBundle.queryLiteralUri = f.createURI(QueryBundle.queryBundleNamespace, "hasQueryLiteral");
-        QueryBundle.queryBundleEndpointUriTerm =
-                f.createURI(QueryBundle.queryBundleNamespace, "hasQueryBundleEndpoint");
-        QueryBundle.queryBundleOriginalEndpointStringTerm =
-                f.createURI(QueryBundle.queryBundleNamespace, "hasOriginalEndpointString");
-        QueryBundle.queryBundleAlternativeEndpointUriTerm =
-                f.createURI(QueryBundle.queryBundleNamespace, "hasAlternativeQueryBundleEndpoint");
-        QueryBundle.queryBundleKeyUri = f.createURI(QueryBundle.queryBundleNamespace, "hasQueryBundleKey");
-        QueryBundle.queryBundleQueryTypeUri = f.createURI(QueryBundle.queryBundleNamespace, "hasQueryTypeUri");
-        QueryBundle.queryBundleProviderUri = f.createURI(QueryBundle.queryBundleNamespace, "hasProviderUri");
-        QueryBundle.queryBundleConfigurationApiVersion =
-                f.createURI(QueryBundle.queryBundleNamespace, "hasConfigurationApiVersion");
-        QueryBundle.queryBundleProfileUri = f.createURI(QueryBundle.queryBundleNamespace, "hasProfileUri");
+        QueryBundle.queryBundleTypeUri = f.createURI(baseUri, "QueryBundle");
+        QueryBundle.queryLiteralUri = f.createURI(baseUri, "hasQueryLiteral");
+        QueryBundle.queryBundleEndpointUriTerm = f.createURI(baseUri, "hasQueryBundleEndpoint");
+        QueryBundle.queryBundleOriginalEndpointStringTerm = f.createURI(baseUri, "hasOriginalEndpointString");
+        QueryBundle.queryBundleAlternativeEndpointUriTerm = f.createURI(baseUri, "hasAlternativeQueryBundleEndpoint");
+        QueryBundle.queryBundleKeyUri = f.createURI(baseUri, "hasQueryBundleKey");
+        QueryBundle.queryBundleQueryTypeUri = f.createURI(baseUri, "hasQueryTypeUri");
+        QueryBundle.queryBundleProviderUri = f.createURI(baseUri, "hasProviderUri");
+        QueryBundle.queryBundleConfigurationApiVersion = f.createURI(baseUri, "hasConfigurationApiVersion");
+        QueryBundle.queryBundleProfileUri = f.createURI(baseUri, "hasProfileUri");
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -341,10 +334,7 @@ public class QueryBundle
         
         try
         {
-            final String keyPrefix =
-                    Settings.getSettings().getDefaultHostAddress()
-                            + Settings.getSettings().getNamespaceForQueryBundle()
-                            + Settings.getSettings().getStringProperty("separator", ":");
+            final String keyPrefix = QueryAllNamespaces.QUERYBUNDLE.getBaseURI();
             
             // create some resources and literals to make statements out of
             final URI queryBundleInstanceUri = f.createURI(keyPrefix + keyToUse.stringValue());

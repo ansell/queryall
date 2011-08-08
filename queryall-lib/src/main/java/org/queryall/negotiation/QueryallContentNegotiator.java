@@ -1,12 +1,12 @@
 package org.queryall.negotiation;
 
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
+
 import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
-
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
-import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

@@ -7,57 +7,51 @@ import java.util.Collection;
  */
 public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
 {
-    int getOrder();
+    void addExcludeProvider(org.openrdf.model.URI excludeProvider);
     
-    void setOrder(int order);
-
-    org.openrdf.model.URI getDefaultProfileIncludeExcludeOrder();
+    void addExcludeQueryType(org.openrdf.model.URI excludeQuery);
     
-    void setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI defaultProfileIncludeExcludeOrder);
-
-    void setAllowImplicitQueryTypeInclusions(boolean allowImplicitQueryInclusions);
-
-    boolean getAllowImplicitQueryTypeInclusions();
-
-    void setAllowImplicitProviderInclusions(boolean allowImplicitProviderInclusions);
-
-    boolean getAllowImplicitProviderInclusions();
-
-    void setAllowImplicitRdfRuleInclusions(boolean allowImplicitRdfRuleInclusions);
-
-    boolean getAllowImplicitRdfRuleInclusions();
+    void addExcludeRdfRule(org.openrdf.model.URI excludeRdfRule);
+    
+    void addIncludeProvider(org.openrdf.model.URI includeProvider);
+    
+    void addIncludeQueryType(org.openrdf.model.URI includeQuery);
+    
+    void addIncludeRdfRule(org.openrdf.model.URI includeRdfRule);
     
     void addProfileAdministrator(org.openrdf.model.URI profileAdministrator);
     
-    Collection<org.openrdf.model.URI> getProfileAdministrators();
+    boolean getAllowImplicitProviderInclusions();
     
+    boolean getAllowImplicitQueryTypeInclusions();
     
-    void addIncludeProvider(org.openrdf.model.URI includeProvider);
-
-    Collection<org.openrdf.model.URI> getIncludeProviders();
+    boolean getAllowImplicitRdfRuleInclusions();
     
-
-    void addExcludeProvider(org.openrdf.model.URI excludeProvider);
-
+    org.openrdf.model.URI getDefaultProfileIncludeExcludeOrder();
+    
     Collection<org.openrdf.model.URI> getExcludeProviders();
     
-
-    void addIncludeQueryType(org.openrdf.model.URI includeQuery);
-
+    Collection<org.openrdf.model.URI> getExcludeQueryTypes();
+    
+    Collection<org.openrdf.model.URI> getExcludeRdfRules();
+    
+    Collection<org.openrdf.model.URI> getIncludeProviders();
+    
     Collection<org.openrdf.model.URI> getIncludeQueryTypes();
     
-
-    void addExcludeQueryType(org.openrdf.model.URI excludeQuery);
-
-    Collection<org.openrdf.model.URI> getExcludeQueryTypes();
-
-
-    void addIncludeRdfRule(org.openrdf.model.URI includeRdfRule);
-
     Collection<org.openrdf.model.URI> getIncludeRdfRules();
     
-
-    void addExcludeRdfRule(org.openrdf.model.URI excludeRdfRule);
-
-    Collection<org.openrdf.model.URI> getExcludeRdfRules();
+    int getOrder();
+    
+    Collection<org.openrdf.model.URI> getProfileAdministrators();
+    
+    void setAllowImplicitProviderInclusions(boolean allowImplicitProviderInclusions);
+    
+    void setAllowImplicitQueryTypeInclusions(boolean allowImplicitQueryInclusions);
+    
+    void setAllowImplicitRdfRuleInclusions(boolean allowImplicitRdfRuleInclusions);
+    
+    void setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI defaultProfileIncludeExcludeOrder);
+    
+    void setOrder(int order);
 }

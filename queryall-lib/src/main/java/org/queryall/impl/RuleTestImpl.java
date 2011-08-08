@@ -17,8 +17,8 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.RuleTest;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
-import org.queryall.query.Settings;
 import org.queryall.utils.StringUtils;
 
 /**
@@ -34,8 +34,6 @@ public class RuleTestImpl implements RuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForRuleTest();
-    
     /**
      * @return the ruletestHasRuleUri
      */
@@ -50,14 +48,6 @@ public class RuleTestImpl implements RuleTest
     public static URI getRuletestInputTestString()
     {
         return RuleTestImpl.ruletestInputTestString;
-    }
-    
-    /**
-     * @return the ruletestNamespace
-     */
-    public static String getRuletestNamespace()
-    {
-        return RuleTestImpl.ruletestNamespace;
     }
     
     /**
@@ -154,22 +144,18 @@ public class RuleTestImpl implements RuleTest
     
     private static URI ruletestOutputTestString;
     
-    private static String ruletestNamespace;
-    
     static
     {
-        RuleTestImpl.ruletestNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForRuleTest()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
-        
         final ValueFactory f = Constants.valueFactory;
         
-        RuleTestImpl.setRuletestTypeUri(f.createURI(RuleTestImpl.ruletestNamespace, "RuleTest"));
-        RuleTestImpl.setRuletestHasRuleUri(f.createURI(RuleTestImpl.ruletestNamespace, "testsRules"));
-        RuleTestImpl.setRuletestTestsStage(f.createURI(RuleTestImpl.ruletestNamespace, "testsStages"));
+        final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
         
-        RuleTestImpl.setRuletestInputTestString(f.createURI(RuleTestImpl.ruletestNamespace, "inputTestString"));
-        RuleTestImpl.setRuletestOutputTestString(f.createURI(RuleTestImpl.ruletestNamespace, "outputTestString"));
+        RuleTestImpl.setRuletestTypeUri(f.createURI(baseUri, "RuleTest"));
+        RuleTestImpl.setRuletestHasRuleUri(f.createURI(baseUri, "testsRules"));
+        RuleTestImpl.setRuletestTestsStage(f.createURI(baseUri, "testsStages"));
+        
+        RuleTestImpl.setRuletestInputTestString(f.createURI(baseUri, "inputTestString"));
+        RuleTestImpl.setRuletestOutputTestString(f.createURI(baseUri, "outputTestString"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
@@ -410,9 +396,9 @@ public class RuleTestImpl implements RuleTest
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return RuleTestImpl.defaultNamespace;
+        return QueryAllNamespaces.RULETEST;
     }
     
     /**

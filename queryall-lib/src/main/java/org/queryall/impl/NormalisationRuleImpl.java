@@ -20,9 +20,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.query.Settings;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -38,8 +38,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     protected static final boolean _TRACE = NormalisationRuleImpl.log.isTraceEnabled();
     protected static final boolean _DEBUG = NormalisationRuleImpl.log.isDebugEnabled();
     protected static final boolean _INFO = NormalisationRuleImpl.log.isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForNormalisationRule();
     
     /**
      * @return the normalisationRuleTypeUri
@@ -314,48 +312,34 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     static
     {
-        NormalisationRuleImpl.rdfruleNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix()
-                        + Settings.getSettings().getNamespaceForNormalisationRule()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
-        
         final ValueFactory f = Constants.valueFactory;
         
-        NormalisationRuleImpl.setNormalisationRuleTypeUri(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "NormalisationRule"));
+        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        NormalisationRuleImpl.version2NormalisationRuleTypeUri =
-                f.createURI(NormalisationRuleImpl.rdfruleNamespace, "RdfRule");
+        NormalisationRuleImpl.setNormalisationRuleTypeUri(f.createURI(baseUri, "NormalisationRule"));
         
-        NormalisationRuleImpl.setRdfruleDescription(f.createURI(NormalisationRuleImpl.rdfruleNamespace, "description"));
-        NormalisationRuleImpl.setRdfruleOrder(f.createURI(NormalisationRuleImpl.rdfruleNamespace, "order"));
-        NormalisationRuleImpl.setRdfruleStage(f.createURI(NormalisationRuleImpl.rdfruleNamespace, "stage"));
-        NormalisationRuleImpl.setRdfruleHasRelatedNamespace(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "hasRelatedNamespace"));
+        NormalisationRuleImpl.version2NormalisationRuleTypeUri = f.createURI(baseUri, "RdfRule");
         
-        NormalisationRuleImpl.setRdfruleStageQueryVariables(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "queryVariables"));
+        NormalisationRuleImpl.setRdfruleDescription(f.createURI(baseUri, "description"));
+        NormalisationRuleImpl.setRdfruleOrder(f.createURI(baseUri, "order"));
+        NormalisationRuleImpl.setRdfruleStage(f.createURI(baseUri, "stage"));
+        NormalisationRuleImpl.setRdfruleHasRelatedNamespace(f.createURI(baseUri, "hasRelatedNamespace"));
         
-        NormalisationRuleImpl.setRdfruleStageAfterQueryCreation(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "afterQueryCreation"));
+        NormalisationRuleImpl.setRdfruleStageQueryVariables(f.createURI(baseUri, "queryVariables"));
         
-        NormalisationRuleImpl.setRdfruleStageAfterQueryParsing(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "afterQueryParsing"));
+        NormalisationRuleImpl.setRdfruleStageAfterQueryCreation(f.createURI(baseUri, "afterQueryCreation"));
         
-        NormalisationRuleImpl.setRdfruleStageBeforeResultsImport(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "beforeResultsImport"));
+        NormalisationRuleImpl.setRdfruleStageAfterQueryParsing(f.createURI(baseUri, "afterQueryParsing"));
         
-        NormalisationRuleImpl.setRdfruleStageAfterResultsImport(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "afterResultsImport"));
+        NormalisationRuleImpl.setRdfruleStageBeforeResultsImport(f.createURI(baseUri, "beforeResultsImport"));
         
-        NormalisationRuleImpl.setRdfruleStageAfterResultsToPool(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "afterResultsToPool"));
+        NormalisationRuleImpl.setRdfruleStageAfterResultsImport(f.createURI(baseUri, "afterResultsImport"));
         
-        NormalisationRuleImpl.setRdfruleStageAfterResultsToDocument(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "afterResultsToDocument"));
+        NormalisationRuleImpl.setRdfruleStageAfterResultsToPool(f.createURI(baseUri, "afterResultsToPool"));
         
-        NormalisationRuleImpl.setRdfruleTypeValidForStage(f.createURI(NormalisationRuleImpl.rdfruleNamespace,
-                "typeValidForStage"));
+        NormalisationRuleImpl.setRdfruleStageAfterResultsToDocument(f.createURI(baseUri, "afterResultsToDocument"));
+        
+        NormalisationRuleImpl.setRdfruleTypeValidForStage(f.createURI(baseUri, "typeValidForStage"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -433,6 +417,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         return false;
     }
     
+    protected NormalisationRuleImpl()
+    {
+        
+    }
+    
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
     public NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
@@ -500,11 +489,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         }
     }
     
-    protected NormalisationRuleImpl()
-    {
-        
-    }
-    
     /**
      * @return the Stages
      */
@@ -530,6 +514,19 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    /**
+     * @return the validStages
+     */
+    protected void addValidStage(final URI validStage)
+    {
+        if(this.validStages == null)
+        {
+            this.validStages = new ArrayList<URI>();
+        }
+        
+        this.validStages.add(validStage);
     }
     
     @Override
@@ -567,9 +564,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return NormalisationRuleImpl.defaultNamespace;
+        return QueryAllNamespaces.RDFRULE;
     }
     
     @Override
@@ -775,6 +772,15 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         this.title = title;
     }
     
+    /**
+     * @param validStages
+     *            the validStages to set
+     */
+    protected void setValidStages(final Collection<URI> nextValidStages)
+    {
+        this.validStages = nextValidStages;
+    }
+    
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -885,27 +891,5 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public boolean validInStage(final org.openrdf.model.URI stage)
     {
         return this.validStages.contains(stage);
-    }
-    
-    /**
-     * @return the validStages
-     */
-    protected void addValidStage(final URI validStage)
-    {
-        if(this.validStages == null)
-        {
-            this.validStages = new ArrayList<URI>();
-        }
-        
-        this.validStages.add(validStage);
-    }
-    
-    /**
-     * @param validStages
-     *            the validStages to set
-     */
-    protected void setValidStages(final Collection<URI> nextValidStages)
-    {
-        this.validStages = nextValidStages;
     }
 }

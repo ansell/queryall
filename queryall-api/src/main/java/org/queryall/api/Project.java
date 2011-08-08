@@ -5,11 +5,11 @@ package org.queryall.api;
  */
 public interface Project extends BaseQueryAllInterface, Comparable<Project>
 {
-    String getDescription();
-
-    void setDescription(String description);
-
     org.openrdf.model.URI getAuthority();
-
+    
+    String getDescription();
+    
     void setAuthority(org.openrdf.model.URI authority);
+    
+    void setDescription(String description);
 }

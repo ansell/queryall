@@ -25,6 +25,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
@@ -42,8 +43,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     private static final boolean _DEBUG = ProvenanceRecord.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProvenanceRecord.log.isInfoEnabled();
-    
-    private static final String defaultNamespace = Settings.getSettings().getNamespaceForProvenance();
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
@@ -104,22 +103,17 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     
     public static URI provenanceRecordDateUri;
     
-    public static String provenanceNamespace;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
         
-        ProvenanceRecord.provenanceNamespace =
-                Settings.getSettings().getOntologyTermUriPrefix() + Settings.getSettings().getNamespaceForProvenance()
-                        + Settings.getSettings().getOntologyTermUriSuffix();
+        final String baseUri = QueryAllNamespaces.PROVENANCE.getBaseURI();
         
-        ProvenanceRecord.provenanceTypeUri = f.createURI(ProvenanceRecord.provenanceNamespace, "ProvenanceRecord");
-        ProvenanceRecord.provenanceHasAuthorOpenIDUri =
-                f.createURI(ProvenanceRecord.provenanceNamespace, "hasAuthorOpenID");
-        ProvenanceRecord.provenanceElementTypeUri = f.createURI(ProvenanceRecord.provenanceNamespace, "elementType");
-        ProvenanceRecord.provenanceElementKeyUri = f.createURI(ProvenanceRecord.provenanceNamespace, "elementKey");
-        ProvenanceRecord.provenanceRecordDateUri = f.createURI(ProvenanceRecord.provenanceNamespace, "recordDate");
+        ProvenanceRecord.provenanceTypeUri = f.createURI(baseUri, "ProvenanceRecord");
+        ProvenanceRecord.provenanceHasAuthorOpenIDUri = f.createURI(baseUri, "hasAuthorOpenID");
+        ProvenanceRecord.provenanceElementTypeUri = f.createURI(baseUri, "elementType");
+        ProvenanceRecord.provenanceElementKeyUri = f.createURI(baseUri, "elementKey");
+        ProvenanceRecord.provenanceRecordDateUri = f.createURI(baseUri, "recordDate");
     }
     
     public static Map<URI, ProvenanceRecord> fetchProvenanceForElementKey(final String hostToUse,
@@ -378,9 +372,9 @@ public class ProvenanceRecord implements BaseQueryAllInterface
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public String getDefaultNamespace()
+    public QueryAllNamespaces getDefaultNamespace()
     {
-        return ProvenanceRecord.defaultNamespace;
+        return QueryAllNamespaces.PROVENANCE;
     }
     
     /**
