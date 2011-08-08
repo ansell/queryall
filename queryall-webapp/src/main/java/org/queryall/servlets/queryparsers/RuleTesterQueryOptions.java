@@ -2,52 +2,52 @@ package org.queryall.servlets.queryparsers;
 
 import org.apache.log4j.Logger;
 
-/** 
+/**
  * Parses query options out of a query string
  */
 
 public class RuleTesterQueryOptions
 {
     public static final Logger log = Logger.getLogger(RuleTesterQueryOptions.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
+    public static final boolean _TRACE = RuleTesterQueryOptions.log.isTraceEnabled();
+    public static final boolean _DEBUG = RuleTesterQueryOptions.log.isDebugEnabled();
+    public static final boolean _INFO = RuleTesterQueryOptions.log.isInfoEnabled();
     
     private boolean _hasTestUri = false;
     private String _testUri = "";
     private String _requestString = "";
-
-    public RuleTesterQueryOptions(String testUri)
+    
+    public RuleTesterQueryOptions(final String testUri)
     {
-        _requestString = testUri;
+        this._requestString = testUri;
         
-        if(_requestString != null && _requestString.startsWith("/"))
+        if(this._requestString != null && this._requestString.startsWith("/"))
         {
-            log.error("requestString="+_requestString);
-            _requestString = _requestString.substring(1);
-            log.error("requestString="+_requestString);
+            RuleTesterQueryOptions.log.error("requestString=" + this._requestString);
+            this._requestString = this._requestString.substring(1);
+            RuleTesterQueryOptions.log.error("requestString=" + this._requestString);
         }
         
-        parseForTestUri(_requestString);
+        this.parseForTestUri(this._requestString);
     }
     
-    private void parseForTestUri(String testUri)
+    public String getTestUri()
     {
-        if(testUri != null && testUri.trim().length() > 0)
-        {
-            _testUri = testUri;
-            _hasTestUri = true;
-        }
+        return this._testUri;
     }
     
     public boolean hasTestUri()
     {
-        return _hasTestUri;
+        return this._hasTestUri;
     }
-
-    public String getTestUri()
+    
+    private void parseForTestUri(final String testUri)
     {
-        return _testUri;
+        if(testUri != null && testUri.trim().length() > 0)
+        {
+            this._testUri = testUri;
+            this._hasTestUri = true;
+        }
     }
-
+    
 }

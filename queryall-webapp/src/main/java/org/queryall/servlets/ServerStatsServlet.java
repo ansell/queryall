@@ -1,70 +1,76 @@
 package org.queryall.servlets;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Hashtable;
 
-import org.queryall.query.*;
-import org.queryall.utils.MathsUtils;
-import org.queryall.enumerations.*;
-import org.queryall.api.QueryAllConfiguration;
-import org.queryall.blacklist.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.queryall.api.QueryAllConfiguration;
+import org.queryall.blacklist.BlacklistController;
+import org.queryall.enumerations.Constants;
+import org.queryall.query.QueryDebug;
+import org.queryall.query.Settings;
+import org.queryall.utils.MathsUtils;
 
 /** 
  * 
  */
 
-public class ServerStatsServlet extends HttpServlet 
+public class ServerStatsServlet extends HttpServlet
 {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -4816515030121762308L;
-	public static final Logger log = Logger.getLogger(ServerStatsServlet.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
-
+    private static final long serialVersionUID = -4816515030121762308L;
+    public static final Logger log = Logger.getLogger(ServerStatsServlet.class.getName());
+    public static final boolean _TRACE = ServerStatsServlet.log.isTraceEnabled();
+    public static final boolean _DEBUG = ServerStatsServlet.log.isDebugEnabled();
+    public static final boolean _INFO = ServerStatsServlet.log.isInfoEnabled();
     
     @Override
-    public void doGet(HttpServletRequest request,
-                        HttpServletResponse response)
-        throws ServletException, IOException 
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+        IOException
     {
-        QueryAllConfiguration localSettings = Settings.getSettings();
-        BlacklistController localBlacklistController = BlacklistController.getDefaultController();
+        final QueryAllConfiguration localSettings = Settings.getSettings();
+        final BlacklistController localBlacklistController = BlacklistController.getDefaultController();
         
-        PrintWriter out = response.getWriter();
+        final PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         
         @SuppressWarnings("unused")
-        String subversionId = "$Id: errorstats.jsp 910 2010-12-03 22:07:48Z p_ansell $";
+        final String subversionId = "$Id: errorstats.jsp 910 2010-12-03 22:07:48Z p_ansell $";
         
         localBlacklistController.doBlacklistExpiry();
         localBlacklistController.clearStatisticsUploadList();
         
-        Date currentDate = new Date();
+        final Date currentDate = new Date();
         
-            // SimpleDateFormat ISO8601UTC = 
-            //  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS'Z'");
-            // SimpleDateFormat ISO8601UTC = 
-            //   new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");	  
-            // ISO8601UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-            String now = Constants.ISO8601UTC().format(currentDate);
+        // SimpleDateFormat ISO8601UTC =
+        // new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss,SSS'Z'");
+        // SimpleDateFormat ISO8601UTC =
+        // new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        // ISO8601UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
+        final String now = Constants.ISO8601UTC().format(currentDate);
         
+        final long differenceMilliseconds = currentDate.getTime() - localBlacklistController.lastExpiryDate.getTime();
         
-        long differenceMilliseconds = currentDate.getTime() - localBlacklistController.lastExpiryDate.getTime();
-        
-        out.write("Current date : "+currentDate.toString()+"<br />\n");
-        out.write("Server Version : "+Settings.VERSION+"<br />\n");
-        out.write("Now : "+now+"<br />\n");
-        out.write("Last error reset date: "+localBlacklistController.lastExpiryDate.toString()+"<br />\n");
-        out.write("Server startup date: "+localBlacklistController.lastServerStartupDate.toString()+"<br />\n");
-        out.write("Reset period "+localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L)+"<br />\n");
-        out.write("Client blacklist will reset in "+((localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L)-differenceMilliseconds)/1000)+" seconds.<br /><br />\n");
+        out.write("Current date : " + currentDate.toString() + "<br />\n");
+        out.write("Server Version : " + Settings.VERSION + "<br />\n");
+        out.write("Now : " + now + "<br />\n");
+        out.write("Last error reset date: " + localBlacklistController.lastExpiryDate.toString() + "<br />\n");
+        out.write("Server startup date: " + localBlacklistController.lastServerStartupDate.toString() + "<br />\n");
+        out.write("Reset period " + localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L) + "<br />\n");
+        out.write("Client blacklist will reset in "
+                + ((localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L) - differenceMilliseconds) / 1000)
+                + " seconds.<br /><br />\n");
         
         if(localBlacklistController.allHttpErrorResponseCodesByServer != null)
         {
@@ -72,17 +78,18 @@ public class ServerStatsServlet extends HttpServlet
             {
                 out.write("All HTTP response error codes by endpoint since last server restart:<br /><br />\n");
                 
-                for(String nextKey : localBlacklistController.allHttpErrorResponseCodesByServer.keySet())
+                for(final String nextKey : localBlacklistController.allHttpErrorResponseCodesByServer.keySet())
                 {
-                    out.write("Endpoint="+nextKey+"<br />\n");
+                    out.write("Endpoint=" + nextKey + "<br />\n");
                     
-                    Hashtable<Integer, Integer> errorCodeList = localBlacklistController.allHttpErrorResponseCodesByServer.get(nextKey);
+                    final Hashtable<Integer, Integer> errorCodeList =
+                            localBlacklistController.allHttpErrorResponseCodesByServer.get(nextKey);
                     
                     out.write("<ul>\n");
                     
-                    for(int nextErrorCode : errorCodeList.keySet())
+                    for(final int nextErrorCode : errorCodeList.keySet())
                     {
-                        out.write("<li>"+nextErrorCode + " : " + errorCodeList.get(nextErrorCode)+"</li>\n");
+                        out.write("<li>" + nextErrorCode + " : " + errorCodeList.get(nextErrorCode) + "</li>\n");
                     }
                     
                     out.write("</ul>\n");
@@ -98,55 +105,56 @@ public class ServerStatsServlet extends HttpServlet
                 
                 out.write("<ul>\n");
                 
-                for(String nextKey : localBlacklistController.allServerQueryTotals.keySet())
+                for(final String nextKey : localBlacklistController.allServerQueryTotals.keySet())
                 {
-                    out.write("<li>Endpoint=" + nextKey + " : " + localBlacklistController.allServerQueryTotals.get(nextKey)+"</li>\n");
+                    out.write("<li>Endpoint=" + nextKey + " : "
+                            + localBlacklistController.allServerQueryTotals.get(nextKey) + "</li>\n");
                 }
                 
                 out.write("</ul>\n");
             }
         }
         
-        for(String nextKey : localBlacklistController.accumulatedBlacklistStatistics.keySet())
+        for(final String nextKey : localBlacklistController.accumulatedBlacklistStatistics.keySet())
         {
-            out.write(localBlacklistController.accumulatedBlacklistStatistics.get(nextKey).toString()+"<br />\n");
-            out.write(localBlacklistController.accumulatedBlacklistStatistics.get(nextKey).errorMessageSummaryToString()+"<br />\n");
+            out.write(localBlacklistController.accumulatedBlacklistStatistics.get(nextKey).toString() + "<br />\n");
+            out.write(localBlacklistController.accumulatedBlacklistStatistics.get(nextKey)
+                    .errorMessageSummaryToString() + "<br />\n");
         }
         
-        Collection<Long> overallQueryTimes = new HashSet<Long>();
-        Collection<Long> userSpecificQueryTimes = new HashSet<Long>();
+        final Collection<Long> overallQueryTimes = new HashSet<Long>();
+        final Collection<Long> userSpecificQueryTimes = new HashSet<Long>();
         long overallQueryTime = 0;
         int overallQueryNumbers = 0;
         
-        
-        
-        for(String nextKey : localBlacklistController.currentQueryDebugInformation.keySet())
+        for(final String nextKey : localBlacklistController.currentQueryDebugInformation.keySet())
         {
-            out.write("<br />Queries by : "+nextKey+"<br />\n");
+            out.write("<br />Queries by : " + nextKey + "<br />\n");
             
-            Collection<QueryDebug> nextSetOfQueries = localBlacklistController.currentQueryDebugInformation.get(nextKey);
+            final Collection<QueryDebug> nextSetOfQueries =
+                    localBlacklistController.currentQueryDebugInformation.get(nextKey);
             
-            Collection<Long> nextQueryTimes = new HashSet<Long>();
+            final Collection<Long> nextQueryTimes = new HashSet<Long>();
             long nextTotalQueryTime = 0;
-            int nextTotalQueryNumbers = nextSetOfQueries.size();
+            final int nextTotalQueryNumbers = nextSetOfQueries.size();
             
-            for(QueryDebug nextQueryDebug : nextSetOfQueries)
+            for(final QueryDebug nextQueryDebug : nextSetOfQueries)
             {
                 nextTotalQueryTime += nextQueryDebug.getTotalTimeMilliseconds();
                 
                 overallQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
                 nextQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
                 
-                if(_DEBUG)
+                if(ServerStatsServlet._DEBUG)
                 {
-                    out.write(nextQueryDebug.toString()+"<br />\n");
+                    out.write(nextQueryDebug.toString() + "<br />\n");
                 }
             }
             
-            out.write("Total number of queries = " + nextTotalQueryNumbers+"<br />\n");
-            out.write("Total query time = " + nextTotalQueryTime+"<br />\n");
-            out.write("Average query length = " + nextTotalQueryTime/nextTotalQueryNumbers+"<br />\n");
-            out.write("Standard deviation = " + MathsUtils.getStandardDeviationFromLongs(nextQueryTimes)+" <br />\n");
+            out.write("Total number of queries = " + nextTotalQueryNumbers + "<br />\n");
+            out.write("Total query time = " + nextTotalQueryTime + "<br />\n");
+            out.write("Average query length = " + nextTotalQueryTime / nextTotalQueryNumbers + "<br />\n");
+            out.write("Standard deviation = " + MathsUtils.getStandardDeviationFromLongs(nextQueryTimes) + " <br />\n");
             
             userSpecificQueryTimes.add(nextTotalQueryTime);
             overallQueryTime += nextTotalQueryTime;
@@ -155,14 +163,15 @@ public class ServerStatsServlet extends HttpServlet
         
         if(overallQueryNumbers > 0)
         {
-            out.write("<br />Overall Total number of queries = " + overallQueryNumbers+"<br />\n");
-            out.write("Overall Total query time = " + overallQueryTime+"<br />\n");
-            out.write("Overall Average query length = " + overallQueryTime/overallQueryNumbers+"<br />\n");
-            out.write("Overall Standard deviation = " + MathsUtils.getStandardDeviationFromLongs(overallQueryTimes)+" <br />\n");
-            out.write("Overall requestor level Standard deviation = " + MathsUtils.getStandardDeviationFromLongs(userSpecificQueryTimes)+" <br />\n");
+            out.write("<br />Overall Total number of queries = " + overallQueryNumbers + "<br />\n");
+            out.write("Overall Total query time = " + overallQueryTime + "<br />\n");
+            out.write("Overall Average query length = " + overallQueryTime / overallQueryNumbers + "<br />\n");
+            out.write("Overall Standard deviation = " + MathsUtils.getStandardDeviationFromLongs(overallQueryTimes)
+                    + " <br />\n");
+            out.write("Overall requestor level Standard deviation = "
+                    + MathsUtils.getStandardDeviationFromLongs(userSpecificQueryTimes) + " <br />\n");
         }
+        
+    }
     
-  }
-  
 }
-

@@ -1,4 +1,3 @@
-
 package org.queryall.servlets.html;
 
 import javax.servlet.ServletContext;
@@ -9,30 +8,25 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 
 /**
- * A facade class that simplifies using a custom Velocity engine from a servlet.
- * It encapsulates creation of the VelocityEngine instance, its storage in the
- * servlet context, and the rendering of templates into the servlet response
- * output stream.
+ * A facade class that simplifies using a custom Velocity engine from a servlet. It encapsulates
+ * creation of the VelocityEngine instance, its storage in the servlet context, and the rendering of
+ * templates into the servlet response output stream.
  * 
- * @author Richard Cyganiak (richard @ cyganiak.de) 
- * Adapted for use by Bio2RDF by...
+ * @author Richard Cyganiak (richard @ cyganiak.de) Adapted for use by Bio2RDF by...
  * @author Peter Ansell (p_ansell @ yahoo.com)
  * @version $Id: VelocityHelper.java 944 2011-02-08 10:23:08Z p_ansell $
  */
 
 public class VelocityHelper
 {
-    private static final Logger log = Logger.getLogger(VelocityHelper.class
-            .getName());
+    private static final Logger log = Logger.getLogger(VelocityHelper.class.getName());
     private static final boolean _TRACE = VelocityHelper.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = VelocityHelper.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = VelocityHelper.log.isInfoEnabled();
     
-    private final static String VELOCITY_ENGINE = VelocityHelper.class
-            .getName()
-            + ".VELOCITY_ENGINE";
+    private final static String VELOCITY_ENGINE = VelocityHelper.class.getName() + ".VELOCITY_ENGINE";
     
     private final ServletContext servletContext;
     private final Context velocityContext;
@@ -41,7 +35,7 @@ public class VelocityHelper
      * 
      * @param servletContext
      */
-    public VelocityHelper(ServletContext servletContext)
+    public VelocityHelper(final ServletContext servletContext)
     {
         this.servletContext = servletContext;
         this.velocityContext = new VelocityContext();
@@ -51,8 +45,7 @@ public class VelocityHelper
     {
         if(VelocityHelper._TRACE)
         {
-            VelocityHelper.log
-                    .trace("VelocityHelper.createVelocityEngine: entering...");
+            VelocityHelper.log.trace("VelocityHelper.createVelocityEngine: entering...");
         }
         
         VelocityEngine result = null;
@@ -63,41 +56,33 @@ public class VelocityHelper
             
             engineProperties.setProperty("runtime.log.logsystem.class",
                     "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
-            engineProperties.setProperty(
-                    "runtime.log.logsystem.log4j.category",
+            engineProperties.setProperty("runtime.log.logsystem.log4j.category",
                     "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             engineProperties.setProperty("input.encoding", "utf-8");
             engineProperties.setProperty("output.encoding", "utf-8");
-            // FIXME XXX: When Velocity supports loading from WEB-INF/classes/ as well as WEB-INF/lib/ remove this property
-            engineProperties.setProperty("file.resource.loader.path",
-                    this.servletContext.getRealPath("/")
-                            + "/WEB-INF/classes/templates/");
-            engineProperties
-                    .setProperty("eventhandler.referenceinsertion.class",
-                            "org.apache.velocity.app.event.implement.EscapeHtmlReference");
-            engineProperties.setProperty("eventhandler.escape.html.match",
-                    "/xmlEncoded.*/");
+            // FIXME XXX: When Velocity supports loading from WEB-INF/classes/ as well as
+            // WEB-INF/lib/ remove this property
+            engineProperties.setProperty("file.resource.loader.path", this.servletContext.getRealPath("/")
+                    + "/WEB-INF/classes/templates/");
+            engineProperties.setProperty("eventhandler.referenceinsertion.class",
+                    "org.apache.velocity.app.event.implement.EscapeHtmlReference");
+            engineProperties.setProperty("eventhandler.escape.html.match", "/xmlEncoded.*/");
             
             if(VelocityHelper._TRACE)
             {
-                VelocityHelper.log
-                        .trace("VelocityHelper.createVelocityEngine: about to create velocity engine");
+                VelocityHelper.log.trace("VelocityHelper.createVelocityEngine: about to create velocity engine");
             }
             
             result = new VelocityEngine(engineProperties);
             
             if(VelocityHelper._TRACE)
             {
-                VelocityHelper.log
-                        .trace("VelocityHelper.createVelocityEngine: created basic engine");
+                VelocityHelper.log.trace("VelocityHelper.createVelocityEngine: created basic engine");
             }
         }
-        catch (final Exception ex)
+        catch(final Exception ex)
         {
-            VelocityHelper.log
-                    .fatal(
-                            "VelocityHelper.setupVelocityProperties: caught fatal exception",
-                            ex);
+            VelocityHelper.log.fatal("VelocityHelper.setupVelocityProperties: caught fatal exception", ex);
             
             // throw new RuntimeException(ex);
         }
@@ -117,18 +102,14 @@ public class VelocityHelper
     {
         if(VelocityHelper._TRACE)
         {
-            VelocityHelper.log
-                    .trace("VelocityHelper.getVelocityEngine: about to get current VelocityEngine instance");
+            VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: about to get current VelocityEngine instance");
         }
         
-        VelocityEngine currentEngine = (VelocityEngine) this.servletContext
-                .getAttribute(VelocityHelper.VELOCITY_ENGINE);
+        VelocityEngine currentEngine = (VelocityEngine)this.servletContext.getAttribute(VelocityHelper.VELOCITY_ENGINE);
         
         if(VelocityHelper._TRACE)
         {
-            VelocityHelper.log
-                    .trace("VelocityHelper.getVelocityEngine: currentEngine="
-                            + currentEngine);
+            VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: currentEngine=" + currentEngine);
         }
         
         if(currentEngine == null)
@@ -136,8 +117,7 @@ public class VelocityHelper
         {
             if(VelocityHelper._TRACE)
             {
-                VelocityHelper.log
-                        .trace("VelocityHelper.getVelocityEngine: setting up engine...");
+                VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: setting up engine...");
             }
             
             currentEngine = this.createVelocityEngine();
@@ -152,8 +132,7 @@ public class VelocityHelper
             
             // synchronized (servletContext)
             // {
-            this.servletContext.setAttribute(VelocityHelper.VELOCITY_ENGINE,
-                    currentEngine);
+            this.servletContext.setAttribute(VelocityHelper.VELOCITY_ENGINE, currentEngine);
             
             // }
             
@@ -166,20 +145,16 @@ public class VelocityHelper
         
         if(VelocityHelper._TRACE)
         {
-            VelocityHelper.log
-                    .trace("VelocityHelper.getVelocityEngine: returning... currentEngine="
-                            + currentEngine);
+            VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: returning... currentEngine=" + currentEngine);
         }
         
         return currentEngine;
     }
     
     /**
-     * Renders a template using the template variables put into the velocity
-     * context.
+     * Renders a template using the template variables put into the velocity context.
      */
-    public void renderXHTML(String templateName, java.io.Writer nextWriter)
-            throws Exception
+    public void renderXHTML(final String templateName, final java.io.Writer nextWriter) throws Exception
     {
         // response.addHeader("Content-Type", "text/html; charset=utf-8");
         // response.addHeader("Cache-Control", "no-cache");
@@ -189,18 +164,15 @@ public class VelocityHelper
         {
             if(VelocityHelper._TRACE)
             {
-                VelocityHelper.log
-                        .trace("VelocityHelper.renderXHTML: about to setup Velocity properties");
+                VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to setup Velocity properties");
             }
             
-            final VelocityEngine currentVelocityEngine = this
-                    .getVelocityEngine();
+            final VelocityEngine currentVelocityEngine = this.getVelocityEngine();
             // setupVelocityEngine();
             
             if(VelocityHelper._TRACE)
             {
-                VelocityHelper.log
-                        .trace("VelocityHelper.renderXHTML: about to mergeTemplate");
+                VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to mergeTemplate");
             }
             
             // make sure that the writer is going to be writing in UTF-8
@@ -208,16 +180,14 @@ public class VelocityHelper
             // OutputStreamWriter(nextWriter, "utf-8");
             // currentVelocityEngine.mergeTemplate(templateName, "utf-8",
             // velocityContext, nextWriter);
-            currentVelocityEngine.mergeTemplate(templateName, "utf-8",
-                    this.velocityContext, nextWriter);
+            currentVelocityEngine.mergeTemplate(templateName, "utf-8", this.velocityContext, nextWriter);
             
             // writer.close();
         }
-        catch (final Exception ex)
+        catch(final Exception ex)
         {
-            VelocityHelper.log.fatal(
-                    "VelocityHelper.renderXHTML: caught exception with templateName="
-                            + templateName, ex);
+            VelocityHelper.log.fatal("VelocityHelper.renderXHTML: caught exception with templateName=" + templateName,
+                    ex);
             
             throw ex;
             // throw new RuntimeException(ex);

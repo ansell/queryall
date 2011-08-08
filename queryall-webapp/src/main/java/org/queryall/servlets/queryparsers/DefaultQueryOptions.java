@@ -1,23 +1,22 @@
 package org.queryall.servlets.queryparsers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import org.apache.log4j.Logger;
-
-/** 
+/**
  * Parses query options out of a query string
  */
 
 public class DefaultQueryOptions
 {
     public static final Logger log = Logger.getLogger(DefaultQueryOptions.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
+    public static final boolean _TRACE = DefaultQueryOptions.log.isTraceEnabled();
+    public static final boolean _DEBUG = DefaultQueryOptions.log.isDebugEnabled();
+    public static final boolean _INFO = DefaultQueryOptions.log.isInfoEnabled();
     
     private boolean _hasExplicitFormat = false;
     private String _chosenFormat = "";
@@ -29,193 +28,230 @@ public class DefaultQueryOptions
     private String parsedRequestString = "";
     
     private QueryAllConfiguration localSettings;
-	private Pattern queryPlanPattern;
-	private String queryplanUrlPrefix;
-	private String queryplanUrlSuffix;
-	private String pageoffsetUrlOpeningPrefix;
-	private String pageoffsetUrlClosingPrefix;
-	private String pageoffsetUrlSuffix;
-	private String htmlUrlPrefix;
-	private String htmlUrlSuffix;
-	private String rdfXmlUrlPrefix;
-	private String rdfXmlUrlSuffix;
-	private String n3UrlPrefix;
-	private String n3UrlSuffix;
-	private String jsonUrlPrefix;
-	private String jsonUrlSuffix;
-	private String ntriplesUrlPrefix;
-	private String ntriplesUrlSuffix;
-	private String nquadsUrlPrefix;
-	private String nquadsUrlSuffix;
+    private Pattern queryPlanPattern;
+    private String queryplanUrlPrefix;
+    private String queryplanUrlSuffix;
+    private String pageoffsetUrlOpeningPrefix;
+    private String pageoffsetUrlClosingPrefix;
+    private String pageoffsetUrlSuffix;
+    private String htmlUrlPrefix;
+    private String htmlUrlSuffix;
+    private String rdfXmlUrlPrefix;
+    private String rdfXmlUrlSuffix;
+    private String n3UrlPrefix;
+    private String n3UrlSuffix;
+    private String jsonUrlPrefix;
+    private String jsonUrlSuffix;
+    private String ntriplesUrlPrefix;
+    private String ntriplesUrlSuffix;
+    private String nquadsUrlPrefix;
+    private String nquadsUrlSuffix;
     
-    public DefaultQueryOptions(String requestUri, String contextPath, QueryAllConfiguration nextSettings)
+    public DefaultQueryOptions(String requestUri, final String contextPath, final QueryAllConfiguration nextSettings)
     {
         this.localSettings = nextSettings;
-
-        pageoffsetUrlOpeningPrefix = localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset");
-        pageoffsetUrlClosingPrefix = localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/");
-        pageoffsetUrlSuffix = localSettings.getStringProperty("pageoffsetUrlSuffix", "");
-        htmlUrlPrefix = localSettings.getStringProperty("htmlUrlPrefix", "page/");
-        htmlUrlSuffix = localSettings.getStringProperty("htmlUrlSuffix", "");
-        rdfXmlUrlPrefix = localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
-        rdfXmlUrlSuffix = localSettings.getStringProperty("rdfXmlUrlSuffix", "");
-        n3UrlPrefix = localSettings.getStringProperty("n3UrlPrefix", "n3/");
-        n3UrlSuffix = localSettings.getStringProperty("n3UrlSuffix", "");
-        jsonUrlPrefix = localSettings.getStringProperty("jsonUrlPrefix", "json/");
-        jsonUrlSuffix = localSettings.getStringProperty("jsonUrlSuffix", "");
-        ntriplesUrlPrefix = localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
-        ntriplesUrlSuffix = localSettings.getStringProperty("ntriplesUrlSuffix", "");
-        nquadsUrlPrefix = localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
-        nquadsUrlSuffix = localSettings.getStringProperty("nquadsUrlSuffix", "");
-        queryplanUrlPrefix = localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/");
-        queryplanUrlSuffix = localSettings.getStringProperty("queryplanUrlSuffix", "");
         
-        String pageOffsetPatternString = "^"+pageoffsetUrlOpeningPrefix+"(\\d+)"+pageoffsetUrlClosingPrefix+"(.+)"+pageoffsetUrlSuffix+"$";
-
-        if(_TRACE)
-            log.trace("pageOffsetPatternString="+pageOffsetPatternString);
+        this.pageoffsetUrlOpeningPrefix =
+                this.localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset");
+        this.pageoffsetUrlClosingPrefix = this.localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/");
+        this.pageoffsetUrlSuffix = this.localSettings.getStringProperty("pageoffsetUrlSuffix", "");
+        this.htmlUrlPrefix = this.localSettings.getStringProperty("htmlUrlPrefix", "page/");
+        this.htmlUrlSuffix = this.localSettings.getStringProperty("htmlUrlSuffix", "");
+        this.rdfXmlUrlPrefix = this.localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
+        this.rdfXmlUrlSuffix = this.localSettings.getStringProperty("rdfXmlUrlSuffix", "");
+        this.n3UrlPrefix = this.localSettings.getStringProperty("n3UrlPrefix", "n3/");
+        this.n3UrlSuffix = this.localSettings.getStringProperty("n3UrlSuffix", "");
+        this.jsonUrlPrefix = this.localSettings.getStringProperty("jsonUrlPrefix", "json/");
+        this.jsonUrlSuffix = this.localSettings.getStringProperty("jsonUrlSuffix", "");
+        this.ntriplesUrlPrefix = this.localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
+        this.ntriplesUrlSuffix = this.localSettings.getStringProperty("ntriplesUrlSuffix", "");
+        this.nquadsUrlPrefix = this.localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
+        this.nquadsUrlSuffix = this.localSettings.getStringProperty("nquadsUrlSuffix", "");
+        this.queryplanUrlPrefix = this.localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/");
+        this.queryplanUrlSuffix = this.localSettings.getStringProperty("queryplanUrlSuffix", "");
         
-        queryPlanPattern = Pattern.compile(pageOffsetPatternString);
-
+        final String pageOffsetPatternString =
+                "^" + this.pageoffsetUrlOpeningPrefix + "(\\d+)" + this.pageoffsetUrlClosingPrefix + "(.+)"
+                        + this.pageoffsetUrlSuffix + "$";
+        
+        if(DefaultQueryOptions._TRACE)
+        {
+            DefaultQueryOptions.log.trace("pageOffsetPatternString=" + pageOffsetPatternString);
+        }
+        
+        this.queryPlanPattern = Pattern.compile(pageOffsetPatternString);
+        
         if(contextPath.equals(""))
         {
-        	isRootContext = true;
+            this.isRootContext = true;
         }
         else
         {
-        	isRootContext = false;
+            this.isRootContext = false;
         }
         
-        if(!isRootContext)
+        if(!this.isRootContext)
         {
-        	if(requestUri.startsWith(contextPath))
-        	{
-        		if(_DEBUG)
-        			log.debug("requestUri before removing contextPath requestUri="+requestUri);
-        		requestUri = requestUri.substring(contextPath.length());
-        		if(_DEBUG)
-        			log.debug("removed contextPath from requestUri contextPath="+contextPath+" requestUri="+requestUri);
-        	}
+            if(requestUri.startsWith(contextPath))
+            {
+                if(DefaultQueryOptions._DEBUG)
+                {
+                    DefaultQueryOptions.log.debug("requestUri before removing contextPath requestUri=" + requestUri);
+                }
+                requestUri = requestUri.substring(contextPath.length());
+                if(DefaultQueryOptions._DEBUG)
+                {
+                    DefaultQueryOptions.log.debug("removed contextPath from requestUri contextPath=" + contextPath
+                            + " requestUri=" + requestUri);
+                }
+            }
         }
         
         String requestString = requestUri;
         
         if(requestString.startsWith("/"))
         {
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
             requestString = requestString.substring(1);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
         
-        requestString = parseForFormat(requestString);
+        requestString = this.parseForFormat(requestString);
         
-        requestString = parseForQueryPlan(requestString);
+        requestString = this.parseForQueryPlan(requestString);
         
-        requestString = parseForPageOffset(requestString);
+        requestString = this.parseForPageOffset(requestString);
         
-        parsedRequestString = requestString;
+        this.parsedRequestString = requestString;
+    }
+    
+    public boolean containsExplicitFormat()
+    {
+        return this._hasExplicitFormat;
+    }
+    
+    public boolean containsExplicitPageOffsetValue()
+    {
+        return this._hasExplicitPageOffsetValue;
+    }
+    
+    public String getExplicitFormat()
+    {
+        return this._chosenFormat;
+    }
+    
+    public int getPageOffset()
+    {
+        return this.pageoffset;
+    }
+    
+    public String getParsedRequest()
+    {
+        return this.parsedRequestString;
+    }
+    
+    public boolean isQueryPlanRequest()
+    {
+        return this._hasQueryPlanRequest;
+    }
+    
+    private boolean matchesPrefixAndSuffix(final String nextString, final String nextPrefix, final String nextSuffix)
+    {
+        return nextString.startsWith(nextPrefix) && nextString.endsWith(nextSuffix)
+                && nextString.length() >= (nextPrefix.length() + nextSuffix.length());
     }
     
     private String parseForFormat(String requestString)
     {
-        if(matchesPrefixAndSuffix(requestString, htmlUrlPrefix, htmlUrlSuffix))
+        if(this.matchesPrefixAndSuffix(requestString, this.htmlUrlPrefix, this.htmlUrlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_HTML;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, htmlUrlPrefix, htmlUrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_HTML;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.htmlUrlPrefix, this.htmlUrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, rdfXmlUrlPrefix, rdfXmlUrlSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, this.rdfXmlUrlPrefix, this.rdfXmlUrlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.APPLICATION_RDF_XML;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, rdfXmlUrlPrefix, rdfXmlUrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_RDF_XML;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.rdfXmlUrlPrefix, this.rdfXmlUrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, n3UrlPrefix, n3UrlSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, this.n3UrlPrefix, this.n3UrlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_RDF_N3;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, n3UrlPrefix, n3UrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_RDF_N3;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.n3UrlPrefix, this.n3UrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, jsonUrlPrefix, jsonUrlSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, this.jsonUrlPrefix, this.jsonUrlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.APPLICATION_JSON;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, jsonUrlPrefix, jsonUrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_JSON;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.jsonUrlPrefix, this.jsonUrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, ntriplesUrlPrefix, ntriplesUrlSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, this.ntriplesUrlPrefix, this.ntriplesUrlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_PLAIN;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, ntriplesUrlPrefix, ntriplesUrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_PLAIN;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.ntriplesUrlPrefix, this.ntriplesUrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, nquadsUrlPrefix, nquadsUrlSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, this.nquadsUrlPrefix, this.nquadsUrlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_X_NQUADS;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nquadsUrlPrefix, nquadsUrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-        }
-        
-        return requestString;
-    }
-    
-    private boolean matchesPrefixAndSuffix(String nextString, String nextPrefix, String nextSuffix)
-    {
-        return nextString.startsWith(nextPrefix) 
-            && nextString.endsWith(nextSuffix) 
-            && nextString.length() >= (nextPrefix.length() + nextSuffix.length());
-    }
-    
-    private String takeOffPrefixAndSuffix(String nextString, String nextPrefix, String nextSuffix)
-    {
-        if(matchesPrefixAndSuffix(nextString, nextPrefix, nextSuffix))
-        {
-            return nextString.substring(nextPrefix.length(),
-                nextString.length()-nextSuffix.length());
-        }
-        else
-        {
-            log.error("Could not takeOffPrefixAndSuffix because the string was not long enough");
-        }
-        
-        return nextString;
-    }
-
-    private String parseForQueryPlan(String requestString)
-    {
-        if(matchesPrefixAndSuffix(requestString, queryplanUrlPrefix, queryplanUrlSuffix))
-        {
-            _hasQueryPlanRequest = true;
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, queryplanUrlPrefix, queryplanUrlSuffix);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_X_NQUADS;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.nquadsUrlPrefix, this.nquadsUrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
         
         return requestString;
@@ -223,7 +259,7 @@ public class DefaultQueryOptions
     
     private String parseForPageOffset(String requestString)
     {
-        Matcher matcher = queryPlanPattern.matcher(requestString);
+        final Matcher matcher = this.queryPlanPattern.matcher(requestString);
         
         if(!matcher.matches())
         {
@@ -232,57 +268,64 @@ public class DefaultQueryOptions
         
         try
         {
-            // This will always be a non-negative integer due to the way the pattern matches, but it may be 0 so we correct that case
-            pageoffset = Integer.parseInt(matcher.group(1));
+            // This will always be a non-negative integer due to the way the pattern matches, but it
+            // may be 0 so we correct that case
+            this.pageoffset = Integer.parseInt(matcher.group(1));
         }
-        catch(NumberFormatException nfe)
+        catch(final NumberFormatException nfe)
         {
-            pageoffset = 1;
+            this.pageoffset = 1;
         }
         
-        if(pageoffset == 0)
-            pageoffset = 1;
+        if(this.pageoffset == 0)
+        {
+            this.pageoffset = 1;
+        }
         
-        _hasExplicitPageOffsetValue = true;
+        this._hasExplicitPageOffsetValue = true;
         
         requestString = matcher.group(2);
         
-        if(_DEBUG)
+        if(DefaultQueryOptions._DEBUG)
         {
-        	log.debug("pageoffset="+pageoffset);
-        	log.debug("requestString="+requestString);
+            DefaultQueryOptions.log.debug("pageoffset=" + this.pageoffset);
+            DefaultQueryOptions.log.debug("requestString=" + requestString);
         }
-
+        
         return requestString;
     }
     
-    public boolean containsExplicitFormat()
+    private String parseForQueryPlan(String requestString)
     {
-        return _hasExplicitFormat;
+        if(this.matchesPrefixAndSuffix(requestString, this.queryplanUrlPrefix, this.queryplanUrlSuffix))
+        {
+            this._hasQueryPlanRequest = true;
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, this.queryplanUrlPrefix, this.queryplanUrlSuffix);
+            if(DefaultQueryOptions._DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+        }
+        
+        return requestString;
     }
     
-    public String getExplicitFormat()
+    private String takeOffPrefixAndSuffix(final String nextString, final String nextPrefix, final String nextSuffix)
     {
-        return _chosenFormat;
-    }
-
-    public boolean containsExplicitPageOffsetValue()
-    {
-        return _hasExplicitPageOffsetValue;
-    }
-
-    public int getPageOffset()
-    {
-        return pageoffset;
-    }
-
-    public boolean isQueryPlanRequest()
-    {
-        return _hasQueryPlanRequest;
-    }
-    
-    public String getParsedRequest()
-    {
-        return parsedRequestString;
+        if(this.matchesPrefixAndSuffix(nextString, nextPrefix, nextSuffix))
+        {
+            return nextString.substring(nextPrefix.length(), nextString.length() - nextSuffix.length());
+        }
+        else
+        {
+            DefaultQueryOptions.log.error("Could not takeOffPrefixAndSuffix because the string was not long enough");
+        }
+        
+        return nextString;
     }
 }

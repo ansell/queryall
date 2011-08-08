@@ -1,61 +1,64 @@
 package org.queryall.servlets;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
-import java.io.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
 
-import org.queryall.query.Settings;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.queryall.query.Settings;
 
-/** 
+/**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RobotsTxtServlet extends HttpServlet 
+public class RobotsTxtServlet extends HttpServlet
 {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 3224404845116318101L;
-	public static final Logger log = Logger.getLogger(RobotsTxtServlet.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
-
+    private static final long serialVersionUID = 3224404845116318101L;
+    public static final Logger log = Logger.getLogger(RobotsTxtServlet.class.getName());
+    public static final boolean _TRACE = RobotsTxtServlet.log.isTraceEnabled();
+    public static final boolean _DEBUG = RobotsTxtServlet.log.isDebugEnabled();
+    public static final boolean _INFO = RobotsTxtServlet.log.isInfoEnabled();
     
     @Override
-    public void doGet(HttpServletRequest request,
-                        HttpServletResponse response)
-        throws ServletException, IOException 
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+        IOException
     {
         // Settings.setServletContext(getServletConfig().getServletContext());
         
-    	if(_INFO)
-    		log.info("Robots.txt requested: request.getRequestURI()="+request.getRequestURI());
+        if(RobotsTxtServlet._INFO)
+        {
+            RobotsTxtServlet.log.info("Robots.txt requested: request.getRequestURI()=" + request.getRequestURI());
+        }
         
         response.setContentType("text/plain");
         
-        PrintWriter out = response.getWriter();
-    
-        Collection<String> robotsList = Settings.getSettings().getStringProperties("blacklistBaseUserAgents");
+        final PrintWriter out = response.getWriter();
+        
+        final Collection<String> robotsList = Settings.getSettings().getStringProperties("blacklistBaseUserAgents");
         
         if(robotsList != null)
         {
-            for(String nextRobot : robotsList)
+            for(final String nextRobot : robotsList)
             {
-                out.write("User-agent: "+nextRobot+"\n");
+                out.write("User-agent: " + nextRobot + "\n");
             }
             
             out.write("Disallow: /\n");
         }
-                
+        
         out.write("\nUser-agent: *\n");
         
         out.write("Disallow: /queryplan/\n");
         out.write("Disallow: /admin/\n");
         out.write("Disallow: /error/\n\n");
-
+        
         // TODO: automate this using configuration
         
         out.write("Disallow: /label/\n");
@@ -75,7 +78,7 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /data/\n");
         out.write("Disallow: /countlinks/\n");
         out.write("Disallow: /countlinksns/\n\n");
-
+        
         out.write("Disallow: /page/label/\n");
         out.write("Disallow: /page/links/\n");
         out.write("Disallow: /page/linkstonamespace/\n");
@@ -93,7 +96,7 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /page/data/\n");
         out.write("Disallow: /page/countlinks/\n");
         out.write("Disallow: /page/countlinksns/\n\n");
-
+        
         out.write("Disallow: /rdfxml/label/\n");
         out.write("Disallow: /rdfxml/links/\n");
         out.write("Disallow: /rdfxml/linkstonamespace/\n");
@@ -111,7 +114,7 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /rdfxml/data/\n");
         out.write("Disallow: /rdfxml/countlinks/\n");
         out.write("Disallow: /rdfxml/countlinksns/\n\n");
-
+        
         out.write("Disallow: /n3/label/\n");
         out.write("Disallow: /n3/links/\n");
         out.write("Disallow: /n3/linkstonamespace/\n");
@@ -129,7 +132,7 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /n3/data/\n");
         out.write("Disallow: /n3/countlinks/\n");
         out.write("Disallow: /n3/countlinksns/\n\n");
-
+        
         out.write("Disallow: /json/label/\n");
         out.write("Disallow: /json/links/\n");
         out.write("Disallow: /json/linkstonamespace/\n");
@@ -147,7 +150,7 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /json/data/\n");
         out.write("Disallow: /json/countlinks/\n");
         out.write("Disallow: /json/countlinksns/\n\n");
-
+        
         out.write("Disallow: /ntriples/label/\n");
         out.write("Disallow: /ntriples/links/\n");
         out.write("Disallow: /ntriples/linkstonamespace/\n");
@@ -165,7 +168,7 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /ntriples/data/\n");
         out.write("Disallow: /ntriples/countlinks/\n");
         out.write("Disallow: /ntriples/countlinksns/\n\n");
-
+        
         out.write("Disallow: /nquads/label/\n");
         out.write("Disallow: /nquads/links/\n");
         out.write("Disallow: /nquads/linkstonamespace/\n");
@@ -183,9 +186,8 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /nquads/data/\n");
         out.write("Disallow: /nquads/countlinks/\n");
         out.write("Disallow: /nquads/countlinksns/\n\n");
-
+        
         out.flush();
     }
-  
+    
 }
-

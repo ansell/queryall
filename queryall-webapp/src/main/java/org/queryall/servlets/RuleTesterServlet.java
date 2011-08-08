@@ -1,51 +1,54 @@
 package org.queryall.servlets;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import org.queryall.query.Settings;
-import org.queryall.servlets.queryparsers.*;
-import org.queryall.utils.RuleUtils;
-import org.queryall.api.QueryAllConfiguration;
-import org.queryall.api.RuleTest;
-import org.queryall.enumerations.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-
 import org.openrdf.model.URI;
+import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.RuleTest;
+import org.queryall.query.Settings;
+import org.queryall.servlets.queryparsers.RuleTesterQueryOptions;
+import org.queryall.utils.RuleUtils;
 
 /** 
  * 
  */
 
-public class RuleTesterServlet extends HttpServlet 
+public class RuleTesterServlet extends HttpServlet
 {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7617736644136389429L;
-	public static final Logger log = Logger.getLogger(RuleTesterServlet.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
-
+    private static final long serialVersionUID = 7617736644136389429L;
+    public static final Logger log = Logger.getLogger(RuleTesterServlet.class.getName());
+    public static final boolean _TRACE = RuleTesterServlet.log.isTraceEnabled();
+    public static final boolean _DEBUG = RuleTesterServlet.log.isDebugEnabled();
+    public static final boolean _INFO = RuleTesterServlet.log.isInfoEnabled();
     
     @Override
-    public void doGet(HttpServletRequest request,
-                        HttpServletResponse response)
-        throws ServletException, IOException 
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+        IOException
     {
-        QueryAllConfiguration localSettings = Settings.getSettings();
+        final QueryAllConfiguration localSettings = Settings.getSettings();
         // Settings.setServletContext(getServletConfig().getServletContext());
         
-        log.debug("testUri parameter="+request.getAttribute("org.queryall.RuleTesterServlet.testUri"));
+        RuleTesterServlet.log.debug("testUri parameter="
+                + request.getAttribute("org.queryall.RuleTesterServlet.testUri"));
         
-        RuleTesterQueryOptions requestRuleTesterQueryOptions = new RuleTesterQueryOptions((String)request.getAttribute("org.queryall.RuleTesterServlet.testUri"));
+        final RuleTesterQueryOptions requestRuleTesterQueryOptions =
+                new RuleTesterQueryOptions((String)request.getAttribute("org.queryall.RuleTesterServlet.testUri"));
         
-        PrintWriter out = response.getWriter();
-    
+        final PrintWriter out = response.getWriter();
+        
         String methodToTest = "";
         
         if(requestRuleTesterQueryOptions.hasTestUri())
@@ -53,14 +56,14 @@ public class RuleTesterServlet extends HttpServlet
             methodToTest = requestRuleTesterQueryOptions.getTestUri();
         }
         
-        log.debug("test-regexmethods: testuri="+methodToTest);
+        RuleTesterServlet.log.debug("test-regexmethods: testuri=" + methodToTest);
         
-        Map<URI, RuleTest> allRuleTests = localSettings.getAllRuleTests();
+        final Map<URI, RuleTest> allRuleTests = localSettings.getAllRuleTests();
         
         boolean allTestsPassed = true;
         
         @SuppressWarnings("unused")
-        List<String> automatedTestResults = new ArrayList<String>();
+        final List<String> automatedTestResults = new ArrayList<String>();
         
         if(!RuleUtils.runRuleTests(allRuleTests.values(), localSettings.getAllNormalisationRules()))
         {
@@ -76,6 +79,5 @@ public class RuleTesterServlet extends HttpServlet
             out.write("<h1><span class='info'>All Tests passed</span></h1>");
         }
     }
-  
+    
 }
-

@@ -1,172 +1,197 @@
 package org.queryall.servlets.queryparsers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
 import org.queryall.utils.StringUtils;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import org.apache.log4j.Logger;
-
-/** 
+/**
  * Parses query options out of a query string
  */
 
 public class ConfigurationQueryOptions
 {
     public static final Logger log = Logger.getLogger(ConfigurationQueryOptions.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
+    public static final boolean _TRACE = ConfigurationQueryOptions.log.isTraceEnabled();
+    public static final boolean _DEBUG = ConfigurationQueryOptions.log.isDebugEnabled();
+    public static final boolean _INFO = ConfigurationQueryOptions.log.isInfoEnabled();
     
-//    private Settings localSettings = localSettings;
-
+    // private Settings localSettings = localSettings;
+    
     private boolean _adminPrefixMatch = false;
     private boolean _adminBasicWebappConfigurationMatch = false;
     private boolean _adminConfigurationMatch = false;
     private boolean _isRefresh = false;
-
+    
     private boolean _hasExplicitFormat = false;
     private String _chosenFormat = "";
     private boolean _hasExplicitApiVersionValue = false;
     private int _apiVersion = -1;
     private boolean _isPlainNamespaceAndIdentifier = false;
-
+    
     private String parsedRequestString = "";
     private QueryAllConfiguration localSettings;
-	private boolean isRootContext = false;
-
+    private boolean isRootContext = false;
     
-    public ConfigurationQueryOptions(String requestUri, String contextPath, QueryAllConfiguration localSettings)
+    public ConfigurationQueryOptions(final String requestUri, final String contextPath,
+            final QueryAllConfiguration localSettings)
     {
-    	_apiVersion = Settings.CONFIG_API_VERSION;
-    	
+        this._apiVersion = Settings.CONFIG_API_VERSION;
+        
         String requestString = requestUri;
         this.localSettings = localSettings;
         
         if(requestString == null)
         {
             requestString = "";
-            log.error("ConfigurationQueryOptions: requestString was null");
+            ConfigurationQueryOptions.log.error("ConfigurationQueryOptions: requestString was null");
         }
         
         if(contextPath.equals(""))
         {
-        	isRootContext  = true;
+            this.isRootContext = true;
         }
         else
         {
-        	isRootContext = false;
+            this.isRootContext = false;
         }
         
-        if(!isRootContext)
+        if(!this.isRootContext)
         {
-        	if(requestString.startsWith(contextPath))
-        	{
-        		if(_DEBUG)
-        			log.debug("requestUri before removing contextPath requestString="+requestString);
-        		requestString = requestString.substring(contextPath.length());
-        		if(_DEBUG)
-        			log.debug("removed contextPath from requestUri contextPath="+contextPath+" requestString="+requestString);
-        	}
+            if(requestString.startsWith(contextPath))
+            {
+                if(ConfigurationQueryOptions._DEBUG)
+                {
+                    ConfigurationQueryOptions.log.debug("requestUri before removing contextPath requestString="
+                            + requestString);
+                }
+                requestString = requestString.substring(contextPath.length());
+                if(ConfigurationQueryOptions._DEBUG)
+                {
+                    ConfigurationQueryOptions.log.debug("removed contextPath from requestUri contextPath="
+                            + contextPath + " requestString=" + requestString);
+                }
+            }
         }
-
+        
         if(requestString.startsWith("/"))
         {
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("requestString=" + requestString);
+            }
             requestString = requestString.substring(1);
-            if(_DEBUG)
-            	log.debug("requestString="+requestString);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("requestString=" + requestString);
+            }
         }
         
-        requestString = parseForAdminPrefix(requestString);
-
-        if(_adminPrefixMatch)
+        requestString = this.parseForAdminPrefix(requestString);
+        
+        if(this._adminPrefixMatch)
         {
-            requestString = parseForRefresh(requestString);
-    
-            if(!_isRefresh)
+            requestString = this.parseForRefresh(requestString);
+            
+            if(!this._isRefresh)
             {
-                requestString = parseForAdminConfiguration(requestString);
+                requestString = this.parseForAdminConfiguration(requestString);
                 
-                if(_adminConfigurationMatch || _adminBasicWebappConfigurationMatch)
+                if(this._adminConfigurationMatch || this._adminBasicWebappConfigurationMatch)
                 {
-                    requestString = parseForApiVersion(requestString);
+                    requestString = this.parseForApiVersion(requestString);
                     
-                    requestString = parseForAdminFormat(requestString);
+                    requestString = this.parseForAdminFormat(requestString);
                 }
             }
         }
         else
         {
-            requestString = parseForNsIdFormat(requestString);
+            requestString = this.parseForNsIdFormat(requestString);
             
             if(StringUtils.isPlainNamespaceAndIdentifier(requestString, localSettings))
             {
-                _isPlainNamespaceAndIdentifier = true;
+                this._isPlainNamespaceAndIdentifier = true;
             }
         }
-
-        parsedRequestString = requestString;
+        
+        this.parsedRequestString = requestString;
     }
     
-    private String parseForAdminPrefix(String requestString)
+    public boolean containsAdminBasicWebappConfiguration()
     {
-        String adminUrlPrefix = localSettings.getStringProperty("adminUrlPrefix", "admin/");
-        
-        if(matchesPrefixAndSuffix(requestString, adminUrlPrefix, ""))
-        {
-        	if(_DEBUG)
-        	{
-        		log.debug("found admin prefix");
-        	}
-        	
-            _adminPrefixMatch = true;
-            
-            requestString = takeOffPrefixAndSuffix(requestString, adminUrlPrefix, "");
-        }
-        else if(_DEBUG)
-    	{
-    		log.debug("did not find admin prefix");
-    	}
-
-        
-        return requestString;
+        return this._adminBasicWebappConfigurationMatch;
+    }
+    
+    public boolean containsAdminConfiguration()
+    {
+        return this._adminConfigurationMatch;
+    }
+    
+    public boolean containsExplicitApiVersion()
+    {
+        return this._hasExplicitApiVersionValue;
+    }
+    
+    public boolean containsExplicitFormat()
+    {
+        return this._hasExplicitFormat;
+    }
+    
+    public int getApiVersion()
+    {
+        return this._apiVersion;
+    }
+    
+    public String getExplicitFormat()
+    {
+        return this._chosenFormat;
+    }
+    
+    public String getParsedRequest()
+    {
+        return this.parsedRequestString;
+    }
+    
+    public boolean isPlainNamespaceAndIdentifier()
+    {
+        return this._isPlainNamespaceAndIdentifier;
+    }
+    
+    public boolean isRefresh()
+    {
+        return this._isRefresh;
+    }
+    
+    private boolean matchesPrefixAndSuffix(final String nextString, final String nextPrefix, final String nextSuffix)
+    {
+        return nextString.startsWith(nextPrefix) && nextString.endsWith(nextSuffix)
+                && nextString.length() >= (nextPrefix.length() + nextSuffix.length());
     }
     
     private String parseForAdminConfiguration(String requestString)
     {
-        String adminConfigurationPrefix = localSettings.getStringProperty("adminConfigurationPrefix", "configuration/");
-
-        String adminWebappConfigurationPrefix = localSettings.getStringProperty("adminWebappConfigurationPrefix", "webappconfiguration/");
+        final String adminConfigurationPrefix =
+                this.localSettings.getStringProperty("adminConfigurationPrefix", "configuration/");
         
-        if(matchesPrefixAndSuffix(requestString, adminConfigurationPrefix, ""))
+        final String adminWebappConfigurationPrefix =
+                this.localSettings.getStringProperty("adminWebappConfigurationPrefix", "webappconfiguration/");
+        
+        if(this.matchesPrefixAndSuffix(requestString, adminConfigurationPrefix, ""))
         {
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationPrefix, "");
+            requestString = this.takeOffPrefixAndSuffix(requestString, adminConfigurationPrefix, "");
             
-            _adminConfigurationMatch = true;
+            this._adminConfigurationMatch = true;
         }
-        else if(matchesPrefixAndSuffix(requestString, adminWebappConfigurationPrefix, ""))
+        else if(this.matchesPrefixAndSuffix(requestString, adminWebappConfigurationPrefix, ""))
         {
-            requestString = takeOffPrefixAndSuffix(requestString, adminWebappConfigurationPrefix, "");
+            requestString = this.takeOffPrefixAndSuffix(requestString, adminWebappConfigurationPrefix, "");
             
-            _adminBasicWebappConfigurationMatch = true;
-        }
-        
-        return requestString;
-    }
-
-    private String parseForRefresh(String requestString)
-    {
-        String adminConfigurationRefreshPrefix = localSettings.getStringProperty("adminConfigurationRefreshPrefix", "refresh");
-        
-        if(matchesPrefixAndSuffix(requestString, adminConfigurationRefreshPrefix, ""))
-        {
-            _isRefresh = true;
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationRefreshPrefix, "");
+            this._adminBasicWebappConfigurationMatch = true;
         }
         
         return requestString;
@@ -174,204 +199,180 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminFormat(String requestString)
     {
-        String adminConfigurationHtmlPrefix = localSettings.getStringProperty("adminConfigurationHtmlPrefix", "");
-        String adminConfigurationHtmlSuffix = localSettings.getStringProperty("adminConfigurationHtmlSuffix", "/html");
-        String adminConfigurationRdfxmlPrefix = localSettings.getStringProperty("adminConfigurationRdfxmlPrefix", "");
-        String adminConfigurationRdfxmlSuffix = localSettings.getStringProperty("adminConfigurationRdfxmlSuffix", "/rdfxml");
-        String adminConfigurationN3Prefix = localSettings.getStringProperty("adminConfigurationN3Prefix", "");
-        String adminConfigurationN3Suffix = localSettings.getStringProperty("adminConfigurationN3Suffix", "/n3");
-        String adminConfigurationJsonPrefix = localSettings.getStringProperty("adminConfigurationJsonPrefix", "");
-        String adminConfigurationJsonSuffix = localSettings.getStringProperty("adminConfigurationJsonSuffix", "/json");
-        String adminConfigurationNTriplesPrefix = localSettings.getStringProperty("adminConfigurationNTriplesPrefix", "");
-        String adminConfigurationNTriplesSuffix = localSettings.getStringProperty("adminConfigurationNTriplesSuffix", "/ntriples");
-        String adminConfigurationNQuadsPrefix = localSettings.getStringProperty("adminConfigurationNQuadsPrefix", "");
-        String adminConfigurationNQuadsSuffix = localSettings.getStringProperty("adminConfigurationNQuadsSuffix", "/nquads");
+        final String adminConfigurationHtmlPrefix =
+                this.localSettings.getStringProperty("adminConfigurationHtmlPrefix", "");
+        final String adminConfigurationHtmlSuffix =
+                this.localSettings.getStringProperty("adminConfigurationHtmlSuffix", "/html");
+        final String adminConfigurationRdfxmlPrefix =
+                this.localSettings.getStringProperty("adminConfigurationRdfxmlPrefix", "");
+        final String adminConfigurationRdfxmlSuffix =
+                this.localSettings.getStringProperty("adminConfigurationRdfxmlSuffix", "/rdfxml");
+        final String adminConfigurationN3Prefix =
+                this.localSettings.getStringProperty("adminConfigurationN3Prefix", "");
+        final String adminConfigurationN3Suffix =
+                this.localSettings.getStringProperty("adminConfigurationN3Suffix", "/n3");
+        final String adminConfigurationJsonPrefix =
+                this.localSettings.getStringProperty("adminConfigurationJsonPrefix", "");
+        final String adminConfigurationJsonSuffix =
+                this.localSettings.getStringProperty("adminConfigurationJsonSuffix", "/json");
+        final String adminConfigurationNTriplesPrefix =
+                this.localSettings.getStringProperty("adminConfigurationNTriplesPrefix", "");
+        final String adminConfigurationNTriplesSuffix =
+                this.localSettings.getStringProperty("adminConfigurationNTriplesSuffix", "/ntriples");
+        final String adminConfigurationNQuadsPrefix =
+                this.localSettings.getStringProperty("adminConfigurationNQuadsPrefix", "");
+        final String adminConfigurationNQuadsSuffix =
+                this.localSettings.getStringProperty("adminConfigurationNQuadsSuffix", "/nquads");
         
-        if(matchesPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix, adminConfigurationHtmlSuffix))
+        if(this.matchesPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix, adminConfigurationHtmlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_HTML;
-            if(_DEBUG)
-            	log.debug("html: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix, adminConfigurationHtmlSuffix);
-            if(_DEBUG)
-            	log.debug("html: requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_HTML;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix,
+                            adminConfigurationHtmlSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix, adminConfigurationRdfxmlSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix,
+                adminConfigurationRdfxmlSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.APPLICATION_RDF_XML;
-            if(_DEBUG)
-            	log.debug("rdfxml: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix, adminConfigurationRdfxmlSuffix);
-            if(_DEBUG)
-            	log.debug("rdfxml: requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_RDF_XML;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix,
+                            adminConfigurationRdfxmlSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix))
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_RDF_N3;
-            if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix);
-            if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_RDF_N3;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.APPLICATION_JSON;
-            if(_DEBUG)
-            	log.debug("json: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix);
-            if(_DEBUG)
-            	log.debug("json: requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_JSON;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationJsonPrefix,
+                            adminConfigurationJsonSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix, adminConfigurationNTriplesSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix,
+                adminConfigurationNTriplesSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_PLAIN;
-            if(_DEBUG)
-            	log.debug("ntriples: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix, adminConfigurationNTriplesSuffix);
-            if(_DEBUG)
-            	log.debug("ntriples: requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_PLAIN;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix,
+                            adminConfigurationNTriplesSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+            }
         }
-        else if(matchesPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix, adminConfigurationNQuadsSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix,
+                adminConfigurationNQuadsSuffix))
         {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_X_NQUADS;
-            if(_DEBUG)
-            	log.debug("nquads: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix, adminConfigurationNQuadsSuffix);
-            if(_DEBUG)
-            	log.debug("nquads: requestString="+requestString);
-        }
-        
-        return requestString;
-    }
-
-    private String parseForNsIdFormat(String requestString)
-    {
-        String nsIdHtmlPrefix = localSettings.getStringProperty("htmlUrlPrefix", "page/");
-        String nsIdHtmlSuffix = localSettings.getStringProperty("htmlUrlSuffix", "");
-        String nsIdRdfxmlPrefix = localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
-        String nsIdRdfxmlSuffix = localSettings.getStringProperty("rdfXmlUrlSuffix", "");
-        String nsIdN3Prefix = localSettings.getStringProperty("n3UrlPrefix", "n3/");
-        String nsIdN3Suffix = localSettings.getStringProperty("n3UrlSuffix", "");
-        String nsIdJsonPrefix = localSettings.getStringProperty("jsonUrlPrefix", "json/");
-        String nsIdJsonSuffix = localSettings.getStringProperty("jsonUrlSuffix", "");
-        String nsIdNTriplesPrefix = localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
-        String nsIdNTriplesSuffix = localSettings.getStringProperty("ntriplesUrlSuffix", "");
-        String nsIdNQuadsPrefix = localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
-        String nsIdNQuadsSuffix = localSettings.getStringProperty("nquadsUrlSuffix", "");
-        
-        
-        if(matchesPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix))
-        {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_HTML;
-            if(_DEBUG)
-            	log.debug("html: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix);
-            if(_DEBUG)
-            	log.debug("html: requestString="+requestString);
-        }
-        else if(matchesPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix))
-        {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.APPLICATION_RDF_XML;
-            if(_DEBUG)
-            	log.debug("rdfxml: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix);
-            if(_DEBUG)
-            	log.debug("rdfxml: requestString="+requestString);
-        }
-        else if(matchesPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix))
-        {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_RDF_N3;
-            if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix);
-            if(_DEBUG)
-            	log.debug("n3: requestString="+requestString);
-        }
-        else if(matchesPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix))
-        {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.APPLICATION_JSON;
-            if(_DEBUG)
-            	log.debug("json: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix);
-            if(_DEBUG)
-            	log.debug("json: requestString="+requestString);
-        }
-        else if(matchesPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix))
-        {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_PLAIN;
-            if(_DEBUG)
-            	log.debug("ntriples: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix);
-            if(_DEBUG)
-            	log.debug("ntriples: requestString="+requestString);
-        }
-        else if(matchesPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix))
-        {
-            _hasExplicitFormat = true;
-            _chosenFormat = Constants.TEXT_X_NQUADS;
-            if(_DEBUG)
-            	log.debug("nquads: requestString="+requestString);
-            requestString = takeOffPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix);
-            if(_DEBUG)
-            	log.debug("nquads: requestString="+requestString);
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_X_NQUADS;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix,
+                            adminConfigurationNQuadsSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+            }
         }
         
         return requestString;
     }
     
-    
-    private boolean matchesPrefixAndSuffix(String nextString, String nextPrefix, String nextSuffix)
+    private String parseForAdminPrefix(String requestString)
     {
-        return nextString.startsWith(nextPrefix) 
-            && nextString.endsWith(nextSuffix) 
-            && nextString.length() >= (nextPrefix.length() + nextSuffix.length());
-    }
-    
-    private String takeOffPrefixAndSuffix(String nextString, String nextPrefix, String nextSuffix)
-    {
-        if(matchesPrefixAndSuffix(nextString, nextPrefix, nextSuffix))
+        final String adminUrlPrefix = this.localSettings.getStringProperty("adminUrlPrefix", "admin/");
+        
+        if(this.matchesPrefixAndSuffix(requestString, adminUrlPrefix, ""))
         {
-            return nextString.substring(nextPrefix.length(),
-                nextString.length()-nextSuffix.length());
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("found admin prefix");
+            }
+            
+            this._adminPrefixMatch = true;
+            
+            requestString = this.takeOffPrefixAndSuffix(requestString, adminUrlPrefix, "");
         }
-        else
+        else if(ConfigurationQueryOptions._DEBUG)
         {
-            log.error("Could not takeOffPrefixAndSuffix because the string was not long enough");
+            ConfigurationQueryOptions.log.debug("did not find admin prefix");
         }
         
-        return nextString;
+        return requestString;
     }
-
+    
     private String parseForApiVersion(String requestString)
     {
-        String adminConfigurationApiOpeningPrefix = localSettings.getStringProperty("adminConfigurationApiVersionOpeningPrefix", "");
-        String adminConfigurationApiClosingPrefix = localSettings.getStringProperty("adminConfigurationApiVersionClosingPrefix", "/");
-        String adminConfigurationApiSuffix = localSettings.getStringProperty("adminConfigurationApiVersionSuffix", "");
-
-        // FIXME: this does not work if there is no file format suffix, it will always call the current API version in these cases
-        String apiVersionPatternString = "^"+adminConfigurationApiOpeningPrefix+"(\\d+)"+adminConfigurationApiClosingPrefix+"(.*)"+adminConfigurationApiSuffix+"$";
+        final String adminConfigurationApiOpeningPrefix =
+                this.localSettings.getStringProperty("adminConfigurationApiVersionOpeningPrefix", "");
+        final String adminConfigurationApiClosingPrefix =
+                this.localSettings.getStringProperty("adminConfigurationApiVersionClosingPrefix", "/");
+        final String adminConfigurationApiSuffix =
+                this.localSettings.getStringProperty("adminConfigurationApiVersionSuffix", "");
         
-        if(_DEBUG)
+        // FIXME: this does not work if there is no file format suffix, it will always call the
+        // current API version in these cases
+        final String apiVersionPatternString =
+                "^" + adminConfigurationApiOpeningPrefix + "(\\d+)" + adminConfigurationApiClosingPrefix + "(.*)"
+                        + adminConfigurationApiSuffix + "$";
+        
+        if(ConfigurationQueryOptions._DEBUG)
         {
-        	log.debug("apiVersionPatternString="+apiVersionPatternString);
-        	log.debug("requestString="+requestString);
+            ConfigurationQueryOptions.log.debug("apiVersionPatternString=" + apiVersionPatternString);
+            ConfigurationQueryOptions.log.debug("requestString=" + requestString);
         }
         
-        Pattern apiVersionPattern = Pattern.compile(apiVersionPatternString);
+        final Pattern apiVersionPattern = Pattern.compile(apiVersionPatternString);
         
-        Matcher matcher = apiVersionPattern.matcher(requestString);
+        final Matcher matcher = apiVersionPattern.matcher(requestString);
         
         if(!matcher.matches())
         {
@@ -380,77 +381,167 @@ public class ConfigurationQueryOptions
         
         try
         {
-            // This will always be a non-negative integer due to the way the pattern matches, but it may be 0 so we correct that case
-            _apiVersion = Integer.parseInt(matcher.group(1));
-
-            if(_apiVersion == 0)
+            // This will always be a non-negative integer due to the way the pattern matches, but it
+            // may be 0 so we correct that case
+            this._apiVersion = Integer.parseInt(matcher.group(1));
+            
+            if(this._apiVersion == 0)
             {
-                _apiVersion = Settings.CONFIG_API_VERSION;
+                this._apiVersion = Settings.CONFIG_API_VERSION;
             }
             else
             {
-                _hasExplicitApiVersionValue = true;
+                this._hasExplicitApiVersionValue = true;
             }
         }
-        catch(NumberFormatException nfe)
+        catch(final NumberFormatException nfe)
         {
-            _apiVersion = Settings.CONFIG_API_VERSION;
-            log.error("ConfigurationQueryOptions: nfe: check the adminConfigurationApiOpeningPrefix for the likely mistake", nfe);
+            this._apiVersion = Settings.CONFIG_API_VERSION;
+            ConfigurationQueryOptions.log
+                    .error("ConfigurationQueryOptions: nfe: check the adminConfigurationApiOpeningPrefix for the likely mistake",
+                            nfe);
         }
         
         requestString = matcher.group(2);
         
-        if(_DEBUG)
+        if(ConfigurationQueryOptions._DEBUG)
         {
-        	log.debug("apiVersion="+_apiVersion);
-        	log.debug("requestString="+requestString);
+            ConfigurationQueryOptions.log.debug("apiVersion=" + this._apiVersion);
+            ConfigurationQueryOptions.log.debug("requestString=" + requestString);
         }
         
         return requestString;
     }
     
-    public boolean isRefresh()
+    private String parseForNsIdFormat(String requestString)
     {
-        return _isRefresh;
+        final String nsIdHtmlPrefix = this.localSettings.getStringProperty("htmlUrlPrefix", "page/");
+        final String nsIdHtmlSuffix = this.localSettings.getStringProperty("htmlUrlSuffix", "");
+        final String nsIdRdfxmlPrefix = this.localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
+        final String nsIdRdfxmlSuffix = this.localSettings.getStringProperty("rdfXmlUrlSuffix", "");
+        final String nsIdN3Prefix = this.localSettings.getStringProperty("n3UrlPrefix", "n3/");
+        final String nsIdN3Suffix = this.localSettings.getStringProperty("n3UrlSuffix", "");
+        final String nsIdJsonPrefix = this.localSettings.getStringProperty("jsonUrlPrefix", "json/");
+        final String nsIdJsonSuffix = this.localSettings.getStringProperty("jsonUrlSuffix", "");
+        final String nsIdNTriplesPrefix = this.localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
+        final String nsIdNTriplesSuffix = this.localSettings.getStringProperty("ntriplesUrlSuffix", "");
+        final String nsIdNQuadsPrefix = this.localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
+        final String nsIdNQuadsSuffix = this.localSettings.getStringProperty("nquadsUrlSuffix", "");
+        
+        if(this.matchesPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_HTML;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_RDF_XML;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_RDF_N3;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_JSON;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_PLAIN;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.TEXT_X_NQUADS;
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix);
+            if(ConfigurationQueryOptions._DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+            }
+        }
+        
+        return requestString;
     }
     
-    public boolean containsExplicitFormat()
+    private String parseForRefresh(String requestString)
     {
-        return _hasExplicitFormat;
+        final String adminConfigurationRefreshPrefix =
+                this.localSettings.getStringProperty("adminConfigurationRefreshPrefix", "refresh");
+        
+        if(this.matchesPrefixAndSuffix(requestString, adminConfigurationRefreshPrefix, ""))
+        {
+            this._isRefresh = true;
+            requestString = this.takeOffPrefixAndSuffix(requestString, adminConfigurationRefreshPrefix, "");
+        }
+        
+        return requestString;
     }
     
-    public String getExplicitFormat()
+    private String takeOffPrefixAndSuffix(final String nextString, final String nextPrefix, final String nextSuffix)
     {
-        return _chosenFormat;
-    }
-
-    public boolean containsExplicitApiVersion()
-    {
-        return _hasExplicitApiVersionValue;
-    }
-    
-    public boolean containsAdminConfiguration()
-    {
-        return _adminConfigurationMatch;
-    }
-    
-    public boolean containsAdminBasicWebappConfiguration()
-    {
-        return _adminBasicWebappConfigurationMatch;
-    }
-    
-    public int getApiVersion()
-    {
-        return _apiVersion;
-    }
-
-    public boolean isPlainNamespaceAndIdentifier()
-    {
-        return _isPlainNamespaceAndIdentifier;
-    }
-    
-    public String getParsedRequest()
-    {
-        return parsedRequestString;
+        if(this.matchesPrefixAndSuffix(nextString, nextPrefix, nextSuffix))
+        {
+            return nextString.substring(nextPrefix.length(), nextString.length() - nextSuffix.length());
+        }
+        else
+        {
+            ConfigurationQueryOptions.log
+                    .error("Could not takeOffPrefixAndSuffix because the string was not long enough");
+        }
+        
+        return nextString;
     }
 }

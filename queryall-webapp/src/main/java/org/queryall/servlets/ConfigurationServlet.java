@@ -1,17 +1,24 @@
 package org.queryall.servlets;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 
-import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.query.Settings;
-import org.queryall.servlets.queryparsers.*;
-import org.queryall.servlets.html.*;
-import org.queryall.utils.RdfUtils;
-import org.queryall.utils.StringUtils;
-import org.queryall.enumerations.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.openrdf.OpenRDFException;
+import org.openrdf.model.URI;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
@@ -19,87 +26,89 @@ import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
-import org.queryall.blacklist.*;
+import org.queryall.blacklist.BlacklistController;
+import org.queryall.enumerations.Constants;
+import org.queryall.negotiation.QueryallContentNegotiator;
+import org.queryall.query.Settings;
+import org.queryall.servlets.html.HtmlPageRenderer;
+import org.queryall.servlets.queryparsers.ConfigurationQueryOptions;
+import org.queryall.utils.RdfUtils;
+import org.queryall.utils.StringUtils;
 
-import org.openrdf.*;
-import org.openrdf.model.*;
-import org.openrdf.rio.*;
-import org.openrdf.repository.*;
-import org.openrdf.repository.sail.*;
-import org.openrdf.sail.memory.*;
-
-
-import org.apache.log4j.Logger;
-
-/** 
+/**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ConfigurationServlet extends HttpServlet 
+public class ConfigurationServlet extends HttpServlet
 {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 3372992659745059491L;
-	
-	public static final Logger log = Logger.getLogger(ConfigurationServlet.class.getName());
-    public static final boolean _TRACE = log.isTraceEnabled();
-    public static final boolean _DEBUG = log.isDebugEnabled();
-    public static final boolean _INFO = log.isInfoEnabled();
-
+    private static final long serialVersionUID = 3372992659745059491L;
+    
+    public static final Logger log = Logger.getLogger(ConfigurationServlet.class.getName());
+    public static final boolean _TRACE = ConfigurationServlet.log.isTraceEnabled();
+    public static final boolean _DEBUG = ConfigurationServlet.log.isDebugEnabled();
+    public static final boolean _INFO = ConfigurationServlet.log.isInfoEnabled();
     
     @Override
-    public void doGet(HttpServletRequest request,
-                        HttpServletResponse response)
-        throws ServletException, IOException 
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+        IOException
     {
-    	QueryAllConfiguration localSettings = Settings.getSettings();
-        BlacklistController localBlacklistController = BlacklistController.getDefaultController();
+        final QueryAllConfiguration localSettings = Settings.getSettings();
+        final BlacklistController localBlacklistController = BlacklistController.getDefaultController();
         
-        if(_INFO)
+        if(ConfigurationServlet._INFO)
         {
-            log.info("request.getRequestURI()="+request.getRequestURI());
-            log.info("ConfigurationServlet: acceptHeader="+request.getHeader("Accept")+" userAgent="+request.getHeader("User-Agent"));
+            ConfigurationServlet.log.info("request.getRequestURI()=" + request.getRequestURI());
+            ConfigurationServlet.log.info("ConfigurationServlet: acceptHeader=" + request.getHeader("Accept")
+                    + " userAgent=" + request.getHeader("User-Agent"));
         }
         
-       ConfigurationQueryOptions requestConfigurationQueryOptions = new ConfigurationQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
+        final ConfigurationQueryOptions requestConfigurationQueryOptions =
+                new ConfigurationQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
-        PrintWriter out = response.getWriter();
+        final PrintWriter out = response.getWriter();
         
-        java.io.StringWriter stBuff = new java.io.StringWriter();
+        final java.io.StringWriter stBuff = new java.io.StringWriter();
         
-        String originalRequestedContentType = QueryallContentNegotiator.getResponseContentType(
-        		request.getHeader("Accept"), 
-        		request.getHeader("User-Agent"), 
-        		localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+        final String originalRequestedContentType =
+                QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
+                        request.getHeader("User-Agent"),
+                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
         String explicitUrlContentType = "";
-
+        
         if(requestConfigurationQueryOptions.isRefresh())
         {
-        	// TODO: avoid cast here
-            if(((Settings) localSettings).isManualRefreshAllowed())
+            // TODO: avoid cast here
+            if(((Settings)localSettings).isManualRefreshAllowed())
             {
-                if(((Settings) localSettings).configRefreshCheck(true))
+                if(((Settings)localSettings).configRefreshCheck(true))
                 {
                     localBlacklistController.doBlacklistExpiry();
                     
                     response.setStatus(HttpServletResponse.SC_OK);
-                    log.info("manualrefresh.jsp: manual refresh succeeded requesterIpAddress="+request.getRemoteAddr());
+                    ConfigurationServlet.log.info("manualrefresh.jsp: manual refresh succeeded requesterIpAddress="
+                            + request.getRemoteAddr());
                     out.write("Refresh succeeded.");
                 }
                 else
                 {
                     response.setStatus(500);
-                    log.error("manualrefresh.jsp: refresh failed for an unknown reason, as it was supposedly allowed in a previous check requesterIpAddress="+request.getRemoteAddr());
+                    ConfigurationServlet.log
+                            .error("manualrefresh.jsp: refresh failed for an unknown reason, as it was supposedly allowed in a previous check requesterIpAddress="
+                                    + request.getRemoteAddr());
                     out.write("Refresh failed for an unknown reason");
                 }
             }
             else
             {
                 response.setStatus(401);
-                log.error("manualrefresh.jsp: refresh not allowed right now requesterIpAddress="+request.getRemoteAddr()+ " localSettings.MANUAL_CONFIGURATION_REFRESH_ALLOWED="+localSettings.getStringProperty("enableManualConfigurationRefresh", ""));
+                ConfigurationServlet.log.error("manualrefresh.jsp: refresh not allowed right now requesterIpAddress="
+                        + request.getRemoteAddr() + " localSettings.MANUAL_CONFIGURATION_REFRESH_ALLOWED="
+                        + localSettings.getStringProperty("enableManualConfigurationRefresh", ""));
                 out.write("Refresh not allowed right now.");
             }
             
@@ -114,13 +123,18 @@ public class ConfigurationServlet extends HttpServlet
             requestedContentType = explicitUrlContentType;
         }
         
-        if(_INFO)
+        if(ConfigurationServlet._INFO)
         {
-        	log.info("requestedContentType="+requestedContentType);
+            ConfigurationServlet.log.info("requestedContentType=" + requestedContentType);
         }
         
-        String realHostName = request.getScheme() + "://" + request.getServerName() + (request.getServerPort() == 80 && request.getScheme().equals("http") ? "" : ":"+ request.getServerPort())+"/";
-                
+        final String realHostName =
+                request.getScheme()
+                        + "://"
+                        + request.getServerName()
+                        + (request.getServerPort() == 80 && request.getScheme().equals("http") ? "" : ":"
+                                + request.getServerPort()) + "/";
+        
         String queryString = requestConfigurationQueryOptions.getParsedRequest();
         
         if(queryString == null)
@@ -128,54 +142,62 @@ public class ConfigurationServlet extends HttpServlet
             queryString = "";
         }
         
-        int apiVersion = requestConfigurationQueryOptions.getApiVersion();
+        final int apiVersion = requestConfigurationQueryOptions.getApiVersion();
         
         if(apiVersion > Settings.CONFIG_API_VERSION)
         {
-            log.error("ConfigurationServlet: requested API version not supported by this server. apiVersion="+apiVersion+" Settings.CONFIG_API_VERSION="+Settings.CONFIG_API_VERSION);
+            ConfigurationServlet.log
+                    .error("ConfigurationServlet: requested API version not supported by this server. apiVersion="
+                            + apiVersion + " Settings.CONFIG_API_VERSION=" + Settings.CONFIG_API_VERSION);
             
             response.setContentType("text/plain");
             response.setStatus(400);
-            out.write("Requested API version not supported by this server. Current supported version="+Settings.CONFIG_API_VERSION);
+            out.write("Requested API version not supported by this server. Current supported version="
+                    + Settings.CONFIG_API_VERSION);
             out.flush();
             return;
         }
         
-        Collection<String> debugStrings = new HashSet<String>();
+        final Collection<String> debugStrings = new HashSet<String>();
         
-        String writerFormatString = RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty("preferredDisplayContentType", ""), "application/rdf+xml");
+        final String writerFormatString =
+                RdfUtils.findBestContentType(requestedContentType,
+                        localSettings.getStringProperty("preferredDisplayContentType", ""), "application/rdf+xml");
         
         RDFFormat writerFormat = null;
         
         if(!writerFormatString.equals("text/html"))
         {
-            writerFormat = Rio.getWriterFormatForMIMEType(writerFormatString);
+            writerFormat = RdfUtils.getWriterFormat(writerFormatString);
         }
-
+        
         // TODO: avoid cast here
-        ((Settings) localSettings).configRefreshCheck(false);
+        ((Settings)localSettings).configRefreshCheck(false);
         
         response.setContentType(requestedContentType);
         response.setCharacterEncoding("UTF-8");
         
         boolean targetOnlyQueryString = false;
         
-        final String queryStringURI = localSettings.getDefaultHostAddress()+queryString;
+        final String queryStringURI = localSettings.getDefaultHostAddress() + queryString;
         
-        if(_INFO)
-        	log.info("queryStringUri="+queryStringURI);
+        if(ConfigurationServlet._INFO)
+        {
+            ConfigurationServlet.log.info("queryStringUri=" + queryStringURI);
+        }
         
         if(StringUtils.isPlainNamespaceAndIdentifier(queryString, localSettings))
         {
             targetOnlyQueryString = true;
-
-            if(_INFO)
-            	log.info("requested plain namespace and identifier from configuration");
+            
+            if(ConfigurationServlet._INFO)
+            {
+                ConfigurationServlet.log.info("requested plain namespace and identifier from configuration");
+            }
         }
         
+        final Repository myRepository = new SailRepository(new MemoryStore());
         
-        Repository myRepository = new SailRepository(new MemoryStore());
-
         RepositoryConnection myRepositoryConnection = null;
         
         try
@@ -184,9 +206,9 @@ public class ConfigurationServlet extends HttpServlet
             
             if(requestConfigurationQueryOptions.containsAdminConfiguration() || targetOnlyQueryString)
             {
-                Map<URI, Provider> allProviders = localSettings.getAllProviders();
+                final Map<URI, Provider> allProviders = localSettings.getAllProviders();
                 
-                for(URI nextProviderKey : allProviders.keySet())
+                for(final URI nextProviderKey : allProviders.keySet())
                 {
                     if(!targetOnlyQueryString || queryStringURI.equals(nextProviderKey.stringValue()))
                     {
@@ -194,23 +216,27 @@ public class ConfigurationServlet extends HttpServlet
                         {
                             if(!allProviders.get(nextProviderKey).toRdf(myRepository, nextProviderKey, apiVersion))
                             {
-                                log.error("ConfigurationServlet: Provider was not placed correctly in the rdf store key="+nextProviderKey);
+                                ConfigurationServlet.log
+                                        .error("ConfigurationServlet: Provider was not placed correctly in the rdf store key="
+                                                + nextProviderKey);
                                 // out.write("<!-- "+RdfUtils.xmlEncodeString(allProviders.get(nextProviderKey).toString()).replace("--","- -")+" -->");
                             }
                         }
-                        catch(Exception ex)
+                        catch(final Exception ex)
                         {
-                            log.error("ConfigurationServlet: Problem generating Provider RDF with key: "+nextProviderKey+" type="+ex.getClass().getName());
-                            log.error(ex.getMessage());
+                            ConfigurationServlet.log
+                                    .error("ConfigurationServlet: Problem generating Provider RDF with key: "
+                                            + nextProviderKey + " type=" + ex.getClass().getName());
+                            ConfigurationServlet.log.error(ex.getMessage());
                             // out.write("Problem generating Provider RDF with key: "+nextProviderKey+"<br />\n");
                             // out.write(RdfUtils.xmlEncodeString(allProviders.get(nextProviderKey).toString()));
                         }
                     }
                 }
                 
-                Map<URI, QueryType> allQueries = localSettings.getAllQueryTypes();
+                final Map<URI, QueryType> allQueries = localSettings.getAllQueryTypes();
                 
-                for(URI nextQueryKey : allQueries.keySet())
+                for(final URI nextQueryKey : allQueries.keySet())
                 {
                     if(!targetOnlyQueryString || queryStringURI.equals(nextQueryKey.stringValue()))
                     {
@@ -218,46 +244,55 @@ public class ConfigurationServlet extends HttpServlet
                         {
                             if(!allQueries.get(nextQueryKey).toRdf(myRepository, nextQueryKey, apiVersion))
                             {
-                                log.error("ConfigurationServlet: Custom Query was not placed correctly in the rdf store key="+nextQueryKey);
+                                ConfigurationServlet.log
+                                        .error("ConfigurationServlet: Custom Query was not placed correctly in the rdf store key="
+                                                + nextQueryKey);
                                 // out.write(RdfUtils.xmlEncodeString(allQueries.get(nextQueryKey).toString()));
                             }
                         }
-                        catch(Exception ex)
+                        catch(final Exception ex)
                         {
-                            log.error("ConfigurationServlet: Problem generating Query RDF with key: "+nextQueryKey+" type="+ex.getClass().getName());
-                            log.error(ex.getMessage());
+                            ConfigurationServlet.log
+                                    .error("ConfigurationServlet: Problem generating Query RDF with key: "
+                                            + nextQueryKey + " type=" + ex.getClass().getName());
+                            ConfigurationServlet.log.error(ex.getMessage());
                             // out.write("Problem generating Query RDF with key: "+nextQueryKey+"<br />\n");
                             // out.write(RdfUtils.xmlEncodeString(allQueries.get(nextQueryKey).toString()));
                         }
                     }
                 }
                 
-                Map<URI, NormalisationRule> allNormalisationRules = localSettings.getAllNormalisationRules();
+                final Map<URI, NormalisationRule> allNormalisationRules = localSettings.getAllNormalisationRules();
                 
-                for(URI nextNormalisationRuleKey : allNormalisationRules.keySet())
+                for(final URI nextNormalisationRuleKey : allNormalisationRules.keySet())
                 {
                     if(!targetOnlyQueryString || queryStringURI.equals(nextNormalisationRuleKey.stringValue()))
                     {
                         try
                         {
-                            if(!allNormalisationRules.get(nextNormalisationRuleKey).toRdf(myRepository, nextNormalisationRuleKey, apiVersion))
+                            if(!allNormalisationRules.get(nextNormalisationRuleKey).toRdf(myRepository,
+                                    nextNormalisationRuleKey, apiVersion))
                             {
-                                log.error("ConfigurationServlet: Rdf Normalisation Rule was not placed correctly in the rdf store key="+nextNormalisationRuleKey);
+                                ConfigurationServlet.log
+                                        .error("ConfigurationServlet: Rdf Normalisation Rule was not placed correctly in the rdf store key="
+                                                + nextNormalisationRuleKey);
                             }
                         }
-                        catch(Exception ex)
+                        catch(final Exception ex)
                         {
-                            log.error("ConfigurationServlet: Problem generating Rdf Rule RDF with key: "+nextNormalisationRuleKey+" type="+ex.getClass().getName());
-                            log.error(ex.getMessage());
+                            ConfigurationServlet.log
+                                    .error("ConfigurationServlet: Problem generating Rdf Rule RDF with key: "
+                                            + nextNormalisationRuleKey + " type=" + ex.getClass().getName());
+                            ConfigurationServlet.log.error(ex.getMessage());
                             // out.write("Problem generating Rdf Rule RDF with key: "+nextNormalisationRuleKey+"<br />\n");
                             // out.write(RdfUtils.xmlEncodeString(allNormalisationRules.get(nextNormalisationRuleKey).toString()));
                         }
                     }
                 }
                 
-                Map<URI, RuleTest> allRuleTests = localSettings.getAllRuleTests();
+                final Map<URI, RuleTest> allRuleTests = localSettings.getAllRuleTests();
                 
-                for(URI nextRuleTestKey : allRuleTests.keySet())
+                for(final URI nextRuleTestKey : allRuleTests.keySet())
                 {
                     if(!targetOnlyQueryString || queryStringURI.equals(nextRuleTestKey.stringValue()))
                     {
@@ -265,41 +300,50 @@ public class ConfigurationServlet extends HttpServlet
                         {
                             if(!allRuleTests.get(nextRuleTestKey).toRdf(myRepository, nextRuleTestKey, apiVersion))
                             {
-                                log.error("ConfigurationServlet: Rule Test was not placed correctly in the rdf store key="+nextRuleTestKey);
+                                ConfigurationServlet.log
+                                        .error("ConfigurationServlet: Rule Test was not placed correctly in the rdf store key="
+                                                + nextRuleTestKey);
                             }
                         }
-                        catch(Exception ex)
+                        catch(final Exception ex)
                         {
-                            log.error("ConfigurationServlet: Problem generating Rule Test RDF with key: "+nextRuleTestKey+" type="+ex.getClass().getName());
-                            log.error(ex.getMessage());
+                            ConfigurationServlet.log
+                                    .error("ConfigurationServlet: Problem generating Rule Test RDF with key: "
+                                            + nextRuleTestKey + " type=" + ex.getClass().getName());
+                            ConfigurationServlet.log.error(ex.getMessage());
                         }
                     }
                 }
                 
-                Map<URI, NamespaceEntry> allNamespaceEntries = localSettings.getAllNamespaceEntries();
+                final Map<URI, NamespaceEntry> allNamespaceEntries = localSettings.getAllNamespaceEntries();
                 
-                for(URI nextNamespaceEntryKey : allNamespaceEntries.keySet())
+                for(final URI nextNamespaceEntryKey : allNamespaceEntries.keySet())
                 {
                     if(!targetOnlyQueryString || queryStringURI.equals(nextNamespaceEntryKey.stringValue()))
                     {
                         try
                         {
-                            if(!allNamespaceEntries.get(nextNamespaceEntryKey).toRdf(myRepository, nextNamespaceEntryKey, apiVersion))
+                            if(!allNamespaceEntries.get(nextNamespaceEntryKey).toRdf(myRepository,
+                                    nextNamespaceEntryKey, apiVersion))
                             {
-                                log.error("ConfigurationServlet: Namespace Entry was not placed correctly in the rdf store key="+nextNamespaceEntryKey);
+                                ConfigurationServlet.log
+                                        .error("ConfigurationServlet: Namespace Entry was not placed correctly in the rdf store key="
+                                                + nextNamespaceEntryKey);
                             }
                         }
-                        catch(Exception ex)
+                        catch(final Exception ex)
                         {
-                            log.error("ConfigurationServlet: Problem generating RDF with namespace: "+nextNamespaceEntryKey);
-                            log.error(ex.getMessage());
+                            ConfigurationServlet.log
+                                    .error("ConfigurationServlet: Problem generating RDF with namespace: "
+                                            + nextNamespaceEntryKey);
+                            ConfigurationServlet.log.error(ex.getMessage());
                         }
                     }
                 }
                 
-                Map<URI, Profile> allProfiles = localSettings.getAllProfiles();
+                final Map<URI, Profile> allProfiles = localSettings.getAllProfiles();
                 
-                for(URI nextProfileKey : allProfiles.keySet())
+                for(final URI nextProfileKey : allProfiles.keySet())
                 {
                     if(!targetOnlyQueryString || queryStringURI.equals(nextProfileKey.stringValue()))
                     {
@@ -307,16 +351,21 @@ public class ConfigurationServlet extends HttpServlet
                         {
                             // log.info("Debug-configuration: nextProfileKey="+nextProfileKey);
                             
-                            if(!allProfiles.get(nextProfileKey).toRdf(myRepository, allProfiles.get(nextProfileKey).getKey(), apiVersion))
+                            if(!allProfiles.get(nextProfileKey).toRdf(myRepository,
+                                    allProfiles.get(nextProfileKey).getKey(), apiVersion))
                             {
-                                log.error("ConfigurationServlet: Profile was not placed correctly in the rdf store key="+nextProfileKey);
+                                ConfigurationServlet.log
+                                        .error("ConfigurationServlet: Profile was not placed correctly in the rdf store key="
+                                                + nextProfileKey);
                                 // out.write(RdfUtils.xmlEncodeString(allNormalisationRules.get(nextNormalisationRuleKey).toString()));
                             }
                         }
-                        catch(Exception ex)
+                        catch(final Exception ex)
                         {
-                            log.error("ConfigurationServlet: Problem generating Profile RDF with key: "+nextProfileKey+" type="+ex.getClass().getName());
-                            log.error(ex.getMessage());
+                            ConfigurationServlet.log
+                                    .error("ConfigurationServlet: Problem generating Profile RDF with key: "
+                                            + nextProfileKey + " type=" + ex.getClass().getName());
+                            ConfigurationServlet.log.error(ex.getMessage());
                             // out.write("Problem generating Rdf Rule RDF with key: "+nextNormalisationRuleKey+"<br />\n");
                             // out.write(RdfUtils.xmlEncodeString(allNormalisationRules.get(nextNormalisationRuleKey).toString()));
                         }
@@ -326,7 +375,7 @@ public class ConfigurationServlet extends HttpServlet
             else if(requestConfigurationQueryOptions.containsAdminBasicWebappConfiguration())
             {
                 myRepositoryConnection = myRepository.getConnection();
-
+                
                 // TODO: put this list into a properties or RDf file
                 myRepositoryConnection.add(localSettings.getStatementProperties("userAgent"));
                 
@@ -367,9 +416,9 @@ public class ConfigurationServlet extends HttpServlet
                 myRepositoryConnection.add(localSettings.getStatementProperties("nquadsUrlSuffix"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("alwaysRedirectToExplicitFormatUrl"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("redirectToExplicitFormatHttpCode"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("queryplanUrlPrefix"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("queryplanUrlSuffix"));
@@ -388,9 +437,11 @@ public class ConfigurationServlet extends HttpServlet
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("adminConfigurationRefreshPrefix"));
                 
-                myRepositoryConnection.add(localSettings.getStatementProperties("adminConfigurationApiVersionOpeningPrefix"));
+                myRepositoryConnection.add(localSettings
+                        .getStatementProperties("adminConfigurationApiVersionOpeningPrefix"));
                 
-                myRepositoryConnection.add(localSettings.getStatementProperties("adminConfigurationApiVersionClosingPrefix"));
+                myRepositoryConnection.add(localSettings
+                        .getStatementProperties("adminConfigurationApiVersionClosingPrefix"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("adminConfigurationApiVersionSuffix"));
                 
@@ -437,55 +488,55 @@ public class ConfigurationServlet extends HttpServlet
                 myRepositoryConnection.add(localSettings.getStatementProperties("blacklistContactEmailAddress"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("blacklistRedirectPage"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("autogenerateIncludeStubList"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("titleProperties"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("imageProperties"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("commentProperties"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("urlProperties"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexTemplate"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("resultsTemplate"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("errorTemplate"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexPageScripts"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexPageScriptsLocal"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexPageStylesheets"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexPageStylesheetsLocal"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("resultsPageScripts"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("resultsPageScriptsLocal"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("resultsPageStylesheets"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("resultsPageStylesheetsLocal"));
                 
                 myRepositoryConnection.add(localSettings.getStatementProperties("shortcutIconPath"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexBannerImagePath"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("indexProjectImagePath"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("unknownQueryStaticAdditions"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("unknownQueryHttpResponseCode"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("unknownNamespaceStaticAdditions"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("unknownNamespaceHttpResponseCode"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("useAllEndpointsForEachProvider"));
-
+                
                 myRepositoryConnection.add(localSettings.getStatementProperties("pageoffsetMaxValue"));
                 myRepositoryConnection.add(localSettings.getStatementProperties("pageoffsetIndividualQueryLimit"));
                 myRepositoryConnection.add(localSettings.getStatementProperties("preferredDisplayContentType"));
@@ -493,7 +544,8 @@ public class ConfigurationServlet extends HttpServlet
                 myRepositoryConnection.add(localSettings.getStatementProperties("assumedResponseContentType"));
                 myRepositoryConnection.add(localSettings.getStatementProperties("defaultAcceptHeader"));
                 myRepositoryConnection.add(localSettings.getStatementProperties("useRequestCache"));
-                myRepositoryConnection.add(localSettings.getStatementProperties("convertAlternateNamespacePrefixesToPreferred"));
+                myRepositoryConnection.add(localSettings
+                        .getStatementProperties("convertAlternateNamespacePrefixesToPreferred"));
                 myRepositoryConnection.add(localSettings.getStatementProperties("useVirtuosoMaxRowsParameter"));
             }
             
@@ -504,58 +556,61 @@ public class ConfigurationServlet extends HttpServlet
             
             if(requestedContentType.equals("text/html"))
             {
-                if(_INFO)
+                if(ConfigurationServlet._INFO)
                 {
-                    log.info("about to call html rendering method");
+                    ConfigurationServlet.log.info("about to call html rendering method");
                 }
                 
                 try
                 {
-                    HtmlPageRenderer.renderHtml(getServletContext(), myRepository, stBuff, debugStrings, queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, request.getContextPath(), -1, localSettings);
+                    HtmlPageRenderer.renderHtml(this.getServletContext(), myRepository, stBuff, debugStrings,
+                            queryString, localSettings.getDefaultHostAddress() + queryString, realHostName,
+                            request.getContextPath(), -1, localSettings);
                 }
-                catch(OpenRDFException ordfe)
+                catch(final OpenRDFException ordfe)
                 {
-                    log.error("couldn't render HTML because of an RDF exception", ordfe);
+                    ConfigurationServlet.log.error("couldn't render HTML because of an RDF exception", ordfe);
                 }
-                catch(Exception ex)
+                catch(final Exception ex)
                 {
-                    log.error("couldn't render HTML because of an unknown exception", ex);
+                    ConfigurationServlet.log.error("couldn't render HTML because of an unknown exception", ex);
                 }
             }
             else
             {
-                if(_INFO)
+                if(ConfigurationServlet._INFO)
                 {
-                    log.info("about to call rdf rendering method");
+                    ConfigurationServlet.log.info("about to call rdf rendering method");
                 }
                 RdfUtils.toWriter(myRepository, stBuff, writerFormat);
             }
-        
+            
         }
-        catch(OpenRDFException ordfe)
+        catch(final OpenRDFException ordfe)
         {
-            log.error("ConfigurationServlet: error", ordfe);
+            ConfigurationServlet.log.error("ConfigurationServlet: error", ordfe);
         }
         
-        if(_INFO)
+        if(ConfigurationServlet._INFO)
         {
-            log.info("about to call out.write");
+            ConfigurationServlet.log.info("about to call out.write");
         }
         
         for(int i = 0; i < stBuff.getBuffer().length(); i++)
-        	out.write(stBuff.getBuffer().charAt(i));
-//        out.write(stBuff.toString());
-        
-        if(_INFO)
         {
-            log.info("about to call out.flush");
+            out.write(stBuff.getBuffer().charAt(i));
+            // out.write(stBuff.toString());
+        }
+        
+        if(ConfigurationServlet._INFO)
+        {
+            ConfigurationServlet.log.info("about to call out.flush");
         }
         out.flush();
-
-        if(_INFO)
+        
+        if(ConfigurationServlet._INFO)
         {
-            log.info("finished");
+            ConfigurationServlet.log.info("finished");
         }
     }
 }
-

@@ -1,277 +1,241 @@
 package org.queryall.servlets;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.query.Settings;
-import org.queryall.servlets.html.*;
-import org.queryall.utils.RdfUtils;
-import org.queryall.api.QueryAllConfiguration;
-import org.queryall.enumerations.*;
-
-import org.openrdf.*;
-import org.openrdf.rio.*;
-import org.openrdf.repository.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.openrdf.OpenRDFException;
+import org.openrdf.repository.Repository;
+import org.openrdf.rio.RDFFormat;
+import org.queryall.api.QueryAllConfiguration;
+import org.queryall.enumerations.Constants;
+import org.queryall.negotiation.QueryallContentNegotiator;
+import org.queryall.query.Settings;
+import org.queryall.servlets.html.HtmlPageRenderer;
+import org.queryall.utils.RdfUtils;
 
-/** 
+/**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryAllSchemaServlet extends HttpServlet
 {
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -4486511923930733168L;
-	public static final Logger log = Logger
-			.getLogger(QueryAllSchemaServlet.class.getName());
-	public static final boolean _TRACE = log.isTraceEnabled();
-	public static final boolean _DEBUG = log.isDebugEnabled();
-	public static final boolean _INFO = log.isInfoEnabled();
-
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
-	{
-		Date queryStartTime = new Date();
-
-		QueryAllConfiguration localSettings = Settings.getSettings();
-
-		PrintWriter out = response.getWriter();
-
-		String realHostName = request.getScheme()
-				+ "://"
-				+ request.getServerName()
-				+ (request.getServerPort() == 80
-						&& request.getScheme().equals("http") ? "" : ":"
-						+ request.getServerPort()) + "/";
-
-		String originalRequestedContentType = QueryallContentNegotiator
-				.getResponseContentType(request.getHeader("Accept"),
-						request.getHeader("User-Agent"), 
-						localSettings.getStringProperty("preferredDisplayContentType", 
-								Constants.APPLICATION_RDF_XML));
-
-		String requestedContentType = originalRequestedContentType;
-
-        String requesterIpAddress = request.getRemoteAddr();
+    private static final long serialVersionUID = -4486511923930733168L;
+    public static final Logger log = Logger.getLogger(QueryAllSchemaServlet.class.getName());
+    public static final boolean _TRACE = QueryAllSchemaServlet.log.isTraceEnabled();
+    public static final boolean _DEBUG = QueryAllSchemaServlet.log.isDebugEnabled();
+    public static final boolean _INFO = QueryAllSchemaServlet.log.isInfoEnabled();
+    
+    @Override
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+        IOException
+    {
+        final Date queryStartTime = new Date();
         
-		String queryString = (String) request
-				.getAttribute("org.queryall.RuleTesterServlet.queryString");
-
-		if(queryString == null)
-		{
-			queryString = "";
-		}
-
-		String locale = request.getLocale().toString();
-
-		String characterEncoding = request.getCharacterEncoding();
-
-		if(_INFO)
-		{
-			log.info("QueryAllSchemaServlet: locale=" + locale
-					+ " characterEncoding=" + characterEncoding);
-		}
-
-		String versionParameter = (String) request
-				.getAttribute("org.queryall.RuleTesterServlet.apiVersion");
-
-		int apiVersion = Settings.CONFIG_API_VERSION;
-
-		if(versionParameter != null && !versionParameter.equals("")
-				&& !Constants.CURRENT.equals(versionParameter))
-		{
-			try
-			{
-				apiVersion = Integer.parseInt(versionParameter);
-			}
-			catch(NumberFormatException nfe)
-			{
-				log.error("QueryAllSchemaServlet: apiVersion not recognised versionParameter="
-						+ versionParameter);
-			}
-		}
-
-		if(apiVersion > Settings.CONFIG_API_VERSION)
-		{
-			log.error("QueryAllSchemaServlet: requested API version not supported by this server. apiVersion="
-					+ apiVersion
-					+ " Settings.CONFIG_API_VERSION="
-					+ Settings.CONFIG_API_VERSION);
-
-			response.setContentType("text/plain");
-			response.setStatus(400);
-			out.write("Requested API version not supported by this server. Current supported version="
-					+ Settings.CONFIG_API_VERSION);
-			return;
-		}
-
-		Collection<String> debugStrings = new HashSet<String>();
-
-		String explicitUrlContentType = (String) request
-				.getAttribute("org.queryall.QueryAllSchemaServlet.chosenContentType");
-
-		if(explicitUrlContentType != null && !explicitUrlContentType.equals(""))
-		{
-			if(log.isInfoEnabled())
-			{
-				log.info("QueryAllSchemaServlet: explicitUrlContentType="
-						+ explicitUrlContentType);
-			}
-
-			// override whatever was requested with the urlrewrite variable
-			requestedContentType = explicitUrlContentType;
-		}
-
-		// even if they request a random format, we need to make sure that Rio
-		// has a writer compatible with it, otherwise we revert to one of the
-		// defaults as a failsafe mechanism
-		RDFFormat writerFormat = Rio
-				.getWriterFormatForMIMEType(requestedContentType);
-
-		if(writerFormat == null)
-		{
-			writerFormat = Rio.getWriterFormatForMIMEType(localSettings
-					.getStringProperty("preferredDisplayContentType",
-							Constants.APPLICATION_RDF_XML));
-
-			if(writerFormat == null)
-			{
-				writerFormat = RDFFormat.RDFXML;
-
-				if(!requestedContentType.equals(Constants.TEXT_HTML))
-				{
-					requestedContentType = Constants.APPLICATION_RDF_XML;
-
-					log.error("QueryAllSchemaServlet: content negotiation failed to find a suitable content type for results. Defaulting to hard coded RDF/XML writer. Please set localSettings.getStringPropertyFromConfig(\"preferredDisplayContentType\") to a MIME type which is understood by the RDF package being used by the servlet to ensure this message doesn't appear.");
-				}
-			}
-			else if(!requestedContentType.equals(Constants.TEXT_HTML))
-			{
-				requestedContentType = localSettings
-						.getStringProperty(
-								"preferredDisplayContentType",
-								Constants.APPLICATION_RDF_XML);
-
-				log.error("QueryAllSchemaServlet: content negotiation failed to find a suitable content type for results. Defaulting to localSettings.getStringPropertyFromConfig(\"preferredDisplayContentType\")="
-						+ localSettings.getStringProperty(
-								"preferredDisplayContentType", ""));
-			}
-		}
-
-		if(log.isInfoEnabled())
-		{
-			log.info("QueryAllSchemaServlet: requestedContentType="
-					+ requestedContentType + " acceptHeader="
-					+ request.getHeader("Accept") + " userAgent="
-					+ request.getHeader("User-Agent"));
-		}
-
-		if(!originalRequestedContentType.equals(requestedContentType))
-		{
-			log.warn("QueryAllSchemaServlet: originalRequestedContentType was overwritten originalRequestedContentType="
-					+ originalRequestedContentType
-					+ " requestedContentType="
-					+ requestedContentType);
-		}
-
-		((Settings) localSettings).configRefreshCheck(false);
-
-		response.setContentType(requestedContentType);
-		response.setCharacterEncoding("UTF-8");
-
-		try
-		{
-			Repository myRepository = RdfUtils.getSchemas();
-
-			java.io.StringWriter stBuff = new java.io.StringWriter();
-
-			if(requestedContentType.equals(Constants.TEXT_HTML))
-			{
-				if(_DEBUG)
-				{
-					log.debug("QueryAllSchemaServlet: about to call html rendering method");
-				}
-
-				try
-				{
-					HtmlPageRenderer.renderHtml(getServletContext(),
-							myRepository, stBuff, debugStrings,
-							localSettings.getOntologyTermUriPrefix()
-									+ queryString,
-							localSettings.getOntologyTermUriPrefix()
-									+ queryString, realHostName,
-							request.getContextPath(), -1, localSettings);
-				}
-				catch(OpenRDFException ordfe)
-				{
-					log.error(
-							"QueryAllSchemaServlet: couldn't render HTML because of an RDF exception",
-							ordfe);
-				}
-				catch(Exception ex)
-				{
-					log.error(
-							"QueryAllSchemaServlet: couldn't render HTML because of an unknown exception",
-							ex);
-				}
-			}
-			else
-			{
-				RdfUtils.toWriter(myRepository, stBuff, writerFormat);
-			}
-
-			String actualRdfString = stBuff.toString();
-
-			if(_TRACE)
-			{
-				log.trace("QueryAllSchemaServlet: actualRdfString="
-						+ actualRdfString);
-			}
-
-			if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
-			{
-				out.write(actualRdfString);
-			}
-			else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
-			{
-				out.write(actualRdfString);
-			}
-			else
-			{
-				out.write(actualRdfString);
-			}
-
-            Date queryEndTime = new Date();
+        final QueryAllConfiguration localSettings = Settings.getSettings();
+        
+        final PrintWriter out = response.getWriter();
+        
+        final String realHostName =
+                request.getScheme()
+                        + "://"
+                        + request.getServerName()
+                        + (request.getServerPort() == 80 && request.getScheme().equals("http") ? "" : ":"
+                                + request.getServerPort()) + "/";
+        
+        final String originalRequestedContentType =
+                QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
+                        request.getHeader("User-Agent"),
+                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+        
+        String requestedContentType = originalRequestedContentType;
+        
+        final String requesterIpAddress = request.getRemoteAddr();
+        
+        String queryString = (String)request.getAttribute("org.queryall.RuleTesterServlet.queryString");
+        
+        if(queryString == null)
+        {
+            queryString = "";
+        }
+        
+        final String locale = request.getLocale().toString();
+        
+        final String characterEncoding = request.getCharacterEncoding();
+        
+        if(QueryAllSchemaServlet._INFO)
+        {
+            QueryAllSchemaServlet.log.info("QueryAllSchemaServlet: locale=" + locale + " characterEncoding="
+                    + characterEncoding);
+        }
+        
+        final String versionParameter = (String)request.getAttribute("org.queryall.RuleTesterServlet.apiVersion");
+        
+        int apiVersion = Settings.CONFIG_API_VERSION;
+        
+        if(versionParameter != null && !versionParameter.equals("") && !Constants.CURRENT.equals(versionParameter))
+        {
+            try
+            {
+                apiVersion = Integer.parseInt(versionParameter);
+            }
+            catch(final NumberFormatException nfe)
+            {
+                QueryAllSchemaServlet.log.error("QueryAllSchemaServlet: apiVersion not recognised versionParameter="
+                        + versionParameter);
+            }
+        }
+        
+        if(apiVersion > Settings.CONFIG_API_VERSION)
+        {
+            QueryAllSchemaServlet.log
+                    .error("QueryAllSchemaServlet: requested API version not supported by this server. apiVersion="
+                            + apiVersion + " Settings.CONFIG_API_VERSION=" + Settings.CONFIG_API_VERSION);
             
-            long nextTotalTime = queryEndTime.getTime()-queryStartTime.getTime();
+            response.setContentType("text/plain");
+            response.setStatus(400);
+            out.write("Requested API version not supported by this server. Current supported version="
+                    + Settings.CONFIG_API_VERSION);
+            return;
+        }
+        
+        final Collection<String> debugStrings = new HashSet<String>();
+        
+        final String explicitUrlContentType =
+                (String)request.getAttribute("org.queryall.QueryAllSchemaServlet.chosenContentType");
+        
+        if(explicitUrlContentType != null && !explicitUrlContentType.equals(""))
+        {
+            if(QueryAllSchemaServlet.log.isInfoEnabled())
+            {
+                QueryAllSchemaServlet.log.info("QueryAllSchemaServlet: explicitUrlContentType="
+                        + explicitUrlContentType);
+            }
             
-			if(_DEBUG)
-			{
-				log.debug("QueryAllSchemaServlet: finished returning information to client requesterIpAddress="
-						+ requesterIpAddress
-						+ " queryString="
-						+ queryString
-						+ " totalTime=" + Long.toString(nextTotalTime));
-			}
-		}
-		catch(RuntimeException rex)
-		{
-			log.error("QueryAllSchemaServlet.doGet: caught runtime exception",
-					rex);
-		}
-		finally
-		{
-			if(out != null)
-			{
-				out.flush();
-			}
-		}
-	}
+            // override whatever was requested with the urlrewrite variable
+            requestedContentType = explicitUrlContentType;
+        }
+        
+        // even if they request a random format, we need to make sure that Rio
+        // has a writer compatible with it, otherwise we revert to one of the
+        // defaults as a failsafe mechanism
+        // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using
+        // this method
+        requestedContentType =
+                RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
+                        Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML),
+                        Constants.APPLICATION_RDF_XML);
+        
+        // this will be null if they chose text/html, but it will be a valid format in other cases
+        // due to the above method
+        final RDFFormat writerFormat = RdfUtils.getWriterFormat(requestedContentType);
+        
+        if(QueryAllSchemaServlet.log.isInfoEnabled())
+        {
+            QueryAllSchemaServlet.log.info("QueryAllSchemaServlet: requestedContentType=" + requestedContentType
+                    + " acceptHeader=" + request.getHeader("Accept") + " userAgent=" + request.getHeader("User-Agent"));
+        }
+        
+        if(!originalRequestedContentType.equals(requestedContentType))
+        {
+            QueryAllSchemaServlet.log
+                    .warn("QueryAllSchemaServlet: originalRequestedContentType was overwritten originalRequestedContentType="
+                            + originalRequestedContentType + " requestedContentType=" + requestedContentType);
+        }
+        
+        ((Settings)localSettings).configRefreshCheck(false);
+        
+        response.setContentType(requestedContentType);
+        response.setCharacterEncoding("UTF-8");
+        
+        try
+        {
+            final Repository myRepository = RdfUtils.getSchemas();
+            
+            final java.io.StringWriter stBuff = new java.io.StringWriter();
+            
+            if(requestedContentType.equals(Constants.TEXT_HTML))
+            {
+                if(QueryAllSchemaServlet._DEBUG)
+                {
+                    QueryAllSchemaServlet.log.debug("QueryAllSchemaServlet: about to call html rendering method");
+                }
+                
+                try
+                {
+                    HtmlPageRenderer.renderHtml(this.getServletContext(), myRepository, stBuff, debugStrings,
+                            localSettings.getOntologyTermUriPrefix() + queryString,
+                            localSettings.getOntologyTermUriPrefix() + queryString, realHostName,
+                            request.getContextPath(), -1, localSettings);
+                }
+                catch(final OpenRDFException ordfe)
+                {
+                    QueryAllSchemaServlet.log.error(
+                            "QueryAllSchemaServlet: couldn't render HTML because of an RDF exception", ordfe);
+                }
+                catch(final Exception ex)
+                {
+                    QueryAllSchemaServlet.log.error(
+                            "QueryAllSchemaServlet: couldn't render HTML because of an unknown exception", ex);
+                }
+            }
+            else
+            {
+                RdfUtils.toWriter(myRepository, stBuff, writerFormat);
+            }
+            
+            final String actualRdfString = stBuff.toString();
+            
+            if(QueryAllSchemaServlet._TRACE)
+            {
+                QueryAllSchemaServlet.log.trace("QueryAllSchemaServlet: actualRdfString=" + actualRdfString);
+            }
+            
+            if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
+            {
+                out.write(actualRdfString);
+            }
+            else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
+            {
+                out.write(actualRdfString);
+            }
+            else
+            {
+                out.write(actualRdfString);
+            }
+            
+            final Date queryEndTime = new Date();
+            
+            final long nextTotalTime = queryEndTime.getTime() - queryStartTime.getTime();
+            
+            if(QueryAllSchemaServlet._DEBUG)
+            {
+                QueryAllSchemaServlet.log
+                        .debug("QueryAllSchemaServlet: finished returning information to client requesterIpAddress="
+                                + requesterIpAddress + " queryString=" + queryString + " totalTime="
+                                + Long.toString(nextTotalTime));
+            }
+        }
+        catch(final RuntimeException rex)
+        {
+            QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught runtime exception", rex);
+        }
+        finally
+        {
+            if(out != null)
+            {
+                out.flush();
+            }
+        }
+    }
 }
