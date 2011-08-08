@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 import org.apache.velocity.context.Context;
+import org.apache.velocity.exception.VelocityException;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
@@ -368,9 +369,9 @@ public class HtmlPageRenderer
                 template.renderXHTML("error.vm", nextWriter);
             }
         }
-        catch(final Exception ex)
+        catch(final VelocityException ex)
         {
-            HtmlPageRenderer.log.fatal("renderHtml: caught exception while rendering XHTML", ex);
+            HtmlPageRenderer.log.error("renderHtml: caught exception while rendering XHTML", ex);
             
             try
             {

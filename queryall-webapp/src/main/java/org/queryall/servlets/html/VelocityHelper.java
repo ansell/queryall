@@ -1,11 +1,17 @@
 package org.queryall.servlets.html;
 
+import java.io.IOException;
+
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.exception.VelocityException;
 
 /**
  * A facade class that simplifies using a custom Velocity engine from a servlet. It encapsulates
@@ -29,7 +35,7 @@ public class VelocityHelper
     private final static String VELOCITY_ENGINE = VelocityHelper.class.getName() + ".VELOCITY_ENGINE";
     
     private final ServletContext servletContext;
-    private final Context velocityContext;
+    private volatile Context velocityContext;
     
     /**
      * 
@@ -98,7 +104,7 @@ public class VelocityHelper
         return this.velocityContext;
     }
     
-    private VelocityEngine getVelocityEngine()
+    private synchronized VelocityEngine getVelocityEngine()
     {
         if(VelocityHelper._TRACE)
         {
@@ -154,7 +160,7 @@ public class VelocityHelper
     /**
      * Renders a template using the template variables put into the velocity context.
      */
-    public void renderXHTML(final String templateName, final java.io.Writer nextWriter) throws Exception
+    public void renderXHTML(final String templateName, final java.io.Writer nextWriter) throws VelocityException
     {
         // response.addHeader("Content-Type", "text/html; charset=utf-8");
         // response.addHeader("Cache-Control", "no-cache");
@@ -184,13 +190,36 @@ public class VelocityHelper
             
             // writer.close();
         }
+        catch(final ResourceNotFoundException ex)
+        {
+            throw new VelocityException(ex);
+        }
+        catch(final ParseErrorException ex)
+        {
+            throw new VelocityException(ex);
+        }
+        catch(final MethodInvocationException ex)
+        {
+            throw new VelocityException(ex);
+        }
         catch(final Exception ex)
         {
-            VelocityHelper.log.fatal("VelocityHelper.renderXHTML: caught exception with templateName=" + templateName,
-                    ex);
-            
-            throw ex;
-            // throw new RuntimeException(ex);
+            VelocityHelper.log.error("Velocity threw bare Exception, rethrowing as VelocityException");
+            throw new VelocityException(ex);
+        }
+        finally
+        {
+            if(nextWriter != null)
+            {
+                try
+                {
+                    nextWriter.flush();
+                }
+                catch(final IOException ex)
+                {
+                    
+                }
+            }
         }
     }
 }
