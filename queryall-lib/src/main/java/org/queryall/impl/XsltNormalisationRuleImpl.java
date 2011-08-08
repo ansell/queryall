@@ -123,10 +123,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        XsltNormalisationRuleImpl.setXsltRuleTypeUri(f.createURI(baseUri,
-                "XsltNormalisationRule"));
-        XsltNormalisationRuleImpl.setXsltRuleStylesheetUri(f.createURI(baseUri,
-                "xsltStylesheet"));
+        XsltNormalisationRuleImpl.setXsltRuleTypeUri(f.createURI(baseUri, "XsltNormalisationRule"));
+        XsltNormalisationRuleImpl.setXsltRuleStylesheetUri(f.createURI(baseUri, "xsltStylesheet"));
         
     }
     

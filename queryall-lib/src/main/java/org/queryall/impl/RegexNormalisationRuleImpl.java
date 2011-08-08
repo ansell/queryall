@@ -141,16 +141,11 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        RegexNormalisationRuleImpl.setRegexRuleTypeUri(f.createURI(baseUri,
-                "RegexNormalisationRule"));
-        RegexNormalisationRuleImpl.setRegexRuleInputMatchRegex(f.createURI(baseUri,
-                "inputMatchRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleInputReplaceRegex(f.createURI(baseUri,
-                "inputReplaceRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleOutputMatchRegex(f.createURI(baseUri,
-                "outputMatchRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleOutputReplaceRegex(f.createURI(baseUri,
-                "outputReplaceRegex"));
+        RegexNormalisationRuleImpl.setRegexRuleTypeUri(f.createURI(baseUri, "RegexNormalisationRule"));
+        RegexNormalisationRuleImpl.setRegexRuleInputMatchRegex(f.createURI(baseUri, "inputMatchRegex"));
+        RegexNormalisationRuleImpl.setRegexRuleInputReplaceRegex(f.createURI(baseUri, "inputReplaceRegex"));
+        RegexNormalisationRuleImpl.setRegexRuleOutputMatchRegex(f.createURI(baseUri, "outputMatchRegex"));
+        RegexNormalisationRuleImpl.setRegexRuleOutputReplaceRegex(f.createURI(baseUri, "outputReplaceRegex"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)

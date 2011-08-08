@@ -217,25 +217,20 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        SparqlNormalisationRuleImpl.setSparqlRuleTypeUri(f.createURI(baseUri,
-                "SparqlNormalisationRule"));
-        SparqlNormalisationRuleImpl.setOLDSparqlRuleSparqlConstructQuery(f.createURI(
-                baseUri, "sparqlConstructQuery"));
-        SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQueryTarget(f.createURI(
-                baseUri, "sparqlConstructQueryTarget"));
-        SparqlNormalisationRuleImpl.setSparqlRuleSparqlWherePattern(f.createURI(baseUri,
-                "sparqlWherePatterns"));
-        SparqlNormalisationRuleImpl.setSparqlRuleSparqlPrefixes(f.createURI(baseUri,
-                "sparqlPrefixes"));
+        SparqlNormalisationRuleImpl.setSparqlRuleTypeUri(f.createURI(baseUri, "SparqlNormalisationRule"));
+        SparqlNormalisationRuleImpl.setOLDSparqlRuleSparqlConstructQuery(f.createURI(baseUri, "sparqlConstructQuery"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlConstructQueryTarget(f.createURI(baseUri,
+                "sparqlConstructQueryTarget"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlWherePattern(f.createURI(baseUri, "sparqlWherePatterns"));
+        SparqlNormalisationRuleImpl.setSparqlRuleSparqlPrefixes(f.createURI(baseUri, "sparqlPrefixes"));
         SparqlNormalisationRuleImpl.setSparqlRuleMode(f.createURI(baseUri, "mode"));
-        SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyDeleteMatches(f.createURI(
-                baseUri, "onlyDeleteMatchingTriples"));
-        SparqlNormalisationRuleImpl.OLDsparqlruleModeOnlyDeleteMatches =
-                f.createURI(baseUri, "onlyDeleteMatches");
-        SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyIncludeMatches(f.createURI(
-                baseUri, "onlyIncludeMatchingTriples"));
-        SparqlNormalisationRuleImpl.setSparqlRuleModeAddAllMatchingTriples(f.createURI(
-                baseUri, "addAllMatchingTriples"));
+        SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyDeleteMatches(f
+                .createURI(baseUri, "onlyDeleteMatchingTriples"));
+        SparqlNormalisationRuleImpl.OLDsparqlruleModeOnlyDeleteMatches = f.createURI(baseUri, "onlyDeleteMatches");
+        SparqlNormalisationRuleImpl.setSparqlRuleModeOnlyIncludeMatches(f.createURI(baseUri,
+                "onlyIncludeMatchingTriples"));
+        SparqlNormalisationRuleImpl.setSparqlRuleModeAddAllMatchingTriples(f
+                .createURI(baseUri, "addAllMatchingTriples"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
