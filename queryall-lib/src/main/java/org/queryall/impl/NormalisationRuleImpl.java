@@ -270,7 +270,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
     
-    private Collection<URI> relatedNamespaces;
+    private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
     
     protected Collection<URI> stages = new ArrayList<URI>(3);
     
@@ -461,7 +461,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleImpl.getRdfruleHasRelatedNamespace()))
             {
-                tempRelatedNamespaces.add((URI)nextStatement.getObject());
+                this.addRelatedNamespaces((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleImpl.getRdfruleStage()))
             {
@@ -477,7 +477,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
         }
         
-        this.relatedNamespaces = tempRelatedNamespaces;
+        //this.setRelatedNamespaces(tempRelatedNamespaces);
         this.stages = tempStages;
         
         if(NormalisationRuleImpl._DEBUG)
@@ -485,6 +485,16 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
                     + this.toString());
         }
+    }
+    
+    /**
+     * 
+     * @param nextRelatedNamespace
+     */
+    @Override
+    public void addRelatedNamespaces(final URI nextRelatedNamespace)
+    {
+        this.relatedNamespaces.add(nextRelatedNamespace);
     }
     
     /**
@@ -605,6 +615,15 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public URI getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
+    }
+    
+    /**
+     * @return the relatedNamespaces
+     */
+    @Override
+    public Collection<URI> getRelatedNamespaces()
+    {
+        return this.relatedNamespaces;
     }
     
     /**
@@ -743,27 +762,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
     
-    /**
-     * @param Stages
-     *            the Stages to set
-     */
-    @Override
-    public void setStages(final Collection<URI> nextStages) throws InvalidStageException
-    {
-        try
-        {
-            for(final URI nextStage : nextStages)
-            {
-                this.addStage(nextStage);
-            }
-        }
-        catch(final InvalidStageException ise)
-        {
-            this.stages = new ArrayList<URI>();
-            throw ise;
-        }
-    }
-    
     @Override
     public void setTitle(final String title)
     {
@@ -834,9 +832,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             con.add(keyUri, NormalisationRuleImpl.getRdfruleOrder(), orderLiteral, keyToUse);
             con.add(keyUri, ProfileImpl.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral, keyToUse);
             
-            if(this.relatedNamespaces != null)
+            if(this.getRelatedNamespaces() != null)
             {
-                for(final URI nextRelatedNamespace : this.relatedNamespaces)
+                for(final URI nextRelatedNamespace : this.getRelatedNamespaces())
                 {
                     con.add(keyUri, NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), nextRelatedNamespace,
                             keyToUse);

@@ -161,34 +161,16 @@ public abstract class AbstractNormalisationRuleTest
         
         for(final URI nextInvalidStage : this.invalidStages)
         {
-            boolean foundException = false;
-            
             try
             {
                 normalisationRule.addStage(nextInvalidStage);
+                Assert.fail("Did not find expected invalid stage exception for setStages");
             }
             catch(final InvalidStageException e)
             {
-                foundException = true;
+                // expected exception
             }
-            
-            Assert.assertTrue("Did not find expected invalid stage exception for addStage", foundException);
         }
-        
-        Assert.assertEquals(normalisationRule.getStages().size(), 0);
-        
-        boolean foundSetException = false;
-        
-        try
-        {
-            normalisationRule.setStages(this.invalidStages);
-        }
-        catch(final InvalidStageException e)
-        {
-            foundSetException = true;
-        }
-        
-        Assert.assertTrue("Did not find expected invalid stage exception for setStages", foundSetException);
         
         Assert.assertEquals(normalisationRule.getStages().size(), 0);
         

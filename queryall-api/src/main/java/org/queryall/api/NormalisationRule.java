@@ -2,6 +2,7 @@ package org.queryall.api;
 
 import java.util.Collection;
 
+import org.openrdf.model.URI;
 import org.queryall.exception.InvalidStageException;
 
 /**
@@ -9,21 +10,23 @@ import org.queryall.exception.InvalidStageException;
  */
 public interface NormalisationRule extends BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
 {
-    void addStage(org.openrdf.model.URI stage) throws InvalidStageException;
+    void addRelatedNamespaces(URI nextRelatedNamespace);
     
     String getDescription();
     
     int getOrder();
     
-    Collection<org.openrdf.model.URI> getStages();
+    Collection<URI> getRelatedNamespaces();
     
-    Collection<org.openrdf.model.URI> getValidStages();
+    Collection<URI> getStages();
     
-    Object normaliseByStage(org.openrdf.model.URI stage, Object input);
+    Collection<URI> getValidStages();
+    
+    Object normaliseByStage(URI stage, Object input);
     
     void setOrder(int order);
     
-    void setStages(Collection<org.openrdf.model.URI> stages) throws InvalidStageException;
+    void addStage(URI nextStage) throws InvalidStageException;
     
     Object stageAfterQueryCreation(Object input);
     
@@ -39,8 +42,8 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     
     Object stageQueryVariables(Object input);
     
-    boolean usedInStage(org.openrdf.model.URI stage);
+    boolean usedInStage(URI stage);
     
-    boolean validInStage(org.openrdf.model.URI stage);
+    boolean validInStage(URI stage);
     
 }

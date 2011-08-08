@@ -33,8 +33,11 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.NamespaceEntry;
+import org.queryall.api.NormalisationRule;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
+import org.queryall.impl.NormalisationRuleImpl;
+import org.queryall.impl.ProfileImpl;
 import org.queryall.utils.RdfUtils;
 
 /**
@@ -444,12 +447,70 @@ public class RdfUtilsTest
     /**
      * Test method for
      * {@link org.queryall.utils.RdfUtils#getNormalisationRules(org.openrdf.repository.Repository)}.
+     * 
+     * TODO Test specific subclasses of NormalisationRule
      */
     @Test
-    @Ignore
     public void testGetNormalisationRules()
     {
-        Assert.fail("Not yet implemented");
+        final InputStream nextInputStream = this.getClass().getResourceAsStream("/testconfigs/normalisationrule-1.n3");
+        
+        try
+        {
+            Assert.assertNotNull("Could not find test file", nextInputStream);
+            
+            this.testRepositoryConnection.add(nextInputStream, "", RDFFormat.N3);
+            this.testRepositoryConnection.commit();
+            
+            final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(this.testRepository);
+            
+            Assert.assertEquals(1, results.size());
+            
+            for(final URI nextNormalisationRuleUri : results.keySet())
+            {
+                Assert.assertEquals("Results did not contain correct normalisation rule URI",
+                        this.testValueFactory.createURI("http://example.org/rdfrule:abc_issn"),
+                        nextNormalisationRuleUri);
+                
+                final NormalisationRule nextNormalisationRule = results.get(nextNormalisationRuleUri);
+                
+                Assert.assertNotNull("Normalisation rule was null", nextNormalisationRule);
+                
+                Assert.assertEquals("Normalisation rule key was not the same as its map URI", nextNormalisationRuleUri,
+                        nextNormalisationRule.getKey());
+                
+                Assert.assertTrue(
+                        "Could not find expected stage",
+                        nextNormalisationRule.getStages().contains(
+                                NormalisationRuleImpl.getRdfruleStageQueryVariables()));
+                Assert.assertTrue(
+                        "Could not find expected stage",
+                        nextNormalisationRule.getStages().contains(
+                                NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()));
+                
+                Assert.assertEquals("Description was not parsed correctly",
+                        "Converts between the URIs used by the ABC ISSN's and the Example organisation ISSN namespace",
+                        nextNormalisationRule.getDescription());
+                Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
+                Assert.assertEquals("Include exclude order was not parsed correctly",
+                        ProfileImpl.getIncludeThenExcludeUri(), nextNormalisationRule.getProfileIncludeExcludeOrder());
+                
+                Assert.assertTrue("Related namespace was not parsed correctly", nextNormalisationRule
+                        .getRelatedNamespaces().contains(this.testValueFactory.createURI("http://example.org/ns:issn")));
+            }
+        }
+        catch(final RDFParseException ex)
+        {
+            Assert.fail("Found unexpected RDFParseException : " + ex.getMessage());
+        }
+        catch(final RepositoryException ex)
+        {
+            Assert.fail("Found unexpected RepositoryException : " + ex.getMessage());
+        }
+        catch(final IOException ex)
+        {
+            Assert.fail("Found unexpected IOException : " + ex.getMessage());
+        }
     }
     
     /**
@@ -534,10 +595,12 @@ public class RdfUtilsTest
      * Test method for {@link org.queryall.utils.RdfUtils#getWriterFormat(java.lang.String)}.
      */
     @Test
-    @Ignore
     public void testGetWriterFormat()
     {
-        Assert.fail("Not yet implemented");
+        Assert.assertEquals("Could not find RDF XML writer format", RDFFormat.RDFXML,
+                RdfUtils.getWriterFormat("application/rdf+xml"));
+        Assert.assertEquals("Could not find N3 writer format", RDFFormat.N3, RdfUtils.getWriterFormat("text/rdf+n3"));
+        Assert.assertNull("Did not properly respond with null for HTML format", RdfUtils.getWriterFormat("text/html"));
     }
     
 }

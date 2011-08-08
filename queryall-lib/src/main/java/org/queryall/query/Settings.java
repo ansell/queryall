@@ -1597,7 +1597,8 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
     
-    private synchronized Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri) throws InterruptedException
+    private synchronized Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri)
+        throws InterruptedException
     {
         if(Settings._TRACE)
         {
