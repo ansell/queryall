@@ -51,6 +51,7 @@ public class QueryAllNamespacesTest
     {
         for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
+            // the testing queryall.properties file should always contain these definitions, as they are stable and long term
             String expectedNamespace = "http://purl.org/queryall/"+nextNamespace.getNamespace()+":";
             Assert.assertEquals("Base URI was not as expected", expectedNamespace, nextNamespace.getBaseURI());
         }
@@ -62,7 +63,11 @@ public class QueryAllNamespacesTest
     @Test
     public final void testGetDefaultValue()
     {
-        fail("Not yet implemented"); // TODO
+        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        {
+            // verify that the default values match the testing queryall.properties file that is used via PropertyUtils to generate the actual namespace
+            Assert.assertEquals("Namespace did not match the default, as it should for testing purposes", nextNamespace.getNamespace(), nextNamespace.getDefaultValue());
+        }
     }
     
     /**
@@ -71,7 +76,12 @@ public class QueryAllNamespacesTest
     @Test
     public final void testGetDescription()
     {
-        fail("Not yet implemented"); // TODO
+        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        {
+            // verify that the description is not a small trivial string
+            assertTrue(nextNamespace.getDescription().trim().length()> 5);
+        }
+        
     }
     
     /**
@@ -80,7 +90,11 @@ public class QueryAllNamespacesTest
     @Test
     public final void testGetNamespace()
     {
-        fail("Not yet implemented"); // TODO
+        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        {
+            // verify that the default values match the testing queryall.properties file that is used via PropertyUtils to generate the actual namespace
+            Assert.assertEquals("Default value did not match the actual namespace, as it should for testing purposes", nextNamespace.getDefaultValue(), nextNamespace.getNamespace());
+        }
     }
     
 }
