@@ -16,6 +16,7 @@ public final class PropertyUtils
 {
     private static final Logger log = LoggerFactory.getLogger(PropertyUtils.class);
     private static final boolean _TRACE = PropertyUtils.log.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _DEBUG = PropertyUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = PropertyUtils.log.isInfoEnabled();
@@ -52,13 +53,6 @@ public final class PropertyUtils
                 if(PropertyUtils._TRACE)
                 {
                     PropertyUtils.log.trace(mre.getMessage(), mre);
-                }
-            }
-            catch(final Exception ex)
-            {
-                if(PropertyUtils._DEBUG)
-                {
-                    PropertyUtils.log.debug(ex.getMessage(), ex);
                 }
             }
         }
