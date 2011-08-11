@@ -3,8 +3,6 @@
  */
 package org.queryall.api.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +11,7 @@ import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
  * @author uqpanse1
- *
+ * 
  */
 public class QueryAllNamespacesTest
 {
@@ -35,24 +33,16 @@ public class QueryAllNamespacesTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.utils.QueryAllNamespaces#QueryAllNamespaces(java.lang.String, java.lang.String, java.lang.String)}.
-     */
-    @Test
-    public final void testQueryAllNamespaces()
-    {
-        Assert.assertEquals(12, QueryAllNamespaces.values().length);
-    }
-    
-    /**
      * Test method for {@link org.queryall.api.utils.QueryAllNamespaces#getBaseURI()}.
      */
     @Test
     public final void testGetBaseURI()
     {
-        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
-            // the testing queryall.properties file should always contain these definitions, as they are stable and long term
-            String expectedNamespace = "http://purl.org/queryall/"+nextNamespace.getNamespace()+":";
+            // the testing queryall.properties file should always contain these definitions, as they
+            // are stable and long term
+            final String expectedNamespace = "http://purl.org/queryall/" + nextNamespace.getNamespace() + ":";
             Assert.assertEquals("Base URI was not as expected", expectedNamespace, nextNamespace.getBaseURI());
         }
     }
@@ -63,10 +53,12 @@ public class QueryAllNamespacesTest
     @Test
     public final void testGetDefaultValue()
     {
-        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
-            // verify that the default values match the testing queryall.properties file that is used via PropertyUtils to generate the actual namespace
-            Assert.assertEquals("Namespace did not match the default, as it should for testing purposes", nextNamespace.getNamespace(), nextNamespace.getDefaultValue());
+            // verify that the default values match the testing queryall.properties file that is
+            // used via PropertyUtils to generate the actual namespace
+            Assert.assertEquals("Namespace did not match the default, as it should for testing purposes",
+                    nextNamespace.getNamespace(), nextNamespace.getDefaultValue());
         }
     }
     
@@ -76,10 +68,10 @@ public class QueryAllNamespacesTest
     @Test
     public final void testGetDescription()
     {
-        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
             // verify that the description is not a small trivial string
-            assertTrue(nextNamespace.getDescription().trim().length()> 5);
+            Assert.assertTrue(nextNamespace.getDescription().trim().length() > 5);
         }
         
     }
@@ -90,11 +82,24 @@ public class QueryAllNamespacesTest
     @Test
     public final void testGetNamespace()
     {
-        for(QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
-            // verify that the default values match the testing queryall.properties file that is used via PropertyUtils to generate the actual namespace
-            Assert.assertEquals("Default value did not match the actual namespace, as it should for testing purposes", nextNamespace.getDefaultValue(), nextNamespace.getNamespace());
+            // verify that the default values match the testing queryall.properties file that is
+            // used via PropertyUtils to generate the actual namespace
+            Assert.assertEquals("Default value did not match the actual namespace, as it should for testing purposes",
+                    nextNamespace.getDefaultValue(), nextNamespace.getNamespace());
         }
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.api.utils.QueryAllNamespaces#QueryAllNamespaces(java.lang.String, java.lang.String, java.lang.String)}
+     * .
+     */
+    @Test
+    public final void testQueryAllNamespaces()
+    {
+        Assert.assertEquals(12, QueryAllNamespaces.values().length);
     }
     
 }

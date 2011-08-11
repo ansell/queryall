@@ -55,10 +55,8 @@ public enum QueryAllNamespaces
         this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, defaultValue);
         this.description = nextDescription;
         this.baseUri =
-                PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
-                        "http://purl.org/queryall/")
-                        + this.namespace
-                        + PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":");
+                PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix", "http://purl.org/queryall/")
+                        + this.namespace + PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":");
     }
     
     public String getBaseURI()

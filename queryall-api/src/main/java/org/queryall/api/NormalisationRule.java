@@ -12,6 +12,8 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
 {
     void addRelatedNamespaces(URI nextRelatedNamespace);
     
+    void addStage(URI nextStage) throws InvalidStageException;
+    
     String getDescription();
     
     int getOrder();
@@ -25,8 +27,6 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     Object normaliseByStage(URI stage, Object input);
     
     void setOrder(int order);
-    
-    void addStage(URI nextStage) throws InvalidStageException;
     
     Object stageAfterQueryCreation(Object input);
     
