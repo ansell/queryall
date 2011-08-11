@@ -58,6 +58,7 @@ public class VelocityHelper
         
         try
         {
+            // TODO: Switch to using velocity.properties file instead of hardcoding the properties here
             final java.util.Properties engineProperties = new java.util.Properties();
             
             engineProperties.setProperty("runtime.log.logsystem.class",
@@ -66,10 +67,9 @@ public class VelocityHelper
                     "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             engineProperties.setProperty("input.encoding", "utf-8");
             engineProperties.setProperty("output.encoding", "utf-8");
-            // FIXME XXX: When Velocity supports loading from WEB-INF/classes/ as well as
-            // WEB-INF/lib/ remove this property
-            engineProperties.setProperty("file.resource.loader.path", this.servletContext.getRealPath("/")
-                    + "/WEB-INF/classes/templates/");
+            engineProperties.setProperty("resource.loader", "class");
+            engineProperties.setProperty("class.resource.loader.class",
+                    "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
             engineProperties.setProperty("eventhandler.referenceinsertion.class",
                     "org.apache.velocity.app.event.implement.EscapeHtmlReference");
             engineProperties.setProperty("eventhandler.escape.html.match", "/xmlEncoded.*/");
