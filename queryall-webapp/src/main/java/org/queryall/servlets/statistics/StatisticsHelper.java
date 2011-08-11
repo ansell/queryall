@@ -230,7 +230,7 @@ public class StatisticsHelper
     // );
     //
     // String key = localSettings.getDefaultHostAddress()
-    // +localSettings.DEFAULT_RDF_STATISTICS_NAMESPACE
+    // +localqueryall.namespaceStatistics
     // +localSettings.getStringPropertyFromConfig("separator")
     // +RdfUtils.percentEncode(keyToUse);
     //

@@ -11,29 +11,29 @@ import org.slf4j.LoggerFactory;
  */
 public enum QueryAllNamespaces
 {
-    NAMESPACEENTRY("Settings.DEFAULT_RDF_NAMESPACEENTRY_NAMESPACE", "ns", "Namespace Entries"),
+    NAMESPACEENTRY("queryall.namespaceNamespaceEntries", "ns", "Namespace Entries"),
     
-    PROFILE("Settings.DEFAULT_RDF_PROFILE_NAMESPACE", "profile", "Profiles"),
+    PROFILE("queryall.namespaceProfiles", "profile", "Profiles"),
     
-    PROJECT("Settings.DEFAULT_RDF_PROJECT_NAMESPACE", "project", "Projects"),
+    PROJECT("queryall.namespaceProjects", "project", "Projects"),
     
-    PROVENANCE("Settings.DEFAULT_RDF_PROVENANCE_NAMESPACE", "provenance", "Provenance Records"),
+    PROVENANCE("queryall.namespaceProvenanceRecords", "provenance", "Provenance Records"),
     
-    PROVIDER("Settings.DEFAULT_RDF_PROVIDER_NAMESPACE", "provider", "Providers"),
+    PROVIDER("queryall.namespaceProviders", "provider", "Providers"),
     
-    QUERY("Settings.DEFAULT_RDF_QUERY_NAMESPACE", "query", "Query Types"),
+    QUERY("queryall.namespaceQueryTypes", "query", "Query Types"),
     
-    QUERYBUNDLE("Settings.DEFAULT_RDF_QUERYBUNDLE_NAMESPACE", "querybundle", "Query Bundles"),
+    QUERYBUNDLE("queryall.namespaceQueryBundles", "querybundle", "Query Bundles"),
     
-    RDFRULE("Settings.DEFAULT_RDF_RDFRULE_NAMESPACE", "rdfrule", "RDF Normalisation Rules"),
+    RDFRULE("queryall.namespaceNormalisationRules", "rdfrule", "RDF Normalisation Rules"),
     
-    RULETEST("Settings.DEFAULT_RDF_RULETEST_NAMESPACE", "ruletest", "Rule Tests"),
+    RULETEST("queryall.namespaceRuleTests", "ruletest", "Rule Tests"),
     
-    STATISTICS("Settings.DEFAULT_RDF_STATISTICS_NAMESPACE", "statistics", "Statistics"),
+    STATISTICS("queryall.namespaceStatistics", "statistics", "Statistics"),
     
-    TEMPLATES("Settings.DEFAULT_RDF_TEMPLATE_NAMESPACE", "template", "Templates"),
+    TEMPLATES("queryall.namespaceTemplates", "template", "Templates"),
     
-    WEBAPPCONFIG("Settings.DEFAULT_RDF_WEBAPP_CONFIGURATION_NAMESPACE", "webapp_configuration",
+    WEBAPPCONFIG("queryall.namespaceWebApplicationConfiguration", "webapp_configuration",
             "Web Application Configurations");
     
     private static final Logger log = LoggerFactory.getLogger(QueryAllNamespaces.class);
@@ -55,10 +55,10 @@ public enum QueryAllNamespaces
         this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, defaultValue);
         this.description = nextDescription;
         this.baseUri =
-                PropertyUtils.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX",
+                PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
                         "http://purl.org/queryall/")
                         + this.namespace
-                        + PropertyUtils.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX", ":");
+                        + PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":");
     }
     
     public String getBaseURI()

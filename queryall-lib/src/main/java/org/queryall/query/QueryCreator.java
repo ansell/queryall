@@ -152,9 +152,9 @@ public class QueryCreator
         // StringBuilder normalisedStandardUri = new
         // StringBuilder(originalQueryType.getStandardUriTemplateString());
         
-        // final String normalisedOntologyUriPrefix = Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX;
+        // final String normalisedOntologyUriPrefix = queryall.ontologyPrefix;
         //
-        // final String normalisedOntologyUriSuffix = Settings.DEFAULT_ONTOLOGYTERMURI_SUFFIX;
+        // final String normalisedOntologyUriSuffix = queryall.ontologySuffix;
         
         String normalisedQueryUri = "";
         

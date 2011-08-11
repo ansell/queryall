@@ -179,9 +179,9 @@ public class QueryAllSchemaServlet extends HttpServlet
                             myRepository,
                             stBuff,
                             debugStrings,
-                            PropertyUtils.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX",
+                            PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
                                     "http://purl.org/queryall/") + queryString,
-                            PropertyUtils.getSystemOrPropertyString("Settings.DEFAULT_ONTOLOGYTERMURI_PREFIX",
+                            PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
                                     "http://purl.org/queryall/") + queryString, realHostName, request.getContextPath(),
                             -1, localSettings);
                 }
