@@ -10,8 +10,7 @@ import org.junit.Test;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
- * @author uqpanse1
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryAllNamespacesTest
 {

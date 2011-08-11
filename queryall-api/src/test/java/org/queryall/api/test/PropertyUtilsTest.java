@@ -11,8 +11,7 @@ import org.junit.Test;
 import org.queryall.api.utils.PropertyUtils;
 
 /**
- * @author uqpanse1
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class PropertyUtilsTest
 {
@@ -52,7 +51,7 @@ public class PropertyUtilsTest
         Assert.assertEquals("Ontology URI Suffix was not as expected", ":",
                 PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":"));
         Assert.assertEquals("Ontology URI Suffix was not as expected, even with default", ":",
-                PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix", ":"));
+                PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":"));
     }
     
     /**
