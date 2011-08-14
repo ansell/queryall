@@ -6,7 +6,6 @@ package org.queryall.impl;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -24,13 +23,15 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class HttpProviderImpl extends ProviderImpl implements HttpProvider, SparqlProvider
 {
-    private static final Logger log = Logger.getLogger(HttpProviderImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class.getName());
     private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = HttpProviderImpl.log.isDebugEnabled();

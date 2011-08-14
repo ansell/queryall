@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.exception.VelocityException;
 import org.openrdf.OpenRDFException;
@@ -36,7 +37,7 @@ import org.queryall.utils.StringUtils;
 
 public class HtmlPageRenderer
 {
-    private static final Logger log = Logger.getLogger(HtmlPageRenderer.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(HtmlPageRenderer.class.getName());
     private static final boolean _TRACE = HtmlPageRenderer.log.isTraceEnabled();
     private static final boolean _DEBUG = HtmlPageRenderer.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -382,7 +383,7 @@ public class HtmlPageRenderer
             }
             catch(final IOException ioe)
             {
-                HtmlPageRenderer.log.fatal("renderHtml: Could not write out error message to nextWriter");
+                HtmlPageRenderer.log.error("renderHtml: Could not write out error message to nextWriter");
             }
         }
         
@@ -470,7 +471,8 @@ public class HtmlPageRenderer
         }
         catch(final Exception ex)
         {
-            HtmlPageRenderer.log.fatal("renderIndexPage: caught exception while rendering XHTML", ex);
+            HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML");
+            log.error(ex.getMessage());
             
             try
             {
@@ -478,7 +480,7 @@ public class HtmlPageRenderer
             }
             catch(final IOException ioe)
             {
-                HtmlPageRenderer.log.fatal("renderIndexPage: Could not write out error message to nextWriter");
+                HtmlPageRenderer.log.error("renderIndexPage: Could not write out error message to nextWriter");
             }
         }
         

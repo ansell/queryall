@@ -3,8 +3,9 @@ package org.queryall.query;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -12,7 +13,7 @@ import org.openrdf.model.URI;
 public class QueryDebug
 {
     @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(QueryDebug.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryDebug.class.getName());
     
     private long totalTimeMilliseconds = 0;
     private String clientIPAddress = "";

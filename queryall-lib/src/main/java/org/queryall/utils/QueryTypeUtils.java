@@ -8,17 +8,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public final class QueryTypeUtils
 {
-    public static final Logger log = Logger.getLogger(QueryTypeUtils.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class.getName());
     public static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
     public static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
     public static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();

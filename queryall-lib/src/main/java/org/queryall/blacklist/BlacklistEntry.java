@@ -3,8 +3,9 @@ package org.queryall.blacklist;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
 import org.queryall.query.RdfFetcherQueryRunnable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -12,7 +13,7 @@ import org.queryall.query.RdfFetcherQueryRunnable;
 public class BlacklistEntry
 {
     @SuppressWarnings("unused")
-    private static final Logger log = Logger.getLogger(BlacklistEntry.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(BlacklistEntry.class.getName());
     
     public int numberOfFailures = 0;
     public String endpointUrl = "";

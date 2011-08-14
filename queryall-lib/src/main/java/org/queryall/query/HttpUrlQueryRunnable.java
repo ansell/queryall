@@ -2,17 +2,18 @@ package org.queryall.query;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.HttpProviderImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thread
 {
-    private static final Logger log = Logger.getLogger(HttpUrlQueryRunnable.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(HttpUrlQueryRunnable.class.getName());
     private static final boolean _TRACE = HttpUrlQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = HttpUrlQueryRunnable.log.isDebugEnabled();

@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.Settings;
@@ -22,7 +23,7 @@ public class ManualRefreshServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = -8130327002164154880L;
-    public static final Logger log = Logger.getLogger(ManualRefreshServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(ManualRefreshServlet.class.getName());
     public static final boolean _TRACE = ManualRefreshServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = ManualRefreshServlet.log.isDebugEnabled();
     public static final boolean _INFO = ManualRefreshServlet.log.isInfoEnabled();

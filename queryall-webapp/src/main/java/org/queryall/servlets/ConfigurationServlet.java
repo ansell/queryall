@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
@@ -45,7 +46,7 @@ public class ConfigurationServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = 3372992659745059491L;
     
-    public static final Logger log = Logger.getLogger(ConfigurationServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(ConfigurationServlet.class.getName());
     public static final boolean _TRACE = ConfigurationServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = ConfigurationServlet.log.isDebugEnabled();
     public static final boolean _INFO = ConfigurationServlet.log.isInfoEnabled();

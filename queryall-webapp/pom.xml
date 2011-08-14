@@ -52,18 +52,18 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 			<version>1.6.4</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.tuckey</groupId>
-			<artifactId>urlrewritefilter</artifactId>
-			<version>3.2.0</version>
-			<type>jar</type>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -88,11 +88,4 @@
 			</resource>
 		</resources>
 	</build>
-	<repositories>
-		<repository>
-		    <id>repo.rasea.org</id>
-		    <name>Rasea Maven Repository (only for UrlRewrite-3.2.0 while it is not in the standard Maven repos)</name>
-		    <url>http://repo.rasea.org/maven2/</url>
-		</repository> 
-	</repositories>
 </project>

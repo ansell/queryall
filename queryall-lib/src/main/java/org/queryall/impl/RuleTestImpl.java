@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -20,6 +19,8 @@ import org.queryall.api.RuleTest;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of the RuleTest class
@@ -28,7 +29,7 @@ import org.queryall.utils.StringUtils;
  */
 public class RuleTestImpl implements RuleTest
 {
-    private static final Logger log = Logger.getLogger(RuleTest.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(RuleTest.class.getName());
     private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = RuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

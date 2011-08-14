@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -25,13 +24,15 @@ import org.queryall.enumerations.Constants;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProviderImpl implements Provider
 {
-    private static final Logger log = Logger.getLogger(ProviderImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class.getName());
     private static final boolean _TRACE = ProviderImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

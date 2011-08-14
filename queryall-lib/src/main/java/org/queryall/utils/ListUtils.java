@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ListUtils
 {
-    private static final Logger log = Logger.getLogger(StringUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(StringUtils.class.getName());
     @SuppressWarnings("unused")
     private static final boolean _TRACE = ListUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")

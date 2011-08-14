@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -27,13 +26,15 @@ import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryTypeImpl implements QueryType
 {
-    private static final Logger log = Logger.getLogger(QueryType.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryType.class.getName());
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

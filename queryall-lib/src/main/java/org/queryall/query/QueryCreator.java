@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
@@ -20,13 +19,15 @@ import org.queryall.enumerations.Constants;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.utils.RuleUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryCreator
 {
-    private static final Logger log = Logger.getLogger(QueryCreator.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryCreator.class.getName());
     private static final boolean _TRACE = QueryCreator.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryCreator.log.isDebugEnabled();
     @SuppressWarnings("unused")

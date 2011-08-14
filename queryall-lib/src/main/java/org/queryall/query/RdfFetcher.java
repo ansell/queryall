@@ -7,17 +7,18 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class RdfFetcher
 {
-    private static final Logger log = Logger.getLogger(RdfFetcher.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(RdfFetcher.class.getName());
     private static final boolean _TRACE = RdfFetcher.log.isTraceEnabled();
     private static final boolean _DEBUG = RdfFetcher.log.isDebugEnabled();
     private static final boolean _INFO = RdfFetcher.log.isInfoEnabled();

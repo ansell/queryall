@@ -1,17 +1,18 @@
 package org.queryall.negotiation;
 
+import org.queryall.query.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
-
-import org.apache.log4j.Logger;
-import org.queryall.query.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryallLanguageNegotiator
 {
-    private static final Logger log = Logger.getLogger(QueryallLanguageNegotiator.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryallLanguageNegotiator.class.getName());
     private static final boolean _TRACE = QueryallLanguageNegotiator.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryallLanguageNegotiator.log.isDebugEnabled();
     @SuppressWarnings("unused")

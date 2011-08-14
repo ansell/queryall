@@ -1,6 +1,7 @@
 package org.queryall.servlets.queryparsers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses query options out of a query string
@@ -8,7 +9,7 @@ import org.apache.log4j.Logger;
 
 public class RuleTesterQueryOptions
 {
-    public static final Logger log = Logger.getLogger(RuleTesterQueryOptions.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RuleTesterQueryOptions.class.getName());
     public static final boolean _TRACE = RuleTesterQueryOptions.log.isTraceEnabled();
     public static final boolean _DEBUG = RuleTesterQueryOptions.log.isDebugEnabled();
     public static final boolean _INFO = RuleTesterQueryOptions.log.isInfoEnabled();

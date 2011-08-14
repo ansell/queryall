@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.ProfilableInterface;
@@ -19,13 +18,15 @@ import org.queryall.api.QueryType;
 import org.queryall.enumerations.ProfileMatch;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.impl.ProfileImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProfileUtils
 {
-    private static final Logger log = Logger.getLogger(ProfileUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProfileUtils.class.getName());
     @SuppressWarnings("unused")
     private static final boolean _TRACE = ProfileUtils.log.isTraceEnabled();
     private static final boolean _DEBUG = ProfileUtils.log.isDebugEnabled();

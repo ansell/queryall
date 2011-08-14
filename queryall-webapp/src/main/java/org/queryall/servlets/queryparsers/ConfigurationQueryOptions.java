@@ -3,7 +3,8 @@ package org.queryall.servlets.queryparsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
@@ -15,7 +16,7 @@ import org.queryall.utils.StringUtils;
 
 public class ConfigurationQueryOptions
 {
-    public static final Logger log = Logger.getLogger(ConfigurationQueryOptions.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(ConfigurationQueryOptions.class.getName());
     public static final boolean _TRACE = ConfigurationQueryOptions.log.isTraceEnabled();
     public static final boolean _DEBUG = ConfigurationQueryOptions.log.isDebugEnabled();
     public static final boolean _INFO = ConfigurationQueryOptions.log.isInfoEnabled();

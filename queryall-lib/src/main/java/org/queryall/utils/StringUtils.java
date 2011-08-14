@@ -15,18 +15,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class StringUtils
 {
-    private static final Logger log = Logger.getLogger(StringUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(StringUtils.class.getName());
     @SuppressWarnings("unused")
     private static final boolean _TRACE = StringUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
@@ -196,13 +197,13 @@ public class StringUtils
         }
         catch(final NoSuchAlgorithmException nsae)
         {
-            RdfUtils.log.fatal("RdfUtils.md5: could not find md5 algorithm");
+            RdfUtils.log.error("RdfUtils.md5: could not find md5 algorithm");
             
             throw new RuntimeException(nsae);
         }
         catch(final java.io.UnsupportedEncodingException uee)
         {
-            RdfUtils.log.fatal("RdfUtils.md5: invalid JRE, does not support UTF-8");
+            RdfUtils.log.error("RdfUtils.md5: invalid JRE, does not support UTF-8");
             
             throw new RuntimeException(uee);
         }
@@ -233,7 +234,7 @@ public class StringUtils
         }
         catch(final java.io.UnsupportedEncodingException uee)
         {
-            StringUtils.log.fatal("RdfUtils.percentEncode: unable to find utf-8 encoder!");
+            StringUtils.log.error("RdfUtils.percentEncode: unable to find utf-8 encoder!");
         }
         
         return result;
@@ -253,7 +254,7 @@ public class StringUtils
         }
         catch(final java.io.UnsupportedEncodingException uee)
         {
-            StringUtils.log.fatal("RdfUtils.percentEncode: unable to find utf-8 encoder!");
+            StringUtils.log.error("RdfUtils.percentEncode: unable to find utf-8 encoder!");
         }
         
         return result;

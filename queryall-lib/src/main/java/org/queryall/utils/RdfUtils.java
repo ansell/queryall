@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -70,6 +69,8 @@ import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
 import org.queryall.query.Settings;
 import org.queryall.statistics.StatisticsEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class to deal with RDF data and resolve RDF queries
@@ -78,7 +79,7 @@ import org.queryall.statistics.StatisticsEntry;
  */
 public final class RdfUtils
 {
-    public static final Logger log = Logger.getLogger(RdfUtils.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RdfUtils.class.getName());
     public static final boolean _TRACE = RdfUtils.log.isTraceEnabled();
     public static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
     public static final boolean _INFO = RdfUtils.log.isInfoEnabled();
@@ -549,7 +550,7 @@ public final class RdfUtils
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getDistinctObjectsFromRepository: entering method");
-            RdfUtils.log.debug(nextRepository);
+            // RdfUtils.log.debug(nextRepository);
             // RdfUtils.log.debug(predicateUris);
         }
         
@@ -647,7 +648,7 @@ public final class RdfUtils
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getDistinctSubjectsFromRepository: entering method");
-            RdfUtils.log.debug(nextRepository);
+            // RdfUtils.log.debug(nextRepository);
             // RdfUtils.log.debug(predicateUris);
         }
         
@@ -829,7 +830,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("getNamespaceEntries:", e);
+            RdfUtils.log.error("getNamespaceEntries:", e);
         }
         
         if(RdfUtils._INFO)
@@ -894,7 +895,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("getNormalisationRules:", e);
+            RdfUtils.log.error("getNormalisationRules:", e);
         }
         if(RdfUtils._INFO)
         {
@@ -923,8 +924,8 @@ public final class RdfUtils
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getObjectUrisFromRepositoryByPredicateUris: entering method");
-            RdfUtils.log.debug(nextRepository);
-            RdfUtils.log.debug(predicateUris);
+            // RdfUtils.log.debug(nextRepository);
+            // RdfUtils.log.debug(predicateUris);
         }
         
         final RepositoryConnection con = nextRepository.getConnection();
@@ -1034,7 +1035,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("getProviders:", e);
+            RdfUtils.log.error("getProviders:" + e.getMessage());
         }
         
         if(RdfUtils._INFO)
@@ -1078,7 +1079,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("getProviders:", e);
+            RdfUtils.log.error("getProviders:", e);
         }
         
         if(RdfUtils._INFO)
@@ -1120,7 +1121,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("getQueryTypes:", e);
+            RdfUtils.log.error("getQueryTypes:", e);
         }
         
         if(RdfUtils._INFO)
@@ -1148,7 +1149,7 @@ public final class RdfUtils
         }
         catch(final InterruptedException ie)
         {
-            RdfUtils.log.fatal("getQueryTypesForQueryBundles: interrupted exception", ie);
+            RdfUtils.log.error("getQueryTypesForQueryBundles: interrupted exception", ie);
             // throw ie;
         }
         
@@ -1239,7 +1240,7 @@ public final class RdfUtils
             }
             catch(final org.openrdf.repository.RepositoryException re2)
             {
-                RdfUtils.log.fatal("getQueryTypesForQueryBundles: failed to close repository connection", re2);
+                RdfUtils.log.error("getQueryTypesForQueryBundles: failed to close repository connection", re2);
             }
         }
         
@@ -1276,7 +1277,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.fatal("getRuleTests:", e);
+            RdfUtils.log.error("getRuleTests:", e);
         }
         
         if(RdfUtils._INFO)
@@ -1309,7 +1310,7 @@ public final class RdfUtils
         }
         catch(final RepositoryException e)
         {
-            RdfUtils.log.fatal("Could not initialise repository for schemas");
+            RdfUtils.log.error("Could not initialise repository for schemas");
             throw new RuntimeException(e);
         }
         
@@ -1563,8 +1564,8 @@ public final class RdfUtils
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
-            RdfUtils.log.debug(nextRepository);
-            RdfUtils.log.debug(predicateUris);
+            // RdfUtils.log.debug(nextRepository);
+            // RdfUtils.log.debug(predicateUris);
         }
         
         final RepositoryConnection con = nextRepository.getConnection();
@@ -1610,8 +1611,8 @@ public final class RdfUtils
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
-            RdfUtils.log.debug(nextRepository);
-            RdfUtils.log.debug(predicateUris);
+            // RdfUtils.log.debug(nextRepository);
+            // RdfUtils.log.debug(predicateUris);
         }
         
         final RepositoryConnection con = nextRepository.getConnection();
@@ -1667,7 +1668,7 @@ public final class RdfUtils
         }
         catch(final java.io.UnsupportedEncodingException uee)
         {
-            RdfUtils.log.fatal("UTF-8 is not supported by this java vm!!!", uee);
+            RdfUtils.log.error("UTF-8 is not supported by this java vm!!!", uee);
             throw new RuntimeException("UTF-8 is not supported by this java vm!!!", uee);
         }
     }
@@ -1704,8 +1705,8 @@ public final class RdfUtils
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: entering method");
-            RdfUtils.log.debug(nextRepository);
-            RdfUtils.log.debug(predicateUris);
+            // RdfUtils.log.debug(nextRepository);
+            // RdfUtils.log.debug(predicateUris);
         }
         
         final RepositoryConnection con = nextRepository.getConnection();

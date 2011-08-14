@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -32,13 +31,15 @@ import org.queryall.impl.HttpProviderImpl;
 import org.queryall.impl.ProjectImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProvenanceRecord implements BaseQueryAllInterface
 {
-    private static final Logger log = Logger.getLogger(ProvenanceRecord.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProvenanceRecord.class.getName());
     private static final boolean _TRACE = ProvenanceRecord.log.isTraceEnabled();
     private static final boolean _DEBUG = ProvenanceRecord.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -144,7 +145,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         }
         catch(final InterruptedException ie)
         {
-            ProvenanceRecord.log.fatal("ProvenanceRecord: interrupted exception", ie);
+            ProvenanceRecord.log.error("ProvenanceRecord: interrupted exception", ie);
             throw ie;
         }
         
@@ -243,7 +244,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
             }
             catch(final org.openrdf.repository.RepositoryException re2)
             {
-                ProvenanceRecord.log.fatal(
+                ProvenanceRecord.log.error(
                         "ProvenanceRecord.fetchProvenanceForElementKey: failed to close repository connection", re2);
             }
         }
@@ -257,7 +258,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         catch(final org.openrdf.repository.RepositoryException re)
         {
             ProvenanceRecord.log
-                    .fatal("ProvenanceRecord.fetchProvenanceForElementKey: failed to get records due to a repository exception",
+                    .error("ProvenanceRecord.fetchProvenanceForElementKey: failed to get records due to a repository exception",
                             re);
         }
         
@@ -286,7 +287,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         catch(final OpenRDFException e)
         {
             // handle exception
-            ProvenanceRecord.log.fatal("getProvenanceRecordsFromRepository.:", e);
+            ProvenanceRecord.log.error("getProvenanceRecordsFromRepository.:", e);
         }
         
         return results;

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -20,13 +19,15 @@ import org.queryall.api.RegexNormalisationRule;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements RegexNormalisationRule
 {
-    private static final Logger log = Logger.getLogger(RegexNormalisationRuleImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(RegexNormalisationRuleImpl.class.getName());
     private static final boolean _TRACE = RegexNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = RegexNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -335,76 +336,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         return this.applyRegex(inputText, this.getOutputMatchRegex(), this.getOutputReplaceRegex());
     }
     
-    private String applyRegex(String inputText, final String matchRegex, final String replaceRegex)
-    {
-        try
-        {
-            if((matchRegex == null) || (replaceRegex == null))
-            {
-                if(RegexNormalisationRuleImpl._TRACE)
-                {
-                    RegexNormalisationRuleImpl.log
-                            .trace("RegexNormalisationRuleImpl.applyRegex: something was null matchRegex=" + matchRegex
-                                    + ", replaceRegex=" + replaceRegex);
-                }
-                
-                return inputText;
-            }
-            
-            if(RegexNormalisationRuleImpl._DEBUG)
-            {
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
-                        + ", replaceRegex=" + replaceRegex);
-            }
-            
-            if(matchRegex.trim().equals(""))
-            {
-                if(RegexNormalisationRuleImpl._DEBUG)
-                {
-                    RegexNormalisationRuleImpl.log
-                            .debug("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
-                }
-                
-                return inputText;
-            }
-            
-            String debugInputText = "";
-            
-            // only take a copy of the string if we need it for debugging
-            if(RegexNormalisationRuleImpl._DEBUG)
-            {
-                debugInputText = inputText;
-            }
-            
-            inputText = inputText.replaceAll(matchRegex, replaceRegex);
-            
-            if(RegexNormalisationRuleImpl._DEBUG)
-            {
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete input="
-                        + debugInputText);
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete result="
-                        + inputText);
-            }
-        }
-        catch(final PatternSyntaxException pse)
-        {
-            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: PatternSyntaxException="
-                    + pse.getMessage());
-        }
-        catch(final IllegalArgumentException iae)
-        {
-            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IllegalArgumentException="
-                    + iae.getMessage());
-        }
-        catch(final IndexOutOfBoundsException ioobe)
-        {
-            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IndexOutOfBoundsException="
-                    + ioobe.getMessage());
-        }
-        
-        return inputText;
-    }
-    
     /**
      * @return a collection of the relevant element types that are implemented by this class,
      *         including abstract implementations
@@ -688,5 +619,75 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         result += "description=" + this.getDescription() + "\n";
         
         return result;
+    }
+    
+    private String applyRegex(String inputText, final String matchRegex, final String replaceRegex)
+    {
+        try
+        {
+            if((matchRegex == null) || (replaceRegex == null))
+            {
+                if(RegexNormalisationRuleImpl._TRACE)
+                {
+                    RegexNormalisationRuleImpl.log
+                            .trace("RegexNormalisationRuleImpl.applyRegex: something was null matchRegex=" + matchRegex
+                                    + ", replaceRegex=" + replaceRegex);
+                }
+                
+                return inputText;
+            }
+            
+            if(RegexNormalisationRuleImpl._DEBUG)
+            {
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
+                        + ", replaceRegex=" + replaceRegex);
+            }
+            
+            if(matchRegex.trim().equals(""))
+            {
+                if(RegexNormalisationRuleImpl._DEBUG)
+                {
+                    RegexNormalisationRuleImpl.log
+                            .debug("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
+                }
+                
+                return inputText;
+            }
+            
+            String debugInputText = "";
+            
+            // only take a copy of the string if we need it for debugging
+            if(RegexNormalisationRuleImpl._DEBUG)
+            {
+                debugInputText = inputText;
+            }
+            
+            inputText = inputText.replaceAll(matchRegex, replaceRegex);
+            
+            if(RegexNormalisationRuleImpl._DEBUG)
+            {
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete input="
+                        + debugInputText);
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete result="
+                        + inputText);
+            }
+        }
+        catch(final PatternSyntaxException pse)
+        {
+            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: PatternSyntaxException="
+                    + pse.getMessage());
+        }
+        catch(final IllegalArgumentException iae)
+        {
+            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IllegalArgumentException="
+                    + iae.getMessage());
+        }
+        catch(final IndexOutOfBoundsException ioobe)
+        {
+            RegexNormalisationRuleImpl.log.error("RegexNormalisationRuleImpl.applyRegex: IndexOutOfBoundsException="
+                    + ioobe.getMessage());
+        }
+        
+        return inputText;
     }
 }

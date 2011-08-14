@@ -8,7 +8,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryAllConfiguration;
@@ -20,13 +19,15 @@ import org.queryall.query.Settings;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.QueryTypeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class BlacklistController
 {
-    private static final Logger log = Logger.getLogger(BlacklistController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);
     private static final boolean _TRACE = BlacklistController.log.isTraceEnabled();
     private static final boolean _DEBUG = BlacklistController.log.isDebugEnabled();
     private static final boolean _INFO = BlacklistController.log.isInfoEnabled();
@@ -296,7 +297,7 @@ public class BlacklistController
                             .error("BlacklistController: found error while clearing completed statistics threads");
                     if(BlacklistController._DEBUG)
                     {
-                        BlacklistController.log.debug(nextThread.getLastException());
+                        BlacklistController.log.debug(nextThread.getLastException().getMessage());
                     }
                 }
                 

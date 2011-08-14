@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
@@ -25,7 +26,7 @@ import org.apache.velocity.exception.VelocityException;
 
 public class VelocityHelper
 {
-    private static final Logger log = Logger.getLogger(VelocityHelper.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(VelocityHelper.class.getName());
     private static final boolean _TRACE = VelocityHelper.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = VelocityHelper.log.isDebugEnabled();
@@ -88,7 +89,7 @@ public class VelocityHelper
         }
         catch(final Exception ex)
         {
-            VelocityHelper.log.fatal("VelocityHelper.setupVelocityProperties: caught fatal exception", ex);
+            VelocityHelper.log.error("VelocityHelper.setupVelocityProperties: caught fatal exception", ex);
             
             // throw new RuntimeException(ex);
         }

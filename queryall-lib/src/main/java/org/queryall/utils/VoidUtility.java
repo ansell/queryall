@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.query.GraphQuery;
@@ -13,6 +12,8 @@ import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A utility class that is used by multiple different Bio2RDF classes
@@ -21,7 +22,7 @@ import org.openrdf.repository.RepositoryConnection;
  */
 public class VoidUtility
 {
-    private static final Logger log = Logger.getLogger(VoidUtility.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(VoidUtility.class.getName());
     @SuppressWarnings("unused")
     private static final boolean _TRACE = VoidUtility.log.isTraceEnabled();
     private static final boolean _DEBUG = VoidUtility.log.isDebugEnabled();
@@ -90,7 +91,7 @@ public class VoidUtility
         if(VoidUtility._DEBUG)
         {
             VoidUtility.log.debug("VoidUtility.parseFromVoidRepository: entering method");
-            VoidUtility.log.debug(nextRepository);
+            // VoidUtility.log.debug(nextRepository);
         }
         
         final RepositoryConnection con = nextRepository.getConnection();

@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -31,7 +32,7 @@ public class StaticFileServlet extends HttpServlet
     private static final long serialVersionUID = -4462026270078646316L;
     private static final int BUFSIZE = 2048;
     
-    public static final Logger log = Logger.getLogger(StaticFileServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(StaticFileServlet.class.getName());
     public static final boolean _TRACE = StaticFileServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = StaticFileServlet.log.isDebugEnabled();
     public static final boolean _INFO = StaticFileServlet.log.isInfoEnabled();

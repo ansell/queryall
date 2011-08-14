@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.RuleTest;
@@ -29,7 +30,7 @@ public class RuleTesterServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = 7617736644136389429L;
-    public static final Logger log = Logger.getLogger(RuleTesterServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RuleTesterServlet.class.getName());
     public static final boolean _TRACE = RuleTesterServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = RuleTesterServlet.log.isDebugEnabled();
     public static final boolean _INFO = RuleTesterServlet.log.isInfoEnabled();

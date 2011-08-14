@@ -14,7 +14,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -31,6 +30,8 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -38,7 +39,7 @@ import org.queryall.utils.StringUtils;
  */
 public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements XsltNormalisationRule
 {
-    private static final Logger log = Logger.getLogger(XsltNormalisationRuleImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleImpl.class.getName());
     private static final boolean _TRACE = XsltNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = XsltNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

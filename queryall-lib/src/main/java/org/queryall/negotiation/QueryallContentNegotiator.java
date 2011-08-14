@@ -1,19 +1,20 @@
 package org.queryall.negotiation;
 
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
-import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
-
-import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryallContentNegotiator
 {
-    public static final Logger log = Logger.getLogger(QueryallContentNegotiator.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(QueryallContentNegotiator.class.getName());
     public static final boolean _TRACE = QueryallContentNegotiator.log.isTraceEnabled();
     public static final boolean _DEBUG = QueryallContentNegotiator.log.isDebugEnabled();
     public static final boolean _INFO = QueryallContentNegotiator.log.isInfoEnabled();

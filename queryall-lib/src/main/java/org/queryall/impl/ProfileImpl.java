@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -22,13 +21,15 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProfileImpl implements Profile, Comparable<Profile>
 {
-    private static final Logger log = Logger.getLogger(Profile.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(Profile.class.getName());
     private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProfileImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -691,7 +692,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         {
             ProfileImpl.log
                     .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey()+" "+this.getDefaultProfileIncludeExcludeOrder().stringValue());
+                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().stringValue());
         }
         
         if(ProfileImpl._TRACE)

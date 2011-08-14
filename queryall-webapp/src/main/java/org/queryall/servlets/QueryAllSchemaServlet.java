@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.rio.RDFFormat;
@@ -32,7 +33,7 @@ public class QueryAllSchemaServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = -4486511923930733168L;
-    public static final Logger log = Logger.getLogger(QueryAllSchemaServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(QueryAllSchemaServlet.class.getName());
     public static final boolean _TRACE = QueryAllSchemaServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = QueryAllSchemaServlet.log.isDebugEnabled();
     public static final boolean _INFO = QueryAllSchemaServlet.log.isInfoEnabled();

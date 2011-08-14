@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
@@ -25,13 +24,15 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.utils.RuleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryBundle
 {
-    private static final Logger log = Logger.getLogger(QueryBundle.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryBundle.class);
     @SuppressWarnings("unused")
     private static final boolean _TRACE = QueryBundle.log.isTraceEnabled();
     @SuppressWarnings("unused")
@@ -426,7 +427,7 @@ public class QueryBundle
         }
         catch(final OpenRDFException ordfe)
         {
-            QueryBundle.log.error(ordfe);
+            QueryBundle.log.error(ordfe.getMessage());
             
             if(con != null)
             {

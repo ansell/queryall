@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -32,13 +31,15 @@ import org.queryall.impl.ProjectImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class StatisticsEntry implements BaseQueryAllInterface
 {
-    private static final Logger log = Logger.getLogger(StatisticsEntry.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class.getName());
     @SuppressWarnings("unused")
     private static final boolean _INFO = StatisticsEntry.log.isInfoEnabled();
     private static final boolean _DEBUG = StatisticsEntry.log.isDebugEnabled();

@@ -10,20 +10,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Provider;
 import org.queryall.api.RuleTest;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.impl.NormalisationRuleImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public final class RuleUtils
 {
-    public static final Logger log = Logger.getLogger(RuleUtils.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RuleUtils.class.getName());
     public static final boolean _TRACE = RuleUtils.log.isTraceEnabled();
     public static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
     public static final boolean _INFO = RuleUtils.log.isInfoEnabled();

@@ -11,24 +11,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.comparators.ValueComparator;
 import org.queryall.impl.QueryTypeImpl;
-import org.queryall.query.RdfFetchController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public final class ProviderUtils
 {
-    public static final Logger log = Logger.getLogger(ProviderUtils.class.getName());
-    public static final boolean _TRACE = ProviderUtils.log.isTraceEnabled();
-    public static final boolean _DEBUG = ProviderUtils.log.isDebugEnabled();
-    public static final boolean _INFO = ProviderUtils.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(ProviderUtils.class);
+    private static final boolean _TRACE = ProviderUtils.log.isTraceEnabled();
+    private static final boolean _DEBUG = ProviderUtils.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = ProviderUtils.log.isInfoEnabled();
     
     public static Collection<Provider> getDefaultProviders(final Map<URI, Provider> allProviders,
             final QueryType queryType, final List<Profile> profileList,
@@ -46,10 +47,10 @@ public final class ProviderUtils
                     if(nextProvider.isUsedWithProfileList(profileList, recogniseImplicitProviderInclusions,
                             includeNonProfileMatchedProviders))
                     {
-                        if(RdfFetchController._DEBUG)
+                        if(ProviderUtils._DEBUG)
                         {
-                            RdfFetchController.log
-                                    .debug("RdfFetchController.getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
+                            ProviderUtils.log
+                                    .debug("getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
                                             + nextProvider.getKey());
                         }
                         
@@ -69,14 +70,13 @@ public final class ProviderUtils
         {
             if(ProviderUtils._DEBUG)
             {
-                ProviderUtils.log
-                        .debug("Settings.getProvidersForNamespaceUris: namespaceUris was either null or empty");
+                ProviderUtils.log.debug("getProvidersForNamespaceUris: namespaceUris was either null or empty");
             }
             return Collections.emptyMap();
         }
         if(ProviderUtils._TRACE)
         {
-            ProviderUtils.log.trace("Settings.getProvidersForNamespaceUris: namespaceUris=" + namespaceUris);
+            ProviderUtils.log.trace("getProvidersForNamespaceUris: namespaceUris=" + namespaceUris);
         }
         final Map<URI, Provider> results = new TreeMap<URI, Provider>(new ValueComparator());
         
@@ -86,7 +86,7 @@ public final class ProviderUtils
             boolean allFound = true;
             if(ProviderUtils._TRACE)
             {
-                ProviderUtils.log.trace("Settings.getProvidersForNamespaceUris: nextProvider.getKey()="
+                ProviderUtils.log.trace("getProvidersForNamespaceUris: nextProvider.getKey()="
                         + nextProvider.getKey().stringValue());
             }
             
@@ -96,13 +96,13 @@ public final class ProviderUtils
                 {
                     if(ProviderUtils._DEBUG)
                     {
-                        ProviderUtils.log.debug("Settings.getProvidersForNamespaceUris: nextNamespaceUriList was null");
+                        ProviderUtils.log.debug("getProvidersForNamespaceUris: nextNamespaceUriList was null");
                     }
                     continue;
                 }
                 if(ProviderUtils._TRACE)
                 {
-                    ProviderUtils.log.trace("Settings.getProvidersForNamespaceUris: nextNamespaceUriList="
+                    ProviderUtils.log.trace("getProvidersForNamespaceUris: nextNamespaceUriList="
                             + nextNamespaceUriList);
                 }
                 boolean somethingFound = false;
@@ -110,8 +110,7 @@ public final class ProviderUtils
                 {
                     if(ProviderUtils._TRACE)
                     {
-                        ProviderUtils.log.trace("Settings.getProvidersForNamespaceUris: nextNamespaceUri="
-                                + nextNamespaceUri);
+                        ProviderUtils.log.trace("getProvidersForNamespaceUris: nextNamespaceUri=" + nextNamespaceUri);
                     }
                     if(nextProvider.containsNamespaceUri(nextNamespaceUri))
                     {
@@ -167,17 +166,17 @@ public final class ProviderUtils
                 {
                     nextQueryNamespaceUris.add(nextUriFromTitleNamespaceList);
                 }
-                else if(RdfFetchController._DEBUG)
+                else if(ProviderUtils._DEBUG)
                 {
-                    RdfFetchController.log
-                            .debug("RdfFetchController.getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="
+                    ProviderUtils.log
+                            .debug("getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="
                                     + nextTitle + " nextQueryType.getKey()=" + nextQueryType.getKey());
                 }
             }
             else
             {
-                RdfFetchController.log
-                        .error("RdfFetchController.getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="
+                ProviderUtils.log
+                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="
                                 + nextNamespaceInputIndex + " queryStringMatches.size()=" + queryStringMatches.size());
                 
                 throw new RuntimeException(
@@ -186,22 +185,21 @@ public final class ProviderUtils
             }
         }
         
-        if(RdfFetchController._DEBUG)
+        if(ProviderUtils._DEBUG)
         {
             // log.debug(
-            // "RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes
+            // "getProvidersForQueryNamespaceSpecific: nextQueryNamespacePrefixes="+nextQueryNamespacePrefixes
             // );
-            RdfFetchController.log
-                    .debug("RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryNamespaceUris="
-                            + nextQueryNamespaceUris);
+            ProviderUtils.log.debug("getProvidersForQueryNamespaceSpecific: nextQueryNamespaceUris="
+                    + nextQueryNamespaceUris);
         }
         
         if(nextQueryType.handlesNamespaceUris(nextQueryNamespaceUris))
         {
-            if(RdfFetchController._DEBUG)
+            if(ProviderUtils._DEBUG)
             {
-                RdfFetchController.log
-                        .debug("RdfFetchController.getProvidersForQueryNamespaceSpecific: confirmed to handle namespaces nextQueryType.getKey()="
+                ProviderUtils.log
+                        .debug("getProvidersForQueryNamespaceSpecific: confirmed to handle namespaces nextQueryType.getKey()="
                                 + nextQueryType.getKey() + " nextQueryNamespaceUris=" + nextQueryNamespaceUris);
             }
             
@@ -211,20 +209,20 @@ public final class ProviderUtils
             
             for(final Provider nextNamespaceSpecificProvider : namespaceSpecificProviders.values())
             {
-                if(RdfFetchController._TRACE)
+                if(ProviderUtils._TRACE)
                 {
-                    RdfFetchController.log
-                            .trace("RdfFetchController.getProvidersForQueryNamespaceSpecific: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="
+                    ProviderUtils.log
+                            .trace("getProvidersForQueryNamespaceSpecific: nextQueryType.isNamespaceSpecific nextNamespaceSpecificProvider="
                                     + nextNamespaceSpecificProvider.getKey());
                 }
                 
                 if(nextNamespaceSpecificProvider.isUsedWithProfileList(sortedIncludedProfiles,
                         recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders))
                 {
-                    if(RdfFetchController._DEBUG)
+                    if(ProviderUtils._DEBUG)
                     {
-                        RdfFetchController.log
-                                .debug("RdfFetchController.getProvidersForQueryNamespaceSpecific: profileList suitable for nextNamespaceSpecificProvider.getKey()="
+                        ProviderUtils.log
+                                .debug("getProvidersForQueryNamespaceSpecific: profileList suitable for nextNamespaceSpecificProvider.getKey()="
                                         + nextNamespaceSpecificProvider.getKey() + " queryString=" + queryString);
                     }
                     
@@ -249,20 +247,20 @@ public final class ProviderUtils
         
         for(final Provider nextAllProvider : relevantProviders.values())
         {
-            if(RdfFetchController._DEBUG)
+            if(ProviderUtils._DEBUG)
             {
-                RdfFetchController.log
-                        .debug("RdfFetchController.getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="
+                ProviderUtils.log
+                        .debug("getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="
                                 + nextAllProvider.toString());
             }
             
             if(nextAllProvider.isUsedWithProfileList(sortedIncludedProfiles, recogniseImplicitProviderInclusions,
                     includeNonProfileMatchedProviders))
             {
-                if(RdfFetchController._DEBUG)
+                if(ProviderUtils._DEBUG)
                 {
-                    RdfFetchController.log
-                            .debug("RdfFetchController.getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
+                    ProviderUtils.log
+                            .debug("getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
                                     + nextAllProvider.getKey());
                 }
                 
@@ -288,14 +286,14 @@ public final class ProviderUtils
         
         if(ProviderUtils._DEBUG)
         {
-            ProviderUtils.log.debug("Settings.getProvidersForQueryType: Found " + results.size()
+            ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size()
                     + " providers for customService=" + nextQueryType.stringValue());
         }
         if(ProviderUtils._TRACE)
         {
             for(final Provider nextResult : results.values())
             {
-                ProviderUtils.log.trace("Settings.getProvidersForQueryType: nextResult=" + nextResult.toString());
+                ProviderUtils.log.trace("getProvidersForQueryType: nextResult=" + nextResult.toString());
             }
         }
         return results;
@@ -307,7 +305,7 @@ public final class ProviderUtils
         if(ProviderUtils._TRACE)
         {
             
-            ProviderUtils.log.trace("Settings.getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType
+            ProviderUtils.log.trace("getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType
                     + " namespaceMatchMethod=" + namespaceMatchMethod + " namespaceUris=" + namespaceUris);
         }
         
@@ -316,7 +314,7 @@ public final class ProviderUtils
         
         if(ProviderUtils._TRACE)
         {
-            ProviderUtils.log.trace("Settings.getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType
+            ProviderUtils.log.trace("getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType
                     + " namespaceProviders=" + namespaceProviders);
         }
         
@@ -324,8 +322,8 @@ public final class ProviderUtils
         
         if(ProviderUtils._TRACE)
         {
-            ProviderUtils.log.trace("Settings.getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType
-                    + " results=" + results);
+            ProviderUtils.log.trace("getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType + " results="
+                    + results);
         }
         return results;
     }

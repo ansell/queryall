@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -22,13 +21,15 @@ import org.queryall.enumerations.Constants;
 import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class NamespaceEntryImpl implements NamespaceEntry
 {
-    private static final Logger log = Logger.getLogger(NamespaceEntry.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(NamespaceEntry.class.getName());
     private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = NamespaceEntryImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

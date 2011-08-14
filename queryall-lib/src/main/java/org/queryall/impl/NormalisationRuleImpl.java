@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -26,6 +25,8 @@ import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -34,7 +35,7 @@ import org.queryall.utils.StringUtils;
 public abstract class NormalisationRuleImpl implements NormalisationRule
 {
     
-    protected static final Logger log = Logger.getLogger(NormalisationRuleImpl.class.getName());
+    protected static final Logger log = LoggerFactory.getLogger(NormalisationRuleImpl.class.getName());
     protected static final boolean _TRACE = NormalisationRuleImpl.log.isTraceEnabled();
     protected static final boolean _DEBUG = NormalisationRuleImpl.log.isDebugEnabled();
     protected static final boolean _INFO = NormalisationRuleImpl.log.isInfoEnabled();
@@ -415,11 +416,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         return false;
     }
     
-    protected NormalisationRuleImpl()
-    {
-        
-    }
-    
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
     public NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
@@ -477,7 +473,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
         }
         
-        //this.setRelatedNamespaces(tempRelatedNamespaces);
+        // this.setRelatedNamespaces(tempRelatedNamespaces);
         this.stages = tempStages;
         
         if(NormalisationRuleImpl._DEBUG)
@@ -485,6 +481,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
                     + this.toString());
         }
+    }
+    
+    protected NormalisationRuleImpl()
+    {
+        
     }
     
     /**
@@ -522,19 +523,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    /**
-     * @return the validStages
-     */
-    protected void addValidStage(final URI validStage)
-    {
-        if(this.validStages == null)
-        {
-            this.validStages = new ArrayList<URI>();
-        }
-        
-        this.validStages.add(validStage);
     }
     
     @Override
@@ -768,15 +756,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         this.title = title;
     }
     
-    /**
-     * @param validStages
-     *            the validStages to set
-     */
-    protected void setValidStages(final Collection<URI> nextValidStages)
-    {
-        this.validStages = nextValidStages;
-    }
-    
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -887,5 +866,27 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public boolean validInStage(final org.openrdf.model.URI stage)
     {
         return this.validStages.contains(stage);
+    }
+    
+    /**
+     * @return the validStages
+     */
+    protected void addValidStage(final URI validStage)
+    {
+        if(this.validStages == null)
+        {
+            this.validStages = new ArrayList<URI>();
+        }
+        
+        this.validStages.add(validStage);
+    }
+    
+    /**
+     * @param validStages
+     *            the validStages to set
+     */
+    protected void setValidStages(final Collection<URI> nextValidStages)
+    {
+        this.validStages = nextValidStages;
     }
 }

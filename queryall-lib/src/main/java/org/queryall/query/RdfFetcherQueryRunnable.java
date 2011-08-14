@@ -2,19 +2,23 @@ package org.queryall.query;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class RdfFetcherQueryRunnable extends Thread
 {
-    static final Logger log = Logger.getLogger(RdfFetcherQueryRunnable.class.getName());
-    static final boolean _TRACE = RdfFetcherQueryRunnable.log.isTraceEnabled();
-    static final boolean _DEBUG = RdfFetcherQueryRunnable.log.isDebugEnabled();
-    static final boolean _INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(RdfFetcherQueryRunnable.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = RdfFetcherQueryRunnable.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = RdfFetcherQueryRunnable.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
     
     private String endpointUrl = "";
     private String format = "";

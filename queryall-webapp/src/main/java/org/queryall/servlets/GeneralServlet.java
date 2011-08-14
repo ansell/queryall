@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
@@ -58,7 +59,7 @@ public class GeneralServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = 997653377781136004L;
     
-    public static final Logger log = Logger.getLogger(GeneralServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(GeneralServlet.class.getName());
     public static final boolean _TRACE = GeneralServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = GeneralServlet.log.isDebugEnabled();
     public static final boolean _INFO = GeneralServlet.log.isInfoEnabled();
@@ -526,7 +527,7 @@ public class GeneralServlet extends HttpServlet
         }
         catch(final OpenRDFException ordfe)
         {
-            GeneralServlet.log.fatal("GeneralServlet.doGet: caught RDF exception", ordfe);
+            GeneralServlet.log.error("GeneralServlet.doGet: caught RDF exception", ordfe);
             throw new RuntimeException("GeneralServlet.doGet failed due to an RDF exception. See log for details");
         }
         catch(final InterruptedException iex)
