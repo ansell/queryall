@@ -5,8 +5,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +22,12 @@ import org.slf4j.LoggerFactory;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.SparqlProvider;
+import org.queryall.blacklist.BlacklistController;
+import org.queryall.query.RdfFetchController;
+import org.queryall.query.RdfFetcher;
+import org.queryall.query.RdfFetcherQueryRunnable;
+import org.queryall.query.RdfFetcherSparqlQueryRunnable;
 import org.queryall.query.Settings;
 
 /**
@@ -41,11 +49,13 @@ public class ProvidersIPListServlet extends HttpServlet
         IOException
     {
         final QueryAllConfiguration localSettings = Settings.getSettings();
-        
+        final BlacklistController localBlacklistController = new BlacklistController(localSettings);
         final PrintWriter out = response.getWriter();
         response.setContentType("text/plain");
         
         final Set<String> resultsSet = new HashSet<String>();
+        
+        Collection<RdfFetcherQueryRunnable> sparqlThreads = new LinkedList<RdfFetcherQueryRunnable>();
         
         for(final Provider nextProvider : localSettings.getAllProviders().values())
         {
@@ -71,6 +81,34 @@ public class ProvidersIPListServlet extends HttpServlet
                             ProvidersIPListServlet.log.info("could not find another slash for nextEndpoint="
                                     + nextEndpoint);
                             continue;
+                        }
+                        
+                        // Test if the endpoint is responsive to a simple SPARQL query
+                        
+//                        RdfFetcher test = new RdfFetcher(localSettings, localBlacklistController);
+                        		
+                        // FIXME: need to have a better way of identifying sparql endpoints
+                        // should use instanceof SparqlProvider, but it is implemented in the same class as HttpProvider in queryall-lib, so it fails miserably
+                        if(nextEndpoint.endsWith("/sparql") || nextEndpoint.endsWith("/sparql/"))
+                        {
+                        	String sparqlGraphUri = "";
+
+                        	if(((SparqlProvider)nextHttpProvider).getUseSparqlGraph())
+                        	{
+                        		sparqlGraphUri = ((SparqlProvider)nextHttpProvider).getSparqlGraphUri();
+                        	}
+
+                        	try
+							{
+                                RdfFetcherSparqlQueryRunnable testQueryRunnable = new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri, "application/rdf+xml", "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug", "application/rdf+xml", 5, localSettings, localBlacklistController, null);
+                                sparqlThreads.add(testQueryRunnable);
+                                
+                                //								test.submitSparqlQuery(nextEndpoint, "application/rdf+xml", sparqlGraphUri, "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "", 5, "application/rdf+xml");
+							}
+							catch(Exception e)
+							{
+								log.error("Error accessing SPARQL endpoint: "+nextEndpoint);
+							}
                         }
                         
                         final String endpointUrl = nextEndpoint.substring(0, lastSlash);
@@ -106,6 +144,16 @@ public class ProvidersIPListServlet extends HttpServlet
             }
         }
         
+        try
+		{
+			RdfFetchController.fetchRdfForQueries(sparqlThreads);
+		}
+		catch(InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
         final String endOfLine = System.getProperty("line.separator");
         
         final List<String> resultsList = new ArrayList<String>(resultsSet.size());

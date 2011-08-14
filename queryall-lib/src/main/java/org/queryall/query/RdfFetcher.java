@@ -292,7 +292,7 @@ public class RdfFetcher
             RdfFetcher.log.debug(String.format("%s: timing=%10d", "RdfFetcher.submitSparqlQuery", (end - start)));
         }
         
-        return results.toString();
+        return results;
     }
     
 }
