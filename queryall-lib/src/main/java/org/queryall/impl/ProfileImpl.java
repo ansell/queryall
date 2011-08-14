@@ -638,7 +638,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             {
                 this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
                 
-                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileIncludeExcludeOrderUri())
+                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileIncludeThenExcludeUri())
                         || this.getDefaultProfileIncludeExcludeOrder().equals(
                                 ProfileImpl.getProfileExcludeThenIncludeUri()))
                 {
@@ -691,7 +691,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         {
             ProfileImpl.log
                     .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey());
+                            + this.getKey()+" "+this.getDefaultProfileIncludeExcludeOrder().stringValue());
         }
         
         if(ProfileImpl._TRACE)
