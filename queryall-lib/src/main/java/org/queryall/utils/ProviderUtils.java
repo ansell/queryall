@@ -16,6 +16,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
+import org.queryall.comparators.ValueComparator;
 import org.queryall.impl.QueryTypeImpl;
 import org.queryall.query.RdfFetchController;
 
@@ -77,7 +78,7 @@ public final class ProviderUtils
         {
             ProviderUtils.log.trace("Settings.getProvidersForNamespaceUris: namespaceUris=" + namespaceUris);
         }
-        final Map<URI, Provider> results = new TreeMap<URI, Provider>();
+        final Map<URI, Provider> results = new TreeMap<URI, Provider>(new ValueComparator());
         
         for(final Provider nextProvider : allProviders.values())
         {
@@ -275,7 +276,7 @@ public final class ProviderUtils
     public static Map<URI, Provider> getProvidersForQueryType(final Map<URI, Provider> allProviders,
             final URI nextQueryType)
     {
-        final Map<URI, Provider> results = new TreeMap<URI, Provider>();
+        final Map<URI, Provider> results = new TreeMap<URI, Provider>(new ValueComparator());
         
         for(final Provider nextProvider : allProviders.values())
         {
