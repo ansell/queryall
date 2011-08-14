@@ -25,7 +25,6 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.SparqlProvider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.RdfFetchController;
-import org.queryall.query.RdfFetcher;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherSparqlQueryRunnable;
 import org.queryall.query.Settings;
