@@ -34,6 +34,7 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
+import org.queryall.api.Profile;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.NormalisationRuleImpl;
@@ -518,10 +519,53 @@ public class RdfUtilsTest
      * {@link org.queryall.utils.RdfUtils#getProfiles(org.openrdf.repository.Repository)}.
      */
     @Test
-    @Ignore
     public void testGetProfiles()
     {
-        Assert.fail("Not yet implemented");
+        final InputStream nextInputStream = this.getClass().getResourceAsStream("/testconfigs/profile-1.n3");
+        
+        try
+        {
+            Assert.assertNotNull("Could not find test file", nextInputStream);
+            
+            this.testRepositoryConnection.add(nextInputStream, "", RDFFormat.N3);
+            this.testRepositoryConnection.commit();
+            
+            final Map<URI, Profile> results = RdfUtils.getProfiles(this.testRepository);
+            
+            Assert.assertEquals(1, results.size());
+            
+            for(final URI nextProfileUri : results.keySet())
+            {
+                Assert.assertEquals("Results did not contain correct profile URI",
+                        this.testValueFactory.createURI("http://example.org/profile:test-1"),
+                        nextProfileUri);
+                
+                final Profile nextProfile = results.get(nextProfileUri);
+                
+                Assert.assertNotNull("Profile was null", nextProfile);
+                
+                Assert.assertEquals("Profile key was not the same as its map URI", nextProfileUri,
+                        nextProfile.getKey());
+                
+                Assert.assertEquals("Title was not parsed correctly",
+                        "Test profile for RDF Utilities test class",
+                        nextProfile.getTitle());
+                Assert.assertEquals("Order was not parsed correctly", 120, nextProfile.getOrder());
+                
+            }
+        }
+        catch(final RDFParseException ex)
+        {
+            Assert.fail("Found unexpected RDFParseException : " + ex.getMessage());
+        }
+        catch(final RepositoryException ex)
+        {
+            Assert.fail("Found unexpected RepositoryException : " + ex.getMessage());
+        }
+        catch(final IOException ex)
+        {
+            Assert.fail("Found unexpected IOException : " + ex.getMessage());
+        }
     }
     
     /**

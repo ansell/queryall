@@ -1,0 +1,14 @@
+<http://example.org/profile:test-1> a <http://purl.org/queryall/profile:Profile> ;
+	<http://purl.org/queryall/profile:Title> "Test profile for RDF Utilities test class" ;
+	<http://purl.org/queryall/profile:order> "120"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://purl.org/queryall/profile:allowImplicitQueryInclusions> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/profile:allowImplicitProviderInclusions> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/profile:allowImplicitRdfRuleInclusions> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/profile:defaultProfileIncludeExcludeOrder> <http://purl.org/queryall/profile:includeThenExclude> ;
+	<http://purl.org/queryall/profile:includesProvider> <http://example.org/provider:include-1> ;
+    <http://purl.org/queryall/profile:includesQuery> <http://example.org/query:include-1> ;
+    <http://purl.org/queryall/profile:includesRdfRule> <http://example.org/rdfrule:include-1> ;
+	<http://purl.org/queryall/profile:excludesProvider> <http://example.org/provider:exclude-1> ;
+    <http://purl.org/queryall/profile:excludesQuery> <http://example.org/query:exclude-1> ;
+    <http://purl.org/queryall/profile:excludesRdfRule> <http://example.org/rdfrule:exclude-1> ;
+
