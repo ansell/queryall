@@ -129,8 +129,7 @@ public class QueryCreator
                     + " templateString=" + templateString + " normalisationUrisNeeded=" + normalisationUrisNeeded);
         }
         
-        // FIXME: move tag pattern to another class to avoid the cast here
-        if(!((Settings)localSettings).getTagPattern().matcher(templateString).matches())
+        if(!(localSettings.getTagPattern().matcher(templateString).matches()))
         {
             if(QueryCreator._DEBUG)
             {
