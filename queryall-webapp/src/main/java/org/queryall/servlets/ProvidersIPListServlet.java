@@ -17,8 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
@@ -28,6 +26,8 @@ import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherSparqlQueryRunnable;
 import org.queryall.query.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -38,7 +38,7 @@ public class ProvidersIPListServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = -7006535158409121292L;
-    public static final Logger log = LoggerFactory.getLogger(ProvidersIPListServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(ProvidersIPListServlet.class);
     public static final boolean _TRACE = ProvidersIPListServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = ProvidersIPListServlet.log.isDebugEnabled();
     public static final boolean _INFO = ProvidersIPListServlet.log.isInfoEnabled();
@@ -54,7 +54,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         final Set<String> resultsSet = new HashSet<String>();
         
-        Collection<RdfFetcherQueryRunnable> sparqlThreads = new LinkedList<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new LinkedList<RdfFetcherQueryRunnable>();
         
         for(final Provider nextProvider : localSettings.getAllProviders().values())
         {
@@ -84,30 +84,39 @@ public class ProvidersIPListServlet extends HttpServlet
                         
                         // Test if the endpoint is responsive to a simple SPARQL query
                         
-//                        RdfFetcher test = new RdfFetcher(localSettings, localBlacklistController);
-                        		
+                        // RdfFetcher test = new RdfFetcher(localSettings,
+                        // localBlacklistController);
+                        
                         // FIXME: need to have a better way of identifying sparql endpoints
-                        // should use instanceof SparqlProvider, but it is implemented in the same class as HttpProvider in queryall-lib, so it fails miserably
+                        // should use instanceof SparqlProvider, but it is implemented in the same
+                        // class as HttpProvider in queryall-lib, so it fails miserably
                         if(nextEndpoint.endsWith("/sparql") || nextEndpoint.endsWith("/sparql/"))
                         {
-                        	String sparqlGraphUri = "";
-
-                        	if(((SparqlProvider)nextHttpProvider).getUseSparqlGraph())
-                        	{
-                        		sparqlGraphUri = ((SparqlProvider)nextHttpProvider).getSparqlGraphUri();
-                        	}
-
-                        	try
-							{
-                                RdfFetcherSparqlQueryRunnable testQueryRunnable = new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri, "application/rdf+xml", "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug", "application/rdf+xml", 5, localSettings, localBlacklistController, null);
+                            String sparqlGraphUri = "";
+                            
+                            if(((SparqlProvider)nextHttpProvider).getUseSparqlGraph())
+                            {
+                                sparqlGraphUri = ((SparqlProvider)nextHttpProvider).getSparqlGraphUri();
+                            }
+                            
+                            try
+                            {
+                                final RdfFetcherSparqlQueryRunnable testQueryRunnable =
+                                        new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri,
+                                                "application/rdf+xml",
+                                                "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug",
+                                                "application/rdf+xml", 5, localSettings, localBlacklistController, null);
                                 sparqlThreads.add(testQueryRunnable);
                                 
-                                //								test.submitSparqlQuery(nextEndpoint, "application/rdf+xml", sparqlGraphUri, "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "", 5, "application/rdf+xml");
-							}
-							catch(Exception e)
-							{
-								log.error("Error accessing SPARQL endpoint: "+nextEndpoint);
-							}
+                                // test.submitSparqlQuery(nextEndpoint, "application/rdf+xml",
+                                // sparqlGraphUri,
+                                // "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "", 5,
+                                // "application/rdf+xml");
+                            }
+                            catch(final Exception e)
+                            {
+                                ProvidersIPListServlet.log.error("Error accessing SPARQL endpoint: " + nextEndpoint);
+                            }
                         }
                         
                         final String endpointUrl = nextEndpoint.substring(0, lastSlash);
@@ -144,15 +153,15 @@ public class ProvidersIPListServlet extends HttpServlet
         }
         
         try
-		{
-			RdfFetchController.fetchRdfForQueries(sparqlThreads);
-		}
-		catch(InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+        {
+            RdfFetchController.fetchRdfForQueries(sparqlThreads);
+        }
+        catch(final InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
         final String endOfLine = System.getProperty("line.separator");
         
         final List<String> resultsList = new ArrayList<String>(resultsSet.size());

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProviderImpl implements Provider
 {
-    private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class);
     private static final boolean _TRACE = ProviderImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

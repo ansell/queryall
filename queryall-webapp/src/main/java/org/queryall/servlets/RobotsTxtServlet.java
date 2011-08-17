@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.queryall.query.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.queryall.query.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -22,7 +22,7 @@ public class RobotsTxtServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = 3224404845116318101L;
-    public static final Logger log = LoggerFactory.getLogger(RobotsTxtServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RobotsTxtServlet.class);
     public static final boolean _TRACE = RobotsTxtServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = RobotsTxtServlet.log.isDebugEnabled();
     public static final boolean _INFO = RobotsTxtServlet.log.isInfoEnabled();

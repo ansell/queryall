@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class BlacklistEntry
 {
     @SuppressWarnings("unused")
-    private static final Logger log = LoggerFactory.getLogger(BlacklistEntry.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(BlacklistEntry.class);
     
     public int numberOfFailures = 0;
     public String endpointUrl = "";

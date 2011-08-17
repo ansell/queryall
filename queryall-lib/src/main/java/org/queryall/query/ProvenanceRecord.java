@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProvenanceRecord implements BaseQueryAllInterface
 {
-    private static final Logger log = LoggerFactory.getLogger(ProvenanceRecord.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProvenanceRecord.class);
     private static final boolean _TRACE = ProvenanceRecord.log.isTraceEnabled();
     private static final boolean _DEBUG = ProvenanceRecord.log.isDebugEnabled();
     @SuppressWarnings("unused")

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class QueryTypeUtils
 {
-    public static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
     public static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
     public static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
     public static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();

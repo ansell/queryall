@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryTypeImpl implements QueryType
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryType.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

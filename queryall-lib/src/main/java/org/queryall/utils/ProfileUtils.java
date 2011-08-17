@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProfileUtils
 {
-    private static final Logger log = LoggerFactory.getLogger(ProfileUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProfileUtils.class);
     @SuppressWarnings("unused")
     private static final boolean _TRACE = ProfileUtils.log.isTraceEnabled();
     private static final boolean _DEBUG = ProfileUtils.log.isDebugEnabled();

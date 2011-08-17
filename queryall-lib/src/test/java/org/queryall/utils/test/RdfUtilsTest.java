@@ -537,18 +537,15 @@ public class RdfUtilsTest
             for(final URI nextProfileUri : results.keySet())
             {
                 Assert.assertEquals("Results did not contain correct profile URI",
-                        this.testValueFactory.createURI("http://example.org/profile:test-1"),
-                        nextProfileUri);
+                        this.testValueFactory.createURI("http://example.org/profile:test-1"), nextProfileUri);
                 
                 final Profile nextProfile = results.get(nextProfileUri);
                 
                 Assert.assertNotNull("Profile was null", nextProfile);
                 
-                Assert.assertEquals("Profile key was not the same as its map URI", nextProfileUri,
-                        nextProfile.getKey());
+                Assert.assertEquals("Profile key was not the same as its map URI", nextProfileUri, nextProfile.getKey());
                 
-                Assert.assertEquals("Title was not parsed correctly",
-                        "Test profile for RDF Utilities test class",
+                Assert.assertEquals("Title was not parsed correctly", "Test profile for RDF Utilities test class",
                         nextProfile.getTitle());
                 Assert.assertEquals("Order was not parsed correctly", 120, nextProfile.getOrder());
                 

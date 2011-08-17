@@ -34,8 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class NormalisationRuleImpl implements NormalisationRule
 {
-    
-    protected static final Logger log = LoggerFactory.getLogger(NormalisationRuleImpl.class.getName());
+    protected static final Logger log = LoggerFactory.getLogger(NormalisationRuleImpl.class);
     protected static final boolean _TRACE = NormalisationRuleImpl.log.isTraceEnabled();
     protected static final boolean _DEBUG = NormalisationRuleImpl.log.isDebugEnabled();
     protected static final boolean _INFO = NormalisationRuleImpl.log.isInfoEnabled();
@@ -416,6 +415,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         return false;
     }
     
+    protected NormalisationRuleImpl()
+    {
+        
+    }
+    
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
     public NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
@@ -483,11 +487,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         }
     }
     
-    protected NormalisationRuleImpl()
-    {
-        
-    }
-    
     /**
      * 
      * @param nextRelatedNamespace
@@ -523,6 +522,19 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    /**
+     * @return the validStages
+     */
+    protected void addValidStage(final URI validStage)
+    {
+        if(this.validStages == null)
+        {
+            this.validStages = new ArrayList<URI>();
+        }
+        
+        this.validStages.add(validStage);
     }
     
     @Override
@@ -756,6 +768,15 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         this.title = title;
     }
     
+    /**
+     * @param validStages
+     *            the validStages to set
+     */
+    protected void setValidStages(final Collection<URI> nextValidStages)
+    {
+        this.validStages = nextValidStages;
+    }
+    
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -866,27 +887,5 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public boolean validInStage(final org.openrdf.model.URI stage)
     {
         return this.validStages.contains(stage);
-    }
-    
-    /**
-     * @return the validStages
-     */
-    protected void addValidStage(final URI validStage)
-    {
-        if(this.validStages == null)
-        {
-            this.validStages = new ArrayList<URI>();
-        }
-        
-        this.validStages.add(validStage);
-    }
-    
-    /**
-     * @param validStages
-     *            the validStages to set
-     */
-    protected void setValidStages(final Collection<URI> nextValidStages)
-    {
-        this.validStages = nextValidStages;
     }
 }

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleTestImpl implements RuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(RuleTest.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(RuleTest.class);
     private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = RuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

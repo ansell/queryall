@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StatisticsEntry implements BaseQueryAllInterface
 {
-    private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class);
     @SuppressWarnings("unused")
     private static final boolean _INFO = StatisticsEntry.log.isInfoEnabled();
     private static final boolean _DEBUG = StatisticsEntry.log.isDebugEnabled();

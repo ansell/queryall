@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements XsltNormalisationRule
 {
-    private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleImpl.class);
     private static final boolean _TRACE = XsltNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = XsltNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openrdf.OpenRDFException;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.query.Settings;
 import org.queryall.servlets.html.HtmlPageRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -22,7 +22,7 @@ import org.queryall.servlets.html.HtmlPageRenderer;
 public class IndexPageServlet extends HttpServlet
 {
     private static final long serialVersionUID = -6472769738354082954L;
-    public static final Logger log = LoggerFactory.getLogger(IndexPageServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(IndexPageServlet.class);
     public static final boolean _TRACE = IndexPageServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = IndexPageServlet.log.isDebugEnabled();
     public static final boolean _INFO = IndexPageServlet.log.isInfoEnabled();

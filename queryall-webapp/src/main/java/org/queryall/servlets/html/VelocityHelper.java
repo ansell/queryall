@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
@@ -13,6 +11,8 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A facade class that simplifies using a custom Velocity engine from a servlet. It encapsulates
@@ -26,7 +26,7 @@ import org.apache.velocity.exception.VelocityException;
 
 public class VelocityHelper
 {
-    private static final Logger log = LoggerFactory.getLogger(VelocityHelper.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(VelocityHelper.class);
     private static final boolean _TRACE = VelocityHelper.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = VelocityHelper.log.isDebugEnabled();
@@ -59,7 +59,8 @@ public class VelocityHelper
         
         try
         {
-            // TODO: Switch to using velocity.properties file instead of hardcoding the properties here
+            // TODO: Switch to using velocity.properties file instead of hardcoding the properties
+            // here
             final java.util.Properties engineProperties = new java.util.Properties();
             
             engineProperties.setProperty("runtime.log.logsystem.class",

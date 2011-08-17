@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class QueryCreator
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryCreator.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryCreator.class);
     private static final boolean _TRACE = QueryCreator.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryCreator.log.isDebugEnabled();
     @SuppressWarnings("unused")

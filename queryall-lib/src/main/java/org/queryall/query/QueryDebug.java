@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class QueryDebug
 {
     @SuppressWarnings("unused")
-    private static final Logger log = LoggerFactory.getLogger(QueryDebug.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(QueryDebug.class);
     
     private long totalTimeMilliseconds = 0;
     private String clientIPAddress = "";

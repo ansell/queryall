@@ -173,6 +173,11 @@ public class RdfFetchController
         this.initialise();
     }
     
+    private void addQueryBundles(final Collection<QueryBundle> queryBundles)
+    {
+        this.queryBundles.addAll(queryBundles);
+    }
+    
     public boolean anyNamespaceNotRecognised()
     {
         return this.namespaceNotRecognised;
@@ -261,137 +266,6 @@ public class RdfFetchController
                         + nextThread.getEndpointUrl());
             }
         }
-    }
-    
-    public Collection<Provider> getAllUsedProviders()
-    {
-        final Collection<Provider> results = new LinkedList<Provider>();
-        
-        for(final QueryBundle nextQueryBundle : this.queryBundles)
-        {
-            results.add(nextQueryBundle.getOriginalProvider());
-        }
-        
-        return results;
-    }
-    
-    /**
-     * @return the errorResults
-     */
-    public Collection<RdfFetcherQueryRunnable> getErrorResults()
-    {
-        return this.errorResults;
-    }
-    
-    /**
-     * @return the fetchThreadGroup
-     */
-    public Collection<RdfFetcherQueryRunnable> getFetchThreadGroup()
-    {
-        return this.fetchThreadGroup;
-    }
-    
-    public Collection<QueryBundle> getQueryBundles()
-    {
-        return this.queryBundles;
-    }
-    
-    public Collection<RdfFetcherQueryRunnable> getResults()
-    {
-        final Collection<RdfFetcherQueryRunnable> results = new HashSet<RdfFetcherQueryRunnable>();
-        
-        results.addAll(this.getSuccessfulResults());
-        results.addAll(this.getErrorResults());
-        
-        return results;
-    }
-    
-    /**
-     * @return the successfulResults
-     */
-    public Collection<RdfFetcherQueryRunnable> getSuccessfulResults()
-    {
-        return this.successfulResults;
-    }
-    
-    /**
-     * @return the uncalledThreads
-     */
-    public Collection<RdfFetcherQueryRunnable> getUncalledThreads()
-    {
-        return this.uncalledThreads;
-    }
-    
-    public boolean queryKnown()
-    {
-        if(this.queryBundles.size() == 0)
-        {
-            return false;
-        }
-        
-        for(final QueryBundle nextQueryBundle : this.queryBundles)
-        {
-            // if the query type for this query bundle is not a dummy query, return true
-            if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
-            {
-                if(RdfFetchController._DEBUG)
-                {
-                    RdfFetchController.log
-                            .debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="
-                                    + nextQueryBundle.getQueryType().getKey().stringValue());
-                }
-                
-                return true;
-            }
-        }
-        
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log.debug("RdfFetchController.queryKnown: returning false at end of method");
-        }
-        
-        return false;
-    }
-    
-    /**
-     * @param errorResults
-     *            the errorResults to set
-     */
-    public void setErrorResults(final Collection<RdfFetcherQueryRunnable> errorResults)
-    {
-        this.errorResults = errorResults;
-    }
-    
-    /**
-     * @param fetchThreadGroup
-     *            the fetchThreadGroup to set
-     */
-    public void setFetchThreadGroup(final Collection<RdfFetcherQueryRunnable> fetchThreadGroup)
-    {
-        this.fetchThreadGroup = fetchThreadGroup;
-    }
-    
-    /**
-     * @param successfulResults
-     *            the successfulResults to set
-     */
-    public void setSuccessfulResults(final Collection<RdfFetcherQueryRunnable> successfulResults)
-    {
-        this.successfulResults = successfulResults;
-    }
-    
-    /**
-     * @param uncalledThreads
-     *            the uncalledThreads to set
-     */
-    public void setUncalledThreads(final Collection<RdfFetcherQueryRunnable> uncalledThreads)
-    {
-        this.uncalledThreads = uncalledThreads;
-    }
-    
-    private void addQueryBundles(final Collection<QueryBundle> queryBundles)
-    {
-        this.queryBundles.addAll(queryBundles);
     }
     
     private Collection<RdfFetcherQueryRunnable> generateFetchThreadsFromQueryBundles(
@@ -745,6 +619,65 @@ public class RdfFetchController
         return results;
     }
     
+    public Collection<Provider> getAllUsedProviders()
+    {
+        final Collection<Provider> results = new LinkedList<Provider>();
+        
+        for(final QueryBundle nextQueryBundle : this.queryBundles)
+        {
+            results.add(nextQueryBundle.getOriginalProvider());
+        }
+        
+        return results;
+    }
+    
+    /**
+     * @return the errorResults
+     */
+    public Collection<RdfFetcherQueryRunnable> getErrorResults()
+    {
+        return this.errorResults;
+    }
+    
+    /**
+     * @return the fetchThreadGroup
+     */
+    public Collection<RdfFetcherQueryRunnable> getFetchThreadGroup()
+    {
+        return this.fetchThreadGroup;
+    }
+    
+    public Collection<QueryBundle> getQueryBundles()
+    {
+        return this.queryBundles;
+    }
+    
+    public Collection<RdfFetcherQueryRunnable> getResults()
+    {
+        final Collection<RdfFetcherQueryRunnable> results = new HashSet<RdfFetcherQueryRunnable>();
+        
+        results.addAll(this.getSuccessfulResults());
+        results.addAll(this.getErrorResults());
+        
+        return results;
+    }
+    
+    /**
+     * @return the successfulResults
+     */
+    public Collection<RdfFetcherQueryRunnable> getSuccessfulResults()
+    {
+        return this.successfulResults;
+    }
+    
+    /**
+     * @return the uncalledThreads
+     */
+    public Collection<RdfFetcherQueryRunnable> getUncalledThreads()
+    {
+        return this.uncalledThreads;
+    }
+    
     // Synchronize access to this method to ensure that only one thread tries to setup queryBundles
     // for each controller instance
     private synchronized void initialise()
@@ -928,5 +861,72 @@ public class RdfFetchController
             RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
                     (end - start)));
         }
+    }
+    
+    public boolean queryKnown()
+    {
+        if(this.queryBundles.size() == 0)
+        {
+            return false;
+        }
+        
+        for(final QueryBundle nextQueryBundle : this.queryBundles)
+        {
+            // if the query type for this query bundle is not a dummy query, return true
+            if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
+            {
+                if(RdfFetchController._DEBUG)
+                {
+                    RdfFetchController.log
+                            .debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="
+                                    + nextQueryBundle.getQueryType().getKey().stringValue());
+                }
+                
+                return true;
+            }
+        }
+        
+        if(RdfFetchController._DEBUG)
+        {
+            RdfFetchController.log.debug("RdfFetchController.queryKnown: returning false at end of method");
+        }
+        
+        return false;
+    }
+    
+    /**
+     * @param errorResults
+     *            the errorResults to set
+     */
+    public void setErrorResults(final Collection<RdfFetcherQueryRunnable> errorResults)
+    {
+        this.errorResults = errorResults;
+    }
+    
+    /**
+     * @param fetchThreadGroup
+     *            the fetchThreadGroup to set
+     */
+    public void setFetchThreadGroup(final Collection<RdfFetcherQueryRunnable> fetchThreadGroup)
+    {
+        this.fetchThreadGroup = fetchThreadGroup;
+    }
+    
+    /**
+     * @param successfulResults
+     *            the successfulResults to set
+     */
+    public void setSuccessfulResults(final Collection<RdfFetcherQueryRunnable> successfulResults)
+    {
+        this.successfulResults = successfulResults;
+    }
+    
+    /**
+     * @param uncalledThreads
+     *            the uncalledThreads to set
+     */
+    public void setUncalledThreads(final Collection<RdfFetcherQueryRunnable> uncalledThreads)
+    {
+        this.uncalledThreads = uncalledThreads;
     }
 }

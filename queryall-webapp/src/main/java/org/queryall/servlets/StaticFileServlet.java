@@ -32,7 +32,7 @@ public class StaticFileServlet extends HttpServlet
     private static final long serialVersionUID = -4462026270078646316L;
     private static final int BUFSIZE = 2048;
     
-    public static final Logger log = LoggerFactory.getLogger(StaticFileServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(StaticFileServlet.class);
     public static final boolean _TRACE = StaticFileServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = StaticFileServlet.log.isDebugEnabled();
     public static final boolean _INFO = StaticFileServlet.log.isInfoEnabled();

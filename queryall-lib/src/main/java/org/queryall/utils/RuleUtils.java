@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class RuleUtils
 {
-    public static final Logger log = LoggerFactory.getLogger(RuleUtils.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RuleUtils.class);
     public static final boolean _TRACE = RuleUtils.log.isTraceEnabled();
     public static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
     public static final boolean _INFO = RuleUtils.log.isInfoEnabled();

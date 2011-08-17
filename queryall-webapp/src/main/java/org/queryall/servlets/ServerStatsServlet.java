@@ -12,14 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.Settings;
 import org.queryall.utils.MathsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * 
@@ -31,7 +31,7 @@ public class ServerStatsServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = -4816515030121762308L;
-    public static final Logger log = LoggerFactory.getLogger(ServerStatsServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(ServerStatsServlet.class);
     public static final boolean _TRACE = ServerStatsServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = ServerStatsServlet.log.isDebugEnabled();
     public static final boolean _INFO = ServerStatsServlet.log.isInfoEnabled();

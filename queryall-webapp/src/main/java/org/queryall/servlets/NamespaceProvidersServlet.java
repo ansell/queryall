@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.openrdf.model.URI;
 import org.queryall.api.HttpProvider;
 import org.queryall.api.NamespaceEntry;
@@ -31,6 +29,8 @@ import org.queryall.impl.QueryTypeImpl;
 import org.queryall.query.Settings;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -41,7 +41,7 @@ public class NamespaceProvidersServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = -7006535158409121292L;
-    public static final Logger log = LoggerFactory.getLogger(NamespaceProvidersServlet.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(NamespaceProvidersServlet.class);
     public static final boolean _TRACE = NamespaceProvidersServlet.log.isTraceEnabled();
     public static final boolean _DEBUG = NamespaceProvidersServlet.log.isDebugEnabled();
     public static final boolean _INFO = NamespaceProvidersServlet.log.isInfoEnabled();
@@ -55,8 +55,8 @@ public class NamespaceProvidersServlet extends HttpServlet
         final PrintWriter out = response.getWriter();
         response.setContentType("text/html");
         
-//        final Date currentDate = new Date();
-//        final String now = Constants.ISO8601UTC().format(currentDate);
+        // final Date currentDate = new Date();
+        // final String now = Constants.ISO8601UTC().format(currentDate);
         
         @SuppressWarnings("unused")
         final String realHostName =

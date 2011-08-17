@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thread
 {
-    private static final Logger log = LoggerFactory.getLogger(HttpUrlQueryRunnable.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(HttpUrlQueryRunnable.class);
     private static final boolean _TRACE = HttpUrlQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = HttpUrlQueryRunnable.log.isDebugEnabled();

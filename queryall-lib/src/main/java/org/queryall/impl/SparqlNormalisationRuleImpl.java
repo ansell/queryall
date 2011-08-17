@@ -33,11 +33,20 @@ import org.slf4j.LoggerFactory;
  */
 public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implements SparqlNormalisationRule
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleImpl.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleImpl.class);
     private static final boolean _TRACE = SparqlNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = SparqlNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = SparqlNormalisationRuleImpl.log.isInfoEnabled();
+    
+    private static URI getOLDSparqlRuleSparqlConstructQuery()
+    {
+        return SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery;
+    }
+    
+    // public String key;
+    // public String description = "";
+    // public String curationStatus = ProjectImpl.projectNotCuratedUri.stringValue();
     
     /**
      * @return the sparqlruleMode
@@ -46,10 +55,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     {
         return SparqlNormalisationRuleImpl.sparqlruleMode;
     }
-    
-    // public String key;
-    // public String description = "";
-    // public String curationStatus = ProjectImpl.projectNotCuratedUri.stringValue();
     
     /**
      * @return the sparqlruleModeAddAllMatchingTriples
@@ -101,6 +106,12 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         return SparqlNormalisationRuleImpl.sparqlruleTypeUri;
     }
     
+    private static void setOLDSparqlRuleSparqlConstructQuery(final URI sparqlruleSparqlConstructQuery)
+    {
+        SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
+        
+    }
+    
     /**
      * @param sparqlruleMode
      *            the sparqlruleMode to set
@@ -146,6 +157,8 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
     }
     
+    // public static String rdfruleNamespace;
+    
     public static void setSparqlRuleSparqlPrefixes(final URI sparqlruleSparqlPrefixes)
     {
         SparqlNormalisationRuleImpl.sparqlruleSparqlPrefixes = sparqlruleSparqlPrefixes;
@@ -156,8 +169,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         SparqlNormalisationRuleImpl.sparqlruleSparqlWherePattern = sparqlruleSparqlWherePattern;
     }
     
-    // public static String rdfruleNamespace;
-    
     /**
      * @param sparqlruleTypeUri
      *            the sparqlruleTypeUri to set
@@ -165,17 +176,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     public static void setSparqlRuleTypeUri(final URI sparqlruleTypeUri)
     {
         SparqlNormalisationRuleImpl.sparqlruleTypeUri = sparqlruleTypeUri;
-    }
-    
-    private static URI getOLDSparqlRuleSparqlConstructQuery()
-    {
-        return SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery;
-    }
-    
-    private static void setOLDSparqlRuleSparqlConstructQuery(final URI sparqlruleSparqlConstructQuery)
-    {
-        SparqlNormalisationRuleImpl.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
-        
     }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -419,6 +419,122 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         this.sparqlWherePatterns.add(sparqlWherePattern);
     }
     
+    private Repository chooseStatementsFromRepository(final Repository myRepository, final boolean addToMyRepository)
+    {
+        Repository resultRepository = null;
+        
+        try
+        {
+            if(!addToMyRepository)
+            {
+                resultRepository = new SailRepository(new MemoryStore());
+                resultRepository.initialize();
+            }
+            
+            if(SparqlNormalisationRuleImpl._DEBUG)
+            {
+                SparqlNormalisationRuleImpl.log
+                        .debug("SparqlNormalisationRuleImpl: selecting statements according to sparqlConstructQueryTarget="
+                                + this.getSparqlConstructQuery());
+            }
+            
+            final RepositoryConnection selectConnection = myRepository.getConnection();
+            RepositoryConnection addConnection = null;
+            
+            if(addToMyRepository)
+            {
+                addConnection = myRepository.getConnection();
+            }
+            else
+            {
+                addConnection = resultRepository.getConnection();
+            }
+            
+            addConnection.setAutoCommit(false);
+            
+            try
+            {
+                for(final String nextConstructQuery : this.getSparqlConstructQueries())
+                {
+                    try
+                    {
+                        final GraphQueryResult graphResult =
+                                selectConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+                        
+                        int selectedStatements = 0;
+                        
+                        while(graphResult.hasNext())
+                        {
+                            addConnection.add(graphResult.next());
+                            selectedStatements++;
+                        }
+                        
+                        if(SparqlNormalisationRuleImpl._DEBUG)
+                        {
+                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: slected "
+                                    + selectedStatements + " statements for results");
+                        }
+                        
+                        addConnection.commit();
+                    }
+                    catch(final Exception ex)
+                    {
+                        SparqlNormalisationRuleImpl.log.error(
+                                "SparqlNormalisationRuleImpl: exception adding statements", ex);
+                    }
+                }
+            }
+            finally
+            {
+                selectConnection.close();
+                addConnection.close();
+            }
+        }
+        catch(final org.openrdf.repository.RepositoryException rex)
+        {
+            SparqlNormalisationRuleImpl.log.error(
+                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
+        }
+        
+        if(addToMyRepository)
+        {
+            return myRepository;
+        }
+        else
+        {
+            return resultRepository;
+        }
+    }
+    
+    private Repository doWorkBasedOnMode(final Repository input)
+    {
+        if(this.getMode().equals(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()))
+        {
+            return this.removeStatementsFromRepository(input);
+        }
+        else if(this.getMode().equals(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches()))
+        {
+            return this.chooseStatementsFromRepository(input, false);
+        }
+        else if(this.getMode().equals(SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples()))
+        {
+            return this.chooseStatementsFromRepository(input, true);
+        }
+        
+        return input;
+    }
+    
+    /**
+     * @param wherePattern
+     * @return
+     */
+    private String getConstructQueryUsingWherePattern(final String wherePattern)
+    {
+        return new StringBuilder(this.getSparqlPrefixes()).append(" CONSTRUCT { ")
+                .append(this.getSparqlConstructQueryTarget()).append(" } WHERE { ").append(wherePattern).append(" }")
+                .toString();
+    }
+    
     /**
      * @return a collection of the relevant element types that are implemented by this class,
      *         including abstract implementations
@@ -494,6 +610,65 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     public List<String> getSparqlWherePatterns()
     {
         return this.sparqlWherePatterns;
+    }
+    
+    private Repository removeStatementsFromRepository(final Repository myRepository)
+    {
+        try
+        {
+            if(SparqlNormalisationRuleImpl._DEBUG)
+            {
+                SparqlNormalisationRuleImpl.log
+                        .debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQueryTarget="
+                                + this.getSparqlConstructQuery());
+            }
+            
+            final RepositoryConnection removeConnection = myRepository.getConnection();
+            
+            try
+            {
+                for(final String nextConstructQuery : this.getSparqlConstructQueries())
+                {
+                    try
+                    {
+                        final GraphQueryResult graphResult =
+                                removeConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+                        
+                        int deletedStatements = 0;
+                        
+                        while(graphResult.hasNext())
+                        {
+                            removeConnection.remove(graphResult.next());
+                            deletedStatements++;
+                        }
+                        
+                        removeConnection.commit();
+                        if(SparqlNormalisationRuleImpl._DEBUG)
+                        {
+                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: removed "
+                                    + deletedStatements + " results");
+                        }
+                        
+                    }
+                    catch(final Exception ex)
+                    {
+                        SparqlNormalisationRuleImpl.log.error(
+                                "SparqlNormalisationRuleImpl: exception removing statements", ex);
+                    }
+                }
+            }
+            finally
+            {
+                removeConnection.close();
+            }
+        }
+        catch(final org.openrdf.repository.RepositoryException rex)
+        {
+            SparqlNormalisationRuleImpl.log.error(
+                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
+        }
+        
+        return myRepository;
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)
@@ -697,180 +872,5 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         result += "description=" + this.getDescription() + "\n";
         
         return result;
-    }
-    
-    private Repository chooseStatementsFromRepository(final Repository myRepository, final boolean addToMyRepository)
-    {
-        Repository resultRepository = null;
-        
-        try
-        {
-            if(!addToMyRepository)
-            {
-                resultRepository = new SailRepository(new MemoryStore());
-                resultRepository.initialize();
-            }
-            
-            if(SparqlNormalisationRuleImpl._DEBUG)
-            {
-                SparqlNormalisationRuleImpl.log
-                        .debug("SparqlNormalisationRuleImpl: selecting statements according to sparqlConstructQueryTarget="
-                                + this.getSparqlConstructQuery());
-            }
-            
-            final RepositoryConnection selectConnection = myRepository.getConnection();
-            RepositoryConnection addConnection = null;
-            
-            if(addToMyRepository)
-            {
-                addConnection = myRepository.getConnection();
-            }
-            else
-            {
-                addConnection = resultRepository.getConnection();
-            }
-            
-            addConnection.setAutoCommit(false);
-            
-            try
-            {
-                for(final String nextConstructQuery : this.getSparqlConstructQueries())
-                {
-                    try
-                    {
-                        final GraphQueryResult graphResult =
-                                selectConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
-                        
-                        int selectedStatements = 0;
-                        
-                        while(graphResult.hasNext())
-                        {
-                            addConnection.add(graphResult.next());
-                            selectedStatements++;
-                        }
-                        
-                        if(SparqlNormalisationRuleImpl._DEBUG)
-                        {
-                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: slected "
-                                    + selectedStatements + " statements for results");
-                        }
-                        
-                        addConnection.commit();
-                    }
-                    catch(final Exception ex)
-                    {
-                        SparqlNormalisationRuleImpl.log.error(
-                                "SparqlNormalisationRuleImpl: exception adding statements", ex);
-                    }
-                }
-            }
-            finally
-            {
-                selectConnection.close();
-                addConnection.close();
-            }
-        }
-        catch(final org.openrdf.repository.RepositoryException rex)
-        {
-            SparqlNormalisationRuleImpl.log.error(
-                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
-        }
-        
-        if(addToMyRepository)
-        {
-            return myRepository;
-        }
-        else
-        {
-            return resultRepository;
-        }
-    }
-    
-    private Repository doWorkBasedOnMode(final Repository input)
-    {
-        if(this.getMode().equals(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches()))
-        {
-            return this.removeStatementsFromRepository(input);
-        }
-        else if(this.getMode().equals(SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches()))
-        {
-            return this.chooseStatementsFromRepository(input, false);
-        }
-        else if(this.getMode().equals(SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples()))
-        {
-            return this.chooseStatementsFromRepository(input, true);
-        }
-        
-        return input;
-    }
-    
-    /**
-     * @param wherePattern
-     * @return
-     */
-    private String getConstructQueryUsingWherePattern(final String wherePattern)
-    {
-        return new StringBuilder(this.getSparqlPrefixes()).append(" CONSTRUCT { ")
-                .append(this.getSparqlConstructQueryTarget()).append(" } WHERE { ").append(wherePattern).append(" }")
-                .toString();
-    }
-    
-    private Repository removeStatementsFromRepository(final Repository myRepository)
-    {
-        try
-        {
-            if(SparqlNormalisationRuleImpl._DEBUG)
-            {
-                SparqlNormalisationRuleImpl.log
-                        .debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQueryTarget="
-                                + this.getSparqlConstructQuery());
-            }
-            
-            final RepositoryConnection removeConnection = myRepository.getConnection();
-            
-            try
-            {
-                for(final String nextConstructQuery : this.getSparqlConstructQueries())
-                {
-                    try
-                    {
-                        final GraphQueryResult graphResult =
-                                removeConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
-                        
-                        int deletedStatements = 0;
-                        
-                        while(graphResult.hasNext())
-                        {
-                            removeConnection.remove(graphResult.next());
-                            deletedStatements++;
-                        }
-                        
-                        removeConnection.commit();
-                        if(SparqlNormalisationRuleImpl._DEBUG)
-                        {
-                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: removed "
-                                    + deletedStatements + " results");
-                        }
-                        
-                    }
-                    catch(final Exception ex)
-                    {
-                        SparqlNormalisationRuleImpl.log.error(
-                                "SparqlNormalisationRuleImpl: exception removing statements", ex);
-                    }
-                }
-            }
-            finally
-            {
-                removeConnection.close();
-            }
-        }
-        catch(final org.openrdf.repository.RepositoryException rex)
-        {
-            SparqlNormalisationRuleImpl.log.error(
-                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
-        }
-        
-        return myRepository;
     }
 }

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RdfFetcher
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfFetcher.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(RdfFetcher.class);
     private static final boolean _TRACE = RdfFetcher.log.isTraceEnabled();
     private static final boolean _DEBUG = RdfFetcher.log.isDebugEnabled();
     private static final boolean _INFO = RdfFetcher.log.isInfoEnabled();

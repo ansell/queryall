@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NamespaceEntryImpl implements NamespaceEntry
 {
-    private static final Logger log = LoggerFactory.getLogger(NamespaceEntry.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(NamespaceEntry.class);
     private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = NamespaceEntryImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

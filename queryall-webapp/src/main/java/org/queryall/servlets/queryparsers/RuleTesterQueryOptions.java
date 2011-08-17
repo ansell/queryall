@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class RuleTesterQueryOptions
 {
-    public static final Logger log = LoggerFactory.getLogger(RuleTesterQueryOptions.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RuleTesterQueryOptions.class);
     public static final boolean _TRACE = RuleTesterQueryOptions.log.isTraceEnabled();
     public static final boolean _DEBUG = RuleTesterQueryOptions.log.isDebugEnabled();
     public static final boolean _INFO = RuleTesterQueryOptions.log.isInfoEnabled();

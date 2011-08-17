@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProfileImpl implements Profile, Comparable<Profile>
 {
-    private static final Logger log = LoggerFactory.getLogger(Profile.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
     private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProfileImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

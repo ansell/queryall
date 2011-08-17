@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProjectImpl implements Project
 {
-    private static final Logger log = LoggerFactory.getLogger(Project.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(ProjectImpl.class);
     private static final boolean _TRACE = ProjectImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProjectImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")

@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class RdfUtils
 {
-    public static final Logger log = LoggerFactory.getLogger(RdfUtils.class.getName());
+    public static final Logger log = LoggerFactory.getLogger(RdfUtils.class);
     public static final boolean _TRACE = RdfUtils.log.isTraceEnabled();
     public static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
     public static final boolean _INFO = RdfUtils.log.isInfoEnabled();

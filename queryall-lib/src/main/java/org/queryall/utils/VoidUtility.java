@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class VoidUtility
 {
-    private static final Logger log = LoggerFactory.getLogger(VoidUtility.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(VoidUtility.class);
     @SuppressWarnings("unused")
     private static final boolean _TRACE = VoidUtility.log.isTraceEnabled();
     private static final boolean _DEBUG = VoidUtility.log.isDebugEnabled();

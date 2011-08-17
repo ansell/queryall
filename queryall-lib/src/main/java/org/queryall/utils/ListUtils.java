@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ListUtils
 {
-    private static final Logger log = LoggerFactory.getLogger(StringUtils.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
     @SuppressWarnings("unused")
     private static final boolean _TRACE = ListUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")

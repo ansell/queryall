@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.exception.VelocityException;
 import org.openrdf.OpenRDFException;
@@ -24,6 +22,8 @@ import org.queryall.servlets.GeneralServlet;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A servlet for serving the HTML page describing a resource. Invokes a Velocity template.
@@ -37,7 +37,7 @@ import org.queryall.utils.StringUtils;
 
 public class HtmlPageRenderer
 {
-    private static final Logger log = LoggerFactory.getLogger(HtmlPageRenderer.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(HtmlPageRenderer.class);
     private static final boolean _TRACE = HtmlPageRenderer.log.isTraceEnabled();
     private static final boolean _DEBUG = HtmlPageRenderer.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -472,7 +472,7 @@ public class HtmlPageRenderer
         catch(final Exception ex)
         {
             HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML");
-            log.error(ex.getMessage());
+            HtmlPageRenderer.log.error(ex.getMessage());
             
             try
             {
