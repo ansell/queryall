@@ -34,7 +34,7 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     @Override
     public URI getProfileExcludeThenIncludeURI()
     {
-        return ProfileImpl.getExcludeThenIncludeUri();
+        return ProfileImpl.getProfileExcludeThenIncludeUri();
     }
     
     @Override
@@ -46,7 +46,7 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     @Override
     public URI getProfileIncludeThenExcludeURI()
     {
-        return ProfileImpl.getIncludeThenExcludeUri();
+        return ProfileImpl.getProfileIncludeThenExcludeUri();
     }
     
     @Override

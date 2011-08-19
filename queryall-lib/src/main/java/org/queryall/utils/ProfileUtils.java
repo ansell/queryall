@@ -136,7 +136,7 @@ public class ProfileUtils
         }
         
         final boolean returnValue =
-                (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getExcludeThenIncludeUri()) || profilableObject
+                (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileExcludeThenIncludeUri()) || profilableObject
                         .getProfileIncludeExcludeOrder()
                         .equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
                         && includeNonProfileMatched;
@@ -204,7 +204,7 @@ public class ProfileUtils
             nextIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
         }
         
-        if(nextIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()))
+        if(nextIncludeExcludeOrder.equals(ProfileImpl.getProfileExcludeThenIncludeUri()))
         {
             if(ProfileUtils._DEBUG)
             {
@@ -240,7 +240,7 @@ public class ProfileUtils
                 return ProfileMatch.IMPLICIT_INCLUDE;
             }
         }
-        else if(nextIncludeExcludeOrder.equals(ProfileImpl.getIncludeThenExcludeUri()))
+        else if(nextIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeThenExcludeUri()))
         {
             if(ProfileUtils._DEBUG)
             {

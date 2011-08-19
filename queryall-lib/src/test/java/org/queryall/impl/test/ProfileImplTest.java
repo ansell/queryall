@@ -22,7 +22,7 @@ public class ProfileImplTest extends AbstractProfileTest
     @Override
     public URI getProfileExcludeThenIncludeURI()
     {
-        return ProfileImpl.getExcludeThenIncludeUri();
+        return ProfileImpl.getProfileExcludeThenIncludeUri();
     }
     
     @Override
@@ -34,6 +34,6 @@ public class ProfileImplTest extends AbstractProfileTest
     @Override
     public URI getProfileIncludeThenExcludeURI()
     {
-        return ProfileImpl.getIncludeThenExcludeUri();
+        return ProfileImpl.getProfileIncludeThenExcludeUri();
     }
 }

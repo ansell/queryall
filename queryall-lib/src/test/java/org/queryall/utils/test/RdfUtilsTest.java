@@ -47,6 +47,7 @@ import org.queryall.utils.RdfUtils;
 public class RdfUtilsTest
 {
     private Repository testRepository;
+    private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
     
     private String applicationRdfXml;
@@ -90,7 +91,9 @@ public class RdfUtilsTest
     private Value testLongStringLiteral;
     private long testLong;
     private String longDataType;
-    private RepositoryConnection testRepositoryConnection;
+    
+    private URI testProfileUri1;
+    private URI testProfileUri2;
     
     /**
      * @throws java.lang.Exception
@@ -161,6 +164,9 @@ public class RdfUtilsTest
                 this.testValueFactory.createLiteral(Long.toString(this.testLong), this.longDataType);
         this.testLongNativeLiteral = this.testValueFactory.createLiteral(this.testLong);
         this.testLongStringLiteral = this.testValueFactory.createLiteral(Long.toString(this.testLong));
+        
+        this.testProfileUri1 = this.testValueFactory.createURI("http://example.org/profile:test-1");
+        this.testProfileUri2 = this.testValueFactory.createURI("http://example.org/profile:test-2");
     }
     
     /**
@@ -207,6 +213,9 @@ public class RdfUtilsTest
         
         this.trueBooleanStringLiteral = null;
         this.falseBooleanStringLiteral = null;
+        
+        this.testProfileUri1 = null;
+        this.testProfileUri2 = null;
     }
     
     /**
@@ -494,7 +503,8 @@ public class RdfUtilsTest
                         nextNormalisationRule.getDescription());
                 Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
                 Assert.assertEquals("Include exclude order was not parsed correctly",
-                        ProfileImpl.getIncludeThenExcludeUri(), nextNormalisationRule.getProfileIncludeExcludeOrder());
+                        ProfileImpl.getProfileIncludeThenExcludeUri(),
+                        nextNormalisationRule.getProfileIncludeExcludeOrder());
                 
                 Assert.assertTrue("Related namespace was not parsed correctly", nextNormalisationRule
                         .getRelatedNamespaces().contains(this.testValueFactory.createURI("http://example.org/ns:issn")));
@@ -532,23 +542,95 @@ public class RdfUtilsTest
             
             final Map<URI, Profile> results = RdfUtils.getProfiles(this.testRepository);
             
-            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(2, results.size());
             
             for(final URI nextProfileUri : results.keySet())
             {
-                Assert.assertEquals("Results did not contain correct profile URI",
-                        this.testValueFactory.createURI("http://example.org/profile:test-1"), nextProfileUri);
-                
                 final Profile nextProfile = results.get(nextProfileUri);
                 
                 Assert.assertNotNull("Profile was null", nextProfile);
                 
                 Assert.assertEquals("Profile key was not the same as its map URI", nextProfileUri, nextProfile.getKey());
                 
-                Assert.assertEquals("Title was not parsed correctly", "Test profile for RDF Utilities test class",
-                        nextProfile.getTitle());
-                Assert.assertEquals("Order was not parsed correctly", 120, nextProfile.getOrder());
-                
+                if(nextProfileUri.equals(this.testProfileUri1))
+                {
+                    Assert.assertEquals("Results did not contain correct profile URI", this.testProfileUri1,
+                            nextProfileUri);
+                    
+                    Assert.assertEquals(
+                            "Title was not parsed correctly",
+                            "Test profile for RDF Utilities test class with all implicit not allowed and exclude by default",
+                            nextProfile.getTitle());
+                    Assert.assertEquals("Order was not parsed correctly", 120, nextProfile.getOrder());
+                    
+                    Assert.assertEquals("Default profile include exclude order was not parsed correctly",
+                            ProfileImpl.getProfileIncludeThenExcludeUri(),
+                            nextProfile.getDefaultProfileIncludeExcludeOrder());
+                    
+                    Assert.assertFalse("Allow implicit provider inclusions was not parsed correctly",
+                            nextProfile.getAllowImplicitProviderInclusions());
+                    Assert.assertFalse("Allow implicit query inclusions was not parsed correctly",
+                            nextProfile.getAllowImplicitQueryTypeInclusions());
+                    Assert.assertFalse("Allow implicit rdf rule inclusions was not parsed correctly",
+                            nextProfile.getAllowImplicitRdfRuleInclusions());
+                    
+                    Assert.assertEquals("Did not find the expected number of included providers", 1, nextProfile
+                            .getIncludeProviders().size());
+                    Assert.assertEquals("Did not find the expected number of excluded providers", 1, nextProfile
+                            .getExcludeProviders().size());
+                    
+                    Assert.assertEquals("Did not find the expected number of included query types", 1, nextProfile
+                            .getIncludeQueryTypes().size());
+                    Assert.assertEquals("Did not find the expected number of excluded query types", 1, nextProfile
+                            .getExcludeQueryTypes().size());
+                    
+                    Assert.assertEquals("Did not find the expected number of included rdf rules", 1, nextProfile
+                            .getIncludeRdfRules().size());
+                    Assert.assertEquals("Did not find the expected number of excluded rdf rules", 1, nextProfile
+                            .getExcludeRdfRules().size());
+                }
+                else if(nextProfileUri.equals(this.testProfileUri2))
+                {
+                    Assert.assertEquals("Results did not contain correct profile URI", this.testProfileUri2,
+                            nextProfileUri);
+                    
+                    Assert.assertEquals(
+                            "Title was not parsed correctly",
+                            "Test profile 2 for RDF Utilities test class with all implicit allowed, and allowed by default",
+                            nextProfile.getTitle());
+                    Assert.assertEquals("Order was not parsed correctly", 230, nextProfile.getOrder());
+                    
+                    Assert.assertEquals("Default profile include exclude order was not parsed correctly",
+                            ProfileImpl.getProfileExcludeThenIncludeUri(),
+                            nextProfile.getDefaultProfileIncludeExcludeOrder());
+                    
+                    Assert.assertTrue("Allow implicit provider inclusions was not parsed correctly",
+                            nextProfile.getAllowImplicitProviderInclusions());
+                    Assert.assertTrue("Allow implicit query inclusions was not parsed correctly",
+                            nextProfile.getAllowImplicitQueryTypeInclusions());
+                    Assert.assertTrue("Allow implicit rdf rule inclusions was not parsed correctly",
+                            nextProfile.getAllowImplicitRdfRuleInclusions());
+                    
+                    Assert.assertEquals("Did not find the expected number of included providers", 0, nextProfile
+                            .getIncludeProviders().size());
+                    Assert.assertEquals("Did not find the expected number of excluded providers", 0, nextProfile
+                            .getExcludeProviders().size());
+                    
+                    Assert.assertEquals("Did not find the expected number of included query types", 0, nextProfile
+                            .getIncludeQueryTypes().size());
+                    Assert.assertEquals("Did not find the expected number of excluded query types", 0, nextProfile
+                            .getExcludeQueryTypes().size());
+                    
+                    Assert.assertEquals("Did not find the expected number of included rdf rules", 0, nextProfile
+                            .getIncludeRdfRules().size());
+                    Assert.assertEquals("Did not find the expected number of excluded rdf rules", 0, nextProfile
+                            .getExcludeRdfRules().size());
+                    
+                }
+                else
+                {
+                    Assert.fail("Found unexpected profile URI=" + nextProfileUri);
+                }
             }
         }
         catch(final RDFParseException ex)

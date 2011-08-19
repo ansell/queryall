@@ -422,16 +422,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>
         ProfileImpl.setProfileIncludeExcludeOrderUndefinedUri(f.createURI(baseUri, "includeExcludeOrderUndefined"));
     }
     
-    public static URI getExcludeThenIncludeUri()
-    {
-        return ProfileImpl.getProfileExcludeThenIncludeUri();
-    }
-    
-    public static URI getIncludeThenExcludeUri()
-    {
-        return ProfileImpl.getProfileIncludeThenExcludeUri();
-    }
-    
     public static URI getProfileIncludeExcludeOrderUndefinedUri()
     {
         return ProfileImpl.profileIncludeExcludeOrderUndefinedUri;

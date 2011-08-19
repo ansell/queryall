@@ -1486,7 +1486,7 @@ public class QueryTypeImpl implements QueryType
                 + "profileIncludeExcludeOrder_span\">Use by default on all profiles?:</span><input type=\"checkbox\" name=\""
                 + prefix + "profileIncludeExcludeOrder\" value=\"profileIncludeExcludeOrder\" ");
         
-        if(this.profileIncludeExcludeOrder.equals(ProfileImpl.getExcludeThenIncludeUri()))
+        if(this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileExcludeThenIncludeUri()))
         {
             sb.append(" checked=\"checked\" ");
         }
