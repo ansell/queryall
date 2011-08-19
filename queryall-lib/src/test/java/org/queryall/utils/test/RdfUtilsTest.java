@@ -35,10 +35,12 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
+import org.queryall.api.Provider;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.ProviderImpl;
 import org.queryall.utils.RdfUtils;
 
 /**
@@ -94,6 +96,8 @@ public class RdfUtilsTest
     
     private URI testProfileUri1;
     private URI testProfileUri2;
+    
+    private URI testProviderUri1;
     
     /**
      * @throws java.lang.Exception
@@ -167,6 +171,9 @@ public class RdfUtilsTest
         
         this.testProfileUri1 = this.testValueFactory.createURI("http://example.org/profile:test-1");
         this.testProfileUri2 = this.testValueFactory.createURI("http://example.org/profile:test-2");
+
+        this.testProviderUri1 = this.testValueFactory.createURI("http://example.org/provider:test-1");
+    
     }
     
     /**
@@ -216,6 +223,8 @@ public class RdfUtilsTest
         
         this.testProfileUri1 = null;
         this.testProfileUri2 = null;
+        
+        this.testProviderUri1 = null;
     }
     
     /**
@@ -652,10 +661,65 @@ public class RdfUtilsTest
      * {@link org.queryall.utils.RdfUtils#getProviders(org.openrdf.repository.Repository)}.
      */
     @Test
-    @Ignore
     public void testGetProviders()
     {
-        Assert.fail("Not yet implemented");
+        final InputStream nextInputStream = this.getClass().getResourceAsStream("/testconfigs/provider-1.n3");
+        
+        try
+        {
+            Assert.assertNotNull("Could not find test file", nextInputStream);
+            
+            this.testRepositoryConnection.add(nextInputStream, "", RDFFormat.N3);
+            this.testRepositoryConnection.commit();
+            
+            final Map<URI, Provider> results = RdfUtils.getProviders(this.testRepository);
+            
+            Assert.assertEquals(1, results.size());
+            
+            for(final URI nextProviderUri : results.keySet())
+            {
+                final Provider nextProvider = results.get(nextProviderUri);
+                
+                Assert.assertNotNull("Provider was null", nextProvider);
+                
+                Assert.assertEquals("Provider key was not the same as its map URI", nextProviderUri, nextProvider.getKey());
+                
+                if(nextProviderUri.equals(this.testProviderUri1))
+                {
+                    Assert.assertEquals("Results did not contain correct profile URI", this.testProviderUri1,
+                            nextProviderUri);
+                    
+                    Assert.assertEquals(
+                            "Title was not parsed correctly",
+                            "Test provider 1",
+                            nextProvider.getTitle());
+                    
+                    Assert.assertEquals("Resolution strategy was not parsed correctly", ProviderImpl.getProviderProxy(), nextProvider.getRedirectOrProxy());
+                    Assert.assertEquals("Resolution method was not parsed correctly", ProviderImpl.getProviderNoCommunication(), nextProvider.getEndpointMethod());
+                    Assert.assertFalse("Default provider status was not parsed correctly", nextProvider.getIsDefaultSource());
+
+                    Assert.assertEquals("Profile include exclude order was not parsed correctly",
+                            ProfileImpl.getProfileExcludeThenIncludeUri(),
+                            nextProvider.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Namespaces were not parsed correctly", 1, nextProvider.getNamespaces().size());
+                    Assert.assertEquals("Query Types were not parsed correctly", 1, nextProvider.getIncludedInQueryTypes().size());
+                    Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider.getNormalisationUris().size());
+                }
+            }
+        }
+        catch(final RDFParseException ex)
+        {
+            Assert.fail("Found unexpected RDFParseException : " + ex.getMessage());
+        }
+        catch(final RepositoryException ex)
+        {
+            Assert.fail("Found unexpected RepositoryException : " + ex.getMessage());
+        }
+        catch(final IOException ex)
+        {
+            Assert.fail("Found unexpected IOException : " + ex.getMessage());
+        }
     }
     
     /**
