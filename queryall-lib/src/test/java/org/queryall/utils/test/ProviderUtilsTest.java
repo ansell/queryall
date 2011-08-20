@@ -181,7 +181,7 @@ public class ProviderUtilsTest
             
             implicitProfileTrueResults = ProviderUtils.getDefaultProviders(testDefaultProviders, testDefaultProvidersQueryTypeTrue1, singleImplicitAllowAllProfileList, true, false);
             
-            Assert.assertEquals(0, implicitProfileTrueResults.size());
+            Assert.assertEquals(1, implicitProfileTrueResults.size());
             
             implicitProfileTrueResults = ProviderUtils.getDefaultProviders(testDefaultProviders, testDefaultProvidersQueryTypeTrue1, singleImplicitAllowAllProfileList, false, true);
             
