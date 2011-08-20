@@ -1,0 +1,16 @@
+<http://example.org/provider:multipleprovidertest-1> a <http://purl.org/queryall/provider:Provider> ;
+	<http://purl.org/queryall/provider:handlesNamespace> <http://example.org/ns:test-1> ;
+	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:test-1> .
+
+<http://example.org/provider:multipleprovidertest-2> a <http://purl.org/queryall/provider:Provider> ;
+	<http://purl.org/queryall/provider:handlesNamespace> <http://example.org/ns:test-1> , <http://example.org/ns:test-2> ;
+	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:test-1> .
+
+<http://example.org/provider:multipleprovidertest-3> a <http://purl.org/queryall/provider:Provider> ;
+	<http://purl.org/queryall/provider:handlesNamespace> <http://example.org/ns:test-1> , <http://example.org/ns:test-2> , <http://example.org/ns:test-3> ;
+	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:test-1> .
+
+<http://example.org/provider:multipleprovidertest-4> a <http://purl.org/queryall/provider:Provider> ;
+	<http://purl.org/queryall/provider:handlesNamespace> <http://example.org/ns:test-2> , <http://example.org/ns:test-3>;
+	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:test-1> .
+	
