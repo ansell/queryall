@@ -1,0 +1,20 @@
+<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> ;
+    <http://purl.org/queryall/query:isDummyQueryType> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+    <http://purl.org/queryall/query:isPageable> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/dc/elements/1.1/title> "Test 1 query type" ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Test 1 query type description." ;
+	<http://purl.org/queryall/query:handleAllNamespaces> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/query:isNamespaceSpecific> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/query:namespaceMatchMethod> <http://purl.org/queryall/query:namespaceMatchAll> ;
+	<http://purl.org/queryall/query:includeDefaults> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/query:inputRegex> "^([\\w-]+):(.+)" ;
+	<http://purl.org/queryall/query:templateString> "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }" ;
+	<http://purl.org/queryall/query:queryUriTemplateString> "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}" ;
+	<http://purl.org/queryall/query:standardUriTemplateString> "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}" ;
+	<http://purl.org/queryall/query:outputRdfXmlString> "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>" ;
+	<http://purl.org/queryall/query:inRobotsTxt> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> ;
+	<http://purl.org/queryall/query:hasPublicIdentifierIndex> "1"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://purl.org/queryall/query:hasNamespaceInputIndex> "1"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://purl.org/queryall/query:includeQueryType> <http://example.org/query:test-1> .
+

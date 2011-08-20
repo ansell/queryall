@@ -86,50 +86,50 @@ public class ProfileUtils
             final ProfileMatch trueResult = ProfileUtils.usedWithProfilable(nextProfile, profilableObject);
             if(trueResult == ProfileMatch.IMPLICIT_INCLUDE)
             {
-                if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log.debug("isUsedWithProfileList: found implicit include for profilableObject="
-                            + profilableObject.getKey().stringValue() + " profile="
-                            + nextProfile.getKey().stringValue());
-                }
+//                if(ProfileUtils._DEBUG)
+//                {
+//                    ProfileUtils.log.debug("isUsedWithProfileList: found implicit include for profilableObject="
+//                            + profilableObject.getKey().stringValue() + " profile="
+//                            + nextProfile.getKey().stringValue());
+//                }
                 
                 if(recogniseImplicitInclusions)
                 {
-                    if(ProfileUtils._DEBUG)
-                    {
-                        ProfileUtils.log
-                                .debug("isUsedWithProfileList: returning implicit include true for profilableObject="
-                                        + profilableObject.getKey().stringValue() + " profile="
-                                        + nextProfile.getKey().stringValue());
-                    }
+//                    if(ProfileUtils._DEBUG)
+//                    {
+//                        ProfileUtils.log
+//                                .debug("isUsedWithProfileList: returning implicit include true for profilableObject="
+//                                        + profilableObject.getKey().stringValue() + " profile="
+//                                        + nextProfile.getKey().stringValue());
+//                    }
                     return true;
                 }
-                else if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log
-                            .debug("isUsedWithProfileList: implicit include not recognised for profilableObject="
-                                    + profilableObject.getKey().stringValue() + " profile="
-                                    + nextProfile.getKey().stringValue());
-                }
+//                else if(ProfileUtils._DEBUG)
+//                {
+//                    ProfileUtils.log
+//                            .debug("isUsedWithProfileList: implicit include not recognised for profilableObject="
+//                                    + profilableObject.getKey().stringValue() + " profile="
+//                                    + nextProfile.getKey().stringValue());
+//                }
             }
             else if(trueResult == ProfileMatch.SPECIFIC_INCLUDE)
             {
-                if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific true for profilableObject="
-                            + profilableObject.getKey().stringValue() + " profile="
-                            + nextProfile.getKey().stringValue());
-                }
+//                if(ProfileUtils._DEBUG)
+//                {
+//                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific true for profilableObject="
+//                            + profilableObject.getKey().stringValue() + " profile="
+//                            + nextProfile.getKey().stringValue());
+//                }
                 return true;
             }
             else if(trueResult == ProfileMatch.SPECIFIC_EXCLUDE)
             {
-                if(ProfileUtils._DEBUG)
-                {
-                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific false for profilableObject="
-                            + profilableObject.getKey().stringValue() + " profile="
-                            + nextProfile.getKey().stringValue());
-                }
+//                if(ProfileUtils._DEBUG)
+//                {
+//                    ProfileUtils.log.debug("isUsedWithProfileList: returning specific false for profilableObject="
+//                            + profilableObject.getKey().stringValue() + " profile="
+//                            + nextProfile.getKey().stringValue());
+//                }
                 return false;
             }
             
@@ -141,11 +141,11 @@ public class ProfileUtils
                         .equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
                         && includeNonProfileMatched;
         
-        if(ProfileUtils._DEBUG)
-        {
-            ProfileUtils.log.debug("ProfileImpl.isUsedWithProfileList: returning no matches found returnValue="
-                    + returnValue + " for profilableObject=" + profilableObject.getKey().stringValue());
-        }
+//        if(ProfileUtils._DEBUG)
+//        {
+//            ProfileUtils.log.debug("ProfileImpl.isUsedWithProfileList: returning no matches found returnValue="
+//                    + returnValue + " for profilableObject=" + profilableObject.getKey().stringValue());
+//        }
         
         return returnValue;
     }

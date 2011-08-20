@@ -59,6 +59,10 @@ public final class ProviderUtils
                 }
             }
         }
+        else
+        {
+            return Collections.emptyList();
+        }
         
         return results;
     }
@@ -82,7 +86,9 @@ public final class ProviderUtils
         
         for(final Provider nextProvider : allProviders.values())
         {
+            // Assume nothing found for anyFound so we can switch it if anything is found
             boolean anyFound = false;
+            // Assume everything found for allFound so we can switch it if anything is not found
             boolean allFound = true;
             if(ProviderUtils._TRACE)
             {
@@ -160,7 +166,7 @@ public final class ProviderUtils
                 final String nextTitle = queryStringMatches.get(nextNamespaceInputIndex - 1);
                 
                 final Collection<URI> nextUriFromTitleNamespaceList =
-                        NamespaceUtils.getNamespaceUrisForTitle(namespacePrefixToUriMap, nextTitle);
+                        NamespaceUtils.getNamespaceUrisForPrefix(namespacePrefixToUriMap, nextTitle);
                 
                 if(nextUriFromTitleNamespaceList != null)
                 {
@@ -287,13 +293,14 @@ public final class ProviderUtils
         if(ProviderUtils._DEBUG)
         {
             ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size()
-                    + " providers for customService=" + nextQueryType.stringValue());
-        }
-        if(ProviderUtils._TRACE)
-        {
-            for(final Provider nextResult : results.values())
+                    + " providers for querytype=" + nextQueryType.stringValue());
+
+            if(ProviderUtils._TRACE)
             {
-                ProviderUtils.log.trace("getProvidersForQueryType: nextResult=" + nextResult.toString());
+                for(final Provider nextResult : results.values())
+                {
+                    ProviderUtils.log.trace("getProvidersForQueryType: nextResult=" + nextResult.toString());
+                }
             }
         }
         return results;
@@ -304,7 +311,6 @@ public final class ProviderUtils
     {
         if(ProviderUtils._TRACE)
         {
-            
             ProviderUtils.log.trace("getProvidersForQueryTypeForNamespaceUris: queryType=" + queryType
                     + " namespaceMatchMethod=" + namespaceMatchMethod + " namespaceUris=" + namespaceUris);
         }
@@ -331,7 +337,7 @@ public final class ProviderUtils
     /**
 	 * 
 	 */
-    public ProviderUtils()
+    private ProviderUtils()
     {
         // TODO Auto-generated constructor stub
     }

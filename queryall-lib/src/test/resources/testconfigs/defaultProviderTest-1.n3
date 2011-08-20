@@ -1,0 +1,8 @@
+<http://example.org/provider:defaulttest-1> a <http://purl.org/queryall/provider:Provider> ;
+	<http://purl.org/queryall/provider:isDefaultSource> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:defaultprovidersquerytypetest-true> .
+
+<http://example.org/provider:nondefaulttest-1> a <http://purl.org/queryall/provider:Provider> ;
+	<http://purl.org/queryall/provider:isDefaultSource> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:defaultprovidersquerytypetest-false> .
+	

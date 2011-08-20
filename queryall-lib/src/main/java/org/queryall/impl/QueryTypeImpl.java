@@ -1261,7 +1261,7 @@ public class QueryTypeImpl implements QueryType
     public boolean matchesQueryString(final String nextQueryString)
     {
         return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryString);
-    }
+     }
     
     @Override
     public void setCurationStatus(final URI curationStatus)

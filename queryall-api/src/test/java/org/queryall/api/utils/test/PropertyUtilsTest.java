@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.api.test;
+package org.queryall.api.utils.test;
 
 import junit.framework.Assert;
 

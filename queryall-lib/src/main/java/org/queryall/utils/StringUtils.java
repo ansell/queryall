@@ -346,9 +346,9 @@ public class StringUtils
             
             for(int i = 0; i < matcher.groupCount(); i++)
             {
-                if(RdfUtils._DEBUG)
+                if(RdfUtils._TRACE)
                 {
-                    RdfUtils.log.debug("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
+                    RdfUtils.log.trace("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
                             + " Found the text \"" + matcher.group(i + 1) + "\" starting at " + "index="
                             + matcher.start(i + 1) + " and ending at index=" + matcher.end(i + 1) + ".");
                 }
@@ -356,9 +356,9 @@ public class StringUtils
                 // buffer.replace(matcher.start(i+1), matcher.end(i+1), replaceString);
                 buffer.replace(matcher.start(i + 1), matcher.end(i + 1), matcher.group(i + 1));
                 
-                if(RdfUtils._INFO)
+                if(RdfUtils._TRACE)
                 {
-                    RdfUtils.log.info("Buffer after replacement=" + buffer.toString());
+                    RdfUtils.log.trace("Buffer after replacement=" + buffer.toString());
                 }
                 // results.add(matcher.group(i+1));
                 

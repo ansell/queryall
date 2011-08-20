@@ -16,7 +16,7 @@ import org.openrdf.model.URI;
 public class NamespaceUtils
 {
     
-    public static Collection<URI> getNamespaceUrisForTitle(final Map<String, Collection<URI>> allNamespacesByPrefix,
+    public static Collection<URI> getNamespaceUrisForPrefix(final Map<String, Collection<URI>> allNamespacesByPrefix,
             final String namespacePrefix)
     {
         Collection<URI> results = new HashSet<URI>();

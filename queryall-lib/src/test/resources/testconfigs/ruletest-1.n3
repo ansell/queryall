@@ -1,0 +1,6 @@
+<http://example.org/ruletest:test-1> a <http://purl.org/queryall/ruletest:RuleTest> , <http://purl.org/queryall/ruletest:RegexRuleTest> ;
+    <http://purl.org/queryall/ruletest:testsStages> <http://purl.org/queryall/rdfrule:queryVariables> , <http://purl.org/queryall/rdfrule:beforeResultsImport> ;
+	<http://purl.org/queryall/ruletest:testsRules> <http://example.org/rdfrule:test-1> ;
+	<http://purl.org/queryall/ruletest:inputTestString> "http://example.org/" ;
+	<http://purl.org/queryall/ruletest:outputTestString> "http://otherexample.net/" .
+

@@ -36,11 +36,14 @@ import org.queryall.api.NamespaceEntry;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryType;
+import org.queryall.api.RuleTest;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProviderImpl;
+import org.queryall.impl.QueryTypeImpl;
 import org.queryall.utils.RdfUtils;
 
 /**
@@ -98,6 +101,8 @@ public class RdfUtilsTest
     private URI testProfileUri2;
     
     private URI testProviderUri1;
+    private URI testRuleTestUri1;
+    private URI testQueryTypeUri1;
     
     /**
      * @throws java.lang.Exception
@@ -173,7 +178,10 @@ public class RdfUtilsTest
         this.testProfileUri2 = this.testValueFactory.createURI("http://example.org/profile:test-2");
 
         this.testProviderUri1 = this.testValueFactory.createURI("http://example.org/provider:test-1");
-    
+        
+        this.testRuleTestUri1 = this.testValueFactory.createURI("http://example.org/ruletest:test-1");
+        
+        this.testQueryTypeUri1 = this.testValueFactory.createURI("http://example.org/query:test-1");
     }
     
     /**
@@ -225,6 +233,10 @@ public class RdfUtilsTest
         this.testProfileUri2 = null;
         
         this.testProviderUri1 = null;
+        
+        this.testRuleTestUri1 = null;
+        
+        this.testQueryTypeUri1 = null;
     }
     
     /**
@@ -727,10 +739,87 @@ public class RdfUtilsTest
      * {@link org.queryall.utils.RdfUtils#getQueryTypes(org.openrdf.repository.Repository)}.
      */
     @Test
-    @Ignore
     public void testGetQueryTypes()
     {
-        Assert.fail("Not yet implemented");
+        final InputStream nextInputStream = this.getClass().getResourceAsStream("/testconfigs/querytype-1.n3");
+        
+        try
+        {
+            Assert.assertNotNull("Could not find test file", nextInputStream);
+            
+            this.testRepositoryConnection.add(nextInputStream, "", RDFFormat.N3);
+            this.testRepositoryConnection.commit();
+            
+            final Map<URI, QueryType> results = RdfUtils.getQueryTypes(this.testRepository);
+            
+            Assert.assertEquals(1, results.size());
+            
+            for(final URI nextQueryTypeUri : results.keySet())
+            {
+                final QueryType nextQueryType = results.get(nextQueryTypeUri);
+                
+                Assert.assertNotNull("QueryType was null", nextQueryType);
+                
+                Assert.assertEquals("QueryType key was not the same as its map URI", nextQueryTypeUri, nextQueryType.getKey());
+                
+                if(nextQueryTypeUri.equals(this.testQueryTypeUri1))
+                {
+                    Assert.assertEquals("Results did not contain correct query type URI", this.testQueryTypeUri1,
+                            nextQueryTypeUri);
+                    
+                    Assert.assertTrue("Query type is dummy query type was not parsed correctly", nextQueryType.getIsDummyQueryType());
+
+                    Assert.assertTrue("Query type is pageable was not parsed correctly", nextQueryType.getIsPageable());
+                    
+                    Assert.assertEquals("Query type title was not parsed correctly", "Test 1 query type", nextQueryType.getTitle());
+                    
+                    Assert.assertFalse("Query type handle all namespaces was not parsed correctly", nextQueryType.getHandleAllNamespaces());
+                    
+                    Assert.assertTrue("Query type is namespace specific was not parsed correctly", nextQueryType.getIsNamespaceSpecific());
+                    
+                    Assert.assertEquals("Query type namespace match method was not parsed correctly", QueryTypeImpl.getNamespaceMatchAllUri(), nextQueryType.getNamespaceMatchMethod());
+
+                    Assert.assertTrue("Query type include defaults was not parsed correctly", nextQueryType.getIncludeDefaults());
+                    
+                    Assert.assertEquals("Query type input regex was not parsed correctly", "^([\\w-]+):(.+)", nextQueryType.getInputRegex());
+                    
+                    Assert.assertEquals("Query type template string was not parsed correctly", "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }", nextQueryType.getTemplateString());
+
+                    Assert.assertEquals("Query type query uri template string was not parsed correctly", "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}", nextQueryType.getQueryUriTemplateString());
+                    
+                    Assert.assertEquals("Query type standard uri template string was not parsed correctly", "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}", nextQueryType.getStandardUriTemplateString());
+                    
+                    Assert.assertEquals("Query type output rdf xml string was not parsed correctly", "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>", nextQueryType.getOutputRdfXmlString());
+                    
+                    Assert.assertTrue("Query type in robots txt was not parsed correctly", nextQueryType.getInRobotsTxt());
+                    
+                    Assert.assertEquals("Query type profile include exclude order was not parsed correctly", ProfileImpl.getProfileExcludeThenIncludeUri(), nextQueryType.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType.getPublicIdentifierIndexes().length);
+                    
+                    Assert.assertEquals("Query type public identifiers were not parsed correctly", 1, nextQueryType.getPublicIdentifierIndexes()[0]);
+
+                    Assert.assertEquals("Query type namespace input indexes size was not parsed correctly", 1, nextQueryType.getNamespaceInputIndexes().length);
+                    
+                    Assert.assertEquals("Query type namespace input indexes were not parsed correctly", 1, nextQueryType.getNamespaceInputIndexes()[0]);
+
+                    Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1, nextQueryType.getSemanticallyLinkedQueryTypes().size());
+
+                }
+            }
+        }
+        catch(final RDFParseException ex)
+        {
+            Assert.fail("Found unexpected RDFParseException : " + ex.getMessage());
+        }
+        catch(final RepositoryException ex)
+        {
+            Assert.fail("Found unexpected RepositoryException : " + ex.getMessage());
+        }
+        catch(final IOException ex)
+        {
+            Assert.fail("Found unexpected IOException : " + ex.getMessage());
+        }
     }
     
     /**
@@ -738,10 +827,56 @@ public class RdfUtilsTest
      * {@link org.queryall.utils.RdfUtils#getRuleTests(org.openrdf.repository.Repository)}.
      */
     @Test
-    @Ignore
     public void testGetRuleTests()
     {
-        Assert.fail("Not yet implemented");
+        final InputStream nextInputStream = this.getClass().getResourceAsStream("/testconfigs/ruletest-1.n3");
+        
+        try
+        {
+            Assert.assertNotNull("Could not find test file", nextInputStream);
+            
+            this.testRepositoryConnection.add(nextInputStream, "", RDFFormat.N3);
+            this.testRepositoryConnection.commit();
+            
+            final Map<URI, RuleTest> results = RdfUtils.getRuleTests(this.testRepository);
+            
+            Assert.assertEquals(1, results.size());
+            
+            for(final URI nextRuleTestUri : results.keySet())
+            {
+                final RuleTest nextRuleTest = results.get(nextRuleTestUri);
+                
+                Assert.assertNotNull("RuleTest was null", nextRuleTest);
+                
+                Assert.assertEquals("RuleTest key was not the same as its map URI", nextRuleTestUri, nextRuleTest.getKey());
+                
+                if(nextRuleTestUri.equals(this.testRuleTestUri1))
+                {
+                    Assert.assertEquals("Results did not contain correct rule test URI", this.testRuleTestUri1,
+                            nextRuleTestUri);
+                    
+                    Assert.assertEquals("RuleTest stages were not parsed correctly", 2, nextRuleTest.getStages().size());
+
+                    Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris().size());
+                    
+                    Assert.assertEquals("RuleTest input string was not parsed correctly", "http://example.org/", nextRuleTest.getTestInputString());
+
+                    Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/", nextRuleTest.getTestOutputString());
+                }
+            }
+        }
+        catch(final RDFParseException ex)
+        {
+            Assert.fail("Found unexpected RDFParseException : " + ex.getMessage());
+        }
+        catch(final RepositoryException ex)
+        {
+            Assert.fail("Found unexpected RepositoryException : " + ex.getMessage());
+        }
+        catch(final IOException ex)
+        {
+            Assert.fail("Found unexpected IOException : " + ex.getMessage());
+        }
     }
     
     /**

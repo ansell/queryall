@@ -43,6 +43,11 @@ public abstract class AbstractQueryTypeTest
     
     private QueryType queryTypePublicIdentifiers;
     
+    private QueryType queryTypeNamespaceInputIndexes;
+    
+    private QueryType queryTypeIncludeDefaults;
+	private QueryType queryTypeNotIncludeDefaults;
+
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll;
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll;
@@ -63,7 +68,7 @@ public abstract class AbstractQueryTypeTest
     
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll;
-    
+
     /**
      * This method must return the URI used by the implementation to indicate that all namespaces
      * must match for the namespace test to be satisfied
@@ -178,6 +183,18 @@ public abstract class AbstractQueryTypeTest
         
         this.queryTypePublicIdentifiers = this.getNewTestQueryType();
         this.queryTypePublicIdentifiers.setPublicIdentifierIndexes(testPublicIdentifierIndexes);
+        
+        final int[] testNamespaceIdentifierIndexes = new int[1];
+        testNamespaceIdentifierIndexes[0] = 2;
+        
+        this.queryTypeNamespaceInputIndexes = this.getNewTestQueryType();
+        this.queryTypeNamespaceInputIndexes.setNamespaceInputIndexes(testNamespaceIdentifierIndexes);
+        
+        this.queryTypeIncludeDefaults = this.getNewTestQueryType();
+        this.queryTypeIncludeDefaults.setIncludeDefaults(true);
+        
+        this.queryTypeNotIncludeDefaults = this.getNewTestQueryType();
+        this.queryTypeNotIncludeDefaults.setIncludeDefaults(false);
         
         this.queryType123NamespacesMatchMethodAll = this.getNewTestQueryType();
         this.queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
@@ -331,6 +348,10 @@ public abstract class AbstractQueryTypeTest
         this.namespaces45 = null;
         
         this.queryTypePublicIdentifiers = null;
+        this.queryTypeNamespaceInputIndexes = null;
+        
+        this.queryTypeIncludeDefaults = null;
+        this.queryTypeNotIncludeDefaults = null;
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = null;
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = null;
@@ -911,6 +932,25 @@ public abstract class AbstractQueryTypeTest
     {
         Assert.assertTrue(this.queryTypePublicIdentifiers.isInputVariablePublic(2));
         Assert.assertFalse(this.queryTypePublicIdentifiers.isInputVariablePublic(1));
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.QueryType#getNamespaceInputIndexes()}.
+     */
+    @Test
+    public void testNamespaceVariables()
+    {
+        Assert.assertEquals(1, this.queryTypeNamespaceInputIndexes.getNamespaceInputIndexes().length);
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.QueryType#getIncludeDefaults()}.
+     */
+    @Test
+    public void testIncludeDefaults()
+    {
+        Assert.assertTrue(this.queryTypeIncludeDefaults.getIncludeDefaults());
+        Assert.assertFalse(this.queryTypeNotIncludeDefaults.getIncludeDefaults());
     }
     
 }
