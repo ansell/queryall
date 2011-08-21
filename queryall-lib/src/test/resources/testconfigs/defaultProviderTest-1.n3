@@ -6,3 +6,9 @@
 	<http://purl.org/queryall/provider:isDefaultSource> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
 	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:defaultprovidersquerytypetest-false> .
 	
+<http://example.org/query:defaultprovidersquerytypetest-true> a <http://purl.org/queryall/query:Query> ;
+	<http://purl.org/queryall/query:includeDefaults> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+
+<http://example.org/query:defaultprovidersquerytypetest-false> a <http://purl.org/queryall/query:Query> ;
+	<http://purl.org/queryall/query:includeDefaults> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+	

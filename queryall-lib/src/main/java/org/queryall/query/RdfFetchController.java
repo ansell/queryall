@@ -726,7 +726,7 @@ public class RdfFetchController
                 if(!nextQueryType.getIsNamespaceSpecific())
                 {
                     chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                            this.localSettings.getAllProviders(), nextQueryType, this.sortedIncludedProfiles,
+                            this.localSettings.getAllProviders(), nextQueryType.getKey(), this.sortedIncludedProfiles,
                             this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
                             this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
                 }
@@ -815,7 +815,7 @@ public class RdfFetchController
                 {
                     if(nextQueryType.getIsNamespaceSpecific()
                             && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                                    this.localSettings.getAllProviders(), nextQueryType, this.sortedIncludedProfiles,
+                                    this.localSettings.getAllProviders(), nextQueryType.getKey(), this.sortedIncludedProfiles,
                                     this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
                                     this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true))
                                     .size() > 0)

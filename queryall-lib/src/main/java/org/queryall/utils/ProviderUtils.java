@@ -31,6 +31,16 @@ public final class ProviderUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderUtils.log.isInfoEnabled();
     
+    /**
+     * 
+     * 
+     * @param allProviders
+     * @param queryType
+     * @param profileList
+     * @param recogniseImplicitProviderInclusions
+     * @param includeNonProfileMatchedProviders
+     * @return
+     */
     public static Collection<Provider> getDefaultProviders(final Map<URI, Provider> allProviders,
             final QueryType queryType, final List<Profile> profileList,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
@@ -67,6 +77,14 @@ public final class ProviderUtils
         return results;
     }
     
+    /**
+     * 
+     * 
+     * @param allProviders
+     * @param namespaceUris
+     * @param namespaceMatchMethod
+     * @return
+     */
     public static Map<URI, Provider> getProvidersForNamespaceUris(final Map<URI, Provider> allProviders,
             final Collection<Collection<URI>> namespaceUris, final URI namespaceMatchMethod)
     {
@@ -145,6 +163,20 @@ public final class ProviderUtils
         return results;
     }
     
+    /**
+     * 
+     * 
+     * NOTE: this method relies on the regular expression matching behaviour of QueryType
+     * 
+     * @param allProviders
+     * @param sortedIncludedProfiles
+     * @param nextQueryType
+     * @param namespacePrefixToUriMap
+     * @param queryString
+     * @param recogniseImplicitProviderInclusions
+     * @param includeNonProfileMatchedProviders
+     * @return
+     */
     public static Collection<Provider> getProvidersForQueryNamespaceSpecific(final Map<URI, Provider> allProviders,
             final List<Profile> sortedIncludedProfiles, final QueryType nextQueryType,
             final Map<String, Collection<URI>> namespacePrefixToUriMap, final String queryString,
@@ -156,7 +188,6 @@ public final class ProviderUtils
         
         final int queryStringMatchesSize = queryStringMatches.size();
         
-        // Collection<String> nextQueryNamespacePrefixes = new HashSet<String>();
         final Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
         
         for(final int nextNamespaceInputIndex : nextQueryType.getNamespaceInputIndexes())
@@ -240,8 +271,18 @@ public final class ProviderUtils
         return results;
     }
     
+    /**
+     * Finds all providers for the given query type URI, taking into account profile instructions, but without taking into account
+     * 
+     * @param allProviders
+     * @param nextQueryTypeURI
+     * @param sortedIncludedProfiles
+     * @param recogniseImplicitProviderInclusions
+     * @param includeNonProfileMatchedProviders
+     * @return
+     */
     public static Collection<Provider> getProvidersForQueryNonNamespaceSpecific(final Map<URI, Provider> allProviders,
-            final QueryType nextQueryType, final List<Profile> sortedIncludedProfiles,
+            final URI nextQueryTypeURI, final List<Profile> sortedIncludedProfiles,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
         final Collection<Provider> results = new LinkedList<Provider>();
@@ -249,7 +290,7 @@ public final class ProviderUtils
         // if we aren't specific to namespace we simply find all providers for this type of custom
         // query
         final Map<URI, Provider> relevantProviders =
-                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey());
+                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryTypeURI);
         
         for(final Provider nextAllProvider : relevantProviders.values())
         {
@@ -277,6 +318,12 @@ public final class ProviderUtils
         return results;
     }
     
+    /**
+     * 
+     * @param allProviders
+     * @param nextQueryType
+     * @return
+     */
     public static Map<URI, Provider> getProvidersForQueryType(final Map<URI, Provider> allProviders,
             final URI nextQueryType)
     {
@@ -306,6 +353,15 @@ public final class ProviderUtils
         return results;
     }
     
+    /**
+     * 
+     * 
+     * @param allProviders
+     * @param queryType
+     * @param namespaceUris
+     * @param namespaceMatchMethod
+     * @return
+     */
     public static Map<URI, Provider> getProvidersForQueryTypeForNamespaceUris(final Map<URI, Provider> allProviders,
             final URI queryType, final Collection<Collection<URI>> namespaceUris, final URI namespaceMatchMethod)
     {
