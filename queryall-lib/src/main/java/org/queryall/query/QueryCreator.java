@@ -196,12 +196,20 @@ public class QueryCreator
         }
         
         replacedString =
+                replacedString.replace(Constants.TEMPLATE_QUICK_LIMIT,
+                        "LIMIT " + localSettings.getIntProperty("pageoffsetQuickQueryLimit", 20));
+        
+        normalisedQueryUri =
+                normalisedQueryUri.replace(Constants.TEMPLATE_QUICK_LIMIT,
+                        "limit/" + localSettings.getIntProperty("pageoffsetQuickQueryLimit", 20));
+        
+        replacedString =
                 replacedString.replace(Constants.TEMPLATE_LIMIT,
-                        "LIMIT " + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
+                        "LIMIT " + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 50));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT,
-                        "limit/" + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
+                        "limit/" + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 50));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {

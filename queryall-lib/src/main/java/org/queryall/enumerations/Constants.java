@@ -185,6 +185,7 @@ public final class Constants
     public static final String TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY = "${percentEncoded_endpointQuery}";
     public static final String TEMPLATE_PLUS_URL_ENCODED_NORMALISED_STANDARD_URI =
             "${plusUrlEncoded_normalisedStandardUri}";
+    public static final String TEMPLATE_QUICK_LIMIT = "${quicklimit}";
     public static final String TEMPLATE_QUERY_STRING = "${queryString}";
     public static final String TEMPLATE_REAL_HOST_NAME = "${realHostName}";
     public static final String TEMPLATE_SPARQL_OFFSET = "${sparqlOffset}";
@@ -314,6 +315,7 @@ public final class Constants
     public static final String TEXT_PLAIN = "text/plain";
     
     public static final String TEXT_X_NQUADS = "text/x-nquads";
+
     
     public static final SimpleDateFormat ISO8601UTC()
     {
