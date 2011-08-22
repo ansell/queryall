@@ -299,10 +299,9 @@ public class RdfFetchController
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
                                 ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(),
-                                this.returnFileFormat, nextQuery, "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
-                                pageoffsetIndividualQueryLimit, this.localSettings, this.localBlacklistController,
-                                nextBundle);
+                                nextQuery, "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
+                                pageoffsetIndividualQueryLimit,
+                                this.localSettings, this.localBlacklistController, nextBundle);
                 
                 addToFetchQueue = true;
                 
@@ -317,9 +316,9 @@ public class RdfFetchController
                     .equals(HttpProviderImpl.getProviderHttpGetUrl()))
             {
                 nextThread =
-                        new RdfFetcherUriQueryRunnable(nextEndpoint, this.returnFileFormat, nextQuery, "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
-                                this.localSettings, this.localBlacklistController, nextBundle);
+                        new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
+                                this.localSettings,
+                                this.localBlacklistController, nextBundle);
                 
                 addToFetchQueue = true;
                 

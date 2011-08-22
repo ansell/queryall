@@ -1965,8 +1965,8 @@ public final class RdfUtils
         for(final String nextLocation : retrievalUrls)
         {
             final RdfFetcherQueryRunnable nextThread =
-                    new RdfFetcherUriQueryRunnable(nextLocation, defaultResultFormat, "", "", defaultResultFormat,
-                            localSettings, localBlacklistController, new QueryBundle());
+                    new RdfFetcherUriQueryRunnable(nextLocation, "", "", defaultResultFormat, localSettings,
+                            localBlacklistController, new QueryBundle());
             
             retrievalThreads.add(nextThread);
         }

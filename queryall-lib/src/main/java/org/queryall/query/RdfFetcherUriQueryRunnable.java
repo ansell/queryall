@@ -10,12 +10,12 @@ import org.queryall.blacklist.BlacklistController;
  */
 public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 {
-    public RdfFetcherUriQueryRunnable(final String nextEndpointUrl, final String nextFormat, final String nextQuery,
-            final String nextDebug, final String nextAcceptHeader, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
+    public RdfFetcherUriQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
+            final String nextAcceptHeader, final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
+            final QueryBundle nextOriginalQueryBundle)
     {
-        super(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings,
-                localBlacklistController, nextOriginalQueryBundle);
+        super(nextEndpointUrl, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController,
+                nextOriginalQueryBundle);
     }
     
     @Override

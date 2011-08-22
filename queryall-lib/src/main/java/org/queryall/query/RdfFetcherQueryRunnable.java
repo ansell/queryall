@@ -21,7 +21,6 @@ public class RdfFetcherQueryRunnable extends Thread
     private static final boolean _INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
     
     private String endpointUrl = "";
-    private String format = "";
     private String query = "";
     private String debug = "";
     private String acceptHeader = "";
@@ -43,12 +42,10 @@ public class RdfFetcherQueryRunnable extends Thread
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
-    public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextFormat, final String nextQuery,
-            final String nextDebug, final String nextAcceptHeader, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController)
+    public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
+            final String nextAcceptHeader, final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController)
     {
         this.setEndpointUrl(nextEndpointUrl);
-        this.setFormat(nextFormat);
         this.setQuery(nextQuery);
         this.setDebug(nextDebug);
         this.setAcceptHeader(nextAcceptHeader);
@@ -56,12 +53,11 @@ public class RdfFetcherQueryRunnable extends Thread
         this.setBlacklistController(localBlacklistController);
     }
     
-    public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextFormat, final String nextQuery,
-            final String nextDebug, final String nextAcceptHeader, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
+    public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
+            final String nextAcceptHeader, final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
+            final QueryBundle nextOriginalQueryBundle)
     {
-        this(nextEndpointUrl, nextFormat, nextQuery, nextDebug, nextAcceptHeader, localSettings,
-                localBlacklistController);
+        this(nextEndpointUrl, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController);
         this.setOriginalQueryBundle(nextOriginalQueryBundle);
     }
     
@@ -100,14 +96,6 @@ public class RdfFetcherQueryRunnable extends Thread
     public String getEndpointUrl()
     {
         return this.endpointUrl;
-    }
-    
-    /**
-     * @return the format
-     */
-    public String getFormat()
-    {
-        return this.format;
     }
     
     /**
@@ -268,15 +256,6 @@ public class RdfFetcherQueryRunnable extends Thread
     public void setEndpointUrl(final String endpointUrl)
     {
         this.endpointUrl = endpointUrl;
-    }
-    
-    /**
-     * @param format
-     *            the format to set
-     */
-    public void setFormat(final String format)
-    {
-        this.format = format;
     }
     
     /**

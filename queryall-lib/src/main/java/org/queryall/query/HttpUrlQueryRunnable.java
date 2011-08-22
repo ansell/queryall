@@ -47,7 +47,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             final String nextAcceptHeader, final String nextFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController)
     {
-        super(nextUrl, nextFormat, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
+        super(nextUrl, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
         this.httpOperation = nextHttpOperation;
         // this.url = nextUrl;
         // this.postInformation = nextPostInformation;
@@ -72,8 +72,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
             {
-                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), this.getFormat(), "",
-                        this.getQuery(), "", this.maxRowsParameter, this.getAcceptHeader()));
+                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(),
+                        "", this.maxRowsParameter, this.getAcceptHeader()));
             }
             else if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostUrlUri().stringValue())
                     || this.httpOperation.equals(HttpProviderImpl.getProviderHttpGetUrlUri().stringValue()))

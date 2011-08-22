@@ -39,7 +39,7 @@ public class RdfFetcher
     }
     
     // If postInformation is empty String "" or null then we assume they did not want to post
-    public String getDocumentFromUrl(final String endpointUrl, final String postInformation, final String acceptHeader)
+    public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
         throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, java.io.IOException
     {
         if(RdfFetcher._DEBUG)
@@ -95,12 +95,10 @@ public class RdfFetcher
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
-                conn.setRequestProperty("Accept", acceptHeader);
+                acceptHeader = this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
             }
-            else
-            {
-                conn.setRequestProperty("Accept", this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3"));
-            }
+            
+            conn.setRequestProperty("Accept", acceptHeader);
             
             conn.setUseCaches(this.localSettings.getBooleanProperty("useRequestCache", true));
             conn.setConnectTimeout(this.localSettings.getIntProperty("connectTimeout", 2000));
@@ -262,6 +260,13 @@ public class RdfFetcher
                 // conn.getResponseCode());
                 this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(), conn.getResponseCode());
                 
+                // Try to debug why there are endpoints responding with 406 suddenly
+                // may just be a virtuoso bug, but need some evidence
+                if(conn.getResponseCode() == 406)
+                {
+                    log.error("Found an endpoint that responded with 406 to acceptHeader="+acceptHeader);
+                }
+                
                 if(RdfFetcher._DEBUG)
                 {
                     final long errorend = System.currentTimeMillis();
@@ -280,8 +285,8 @@ public class RdfFetcher
         return results.toString();
     }
     
-    public String submitSparqlQuery(final String endpointUrl, final String format, final String defaultGraphUri,
-            final String query, final String debug, final int maxRowsParameter, final String acceptHeader)
+    public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
+            final String debug, final int maxRowsParameter, final String acceptHeader)
         throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, java.io.IOException
     {
         if(RdfFetcher._DEBUG)
@@ -294,7 +299,10 @@ public class RdfFetcher
         // NOTE: We use POST instead of GET so there is never a chance
         // that the URI will exceed the maximum supported length for a
         // particular HTTP server or intermediate proxy
-        String postQuery = "format=" + StringUtils.percentEncode(format) + "&";
+        String postQuery = "";
+        
+        // FIXME: Do we need to send a single format here?
+        //"format=" + StringUtils.percentEncode(acceptHeader) + "&";
         
         if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
         {

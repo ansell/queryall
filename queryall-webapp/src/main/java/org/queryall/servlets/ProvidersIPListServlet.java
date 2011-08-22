@@ -103,9 +103,9 @@ public class ProvidersIPListServlet extends HttpServlet
                             {
                                 final RdfFetcherSparqlQueryRunnable testQueryRunnable =
                                         new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri,
-                                                "application/rdf+xml",
-                                                "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug",
-                                                "application/rdf+xml", 5, localSettings, localBlacklistController, null);
+                                                "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5",
+                                                "nextDebug", "application/rdf+xml",
+                                                5, localSettings, localBlacklistController, null);
                                 sparqlThreads.add(testQueryRunnable);
                                 
                                 // test.submitSparqlQuery(nextEndpoint, "application/rdf+xml",
