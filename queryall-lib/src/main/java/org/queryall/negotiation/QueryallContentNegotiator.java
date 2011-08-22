@@ -138,7 +138,7 @@ public class QueryallContentNegotiator
             if(QueryallContentNegotiator._TRACE)
             {
                 QueryallContentNegotiator.log
-                        .trace("QueryallContentNegotiator: bestMatch not found, returning Settings:preferredDisplayContentType instead");
+                        .trace("QueryallContentNegotiator: bestMatch not found, returning fallback instead");
             }
             
             return fallback;

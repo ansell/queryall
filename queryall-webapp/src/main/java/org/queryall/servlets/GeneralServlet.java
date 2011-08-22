@@ -383,6 +383,7 @@ public class GeneralServlet extends HttpServlet
             return;
         }
         
+        // TODO: arrange to move this into the header include function
         response.setHeader("X-Application", localSettings.getStringProperty("userAgent", "queryall") + "/"
                 + Settings.VERSION);
         
@@ -392,7 +393,7 @@ public class GeneralServlet extends HttpServlet
         
         final RdfFetchController fetchController =
                 new RdfFetchController(localSettings, localBlacklistController, queryString, includedProfiles,
-                        useDefaultProviders, realHostName, pageOffset, requestedContentType);
+                        useDefaultProviders, realHostName, pageOffset);
         
         final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
         
@@ -758,15 +759,15 @@ public class GeneralServlet extends HttpServlet
             nextScheduledQueryBundle.toRdf(
                     myRepository,
                     StringUtils.createURI(StringUtils.percentEncode(queryString)
-                            + localSettings.getStringProperty("separator", ":")
+                            + localSettings.getSeparator()
                             + "pageoffset"
                             + pageOffset
-                            + localSettings.getStringProperty("separator", ":")
+                            + localSettings.getSeparator()
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getOriginalProvider().getKey()
                                     .stringValue().toLowerCase())
-                            + localSettings.getStringProperty("separator", ":")
+                            + localSettings.getSeparator()
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
-                                    .toLowerCase()) + localSettings.getStringProperty("separator", ":")
+                                    .toLowerCase()) + localSettings.getSeparator()
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
                     Settings.CONFIG_API_VERSION);
         }
@@ -912,19 +913,22 @@ public class GeneralServlet extends HttpServlet
             final boolean isPretendQuery, final int pageOffset, final String originalRequestedContentType,
             final String requestedContentType)
     {
-        GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
-                + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
-                + requestQueryOptions.containsExplicitPageOffsetValue() + " pageOffset=" + pageOffset
-                + " isPretendQuery=" + isPretendQuery + " useDefaultProviders=" + useDefaultProviders);
-        GeneralServlet.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
-                + request.getHeader("Accept") + " userAgent=" + request.getHeader("User-Agent"));
-        GeneralServlet.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
-        
-        if(!originalRequestedContentType.equals(requestedContentType))
+        if(_INFO)
         {
-            GeneralServlet.log
-                    .info("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="
-                            + originalRequestedContentType + " requestedContentType=" + requestedContentType);
+            GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
+                    + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
+                    + requestQueryOptions.containsExplicitPageOffsetValue() + " pageOffset=" + pageOffset
+                    + " isPretendQuery=" + isPretendQuery + " useDefaultProviders=" + useDefaultProviders);
+            GeneralServlet.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
+                    + request.getHeader("Accept") + " userAgent=" + request.getHeader("User-Agent"));
+            GeneralServlet.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
+            
+            if(!originalRequestedContentType.equals(requestedContentType))
+            {
+                GeneralServlet.log
+                        .info("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="
+                                + originalRequestedContentType + " requestedContentType=" + requestedContentType);
+            }
         }
     }
     

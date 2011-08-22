@@ -1111,7 +1111,7 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_ADDRESS,
                 StringUtils.xmlEncodeString("http://" + localSettings.getStringProperty("hostName", "") + "/"));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR,
-                StringUtils.xmlEncodeString(localSettings.getStringProperty("separator", ":")));
+                StringUtils.xmlEncodeString(localSettings.getSeparator()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils.xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils.xmlEncodeString(realHostName));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING, StringUtils.xmlEncodeString(queryString));
@@ -1124,7 +1124,7 @@ public class QueryCreator
                 StringUtils.xmlEncodeString(StringUtils.percentEncode("http://"
                         + localSettings.getStringProperty("hostName", "") + "/")));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
-                .xmlEncodeString(StringUtils.percentEncode(localSettings.getStringProperty("separator", ":"))));
+                .xmlEncodeString(StringUtils.percentEncode(localSettings.getSeparator())));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME,

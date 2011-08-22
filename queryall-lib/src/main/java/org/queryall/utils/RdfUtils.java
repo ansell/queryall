@@ -159,11 +159,11 @@ public final class RdfUtils
         {
             endpointUrls
                     .add(hostToUse + new QueryTypeImpl().getDefaultNamespace()
-                            + localSettings.getStringProperty("separator", ":")
+                            + localSettings.getSeparator()
                             + StringUtils.percentEncode(nsAndIdList.get(1)));
             nextQueryBundle
                     .setQueryEndpoint(hostToUse + new QueryTypeImpl().getDefaultNamespace()
-                            + localSettings.getStringProperty("separator", ":")
+                            + localSettings.getSeparator()
                             + StringUtils.percentEncode(nsAndIdList.get(1)));
         }
         // }
@@ -180,7 +180,7 @@ public final class RdfUtils
         dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpGetUrl());
         dummyProvider
                 .setKey(hostToUse + QueryAllNamespaces.PROVIDER.getNamespace()
-                        + localSettings.getStringProperty("separator", ":")
+                        + localSettings.getSeparator()
                         + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         
@@ -190,7 +190,7 @@ public final class RdfUtils
         
         dummyQuery
                 .setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
-                        + localSettings.getStringProperty("separator", ":")
+                        + localSettings.getSeparator()
                         + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
@@ -225,7 +225,7 @@ public final class RdfUtils
         
         dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpPostSparql());
         dummyProvider.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
-                + localSettings.getStringProperty("separator", ":")
+                + localSettings.getSeparator()
                 + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
@@ -234,7 +234,7 @@ public final class RdfUtils
         final QueryType dummyQuery = new QueryTypeImpl();
         
         dummyQuery.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
-                + localSettings.getStringProperty("separator", ":")
+                + localSettings.getSeparator()
                 + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);

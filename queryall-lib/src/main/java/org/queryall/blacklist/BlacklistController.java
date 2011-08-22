@@ -333,7 +333,7 @@ public class BlacklistController
     // this method checks for the expiry of the blacklist and clears the
     // blacklist if it has expired, and returns true if it has expired since
     // last time, even if there were no errors since then
-    public boolean doBlacklistExpiry()
+    public synchronized boolean doBlacklistExpiry()
     {
         final long blacklistResetPeriodMilliseconds =
                 this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);

@@ -125,7 +125,6 @@ public class RdfFetchController
     private boolean useDefaultProviders = true;
     private String realHostName;
     private int pageOffset;
-    private String returnFileFormat;
     private boolean includeNonPagedQueries = true;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
@@ -145,7 +144,7 @@ public class RdfFetchController
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final String nextQueryString,
             final List<Profile> nextIncludedSortedProfiles, final boolean nextUseDefaultProviders,
-            final String nextRealHostName, final int nextPageOffset, final String nextReturnFileFormat)
+            final String nextRealHostName, final int nextPageOffset)
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -168,7 +167,6 @@ public class RdfFetchController
         }
         
         this.includeNonPagedQueries = (this.pageOffset == 1);
-        this.returnFileFormat = nextReturnFileFormat;
         
         this.initialise();
     }
@@ -298,10 +296,10 @@ public class RdfFetchController
             {
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
-                                ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(),
-                                nextQuery, "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
-                                pageoffsetIndividualQueryLimit,
-                                this.localSettings, this.localBlacklistController, nextBundle);
+                                ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(), nextQuery,
+                                "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
+                                pageoffsetIndividualQueryLimit, this.localSettings, this.localBlacklistController,
+                                nextBundle);
                 
                 addToFetchQueue = true;
                 
@@ -316,9 +314,9 @@ public class RdfFetchController
                     .equals(HttpProviderImpl.getProviderHttpGetUrl()))
             {
                 nextThread =
-                        new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
-                                this.localSettings,
-                                this.localBlacklistController, nextBundle);
+                        new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",
+                                ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(),
+                                this.localSettings, this.localBlacklistController, nextBundle);
                 
                 addToFetchQueue = true;
                 
@@ -458,7 +456,7 @@ public class RdfFetchController
                             nextEndpoint
                                     .replace(Constants.TEMPLATE_REAL_HOST_NAME, this.realHostName)
                                     .replace(Constants.TEMPLATE_DEFAULT_SEPARATOR,
-                                            localSettings.getStringProperty("separator", ":"))
+                                            localSettings.getSeparator())
                                     .replace(Constants.TEMPLATE_OFFSET, String.valueOf(this.pageOffset));
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc
@@ -687,6 +685,8 @@ public class RdfFetchController
         {
             this.queryBundles = new LinkedList<QueryBundle>();
             
+            // FIXME: need to integrate NamespaceEntry list with this method so we can substitute
+            // preferred namespaces for alternates
             final Collection<QueryType> allCustomQueries =
                     QueryTypeUtils.getQueryTypesMatchingQueryString(this.queryString, this.sortedIncludedProfiles,
                             this.localSettings.getAllQueryTypes(),
@@ -778,14 +778,15 @@ public class RdfFetchController
                                 .trace("RdfFetchController.initialise: found NO suitable providers for custom type="
                                         + nextQueryType.getKey());
                     }
+                    
+                    if(RdfFetchController._TRACE)
+                    {
+                        RdfFetchController.log
+                                .trace("RdfFetchController.initialise: about to generate query bundles for query type and providers");
+                    }
                 } // end if(_DEBUG}
                 
-                if(RdfFetchController._TRACE)
-                {
-                    RdfFetchController.log
-                            .trace("RdfFetchController.initialise: about to generate query bundles for query type and providers");
-                }
-                
+                // Default to safe setting of useAllEndpointsForEachProvider=true here
                 final Collection<QueryBundle> queryBundlesForQueryType =
                         this.generateQueryBundlesForQueryTypeAndProviders(nextQueryType, chosenProviders,
                                 this.localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true),
@@ -814,7 +815,8 @@ public class RdfFetchController
                 {
                     if(nextQueryType.getIsNamespaceSpecific()
                             && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                                    this.localSettings.getAllProviders(), nextQueryType.getKey(), this.sortedIncludedProfiles,
+                                    this.localSettings.getAllProviders(), nextQueryType.getKey(),
+                                    this.sortedIncludedProfiles,
                                     this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
                                     this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true))
                                     .size() > 0)
@@ -823,42 +825,41 @@ public class RdfFetchController
                     }
                 }
             } // end for(QueryType nextQueryType : allCustomQueries)
-        } // end if(queryBundles == null)
-        
-        if(RdfFetchController._DEBUG)
-        {
-            if(this.queryBundles.size() > 0)
+            
+            if(RdfFetchController._DEBUG)
             {
-                for(final QueryBundle nextQueryBundleDebug : this.queryBundles)
+                if(this.queryBundles.size() > 0)
                 {
-                    RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
-                            + nextQueryBundleDebug.toString());
+                    for(final QueryBundle nextQueryBundleDebug : this.queryBundles)
+                    {
+                        RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
+                                + nextQueryBundleDebug.toString());
+                    }
                 }
             }
-        }
-        if(RdfFetchController._INFO)
-        {
-            if(this.queryBundles.size() == 0)
+            if(RdfFetchController._INFO)
             {
-                RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
+                if(this.queryBundles.size() == 0)
+                {
+                    RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
+                }
             }
-        }
+            if(RdfFetchController._DEBUG)
+            {
+                final long end = System.currentTimeMillis();
+                
+                RdfFetchController.log.debug("RdfFetchController.initialise: numberOfThreads="
+                        + this.getFetchThreadGroup().size());
+                
+                RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
+                        (end - start)));
+            }
+        } // end if(queryBundles == null)
         
-        // queryBundles = multiProviderQueryBundles;
-        // return multiProviderQueryBundles;
-        
-        this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.queryBundles,
-                this.localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0)));
-        
-        if(RdfFetchController._DEBUG)
+        if(this.fetchThreadGroup.size() == 0)
         {
-            final long end = System.currentTimeMillis();
-            
-            RdfFetchController.log.debug("RdfFetchController.initialise: numberOfThreads="
-                    + this.getFetchThreadGroup().size());
-            
-            RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
-                    (end - start)));
+            this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.queryBundles,
+                    this.localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0)));
         }
     }
     

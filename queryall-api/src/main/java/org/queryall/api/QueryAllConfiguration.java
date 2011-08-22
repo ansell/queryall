@@ -52,6 +52,8 @@ public interface QueryAllConfiguration
     
     Pattern getPlainNamespacePattern();
     
+    String getSeparator();
+    
     Collection<Statement> getStatementProperties(String string);
     
     Collection<String> getStringProperties(String string);

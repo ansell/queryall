@@ -98,6 +98,7 @@ public class Settings implements QueryAllConfiguration
     private volatile Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
     
     private long initialisedTimestamp = System.currentTimeMillis();
+    private String separator;
     
     private static Settings defaultSettings = null;
     
@@ -1950,5 +1951,19 @@ public class Settings implements QueryAllConfiguration
     public void setWebappConfigUriList(final Collection<String> webappConfigUriList)
     {
         this.webappConfigUriList = webappConfigUriList;
+    }
+
+    /**
+     * Helper method to get the default separator, using a non-lookup cache if possible
+     */
+    @Override
+    public String getSeparator()
+    {
+        if(this.separator == null)
+        {
+            this.separator = this.getStringProperty("defaultSeparator", ":");
+        }
+        
+        return this.separator;
     }
 }
