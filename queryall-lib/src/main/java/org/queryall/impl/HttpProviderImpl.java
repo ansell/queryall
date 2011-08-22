@@ -351,7 +351,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
         }
         else
         {
-            return Settings.getSettings().getStringProperty("defaultAcceptHeader", "application/rdf+xml");
+            return Settings.getSettings().getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
         }
     }
     

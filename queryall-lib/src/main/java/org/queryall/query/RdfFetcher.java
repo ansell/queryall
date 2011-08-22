@@ -78,6 +78,8 @@ public class RdfFetcher
                 }
             }
             
+            // logging currently based on the IP address and the protocol, but not on the port number
+            // TODO: do we need to log at the port number level?
             this.localBlacklistController.accumulateQueryTotal(url.getProtocol() + "://" + url.getHost());
             
             conn = (HttpURLConnection)url.openConnection();
@@ -94,6 +96,10 @@ public class RdfFetcher
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
                 conn.setRequestProperty("Accept", acceptHeader);
+            }
+            else
+            {
+                conn.setRequestProperty("Accept", this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3"));
             }
             
             conn.setUseCaches(this.localSettings.getBooleanProperty("useRequestCache", true));
