@@ -86,7 +86,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             // normalise it
             this.setNormalisedResult(this.getRawResult());
             
-            this.setReturnedContentType(fetcher.lastReturnedContentType);
+            this.setReturnedContentType(fetcher.getLastReturnedContentType());
             
             if(this.getReturnedContentType() != null)
             {
@@ -95,7 +95,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
             }
             
-            this.setReturnedContentEncoding(fetcher.lastReturnedContentEncoding);
+            this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
             
             this.setWasSuccessful(true);
         }

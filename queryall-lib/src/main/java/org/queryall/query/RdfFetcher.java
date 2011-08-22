@@ -27,8 +27,8 @@ public class RdfFetcher
     public static String RDF_XML_FETCH_OPERATION = "RDF_XML_FETCH_OPERATION";
     public static String HTTP_POST_OPERATION = "HTTP_POST_OPERATION";
     
-    public String lastReturnedContentType = null;
-    public String lastReturnedContentEncoding = null;
+    private String lastReturnedContentType = null;
+    private String lastReturnedContentEncoding = null;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
@@ -40,7 +40,7 @@ public class RdfFetcher
     
     // If postInformation is empty String "" or null then we assume they did not want to post
     public String getDocumentFromUrl(final String endpointUrl, final String postInformation, final String acceptHeader)
-        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, Exception
+        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, java.io.IOException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -128,8 +128,8 @@ public class RdfFetcher
                 inputStream = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             }
             
-            this.lastReturnedContentType = conn.getContentType();
-            this.lastReturnedContentEncoding = conn.getContentEncoding();
+            this.setLastReturnedContentType(conn.getContentType());
+            this.setLastReturnedContentEncoding(conn.getContentEncoding());
             
             String line;
             
@@ -138,7 +138,7 @@ public class RdfFetcher
                 if(RdfFetcher._TRACE)
                 {
                     RdfFetcher.log.trace("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
-                            + " lastReturnedContentEncoding=" + this.lastReturnedContentEncoding + " line=" + line);
+                            + " lastReturnedContentEncoding=" + this.getLastReturnedContentEncoding() + " line=" + line);
                 }
                 
                 results.append(line + "\n");
@@ -155,6 +155,30 @@ public class RdfFetcher
             errorOccured = true;
             
             throw uhe;
+        }
+        catch(final java.net.NoRouteToHostException nrthe)
+        {
+            if(RdfFetcher._INFO)
+            {
+                RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: No Route To Host Exception occurred endpointUrl="
+                        + endpointUrl);
+            }
+            
+            errorOccured = true;
+            
+            throw nrthe;
+        }
+        catch(final java.net.PortUnreachableException pue)
+        {
+            if(RdfFetcher._INFO)
+            {
+                RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Port Unreachable Exception occurred endpointUrl="
+                        + endpointUrl);
+            }
+            
+            errorOccured = true;
+            
+            throw pue;
         }
         catch(final java.net.ConnectException ce)
         {
@@ -192,17 +216,17 @@ public class RdfFetcher
             
             throw se;
         }
-        catch(final Exception ex)
+        catch(final java.io.IOException ioe)
         {
             if(RdfFetcher._INFO)
             {
-                RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Unknown exception occurred endpointUrl="
-                        + endpointUrl + " type=" + ex.getClass().getName() + " message=" + ex.getMessage());
+                RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Input Output Exception occurred endpointUrl="
+                        + endpointUrl);
             }
             
             errorOccured = true;
             
-            throw ex;
+            throw ioe;
         }
         finally
         {
@@ -227,11 +251,10 @@ public class RdfFetcher
             if(errorOccured)
             {
                 // having conn.getResponseCode() slows everything down apparently if there was an
-                // error
-                // and makes it hard to find out where the error occurred even
+                // error and makes it hard to find out where the error occurred even
                 // BlacklistController.accumulateHttpResponseError(url.getProtocol()+"://"+url.getHost(),
                 // conn.getResponseCode());
-                this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(), 1);
+                this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(), conn.getResponseCode());
                 
                 if(RdfFetcher._DEBUG)
                 {
@@ -253,7 +276,7 @@ public class RdfFetcher
     
     public String submitSparqlQuery(final String endpointUrl, final String format, final String defaultGraphUri,
             final String query, final String debug, final int maxRowsParameter, final String acceptHeader)
-        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, Exception
+        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, java.io.IOException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -293,6 +316,38 @@ public class RdfFetcher
         }
         
         return results;
+    }
+
+    /**
+     * @return the lastReturnedContentType
+     */
+    public String getLastReturnedContentType()
+    {
+        return lastReturnedContentType;
+    }
+
+    /**
+     * @param lastReturnedContentType the lastReturnedContentType to set
+     */
+    protected void setLastReturnedContentType(String lastReturnedContentType)
+    {
+        this.lastReturnedContentType = lastReturnedContentType;
+    }
+
+    /**
+     * @return the lastReturnedContentEncoding
+     */
+    public String getLastReturnedContentEncoding()
+    {
+        return lastReturnedContentEncoding;
+    }
+
+    /**
+     * @param lastReturnedContentEncoding the lastReturnedContentEncoding to set
+     */
+    protected void setLastReturnedContentEncoding(String lastReturnedContentEncoding)
+    {
+        this.lastReturnedContentEncoding = lastReturnedContentEncoding;
     }
     
 }

@@ -31,7 +31,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setQueryEndTime(new Date());
             
-            this.setReturnedContentType(fetcher.lastReturnedContentType);
+            this.setReturnedContentType(fetcher.getLastReturnedContentType());
             
             if(this.getReturnedContentType() != null)
             {
@@ -40,7 +40,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                 this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
             }
             
-            this.setReturnedContentEncoding(fetcher.lastReturnedContentEncoding);
+            this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
             
             this.setWasSuccessful(true);
         }
