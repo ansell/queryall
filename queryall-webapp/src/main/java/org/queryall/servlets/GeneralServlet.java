@@ -1049,6 +1049,7 @@ public class GeneralServlet extends HttpServlet
         response.setCharacterEncoding("UTF-8");
         response.setStatus(responseCode);
         response.setHeader("Vary", "Accept");
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.flushBuffer();
     }
     
