@@ -24,11 +24,11 @@ public class QueryallLanguageNegotiator
     {
         contentNegotiator = new ContentTypeNegotiator();
         
-        if(Settings.getSettings().getStringProperty("preferredDisplayLanguage", "") != null
-                && !Settings.getSettings().getStringProperty("preferredDisplayLanguage", "").trim().equals(""))
+        if(Settings.getSettings().getStringProperty("preferredDisplayLanguage", "en") != null
+                && !Settings.getSettings().getStringProperty("preferredDisplayLanguage", "en").trim().equals(""))
         {
             QueryallLanguageNegotiator.contentNegotiator.addVariant(Settings.getSettings().getStringProperty(
-                    "preferredDisplayLanguage", ""));
+                    "preferredDisplayLanguage", "en"));
         }
         
         QueryallLanguageNegotiator.contentNegotiator.addVariant("en;q=0.9").addAliasMediaType("en_GB;q=0.9")

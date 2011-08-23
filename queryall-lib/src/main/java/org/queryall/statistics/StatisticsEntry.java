@@ -741,8 +741,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
             
             return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
                     localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "*/*",
-                    localSettings.getStringProperty("assumedResponseContentType", ""), localSettings,
-                    localBlacklistController);
+                    localSettings, localBlacklistController);
         }
         else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderImpl.getProviderHttpPostUrlUri())
                 .equals(HttpProviderImpl.getProviderHttpPostUrlUri()))
@@ -755,8 +754,7 @@ public class StatisticsEntry implements BaseQueryAllInterface
             }
             
             return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), postInformation, "*/*",
-                    localSettings.getStringProperty("assumedResponseContentType", ""), localSettings,
+                    localSettings.getStringProperty("statisticsServerUrl", ""), postInformation, "*/*", localSettings,
                     localBlacklistController);
         }
         else

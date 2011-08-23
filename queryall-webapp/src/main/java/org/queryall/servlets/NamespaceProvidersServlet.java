@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,12 +75,12 @@ public class NamespaceProvidersServlet extends HttpServlet
         
         final Map<URI, QueryType> allQueryTypes = localSettings.getAllQueryTypes();
         
-        final Map<URI, Collection<Provider>> providersByNamespace = new Hashtable<URI, Collection<Provider>>();
+        final Map<URI, Collection<Provider>> providersByNamespace = new ConcurrentHashMap<URI, Collection<Provider>>();
         
-        final Map<URI, Collection<Provider>> providersByQueryKey = new Hashtable<URI, Collection<Provider>>();
+        final Map<URI, Collection<Provider>> providersByQueryKey = new ConcurrentHashMap<URI, Collection<Provider>>();
         
         final Map<String, Collection<Provider>> allQueryTypesByNamespace =
-                new Hashtable<String, Collection<Provider>>();
+                new ConcurrentHashMap<String, Collection<Provider>>();
         
         int overallQueryTypeProviders = 0;
         int overallNamespaceProviders = 0;

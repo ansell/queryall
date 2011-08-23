@@ -2,10 +2,10 @@ package org.queryall.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
 import org.openrdf.model.URI;
@@ -1054,7 +1054,7 @@ public class QueryCreator
                     + " realHostName=" + realHostName + " pageOffset=" + pageOffset);
         }
         
-        final Map<String, String> attributeList = new Hashtable<String, String>();
+        final Map<String, String> attributeList = new ConcurrentHashMap<String, String>();
         
         if(nextIncludedQueryType != null && nextIncludedQueryType.getKey() != null)
         {
@@ -1123,8 +1123,8 @@ public class QueryCreator
                 Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode("http://"
                         + localSettings.getStringProperty("hostName", "") + "/")));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR, StringUtils
-                .xmlEncodeString(StringUtils.percentEncode(localSettings.getSeparator())));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR,
+                StringUtils.xmlEncodeString(StringUtils.percentEncode(localSettings.getSeparator())));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME,
@@ -1525,14 +1525,15 @@ public class QueryCreator
     
     public static String testReplaceMethod(final String inputString)
     {
-        final Map<String, String> myTestHashtable = new TreeMap<String, String>();
+        final Map<String, String> myTestConcurrentHashMap = new TreeMap<String, String>();
         
-        myTestHashtable.put("${input_1}", "MyInput1");
-        myTestHashtable.put("${inputUrlEncoded_privatelowercase_input_1}", "myinput1");
-        myTestHashtable.put("${input_2}", "YourInput2");
-        myTestHashtable.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
+        myTestConcurrentHashMap.put("${input_1}", "MyInput1");
+        myTestConcurrentHashMap.put("${inputUrlEncoded_privatelowercase_input_1}", "myinput1");
+        myTestConcurrentHashMap.put("${input_2}", "YourInput2");
+        myTestConcurrentHashMap.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
         
-        final String returnString = QueryCreator.replaceTags(inputString, myTestHashtable, Settings.getSettings());
+        final String returnString =
+                QueryCreator.replaceTags(inputString, myTestConcurrentHashMap, Settings.getSettings());
         
         // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
         

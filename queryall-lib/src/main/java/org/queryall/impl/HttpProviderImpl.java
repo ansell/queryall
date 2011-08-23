@@ -4,6 +4,7 @@
 package org.queryall.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.openrdf.OpenRDFException;
@@ -335,7 +336,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     {
         if(this.endpointUrls == null)
         {
-            this.endpointUrls = new HashSet<String>();
+            this.endpointUrls = Collections.synchronizedSet(new HashSet<String>());
         }
         
         this.endpointUrls.add(endpointUrl);

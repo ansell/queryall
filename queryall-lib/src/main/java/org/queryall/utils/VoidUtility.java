@@ -2,8 +2,8 @@ package org.queryall.utils;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -46,7 +46,7 @@ public class VoidUtility
                         + " } " + " WHERE " + " { " + "  ?dataset a <http://rdfs.org/ns/void#Dataset> . "
                         + "  ?dataset <http://rdfs.org/ns/void#sparqlEndpoint> ?endpoint . " + " } ";
         
-        final Map<String, Collection<String>> testMapping = new Hashtable<String, Collection<String>>();
+        final Map<String, Collection<String>> testMapping = new ConcurrentHashMap<String, Collection<String>>();
         
         final Collection<String> constructQueries = new HashSet<String>();
         constructQueries.add(sparqlQuery);
@@ -69,14 +69,14 @@ public class VoidUtility
     
     public VoidUtility()
     {
-        this.queryUriToVoidSparqlConstructQueries = new Hashtable<String, Collection<String>>();
+        this.queryUriToVoidSparqlConstructQueries = new ConcurrentHashMap<String, Collection<String>>();
     }
     
     public Map<String, Collection<String>> getQueryTypeMappings()
     {
         if(this.queryUriToVoidSparqlConstructQueries == null)
         {
-            this.queryUriToVoidSparqlConstructQueries = new Hashtable<String, Collection<String>>();
+            this.queryUriToVoidSparqlConstructQueries = new ConcurrentHashMap<String, Collection<String>>();
         }
         
         return this.queryUriToVoidSparqlConstructQueries;

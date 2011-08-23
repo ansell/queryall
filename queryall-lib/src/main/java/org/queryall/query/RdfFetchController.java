@@ -453,10 +453,8 @@ public class RdfFetchController
                 for(final String nextEndpoint : nextEndpointUrls)
                 {
                     String replacedEndpoint =
-                            nextEndpoint
-                                    .replace(Constants.TEMPLATE_REAL_HOST_NAME, this.realHostName)
-                                    .replace(Constants.TEMPLATE_DEFAULT_SEPARATOR,
-                                            localSettings.getSeparator())
+                            nextEndpoint.replace(Constants.TEMPLATE_REAL_HOST_NAME, this.realHostName)
+                                    .replace(Constants.TEMPLATE_DEFAULT_SEPARATOR, localSettings.getSeparator())
                                     .replace(Constants.TEMPLATE_OFFSET, String.valueOf(this.pageOffset));
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -176,7 +176,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
                     {
                         nextReaderFormat =
                                 Rio.getParserFormatForMIMEType(Settings.getSettings().getStringProperty(
-                                        "assumedResponseContentType", ""));
+                                        "assumedResponseContentType", Constants.APPLICATION_RDF_XML));
                         
                         if(nextReaderFormat == null)
                         {
@@ -268,7 +268,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     public static Map<URI, ProvenanceRecord> getProvenanceRecordsFromRepository(final Repository myRepository,
             final int modelVersion) throws org.openrdf.repository.RepositoryException
     {
-        final Map<URI, ProvenanceRecord> results = new Hashtable<URI, ProvenanceRecord>();
+        final Map<URI, ProvenanceRecord> results = new ConcurrentHashMap<URI, ProvenanceRecord>();
         
         final URI provenanceTypeUri = ProvenanceRecord.provenanceTypeUri;
         

@@ -43,7 +43,8 @@ public class RdfFetcherQueryRunnable extends Thread
     private BlacklistController localBlacklistController;
     
     public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
-            final String nextAcceptHeader, final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController)
+            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController)
     {
         this.setEndpointUrl(nextEndpointUrl);
         this.setQuery(nextQuery);
@@ -54,8 +55,8 @@ public class RdfFetcherQueryRunnable extends Thread
     }
     
     public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
-            final String nextAcceptHeader, final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
-            final QueryBundle nextOriginalQueryBundle)
+            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
     {
         this(nextEndpointUrl, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController);
         this.setOriginalQueryBundle(nextOriginalQueryBundle);

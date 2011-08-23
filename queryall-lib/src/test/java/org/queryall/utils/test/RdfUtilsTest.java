@@ -176,7 +176,7 @@ public class RdfUtilsTest
         
         this.testProfileUri1 = this.testValueFactory.createURI("http://example.org/profile:test-1");
         this.testProfileUri2 = this.testValueFactory.createURI("http://example.org/profile:test-2");
-
+        
         this.testProviderUri1 = this.testValueFactory.createURI("http://example.org/provider:test-1");
         
         this.testRuleTestUri1 = this.testValueFactory.createURI("http://example.org/ruletest:test-1");
@@ -694,29 +694,31 @@ public class RdfUtilsTest
                 
                 Assert.assertNotNull("Provider was null", nextProvider);
                 
-                Assert.assertEquals("Provider key was not the same as its map URI", nextProviderUri, nextProvider.getKey());
+                Assert.assertEquals("Provider key was not the same as its map URI", nextProviderUri,
+                        nextProvider.getKey());
                 
                 if(nextProviderUri.equals(this.testProviderUri1))
                 {
                     Assert.assertEquals("Results did not contain correct profile URI", this.testProviderUri1,
                             nextProviderUri);
                     
-                    Assert.assertEquals(
-                            "Title was not parsed correctly",
-                            "Test provider 1",
-                            nextProvider.getTitle());
+                    Assert.assertEquals("Title was not parsed correctly", "Test provider 1", nextProvider.getTitle());
                     
-                    Assert.assertEquals("Resolution strategy was not parsed correctly", ProviderImpl.getProviderProxy(), nextProvider.getRedirectOrProxy());
-                    Assert.assertEquals("Resolution method was not parsed correctly", ProviderImpl.getProviderNoCommunication(), nextProvider.getEndpointMethod());
-                    Assert.assertFalse("Default provider status was not parsed correctly", nextProvider.getIsDefaultSource());
-
+                    Assert.assertEquals("Resolution strategy was not parsed correctly",
+                            ProviderImpl.getProviderProxy(), nextProvider.getRedirectOrProxy());
+                    Assert.assertEquals("Resolution method was not parsed correctly",
+                            ProviderImpl.getProviderNoCommunication(), nextProvider.getEndpointMethod());
+                    Assert.assertFalse("Default provider status was not parsed correctly",
+                            nextProvider.getIsDefaultSource());
+                    
                     Assert.assertEquals("Profile include exclude order was not parsed correctly",
-                            ProfileImpl.getProfileExcludeThenIncludeUri(),
-                            nextProvider.getProfileIncludeExcludeOrder());
+                            ProfileImpl.getProfileExcludeThenIncludeUri(), nextProvider.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Namespaces were not parsed correctly", 1, nextProvider.getNamespaces().size());
-                    Assert.assertEquals("Query Types were not parsed correctly", 1, nextProvider.getIncludedInQueryTypes().size());
-                    Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider.getNormalisationUris().size());
+                    Assert.assertEquals("Query Types were not parsed correctly", 1, nextProvider
+                            .getIncludedInQueryTypes().size());
+                    Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider
+                            .getNormalisationUris().size());
                 }
             }
         }
@@ -760,51 +762,76 @@ public class RdfUtilsTest
                 
                 Assert.assertNotNull("QueryType was null", nextQueryType);
                 
-                Assert.assertEquals("QueryType key was not the same as its map URI", nextQueryTypeUri, nextQueryType.getKey());
+                Assert.assertEquals("QueryType key was not the same as its map URI", nextQueryTypeUri,
+                        nextQueryType.getKey());
                 
                 if(nextQueryTypeUri.equals(this.testQueryTypeUri1))
                 {
                     Assert.assertEquals("Results did not contain correct query type URI", this.testQueryTypeUri1,
                             nextQueryTypeUri);
                     
-                    Assert.assertTrue("Query type is dummy query type was not parsed correctly", nextQueryType.getIsDummyQueryType());
-
+                    Assert.assertTrue("Query type is dummy query type was not parsed correctly",
+                            nextQueryType.getIsDummyQueryType());
+                    
                     Assert.assertTrue("Query type is pageable was not parsed correctly", nextQueryType.getIsPageable());
                     
-                    Assert.assertEquals("Query type title was not parsed correctly", "Test 1 query type", nextQueryType.getTitle());
+                    Assert.assertEquals("Query type title was not parsed correctly", "Test 1 query type",
+                            nextQueryType.getTitle());
                     
-                    Assert.assertFalse("Query type handle all namespaces was not parsed correctly", nextQueryType.getHandleAllNamespaces());
+                    Assert.assertFalse("Query type handle all namespaces was not parsed correctly",
+                            nextQueryType.getHandleAllNamespaces());
                     
-                    Assert.assertTrue("Query type is namespace specific was not parsed correctly", nextQueryType.getIsNamespaceSpecific());
+                    Assert.assertTrue("Query type is namespace specific was not parsed correctly",
+                            nextQueryType.getIsNamespaceSpecific());
                     
-                    Assert.assertEquals("Query type namespace match method was not parsed correctly", QueryTypeImpl.getNamespaceMatchAllUri(), nextQueryType.getNamespaceMatchMethod());
-
-                    Assert.assertTrue("Query type include defaults was not parsed correctly", nextQueryType.getIncludeDefaults());
+                    Assert.assertEquals("Query type namespace match method was not parsed correctly",
+                            QueryTypeImpl.getNamespaceMatchAllUri(), nextQueryType.getNamespaceMatchMethod());
                     
-                    Assert.assertEquals("Query type input regex was not parsed correctly", "^([\\w-]+):(.+)", nextQueryType.getInputRegex());
+                    Assert.assertTrue("Query type include defaults was not parsed correctly",
+                            nextQueryType.getIncludeDefaults());
                     
-                    Assert.assertEquals("Query type template string was not parsed correctly", "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }", nextQueryType.getTemplateString());
-
-                    Assert.assertEquals("Query type query uri template string was not parsed correctly", "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}", nextQueryType.getQueryUriTemplateString());
+                    Assert.assertEquals("Query type input regex was not parsed correctly", "^([\\w-]+):(.+)",
+                            nextQueryType.getInputRegex());
                     
-                    Assert.assertEquals("Query type standard uri template string was not parsed correctly", "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}", nextQueryType.getStandardUriTemplateString());
+                    Assert.assertEquals("Query type template string was not parsed correctly",
+                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
+                            nextQueryType.getTemplateString());
                     
-                    Assert.assertEquals("Query type output rdf xml string was not parsed correctly", "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>", nextQueryType.getOutputRdfXmlString());
+                    Assert.assertEquals("Query type query uri template string was not parsed correctly",
+                            "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}",
+                            nextQueryType.getQueryUriTemplateString());
                     
-                    Assert.assertTrue("Query type in robots txt was not parsed correctly", nextQueryType.getInRobotsTxt());
+                    Assert.assertEquals("Query type standard uri template string was not parsed correctly",
+                            "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}",
+                            nextQueryType.getStandardUriTemplateString());
                     
-                    Assert.assertEquals("Query type profile include exclude order was not parsed correctly", ProfileImpl.getProfileExcludeThenIncludeUri(), nextQueryType.getProfileIncludeExcludeOrder());
+                    Assert.assertEquals(
+                            "Query type output rdf xml string was not parsed correctly",
+                            "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>",
+                            nextQueryType.getOutputRdfXmlString());
                     
-                    Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType.getPublicIdentifierIndexes().length);
+                    Assert.assertTrue("Query type in robots txt was not parsed correctly",
+                            nextQueryType.getInRobotsTxt());
                     
-                    Assert.assertEquals("Query type public identifiers were not parsed correctly", 1, nextQueryType.getPublicIdentifierIndexes()[0]);
-
-                    Assert.assertEquals("Query type namespace input indexes size was not parsed correctly", 1, nextQueryType.getNamespaceInputIndexes().length);
+                    Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
+                            ProfileImpl.getProfileExcludeThenIncludeUri(),
+                            nextQueryType.getProfileIncludeExcludeOrder());
                     
-                    Assert.assertEquals("Query type namespace input indexes were not parsed correctly", 1, nextQueryType.getNamespaceInputIndexes()[0]);
-
-                    Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1, nextQueryType.getSemanticallyLinkedQueryTypes().size());
-
+                    Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1,
+                            nextQueryType.getPublicIdentifierIndexes().length);
+                    
+                    Assert.assertEquals("Query type public identifiers were not parsed correctly", 1,
+                            nextQueryType.getPublicIdentifierIndexes()[0]);
+                    
+                    Assert.assertEquals("Query type namespace input indexes size was not parsed correctly", 1,
+                            nextQueryType.getNamespaceInputIndexes().length);
+                    
+                    Assert.assertEquals("Query type namespace input indexes were not parsed correctly", 1,
+                            nextQueryType.getNamespaceInputIndexes()[0]);
+                    
+                    Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1,
+                            nextQueryType.getSemanticallyLinkedQueryTypes().size());
+                    
                 }
             }
         }
@@ -848,7 +875,8 @@ public class RdfUtilsTest
                 
                 Assert.assertNotNull("RuleTest was null", nextRuleTest);
                 
-                Assert.assertEquals("RuleTest key was not the same as its map URI", nextRuleTestUri, nextRuleTest.getKey());
+                Assert.assertEquals("RuleTest key was not the same as its map URI", nextRuleTestUri,
+                        nextRuleTest.getKey());
                 
                 if(nextRuleTestUri.equals(this.testRuleTestUri1))
                 {
@@ -856,12 +884,15 @@ public class RdfUtilsTest
                             nextRuleTestUri);
                     
                     Assert.assertEquals("RuleTest stages were not parsed correctly", 2, nextRuleTest.getStages().size());
-
-                    Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris().size());
                     
-                    Assert.assertEquals("RuleTest input string was not parsed correctly", "http://example.org/", nextRuleTest.getTestInputString());
-
-                    Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/", nextRuleTest.getTestOutputString());
+                    Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris()
+                            .size());
+                    
+                    Assert.assertEquals("RuleTest input string was not parsed correctly", "http://example.org/",
+                            nextRuleTest.getTestInputString());
+                    
+                    Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/",
+                            nextRuleTest.getTestOutputString());
                 }
             }
         }

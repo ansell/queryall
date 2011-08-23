@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
@@ -157,14 +157,10 @@ public final class RdfUtils
         
         if(nsAndIdList.size() == 2)
         {
-            endpointUrls
-                    .add(hostToUse + new QueryTypeImpl().getDefaultNamespace()
-                            + localSettings.getSeparator()
-                            + StringUtils.percentEncode(nsAndIdList.get(1)));
-            nextQueryBundle
-                    .setQueryEndpoint(hostToUse + new QueryTypeImpl().getDefaultNamespace()
-                            + localSettings.getSeparator()
-                            + StringUtils.percentEncode(nsAndIdList.get(1)));
+            endpointUrls.add(hostToUse + new QueryTypeImpl().getDefaultNamespace() + localSettings.getSeparator()
+                    + StringUtils.percentEncode(nsAndIdList.get(1)));
+            nextQueryBundle.setQueryEndpoint(hostToUse + new QueryTypeImpl().getDefaultNamespace()
+                    + localSettings.getSeparator() + StringUtils.percentEncode(nsAndIdList.get(1)));
         }
         // }
         // else
@@ -178,20 +174,16 @@ public final class RdfUtils
         
         dummyProvider.setEndpointUrls(endpointUrls);
         dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpGetUrl());
-        dummyProvider
-                .setKey(hostToUse + QueryAllNamespaces.PROVIDER.getNamespace()
-                        + localSettings.getSeparator()
-                        + StringUtils.percentEncode(namespaceAndIdentifier));
+        dummyProvider.setKey(hostToUse + QueryAllNamespaces.PROVIDER.getNamespace() + localSettings.getSeparator()
+                + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setProvider(dummyProvider);
         
         final QueryType dummyQuery = new QueryTypeImpl();
         
-        dummyQuery
-                .setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
-                        + localSettings.getSeparator()
-                        + StringUtils.percentEncode(namespaceAndIdentifier));
+        dummyQuery.setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
+                + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -225,8 +217,7 @@ public final class RdfUtils
         
         dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpPostSparql());
         dummyProvider.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
-                + localSettings.getSeparator()
-                + StringUtils.percentEncode(nextQueryKey.stringValue()));
+                + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
@@ -234,8 +225,7 @@ public final class RdfUtils
         final QueryType dummyQuery = new QueryTypeImpl();
         
         dummyQuery.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
-                + localSettings.getSeparator()
-                + StringUtils.percentEncode(nextQueryKey.stringValue()));
+                + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyQuery.setTitle("$$__queryfetch__$$");
         dummyQuery.setIncludeDefaults(true);
         
@@ -313,7 +303,7 @@ public final class RdfUtils
             final BlacklistController localBlacklistController)
     {
         return new HttpUrlQueryRunnable(sparqlEndpointMethod, sparqlEndpointUrl, sparqlQuery, acceptHeader,
-                expectedReturnFormat, localSettings, localBlacklistController);
+                localSettings, localBlacklistController);
     }
     
     /**
@@ -805,7 +795,7 @@ public final class RdfUtils
     
     public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
     {
-        final Map<URI, NamespaceEntry> results = new Hashtable<URI, NamespaceEntry>();
+        final Map<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
         if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entry configurations");
@@ -856,7 +846,7 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         
-        final Map<URI, NormalisationRule> results = new Hashtable<URI, NormalisationRule>();
+        final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
         
         try
         {
@@ -1010,7 +1000,7 @@ public final class RdfUtils
     
     public static Map<URI, Profile> getProfiles(final Repository myRepository)
     {
-        final Map<URI, Profile> results = new Hashtable<URI, Profile>();
+        final Map<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
         
         if(RdfUtils._DEBUG)
         {
@@ -1053,7 +1043,7 @@ public final class RdfUtils
     
     public static Map<URI, Provider> getProviders(final Repository myRepository)
     {
-        final Map<URI, Provider> results = new Hashtable<URI, Provider>();
+        final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
         
         if(RdfUtils._DEBUG)
         {
@@ -1097,7 +1087,7 @@ public final class RdfUtils
     
     public static Map<URI, QueryType> getQueryTypes(final Repository myRepository)
     {
-        final Map<URI, QueryType> results = new Hashtable<URI, QueryType>();
+        final Map<URI, QueryType> results = new ConcurrentHashMap<URI, QueryType>();
         final long start = System.currentTimeMillis();
         if(RdfUtils._DEBUG)
         {
@@ -1244,16 +1234,14 @@ public final class RdfUtils
             }
         }
         
-        Map<URI, QueryType> results = null;
-        
-        results = RdfUtils.getQueryTypes(myRepository);
+        final Map<URI, QueryType> results = RdfUtils.getQueryTypes(myRepository);
         
         return results.values();
     }
     
     public static Map<URI, RuleTest> getRuleTests(final Repository myRepository)
     {
-        final Map<URI, RuleTest> results = new Hashtable<URI, RuleTest>();
+        final Map<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
         
         if(RdfUtils._DEBUG)
         {

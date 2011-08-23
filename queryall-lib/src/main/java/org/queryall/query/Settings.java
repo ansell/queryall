@@ -4,11 +4,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.openrdf.OpenRDFException;
@@ -44,63 +43,20 @@ import org.slf4j.LoggerFactory;
  */
 public class Settings implements QueryAllConfiguration
 {
+    // Wrap up the singleton in its own inner static class
+    private static class SettingsHolder
+    {
+        public static final QueryAllConfiguration helper = new Settings();
+    }
+    
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
     private static final boolean _TRACE = Settings.log.isTraceEnabled();
     private static final boolean _DEBUG = Settings.log.isDebugEnabled();
     private static final boolean _INFO = Settings.log.isInfoEnabled();
     
     public static final int CONFIG_API_VERSION = 5;
+    
     public static final String VERSION = Settings.getVersion();
-    
-    public static QueryAllConfiguration getSettings()
-    {
-        if(Settings.defaultSettings == null)
-        {
-            Settings.defaultSettings = new Settings();
-        }
-        
-        return Settings.defaultSettings;
-    }
-    
-    /**
-     * Checks for the configured version first in the system vm properties, then in the localisation
-     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
-     * 
-     * @return The version, defaults to "0.0.1"
-     */
-    private static String getVersion()
-    {
-        return PropertyUtils.getSystemOrPropertyString("queryall.Version", "0.0.1");
-    }
-    
-    // These properties are pulled out of the queryall.properties file
-    private volatile String baseConfigLocation = Settings.getDefaultBaseConfigLocationProperty();;
-    private volatile String baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
-    private volatile String baseConfigMimeFormat = Settings.getDefaultBaseConfigMimeFormatProperty();
-    
-    private volatile Collection<String> webappConfigUriList = new HashSet<String>();
-    
-    private volatile Repository currentBaseConfigurationRepository = null;
-    private volatile Repository currentWebAppConfigurationRepository = null;
-    private volatile Repository currentConfigurationRepository = null;
-    
-    private volatile Map<URI, Provider> cachedProviders = null;
-    private volatile Map<URI, NormalisationRule> cachedNormalisationRules = null;
-    private volatile Map<URI, RuleTest> cachedRuleTests = null;
-    private volatile Map<URI, QueryType> cachedCustomQueries = null;
-    private volatile Map<URI, Profile> cachedProfiles = null;
-    private volatile Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
-    private volatile Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
-    private volatile Pattern cachedTagPattern = null;
-    
-    // TODO: monitor this for size and see whether we should be resetting it
-    // regularly
-    private volatile Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
-    
-    private long initialisedTimestamp = System.currentTimeMillis();
-    private String separator;
-    
-    private static Settings defaultSettings = null;
     
     /**
      * Checks for the base config location first in the system vm properties, then in the
@@ -135,7 +91,52 @@ public class Settings implements QueryAllConfiguration
     {
         return PropertyUtils.getSystemOrPropertyString("queryall.BaseConfigUri",
                 "http://purl.org/queryall/webapp_configuration:theBaseConfig");
+    };
+    
+    public static QueryAllConfiguration getSettings()
+    {
+        return SettingsHolder.helper;
     }
+    
+    /**
+     * Checks for the configured version first in the system vm properties, then in the localisation
+     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
+     * 
+     * @return The version, defaults to "0.0.1"
+     */
+    private static String getVersion()
+    {
+        return PropertyUtils.getSystemOrPropertyString("queryall.Version", "0.0.1");
+    }
+    
+    // These properties are pulled out of the queryall.properties file
+    private volatile String baseConfigLocation = Settings.getDefaultBaseConfigLocationProperty();
+    
+    private volatile String baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
+    private volatile String baseConfigMimeFormat = Settings.getDefaultBaseConfigMimeFormatProperty();
+    private volatile Collection<String> webappConfigUriList = new HashSet<String>();
+    
+    private volatile Repository currentBaseConfigurationRepository = null;
+    private volatile Repository currentWebAppConfigurationRepository = null;
+    private volatile Repository currentConfigurationRepository = null;
+    private volatile Map<URI, Provider> cachedProviders = null;
+    private volatile Map<URI, NormalisationRule> cachedNormalisationRules = null;
+    private volatile Map<URI, RuleTest> cachedRuleTests = null;
+    private volatile Map<URI, QueryType> cachedCustomQueries = null;
+    private volatile Map<URI, Profile> cachedProfiles = null;
+    
+    private volatile Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
+    
+    private volatile Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
+    private volatile Pattern cachedTagPattern = null;
+    
+    // TODO: monitor this for size and see whether we should be resetting it
+    // regularly
+    private volatile Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
+    
+    private long initialisedTimestamp = System.currentTimeMillis();
+    
+    private volatile String separator;
     
     public Settings()
     {
@@ -144,6 +145,19 @@ public class Settings implements QueryAllConfiguration
         this.baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
     }
     
+    /**
+     * Creates a settings object using a classpath resource location, the mime format to expect, and
+     * the URI of the base configuration inside the file.
+     * 
+     * @param baseConfigLocation
+     *            A string path to a classpath resource which contains information about where to
+     *            find the further configuration files.
+     * @param baseConfigMimeFormat
+     *            The MIME format of the baseConfigLocation file.
+     * @param baseConfigUri
+     *            The subject URI to use to fetch the relevant statements from the
+     *            baseConfigLocation
+     */
     public Settings(final String baseConfigLocation, final String baseConfigMimeFormat, final String baseConfigUri)
     {
         // Do a quick test on the base config file existence
@@ -167,8 +181,76 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry)
     {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("TODO: Implement me!");
+        this.addNamespaceEntryAndPrefix(nextNamespaceEntry.getKey(), nextNamespaceEntry);
+    }
+    
+    /**
+     * Helper method to add a new namespace entry and its prefixes to the internal caches.
+     * 
+     * @param nextNamespaceEntryUri
+     * @param nextNamespaceEntryConfiguration
+     */
+    private void addNamespaceEntryAndPrefix(final URI nextNamespaceEntryUri,
+            final NamespaceEntry nextNamespaceEntryConfiguration)
+    {
+        if(this.cachedNamespaceEntries == null)
+        {
+            synchronized(this)
+            {
+                this.cachedNamespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>(200);
+                this.cachedNamespacePrefixToUriEntries = new ConcurrentHashMap<String, Collection<URI>>(200);
+            }
+        }
+        
+        synchronized(this.cachedNamespaceEntries)
+        {
+            this.cachedNamespaceEntries.put(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
+        }
+        
+        synchronized(this.cachedNamespacePrefixToUriEntries)
+        {
+            // cache the preferred prefix
+            if(this.cachedNamespacePrefixToUriEntries.containsKey(nextNamespaceEntryConfiguration.getPreferredPrefix()))
+            {
+                final Collection<URI> currentnamespacePreferredPrefixToUriList =
+                        this.cachedNamespacePrefixToUriEntries
+                                .get(nextNamespaceEntryConfiguration.getPreferredPrefix());
+                if(!currentnamespacePreferredPrefixToUriList.contains(nextNamespaceEntryUri))
+                {
+                    currentnamespacePreferredPrefixToUriList.add(nextNamespaceEntryUri);
+                }
+            }
+            else
+            {
+                final Collection<URI> newnamespacePreferredPrefixToUriList = new HashSet<URI>();
+                newnamespacePreferredPrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
+                this.cachedNamespacePrefixToUriEntries.put(nextNamespaceEntryConfiguration.getPreferredPrefix(),
+                        newnamespacePreferredPrefixToUriList);
+            }
+            
+            // then cache any alternative prefixes as well
+            if(nextNamespaceEntryConfiguration.getAlternativePrefixes() != null)
+            {
+                for(final String nextAlternativePrefix : nextNamespaceEntryConfiguration.getAlternativePrefixes())
+                {
+                    if(this.cachedNamespacePrefixToUriEntries.containsKey(nextAlternativePrefix))
+                    {
+                        final Collection<URI> currentNamespacePrefixToUriList =
+                                this.cachedNamespacePrefixToUriEntries.get(nextAlternativePrefix);
+                        if(!currentNamespacePrefixToUriList.contains(nextNamespaceEntryUri))
+                        {
+                            currentNamespacePrefixToUriList.add(nextNamespaceEntryUri);
+                        }
+                    }
+                    else
+                    {
+                        final Collection<URI> newNamespacePrefixToUriList = new HashSet<URI>();
+                        newNamespacePrefixToUriList.add(nextNamespaceEntryUri);
+                        this.cachedNamespacePrefixToUriEntries.put(nextAlternativePrefix, newNamespacePrefixToUriList);
+                    }
+                }
+            }
+        }
     }
     
     @Override
@@ -357,7 +439,7 @@ public class Settings implements QueryAllConfiguration
                 {
                     synchronized(this.getNamespacePrefixesToUris())
                     {
-                        this.setNamespacePrefixesToUris(null);
+                        this.cachedNamespacePrefixToUriEntries = null;
                     }
                 }
                 this.getAllNamespaceEntries();
@@ -437,7 +519,8 @@ public class Settings implements QueryAllConfiguration
         return false;
     }
     
-    private void doConfigKeyCache(final URI subjectKey, final URI propertyKey, final Collection<Value> newObject)
+    private synchronized void doConfigKeyCache(final URI subjectKey, final URI propertyKey,
+            final Collection<Value> newObject)
     {
         if(newObject == null)
         {
@@ -447,7 +530,7 @@ public class Settings implements QueryAllConfiguration
         
         if(this.cachedWebAppConfigSearches == null)
         {
-            this.cachedWebAppConfigSearches = new Hashtable<URI, Map<URI, Collection<Value>>>(200);
+            this.cachedWebAppConfigSearches = new ConcurrentHashMap<URI, Map<URI, Collection<Value>>>(200);
         }
         
         if(this.cachedWebAppConfigSearches.containsKey(subjectKey))
@@ -471,8 +554,7 @@ public class Settings implements QueryAllConfiguration
         }
         else
         {
-            final Map<URI, Collection<Value>> newCache =
-                    Collections.synchronizedMap(new HashMap<URI, Collection<Value>>());
+            final Map<URI, Collection<Value>> newCache = new ConcurrentHashMap<URI, Collection<Value>>();
             newCache.put(propertyKey, newObject);
             this.cachedWebAppConfigSearches.put(subjectKey, newCache);
             // log.trace("Settings.doConfigKeyCache: New cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
@@ -480,19 +562,17 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries()
+    public Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
         return this.getAllNamespaceEntries(true);
     }
     
-    public synchronized Map<URI, NamespaceEntry> getAllNamespaceEntries(final boolean useCache)
+    public Map<URI, NamespaceEntry> getAllNamespaceEntries(final boolean useCache)
     {
         if(useCache && this.cachedNamespaceEntries != null)
         {
-            return this.cachedNamespaceEntries;
+            return Collections.unmodifiableMap(this.cachedNamespaceEntries);
         }
-        
-        final Map<String, Collection<URI>> tempNamespacePrefixToUriEntries = new Hashtable<String, Collection<URI>>();
         
         try
         {
@@ -503,51 +583,14 @@ public class Settings implements QueryAllConfiguration
                 Settings.log.info("Settings.getAllNamespaceEntries: found " + results.size() + " namespaces");
             }
             
-            for(final NamespaceEntry nextNamespaceEntryConfiguration : results.values())
+            for(final URI nextNamespaceEntryUri : results.keySet())
             {
-                if(tempNamespacePrefixToUriEntries.containsKey(nextNamespaceEntryConfiguration.getPreferredPrefix()))
-                {
-                    final Collection<URI> currentnamespacePreferredPrefixToUriList =
-                            tempNamespacePrefixToUriEntries.get(nextNamespaceEntryConfiguration.getPreferredPrefix());
-                    if(!currentnamespacePreferredPrefixToUriList.contains(nextNamespaceEntryConfiguration.getKey()))
-                    {
-                        currentnamespacePreferredPrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
-                    }
-                }
-                else
-                {
-                    final Collection<URI> newnamespacePreferredPrefixToUriList = new HashSet<URI>();
-                    newnamespacePreferredPrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
-                    tempNamespacePrefixToUriEntries.put(nextNamespaceEntryConfiguration.getPreferredPrefix(),
-                            newnamespacePreferredPrefixToUriList);
-                }
-                if(nextNamespaceEntryConfiguration.getAlternativePrefixes() != null)
-                {
-                    for(final String nextAlternativePrefix : nextNamespaceEntryConfiguration.getAlternativePrefixes())
-                    {
-                        if(tempNamespacePrefixToUriEntries.containsKey(nextAlternativePrefix))
-                        {
-                            final Collection<URI> currentNamespacePrefixToUriList =
-                                    tempNamespacePrefixToUriEntries.get(nextAlternativePrefix);
-                            if(!currentNamespacePrefixToUriList.contains(nextNamespaceEntryConfiguration.getKey()))
-                            {
-                                currentNamespacePrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
-                            }
-                        }
-                        else
-                        {
-                            final Collection<URI> newNamespacePrefixToUriList = new HashSet<URI>();
-                            newNamespacePrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
-                            tempNamespacePrefixToUriEntries.put(nextAlternativePrefix, newNamespacePrefixToUriList);
-                        }
-                    }
-                }
+                final NamespaceEntry nextNamespaceEntryConfiguration = results.get(nextNamespaceEntryUri);
+                
+                this.addNamespaceEntryAndPrefix(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
             }
             
-            this.setNamespacePrefixesToUris(tempNamespacePrefixToUriEntries);
-            this.cachedNamespaceEntries = results;
-            
-            return results;
+            return Collections.unmodifiableMap(this.cachedNamespaceEntries);
         }
         catch(final java.lang.InterruptedException ie)
         {
@@ -559,7 +602,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public synchronized Map<URI, NormalisationRule> getAllNormalisationRules()
+    public Map<URI, NormalisationRule> getAllNormalisationRules()
     {
         return this.getAllNormalisationRules(true);
     }
@@ -597,7 +640,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public synchronized Map<URI, Profile> getAllProfiles()
+    public Map<URI, Profile> getAllProfiles()
     {
         return this.getAllProfiles(true);
     }
@@ -633,7 +676,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public synchronized Map<URI, Provider> getAllProviders()
+    public Map<URI, Provider> getAllProviders()
     {
         return this.getAllProviders(true);
     }
@@ -674,7 +717,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public synchronized Map<URI, QueryType> getAllQueryTypes()
+    public Map<URI, QueryType> getAllQueryTypes()
     {
         return this.getAllQueryTypes(true);
     }
@@ -711,7 +754,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public synchronized Map<URI, RuleTest> getAllRuleTests()
+    public Map<URI, RuleTest> getAllRuleTests()
     {
         return this.getAllRuleTests(true);
     }
@@ -947,7 +990,7 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
     
-    private Collection<Value> getConfigKeyCached(final URI subjectKey, final URI propertyKey)
+    private synchronized Collection<Value> getConfigKeyCached(final URI subjectKey, final URI propertyKey)
     {
         if(this.cachedWebAppConfigSearches != null && this.cachedWebAppConfigSearches.containsKey(subjectKey))
         {
@@ -978,6 +1021,12 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
+    /**
+     * Defaults to http://bio2rdf.org/ if the configuration files do not contain any of the relevant properties, 
+     * or some part of that if they only contain some of the relevant properties.
+     * 
+     * The properties used to generate the result are {uriPrefix}{hostName}{uriSuffix}
+     */
     public String getDefaultHostAddress()
     {
         return this.getStringProperty("uriPrefix", "http://") + this.getStringProperty("hostName", "bio2rdf.org")
@@ -1097,13 +1146,27 @@ public class Settings implements QueryAllConfiguration
     @Override
     public Pattern getPlainNamespaceAndIdentifierPattern()
     {
-        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", ""));
+        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"));
     }
     
     @Override
     public Pattern getPlainNamespacePattern()
     {
-        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", ""));
+        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", "^([\\w-]+)$"));
+    }
+    
+    /**
+     * Helper method to get the default separator, using a non-lookup cache if possible
+     */
+    @Override
+    public String getSeparator()
+    {
+        if(this.separator == null)
+        {
+            this.separator = this.getStringProperty("defaultSeparator", ":");
+        }
+        
+        return this.separator;
     }
     
     private synchronized Repository getServerConfigurationRdf() throws java.lang.InterruptedException
@@ -1599,7 +1662,7 @@ public class Settings implements QueryAllConfiguration
         return results;
     }
     
-    private synchronized Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri)
+    private Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri)
         throws InterruptedException
     {
         if(Settings._TRACE)
@@ -1951,19 +2014,5 @@ public class Settings implements QueryAllConfiguration
     public void setWebappConfigUriList(final Collection<String> webappConfigUriList)
     {
         this.webappConfigUriList = webappConfigUriList;
-    }
-
-    /**
-     * Helper method to get the default separator, using a non-lookup cache if possible
-     */
-    @Override
-    public String getSeparator()
-    {
-        if(this.separator == null)
-        {
-            this.separator = this.getStringProperty("defaultSeparator", ":");
-        }
-        
-        return this.separator;
     }
 }

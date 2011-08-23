@@ -833,7 +833,7 @@ public class GeneralServlet extends HttpServlet
                 {
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString,
-                                    localSettings.getStringProperty("hostName", ""), realHostName, pageOffset,
+                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName, pageOffset,
                                     localSettings);
                     
                     String nextBackupString =
@@ -953,7 +953,9 @@ public class GeneralServlet extends HttpServlet
             final Collection<String> debugStrings, final Repository convertedPool, final String contextPath)
         throws IOException
     {
-        final java.io.StringWriter cleanOutput = new java.io.StringWriter();
+        // Assume an average document may easily contain 2000 characters, to save on copies inside the stringwriter
+        // By default it starts with only 16 characters if we don't set a number here
+        final java.io.StringWriter cleanOutput = new java.io.StringWriter(2000);
         
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
@@ -1001,16 +1003,13 @@ public class GeneralServlet extends HttpServlet
             }
             final StringBuffer buffer = cleanOutput.getBuffer();
             
-            // HACK: aduna sesame developers refuse to believe that anyone would want to get an
-            // RDF/XML string without the xml PI, so this is to get around their stubborness
+            // HACK to get around lack of interest in sesame for getting RDF/XML documents without the XML PI
+            // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with all RDF/XML results and we need to change the magic number here
             if(buffer.length() > 38)
             {
                 for(int i = 38; i < cleanOutput.getBuffer().length(); i++)
                 {
                     out.write(buffer.charAt(i));
-                    // HACK: can't find a way to get sesame to print out the rdf without the xml PI
-                    // out.write(actualRdfString.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-                    // ""));
                 }
             }
         }

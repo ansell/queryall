@@ -3,10 +3,9 @@
  */
 package org.queryall.api.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
+ * Generates the namespace ontology URIs based on calls to PropertyUtils
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public enum QueryAllNamespaces
@@ -35,14 +34,6 @@ public enum QueryAllNamespaces
     
     WEBAPPCONFIG("queryall.namespaceWebApplicationConfiguration", "webapp_configuration",
             "Web Application Configurations");
-    
-    private static final Logger log = LoggerFactory.getLogger(QueryAllNamespaces.class);
-    @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryAllNamespaces.log.isTraceEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryAllNamespaces.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryAllNamespaces.log.isInfoEnabled();
     
     private String defaultValue;
     private String description;

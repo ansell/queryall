@@ -272,7 +272,8 @@ public final class ProviderUtils
     }
     
     /**
-     * Finds all providers for the given query type URI, taking into account profile instructions, but without taking into account
+     * Finds all providers for the given query type URI, taking into account profile instructions,
+     * but without taking into account
      * 
      * @param allProviders
      * @param nextQueryTypeURI
@@ -339,9 +340,9 @@ public final class ProviderUtils
         
         if(ProviderUtils._DEBUG)
         {
-            ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size()
-                    + " providers for querytype=" + nextQueryType.stringValue());
-
+            ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size() + " providers for querytype="
+                    + nextQueryType.stringValue());
+            
             if(ProviderUtils._TRACE)
             {
                 for(final Provider nextResult : results.values())

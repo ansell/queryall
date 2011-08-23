@@ -40,7 +40,8 @@ public class RdfFetcher
     
     // If postInformation is empty String "" or null then we assume they did not want to post
     public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
-        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, java.io.IOException
+        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException,
+        java.io.IOException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -78,7 +79,8 @@ public class RdfFetcher
                 }
             }
             
-            // logging currently based on the IP address and the protocol, but not on the port number
+            // logging currently based on the IP address and the protocol, but not on the port
+            // number
             // TODO: do we need to log at the port number level?
             this.localBlacklistController.accumulateQueryTotal(url.getProtocol() + "://" + url.getHost());
             
@@ -95,7 +97,8 @@ public class RdfFetcher
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
-                acceptHeader = this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
+                acceptHeader =
+                        this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
             }
             
             conn.setRequestProperty("Accept", acceptHeader);
@@ -141,8 +144,10 @@ public class RdfFetcher
             {
                 if(RdfFetcher._TRACE)
                 {
-                    RdfFetcher.log.trace("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
-                            + " lastReturnedContentEncoding=" + this.getLastReturnedContentEncoding() + " line=" + line);
+                    RdfFetcher.log
+                            .trace("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
+                                    + " lastReturnedContentEncoding=" + this.getLastReturnedContentEncoding()
+                                    + " line=" + line);
                 }
                 
                 results.append(line + "\n");
@@ -258,13 +263,14 @@ public class RdfFetcher
                 // error and makes it hard to find out where the error occurred even
                 // BlacklistController.accumulateHttpResponseError(url.getProtocol()+"://"+url.getHost(),
                 // conn.getResponseCode());
-                this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(), conn.getResponseCode());
+                this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(),
+                        conn.getResponseCode());
                 
                 // Try to debug why there are endpoints responding with 406 suddenly
                 // may just be a virtuoso bug, but need some evidence
                 if(conn.getResponseCode() == 406)
                 {
-                    log.error("Found an endpoint that responded with 406 to acceptHeader="+acceptHeader);
+                    RdfFetcher.log.error("Found an endpoint that responded with 406 to acceptHeader=" + acceptHeader);
                 }
                 
                 if(RdfFetcher._DEBUG)
@@ -285,9 +291,44 @@ public class RdfFetcher
         return results.toString();
     }
     
+    /**
+     * @return the lastReturnedContentEncoding
+     */
+    public String getLastReturnedContentEncoding()
+    {
+        return this.lastReturnedContentEncoding;
+    }
+    
+    /**
+     * @return the lastReturnedContentType
+     */
+    public String getLastReturnedContentType()
+    {
+        return this.lastReturnedContentType;
+    }
+    
+    /**
+     * @param lastReturnedContentEncoding
+     *            the lastReturnedContentEncoding to set
+     */
+    protected void setLastReturnedContentEncoding(final String lastReturnedContentEncoding)
+    {
+        this.lastReturnedContentEncoding = lastReturnedContentEncoding;
+    }
+    
+    /**
+     * @param lastReturnedContentType
+     *            the lastReturnedContentType to set
+     */
+    protected void setLastReturnedContentType(final String lastReturnedContentType)
+    {
+        this.lastReturnedContentType = lastReturnedContentType;
+    }
+    
     public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
             final String debug, final int maxRowsParameter, final String acceptHeader)
-        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException, java.io.IOException
+        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException,
+        java.io.IOException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -302,7 +343,7 @@ public class RdfFetcher
         String postQuery = "";
         
         // FIXME: Do we need to send a single format here?
-        //"format=" + StringUtils.percentEncode(acceptHeader) + "&";
+        // "format=" + StringUtils.percentEncode(acceptHeader) + "&";
         
         if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
         {
@@ -330,38 +371,6 @@ public class RdfFetcher
         }
         
         return results;
-    }
-
-    /**
-     * @return the lastReturnedContentType
-     */
-    public String getLastReturnedContentType()
-    {
-        return lastReturnedContentType;
-    }
-
-    /**
-     * @param lastReturnedContentType the lastReturnedContentType to set
-     */
-    protected void setLastReturnedContentType(String lastReturnedContentType)
-    {
-        this.lastReturnedContentType = lastReturnedContentType;
-    }
-
-    /**
-     * @return the lastReturnedContentEncoding
-     */
-    public String getLastReturnedContentEncoding()
-    {
-        return lastReturnedContentEncoding;
-    }
-
-    /**
-     * @param lastReturnedContentEncoding the lastReturnedContentEncoding to set
-     */
-    protected void setLastReturnedContentEncoding(String lastReturnedContentEncoding)
-    {
-        this.lastReturnedContentEncoding = lastReturnedContentEncoding;
     }
     
 }

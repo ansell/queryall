@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -83,7 +83,7 @@ public class ServerStatsServlet extends HttpServlet
                 {
                     out.write("Endpoint=" + nextKey + "<br />\n");
                     
-                    final Hashtable<Integer, Integer> errorCodeList =
+                    final Map<Integer, Integer> errorCodeList =
                             localBlacklistController.allHttpErrorResponseCodesByServer.get(nextKey);
                     
                     out.write("<ul>\n");

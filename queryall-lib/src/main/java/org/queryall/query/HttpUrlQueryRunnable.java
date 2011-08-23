@@ -20,40 +20,15 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     @SuppressWarnings("unused")
     private static final boolean _INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
     
-    // private Settings localSettings = Settings.getSettings();
-    
     public String httpOperation = "GET";
-    // public String url = "";
-    // public String postInformation = "";
-    // public String acceptHeader = "";
     public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
     
-    // public String format = "";
-    
-    // public String rawResult = "";
-    // public String returnedContentType = null;
-    // public String returnedMIMEType = null;
-    // public String returnedContentEncoding = null;
-    
-    // public Exception lastException = null;
-    
-    // public Date queryStartTime = null;
-    // public Date queryEndTime = null;
-    
-    // public boolean completed = false;
-    // public boolean wasSuccessful = false;
-    
     public HttpUrlQueryRunnable(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
-            final String nextAcceptHeader, final String nextFormat, final QueryAllConfiguration localSettings,
+            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController)
     {
         super(nextUrl, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
         this.httpOperation = nextHttpOperation;
-        // this.url = nextUrl;
-        // this.postInformation = nextPostInformation;
-        // this.acceptHeader = nextAcceptHeader;
-        // this.format = nextFormat;
-        
     }
     
     @Override
@@ -72,8 +47,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostSparqlUri().stringValue()))
             {
-                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(),
-                        "", this.maxRowsParameter, this.getAcceptHeader()));
+                this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "",
+                        this.maxRowsParameter, this.getAcceptHeader()));
             }
             else if(this.httpOperation.equals(HttpProviderImpl.getProviderHttpPostUrlUri().stringValue())
                     || this.httpOperation.equals(HttpProviderImpl.getProviderHttpGetUrlUri().stringValue()))

@@ -30,7 +30,7 @@ public class QueryAllNamespacesTest
     public void tearDown() throws Exception
     {
     }
-
+    
     /**
      * Test method for {@link org.queryall.api.utils.QueryAllNamespaces#getBaseURI()}.
      */
@@ -98,10 +98,10 @@ public class QueryAllNamespacesTest
     @Test
     public final void testQueryAllNamespaces()
     {
-    	// make sure it wasn't empty
-    	Assert.assertTrue("QueryAllNamespaces was empty", QueryAllNamespaces.values().length > 0);
-    	// Then test the expected size
-    	Assert.assertEquals(12, QueryAllNamespaces.values().length);
+        // make sure it wasn't empty
+        Assert.assertTrue("QueryAllNamespaces was empty", QueryAllNamespaces.values().length > 0);
+        // Then test the expected size
+        Assert.assertEquals(12, QueryAllNamespaces.values().length);
     }
     
 }

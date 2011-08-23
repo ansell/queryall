@@ -14,9 +14,9 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
     public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
     
     public RdfFetcherSparqlQueryRunnable(final String nextEndpointUrl, final String nextGraphUri,
-            final String nextQuery, final String nextDebug, final String nextAcceptHeader, final int nextMaxRowsParameter,
-            final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
-            final QueryBundle nextOriginalQueryBundle)
+            final String nextQuery, final String nextDebug, final String nextAcceptHeader,
+            final int nextMaxRowsParameter, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
     {
         super(nextEndpointUrl, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController,
                 nextOriginalQueryBundle);
@@ -35,8 +35,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryStartTime(new Date());
             
             this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), // this.originalQueryBundle.originalProvider.getSparqlGraphUri(),
-            this.graphUri,
-            this.getQuery(), this.getDebug(), this.maxRowsParameter, this.getAcceptHeader()));
+                    this.graphUri, this.getQuery(), this.getDebug(), this.maxRowsParameter, this.getAcceptHeader()));
             
             this.setQueryEndTime(new Date());
             

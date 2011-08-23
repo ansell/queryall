@@ -46,8 +46,8 @@ public abstract class AbstractQueryTypeTest
     private QueryType queryTypeNamespaceInputIndexes;
     
     private QueryType queryTypeIncludeDefaults;
-	private QueryType queryTypeNotIncludeDefaults;
-
+    private QueryType queryTypeNotIncludeDefaults;
+    
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll;
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll;
@@ -68,7 +68,7 @@ public abstract class AbstractQueryTypeTest
     
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll;
-
+    
     /**
      * This method must return the URI used by the implementation to indicate that all namespaces
      * must match for the namespace test to be satisfied
@@ -925,6 +925,16 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
+     * Test method for {@link org.queryall.api.QueryType#getIncludeDefaults()}.
+     */
+    @Test
+    public void testIncludeDefaults()
+    {
+        Assert.assertTrue(this.queryTypeIncludeDefaults.getIncludeDefaults());
+        Assert.assertFalse(this.queryTypeNotIncludeDefaults.getIncludeDefaults());
+    }
+    
+    /**
      * Test method for {@link org.queryall.api.QueryType#isInputVariablePublic(int)}.
      */
     @Test
@@ -941,16 +951,6 @@ public abstract class AbstractQueryTypeTest
     public void testNamespaceVariables()
     {
         Assert.assertEquals(1, this.queryTypeNamespaceInputIndexes.getNamespaceInputIndexes().length);
-    }
-    
-    /**
-     * Test method for {@link org.queryall.api.QueryType#getIncludeDefaults()}.
-     */
-    @Test
-    public void testIncludeDefaults()
-    {
-        Assert.assertTrue(this.queryTypeIncludeDefaults.getIncludeDefaults());
-        Assert.assertFalse(this.queryTypeNotIncludeDefaults.getIncludeDefaults());
     }
     
 }
