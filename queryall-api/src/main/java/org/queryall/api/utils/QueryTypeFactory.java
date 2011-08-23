@@ -11,5 +11,5 @@ public interface QueryTypeFactory {
 	QueryTypeEnum getQueryType();
 
 	QueryTypeParser getParser();
-
+	
 }
