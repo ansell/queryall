@@ -5,9 +5,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -26,7 +26,7 @@ import org.queryall.api.RuleTest;
 import org.queryall.api.SparqlProvider;
 import org.queryall.impl.ProviderImpl;
 import org.queryall.impl.QueryTypeImpl;
-import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
 import org.slf4j.Logger;
@@ -50,7 +50,8 @@ public class NamespaceProvidersServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings = Settings.getSettings();
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         
         final PrintWriter out = response.getWriter();
         response.setContentType("text/html");

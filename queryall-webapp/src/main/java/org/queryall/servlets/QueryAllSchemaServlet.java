@@ -1,5 +1,7 @@
 package org.queryall.servlets;
 
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.rio.RDFFormat;
@@ -19,6 +22,7 @@ import org.queryall.api.utils.PropertyUtils;
 import org.queryall.enumerations.Constants;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
@@ -44,8 +48,13 @@ public class QueryAllSchemaServlet extends HttpServlet
     {
         final Date queryStartTime = new Date();
         
-        final QueryAllConfiguration localSettings = Settings.getSettings();
-        
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final ContentTypeNegotiator localContentTypeNegotiator =
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+        final VelocityEngine localVelocityEngine =
+                (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+
         final PrintWriter out = response.getWriter();
         
         final String realHostName =
@@ -58,7 +67,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"),
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        localContentTypeNegotiator, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -176,7 +185,7 @@ public class QueryAllSchemaServlet extends HttpServlet
                 try
                 {
                     HtmlPageRenderer.renderHtml(
-                            this.getServletContext(),
+                            localVelocityEngine,
                             myRepository,
                             stBuff,
                             debugStrings,

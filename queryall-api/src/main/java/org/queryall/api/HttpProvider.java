@@ -12,7 +12,7 @@ public interface HttpProvider extends Provider
 {
     void addEndpointUrl(String endpointUrl);
     
-    String getAcceptHeaderString();
+    String getAcceptHeaderString(String defaultAcceptHeader);
     
     Collection<String> getEndpointUrls();
     

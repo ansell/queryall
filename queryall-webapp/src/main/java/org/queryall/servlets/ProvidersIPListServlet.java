@@ -25,7 +25,7 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherSparqlQueryRunnable;
-import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +47,11 @@ public class ProvidersIPListServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings = Settings.getSettings();
-        final BlacklistController localBlacklistController = new BlacklistController(localSettings);
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final BlacklistController localBlacklistController =
+                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
+        
         final PrintWriter out = response.getWriter();
         response.setContentType("text/plain");
         
@@ -103,9 +106,8 @@ public class ProvidersIPListServlet extends HttpServlet
                             {
                                 final RdfFetcherSparqlQueryRunnable testQueryRunnable =
                                         new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri,
-                                                "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5",
-                                                "nextDebug", "application/rdf+xml",
-                                                5, localSettings, localBlacklistController, null);
+                                                "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug",
+                                                "application/rdf+xml", 5, localSettings, localBlacklistController, null);
                                 sparqlThreads.add(testQueryRunnable);
                                 
                                 // test.submitSparqlQuery(nextEndpoint, "application/rdf+xml",

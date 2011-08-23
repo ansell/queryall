@@ -136,6 +136,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
         
         queryBundles.add(nextQueryBundle);
         
+        // TODO: remove calls to Settings.getSettings() and BlacklistController.getDefaultController() here
         final RdfFetchController fetchController =
                 new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
         

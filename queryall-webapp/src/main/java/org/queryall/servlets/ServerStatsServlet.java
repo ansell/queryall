@@ -17,6 +17,7 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.MathsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +41,10 @@ public class ServerStatsServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings = Settings.getSettings();
-        final BlacklistController localBlacklistController = BlacklistController.getDefaultController();
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final BlacklistController localBlacklistController =
+                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
         
         final PrintWriter out = response.getWriter();
         response.setContentType("text/html");

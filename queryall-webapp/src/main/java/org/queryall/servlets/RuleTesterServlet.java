@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.RuleTest;
-import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.queryparsers.RuleTesterQueryOptions;
 import org.queryall.utils.RuleUtils;
 import org.slf4j.Logger;
@@ -39,8 +39,8 @@ public class RuleTesterServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings = Settings.getSettings();
-        // Settings.setServletContext(getServletConfig().getServletContext());
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         
         RuleTesterServlet.log.debug("testUri parameter="
                 + request.getAttribute("org.queryall.RuleTesterServlet.testUri"));

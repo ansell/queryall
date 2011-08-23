@@ -22,7 +22,6 @@ import org.queryall.api.HttpProvider;
 import org.queryall.api.SparqlProvider;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
-import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -340,11 +339,10 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
         }
         
         this.endpointUrls.add(endpointUrl);
-        
     }
     
     @Override
-    public String getAcceptHeaderString()
+    public String getAcceptHeaderString(String defaultAcceptHeader)
     {
         if(this.acceptHeaderString != null && !this.acceptHeaderString.trim().equals(""))
         {
@@ -352,7 +350,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
         }
         else
         {
-            return Settings.getSettings().getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
+            return "";
         }
     }
     
@@ -465,14 +463,9 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             // non-trivial purpose
             Literal acceptHeaderLiteral = null;
             
-            if(this.getAcceptHeaderString() == null || this.getAcceptHeaderString().trim().equals(""))
+            if(this.acceptHeaderString != null && this.acceptHeaderString.trim().length() > 0)
             {
-                acceptHeaderLiteral =
-                        f.createLiteral(Settings.getSettings().getStringProperty("defaultAcceptHeader", ""));
-            }
-            else
-            {
-                acceptHeaderLiteral = f.createLiteral(this.getAcceptHeaderString());
+                acceptHeaderLiteral = f.createLiteral(this.acceptHeaderString);
             }
             
             final Literal useSparqlGraphLiteral = f.createLiteral(this.getUseSparqlGraph());
@@ -482,7 +475,10 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             
             con.add(providerInstanceUri, RDF.TYPE, ProviderImpl.getProviderTypeUri(), keyToUse);
             
-            con.add(providerInstanceUri, HttpProviderImpl.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
+            if(acceptHeaderLiteral != null)
+            {
+                con.add(providerInstanceUri, HttpProviderImpl.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
+            }
             
             con.add(providerInstanceUri, ProviderImpl.getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral,
                     keyToUse);

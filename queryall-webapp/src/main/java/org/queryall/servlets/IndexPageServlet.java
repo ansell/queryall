@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.OpenRDFException;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,8 @@ public class IndexPageServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings = Settings.getSettings();
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         
         final PrintWriter out = response.getWriter();
         response.setContentType("text/html");

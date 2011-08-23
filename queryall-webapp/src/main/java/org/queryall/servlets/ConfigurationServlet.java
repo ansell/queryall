@@ -1,5 +1,7 @@
 package org.queryall.servlets;
 
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
@@ -29,6 +32,7 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.ConfigurationQueryOptions;
 import org.queryall.utils.RdfUtils;
@@ -55,8 +59,14 @@ public class ConfigurationServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings = Settings.getSettings();
-        final BlacklistController localBlacklistController = BlacklistController.getDefaultController();
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final BlacklistController localBlacklistController =
+                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
+        final ContentTypeNegotiator localContentTypeNegotiator =
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+        final VelocityEngine localVelocityEngine =
+                (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
         
         if(ConfigurationServlet._INFO)
         {
@@ -75,7 +85,7 @@ public class ConfigurationServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"),
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        localContentTypeNegotiator, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -564,7 +574,7 @@ public class ConfigurationServlet extends HttpServlet
                 
                 try
                 {
-                    HtmlPageRenderer.renderHtml(this.getServletContext(), myRepository, stBuff, debugStrings,
+                    HtmlPageRenderer.renderHtml(localVelocityEngine, myRepository, stBuff, debugStrings,
                             queryString, localSettings.getDefaultHostAddress() + queryString, realHostName,
                             request.getContextPath(), -1, localSettings);
                 }

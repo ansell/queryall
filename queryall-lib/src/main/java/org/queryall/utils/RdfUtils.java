@@ -1130,6 +1130,7 @@ public final class RdfUtils
     public static Collection<QueryType> getQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
             final int modelVersion, final QueryAllConfiguration localSettings)
     {
+        // TODO: remove call to BlacklistController.getDefaultController() here
         final RdfFetchController fetchController =
                 new RdfFetchController(localSettings, BlacklistController.getDefaultController(), queryBundles);
         

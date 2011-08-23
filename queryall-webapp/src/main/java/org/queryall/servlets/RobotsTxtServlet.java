@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.queryall.query.Settings;
+import org.queryall.api.QueryAllConfiguration;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,8 @@ public class RobotsTxtServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        // Settings.setServletContext(getServletConfig().getServletContext());
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         
         if(RobotsTxtServlet._INFO)
         {
@@ -42,7 +44,7 @@ public class RobotsTxtServlet extends HttpServlet
         
         final PrintWriter out = response.getWriter();
         
-        final Collection<String> robotsList = Settings.getSettings().getStringProperties("blacklistBaseUserAgents");
+        final Collection<String> robotsList = localSettings.getStringProperties("blacklistBaseUserAgents");
         
         if(robotsList != null)
         {

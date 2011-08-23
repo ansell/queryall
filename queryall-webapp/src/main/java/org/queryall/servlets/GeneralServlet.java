@@ -1,5 +1,7 @@
 package org.queryall.servlets;
 
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
@@ -39,6 +42,7 @@ import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.Settings;
+import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.utils.ProfileUtils;
@@ -284,8 +288,15 @@ public class GeneralServlet extends HttpServlet
     {
         final long queryStartTime = System.currentTimeMillis();
         
-        final QueryAllConfiguration localSettings = Settings.getSettings();
-        final BlacklistController localBlacklistController = BlacklistController.getDefaultController();
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final BlacklistController localBlacklistController =
+                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
+        final ContentTypeNegotiator localContentTypeNegotiator =
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+        final VelocityEngine localVelocityEngine =
+                (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+        
         final DefaultQueryOptions requestQueryOptions =
                 new DefaultQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
@@ -333,8 +344,9 @@ public class GeneralServlet extends HttpServlet
         }
         
         final String originalRequestedContentType =
-                QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                QueryallContentNegotiator.getResponseContentType(acceptHeader,
+                        userAgentHeader,
+                        localContentTypeNegotiator, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -488,7 +500,7 @@ public class GeneralServlet extends HttpServlet
             final Repository convertedPool =
                     this.doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
             
-            this.resultsToWriter(out, localSettings, writerFormat, realHostName, queryString, pageOffset,
+            this.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName, queryString, pageOffset,
                     requestedContentType, fetchController, debugStrings, convertedPool, contextPath);
             
             out.flush();
@@ -833,8 +845,8 @@ public class GeneralServlet extends HttpServlet
                 {
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString,
-                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName, pageOffset,
-                                    localSettings);
+                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
+                                    pageOffset, localSettings);
                     
                     String nextBackupString =
                             QueryCreator.createStaticRdfXmlString(nextQueryType, nextQueryType, new ProviderImpl(),
@@ -913,7 +925,7 @@ public class GeneralServlet extends HttpServlet
             final boolean isPretendQuery, final int pageOffset, final String originalRequestedContentType,
             final String requestedContentType)
     {
-        if(_INFO)
+        if(GeneralServlet._INFO)
         {
             GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
                     + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
@@ -947,13 +959,14 @@ public class GeneralServlet extends HttpServlet
      * @param contextPath
      * @throws IOException
      */
-    private void resultsToWriter(final Writer out, final QueryAllConfiguration localSettings,
+    private void resultsToWriter(final VelocityEngine nextEngine, final Writer out, final QueryAllConfiguration localSettings,
             final RDFFormat writerFormat, final String realHostName, final String queryString, final int pageOffset,
             final String requestedContentType, final RdfFetchController fetchController,
             final Collection<String> debugStrings, final Repository convertedPool, final String contextPath)
         throws IOException
     {
-        // Assume an average document may easily contain 2000 characters, to save on copies inside the stringwriter
+        // Assume an average document may easily contain 2000 characters, to save on copies inside
+        // the stringwriter
         // By default it starts with only 16 characters if we don't set a number here
         final java.io.StringWriter cleanOutput = new java.io.StringWriter(2000);
         
@@ -968,7 +981,7 @@ public class GeneralServlet extends HttpServlet
             
             try
             {
-                HtmlPageRenderer.renderHtml(this.getServletContext(), convertedPool, cleanOutput, fetchController,
+                HtmlPageRenderer.renderHtml(nextEngine, convertedPool, cleanOutput, fetchController,
                         debugStrings, queryString, localSettings.getDefaultHostAddress() + queryString, realHostName,
                         contextPath, pageOffset, localSettings);
             }
@@ -1003,8 +1016,10 @@ public class GeneralServlet extends HttpServlet
             }
             final StringBuffer buffer = cleanOutput.getBuffer();
             
-            // HACK to get around lack of interest in sesame for getting RDF/XML documents without the XML PI
-            // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with all RDF/XML results and we need to change the magic number here
+            // HACK to get around lack of interest in sesame for getting RDF/XML documents without
+            // the XML PI
+            // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with
+            // all RDF/XML results and we need to change the magic number here
             if(buffer.length() > 38)
             {
                 for(int i = 38; i < cleanOutput.getBuffer().length(); i++)

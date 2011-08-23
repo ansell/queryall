@@ -2,9 +2,6 @@ package org.queryall.servlets.html;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
-
-import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -21,7 +18,6 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Richard Cyganiak (richard @ cyganiak.de) Adapted for use by Bio2RDF by...
  * @author Peter Ansell (p_ansell @ yahoo.com)
- * @version $Id: VelocityHelper.java 944 2011-02-08 10:23:08Z p_ansell $
  */
 
 public class VelocityHelper
@@ -33,22 +29,7 @@ public class VelocityHelper
     @SuppressWarnings("unused")
     private static final boolean _INFO = VelocityHelper.log.isInfoEnabled();
     
-    private final static String VELOCITY_ENGINE = VelocityHelper.class.getName() + ".VELOCITY_ENGINE";
-    
-    private final ServletContext servletContext;
-    private volatile Context velocityContext;
-    
-    /**
-     * 
-     * @param servletContext
-     */
-    public VelocityHelper(final ServletContext servletContext)
-    {
-        this.servletContext = servletContext;
-        this.velocityContext = new VelocityContext();
-    }
-    
-    private VelocityEngine createVelocityEngine()
+    public static VelocityEngine createVelocityEngine()
     {
         if(VelocityHelper._TRACE)
         {
@@ -99,98 +80,24 @@ public class VelocityHelper
     }
     
     /**
-     * @return A receptacle for template variables
-     */
-    public Context getVelocityContext()
-    {
-        return this.velocityContext;
-    }
-    
-    private synchronized VelocityEngine getVelocityEngine()
-    {
-        if(VelocityHelper._TRACE)
-        {
-            VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: about to get current VelocityEngine instance");
-        }
-        
-        VelocityEngine currentEngine = (VelocityEngine)this.servletContext.getAttribute(VelocityHelper.VELOCITY_ENGINE);
-        
-        if(VelocityHelper._TRACE)
-        {
-            VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: currentEngine=" + currentEngine);
-        }
-        
-        if(currentEngine == null)
-        // if(engineSetup == null || !engineSetup)
-        {
-            if(VelocityHelper._TRACE)
-            {
-                VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: setting up engine...");
-            }
-            
-            currentEngine = this.createVelocityEngine();
-            
-            // setupVelocityProperties();
-            
-            if(VelocityHelper._TRACE)
-            {
-                VelocityHelper.log
-                        .trace("VelocityHelper.getVelocityEngine: about to try to synchronize access to servletContext");
-            }
-            
-            // synchronized (servletContext)
-            // {
-            this.servletContext.setAttribute(VelocityHelper.VELOCITY_ENGINE, currentEngine);
-            
-            // }
-            
-            if(VelocityHelper._TRACE)
-            {
-                VelocityHelper.log
-                        .trace("VelocityHelper.getVelocityEngine: finished with synchronized access to servletContext");
-            }
-        }
-        
-        if(VelocityHelper._TRACE)
-        {
-            VelocityHelper.log.trace("VelocityHelper.getVelocityEngine: returning... currentEngine=" + currentEngine);
-        }
-        
-        return currentEngine;
-    }
-    
-    /**
      * Renders a template using the template variables put into the velocity context.
      */
-    public void renderXHTML(final String templateName, final java.io.Writer nextWriter) throws VelocityException
+    public static void renderXHTML(final VelocityEngine nextVelocityEngine, final Context nextVelocityContext,
+            final String templateName, final java.io.Writer nextWriter) throws VelocityException
     {
-        // response.addHeader("Content-Type", "text/html; charset=utf-8");
-        // response.addHeader("Cache-Control", "no-cache");
-        // response.addHeader("Pragma", "no-cache");
-        
         try
         {
             if(VelocityHelper._TRACE)
             {
-                VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to setup Velocity properties");
+                VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to get velocity engine");
             }
-            
-            final VelocityEngine currentVelocityEngine = this.getVelocityEngine();
-            // setupVelocityEngine();
             
             if(VelocityHelper._TRACE)
             {
                 VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to mergeTemplate");
             }
             
-            // make sure that the writer is going to be writing in UTF-8
-            // OutputStreamWriter utf8Writer = new
-            // OutputStreamWriter(nextWriter, "utf-8");
-            // currentVelocityEngine.mergeTemplate(templateName, "utf-8",
-            // velocityContext, nextWriter);
-            currentVelocityEngine.mergeTemplate(templateName, "utf-8", this.velocityContext, nextWriter);
-            
-            // writer.close();
+            nextVelocityEngine.mergeTemplate(templateName, "utf-8", nextVelocityContext, nextWriter);
         }
         catch(final ResourceNotFoundException ex)
         {
@@ -206,7 +113,10 @@ public class VelocityHelper
         }
         catch(final Exception ex)
         {
-            VelocityHelper.log.error("Velocity threw bare Exception, rethrowing as VelocityException");
+            // TODO: remove this after upgrading to a version of Velocity that doesn't contain
+            // "throws Exception" on mergeTemplate
+            VelocityHelper.log
+                    .error("Velocity threw bare Exception, rethrowing as VelocityException so we don't have to have throws Exception everywhere ourselves");
             throw new VelocityException(ex);
         }
         finally
@@ -219,9 +129,16 @@ public class VelocityHelper
                 }
                 catch(final IOException ex)
                 {
-                    
+                    VelocityHelper.log.error("Could not flush writer", ex);
                 }
             }
         }
+    }
+    
+    /**
+     * 
+     */
+    private VelocityHelper()
+    {
     }
 }
