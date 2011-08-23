@@ -19,6 +19,7 @@ import org.queryall.api.HttpProvider;
 import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
 import org.queryall.api.Provider;
+import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
@@ -55,6 +56,7 @@ public class QueryBundle
     
     private Collection<Profile> relevantProfiles = new HashSet<Profile>();
     private Map<String, String> alternativeEndpointsAndQueries;
+    private QueryAllConfiguration localSettings;
     
     public static URI queryBundleTypeUri;
     public static URI queryLiteralUri;
@@ -404,8 +406,7 @@ public class QueryBundle
             
             this.getOriginalProvider().toRdf(myRepository, keyToUse, modelVersion);
             
-            for(final NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(Settings.getSettings()
-                    .getAllNormalisationRules(), this.getOriginalProvider().getNormalisationUris(),
+            for(final NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(((QueryAllConfiguration)getQueryallSettings()).getAllNormalisationRules(), this.getOriginalProvider().getNormalisationUris(),
                     SortOrder.LOWEST_ORDER_FIRST))
             {
                 nextRelevantRdfRule.toRdf(myRepository, keyToUse, modelVersion);
@@ -481,5 +482,21 @@ public class QueryBundle
         }
         
         return sb.toString();
+    }
+
+    /**
+     * @return the localSettings
+     */
+    public QueryAllConfiguration getQueryallSettings()
+    {
+        return localSettings;
+    }
+
+    /**
+     * @param localSettings the localSettings to set
+     */
+    public void setQueryallSettings(QueryAllConfiguration localSettings)
+    {
+        this.localSettings = localSettings;
     }
 }

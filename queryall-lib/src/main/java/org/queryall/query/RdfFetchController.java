@@ -433,6 +433,7 @@ public class RdfFetchController
                 nextProviderQueryBundle.setProvider(nextProvider);
                 nextProviderQueryBundle.setQueryType(nextQueryType);
                 nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
+                nextProviderQueryBundle.setQueryallSettings(localSettings);
                 
                 results.add(nextProviderQueryBundle);
             }
@@ -554,6 +555,7 @@ public class RdfFetchController
                             nextProviderQueryBundle.setOriginalProvider(nextProvider);
                             nextProviderQueryBundle.setQueryType(nextQueryType);
                             nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
+                            nextProviderQueryBundle.setQueryallSettings(localSettings);
                             
                             // Then test whether the endpoint is blacklisted before accepting it
                             if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication())
@@ -591,6 +593,7 @@ public class RdfFetchController
                     nextProviderQueryBundle.setProvider(nextProvider);
                     nextProviderQueryBundle.setQueryType(nextQueryType);
                     nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
+                    nextProviderQueryBundle.setQueryallSettings(localSettings);
                     
                     results.add(nextProviderQueryBundle);
                     

@@ -525,11 +525,7 @@ public class ProjectImpl implements Project
             final Literal titleLiteral = f.createLiteral(this.getTitle());
             URI authorityLiteral = null;
             
-            if(this.getAuthority() == null)
-            {
-                authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
-            }
-            else
+            if(this.getAuthority() != null)
             {
                 authorityLiteral = this.getAuthority();
             }
@@ -544,7 +540,12 @@ public class ProjectImpl implements Project
             con.setAutoCommit(false);
             
             con.add(projectInstanceUri, RDF.TYPE, ProjectImpl.getProjectTypeUri(), keyToUse);
-            con.add(projectInstanceUri, ProjectImpl.getProjectAuthority(), authorityLiteral, keyToUse);
+            
+            if(authorityLiteral != null)
+            {
+                con.add(projectInstanceUri, ProjectImpl.getProjectAuthority(), authorityLiteral, keyToUse);
+            }
+            
             if(modelVersion == 1)
             {
                 con.add(projectInstanceUri, ProjectImpl.getProjectTitle(), titleLiteral, keyToUse);

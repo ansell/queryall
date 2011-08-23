@@ -694,11 +694,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
             
             URI authorityLiteral = null;
             
-            if(this.getAuthority() == null || this.getAuthority().stringValue().trim().equals(""))
-            {
-                authorityLiteral = f.createURI(Settings.getSettings().getDefaultHostAddress());
-            }
-            else
+            if(this.getAuthority() != null && !this.getAuthority().stringValue().trim().equals(""))
             {
                 authorityLiteral = this.getAuthority();
             }
@@ -732,7 +728,12 @@ public class NamespaceEntryImpl implements NamespaceEntry
             con.setAutoCommit(false);
             
             con.add(namespaceInstanceUri, RDF.TYPE, NamespaceEntryImpl.getNamespaceTypeUri(), keyToUse);
-            con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceAuthority(), authorityLiteral, keyToUse);
+
+            if(authorityLiteral != null)
+            {
+                con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceAuthority(), authorityLiteral, keyToUse);
+            }
+            
             con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespacePreferredPrefix(), preferredPrefixLiteral,
                     keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntryImpl.getNamespaceConvertQueriesToPreferredPrefix(),

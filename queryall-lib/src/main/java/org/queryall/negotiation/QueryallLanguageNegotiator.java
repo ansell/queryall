@@ -63,6 +63,7 @@ public class QueryallLanguageNegotiator
                         .trace("QueryallLanguageNegotiator: bestMatch not found, returning en instead");
             }
             
+            // TODO: remove reliance on Settings.getSettings() here
             return Settings.getSettings().getStringProperty("preferredDisplayLanguage", "");
         }
         
