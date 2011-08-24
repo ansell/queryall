@@ -134,7 +134,7 @@ public class QueryTypeImpl implements QueryType
     static
     {
         // register this query type implementation with the central register
-        QueryTypeEnum.register(QueryTypeSchema.class.getName(), QueryTypeImpl.myTypes());
+        QueryTypeEnum.register(QueryTypeImpl.class.getName(), QueryTypeImpl.myTypes());
     }
     
     public QueryTypeImpl()

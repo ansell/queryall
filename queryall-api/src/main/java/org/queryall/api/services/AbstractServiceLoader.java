@@ -5,11 +5,11 @@ package org.queryall.api.services;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +22,16 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractServiceLoader<K, S>
 {
-    protected final static Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    protected static Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
     
-    protected Map<K, S> services = new ConcurrentHashMap<K, S>();
+    protected Map<K, S> services = Collections.synchronizedMap(new HashMap<K, S>());
     
-    protected AbstractServiceLoader(final Class<S> serviceClass)
+    protected AbstractServiceLoader(Class<S> serviceClass)
     {
-        final ServiceLoader<S> serviceLoader =
+        ServiceLoader<S> serviceLoader =
                 java.util.ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
         
-        final Iterator<S> services = serviceLoader.iterator();
+        Iterator<S> services = serviceLoader.iterator();
         
         // Loop through this way so we can catch all errors for each iteration and only discard
         // plugins that are invalid
@@ -44,9 +44,9 @@ public abstract class AbstractServiceLoader<K, S>
                     break;
                 }
                 
-                final S service = services.next();
+                S service = services.next();
                 
-                final S oldService = this.add(service);
+                S oldService = this.add(service);
                 
                 if(oldService != null)
                 {
@@ -56,19 +56,19 @@ public abstract class AbstractServiceLoader<K, S>
                 
                 AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
             }
-            catch(final Error e)
+            catch(Error e)
             {
                 AbstractServiceLoader.log.error("Failed to instantiate service", e);
             }
         }
     }
     
-    public S add(final S service)
+    public S add(S service)
     {
         return this.services.put(this.getKey(service), service);
     }
     
-    public S get(final K key)
+    public S get(K key)
     {
         return this.services.get(key);
     }
@@ -96,12 +96,12 @@ public abstract class AbstractServiceLoader<K, S>
         return Collections.unmodifiableSet(this.services.keySet());
     }
     
-    public boolean has(final K key)
+    public boolean has(K key)
     {
         return this.services.containsKey(key);
     }
     
-    public void remove(final S service)
+    public void remove(S service)
     {
         this.services.remove(this.getKey(service));
     }
