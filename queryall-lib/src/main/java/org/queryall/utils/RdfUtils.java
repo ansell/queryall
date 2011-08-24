@@ -58,11 +58,11 @@ import org.queryall.impl.NamespaceEntryImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProjectImpl;
 import org.queryall.impl.ProviderImpl;
-import org.queryall.impl.QueryTypeImpl;
 import org.queryall.impl.RegexNormalisationRuleImpl;
 import org.queryall.impl.RuleTestImpl;
 import org.queryall.impl.SparqlNormalisationRuleImpl;
 import org.queryall.impl.XsltNormalisationRuleImpl;
+import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.query.QueryBundle;
@@ -1129,7 +1129,7 @@ public final class RdfUtils
             
                 for(QueryTypeEnum nextQueryTypeEnum : matchingQueryTypeEnums)
                 {
-                    results.put(nextSubjectUri, ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createQueryType(
+                    results.put(nextSubjectUri, ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
                             con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                     nextSubjectUri, Settings.CONFIG_API_VERSION));
                 }

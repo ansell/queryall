@@ -21,6 +21,7 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
+import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;

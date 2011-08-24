@@ -25,7 +25,7 @@ import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.api.SparqlProvider;
 import org.queryall.impl.ProviderImpl;
-import org.queryall.impl.QueryTypeImpl;
+import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;

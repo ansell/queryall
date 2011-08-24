@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.querytype;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,9 @@ import org.queryall.api.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
+import org.queryall.impl.NamespaceEntryImpl;
+import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.ProjectImpl;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;

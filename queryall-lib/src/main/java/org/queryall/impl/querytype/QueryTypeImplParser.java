@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl;
+package org.queryall.impl.querytype;
 
 import java.util.Collection;
 
@@ -16,7 +16,6 @@ import org.queryall.api.querytype.QueryTypeParser;
  */
 public class QueryTypeImplParser implements QueryTypeParser
 {
-    
     /**
      * 
      */
@@ -25,11 +24,8 @@ public class QueryTypeImplParser implements QueryTypeParser
 
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.utils.QueryTypeParser#createQueryType(java.util.Collection, org.openrdf.model.URI, int)
-     */
     @Override
-    public QueryType createQueryType(Collection<Statement> rdfStatements, URI subjectKey, int modelVersion)
+    public QueryType createObject(Collection<Statement> rdfStatements, URI subjectKey, int modelVersion)
         throws IllegalArgumentException
     {
         try

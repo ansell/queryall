@@ -16,7 +16,7 @@ import org.queryall.api.Profile;
 import org.queryall.api.Provider;
 import org.queryall.api.QueryType;
 import org.queryall.comparators.ValueComparator;
-import org.queryall.impl.QueryTypeImpl;
+import org.queryall.impl.querytype.QueryTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

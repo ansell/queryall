@@ -43,7 +43,7 @@ import org.queryall.enumerations.Constants;
 import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProviderImpl;
-import org.queryall.impl.QueryTypeImpl;
+import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.utils.RdfUtils;
 
 /**

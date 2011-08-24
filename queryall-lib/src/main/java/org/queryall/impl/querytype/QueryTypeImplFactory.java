@@ -1,38 +1,28 @@
 /**
  * 
  */
-package org.queryall.impl;
+package org.queryall.impl.querytype;
 
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeFactory;
 import org.queryall.api.querytype.QueryTypeParser;
 
 /**
- * @author uqpanse1
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryTypeImplFactory implements QueryTypeFactory
 {
-    
     /**
-     * 
-     */
-    public QueryTypeImplFactory()
-    {
-        // TODO Auto-generated constructor stub
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.utils.QueryTypeFactory#getQueryType()
+     * Returns the enumeration from the enumeration that matches this factory
      */
     @Override
-    public QueryTypeEnum getQueryType()
+    public QueryTypeEnum getEnum()
     {
         return QueryTypeEnum.valueOf(QueryTypeImpl.class.getName());
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.utils.QueryTypeFactory#getParser()
+    /**
+     * Returns the parser from the enumeration that matches this factory
      */
     @Override
     public QueryTypeParser getParser()

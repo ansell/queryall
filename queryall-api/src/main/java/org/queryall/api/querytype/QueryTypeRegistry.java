@@ -36,7 +36,7 @@ public class QueryTypeRegistry extends AbstractServiceLoader<QueryTypeEnum, Quer
 	@Override
 	protected QueryTypeEnum getKey(QueryTypeFactory factory) 
 	{
-		return factory.getQueryType();
+		return factory.getEnum();
 	}
 
 }

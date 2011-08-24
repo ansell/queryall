@@ -6,7 +6,7 @@ package org.queryall.impl.test;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryType;
 import org.queryall.api.test.AbstractQueryTypeTest;
-import org.queryall.impl.QueryTypeImpl;
+import org.queryall.impl.querytype.QueryTypeImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
