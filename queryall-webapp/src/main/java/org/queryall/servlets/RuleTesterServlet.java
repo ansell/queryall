@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.model.URI;
-import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.queryparsers.RuleTesterQueryOptions;

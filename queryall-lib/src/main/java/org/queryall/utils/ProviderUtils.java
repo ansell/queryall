@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.openrdf.model.URI;
-import org.queryall.api.Profile;
+import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;

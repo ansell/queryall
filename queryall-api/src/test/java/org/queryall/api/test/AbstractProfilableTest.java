@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.ProfilableInterface;
-import org.queryall.api.Profile;
+import org.queryall.api.base.ProfilableInterface;
+import org.queryall.api.profile.Profile;
 
 /**
  * Abstract unit test for Profilable API

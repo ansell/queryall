@@ -3,8 +3,8 @@ package org.queryall.api.test;
 import java.util.List;
 
 import org.junit.Assert;
-import org.queryall.api.ProfilableInterface;
-import org.queryall.api.Profile;
+import org.queryall.api.base.ProfilableInterface;
+import org.queryall.api.profile.Profile;
 
 /**
  * 

@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 
-import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;

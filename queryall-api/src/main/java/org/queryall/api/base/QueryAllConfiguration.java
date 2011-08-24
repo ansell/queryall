@@ -1,4 +1,4 @@
-package org.queryall.api;
+package org.queryall.api.base;
 
 import java.util.Collection;
 import java.util.Map;
@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;

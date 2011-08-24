@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.queryall.api.Profile;
-import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;

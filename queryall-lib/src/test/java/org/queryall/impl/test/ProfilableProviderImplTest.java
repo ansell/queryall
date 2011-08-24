@@ -4,8 +4,8 @@
 package org.queryall.impl.test;
 
 import org.openrdf.model.URI;
-import org.queryall.api.ProfilableInterface;
-import org.queryall.api.Profile;
+import org.queryall.api.base.ProfilableInterface;
+import org.queryall.api.profile.Profile;
 import org.queryall.impl.provider.HttpProviderImpl;
 
 /**

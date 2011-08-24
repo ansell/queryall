@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.queryall.api.Profile;
+import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.QueryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

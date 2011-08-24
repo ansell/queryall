@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.Profile;
+import org.queryall.api.profile.Profile;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -86,7 +86,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#addExcludeProvider(org.openrdf.model.URI)}.
+     * Test method for {@link org.queryall.api.profile.Profile#addExcludeProvider(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddExcludeProvider()
@@ -98,7 +98,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#addExcludeQueryType(org.openrdf.model.URI)}.
+     * Test method for {@link org.queryall.api.profile.Profile#addExcludeQueryType(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddExcludeQueryType()
@@ -110,7 +110,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#addExcludeRdfRule(org.openrdf.model.URI)}.
+     * Test method for {@link org.queryall.api.profile.Profile#addExcludeRdfRule(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddExcludeRdfRule()
@@ -122,7 +122,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#addIncludeProvider(org.openrdf.model.URI)}.
+     * Test method for {@link org.queryall.api.profile.Profile#addIncludeProvider(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddIncludeProvider()
@@ -134,7 +134,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#addIncludeQueryType(org.openrdf.model.URI)}.
+     * Test method for {@link org.queryall.api.profile.Profile#addIncludeQueryType(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddIncludeQueryType()
@@ -146,7 +146,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#addIncludeRdfRule(org.openrdf.model.URI)}.
+     * Test method for {@link org.queryall.api.profile.Profile#addIncludeRdfRule(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddIncludeRdfRule()
@@ -159,7 +159,7 @@ public abstract class AbstractProfileTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.Profile#addProfileAdministrators(org.openrdf.model.URI)}.
+     * {@link org.queryall.api.profile.Profile#addProfileAdministrators(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddProfileAdministrator()
@@ -174,7 +174,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#compareTo(org.queryall.api.Profile)}.
+     * Test method for {@link org.queryall.api.profile.Profile#compareTo(org.queryall.api.profile.Profile)}.
      */
     @Test
     public final void testCompareTo()
@@ -184,7 +184,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getAllowImplicitProviderInclusions()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getAllowImplicitProviderInclusions()}.
      */
     @Test
     public final void testGetAllowImplicitProviderInclusions()
@@ -193,7 +193,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getAllowImplicitQueryTypeInclusions()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getAllowImplicitQueryTypeInclusions()}.
      */
     @Test
     public final void testGetAllowImplicitQueryTypeInclusions()
@@ -202,7 +202,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getAllowImplicitRdfRuleInclusions()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getAllowImplicitRdfRuleInclusions()}.
      */
     @Test
     public final void testGetAllowImplicitRdfRuleInclusions()
@@ -211,7 +211,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getDefaultProfileIncludeExcludeOrder()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getDefaultProfileIncludeExcludeOrder()}.
      */
     @Test
     public final void testGetDefaultProfileIncludeExcludeOrder()
@@ -221,7 +221,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getExcludeProviders()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getExcludeProviders()}.
      */
     @Test
     public final void testGetExcludeProviders()
@@ -233,7 +233,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getExcludeQueryTypes()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getExcludeQueryTypes()}.
      */
     @Test
     public final void testGetExcludeQueryTypes()
@@ -245,7 +245,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getExcludeRdfRules()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getExcludeRdfRules()}.
      */
     @Test
     public final void testGetExcludeRdfRules()
@@ -257,7 +257,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getIncludeProviders()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getIncludeProviders()}.
      */
     @Test
     public final void testGetIncludeProviders()
@@ -269,7 +269,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getIncludeQueryTypes()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getIncludeQueryTypes()}.
      */
     @Test
     public final void testGetIncludeQueryTypes()
@@ -281,7 +281,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getIncludeRdfRules()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getIncludeRdfRules()}.
      */
     @Test
     public final void testGetIncludeRdfRules()
@@ -293,7 +293,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getOrder()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getOrder()}.
      */
     @Test
     public final void testGetOrder()
@@ -306,7 +306,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#getProfileAdministrators()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getProfileAdministrators()}.
      */
     @Test
     public final void testGetProfileAdministrators()
@@ -321,7 +321,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#setAllowImplicitProviderInclusions(boolean)}
+     * Test method for {@link org.queryall.api.profile.Profile#setAllowImplicitProviderInclusions(boolean)}
      * .
      */
     @Test
@@ -342,7 +342,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#setAllowImplicitQueryTypeInclusions(boolean)}
+     * Test method for {@link org.queryall.api.profile.Profile#setAllowImplicitQueryTypeInclusions(boolean)}
      * .
      */
     @Test
@@ -363,7 +363,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#setAllowImplicitRdfRuleInclusions(boolean)} .
+     * Test method for {@link org.queryall.api.profile.Profile#setAllowImplicitRdfRuleInclusions(boolean)} .
      */
     @Test
     public final void testSetAllowImplicitRdfRuleInclusions()
@@ -384,7 +384,7 @@ public abstract class AbstractProfileTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.Profile#setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI)}.
+     * {@link org.queryall.api.profile.Profile#setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI)}.
      */
     @Test
     public final void testSetDefaultProfileIncludeExcludeOrder()
@@ -404,7 +404,7 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Profile#setOrder(int)}.
+     * Test method for {@link org.queryall.api.profile.Profile#setOrder(int)}.
      */
     @Test
     public final void testSetOrder()

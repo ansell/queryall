@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
  * Parses RDF configurations to create instances of the BaseQueryAllInterface interface 

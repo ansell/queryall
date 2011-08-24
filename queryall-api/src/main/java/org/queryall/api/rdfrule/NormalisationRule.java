@@ -3,8 +3,8 @@ package org.queryall.api.rdfrule;
 import java.util.Collection;
 
 import org.openrdf.model.URI;
-import org.queryall.api.BaseQueryAllInterface;
-import org.queryall.api.ProfilableInterface;
+import org.queryall.api.base.BaseQueryAllInterface;
+import org.queryall.api.base.ProfilableInterface;
 import org.queryall.exception.InvalidStageException;
 
 /**

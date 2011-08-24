@@ -3,7 +3,7 @@ package org.queryall.servlets.queryparsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

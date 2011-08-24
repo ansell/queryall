@@ -3,7 +3,7 @@
  */
 package org.queryall.impl.test;
 
-import org.queryall.api.ProfilableInterface;
+import org.queryall.api.base.ProfilableInterface;
 import org.queryall.impl.rdfrule.XsltNormalisationRuleImpl;
 
 /**

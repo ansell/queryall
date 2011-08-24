@@ -2,7 +2,7 @@ package org.queryall.query;
 
 import java.util.Date;
 
-import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 
 /**

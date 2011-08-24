@@ -3,7 +3,7 @@
  */
 package org.queryall.api.services;
 
-import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
  * 

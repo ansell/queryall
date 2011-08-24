@@ -17,7 +17,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.rio.RDFFormat;
-import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.negotiation.QueryallContentNegotiator;

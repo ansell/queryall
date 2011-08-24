@@ -2,7 +2,7 @@ package org.queryall.api.ruletest;
 
 import java.util.Collection;
 
-import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

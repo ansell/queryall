@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.api;
+package org.queryall.api.namespace;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
