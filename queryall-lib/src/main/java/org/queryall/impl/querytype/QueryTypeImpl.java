@@ -145,7 +145,6 @@ public class QueryTypeImpl implements QueryType
     public QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final Collection<URI> tempNamespacesToHandle = new HashSet<URI>();
         final Collection<Integer> tempPublicIdentifierIndexes = new HashSet<Integer>();
         final Collection<Integer> tempNamespaceInputIndexes = new HashSet<Integer>();
         
@@ -183,7 +182,7 @@ public class QueryTypeImpl implements QueryType
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceToHandle()))
             {
-                tempNamespacesToHandle.add((URI)nextStatement.getObject());
+                this.addNamespaceToHandle((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryPublicIdentifierIndex()))
             {
@@ -251,7 +250,6 @@ public class QueryTypeImpl implements QueryType
             }
         }
         
-        this.setNamespacesToHandle(tempNamespacesToHandle);
         this.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes
                 .toArray(new Integer[0])));
         this.setNamespaceInputIndexes(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes

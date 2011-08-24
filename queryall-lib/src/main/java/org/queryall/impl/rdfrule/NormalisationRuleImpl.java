@@ -71,7 +71,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final Collection<URI> tempRelatedNamespaces = new HashSet<URI>();
         final Collection<URI> tempStages = new HashSet<URI>();
         
         for(final Statement nextStatement : inputStatements)
