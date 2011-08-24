@@ -13,7 +13,7 @@ public class QueryAllEnum
     protected static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
     private List<URI> typeURIs;
     private String name;
-
+    
     /**
      * Create a new QueryType enum using the given name, which must be unique
      * 
@@ -25,7 +25,7 @@ public class QueryAllEnum
         this.setName(nextName);
         this.setTypeURI(nextTypeURIs);
     }
-
+    
     /**
      * @return the name
      */
@@ -33,7 +33,7 @@ public class QueryAllEnum
     {
         return this.name;
     }
-
+    
     /**
      * 
      * @return the typeURIs
@@ -42,7 +42,7 @@ public class QueryAllEnum
     {
         return Collections.unmodifiableList(this.typeURIs);
     }
-
+    
     /**
      * The name can only be set using the constructor.
      * 
@@ -53,7 +53,7 @@ public class QueryAllEnum
     {
         this.name = name;
     }
-
+    
     /**
      * The type can only be set using the constructor.
      * 

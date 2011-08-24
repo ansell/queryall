@@ -30,40 +30,6 @@ public class XsltNormalisationRuleSchema
     private static final boolean _DEBUG = XsltNormalisationRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = XsltNormalisationRuleSchema.log.isInfoEnabled();
-
-    /**
-     * @return the xsltRuleStylesheetUri
-     */
-    public static URI getXsltRuleStylesheetUri()
-    {
-        return XsltNormalisationRuleSchema.xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @return the xsltRuleTypeUri
-     */
-    public static URI getXsltRuleTypeUri()
-    {
-        return XsltNormalisationRuleSchema.xsltRuleTypeUri;
-    }
-    
-    /**
-     * @param xsltRuleStylesheetUri
-     *            the xsltRuleStylesheetUri to set
-     */
-    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @param xsltRuleTypeUri
-     *            the xsltRuleTypeUri to set
-     */
-    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
-    }
     
     private static URI xsltRuleTypeUri;
     
@@ -78,6 +44,22 @@ public class XsltNormalisationRuleSchema
         XsltNormalisationRuleSchema.setXsltRuleTypeUri(f.createURI(baseUri, "XsltNormalisationRule"));
         XsltNormalisationRuleSchema.setXsltRuleStylesheetUri(f.createURI(baseUri, "xsltStylesheet"));
         
+    }
+    
+    /**
+     * @return the xsltRuleStylesheetUri
+     */
+    public static URI getXsltRuleStylesheetUri()
+    {
+        return XsltNormalisationRuleSchema.xsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @return the xsltRuleTypeUri
+     */
+    public static URI getXsltRuleTypeUri()
+    {
+        return XsltNormalisationRuleSchema.xsltRuleTypeUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -133,6 +115,24 @@ public class XsltNormalisationRuleSchema
         }
         
         return false;
+    }
+    
+    /**
+     * @param xsltRuleStylesheetUri
+     *            the xsltRuleStylesheetUri to set
+     */
+    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @param xsltRuleTypeUri
+     *            the xsltRuleTypeUri to set
+     */
+    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
     }
     
 }

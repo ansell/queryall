@@ -377,7 +377,8 @@ public abstract class AbstractQueryTypeTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Collection)}.
+     * {@link org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Collection)}
+     * .
      * 
      * This test requires the namespaces to be specifically declared for the test to succeed
      */
@@ -662,8 +663,8 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Collection)}
-     * .
+     * Test method for
+     * {@link org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Collection)} .
      * 
      * This test does not require the namespaces to be specifically declared for the test to succeed
      */

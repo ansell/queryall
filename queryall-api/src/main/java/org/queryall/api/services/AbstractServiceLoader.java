@@ -16,89 +16,93 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An abstract service loader.
- *
+ * 
  * This is a java 6 version of info.aduna.lang.service.ServiceRegistry.
  * 
  */
-public abstract class AbstractServiceLoader<K, S> 
+public abstract class AbstractServiceLoader<K, S>
 {
-		protected final static Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
-
-		protected Map<K, S> services = new ConcurrentHashMap<K, S>();
-
-		protected AbstractServiceLoader(Class<S> serviceClass) 
-		{
-			ServiceLoader<S> serviceLoader = java.util.ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
-			
-			Iterator<S> services = serviceLoader.iterator();
-			
-			// Loop through this way so we can catch all errors for each iteration and only discard plugins that are invalid
-			while(true) 
-			{
-				try 
-				{
-					if(!services.hasNext()) 
-					{
-                        break;
-					}
-
-					S service = services.next();
-
-					S oldService = add(service);
-
-					if(oldService != null) 
-					{
-						log.warn("New service {} replaces existing service {}", service.getClass(),
-								oldService.getClass());
-					}
-
-					log.debug("Registered service class {}", service.getClass().getName());
-				}
-				catch (Error e) 
-				{
-					log.error("Failed to instantiate service", e);
-				}
-			}
-		}
-
-		public S add(S service) 
-		{
-			return services.put(getKey(service), service);
-		}
-
-		public void remove(S service) 
-		{
-			services.remove(getKey(service));
-		}
-
-		public S get(K key) 
-		{
-			return services.get(key);
-		}
-
-		public boolean has(K key) 
-		{
-			return services.containsKey(key);
-		}
-
-		public Collection<S> getAll() 
-		{
-			return Collections.unmodifiableCollection(services.values());
-		}
-
-		public Set<K> getKeys() 
-		{
-			return Collections.unmodifiableSet(services.keySet());
-		}
-
-		/**
-		 * This method needs to be overriden to provide a unique key, based on the generic key type (K) to use as the identifier for the given service.
-		 * 
-		 * The key must be unique within this registry.
-		 * 
-		 * @param service A service to return a key for
-		 * 
-		 * @return The unique key for the given service.
-		 */
-		protected abstract K getKey(S service);	
+    protected final static Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    
+    protected Map<K, S> services = new ConcurrentHashMap<K, S>();
+    
+    protected AbstractServiceLoader(final Class<S> serviceClass)
+    {
+        final ServiceLoader<S> serviceLoader =
+                java.util.ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
+        
+        final Iterator<S> services = serviceLoader.iterator();
+        
+        // Loop through this way so we can catch all errors for each iteration and only discard
+        // plugins that are invalid
+        while(true)
+        {
+            try
+            {
+                if(!services.hasNext())
+                {
+                    break;
+                }
+                
+                final S service = services.next();
+                
+                final S oldService = this.add(service);
+                
+                if(oldService != null)
+                {
+                    AbstractServiceLoader.log.warn("New service {} replaces existing service {}", service.getClass(),
+                            oldService.getClass());
+                }
+                
+                AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
+            }
+            catch(final Error e)
+            {
+                AbstractServiceLoader.log.error("Failed to instantiate service", e);
+            }
+        }
+    }
+    
+    public S add(final S service)
+    {
+        return this.services.put(this.getKey(service), service);
+    }
+    
+    public S get(final K key)
+    {
+        return this.services.get(key);
+    }
+    
+    public Collection<S> getAll()
+    {
+        return Collections.unmodifiableCollection(this.services.values());
+    }
+    
+    /**
+     * This method needs to be overriden to provide a unique key, based on the generic key type (K)
+     * to use as the identifier for the given service.
+     * 
+     * The key must be unique within this registry.
+     * 
+     * @param service
+     *            A service to return a key for
+     * 
+     * @return The unique key for the given service.
+     */
+    protected abstract K getKey(S service);
+    
+    public Set<K> getKeys()
+    {
+        return Collections.unmodifiableSet(this.services.keySet());
+    }
+    
+    public boolean has(final K key)
+    {
+        return this.services.containsKey(key);
+    }
+    
+    public void remove(final S service)
+    {
+        this.services.remove(this.getKey(service));
+    }
 }

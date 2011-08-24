@@ -86,7 +86,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#addExcludeProvider(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#addExcludeProvider(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddExcludeProvider()
@@ -98,7 +99,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#addExcludeQueryType(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#addExcludeQueryType(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddExcludeQueryType()
@@ -110,7 +112,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#addExcludeRdfRule(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#addExcludeRdfRule(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddExcludeRdfRule()
@@ -122,7 +125,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#addIncludeProvider(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#addIncludeProvider(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddIncludeProvider()
@@ -134,7 +138,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#addIncludeQueryType(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#addIncludeQueryType(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddIncludeQueryType()
@@ -146,7 +151,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#addIncludeRdfRule(org.openrdf.model.URI)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#addIncludeRdfRule(org.openrdf.model.URI)}.
      */
     @Test
     public final void testAddIncludeRdfRule()
@@ -174,7 +180,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#compareTo(org.queryall.api.profile.Profile)}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#compareTo(org.queryall.api.profile.Profile)}.
      */
     @Test
     public final void testCompareTo()
@@ -184,7 +191,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#getAllowImplicitProviderInclusions()}.
+     * Test method for {@link org.queryall.api.profile.Profile#getAllowImplicitProviderInclusions()}
+     * .
      */
     @Test
     public final void testGetAllowImplicitProviderInclusions()
@@ -193,7 +201,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#getAllowImplicitQueryTypeInclusions()}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#getAllowImplicitQueryTypeInclusions()}.
      */
     @Test
     public final void testGetAllowImplicitQueryTypeInclusions()
@@ -211,7 +220,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#getDefaultProfileIncludeExcludeOrder()}.
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#getDefaultProfileIncludeExcludeOrder()}.
      */
     @Test
     public final void testGetDefaultProfileIncludeExcludeOrder()
@@ -321,8 +331,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#setAllowImplicitProviderInclusions(boolean)}
-     * .
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#setAllowImplicitProviderInclusions(boolean)} .
      */
     @Test
     public final void testSetAllowImplicitProviderInclusions()
@@ -342,8 +352,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#setAllowImplicitQueryTypeInclusions(boolean)}
-     * .
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#setAllowImplicitQueryTypeInclusions(boolean)} .
      */
     @Test
     public final void testSetAllowImplicitQueryTypeInclusions()
@@ -363,7 +373,8 @@ public abstract class AbstractProfileTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.profile.Profile#setAllowImplicitRdfRuleInclusions(boolean)} .
+     * Test method for
+     * {@link org.queryall.api.profile.Profile#setAllowImplicitRdfRuleInclusions(boolean)} .
      */
     @Test
     public final void testSetAllowImplicitRdfRuleInclusions()
@@ -384,7 +395,8 @@ public abstract class AbstractProfileTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.profile.Profile#setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI)}.
+     * {@link org.queryall.api.profile.Profile#setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI)}
+     * .
      */
     @Test
     public final void testSetDefaultProfileIncludeExcludeOrder()

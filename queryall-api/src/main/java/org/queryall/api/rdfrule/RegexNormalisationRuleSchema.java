@@ -31,6 +31,29 @@ public class RegexNormalisationRuleSchema
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleSchema.log.isInfoEnabled();
     
+    private static URI regexruleTypeUri;
+    
+    private static URI regexruleInputMatchRegex;
+    
+    private static URI regexruleInputReplaceRegex;
+    
+    private static URI regexruleOutputMatchRegex;
+    
+    private static URI regexruleOutputReplaceRegex;
+    
+    static
+    {
+        final ValueFactory f = Constants.valueFactory;
+        
+        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
+        
+        RegexNormalisationRuleSchema.setRegexRuleTypeUri(f.createURI(baseUri, "RegexNormalisationRule"));
+        RegexNormalisationRuleSchema.setRegexRuleInputMatchRegex(f.createURI(baseUri, "inputMatchRegex"));
+        RegexNormalisationRuleSchema.setRegexRuleInputReplaceRegex(f.createURI(baseUri, "inputReplaceRegex"));
+        RegexNormalisationRuleSchema.setRegexRuleOutputMatchRegex(f.createURI(baseUri, "outputMatchRegex"));
+        RegexNormalisationRuleSchema.setRegexRuleOutputReplaceRegex(f.createURI(baseUri, "outputReplaceRegex"));
+    }
+    
     /**
      * @return the rdfruleInputMatchRegex
      */
@@ -69,73 +92,6 @@ public class RegexNormalisationRuleSchema
     public static URI getRegexRuleTypeUri()
     {
         return RegexNormalisationRuleSchema.regexruleTypeUri;
-    }
-    
-    /**
-     * @param rdfruleInputMatchRegex
-     *            the rdfruleInputMatchRegex to set
-     */
-    public static void setRegexRuleInputMatchRegex(final URI rdfruleInputMatchRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleInputMatchRegex = rdfruleInputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleInputReplaceRegex
-     *            the rdfruleInputReplaceRegex to set
-     */
-    public static void setRegexRuleInputReplaceRegex(final URI rdfruleInputReplaceRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputMatchRegex
-     *            the rdfruleOutputMatchRegex to set
-     */
-    public static void setRegexRuleOutputMatchRegex(final URI rdfruleOutputMatchRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputReplaceRegex
-     *            the rdfruleOutputReplaceRegex to set
-     */
-    public static void setRegexRuleOutputReplaceRegex(final URI rdfruleOutputReplaceRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
-    }
-    
-    /**
-     * @param regexruleTypeUri
-     *            the regexruleTypeUri to set
-     */
-    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
-    {
-        RegexNormalisationRuleSchema.regexruleTypeUri = regexruleTypeUri;
-    }
-    private static URI regexruleTypeUri;
-    
-    private static URI regexruleInputMatchRegex;
-    
-    private static URI regexruleInputReplaceRegex;
-    
-    private static URI regexruleOutputMatchRegex;
-    
-    private static URI regexruleOutputReplaceRegex;
-    
-    static
-    {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
-        
-        RegexNormalisationRuleSchema.setRegexRuleTypeUri(f.createURI(baseUri, "RegexNormalisationRule"));
-        RegexNormalisationRuleSchema.setRegexRuleInputMatchRegex(f.createURI(baseUri, "inputMatchRegex"));
-        RegexNormalisationRuleSchema.setRegexRuleInputReplaceRegex(f.createURI(baseUri, "inputReplaceRegex"));
-        RegexNormalisationRuleSchema.setRegexRuleOutputMatchRegex(f.createURI(baseUri, "outputMatchRegex"));
-        RegexNormalisationRuleSchema.setRegexRuleOutputReplaceRegex(f.createURI(baseUri, "outputReplaceRegex"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -230,6 +186,51 @@ public class RegexNormalisationRuleSchema
         }
         
         return false;
+    }
+    
+    /**
+     * @param rdfruleInputMatchRegex
+     *            the rdfruleInputMatchRegex to set
+     */
+    public static void setRegexRuleInputMatchRegex(final URI rdfruleInputMatchRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleInputMatchRegex = rdfruleInputMatchRegex;
+    }
+    
+    /**
+     * @param rdfruleInputReplaceRegex
+     *            the rdfruleInputReplaceRegex to set
+     */
+    public static void setRegexRuleInputReplaceRegex(final URI rdfruleInputReplaceRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
+    }
+    
+    /**
+     * @param rdfruleOutputMatchRegex
+     *            the rdfruleOutputMatchRegex to set
+     */
+    public static void setRegexRuleOutputMatchRegex(final URI rdfruleOutputMatchRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
+    }
+    
+    /**
+     * @param rdfruleOutputReplaceRegex
+     *            the rdfruleOutputReplaceRegex to set
+     */
+    public static void setRegexRuleOutputReplaceRegex(final URI rdfruleOutputReplaceRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
+    }
+    
+    /**
+     * @param regexruleTypeUri
+     *            the regexruleTypeUri to set
+     */
+    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
+    {
+        RegexNormalisationRuleSchema.regexruleTypeUri = regexruleTypeUri;
     }
     
 }

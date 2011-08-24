@@ -99,6 +99,5 @@ public final class QueryTypeUtils
     {
         // TODO Auto-generated constructor stub
     }
-
     
 }

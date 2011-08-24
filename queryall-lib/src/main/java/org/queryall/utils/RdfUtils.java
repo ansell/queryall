@@ -1102,28 +1102,32 @@ public final class RdfUtils
             RdfUtils.log.debug("getQueryTypes: started parsing query types");
         }
         
-        // This is the base query type URI, extensions or plugins must include this URI alongside their customised type URIs
+        // This is the base query type URI, extensions or plugins must include this URI alongside
+        // their customised type URIs
         final URI queryTypeUri = QueryTypeSchema.getQueryTypeUri();
         
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
             
-            List<Statement> allDeclaredQueryTypeSubjects = con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList();
+            final List<Statement> allDeclaredQueryTypeSubjects =
+                    con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList();
             
-            for(Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
+            for(final Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
             {
                 if(!(nextDeclaredQueryTypeSubject.getSubject() instanceof URI))
                 {
-                    log.error("We do not support blank nodes as query type identifiers");
+                    RdfUtils.log.error("We do not support blank nodes as query type identifiers");
                     continue;
                 }
                 
                 final URI nextSubjectUri = (URI)nextDeclaredQueryTypeSubject.getSubject();
-
-                Collection<Value> nextQueryTypeValues = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE, (URI)nextDeclaredQueryTypeSubject.getSubject());
-                List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
-                for(Value nextQueryTypeValue : nextQueryTypeValues)
+                
+                final Collection<Value> nextQueryTypeValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredQueryTypeSubject.getSubject());
+                final List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
+                for(final Value nextQueryTypeValue : nextQueryTypeValues)
                 {
                     if(nextQueryTypeValue instanceof URI)
                     {
@@ -1131,12 +1135,14 @@ public final class RdfUtils
                     }
                 }
                 
-                Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
-            
-                for(QueryTypeEnum nextQueryTypeEnum : matchingQueryTypeEnums)
+                final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
+                
+                for(final QueryTypeEnum nextQueryTypeEnum : matchingQueryTypeEnums)
                 {
-                    results.put(nextSubjectUri, ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
-                            con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                     nextSubjectUri, Settings.CONFIG_API_VERSION));
                 }
             }

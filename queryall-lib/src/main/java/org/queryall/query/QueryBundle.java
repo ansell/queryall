@@ -205,6 +205,14 @@ public class QueryBundle
         return this.query;
     }
     
+    /**
+     * @return the localSettings
+     */
+    public QueryAllConfiguration getQueryallSettings()
+    {
+        return this.localSettings;
+    }
+    
     public String getQueryEndpoint()
     {
         return this.queryEndpoint;
@@ -287,6 +295,15 @@ public class QueryBundle
     public void setQuery(final String query)
     {
         this.query = query;
+    }
+    
+    /**
+     * @param localSettings
+     *            the localSettings to set
+     */
+    public void setQueryallSettings(final QueryAllConfiguration localSettings)
+    {
+        this.localSettings = localSettings;
     }
     
     public void setQueryEndpoint(final String endpointUrl)
@@ -406,7 +423,8 @@ public class QueryBundle
             
             this.getOriginalProvider().toRdf(myRepository, keyToUse, modelVersion);
             
-            for(final NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(((QueryAllConfiguration)getQueryallSettings()).getAllNormalisationRules(), this.getOriginalProvider().getNormalisationUris(),
+            for(final NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(this.getQueryallSettings()
+                    .getAllNormalisationRules(), this.getOriginalProvider().getNormalisationUris(),
                     SortOrder.LOWEST_ORDER_FIRST))
             {
                 nextRelevantRdfRule.toRdf(myRepository, keyToUse, modelVersion);
@@ -482,21 +500,5 @@ public class QueryBundle
         }
         
         return sb.toString();
-    }
-
-    /**
-     * @return the localSettings
-     */
-    public QueryAllConfiguration getQueryallSettings()
-    {
-        return localSettings;
-    }
-
-    /**
-     * @param localSettings the localSettings to set
-     */
-    public void setQueryallSettings(QueryAllConfiguration localSettings)
-    {
-        this.localSettings = localSettings;
     }
 }

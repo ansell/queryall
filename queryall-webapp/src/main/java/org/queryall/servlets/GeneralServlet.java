@@ -293,7 +293,8 @@ public class GeneralServlet extends HttpServlet
         final BlacklistController localBlacklistController =
                 (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
         final ContentTypeNegotiator localContentTypeNegotiator =
-                (ContentTypeNegotiator)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(
+                        SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
         final VelocityEngine localVelocityEngine =
                 (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
         
@@ -344,9 +345,9 @@ public class GeneralServlet extends HttpServlet
         }
         
         final String originalRequestedContentType =
-                QueryallContentNegotiator.getResponseContentType(acceptHeader,
-                        userAgentHeader,
-                        localContentTypeNegotiator, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
+                        localContentTypeNegotiator,
+                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -500,8 +501,8 @@ public class GeneralServlet extends HttpServlet
             final Repository convertedPool =
                     this.doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
             
-            this.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName, queryString, pageOffset,
-                    requestedContentType, fetchController, debugStrings, convertedPool, contextPath);
+            this.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName, queryString,
+                    pageOffset, requestedContentType, fetchController, debugStrings, convertedPool, contextPath);
             
             out.flush();
             
@@ -959,11 +960,11 @@ public class GeneralServlet extends HttpServlet
      * @param contextPath
      * @throws IOException
      */
-    private void resultsToWriter(final VelocityEngine nextEngine, final Writer out, final QueryAllConfiguration localSettings,
-            final RDFFormat writerFormat, final String realHostName, final String queryString, final int pageOffset,
-            final String requestedContentType, final RdfFetchController fetchController,
-            final Collection<String> debugStrings, final Repository convertedPool, final String contextPath)
-        throws IOException
+    private void resultsToWriter(final VelocityEngine nextEngine, final Writer out,
+            final QueryAllConfiguration localSettings, final RDFFormat writerFormat, final String realHostName,
+            final String queryString, final int pageOffset, final String requestedContentType,
+            final RdfFetchController fetchController, final Collection<String> debugStrings,
+            final Repository convertedPool, final String contextPath) throws IOException
     {
         // Assume an average document may easily contain 2000 characters, to save on copies inside
         // the stringwriter
@@ -981,9 +982,9 @@ public class GeneralServlet extends HttpServlet
             
             try
             {
-                HtmlPageRenderer.renderHtml(nextEngine, convertedPool, cleanOutput, fetchController,
-                        debugStrings, queryString, localSettings.getDefaultHostAddress() + queryString, realHostName,
-                        contextPath, pageOffset, localSettings);
+                HtmlPageRenderer.renderHtml(nextEngine, convertedPool, cleanOutput, fetchController, debugStrings,
+                        queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath,
+                        pageOffset, localSettings);
             }
             catch(final OpenRDFException ordfe)
             {

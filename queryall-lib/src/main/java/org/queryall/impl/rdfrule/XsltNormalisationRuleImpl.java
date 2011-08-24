@@ -76,7 +76,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     
     private String xsltStylesheet;
     
-    
     public XsltNormalisationRuleImpl()
     {
         super();
@@ -274,8 +273,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         {
             XsltNormalisationRuleImpl.log
                     .info("stageBeforeResultsImport returning input unchanged this.getValidStages="
-                            + this.getValidStages()
-                                    .contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
+                            + this.getValidStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
                             + " this.getStages()="
                             + this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
             return input;

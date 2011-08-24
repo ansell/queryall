@@ -32,7 +32,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
-    
     private String inputMatchRegex = "";
     
     private String inputReplaceRegex = "";
@@ -40,7 +39,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     private String outputMatchRegex = "";
     
     private String outputReplaceRegex = "";
-    
     
     public RegexNormalisationRuleImpl()
     {
@@ -446,7 +444,8 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             con.setAutoCommit(false);
             
             con.add(keyUri, RDF.TYPE, RegexNormalisationRuleSchema.getRegexRuleTypeUri(), keyToUse);
-            con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleInputMatchRegex(), inputMatchRegexLiteral, keyToUse);
+            con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleInputMatchRegex(), inputMatchRegexLiteral,
+                    keyToUse);
             con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleInputReplaceRegex(), inputReplaceRegexLiteral,
                     keyToUse);
             con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleOutputMatchRegex(), outputMatchRegexLiteral,

@@ -15,35 +15,34 @@ import org.queryall.exception.UnsupportedQueryTypeException;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ServiceUtils 
+public class ServiceUtils
 {
-
-	/**
+    
+    /**
+     * Creates a query type parser for the given query type enum
+     * 
+     * @param queryType
+     * @return
+     * @throws UnsupportedQueryTypeException
+     */
+    public static QueryTypeParser createQueryTypeParser(final QueryTypeEnum queryType)
+        throws UnsupportedQueryTypeException
+    {
+        final QueryTypeFactory factory = QueryTypeRegistry.getInstance().get(queryType);
+        
+        if(factory != null)
+        {
+            return factory.getParser();
+        }
+        
+        throw new UnsupportedQueryTypeException("No factory available for query type " + queryType);
+    }
+    
+    /**
 	 * 
 	 */
-	public ServiceUtils() 
-	{
-
-
-	}
-
-	/**
-	 * Creates a query type parser for the given query type enum
-	 * 
-	 * @param queryType
-	 * @return
-	 * @throws UnsupportedQueryTypeException
-	 */
-	public static QueryTypeParser createQueryTypeParser(QueryTypeEnum queryType)
-			throws UnsupportedQueryTypeException
-	{
-			QueryTypeFactory factory = QueryTypeRegistry.getInstance().get(queryType);
-
-			if (factory != null) 
-			{
-				return factory.getParser();
-			}
-			
-			throw new UnsupportedQueryTypeException("No factory available for query type " + queryType);
-	}
+    public ServiceUtils()
+    {
+        
+    }
 }

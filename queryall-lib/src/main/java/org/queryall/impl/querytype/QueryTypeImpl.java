@@ -42,7 +42,14 @@ public class QueryTypeImpl implements QueryType
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
     
-
+    private static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(QueryTypeSchema.getQueryTypeUri());
+        
+        return results;
+    }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -127,7 +134,7 @@ public class QueryTypeImpl implements QueryType
     static
     {
         // register this query type implementation with the central register
-        QueryTypeEnum.register(QueryTypeSchema.class.getName(), myTypes());
+        QueryTypeEnum.register(QueryTypeSchema.class.getName(), QueryTypeImpl.myTypes());
     }
     
     public QueryTypeImpl()
@@ -315,16 +322,7 @@ public class QueryTypeImpl implements QueryType
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
-    }
-    
-    private static List<URI> myTypes()
-    {
-        final List<URI> results = new ArrayList<URI>(1);
-        
-        results.add(QueryTypeSchema.getQueryTypeUri());
-        
-        return results;
+        return QueryTypeImpl.myTypes();
     }
     
     @Override
@@ -979,7 +977,8 @@ public class QueryTypeImpl implements QueryType
                 con.add(queryInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
             }
             
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryHandleAllNamespaces(), handleAllNamespacesLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryHandleAllNamespaces(), handleAllNamespacesLiteral,
+                    keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
                     keyToUse);

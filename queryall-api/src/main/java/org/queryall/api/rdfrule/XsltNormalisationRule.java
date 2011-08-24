@@ -1,6 +1,5 @@
 package org.queryall.api.rdfrule;
 
-
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */

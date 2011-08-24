@@ -15,7 +15,7 @@ public class UnsupportedQueryTypeException extends RuntimeException
      * 
      */
     private static final long serialVersionUID = 6962509127774602019L;
-
+    
     /**
      * 
      */
@@ -27,26 +27,26 @@ public class UnsupportedQueryTypeException extends RuntimeException
     /**
      * @param message
      */
-    public UnsupportedQueryTypeException(String message)
+    public UnsupportedQueryTypeException(final String message)
     {
         super(message);
-    }
-    
-    /**
-     * @param cause
-     */
-    public UnsupportedQueryTypeException(Throwable cause)
-    {
-        super(cause);
     }
     
     /**
      * @param message
      * @param cause
      */
-    public UnsupportedQueryTypeException(String message, Throwable cause)
+    public UnsupportedQueryTypeException(final String message, final Throwable cause)
     {
         super(message, cause);
+    }
+    
+    /**
+     * @param cause
+     */
+    public UnsupportedQueryTypeException(final Throwable cause)
+    {
+        super(cause);
     }
     
 }

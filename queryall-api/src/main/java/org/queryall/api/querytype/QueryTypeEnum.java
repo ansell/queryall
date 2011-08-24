@@ -21,7 +21,7 @@ import org.queryall.api.services.QueryAllEnum;
 public class QueryTypeEnum extends QueryAllEnum
 {
     protected static final Collection<QueryTypeEnum> ALL_QUERY_TYPES = new ArrayList<QueryTypeEnum>(5);
-
+    
     public static Collection<QueryTypeEnum> byTypeUris(final List<URI> nextQueryTypeUris)
     {
         final List<QueryTypeEnum> results = new ArrayList<QueryTypeEnum>(QueryTypeEnum.ALL_QUERY_TYPES.size());
@@ -44,7 +44,7 @@ public class QueryTypeEnum extends QueryAllEnum
     {
         if(QueryTypeEnum.valueOf(nextQueryType.getName()) != null)
         {
-            QueryTypeEnum.log.error("Cannot register this query type again name=" + nextQueryType.getName());
+            QueryAllEnum.log.error("Cannot register this query type again name=" + nextQueryType.getName());
         }
         else
         {
@@ -79,7 +79,7 @@ public class QueryTypeEnum extends QueryAllEnum
     {
         return Collections.unmodifiableCollection(QueryTypeEnum.ALL_QUERY_TYPES);
     }
-
+    
     /**
      * Create a new QueryType enum using the given name, which must be unique
      * 

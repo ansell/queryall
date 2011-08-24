@@ -129,7 +129,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     }
     
     @Override
-    public String getAcceptHeaderString(String defaultAcceptHeader)
+    public String getAcceptHeaderString(final String defaultAcceptHeader)
     {
         if(this.acceptHeaderString != null && !this.acceptHeaderString.trim().equals(""))
         {
@@ -264,7 +264,8 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             
             if(acceptHeaderLiteral != null)
             {
-                con.add(providerInstanceUri, HttpProviderSchema.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
+                con.add(providerInstanceUri, HttpProviderSchema.getProviderAcceptHeader(), acceptHeaderLiteral,
+                        keyToUse);
             }
             
             con.add(providerInstanceUri, ProviderSchema.getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral,

@@ -46,8 +46,8 @@ public class NamespaceEntrySchema
     {
         final ValueFactory f = Constants.valueFactory;
         
-        NamespaceEntrySchema
-                .setNamespaceTypeUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "Namespace"));
+        NamespaceEntrySchema.setNamespaceTypeUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
+                "Namespace"));
         NamespaceEntrySchema.setNamespaceAuthority(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "authority"));
         NamespaceEntrySchema.setNamespaceIdentifierRegex(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
@@ -139,6 +139,14 @@ public class NamespaceEntrySchema
         return NamespaceEntrySchema.namespaceUriTemplate;
     }
     
+    /**
+     * @return the oldNamespaceTitle
+     */
+    public static URI getOldNamespaceTitle()
+    {
+        return NamespaceEntrySchema.oldNamespaceTitle;
+    }
+    
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
@@ -172,13 +180,14 @@ public class NamespaceEntrySchema
             con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.LABEL, f.createLiteral("."),
+                    contextKeyUri);
             
             // TODO: Add description
             con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.DOMAIN, NamespaceEntrySchema.getNamespaceTypeUri(),
-                    contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.DOMAIN,
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // TODO: Add description
@@ -195,8 +204,8 @@ public class NamespaceEntrySchema
                     contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.LABEL, f.createLiteral("."),
-                    contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.LABEL,
+                    f.createLiteral("."), contextKeyUri);
             
             // TODO: Add description
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
@@ -208,8 +217,8 @@ public class NamespaceEntrySchema
             // TODO: Add description
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.DOMAIN, NamespaceEntrySchema.getNamespaceTypeUri(),
-                    contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.DOMAIN,
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             if(modelVersion == 1)
@@ -325,23 +334,14 @@ public class NamespaceEntrySchema
     {
         NamespaceEntrySchema.namespaceUriTemplate = namespaceUriTemplate;
     }
-
+    
     /**
-     * @return the oldNamespaceTitle
+     * @param oldNamespaceTitle
+     *            the oldNamespaceTitle to set
      */
-    public static URI getOldNamespaceTitle()
-    {
-        return oldNamespaceTitle;
-    }
-
-    /**
-     * @param oldNamespaceTitle the oldNamespaceTitle to set
-     */
-    public static void setOldNamespaceTitle(URI oldNamespaceTitle)
+    public static void setOldNamespaceTitle(final URI oldNamespaceTitle)
     {
         NamespaceEntrySchema.oldNamespaceTitle = oldNamespaceTitle;
     }
     
-
-
 }

@@ -361,7 +361,8 @@ public class HtmlPageRenderer
                     HtmlPageRenderer.log.debug("renderHtml: fetchController.queryKnown(), using page.vm template");
                 }
                 final String templateLocation = localSettings.getStringProperty("resultsTemplate", "page.vm");
-//                final VelocityEngine nextEngine = (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+                // final VelocityEngine nextEngine =
+                // (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
                 
                 VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
             }
@@ -377,7 +378,8 @@ public class HtmlPageRenderer
                 
                 final String templateLocation = localSettings.getStringProperty("errorTemplate", "error.vm");
                 
-//                final VelocityEngine nextEngine = (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+                // final VelocityEngine nextEngine =
+                // (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
                 
                 VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
             }
@@ -479,7 +481,8 @@ public class HtmlPageRenderer
         
         try
         {
-            final VelocityEngine nextEngine = (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+            final VelocityEngine nextEngine =
+                    (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
             
             VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
         }

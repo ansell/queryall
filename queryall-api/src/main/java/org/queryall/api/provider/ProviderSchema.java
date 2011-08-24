@@ -12,17 +12,16 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.api.utils.Constants;
 import org.queryall.api.namespace.NamespaceEntrySchema;
-import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProviderSchema
@@ -34,7 +33,7 @@ public class ProviderSchema
     private static final boolean _DEBUG = ProviderSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderSchema.log.isInfoEnabled();
-
+    
     private static URI providerNoCommunication;
     
     private static URI providerTypeUri;
@@ -62,7 +61,7 @@ public class ProviderSchema
     private static URI providerProxy;
     
     private static URI providerAssumedContentType;
-
+    
     static
     {
         final ValueFactory f = Constants.valueFactory;
@@ -87,125 +86,7 @@ public class ProviderSchema
         // NOTE: This was deprecated after API version 1 in favour of dc elements title
         ProviderSchema.setProviderTitle(f.createURI(baseUri, "Title"));
     }
-
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-            throws OpenRDFException
-        {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            final ValueFactory f = Constants.valueFactory;
-            
-            try
-            {
-                con.setAutoCommit(false);
-                
-                con.add(ProviderSchema.getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-                
-                if(modelVersion == 1)
-                {
-                    con.add(ProviderSchema.getProviderTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
-                    con.add(ProviderSchema.getProviderTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextUri);
-                }
-                
-                con.add(ProviderSchema.getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderResolutionStrategy(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
-                con.add(ProviderSchema.getProviderResolutionStrategy(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderResolutionStrategy(),
-                        RDFS.LABEL,
-                        f.createLiteral("The provider may use a strategy of either proxying the communications with this provider, or it may redirect to it."),
-                        contextUri);
-                
-                con.add(ProviderSchema.getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntrySchema.getNamespaceTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.LABEL, f.createLiteral("."), contextUri);
-                
-                con.add(ProviderSchema.getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(), contextUri);
-                con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.LABEL, f.createLiteral("."), contextUri);
-                
-                con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.RANGE,
-                        NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-                con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("."), contextUri);
-                
-                con.add(ProviderSchema.getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
-                con.add(ProviderSchema.getProviderResolutionMethod(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderResolutionMethod(),
-                        RDFS.LABEL,
-                        f.createLiteral("The provider may either use no-communication, or one of the supported resolution methods, for example, HTTP GET or HTTP POST."),
-                        contextUri);
-                
-                con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDFS.LABEL, f.createLiteral("."), contextUri);
-                
-                con.add(ProviderSchema.getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(ProviderSchema.getProviderGraphUri(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(), contextUri);
-                con.add(ProviderSchema.getProviderGraphUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
-                
-                con.add(ProviderSchema.getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextUri);
-                
-                con.add(ProviderSchema.getProviderAssumedContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderAssumedContentType(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(ProviderSchema.getProviderAssumedContentType(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                        contextUri);
-                con.add(ProviderSchema.getProviderAssumedContentType(),
-                        RDFS.LABEL,
-                        f.createLiteral("If the provider does not send a recognised RDF format MIME type, the assumed content type will be used, as long as it is a recognised RDF format MIME type."),
-                        contextUri);
-                
-                con.add(ProviderSchema.getProviderRedirect(), RDFS.LABEL,
-                        f.createLiteral("The provider will redirect users to one of the endpoints given."), contextUri);
-                
-                con.add(ProviderSchema.getProviderProxy(),
-                        RDFS.LABEL,
-                        f.createLiteral("The provider will proxy requests for users and return results in combination with other providers."),
-                        contextUri);
-                
-                // If everything went as planned, we can commit the result
-                con.commit();
-                
-                return true;
-            }
-            catch(final RepositoryException re)
-            {
-                // Something went wrong during the transaction, so we roll it back
-                
-                if(con != null)
-                {
-                    con.rollback();
-                }
-                
-                ProviderSchema.log.error("RepositoryException: " + re.getMessage());
-            }
-            finally
-            {
-                if(con != null)
-                {
-                    con.close();
-                }
-            }
-            
-            return false;
-        }
-
+    
     /**
      * @return the providerAssumedContentType
      */
@@ -310,17 +191,136 @@ public class ProviderSchema
         return ProviderSchema.providerTitle;
     }
     
-    // Use these to include information based on whether or not the provider was actually used to
-    // provide information for particular user queries
-    // public Collection<String> providerQueryInclusions = new HashSet<String>();
-    // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
-    
     /**
      * @return the providerTypeUri
      */
     public static URI getProviderTypeUri()
     {
         return ProviderSchema.providerTypeUri;
+    }
+    
+    // Use these to include information based on whether or not the provider was actually used to
+    // provide information for particular user queries
+    // public Collection<String> providerQueryInclusions = new HashSet<String>();
+    // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
+    
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            
+            con.add(ProviderSchema.getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            
+            if(modelVersion == 1)
+            {
+                con.add(ProviderSchema.getProviderTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
+                con.add(ProviderSchema.getProviderTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextUri);
+            }
+            
+            con.add(ProviderSchema.getProviderResolutionStrategy(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderResolutionStrategy(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(ProviderSchema.getProviderResolutionStrategy(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderResolutionStrategy(),
+                    RDFS.LABEL,
+                    f.createLiteral("The provider may use a strategy of either proxying the communications with this provider, or it may redirect to it."),
+                    contextUri);
+            
+            con.add(ProviderSchema.getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.RANGE,
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
+            con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(ProviderSchema.getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.RANGE,
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.DOMAIN,
+                    ProviderSchema.getProviderTypeUri(), contextUri);
+            con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(ProviderSchema.getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(ProviderSchema.getProviderResolutionMethod(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderResolutionMethod(),
+                    RDFS.LABEL,
+                    f.createLiteral("The provider may either use no-communication, or one of the supported resolution methods, for example, HTTP GET or HTTP POST."),
+                    contextUri);
+            
+            con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDFS.DOMAIN,
+                    ProviderSchema.getProviderTypeUri(), contextUri);
+            con.add(ProviderSchema.getProviderRequiresSparqlGraphURI(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(ProviderSchema.getProviderGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(ProviderSchema.getProviderGraphUri(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(), contextUri);
+            con.add(ProviderSchema.getProviderGraphUri(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(ProviderSchema.getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("."), contextUri);
+            
+            con.add(ProviderSchema.getProviderAssumedContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(ProviderSchema.getProviderAssumedContentType(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(ProviderSchema.getProviderAssumedContentType(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderAssumedContentType(),
+                    RDFS.LABEL,
+                    f.createLiteral("If the provider does not send a recognised RDF format MIME type, the assumed content type will be used, as long as it is a recognised RDF format MIME type."),
+                    contextUri);
+            
+            con.add(ProviderSchema.getProviderRedirect(), RDFS.LABEL,
+                    f.createLiteral("The provider will redirect users to one of the endpoints given."), contextUri);
+            
+            con.add(ProviderSchema.getProviderProxy(),
+                    RDFS.LABEL,
+                    f.createLiteral("The provider will proxy requests for users and return results in combination with other providers."),
+                    contextUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            ProviderSchema.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
     }
     
     /**
@@ -447,5 +447,5 @@ public class ProviderSchema
     public static void setProviderTypeUri(final URI providerTypeUri)
     {
         ProviderSchema.providerTypeUri = providerTypeUri;
-    }    
+    }
 }

@@ -64,7 +64,8 @@ public class ConfigurationServlet extends HttpServlet
         final BlacklistController localBlacklistController =
                 (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
         final ContentTypeNegotiator localContentTypeNegotiator =
-                (ContentTypeNegotiator)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(
+                        SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
         final VelocityEngine localVelocityEngine =
                 (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
         
@@ -84,8 +85,8 @@ public class ConfigurationServlet extends HttpServlet
         
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
-                        request.getHeader("User-Agent"),
-                        localContentTypeNegotiator, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        request.getHeader("User-Agent"), localContentTypeNegotiator,
+                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -574,8 +575,8 @@ public class ConfigurationServlet extends HttpServlet
                 
                 try
                 {
-                    HtmlPageRenderer.renderHtml(localVelocityEngine, myRepository, stBuff, debugStrings,
-                            queryString, localSettings.getDefaultHostAddress() + queryString, realHostName,
+                    HtmlPageRenderer.renderHtml(localVelocityEngine, myRepository, stBuff, debugStrings, queryString,
+                            localSettings.getDefaultHostAddress() + queryString, realHostName,
                             request.getContextPath(), -1, localSettings);
                 }
                 catch(final OpenRDFException ordfe)

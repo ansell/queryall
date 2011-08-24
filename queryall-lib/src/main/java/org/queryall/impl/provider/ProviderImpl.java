@@ -39,8 +39,6 @@ public class ProviderImpl implements Provider
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
     
-
-    
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key = null;
@@ -66,7 +64,6 @@ public class ProviderImpl implements Provider
     private URI endpointMethod = ProviderSchema.getProviderNoCommunication();
     
     private String assumedContentType = "";
-    
     
     static
     {
@@ -728,7 +725,8 @@ public class ProviderImpl implements Provider
             
             con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderResolutionStrategy(), redirectOrProxyLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderResolutionStrategy(), redirectOrProxyLiteral,
+                    keyToUse);
             
             con.add(providerInstanceUri, ProviderSchema.getProviderResolutionMethod(), endpointMethodLiteral, keyToUse);
             

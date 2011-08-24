@@ -96,7 +96,8 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             {
                 this.setSparqlConstructQueryTarget(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(SparqlNormalisationRuleSchema.getSparqlRuleSparqlWherePattern()))
+            else if(nextStatement.getPredicate()
+                    .equals(SparqlNormalisationRuleSchema.getSparqlRuleSparqlWherePattern()))
             {
                 this.addSparqlWherePattern(nextStatement.getObject().stringValue());
             }

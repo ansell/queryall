@@ -51,10 +51,11 @@ public class QueryAllSchemaServlet extends HttpServlet
         final QueryAllConfiguration localSettings =
                 (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         final ContentTypeNegotiator localContentTypeNegotiator =
-                (ContentTypeNegotiator)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(
+                        SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
         final VelocityEngine localVelocityEngine =
                 (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
-
+        
         final PrintWriter out = response.getWriter();
         
         final String realHostName =
@@ -66,8 +67,8 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
-                        request.getHeader("User-Agent"),
-                        localContentTypeNegotiator, localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        request.getHeader("User-Agent"), localContentTypeNegotiator,
+                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         

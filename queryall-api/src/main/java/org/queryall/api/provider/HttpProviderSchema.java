@@ -35,7 +35,7 @@ public class HttpProviderSchema
     private static URI providerAcceptHeader;
     private static URI providerEndpointUrl;
     private static URI providerSparqlProviderUri;
-
+    
     static
     {
         final ValueFactory f = new MemValueFactory();
@@ -58,7 +58,7 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerAcceptHeader;
     }
-
+    
     /**
      * @return the providerEndpointUrl
      */
@@ -66,7 +66,7 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerEndpointUrl;
     }
-
+    
     /**
      * @return the providerHttpGetUrl
      */
@@ -74,12 +74,12 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerHttpGetUrl;
     }
-
+    
     public static URI getProviderHttpGetUrlUri()
     {
         return HttpProviderSchema.getProviderHttpGetUrl();
     }
-
+    
     /**
      * @return the providerHttpPostSparql
      */
@@ -87,12 +87,12 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerHttpPostSparql;
     }
-
+    
     public static URI getProviderHttpPostSparqlUri()
     {
         return HttpProviderSchema.getProviderHttpPostSparql();
     }
-
+    
     /**
      * @return the providerHttpPostUrl
      */
@@ -100,12 +100,12 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerHttpPostUrl;
     }
-
+    
     public static URI getProviderHttpPostUrlUri()
     {
         return HttpProviderSchema.getProviderHttpPostUrl();
     }
-
+    
     /**
      * @return the providerHttpProviderUri
      */
@@ -113,7 +113,7 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerHttpProviderUri;
     }
-
+    
     /**
      * @return the providerSparqlProviderUri
      */
@@ -121,8 +121,9 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.providerSparqlProviderUri;
     }
-
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion) throws OpenRDFException
+    
+    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+        throws OpenRDFException
     {
         ProviderSchema.schemaToRdf(myRepository, contextUri, modelVersion);
         
@@ -135,8 +136,8 @@ public class HttpProviderSchema
             con.setAutoCommit(false);
             
             con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDFS.SUBCLASSOF, ProviderSchema.getProviderTypeUri(),
-                    contextUri);
+            con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDFS.SUBCLASSOF,
+                    ProviderSchema.getProviderTypeUri(), contextUri);
             
             con.add(HttpProviderSchema.getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(HttpProviderSchema.getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextUri);
@@ -180,7 +181,7 @@ public class HttpProviderSchema
         
         return false;
     }
-
+    
     /**
      * @param providerAcceptHeader
      *            the providerAcceptHeader to set
@@ -189,7 +190,7 @@ public class HttpProviderSchema
     {
         HttpProviderSchema.providerAcceptHeader = providerAcceptHeader;
     }
-
+    
     /**
      * @param providerEndpointUrl
      *            the providerEndpointUrl to set
@@ -198,7 +199,7 @@ public class HttpProviderSchema
     {
         HttpProviderSchema.providerEndpointUrl = providerEndpointUrl;
     }
-
+    
     /**
      * @param providerHttpGetUrl
      *            the providerHttpGetUrl to set
@@ -207,7 +208,7 @@ public class HttpProviderSchema
     {
         HttpProviderSchema.providerHttpGetUrl = providerHttpGetUrl;
     }
-
+    
     /**
      * @param providerHttpPostSparql
      *            the providerHttpPostSparql to set
@@ -216,7 +217,7 @@ public class HttpProviderSchema
     {
         HttpProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
     }
-
+    
     /**
      * @param providerHttpPostUrl
      *            the providerHttpPostUrl to set
@@ -225,7 +226,7 @@ public class HttpProviderSchema
     {
         HttpProviderSchema.providerHttpPostUrl = providerHttpPostUrl;
     }
-
+    
     /**
      * @param providerHttpProviderUri
      *            the providerHttpProviderUri to set
@@ -234,7 +235,7 @@ public class HttpProviderSchema
     {
         HttpProviderSchema.providerHttpProviderUri = providerHttpProviderUri;
     }
-
+    
     /**
      * @param providerSparqlProviderUri
      *            the providerSparqlProviderUri to set

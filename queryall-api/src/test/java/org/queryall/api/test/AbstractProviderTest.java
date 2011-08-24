@@ -108,8 +108,8 @@ public abstract class AbstractProviderTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.provider.Provider#containsNamespaceUri(org.openrdf.model.URI)}
-     * .
+     * Test method for
+     * {@link org.queryall.api.provider.Provider#containsNamespaceUri(org.openrdf.model.URI)} .
      */
     @Test
     public void testContainsNamespaceUri()
@@ -123,8 +123,8 @@ public abstract class AbstractProviderTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.provider.Provider#containsQueryTypeUri(org.openrdf.model.URI)}
-     * .
+     * Test method for
+     * {@link org.queryall.api.provider.Provider#containsQueryTypeUri(org.openrdf.model.URI)} .
      */
     @Test
     public void testHandlesQueryTypes()

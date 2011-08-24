@@ -504,8 +504,8 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             con.add(ProfileImpl.getProfileIncludeProviderInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.RANGE, ProviderSchema.getProviderTypeUri(),
-                    contextUri);
+            con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.RANGE,
+                    ProviderSchema.getProviderTypeUri(), contextUri);
             con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);

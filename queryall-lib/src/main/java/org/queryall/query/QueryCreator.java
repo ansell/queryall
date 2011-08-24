@@ -1523,7 +1523,7 @@ public class QueryCreator
         return inputString;
     }
     
-    public static String testReplaceMethod(final String inputString, QueryAllConfiguration localSettings)
+    public static String testReplaceMethod(final String inputString, final QueryAllConfiguration localSettings)
     {
         final Map<String, String> myTestMap = new TreeMap<String, String>();
         
@@ -1532,8 +1532,7 @@ public class QueryCreator
         myTestMap.put("${input_2}", "YourInput2");
         myTestMap.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
         
-        final String returnString =
-                QueryCreator.replaceTags(inputString, myTestMap, localSettings);
+        final String returnString = QueryCreator.replaceTags(inputString, myTestMap, localSettings);
         
         // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
         

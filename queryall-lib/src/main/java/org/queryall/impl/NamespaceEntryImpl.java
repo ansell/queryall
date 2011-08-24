@@ -432,7 +432,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
             con.setAutoCommit(false);
             
             con.add(namespaceInstanceUri, RDF.TYPE, NamespaceEntrySchema.getNamespaceTypeUri(), keyToUse);
-
+            
             if(authorityLiteral != null)
             {
                 con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceAuthority(), authorityLiteral, keyToUse);

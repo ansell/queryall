@@ -28,7 +28,7 @@ public class SettingsContextListener implements ServletContextListener
     public static final String QUERYALL_VELOCITY = "queryallvelocity";
     public static final String QUERYALL_BLACKLIST = "queryallblacklist";
     public static final String QUERYALL_CONFIG = "queryallconfig";
-
+    
     /**
      * 
      */
@@ -58,7 +58,9 @@ public class SettingsContextListener implements ServletContextListener
         // also create a new velocity engine, as it is slow to create every time we make a query
         final VelocityEngine currentEngine = VelocityHelper.createVelocityEngine();
         
-        final ContentTypeNegotiator contentTypeNegotiator = QueryallContentNegotiator.getContentNegotiator(tempSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+        final ContentTypeNegotiator contentTypeNegotiator =
+                QueryallContentNegotiator.getContentNegotiator(tempSettings.getStringProperty(
+                        "preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
         
         // then put both of them into servlet context so they can be shared between requests in this
         // servlet
