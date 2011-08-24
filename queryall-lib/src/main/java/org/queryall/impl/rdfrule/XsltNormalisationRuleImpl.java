@@ -25,6 +25,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -74,11 +75,11 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         final XsltNormalisationRuleImpl testRule = new XsltNormalisationRuleImpl();
         testRule.setKey(StringUtils.createURI("http://example.org/test/xsltnormalisationrule/42"));
         testRule.setXsltStylesheet(testXsltStyleSheet);
-        testRule.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
+        testRule.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
         
         try
         {
-            testRule.addStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
+            testRule.addStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
         }
         catch(final InvalidStageException ise)
         {
@@ -132,7 +133,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
+        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -147,7 +148,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
                     f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."),
                     contextUri);
             con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             
             con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
@@ -188,10 +189,10 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     {
         super();
         
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
     }
     
     /**
@@ -205,10 +206,10 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         
@@ -300,8 +301,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @Override
     public Object stageAfterQueryCreation(final Object input)
     {
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation()))
+        if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation())
+                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()))
         {
             return this.transformString((String)input);
         }
@@ -341,8 +342,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @Override
     public Object stageAfterResultsToDocument(final Object input)
     {
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument()))
+        if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument())
+                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()))
         {
             return this.transformString((String)input);
         }
@@ -372,8 +373,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     public Object stageBeforeResultsImport(final Object input)
     {
         XsltNormalisationRuleImpl.log.info("stageBeforeResultsImport input=" + (String)input);
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()))
+        if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
+                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
         {
             return this.transformString((String)input);
         }
@@ -382,9 +383,9 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             XsltNormalisationRuleImpl.log
                     .info("stageBeforeResultsImport returning input unchanged this.getValidStages="
                             + this.getValidStages()
-                                    .contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport())
+                                    .contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
                             + " this.getStages()="
-                            + this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()));
+                            + this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
             return input;
         }
     }
@@ -397,8 +398,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @Override
     public Object stageQueryVariables(final Object input)
     {
-        if(this.getValidStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables())
-                && this.stages.contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
+        if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables())
+                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
         {
             return this.transformString((String)input);
         }

@@ -17,10 +17,10 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
@@ -218,7 +218,7 @@ public class RdfFetchController
                     final String nextResult = nextThread.getRawResult();
                     
                     final String convertedResult =
-                            (String)QueryCreator.normaliseByStage(NormalisationRuleImpl
+                            (String)QueryCreator.normaliseByStage(NormalisationRuleSchema
                                     .getRdfruleStageBeforeResultsImport(), nextResult, RuleUtils.getSortedRulesByUris(
                                     this.localSettings.getAllNormalisationRules(), nextThread.getOriginalQueryBundle()
                                             .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),

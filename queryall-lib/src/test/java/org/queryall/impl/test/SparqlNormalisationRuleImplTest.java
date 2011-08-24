@@ -5,10 +5,10 @@ package org.queryall.impl.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.Profile;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.test.AbstractSparqlNormalisationRuleTest;
 import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
 
 /**
@@ -52,43 +52,43 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     @Override
     public URI getRdfruleStageAfterQueryCreationURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageAfterQueryCreation();
+        return NormalisationRuleSchema.getRdfruleStageAfterQueryCreation();
     }
     
     @Override
     public URI getRdfruleStageAfterQueryParsingURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageAfterQueryParsing();
+        return NormalisationRuleSchema.getRdfruleStageAfterQueryParsing();
     }
     
     @Override
     public URI getRdfruleStageAfterResultsImportURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageAfterResultsImport();
+        return NormalisationRuleSchema.getRdfruleStageAfterResultsImport();
     }
     
     @Override
     public URI getRdfruleStageAfterResultsToDocumentURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument();
+        return NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument();
     }
     
     @Override
     public URI getRdfruleStageAfterResultsToPoolURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageAfterResultsToPool();
+        return NormalisationRuleSchema.getRdfruleStageAfterResultsToPool();
     }
     
     @Override
     public URI getRdfruleStageBeforeResultsImportURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageBeforeResultsImport();
+        return NormalisationRuleSchema.getRdfruleStageBeforeResultsImport();
     }
     
     @Override
     public URI getRdfruleStageQueryVariablesURI()
     {
-        return NormalisationRuleImpl.getRdfruleStageQueryVariables();
+        return NormalisationRuleSchema.getRdfruleStageQueryVariables();
     }
     
     @Override

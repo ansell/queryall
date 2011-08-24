@@ -20,6 +20,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
@@ -237,7 +238,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
+        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -252,7 +253,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                     f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples."),
                     contextUri);
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             
             // TODO: update schema
             con.add(SparqlNormalisationRuleImpl.getSparqlRuleSparqlConstructQueryTarget(), RDF.TYPE,
@@ -315,8 +316,8 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     {
         super();
         
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToPool());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -326,8 +327,8 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToPool());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
         
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         

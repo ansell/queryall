@@ -39,11 +39,11 @@ import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.RdfUtils;
 
 /**
@@ -513,11 +513,11 @@ public class RdfUtilsTest
                 Assert.assertTrue(
                         "Could not find expected stage",
                         nextNormalisationRule.getStages().contains(
-                                NormalisationRuleImpl.getRdfruleStageQueryVariables()));
+                                NormalisationRuleSchema.getRdfruleStageQueryVariables()));
                 Assert.assertTrue(
                         "Could not find expected stage",
                         nextNormalisationRule.getStages().contains(
-                                NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()));
+                                NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
                 
                 Assert.assertEquals("Description was not parsed correctly",
                         "Converts between the URIs used by the ABC ISSN's and the Example organisation ISSN namespace",

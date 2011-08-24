@@ -13,9 +13,9 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.SortOrder;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,13 +187,13 @@ public final class RuleUtils
             String nextInputTestResult = nextTestInputString;
             
             // TODO: only testing two out of the stages here
-            if(nextRuleTest.getStages().contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()))
+            if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
             {
                 for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                         nextRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
                 {
                     nextInputTestResult =
-                            (String)nextRule.normaliseByStage(NormalisationRuleImpl.getRdfruleStageQueryVariables(),
+                            (String)nextRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
                                     nextTestInputString);
                 }
                 
@@ -221,7 +221,7 @@ public final class RuleUtils
                 }
             }
             
-            if(nextRuleTest.getStages().contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()))
+            if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
             {
                 String nextOutputTestResult = nextTestInputString;
                 
@@ -230,7 +230,7 @@ public final class RuleUtils
                 {
                     nextOutputTestResult =
                             (String)nextRule.normaliseByStage(
-                                    NormalisationRuleImpl.getRdfruleStageBeforeResultsImport(), nextTestInputString);
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextTestInputString);
                     
                     if(nextOutputTestResult.equals(nextTestInputString))
                     {

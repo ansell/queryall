@@ -19,9 +19,9 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -526,14 +526,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             con.add(ProfileImpl.getProfileIncludeRdfRuleInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileImpl.getProfileIncludeRdfRuleInProfile(), RDFS.RANGE,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(ProfileImpl.getProfileIncludeRdfRuleInProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileIncludeRdfRuleInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             con.add(ProfileImpl.getProfileExcludeRdfRuleFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileImpl.getProfileExcludeRdfRuleFromProfile(), RDFS.RANGE,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(ProfileImpl.getProfileExcludeRdfRuleFromProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileExcludeRdfRuleFromProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);

@@ -15,11 +15,11 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.ProjectImpl;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,7 +179,7 @@ public class RuleTestImpl implements RuleTest
             
             con.add(RuleTestImpl.getRuletestHasRuleUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(RuleTestImpl.getRuletestHasRuleUri(), RDFS.RANGE,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextKeyUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextKeyUri);
             con.add(RuleTestImpl.getRuletestHasRuleUri(), RDFS.DOMAIN, RuleTestImpl.getRuletestTypeUri(), contextKeyUri);
             con.add(RuleTestImpl.getRuletestHasRuleUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             

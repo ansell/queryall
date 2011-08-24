@@ -30,11 +30,11 @@ import org.queryall.api.Profile;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.provider.ProviderImpl;
-import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.QueryCreator;
@@ -570,7 +570,7 @@ public class GeneralServlet extends HttpServlet
             final Repository myRepository)
     {
         return (Repository)QueryCreator.normaliseByStage(
-                NormalisationRuleImpl.getRdfruleStageAfterResultsToPool(),
+                NormalisationRuleSchema.getRdfruleStageAfterResultsToPool(),
                 myRepository,
                 RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
                         localSettings.getAllNormalisationRules(), SortOrder.HIGHEST_ORDER_FIRST), includedProfiles,
@@ -689,7 +689,7 @@ public class GeneralServlet extends HttpServlet
                 RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
                 
                 tempRepository =
-                        (Repository)QueryCreator.normaliseByStage(NormalisationRuleImpl
+                        (Repository)QueryCreator.normaliseByStage(NormalisationRuleSchema
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
                                 localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle()
                                         .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),

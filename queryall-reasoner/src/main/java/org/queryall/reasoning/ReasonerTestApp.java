@@ -87,7 +87,7 @@ public class ReasonerTestApp
     	
     	try
     	{
-    		queryallRule.addStage(SparqlNormalisationRuleImpl.getRdfruleStageAfterResultsImport());
+    		queryallRule.addStage(SparqlNormalisationRuleSchema.getRdfruleStageAfterResultsImport());
     	}
     	catch(InvalidStageException ise)
     	{

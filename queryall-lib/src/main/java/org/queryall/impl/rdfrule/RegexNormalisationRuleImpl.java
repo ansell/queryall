@@ -15,6 +15,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -152,7 +153,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleImpl.schemaToRdf(myRepository, contextUri, modelVersion);
+        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
@@ -164,7 +165,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             
             con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(),
                     RDFS.LABEL,
                     f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
@@ -247,10 +248,10 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         super();
         
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -260,10 +261,10 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         
@@ -538,7 +539,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @Override
     public Object stageAfterQueryCreation(final Object input)
     {
-        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterQueryCreation()) ? this
+        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()) ? this
                 .applyInputRuleToString((String)input) : input;
     }
     
@@ -557,7 +558,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @Override
     public Object stageAfterResultsToDocument(final Object input)
     {
-        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageAfterResultsToDocument()) ? this
+        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()) ? this
                 .applyOutputRuleToString((String)input) : input;
     }
     
@@ -570,14 +571,14 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @Override
     public Object stageBeforeResultsImport(final Object input)
     {
-        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageBeforeResultsImport()) ? this
+        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()) ? this
                 .applyOutputRuleToString((String)input) : input;
     }
     
     @Override
     public Object stageQueryVariables(final Object input)
     {
-        return this.stages.contains(NormalisationRuleImpl.getRdfruleStageQueryVariables()) ? this
+        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()) ? this
                 .applyInputRuleToString((String)input) : input;
     }
     

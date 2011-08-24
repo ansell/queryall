@@ -17,6 +17,7 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +131,7 @@ public class ProviderSchema
                 
                 con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
                 con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.RANGE,
-                        NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
+                        NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
                 con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
                         contextUri);
                 con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("."), contextUri);
