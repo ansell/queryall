@@ -52,6 +52,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
@@ -858,7 +859,7 @@ public final class RdfUtils
             final RepositoryConnection con = myRepository.getConnection();
             
             // Import Regular Expression Normalisation Rules first
-            final URI regexRuleTypeUri = RegexNormalisationRuleImpl.getRegexRuleTypeUri();
+            final URI regexRuleTypeUri = RegexNormalisationRuleSchema.getRegexRuleTypeUri();
             for(final Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri, true).asList())
             {
                 final URI nextSubjectUri = (URI)nextRegexRule.getSubject();
@@ -1384,7 +1385,7 @@ public final class RdfUtils
         
         try
         {
-            if(!RegexNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!RegexNormalisationRuleSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("RegexNormalisationRuleImpl schema was not placed correctly in the rdf store");
             }

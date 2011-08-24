@@ -9,16 +9,14 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.RegexNormalisationRule;
+import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
-import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,90 +32,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
-    /**
-     * @return the rdfruleInputMatchRegex
-     */
-    public static URI getRegexRuleInputMatchRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleInputMatchRegex;
-    }
-    
-    /**
-     * @return the rdfruleInputReplaceRegex
-     */
-    public static URI getRegexRuleInputReplaceRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleInputReplaceRegex;
-    }
-    
-    /**
-     * @return the rdfruleOutputMatchRegex
-     */
-    public static URI getRegexRuleOutputMatchRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleOutputMatchRegex;
-    }
-    
-    /**
-     * @return the rdfruleOutputReplaceRegex
-     */
-    public static URI getRegexRuleOutputReplaceRegex()
-    {
-        return RegexNormalisationRuleImpl.regexruleOutputReplaceRegex;
-    }
-    
-    /**
-     * @return the regexruleTypeUri
-     */
-    public static URI getRegexRuleTypeUri()
-    {
-        return RegexNormalisationRuleImpl.regexruleTypeUri;
-    }
-    
-    /**
-     * @param rdfruleInputMatchRegex
-     *            the rdfruleInputMatchRegex to set
-     */
-    public static void setRegexRuleInputMatchRegex(final URI rdfruleInputMatchRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleInputMatchRegex = rdfruleInputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleInputReplaceRegex
-     *            the rdfruleInputReplaceRegex to set
-     */
-    public static void setRegexRuleInputReplaceRegex(final URI rdfruleInputReplaceRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputMatchRegex
-     *            the rdfruleOutputMatchRegex to set
-     */
-    public static void setRegexRuleOutputMatchRegex(final URI rdfruleOutputMatchRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputReplaceRegex
-     *            the rdfruleOutputReplaceRegex to set
-     */
-    public static void setRegexRuleOutputReplaceRegex(final URI rdfruleOutputReplaceRegex)
-    {
-        RegexNormalisationRuleImpl.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
-    }
-    
-    /**
-     * @param regexruleTypeUri
-     *            the regexruleTypeUri to set
-     */
-    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
-    {
-        RegexNormalisationRuleImpl.regexruleTypeUri = regexruleTypeUri;
-    }
     
     private String inputMatchRegex = "";
     
@@ -127,122 +41,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     
     private String outputReplaceRegex = "";
     
-    private static URI regexruleTypeUri;
-    
-    private static URI regexruleInputMatchRegex;
-    
-    private static URI regexruleInputReplaceRegex;
-    
-    private static URI regexruleOutputMatchRegex;
-    
-    private static URI regexruleOutputReplaceRegex;
-    
-    static
-    {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
-        
-        RegexNormalisationRuleImpl.setRegexRuleTypeUri(f.createURI(baseUri, "RegexNormalisationRule"));
-        RegexNormalisationRuleImpl.setRegexRuleInputMatchRegex(f.createURI(baseUri, "inputMatchRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleInputReplaceRegex(f.createURI(baseUri, "inputReplaceRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleOutputMatchRegex(f.createURI(baseUri, "outputMatchRegex"));
-        RegexNormalisationRuleImpl.setRegexRuleOutputReplaceRegex(f.createURI(baseUri, "outputReplaceRegex"));
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-        throws OpenRDFException
-    {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
-                    contextUri);
-            
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), RDFS.DOMAIN,
-                    RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(),
-                    RDFS.LABEL,
-                    f.createLiteral("The input regular expression that is used to identify whether the denormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."),
-                    contextUri);
-            
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), RDFS.DOMAIN,
-                    RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(),
-                    RDFS.LABEL,
-                    f.createLiteral("The pattern that is used together with the input match regular expression to define what the denormalised data should be."),
-                    contextUri);
-            
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), RDFS.DOMAIN,
-                    RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(),
-                    RDFS.LABEL,
-                    f.createLiteral("The output regular expression that is used to identify whether the renormalisation part of the rule matches the data, and if so, whether there are any matching groups that need to be substitued into the replacement pattern."),
-                    contextUri);
-            
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), RDFS.DOMAIN,
-                    RegexNormalisationRuleImpl.getRegexRuleTypeUri(), contextUri);
-            con.add(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(),
-                    RDFS.LABEL,
-                    f.createLiteral("The pattern that is used together with the output match regular expression to define what the normalised data should be."),
-                    contextUri);
-            
-            // for(String nextValidStage : validStages)
-            // {
-            // con.add(RegexNormalisationRuleImpl.regexruleTypeUri,
-            // NormalisationRule.rdfruleTypeValidForStage,
-            // f.createURI(nextValidStage), contextKeyUri);
-            // }
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            RegexNormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
     
     public RegexNormalisationRuleImpl()
     {
@@ -281,8 +79,8 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && (nextStatement.getObject().equals(RegexNormalisationRuleImpl.getRegexRuleTypeUri()) || nextStatement
-                            .getObject().equals(RegexNormalisationRuleImpl.getRegexRuleTypeUri())))
+                    && (nextStatement.getObject().equals(RegexNormalisationRuleSchema.getRegexRuleTypeUri()) || nextStatement
+                            .getObject().equals(RegexNormalisationRuleSchema.getRegexRuleTypeUri())))
             {
                 if(RegexNormalisationRuleImpl._TRACE)
                 {
@@ -292,19 +90,19 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex()))
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleSchema.getRegexRuleInputMatchRegex()))
             {
                 this.setInputMatchRegex(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex()))
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleSchema.getRegexRuleInputReplaceRegex()))
             {
                 this.setInputReplaceRegex(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex()))
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleSchema.getRegexRuleOutputMatchRegex()))
             {
                 this.setOutputMatchRegex(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex()))
+            else if(nextStatement.getPredicate().equals(RegexNormalisationRuleSchema.getRegexRuleOutputReplaceRegex()))
             {
                 this.setOutputReplaceRegex(nextStatement.getObject().stringValue());
             }
@@ -416,7 +214,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     {
         final Collection<URI> results = super.getElementTypes();
         
-        results.add(RegexNormalisationRuleImpl.getRegexRuleTypeUri());
+        results.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
         return results;
     }
     
@@ -647,13 +445,13 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, RegexNormalisationRuleImpl.getRegexRuleTypeUri(), keyToUse);
-            con.add(keyUri, RegexNormalisationRuleImpl.getRegexRuleInputMatchRegex(), inputMatchRegexLiteral, keyToUse);
-            con.add(keyUri, RegexNormalisationRuleImpl.getRegexRuleInputReplaceRegex(), inputReplaceRegexLiteral,
+            con.add(keyUri, RDF.TYPE, RegexNormalisationRuleSchema.getRegexRuleTypeUri(), keyToUse);
+            con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleInputMatchRegex(), inputMatchRegexLiteral, keyToUse);
+            con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleInputReplaceRegex(), inputReplaceRegexLiteral,
                     keyToUse);
-            con.add(keyUri, RegexNormalisationRuleImpl.getRegexRuleOutputMatchRegex(), outputMatchRegexLiteral,
+            con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleOutputMatchRegex(), outputMatchRegexLiteral,
                     keyToUse);
-            con.add(keyUri, RegexNormalisationRuleImpl.getRegexRuleOutputReplaceRegex(), outputReplaceRegexLiteral,
+            con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleOutputReplaceRegex(), outputReplaceRegexLiteral,
                     keyToUse);
             
             // If everything went as planned, we can commit the result
