@@ -29,11 +29,13 @@ public class HttpProviderSchema
     private static final boolean _INFO = HttpProviderSchema.log.isInfoEnabled();
     
     private static URI providerHttpProviderUri;
+    // FIXME: Move this to SparqlProviderSchema
     private static URI providerHttpPostSparql;
     private static URI providerHttpGetUrl;
     private static URI providerHttpPostUrl;
     private static URI providerAcceptHeader;
     private static URI providerEndpointUrl;
+    // FIXME: Move this to SparqlProviderSchema
     private static URI providerSparqlProviderUri;
     
     static
