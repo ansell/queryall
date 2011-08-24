@@ -44,6 +44,7 @@ import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
@@ -175,7 +176,7 @@ public final class RdfUtils
         // }
         
         dummyProvider.setEndpointUrls(endpointUrls);
-        dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpGetUrl());
+        dummyProvider.setEndpointMethod(HttpProviderSchema.getProviderHttpGetUrl());
         dummyProvider.setKey(hostToUse + QueryAllNamespaces.PROVIDER.getNamespace() + localSettings.getSeparator()
                 + StringUtils.percentEncode(namespaceAndIdentifier));
         dummyProvider.setIsDefaultSource(true);
@@ -217,7 +218,7 @@ public final class RdfUtils
         
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
-        dummyProvider.setEndpointMethod(HttpProviderImpl.getProviderHttpPostSparql());
+        dummyProvider.setEndpointMethod(HttpProviderSchema.getProviderHttpPostSparql());
         dummyProvider.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);

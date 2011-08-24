@@ -12,13 +12,13 @@ import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.enumerations.SortOrder;
-import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.provider.ProviderImpl;
 import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.ListUtils;
@@ -292,7 +292,7 @@ public class RdfFetchController
             boolean addToFetchQueue = false;
             
             if(nextBundle.getOriginalProvider().getEndpointMethod()
-                    .equals(HttpProviderImpl.getProviderHttpPostSparql()))
+                    .equals(HttpProviderSchema.getProviderHttpPostSparql()))
             {
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
@@ -311,7 +311,7 @@ public class RdfFetchController
                 }
             }
             else if(nextBundle.getOriginalProvider().getEndpointMethod()
-                    .equals(HttpProviderImpl.getProviderHttpGetUrl()))
+                    .equals(HttpProviderSchema.getProviderHttpGetUrl()))
             {
                 nextThread =
                         new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",

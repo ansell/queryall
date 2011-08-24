@@ -12,15 +12,13 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
-import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
@@ -31,214 +29,12 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpProviderImpl extends ProviderImpl implements HttpProvider, SparqlProvider
 {
-    private static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
+    static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
     private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = HttpProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = HttpProviderImpl.log.isInfoEnabled();
-    
-    private static URI providerHttpProviderUri;
-    private static URI providerHttpPostSparql;
-    private static URI providerHttpGetUrl;
-    private static URI providerHttpPostUrl;
-    private static URI providerAcceptHeader;
-    private static URI providerEndpointUrl;
-    private static URI providerSparqlProviderUri;
-    
-    /**
-     * @return the providerAcceptHeader
-     */
-    public static URI getProviderAcceptHeader()
-    {
-        return HttpProviderImpl.providerAcceptHeader;
-    }
-    
-    /**
-     * @return the providerEndpointUrl
-     */
-    public static URI getProviderEndpointUrl()
-    {
-        return HttpProviderImpl.providerEndpointUrl;
-    }
-    
-    /**
-     * @return the providerHttpGetUrl
-     */
-    public static URI getProviderHttpGetUrl()
-    {
-        return HttpProviderImpl.providerHttpGetUrl;
-    }
-    
-    public static URI getProviderHttpGetUrlUri()
-    {
-        return HttpProviderImpl.getProviderHttpGetUrl();
-    }
-    
-    /**
-     * @return the providerHttpPostSparql
-     */
-    public static URI getProviderHttpPostSparql()
-    {
-        return HttpProviderImpl.providerHttpPostSparql;
-    }
-    
-    public static URI getProviderHttpPostSparqlUri()
-    {
-        return HttpProviderImpl.getProviderHttpPostSparql();
-    }
-    
-    /**
-     * @return the providerHttpPostUrl
-     */
-    public static URI getProviderHttpPostUrl()
-    {
-        return HttpProviderImpl.providerHttpPostUrl;
-    }
-    
-    public static URI getProviderHttpPostUrlUri()
-    {
-        return HttpProviderImpl.getProviderHttpPostUrl();
-    }
-    
-    /**
-     * @return the providerHttpProviderUri
-     */
-    public static URI getProviderHttpProviderUri()
-    {
-        return HttpProviderImpl.providerHttpProviderUri;
-    }
-    
-    /**
-     * @return the providerSparqlProviderUri
-     */
-    public static URI getProviderSparqlProviderUri()
-    {
-        return HttpProviderImpl.providerSparqlProviderUri;
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-        throws OpenRDFException
-    {
-        ProviderImpl.schemaToRdf(myRepository, contextUri, modelVersion);
-        
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(HttpProviderImpl.getProviderHttpProviderUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(HttpProviderImpl.getProviderHttpProviderUri(), RDFS.SUBCLASSOF, ProviderImpl.getProviderTypeUri(),
-                    contextUri);
-            
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.DOMAIN,
-                    HttpProviderImpl.getProviderHttpProviderUri(), contextUri);
-            con.add(HttpProviderImpl.getProviderAcceptHeader(), RDFS.LABEL,
-                    f.createLiteral("The HTTP Accept header to send to this provider."), contextUri);
-            
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(HttpProviderImpl.getProviderEndpointUrl(), RDFS.DOMAIN,
-                    HttpProviderImpl.getProviderHttpProviderUri(), contextUri);
-            con.add(HttpProviderImpl.getProviderEndpointUrl(),
-                    RDFS.LABEL,
-                    f.createLiteral("The URL template for this provider. If it contains variables, these may be replaced when executing a query."),
-                    contextUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            HttpProviderImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * @param providerAcceptHeader
-     *            the providerAcceptHeader to set
-     */
-    public static void setProviderAcceptHeader(final URI providerAcceptHeader)
-    {
-        HttpProviderImpl.providerAcceptHeader = providerAcceptHeader;
-    }
-    
-    /**
-     * @param providerEndpointUrl
-     *            the providerEndpointUrl to set
-     */
-    public static void setProviderEndpointUrl(final URI providerEndpointUrl)
-    {
-        HttpProviderImpl.providerEndpointUrl = providerEndpointUrl;
-    }
-    
-    /**
-     * @param providerHttpGetUrl
-     *            the providerHttpGetUrl to set
-     */
-    public static void setProviderHttpGetUrl(final URI providerHttpGetUrl)
-    {
-        HttpProviderImpl.providerHttpGetUrl = providerHttpGetUrl;
-    }
-    
-    /**
-     * @param providerHttpPostSparql
-     *            the providerHttpPostSparql to set
-     */
-    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
-    {
-        HttpProviderImpl.providerHttpPostSparql = providerHttpPostSparql;
-    }
-    
-    /**
-     * @param providerHttpPostUrl
-     *            the providerHttpPostUrl to set
-     */
-    public static void setProviderHttpPostUrl(final URI providerHttpPostUrl)
-    {
-        HttpProviderImpl.providerHttpPostUrl = providerHttpPostUrl;
-    }
-    
-    /**
-     * @param providerHttpProviderUri
-     *            the providerHttpProviderUri to set
-     */
-    public static void setProviderHttpProviderUri(final URI providerHttpProviderUri)
-    {
-        HttpProviderImpl.providerHttpProviderUri = providerHttpProviderUri;
-    }
-    
-    /**
-     * @param providerSparqlProviderUri
-     *            the providerSparqlProviderUri to set
-     */
-    public static void setProviderSparqlProviderUri(final URI providerSparqlProviderUri)
-    {
-        HttpProviderImpl.providerSparqlProviderUri = providerSparqlProviderUri;
-    }
     
     private Collection<String> endpointUrls = new HashSet<String>();
     // Use these to include information based on whether or not the provider was actually used to
@@ -254,17 +50,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
-        
-        HttpProviderImpl.setProviderHttpProviderUri(f.createURI(baseUri, "HttpProvider"));
-        HttpProviderImpl.setProviderSparqlProviderUri(f.createURI(baseUri, "SparqlProvider"));
-        HttpProviderImpl.setProviderEndpointUrl(f.createURI(baseUri, "endpointUrl"));
-        HttpProviderImpl.setProviderAcceptHeader(f.createURI(baseUri, "acceptHeader"));
-        HttpProviderImpl.setProviderHttpPostSparql(f.createURI(baseUri, "httppostsparql"));
-        HttpProviderImpl.setProviderHttpGetUrl(f.createURI(baseUri, "httpgeturl"));
-        HttpProviderImpl.setProviderHttpPostUrl(f.createURI(baseUri, "httpposturl"));
+        ;
     }
     
     public HttpProviderImpl()
@@ -291,7 +77,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(HttpProviderImpl.getProviderHttpProviderUri()))
+                    && nextStatement.getObject().equals(HttpProviderSchema.getProviderHttpProviderUri()))
             {
                 if(HttpProviderImpl._TRACE)
                 {
@@ -301,11 +87,11 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
                 // resultIsValid = true;
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(HttpProviderImpl.getProviderAcceptHeader()))
+            else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderAcceptHeader()))
             {
                 this.setAcceptHeaderString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(HttpProviderImpl.getProviderEndpointUrl()))
+            else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderEndpointUrl()))
             {
                 this.addEndpointUrl(nextStatement.getObject().stringValue());
             }
@@ -363,8 +149,8 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     {
         final Collection<URI> results = super.getElementTypes();
         
-        results.add(HttpProviderImpl.getProviderHttpProviderUri());
-        results.add(HttpProviderImpl.getProviderSparqlProviderUri());
+        results.add(HttpProviderSchema.getProviderHttpProviderUri());
+        results.add(HttpProviderSchema.getProviderSparqlProviderUri());
         
         return results;
     }
@@ -403,13 +189,13 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     @Override
     public boolean isHttpGetUrl()
     {
-        return this.getEndpointMethod().equals(HttpProviderImpl.getProviderHttpGetUrl());
+        return this.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpGetUrl());
     }
     
     @Override
     public boolean isHttpPostSparql()
     {
-        return this.getEndpointMethod().equals(HttpProviderImpl.getProviderHttpPostSparql());
+        return this.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpPostSparql());
     }
     
     @Override
@@ -477,7 +263,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             
             if(acceptHeaderLiteral != null)
             {
-                con.add(providerInstanceUri, HttpProviderImpl.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
+                con.add(providerInstanceUri, HttpProviderSchema.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
             }
             
             con.add(providerInstanceUri, ProviderImpl.getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral,
@@ -491,7 +277,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
                 {
                     if(nextEndpointUrl != null)
                     {
-                        con.add(providerInstanceUri, HttpProviderImpl.getProviderEndpointUrl(),
+                        con.add(providerInstanceUri, HttpProviderSchema.getProviderEndpointUrl(),
                                 f.createLiteral(nextEndpointUrl), keyToUse);
                     }
                 }

@@ -23,11 +23,11 @@ import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.ProjectImpl;
-import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -705,8 +705,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
     public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
-        if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderImpl.getProviderHttpPostSparqlUri())
-                .equals(HttpProviderImpl.getProviderHttpPostSparqlUri()))
+        if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostSparqlUri())
+                .equals(HttpProviderSchema.getProviderHttpPostSparqlUri()))
         {
             final Repository myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
@@ -743,8 +743,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
                     localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "*/*",
                     localSettings, localBlacklistController);
         }
-        else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderImpl.getProviderHttpPostUrlUri())
-                .equals(HttpProviderImpl.getProviderHttpPostUrlUri()))
+        else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostUrlUri())
+                .equals(HttpProviderSchema.getProviderHttpPostUrlUri()))
         {
             final String postInformation = this.toPostArray();
             
