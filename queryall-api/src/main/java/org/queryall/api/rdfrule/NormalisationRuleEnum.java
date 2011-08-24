@@ -40,13 +40,13 @@ public class NormalisationRuleEnum extends QueryAllEnum
     }
     
     /**
-     * Registers the specified query type.
+     * Registers the specified normalisation rule.
      */
     public static void register(final NormalisationRuleEnum nextRdfRule)
     {
         if(NormalisationRuleEnum.valueOf(nextRdfRule.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this query type again name=" + nextRdfRule.getName());
+            QueryAllEnum.log.error("Cannot register this normalisation rule again name=" + nextRdfRule.getName());
         }
         else
         {
@@ -75,7 +75,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered query types.
+     * Returns all known/registered normalisation rules.
      */
     public static Collection<NormalisationRuleEnum> values()
     {

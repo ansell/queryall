@@ -16,14 +16,6 @@ import org.queryall.api.querytype.QueryTypeParser;
  */
 public class QueryTypeImplParser implements QueryTypeParser
 {
-    /**
-     * 
-     */
-    public QueryTypeImplParser()
-    {
-        
-    }
-    
     @Override
     public QueryType createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
             final int modelVersion) throws IllegalArgumentException
@@ -37,5 +29,4 @@ public class QueryTypeImplParser implements QueryTypeParser
             throw new IllegalArgumentException("Could not parse the given RDF statements into a query type", ex);
         }
     }
-    
 }

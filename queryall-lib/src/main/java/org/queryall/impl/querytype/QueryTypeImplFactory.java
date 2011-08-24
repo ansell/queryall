@@ -3,6 +3,7 @@
  */
 package org.queryall.impl.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeFactory;
 import org.queryall.api.querytype.QueryTypeParser;
@@ -10,6 +11,7 @@ import org.queryall.api.querytype.QueryTypeParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
+@MetaInfServices
 public class QueryTypeImplFactory implements QueryTypeFactory
 {
     /**

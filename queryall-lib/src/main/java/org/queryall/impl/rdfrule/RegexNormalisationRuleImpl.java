@@ -37,7 +37,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     
     static
     {
-        // register this query type implementation with the central register
+        // register this normalisation rule implementation with the central register
         NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
     }
     
