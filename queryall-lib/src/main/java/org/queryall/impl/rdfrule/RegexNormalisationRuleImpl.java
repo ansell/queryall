@@ -1,7 +1,9 @@
 package org.queryall.impl.rdfrule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.openrdf.OpenRDFException;
@@ -13,6 +15,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
@@ -32,6 +35,22 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
+    static
+    {
+        // register this query type implementation with the central register
+        NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
+    }
+    
+    private static List<URI> myTypes()
+    {
+        List<URI> results = new ArrayList<URI>(2);
+        
+        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        results.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
+        
+        return results;
+    }
+
     private String inputMatchRegex = "";
     
     private String inputReplaceRegex = "";
@@ -210,10 +229,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = super.getElementTypes();
-        
-        results.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
-        return results;
+        return myTypes();
     }
     
     /*

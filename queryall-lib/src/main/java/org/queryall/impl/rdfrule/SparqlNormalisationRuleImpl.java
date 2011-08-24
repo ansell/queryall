@@ -18,6 +18,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
@@ -47,6 +48,22 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     
     private URI mode = SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches();
     
+    static
+    {
+        // register this query type implementation with the central register
+        NormalisationRuleEnum.register(SparqlNormalisationRuleImpl.class.getName(), SparqlNormalisationRuleImpl.myTypes());
+    }
+    
+    private static List<URI> myTypes()
+    {
+        List<URI> results = new ArrayList<URI>(2);
+        
+        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        results.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
+        
+        return results;
+    }
+
     public SparqlNormalisationRuleImpl()
     {
         super();
@@ -279,10 +296,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = super.getElementTypes();
-        
-        results.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
-        return results;
+        return myTypes();
     }
     
     /*

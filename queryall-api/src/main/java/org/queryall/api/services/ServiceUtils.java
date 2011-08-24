@@ -47,7 +47,6 @@ import org.queryall.exception.UnsupportedRuleTestException;
  */
 public class ServiceUtils
 {
-    
     /**
      * Creates a namespace entry parser for the given namespace entry enum
      * 

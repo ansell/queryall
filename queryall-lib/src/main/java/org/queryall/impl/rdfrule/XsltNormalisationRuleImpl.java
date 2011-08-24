@@ -5,8 +5,10 @@ package org.queryall.impl.rdfrule;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -23,6 +25,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
@@ -43,6 +46,22 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @SuppressWarnings("unused")
     private static final boolean _INFO = XsltNormalisationRuleImpl.log.isInfoEnabled();
     
+    static
+    {
+        // register this query type implementation with the central register
+        NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(), XsltNormalisationRuleImpl.myTypes());
+    }
+    
+    private static List<URI> myTypes()
+    {
+        List<URI> results = new ArrayList<URI>(2);
+        
+        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
+        
+        return results;
+    }
+
     /**
      * @param args
      */
@@ -156,10 +175,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = super.getElementTypes();
-        
-        results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
-        return results;
+        return myTypes();
     }
     
     /*
