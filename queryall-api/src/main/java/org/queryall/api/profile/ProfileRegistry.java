@@ -3,18 +3,16 @@
  */
 package org.queryall.api.profile;
 
-import org.queryall.api.project.ProjectEnum;
-import org.queryall.api.project.ProjectFactory;
 import org.queryall.api.services.AbstractServiceLoader;
 
 /**
- * Dynamically loads and keeps a track of the different Project's that are available.
+ * Dynamically loads and keeps a track of the different Profile's that are available.
  * 
- * Uses ProjectEnum objects as keys, as defined in ProjectFactory
+ * Uses ProfileEnum objects as keys, as defined in ProfileFactory
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfileRegistry extends AbstractServiceLoader<ProjectEnum, ProjectFactory>
+public class ProfileRegistry extends AbstractServiceLoader<ProfileEnum, ProfileFactory>
 {
     private static ProfileRegistry defaultRegistry;
     
@@ -33,11 +31,11 @@ public class ProfileRegistry extends AbstractServiceLoader<ProjectEnum, ProjectF
     
     public ProfileRegistry()
     {
-        super(ProjectFactory.class);
+        super(ProfileFactory.class);
     }
     
     @Override
-    protected ProjectEnum getKey(final ProjectFactory factory)
+    protected ProfileEnum getKey(final ProfileFactory factory)
     {
         return factory.getEnum();
     }
