@@ -12,6 +12,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.NamespaceEntrySchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.provider.ProviderSchema;
@@ -115,7 +116,7 @@ public class ProviderSchema
                         contextUri);
                 
                 con.add(ProviderSchema.getProviderHandledNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-                con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(),
+                con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.RANGE, NamespaceEntrySchema.getNamespaceTypeUri(),
                         contextUri);
                 con.add(ProviderSchema.getProviderHandledNamespace(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
                         contextUri);

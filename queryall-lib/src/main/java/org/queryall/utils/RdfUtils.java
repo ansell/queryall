@@ -42,6 +42,7 @@ import org.openrdf.sail.memory.model.BooleanMemLiteral;
 import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.queryall.api.BaseQueryAllInterface;
 import org.queryall.api.NamespaceEntry;
+import org.queryall.api.NamespaceEntrySchema;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
@@ -806,7 +807,7 @@ public final class RdfUtils
         }
         final long start = System.currentTimeMillis();
         
-        final URI namespaceEntryTypeUri = NamespaceEntryImpl.getNamespaceTypeUri();
+        final URI namespaceEntryTypeUri = NamespaceEntrySchema.getNamespaceTypeUri();
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
@@ -1434,7 +1435,7 @@ public final class RdfUtils
         
         try
         {
-            if(!NamespaceEntryImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!NamespaceEntrySchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("NamespaceEntry schema was not placed correctly in the rdf store");
             }

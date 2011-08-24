@@ -17,12 +17,12 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.NamespaceEntrySchema;
 import org.queryall.api.Profile;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.impl.NamespaceEntryImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProjectImpl;
 import org.queryall.utils.ProfileUtils;
@@ -384,7 +384,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
-                    NamespaceEntryImpl.getNamespaceTypeUri(), contextUri);
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
                     NormalisationRuleImpl.getNormalisationRuleTypeUri(), contextUri);
             con.add(NormalisationRuleImpl.getRdfruleHasRelatedNamespace(),

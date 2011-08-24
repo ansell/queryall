@@ -12,6 +12,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.NamespaceEntrySchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -532,7 +533,7 @@ public class QueryTypeSchema
             }
             
             con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(),
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.RANGE, NamespaceEntrySchema.getNamespaceTypeUri(),
                     contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
