@@ -7,6 +7,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
+import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.test.AbstractSparqlNormalisationRuleTest;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
@@ -94,19 +95,19 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     @Override
     public URI getSparqlRuleModeAddAllMatchingTriplesURI()
     {
-        return SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples();
+        return SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples();
     }
     
     @Override
     public URI getSparqlRuleModeOnlyDeleteMatchesURI()
     {
-        return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyDeleteMatches();
+        return SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches();
     }
     
     @Override
     public URI getSparqlRuleModeOnlyIncludeMatchesURI()
     {
-        return SparqlNormalisationRuleImpl.getSparqlRuleModeOnlyIncludeMatches();
+        return SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches();
     }
     
 }
