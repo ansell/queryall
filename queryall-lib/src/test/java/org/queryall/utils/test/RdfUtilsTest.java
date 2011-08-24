@@ -43,7 +43,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.utils.RdfUtils;
 
 /**

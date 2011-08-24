@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.namespace;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +18,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;

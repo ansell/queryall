@@ -6,7 +6,7 @@ package org.queryall.impl.test;
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.test.AbstractProfileTest;
-import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.profile.ProfileImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

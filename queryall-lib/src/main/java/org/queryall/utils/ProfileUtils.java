@@ -17,7 +17,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.SortOrder;
-import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.profile.ProfileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -29,7 +29,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
-import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.RdfUtils;
 

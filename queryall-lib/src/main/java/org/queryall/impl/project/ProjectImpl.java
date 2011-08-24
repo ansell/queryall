@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.project;
 
 import java.util.ArrayList;
 import java.util.Collection;

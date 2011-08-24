@@ -27,7 +27,7 @@ import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.ProjectImpl;
+import org.queryall.impl.project.ProjectImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;

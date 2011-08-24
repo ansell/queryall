@@ -9,7 +9,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.test.AbstractSparqlNormalisationRuleTest;
-import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
 
 /**
