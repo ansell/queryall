@@ -20,11 +20,13 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class NormalisationRuleEnum extends QueryAllEnum
 {
-    protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES = new ArrayList<NormalisationRuleEnum>(5);
+    protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
+            new ArrayList<NormalisationRuleEnum>(5);
     
     public static Collection<NormalisationRuleEnum> byTypeUris(final List<URI> nextRdfRuleUris)
     {
-        final List<NormalisationRuleEnum> results = new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
+        final List<NormalisationRuleEnum> results =
+                new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
         
         for(final NormalisationRuleEnum nextRdfRuleEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
         {

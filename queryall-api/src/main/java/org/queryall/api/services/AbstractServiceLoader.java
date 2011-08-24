@@ -26,12 +26,12 @@ public abstract class AbstractServiceLoader<K, S>
     
     protected Map<K, S> services = Collections.synchronizedMap(new HashMap<K, S>());
     
-    protected AbstractServiceLoader(Class<S> serviceClass)
+    protected AbstractServiceLoader(final Class<S> serviceClass)
     {
-        ServiceLoader<S> serviceLoader =
+        final ServiceLoader<S> serviceLoader =
                 java.util.ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
         
-        Iterator<S> services = serviceLoader.iterator();
+        final Iterator<S> services = serviceLoader.iterator();
         
         // Loop through this way so we can catch all errors for each iteration and only discard
         // plugins that are invalid
@@ -44,9 +44,9 @@ public abstract class AbstractServiceLoader<K, S>
                     break;
                 }
                 
-                S service = services.next();
+                final S service = services.next();
                 
-                S oldService = this.add(service);
+                final S oldService = this.add(service);
                 
                 if(oldService != null)
                 {
@@ -56,19 +56,19 @@ public abstract class AbstractServiceLoader<K, S>
                 
                 AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
             }
-            catch(Error e)
+            catch(final Error e)
             {
                 AbstractServiceLoader.log.error("Failed to instantiate service", e);
             }
         }
     }
     
-    public S add(S service)
+    public S add(final S service)
     {
         return this.services.put(this.getKey(service), service);
     }
     
-    public S get(K key)
+    public S get(final K key)
     {
         return this.services.get(key);
     }
@@ -96,12 +96,12 @@ public abstract class AbstractServiceLoader<K, S>
         return Collections.unmodifiableSet(this.services.keySet());
     }
     
-    public boolean has(K key)
+    public boolean has(final K key)
     {
         return this.services.containsKey(key);
     }
     
-    public void remove(S service)
+    public void remove(final S service)
     {
         this.services.remove(this.getKey(service));
     }

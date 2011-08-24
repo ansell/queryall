@@ -15,7 +15,7 @@ public class UnsupportedProfileException extends RuntimeException
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-
+    
     /**
      * 
      */

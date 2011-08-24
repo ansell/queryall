@@ -10,7 +10,8 @@ import org.queryall.api.services.QueryAllFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public interface NormalisationRuleFactory extends QueryAllFactory<NormalisationRuleEnum, NormalisationRuleParser, NormalisationRule>
+public interface NormalisationRuleFactory extends
+        QueryAllFactory<NormalisationRuleEnum, NormalisationRuleParser, NormalisationRule>
 {
     
 }

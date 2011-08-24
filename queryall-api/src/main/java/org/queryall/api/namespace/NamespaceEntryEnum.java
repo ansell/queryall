@@ -24,7 +24,8 @@ public class NamespaceEntryEnum extends QueryAllEnum
     
     public static Collection<NamespaceEntryEnum> byTypeUris(final List<URI> nextNamespaceEntryUris)
     {
-        final List<NamespaceEntryEnum> results = new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_PROJECTS.size());
+        final List<NamespaceEntryEnum> results =
+                new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_PROJECTS.size());
         
         for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_PROJECTS)
         {

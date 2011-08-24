@@ -49,6 +49,104 @@ public class ServiceUtils
 {
     
     /**
+     * Creates a namespace entry parser for the given namespace entry enum
+     * 
+     * @param namespaceEntry
+     * @return
+     * @throws UnsupportedNamespaceEntryException
+     */
+    public static NamespaceEntryParser createNamespaceEntryParser(final NamespaceEntryEnum namespaceEntry)
+        throws UnsupportedNamespaceEntryException
+    {
+        final NamespaceEntryFactory factory = NamespaceEntryRegistry.getInstance().get(namespaceEntry);
+        
+        if(factory != null)
+        {
+            return factory.getParser();
+        }
+        
+        throw new UnsupportedNamespaceEntryException("No factory available for namespace entry " + namespaceEntry);
+    }
+    
+    /**
+     * Creates a normalisation rule parser for the given normalisation rule enum
+     * 
+     * @param normalisationRule
+     * @return
+     * @throws UnsupportedNormalisationRuleException
+     */
+    public static NormalisationRuleParser createNormalisationRuleParser(final NormalisationRuleEnum normalisationRule)
+        throws UnsupportedNormalisationRuleException
+    {
+        final NormalisationRuleFactory factory = NormalisationRuleRegistry.getInstance().get(normalisationRule);
+        
+        if(factory != null)
+        {
+            return factory.getParser();
+        }
+        
+        throw new UnsupportedNormalisationRuleException("No factory available for normalisation rule "
+                + normalisationRule);
+    }
+    
+    /**
+     * Creates a profile parser for the given profile enum
+     * 
+     * @param profile
+     * @return
+     * @throws UnsupportedProfileException
+     */
+    public static ProfileParser createProfileParser(final ProfileEnum profile) throws UnsupportedProfileException
+    {
+        final ProfileFactory factory = ProfileRegistry.getInstance().get(profile);
+        
+        if(factory != null)
+        {
+            return factory.getParser();
+        }
+        
+        throw new UnsupportedProfileException("No factory available for profile " + profile);
+    }
+    
+    /**
+     * Creates a project parser for the given project enum
+     * 
+     * @param project
+     * @return
+     * @throws UnsupportedProjectException
+     */
+    public static ProjectParser createProjectParser(final ProjectEnum project) throws UnsupportedProjectException
+    {
+        final ProjectFactory factory = ProjectRegistry.getInstance().get(project);
+        
+        if(factory != null)
+        {
+            return factory.getParser();
+        }
+        
+        throw new UnsupportedProjectException("No factory available for project " + project);
+    }
+    
+    /**
+     * Creates a provider parser for the given provider enum
+     * 
+     * @param provider
+     * @return
+     * @throws UnsupportedProviderException
+     */
+    public static ProviderParser createProviderParser(final ProviderEnum provider) throws UnsupportedProviderException
+    {
+        final ProviderFactory factory = ProviderRegistry.getInstance().get(provider);
+        
+        if(factory != null)
+        {
+            return factory.getParser();
+        }
+        
+        throw new UnsupportedProviderException("No factory available for provider " + provider);
+    }
+    
+    /**
      * Creates a query type parser for the given query type enum
      * 
      * @param queryType
@@ -69,74 +167,13 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a provider parser for the given provider enum
-     * 
-     * @param provider
-     * @return
-     * @throws UnsupportedProviderException
-     */
-    public static ProviderParser createProviderParser(final ProviderEnum provider)
-        throws UnsupportedProviderException
-    {
-        final ProviderFactory factory = ProviderRegistry.getInstance().get(provider);
-        
-        if(factory != null)
-        {
-            return factory.getParser();
-        }
-        
-        throw new UnsupportedProviderException("No factory available for provider " + provider);
-    }
-    
-    /**
-     * Creates a project parser for the given project enum
-     * 
-     * @param project
-     * @return
-     * @throws UnsupportedProjectException
-     */
-    public static ProjectParser createProjectParser(final ProjectEnum project)
-        throws UnsupportedProjectException
-    {
-        final ProjectFactory factory = ProjectRegistry.getInstance().get(project);
-        
-        if(factory != null)
-        {
-            return factory.getParser();
-        }
-        
-        throw new UnsupportedProjectException("No factory available for project " + project);
-    }
-    
-    /**
-     * Creates a normalisation rule parser for the given normalisation rule enum
-     * 
-     * @param normalisationRule
-     * @return
-     * @throws UnsupportedNormalisationRuleException
-     */
-    public static NormalisationRuleParser createNormalisationRuleParser(final NormalisationRuleEnum normalisationRule)
-        throws UnsupportedNormalisationRuleException
-    {
-        final NormalisationRuleFactory factory = NormalisationRuleRegistry.getInstance().get(normalisationRule);
-        
-        if(factory != null)
-        {
-            return factory.getParser();
-        }
-        
-        throw new UnsupportedNormalisationRuleException("No factory available for normalisation rule " + normalisationRule);
-    }
-    
-    /**
      * Creates a rule test parser for the given rule test enum
      * 
      * @param ruleTest
      * @return
      * @throws UnsupportedRuleTestException
      */
-    public static RuleTestParser createRuleTestParser(final RuleTestEnum ruleTest)
-        throws UnsupportedRuleTestException
+    public static RuleTestParser createRuleTestParser(final RuleTestEnum ruleTest) throws UnsupportedRuleTestException
     {
         final RuleTestFactory factory = RuleTestRegistry.getInstance().get(ruleTest);
         
@@ -146,46 +183,6 @@ public class ServiceUtils
         }
         
         throw new UnsupportedRuleTestException("No factory available for rule test " + ruleTest);
-    }
-    
-    /**
-     * Creates a namespace entry parser for the given namespace entry enum
-     * 
-     * @param namespaceEntry
-     * @return
-     * @throws UnsupportedNamespaceEntryException
-     */
-    public static NamespaceEntryParser createNamespaceEntryParser(final NamespaceEntryEnum namespaceEntry)
-        throws UnsupportedNamespaceEntryException
-    {
-        final NamespaceEntryFactory factory = NamespaceEntryRegistry.getInstance().get(namespaceEntry);
-        
-        if(factory != null)
-        {
-            return factory.getParser();
-        }
-        
-        throw new UnsupportedNamespaceEntryException("No factory available for namespace entry " + namespaceEntry);
-    }
-
-    /**
-     * Creates a profile parser for the given profile enum
-     * 
-     * @param profile
-     * @return
-     * @throws UnsupportedProfileException
-     */
-    public static ProfileParser createProfileParser(final ProfileEnum profile)
-        throws UnsupportedProfileException
-    {
-        final ProfileFactory factory = ProfileRegistry.getInstance().get(profile);
-        
-        if(factory != null)
-        {
-            return factory.getParser();
-        }
-        
-        throw new UnsupportedProfileException("No factory available for profile " + profile);
     }
     
     /**

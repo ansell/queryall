@@ -10,7 +10,8 @@ import org.queryall.api.services.QueryAllFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public interface NamespaceEntryFactory extends QueryAllFactory<NamespaceEntryEnum, NamespaceEntryParser, NamespaceEntry>
+public interface NamespaceEntryFactory extends
+        QueryAllFactory<NamespaceEntryEnum, NamespaceEntryParser, NamespaceEntry>
 {
     
 }

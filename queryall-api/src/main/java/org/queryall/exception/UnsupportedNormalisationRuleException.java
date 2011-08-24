@@ -4,7 +4,8 @@
 package org.queryall.exception;
 
 /**
- * An exception that is thrown when an unknown NormalisationRule is given to the NormalisationRuleRegistry
+ * An exception that is thrown when an unknown NormalisationRule is given to the
+ * NormalisationRuleRegistry
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -15,7 +16,7 @@ public class UnsupportedNormalisationRuleException extends RuntimeException
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-
+    
     /**
      * 
      */
