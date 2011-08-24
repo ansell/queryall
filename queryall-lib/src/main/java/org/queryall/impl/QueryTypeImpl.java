@@ -589,7 +589,7 @@ public class QueryTypeImpl implements QueryType
         QueryTypeImpl.setQueryIsDummyQueryType(f.createURI(baseUri, "isDummyQueryType"));
         
         // register this query type implementation with the central register
-        QueryTypeEnum.register("org.queryall.impl.QueryTypeImpl", myTypes());
+        QueryTypeEnum.register(QueryTypeImpl.class.getName(), myTypes());
     }
     
     public static URI getNamespaceMatchAllUri()

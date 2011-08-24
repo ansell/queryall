@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public final class QueryTypeUtils implements QueryTypeParser
+public final class QueryTypeUtils
 {
     public static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
     public static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
@@ -106,28 +106,5 @@ public final class QueryTypeUtils implements QueryTypeParser
         // TODO Auto-generated constructor stub
     }
 
-    @Override
-    public QueryType createQueryType(Collection<Statement> rdfStatements, URI subjectKey, int modelVersion)
-        throws IllegalArgumentException
-    {
-        List<URI> typeStatements = new ArrayList<URI>(4);
-        
-        for(Statement nextStatement : rdfStatements)
-        {
-            if(nextStatement.getPredicate().equals(RDF.TYPE) && nextStatement.getSubject().equals(subjectKey) && nextStatement.getObject() instanceof URI)
-            {
-                typeStatements.add((URI)nextStatement.getObject());
-            }
-        }
-        
-        Collection<QueryTypeEnum> matchingQueryTypes = QueryTypeEnum.byTypeUris(typeStatements);
-        
-        for(QueryTypeEnum nextQueryType : matchingQueryTypes)
-        {
-            ServiceUtils.createQueryTypeParser(nextQueryType);
-        }
-        
-        return null;
-    }
     
 }

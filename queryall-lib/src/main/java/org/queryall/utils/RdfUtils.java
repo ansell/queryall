@@ -49,6 +49,8 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.QueryType;
 import org.queryall.api.RuleTest;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.api.utils.QueryTypeEnum;
+import org.queryall.api.utils.ServiceUtils;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.HttpProviderImpl;
@@ -1094,18 +1096,43 @@ public final class RdfUtils
             RdfUtils.log.debug("getQueryTypes: started parsing query types");
         }
         
+        // This is the base query type URI, extensions or plugins must include this URI alongside their customised type URIs
         final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
         
         try
         {
             final RepositoryConnection con = myRepository.getConnection();
             
-            for(final Statement nextQueryType : con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList())
+            List<Statement> allDeclaredQueryTypeSubjects = con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList();
+            
+            for(Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
             {
-                final URI nextSubjectUri = (URI)nextQueryType.getSubject();
-                results.put(nextSubjectUri,
-                        new QueryTypeImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                if(!(nextDeclaredQueryTypeSubject.getSubject() instanceof URI))
+                {
+                    log.error("We do not support blank nodes as query type identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredQueryTypeSubject.getSubject();
+
+                Collection<Value> nextQueryTypeValues = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE, (URI)nextDeclaredQueryTypeSubject.getSubject());
+                List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
+                for(Value nextQueryTypeValue : nextQueryTypeUris)
+                {
+                    if(nextQueryTypeValue instanceof URI)
+                    {
+                        nextQueryTypeUris.add((URI)nextQueryTypeValue);
+                    }
+                }
+                
+                Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
+            
+                for(QueryTypeEnum nextQueryTypeEnum : matchingQueryTypeEnums)
+                {
+                    results.put(nextSubjectUri, ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createQueryType(
+                            con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
             }
         }
         catch(final OpenRDFException e)

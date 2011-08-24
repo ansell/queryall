@@ -61,11 +61,11 @@ public class QueryTypeEnum
         return newQueryTypeEnum;
     }
     
-    public static QueryTypeEnum valueOf(final String queryTypeName)
+    public static QueryTypeEnum valueOf(final String string)
     {
         for(final QueryTypeEnum nextQueryTypeEnum : QueryTypeEnum.ALL_QUERY_TYPES)
         {
-            if(nextQueryTypeEnum.getName().equalsIgnoreCase(queryTypeName))
+            if(nextQueryTypeEnum.getName().equals(string))
             {
                 return nextQueryTypeEnum;
             }
