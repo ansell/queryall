@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.enumerations.Constants;
+import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

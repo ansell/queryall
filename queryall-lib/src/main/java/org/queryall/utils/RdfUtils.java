@@ -46,19 +46,20 @@ import org.queryall.api.Profile;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
+import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.services.ServiceUtils;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.enumerations.Constants;
 import org.queryall.impl.NamespaceEntryImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProjectImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
-import org.queryall.impl.provider.ProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.impl.rdfrule.RegexNormalisationRuleImpl;
 import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
@@ -1055,7 +1056,7 @@ public final class RdfUtils
         final long start = System.currentTimeMillis();
         
         // TODO: HACK: treat all providers as HttpProviderImpl for now
-        final URI providerTypeUri = ProviderImpl.getProviderTypeUri();
+        final URI providerTypeUri = ProviderSchema.getProviderTypeUri();
         
         try
         {
@@ -1098,7 +1099,7 @@ public final class RdfUtils
         }
         
         // This is the base query type URI, extensions or plugins must include this URI alongside their customised type URIs
-        final URI queryTypeUri = QueryTypeImpl.getQueryTypeUri();
+        final URI queryTypeUri = QueryTypeSchema.getQueryTypeUri();
         
         try
         {
@@ -1333,7 +1334,7 @@ public final class RdfUtils
         
         try
         {
-            if(!ProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!ProviderSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("Provider schema was not placed correctly in the rdf store");
             }
@@ -1345,7 +1346,7 @@ public final class RdfUtils
         
         try
         {
-            if(!HttpProviderImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!HttpProviderSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("HttpProviderImpl schema was not placed correctly in the rdf store");
             }
@@ -1370,7 +1371,7 @@ public final class RdfUtils
         
         try
         {
-            if(!QueryTypeImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!QueryTypeSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("QueryType schema was not placed correctly in the rdf store");
             }

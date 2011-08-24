@@ -20,12 +20,12 @@ import org.queryall.api.Profile;
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.impl.provider.ProviderImpl;
-import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
@@ -115,7 +115,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                     
                     final Map<URI, Provider> namespaceProviders =
                             ProviderUtils.getProvidersForNamespaceUris(allProviders, nextNamespacesList,
-                                    QueryTypeImpl.getQueryNamespaceMatchAny());
+                                    QueryTypeSchema.getQueryNamespaceMatchAny());
                     
                     providersByNamespace.put(nextNamespace, namespaceProviders.values());
                     
@@ -137,7 +137,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 final Map<URI, Provider> queryTypesByNamespace =
                                         ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders,
                                                 nextQueryKey, nextQueryTypesByNamespacesList,
-                                                QueryTypeImpl.getQueryNamespaceMatchAny());
+                                                QueryTypeSchema.getQueryNamespaceMatchAny());
                                 
                                 allQueryTypesByNamespace.put(
                                         nextQueryKey.stringValue() + " " + nextNamespace.stringValue(),
@@ -361,7 +361,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                     }
                                 }
                                 else if(nextQueryNamespaceProvider.getEndpointMethod().equals(
-                                        ProviderImpl.getProviderNoCommunication().stringValue()))
+                                        ProviderSchema.getProviderNoCommunication().stringValue()))
                                 {
                                     if(NamespaceProvidersServlet.log.isDebugEnabled())
                                     {

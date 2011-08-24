@@ -18,8 +18,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
+import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
-import org.queryall.enumerations.Constants;
+import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,11 +96,11 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             {
                 this.addEndpointUrl(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(ProviderImpl.getProviderRequiresSparqlGraphURI()))
+            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderRequiresSparqlGraphURI()))
             {
                 this.setUseSparqlGraph(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(ProviderImpl.getProviderGraphUri()))
+            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderGraphUri()))
             {
                 this.setSparqlGraphUri(nextStatement.getObject().stringValue());
             }
@@ -259,17 +260,17 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             
             con.setAutoCommit(false);
             
-            con.add(providerInstanceUri, RDF.TYPE, ProviderImpl.getProviderTypeUri(), keyToUse);
+            con.add(providerInstanceUri, RDF.TYPE, ProviderSchema.getProviderTypeUri(), keyToUse);
             
             if(acceptHeaderLiteral != null)
             {
                 con.add(providerInstanceUri, HttpProviderSchema.getProviderAcceptHeader(), acceptHeaderLiteral, keyToUse);
             }
             
-            con.add(providerInstanceUri, ProviderImpl.getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral,
+            con.add(providerInstanceUri, ProviderSchema.getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral,
                     keyToUse);
             
-            con.add(providerInstanceUri, ProviderImpl.getProviderGraphUri(), sparqlGraphUriLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderGraphUri(), sparqlGraphUriLiteral, keyToUse);
             
             if(this.getEndpointUrls() != null)
             {

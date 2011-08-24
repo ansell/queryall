@@ -10,8 +10,8 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.queryall.api.QueryAllConfiguration;
+import org.queryall.api.utils.Constants;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.enumerations.Constants;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.Settings;
 import org.queryall.servlets.html.VelocityHelper;

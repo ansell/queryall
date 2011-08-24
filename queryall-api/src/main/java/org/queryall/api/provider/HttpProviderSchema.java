@@ -9,12 +9,15 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.enumerations.Constants;
-import org.queryall.impl.provider.ProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public class HttpProviderSchema
 {
     static final Logger log = LoggerFactory.getLogger(HttpProviderSchema.class);
@@ -35,7 +38,7 @@ public class HttpProviderSchema
 
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = new MemValueFactory();
         
         final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
@@ -121,18 +124,18 @@ public class HttpProviderSchema
 
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion) throws OpenRDFException
     {
-        ProviderImpl.schemaToRdf(myRepository, contextUri, modelVersion);
+        ProviderSchema.schemaToRdf(myRepository, contextUri, modelVersion);
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = new MemValueFactory();
         
         try
         {
             con.setAutoCommit(false);
             
             con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDFS.SUBCLASSOF, ProviderImpl.getProviderTypeUri(),
+            con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDFS.SUBCLASSOF, ProviderSchema.getProviderTypeUri(),
                     contextUri);
             
             con.add(HttpProviderSchema.getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);

@@ -11,18 +11,16 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
+import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.enumerations.Constants;
-import org.queryall.impl.NamespaceEntryImpl;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.ProjectImpl;
 import org.queryall.query.ProvenanceRecord;
@@ -44,396 +42,7 @@ public class QueryTypeImpl implements QueryType
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
     
-    /**
-     * @return the queryHandleAllNamespaces
-     */
-    public static URI getQueryHandleAllNamespaces()
-    {
-        return QueryTypeImpl.queryHandleAllNamespaces;
-    }
-    
-    /**
-     * @return the queryIncludeDefaults
-     */
-    public static URI getQueryIncludeDefaults()
-    {
-        return QueryTypeImpl.queryIncludeDefaults;
-    }
-    
-    /**
-     * @return the queryIncludeQueryType
-     */
-    public static URI getQueryIncludeQueryType()
-    {
-        return QueryTypeImpl.queryIncludeQueryType;
-    }
-    
-    /**
-     * @return the queryInputRegex
-     */
-    public static URI getQueryInputRegex()
-    {
-        return QueryTypeImpl.queryInputRegex;
-    }
-    
-    /**
-     * @return the queryInRobotsTxt
-     */
-    public static URI getQueryInRobotsTxt()
-    {
-        return QueryTypeImpl.queryInRobotsTxt;
-    }
-    
-    /**
-     * @return the queryIsDummyQueryType
-     */
-    public static URI getQueryIsDummyQueryType()
-    {
-        return QueryTypeImpl.queryIsDummyQueryType;
-    }
-    
-    /**
-     * @return the queryIsPageable
-     */
-    public static URI getQueryIsPageable()
-    {
-        return QueryTypeImpl.queryIsPageable;
-    }
-    
-    /**
-     * @return the queryNamespaceInputIndex
-     */
-    public static URI getQueryNamespaceInputIndex()
-    {
-        return QueryTypeImpl.queryNamespaceInputIndex;
-    }
-    
-    /**
-     * @return the queryNamespaceMatchAll
-     */
-    public static URI getQueryNamespaceMatchAll()
-    {
-        return QueryTypeImpl.queryNamespaceMatchAll;
-    }
-    
-    /**
-     * @return the queryNamespaceMatchAny
-     */
-    public static URI getQueryNamespaceMatchAny()
-    {
-        return QueryTypeImpl.queryNamespaceMatchAny;
-    }
-    
-    /**
-     * @return the queryNamespaceMatchMethod
-     */
-    public static URI getQueryNamespaceMatchMethod()
-    {
-        return QueryTypeImpl.queryNamespaceMatchMethod;
-    }
-    
-    /**
-     * @return the queryNamespaceSpecific
-     */
-    public static URI getQueryNamespaceSpecific()
-    {
-        return QueryTypeImpl.queryNamespaceSpecific;
-    }
-    
-    /**
-     * @return the queryNamespaceToHandle
-     */
-    public static URI getQueryNamespaceToHandle()
-    {
-        return QueryTypeImpl.queryNamespaceToHandle;
-    }
-    
-    /**
-     * @return the queryOutputRdfXmlString
-     */
-    public static URI getQueryOutputRdfXmlString()
-    {
-        return QueryTypeImpl.queryOutputRdfXmlString;
-    }
-    
-    /**
-     * @return the queryParameterTemplateTerm
-     */
-    public static URI getQueryParameterTemplateTerm()
-    {
-        return QueryTypeImpl.queryParameterTemplateTerm;
-    }
-    
-    /**
-     * @return the queryPublicIdentifierIndex
-     */
-    public static URI getQueryPublicIdentifierIndex()
-    {
-        return QueryTypeImpl.queryPublicIdentifierIndex;
-    }
-    
-    /**
-     * @return the queryQueryUriTemplateString
-     */
-    public static URI getQueryQueryUriTemplateString()
-    {
-        return QueryTypeImpl.queryQueryUriTemplateString;
-    }
-    
-    /**
-     * @return the queryStandardUriTemplateString
-     */
-    public static URI getQueryStandardUriTemplateString()
-    {
-        return QueryTypeImpl.queryStandardUriTemplateString;
-    }
-    
-    /**
-     * @return the queryStaticOutputTemplateTerm
-     */
-    public static URI getQueryStaticOutputTemplateTerm()
-    {
-        return QueryTypeImpl.queryStaticOutputTemplateTerm;
-    }
-    
-    /**
-     * @return the queryTemplateString
-     */
-    public static URI getQueryTemplateString()
-    {
-        return QueryTypeImpl.queryTemplateString;
-    }
-    
-    /**
-     * @return the queryTemplateTerm
-     */
-    public static URI getQueryTemplateTerm()
-    {
-        return QueryTypeImpl.queryTemplateTerm;
-    }
-    
-    /**
-     * @return the queryTitle
-     */
-    public static URI getQueryTitle()
-    {
-        return QueryTypeImpl.queryTitle;
-    }
-    
-    /**
-     * @return the queryTypeUri
-     */
-    public static URI getQueryTypeUri()
-    {
-        return QueryTypeImpl.queryTypeUri;
-    }
-    
-    /**
-     * @param queryHandleAllNamespaces
-     *            the queryHandleAllNamespaces to set
-     */
-    public static void setQueryHandleAllNamespaces(final URI queryHandleAllNamespaces)
-    {
-        QueryTypeImpl.queryHandleAllNamespaces = queryHandleAllNamespaces;
-    }
-    
-    /**
-     * @param queryIncludeDefaults
-     *            the queryIncludeDefaults to set
-     */
-    public static void setQueryIncludeDefaults(final URI queryIncludeDefaults)
-    {
-        QueryTypeImpl.queryIncludeDefaults = queryIncludeDefaults;
-    }
-    
-    /**
-     * @param queryIncludeQueryType
-     *            the queryIncludeQueryType to set
-     */
-    public static void setQueryIncludeQueryType(final URI queryIncludeQueryType)
-    {
-        QueryTypeImpl.queryIncludeQueryType = queryIncludeQueryType;
-    }
-    
-    /**
-     * @param queryInputRegex
-     *            the queryInputRegex to set
-     */
-    public static void setQueryInputRegex(final URI queryInputRegex)
-    {
-        QueryTypeImpl.queryInputRegex = queryInputRegex;
-    }
-    
-    /**
-     * @param queryInRobotsTxt
-     *            the queryInRobotsTxt to set
-     */
-    public static void setQueryInRobotsTxt(final URI queryInRobotsTxt)
-    {
-        QueryTypeImpl.queryInRobotsTxt = queryInRobotsTxt;
-    }
-    
-    /**
-     * @param queryIsDummyQueryType
-     *            the queryIsDummyQueryType to set
-     */
-    public static void setQueryIsDummyQueryType(final URI queryIsDummyQueryType)
-    {
-        QueryTypeImpl.queryIsDummyQueryType = queryIsDummyQueryType;
-    }
-    
-    /**
-     * @param queryIsPageable
-     *            the queryIsPageable to set
-     */
-    public static void setQueryIsPageable(final URI queryIsPageable)
-    {
-        QueryTypeImpl.queryIsPageable = queryIsPageable;
-    }
-    
-    /**
-     * @param queryNamespaceInputIndex
-     *            the queryNamespaceInputIndex to set
-     */
-    public static void setQueryNamespaceInputIndex(final URI queryNamespaceInputIndex)
-    {
-        QueryTypeImpl.queryNamespaceInputIndex = queryNamespaceInputIndex;
-    }
-    
-    /**
-     * @param queryNamespaceMatchAll
-     *            the queryNamespaceMatchAll to set
-     */
-    public static void setQueryNamespaceMatchAll(final URI queryNamespaceMatchAll)
-    {
-        QueryTypeImpl.queryNamespaceMatchAll = queryNamespaceMatchAll;
-    }
-    
-    /**
-     * @param queryNamespaceMatchAny
-     *            the queryNamespaceMatchAny to set
-     */
-    public static void setQueryNamespaceMatchAny(final URI queryNamespaceMatchAny)
-    {
-        QueryTypeImpl.queryNamespaceMatchAny = queryNamespaceMatchAny;
-    }
-    
-    /**
-     * @param queryNamespaceMatchMethod
-     *            the queryNamespaceMatchMethod to set
-     */
-    public static void setQueryNamespaceMatchMethod(final URI queryNamespaceMatchMethod)
-    {
-        QueryTypeImpl.queryNamespaceMatchMethod = queryNamespaceMatchMethod;
-    }
-    
-    /**
-     * @param queryNamespaceSpecific
-     *            the queryNamespaceSpecific to set
-     */
-    public static void setQueryNamespaceSpecific(final URI queryNamespaceSpecific)
-    {
-        QueryTypeImpl.queryNamespaceSpecific = queryNamespaceSpecific;
-    }
-    
-    /**
-     * @param queryNamespaceToHandle
-     *            the queryNamespaceToHandle to set
-     */
-    public static void setQueryNamespaceToHandle(final URI queryNamespaceToHandle)
-    {
-        QueryTypeImpl.queryNamespaceToHandle = queryNamespaceToHandle;
-    }
-    
-    /**
-     * @param queryOutputRdfXmlString
-     *            the queryOutputRdfXmlString to set
-     */
-    public static void setQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
-    {
-        QueryTypeImpl.queryOutputRdfXmlString = queryOutputRdfXmlString;
-    }
-    
-    /**
-     * @param queryParameterTemplateTerm
-     *            the queryParameterTemplateTerm to set
-     */
-    public static void setQueryParameterTemplateTerm(final URI queryParameterTemplateTerm)
-    {
-        QueryTypeImpl.queryParameterTemplateTerm = queryParameterTemplateTerm;
-    }
-    
-    /**
-     * @param queryPublicIdentifierIndex
-     *            the queryPublicIdentifierIndex to set
-     */
-    public static void setQueryPublicIdentifierIndex(final URI queryPublicIdentifierIndex)
-    {
-        QueryTypeImpl.queryPublicIdentifierIndex = queryPublicIdentifierIndex;
-    }
-    
-    /**
-     * @param queryQueryUriTemplateString
-     *            the queryQueryUriTemplateString to set
-     */
-    public static void setQueryQueryUriTemplateString(final URI queryQueryUriTemplateString)
-    {
-        QueryTypeImpl.queryQueryUriTemplateString = queryQueryUriTemplateString;
-    }
-    
-    /**
-     * @param queryStandardUriTemplateString
-     *            the queryStandardUriTemplateString to set
-     */
-    public static void setQueryStandardUriTemplateString(final URI queryStandardUriTemplateString)
-    {
-        QueryTypeImpl.queryStandardUriTemplateString = queryStandardUriTemplateString;
-    }
-    
-    /**
-     * @param queryStaticOutputTemplateTerm
-     *            the queryStaticOutputTemplateTerm to set
-     */
-    public static void setQueryStaticOutputTemplateTerm(final URI queryStaticOutputTemplateTerm)
-    {
-        QueryTypeImpl.queryStaticOutputTemplateTerm = queryStaticOutputTemplateTerm;
-    }
-    
-    /**
-     * @param queryTemplateString
-     *            the queryTemplateString to set
-     */
-    public static void setQueryTemplateString(final URI queryTemplateString)
-    {
-        QueryTypeImpl.queryTemplateString = queryTemplateString;
-    }
-    
-    /**
-     * @param queryTemplateTerm
-     *            the queryTemplateTerm to set
-     */
-    public static void setQueryTemplateTerm(final URI queryTemplateTerm)
-    {
-        QueryTypeImpl.queryTemplateTerm = queryTemplateTerm;
-    }
-    
-    /**
-     * @param queryTitle
-     *            the queryTitle to set
-     */
-    public static void setQueryTitle(final URI queryTitle)
-    {
-        QueryTypeImpl.queryTitle = queryTitle;
-    }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setQueryTypeUri(final URI queryTypeUri)
-    {
-        QueryTypeImpl.queryTypeUri = queryTypeUri;
-    }
+
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -476,7 +85,7 @@ public class QueryTypeImpl implements QueryType
     // satisfy the initial test for query usability
     // Possible values are QueryType.queryNamespaceMatchAll.stringValue() and
     // QueryType.queryNamespaceMatchAny.stringValue()
-    private URI namespaceMatchMethod = QueryTypeImpl.getQueryNamespaceMatchAny();
+    private URI namespaceMatchMethod = QueryTypeSchema.getQueryNamespaceMatchAny();
     
     // if we are told we can include defaults, even if we are known to be namespace specific we can
     // utilise the default providers as sources
@@ -515,235 +124,10 @@ public class QueryTypeImpl implements QueryType
     
     private boolean isDummyQueryType = false;
     
-    private static URI queryTypeUri;
-    
-    private static URI queryTitle;
-    
-    private static URI queryHandleAllNamespaces;
-    
-    private static URI queryNamespaceToHandle;
-    
-    private static URI queryPublicIdentifierIndex;
-    
-    private static URI queryNamespaceInputIndex;
-    
-    private static URI queryNamespaceMatchMethod;
-    
-    private static URI queryNamespaceSpecific;
-    
-    private static URI queryIncludeDefaults;
-    
-    private static URI queryInputRegex;
-    
-    private static URI queryIncludeQueryType;
-    
-    private static URI queryTemplateString;
-    
-    private static URI queryQueryUriTemplateString;
-    
-    private static URI queryStandardUriTemplateString;
-    
-    private static URI queryOutputRdfXmlString;
-    
-    private static URI queryTemplateTerm;
-    
-    private static URI queryParameterTemplateTerm;
-    
-    private static URI queryStaticOutputTemplateTerm;
-    
-    private static URI queryInRobotsTxt;
-    
-    private static URI queryIsPageable;
-    
-    private static URI queryIsDummyQueryType;
-    
-    private static URI queryNamespaceMatchAny;
-    
-    private static URI queryNamespaceMatchAll;
-    
     static
     {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
-        
-        QueryTypeImpl.setQueryTypeUri(f.createURI(baseUri, "Query"));
-        QueryTypeImpl.setQueryTitle(f.createURI(baseUri, "title"));
-        QueryTypeImpl.setQueryHandleAllNamespaces(f.createURI(baseUri, "handleAllNamespaces"));
-        QueryTypeImpl.setQueryNamespaceToHandle(f.createURI(baseUri, "namespaceToHandle"));
-        QueryTypeImpl.setQueryPublicIdentifierIndex(f.createURI(baseUri, "hasPublicIdentifierIndex"));
-        QueryTypeImpl.setQueryNamespaceInputIndex(f.createURI(baseUri, "hasNamespaceInputIndex"));
-        QueryTypeImpl.setQueryNamespaceMatchMethod(f.createURI(baseUri, "namespaceMatchMethod"));
-        QueryTypeImpl.setQueryNamespaceSpecific(f.createURI(baseUri, "isNamespaceSpecific"));
-        QueryTypeImpl.setQueryIncludeDefaults(f.createURI(baseUri, "includeDefaults"));
-        QueryTypeImpl.setQueryIncludeQueryType(f.createURI(baseUri, "includeQueryType"));
-        QueryTypeImpl.setQueryInputRegex(f.createURI(baseUri, "inputRegex"));
-        QueryTypeImpl.setQueryTemplateString(f.createURI(baseUri, "templateString"));
-        QueryTypeImpl.setQueryQueryUriTemplateString(f.createURI(baseUri, "queryUriTemplateString"));
-        QueryTypeImpl.setQueryStandardUriTemplateString(f.createURI(baseUri, "standardUriTemplateString"));
-        QueryTypeImpl.setQueryOutputRdfXmlString(f.createURI(baseUri, "outputRdfXmlString"));
-        QueryTypeImpl.setQueryInRobotsTxt(f.createURI(baseUri, "inRobotsTxt"));
-        QueryTypeImpl.setQueryIsPageable(f.createURI(baseUri, "isPageable"));
-        QueryTypeImpl.setQueryNamespaceMatchAny(f.createURI(baseUri, "namespaceMatchAny"));
-        QueryTypeImpl.setQueryNamespaceMatchAll(f.createURI(baseUri, "namespaceMatchAll"));
-        QueryTypeImpl.setQueryTemplateTerm(f.createURI(baseUri, "includedQueryTemplate"));
-        QueryTypeImpl.setQueryParameterTemplateTerm(f.createURI(baseUri, "includedQueryParameterTemplate"));
-        QueryTypeImpl.setQueryStaticOutputTemplateTerm(f.createURI(baseUri, "includedStaticOutputTemplate"));
-        QueryTypeImpl.setQueryIsDummyQueryType(f.createURI(baseUri, "isDummyQueryType"));
-        
         // register this query type implementation with the central register
-        QueryTypeEnum.register(QueryTypeImpl.class.getName(), myTypes());
-    }
-    
-    public static URI getNamespaceMatchAllUri()
-    {
-        return QueryTypeImpl.getQueryNamespaceMatchAll();
-    }
-    
-    public static URI getNamespaceMatchAnyUri()
-    {
-        return QueryTypeImpl.getQueryNamespaceMatchAny();
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            final URI contextKeyUri = keyToUse;
-            con.setAutoCommit(false);
-            
-            con.add(QueryTypeImpl.getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            
-            if(modelVersion == 1)
-            {
-                con.add(QueryTypeImpl.getQueryTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(QueryTypeImpl.getQueryTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
-            }
-            
-            con.add(QueryTypeImpl.getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceToHandle(), RDFS.RANGE, NamespaceEntryImpl.getNamespaceTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceToHandle(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceToHandle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryIncludeQueryType(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIncludeQueryType(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIncludeQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryNamespaceMatchMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceMatchMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceMatchMethod(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceMatchMethod(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryHandleAllNamespaces(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryHandleAllNamespaces(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryHandleAllNamespaces(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryHandleAllNamespaces(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryNamespaceSpecific(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceSpecific(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceSpecific(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceSpecific(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryIncludeDefaults(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIncludeDefaults(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeImpl.getQueryInputRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeImpl.getQueryInRobotsTxt(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIsPageable(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIsPageable(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIsPageable(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryIsDummyQueryType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIsDummyQueryType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIsDummyQueryType(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryIsDummyQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryPublicIdentifierIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryPublicIdentifierIndex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryNamespaceInputIndex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeImpl.getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryQueryUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryQueryUriTemplateString(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryQueryUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryStandardUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryStandardUriTemplateString(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeImpl.getQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeImpl.getQueryOutputRdfXmlString(), RDFS.DOMAIN, QueryTypeImpl.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeImpl.getQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            QueryTypeImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
+        QueryTypeEnum.register(QueryTypeSchema.class.getName(), myTypes());
     }
     
     public QueryTypeImpl()
@@ -768,7 +152,7 @@ public class QueryTypeImpl implements QueryType
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(QueryTypeImpl.getQueryTypeUri()))
+                    && nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri()))
             {
                 if(QueryTypeImpl._TRACE)
                 {
@@ -781,72 +165,72 @@ public class QueryTypeImpl implements QueryType
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryTitle())
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTitle())
                     || nextStatement.getPredicate().equals(Constants.DC_TITLE))
             {
                 this.setTitle(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryHandleAllNamespaces()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryHandleAllNamespaces()))
             {
                 this.setHandleAllNamespaces(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryNamespaceToHandle()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceToHandle()))
             {
                 tempNamespacesToHandle.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryPublicIdentifierIndex()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryPublicIdentifierIndex()))
             {
                 tempPublicIdentifierIndexes.add(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryNamespaceInputIndex()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceInputIndex()))
             {
                 tempNamespaceInputIndexes.add(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryNamespaceMatchMethod()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceMatchMethod()))
             {
                 this.setNamespaceMatchMethod((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryNamespaceSpecific()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceSpecific()))
             {
                 this.setIsNamespaceSpecific(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryIncludeDefaults()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIncludeDefaults()))
             {
                 this.setIncludeDefaults(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryInputRegex()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryInputRegex()))
             {
                 this.setInputRegex(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryIncludeQueryType()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIncludeQueryType()))
             {
                 tempsemanticallyLinkedCustomQueries.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryTemplateString()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTemplateString()))
             {
                 this.setTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryQueryUriTemplateString()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryQueryUriTemplateString()))
             {
                 this.setQueryUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryStandardUriTemplateString()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryStandardUriTemplateString()))
             {
                 this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryOutputRdfXmlString()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryOutputRdfXmlString()))
             {
                 this.setOutputRdfXmlString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryInRobotsTxt()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryInRobotsTxt()))
             {
                 this.setInRobotsTxt(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryIsPageable()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIsPageable()))
             {
                 this.setIsPageable(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeImpl.getQueryIsDummyQueryType()))
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIsDummyQueryType()))
             {
                 this.setIsDummyQueryType(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
@@ -938,7 +322,7 @@ public class QueryTypeImpl implements QueryType
     {
         final List<URI> results = new ArrayList<URI>(1);
         
-        results.add(QueryTypeImpl.getQueryTypeUri());
+        results.add(QueryTypeSchema.getQueryTypeUri());
         
         return results;
     }
@@ -1151,7 +535,7 @@ public class QueryTypeImpl implements QueryType
             {
                 anyMatched = true;
                 
-                if(this.namespaceMatchMethod.equals(QueryTypeImpl.getQueryNamespaceMatchAny()))
+                if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAny()))
                 {
                     if(QueryTypeImpl._DEBUG)
                     {
@@ -1167,7 +551,7 @@ public class QueryTypeImpl implements QueryType
             {
                 allMatched = false;
                 
-                if(this.namespaceMatchMethod.equals(QueryTypeImpl.getQueryNamespaceMatchAll()))
+                if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
                 {
                     if(QueryTypeImpl._DEBUG)
                     {
@@ -1181,7 +565,7 @@ public class QueryTypeImpl implements QueryType
             }
         }
         
-        if(this.namespaceMatchMethod.equals(QueryTypeImpl.getQueryNamespaceMatchAny()))
+        if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAny()))
         {
             if(QueryTypeImpl._DEBUG)
             {
@@ -1197,7 +581,7 @@ public class QueryTypeImpl implements QueryType
             
             return anyMatched;
         }
-        else if(this.namespaceMatchMethod.equals(QueryTypeImpl.getQueryNamespaceMatchAll()))
+        else if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
         {
             if(QueryTypeImpl._DEBUG)
             {
@@ -1484,7 +868,7 @@ public class QueryTypeImpl implements QueryType
                 + "namespaceMatchMethod_span\">All namespaces must match?:</span><input type=\"checkbox\" name=\""
                 + prefix + "namespaceMatchMethod\" value=\"namespaceMatchMethod\" ");
         
-        if(this.namespaceMatchMethod.equals(QueryTypeImpl.getQueryNamespaceMatchAll()))
+        if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
         {
             sb.append(" checked=\"checked\" ");
         }
@@ -1584,32 +968,32 @@ public class QueryTypeImpl implements QueryType
             
             con.setAutoCommit(false);
             
-            con.add(queryInstanceUri, RDF.TYPE, QueryTypeImpl.getQueryTypeUri(), keyToUse);
+            con.add(queryInstanceUri, RDF.TYPE, QueryTypeSchema.getQueryTypeUri(), keyToUse);
             con.add(queryInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             if(modelVersion == 1)
             {
-                con.add(queryInstanceUri, QueryTypeImpl.getQueryTitle(), titleLiteral, keyToUse);
+                con.add(queryInstanceUri, QueryTypeSchema.getQueryTitle(), titleLiteral, keyToUse);
             }
             else
             {
                 con.add(queryInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
             }
             
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryHandleAllNamespaces(), handleAllNamespacesLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryHandleAllNamespaces(), handleAllNamespacesLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
                     keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryInputRegex(), inputRegexLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryTemplateString(), templateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral,
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral,
                     keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryStandardUriTemplateString(),
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryStandardUriTemplateString(),
                     standardUriTemplateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryOutputRdfXmlString(), outputRdfXmlStringLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryIsPageable(), isPageableLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeImpl.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryOutputRdfXmlString(), outputRdfXmlStringLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, keyToUse);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
             
             con.add(queryInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(),
                     profileIncludeExcludeOrderLiteral, keyToUse);
@@ -1623,7 +1007,7 @@ public class QueryTypeImpl implements QueryType
                 {
                     if(nextNamespaceToHandle != null)
                     {
-                        con.add(queryInstanceUri, QueryTypeImpl.getQueryNamespaceToHandle(), nextNamespaceToHandle,
+                        con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceToHandle(), nextNamespaceToHandle,
                                 keyToUse);
                     }
                 }
@@ -1634,7 +1018,7 @@ public class QueryTypeImpl implements QueryType
                 
                 for(final int nextPublicIdentifierIndex : this.publicIdentifierIndexes)
                 {
-                    con.add(queryInstanceUri, QueryTypeImpl.getQueryPublicIdentifierIndex(),
+                    con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierIndex(),
                             f.createLiteral(nextPublicIdentifierIndex), keyToUse);
                 }
             }
@@ -1643,7 +1027,7 @@ public class QueryTypeImpl implements QueryType
             {
                 for(final int nextNamespaceInputIndex : this.namespaceInputIndexes)
                 {
-                    con.add(queryInstanceUri, QueryTypeImpl.getQueryNamespaceInputIndex(),
+                    con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputIndex(),
                             f.createLiteral(nextNamespaceInputIndex), keyToUse);
                 }
             }
@@ -1654,7 +1038,7 @@ public class QueryTypeImpl implements QueryType
                 {
                     if(nextSemanticallyLinkedQueryType != null)
                     {
-                        con.add(queryInstanceUri, QueryTypeImpl.getQueryIncludeQueryType(),
+                        con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeQueryType(),
                                 nextSemanticallyLinkedQueryType, keyToUse);
                     }
                 }

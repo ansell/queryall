@@ -14,12 +14,12 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.enumerations.Constants;
-import org.queryall.enumerations.SortOrder;
-import org.queryall.impl.provider.ProviderImpl;
 import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProviderUtils;
@@ -328,7 +328,7 @@ public class RdfFetchController
                 }
             }
             else if(nextBundle.getOriginalProvider().getEndpointMethod()
-                    .equals(ProviderImpl.getProviderNoCommunication()))
+                    .equals(ProviderSchema.getProviderNoCommunication()))
             {
                 if(RdfFetchController._TRACE)
                 {
@@ -392,7 +392,7 @@ public class RdfFetchController
             final boolean isHttpWithNoEndpoint =
                     nextProvider instanceof HttpProvider && !((HttpProvider)nextProvider).hasEndpointUrl();
             
-            if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication())
+            if(nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication())
                     && isHttpWithNoEndpoint)
             {
                 String nextStaticRdfXmlString = "";
@@ -558,7 +558,7 @@ public class RdfFetchController
                             nextProviderQueryBundle.setQueryallSettings(localSettings);
                             
                             // Then test whether the endpoint is blacklisted before accepting it
-                            if(nextProvider.getEndpointMethod().equals(ProviderImpl.getProviderNoCommunication())
+                            if(nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication())
                                     || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                             {
                                 // setup all of the alternatives replaced endpoints and queries for

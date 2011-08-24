@@ -17,7 +17,7 @@ import org.queryall.api.QueryAllConfiguration;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
-import org.queryall.enumerations.SortOrder;
+import org.queryall.api.utils.SortOrder;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProfileUtils;
 import org.slf4j.Logger;

@@ -17,10 +17,10 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
+import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.enumerations.Constants;
-import org.queryall.impl.provider.ProviderImpl;
-import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -497,28 +497,28 @@ public class ProfileImpl implements Profile, Comparable<Profile>
                     contextUri);
             
             con.add(ProfileImpl.getProfileIncludeProviderInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileImpl.getProfileIncludeProviderInProfile(), RDFS.RANGE, ProviderImpl.getProviderTypeUri(),
+            con.add(ProfileImpl.getProfileIncludeProviderInProfile(), RDFS.RANGE, ProviderSchema.getProviderTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileIncludeProviderInProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileIncludeProviderInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.RANGE, ProviderImpl.getProviderTypeUri(),
+            con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.RANGE, ProviderSchema.getProviderTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileExcludeProviderFromProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             con.add(ProfileImpl.getProfileIncludeQueryInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileImpl.getProfileIncludeQueryInProfile(), RDFS.RANGE, QueryTypeImpl.getQueryTypeUri(),
+            con.add(ProfileImpl.getProfileIncludeQueryInProfile(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileIncludeQueryInProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileIncludeQueryInProfile(), RDFS.LABEL, f.createLiteral("."), contextUri);
             
             con.add(ProfileImpl.getProfileExcludeQueryFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileImpl.getProfileExcludeQueryFromProfile(), RDFS.RANGE, QueryTypeImpl.getQueryTypeUri(),
+            con.add(ProfileImpl.getProfileExcludeQueryFromProfile(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
                     contextUri);
             con.add(ProfileImpl.getProfileExcludeQueryFromProfile(), RDFS.DOMAIN, ProfileImpl.getProfileTypeUri(),
                     contextUri);

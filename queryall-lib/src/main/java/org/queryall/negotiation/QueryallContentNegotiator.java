@@ -3,7 +3,7 @@ package org.queryall.negotiation;
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 
-import org.queryall.enumerations.Constants;
+import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

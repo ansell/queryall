@@ -15,8 +15,8 @@ import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.comparators.ValueComparator;
-import org.queryall.impl.querytype.QueryTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,11 +151,11 @@ public final class ProviderUtils
                     allFound = false;
                 }
             }
-            if(anyFound && namespaceMatchMethod.equals(QueryTypeImpl.getNamespaceMatchAnyUri()))
+            if(anyFound && namespaceMatchMethod.equals(QueryTypeSchema.getNamespaceMatchAnyUri()))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }
-            else if(allFound && namespaceMatchMethod.equals(QueryTypeImpl.getNamespaceMatchAllUri()))
+            else if(allFound && namespaceMatchMethod.equals(QueryTypeSchema.getNamespaceMatchAllUri()))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }

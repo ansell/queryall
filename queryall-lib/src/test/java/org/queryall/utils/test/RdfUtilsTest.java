@@ -35,14 +35,14 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.Profile;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.enumerations.Constants;
 import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.provider.ProviderImpl;
-import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.RdfUtils;
 
@@ -705,9 +705,9 @@ public class RdfUtilsTest
                     Assert.assertEquals("Title was not parsed correctly", "Test provider 1", nextProvider.getTitle());
                     
                     Assert.assertEquals("Resolution strategy was not parsed correctly",
-                            ProviderImpl.getProviderProxy(), nextProvider.getRedirectOrProxy());
+                            ProviderSchema.getProviderProxy(), nextProvider.getRedirectOrProxy());
                     Assert.assertEquals("Resolution method was not parsed correctly",
-                            ProviderImpl.getProviderNoCommunication(), nextProvider.getEndpointMethod());
+                            ProviderSchema.getProviderNoCommunication(), nextProvider.getEndpointMethod());
                     Assert.assertFalse("Default provider status was not parsed correctly",
                             nextProvider.getIsDefaultSource());
                     
@@ -785,7 +785,7 @@ public class RdfUtilsTest
                             nextQueryType.getIsNamespaceSpecific());
                     
                     Assert.assertEquals("Query type namespace match method was not parsed correctly",
-                            QueryTypeImpl.getNamespaceMatchAllUri(), nextQueryType.getNamespaceMatchMethod());
+                            QueryTypeSchema.getNamespaceMatchAllUri(), nextQueryType.getNamespaceMatchMethod());
                     
                     Assert.assertTrue("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());

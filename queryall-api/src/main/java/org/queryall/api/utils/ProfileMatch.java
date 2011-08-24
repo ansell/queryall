@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.enumerations;
+package org.queryall.api.utils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
