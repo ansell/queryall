@@ -17,8 +17,10 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     boolean getIncludeDefaults();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     String getInputRegex();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     Pattern getInputRegexPattern();
     
     boolean getInRobotsTxt();
@@ -29,38 +31,48 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     boolean getIsPageable();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     int[] getNamespaceInputIndexes();
     
     URI getNamespaceMatchMethod();
     
     Collection<URI> getNamespacesToHandle();
     
+    // TODO: extract this into a new interface called RdfXmlOutputQueryType
     String getOutputRdfXmlString();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     int[] getPublicIdentifierIndexes();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     String getQueryUriTemplateString();
     
     Collection<URI> getSemanticallyLinkedQueryTypes();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     String getStandardUriTemplateString();
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     String getTemplateString();
     
     boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
     
     boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     boolean isInputVariablePublic(int inputVariableIndex);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     List<String> matchesForQueryString(String queryString);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     boolean matchesQueryString(String queryString);
     
     void setHandleAllNamespaces(boolean handleAllNamespaces);
     
     void setIncludeDefaults(boolean includeDefaults);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     void setInputRegex(String nextInputRegex);
     
     void setInRobotsTxt(boolean inRobotsTxt);
@@ -71,22 +83,28 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     void setIsPageable(boolean isPageable);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     void setNamespaceInputIndexes(int[] namespaceInputIndexes);
     
     void setNamespaceMatchMethod(URI namespaceMatchMethod);
     
     void setNamespacesToHandle(Collection<URI> namespacesToHandle);
     
+    // TODO: extract this into a new interface called RdfXmlOutputQueryType
     void setOutputRdfXmlString(String outputRdfXmlString);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     void setPublicIdentifierIndexes(int[] publicIdentifierIndexes);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     void setQueryUriTemplateString(String queryUriTemplateString);
     
     void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedQueryTypes);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     void setStandardUriTemplateString(String standardUriTemplateString);
     
+    // TODO: extract this into a new interface called RegexInputQueryType
     void setTemplateString(String templateString);
     
 }
