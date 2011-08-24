@@ -20,6 +20,7 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryType;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.api.utils.QueryTypeEnum;
 import org.queryall.enumerations.Constants;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ListUtils;
@@ -586,6 +587,9 @@ public class QueryTypeImpl implements QueryType
         QueryTypeImpl.setQueryParameterTemplateTerm(f.createURI(baseUri, "includedQueryParameterTemplate"));
         QueryTypeImpl.setQueryStaticOutputTemplateTerm(f.createURI(baseUri, "includedStaticOutputTemplate"));
         QueryTypeImpl.setQueryIsDummyQueryType(f.createURI(baseUri, "isDummyQueryType"));
+        
+        // register this query type implementation with the central register
+        QueryTypeEnum.register("org.queryall.impl.QueryTypeImpl", myTypes());
     }
     
     public static URI getNamespaceMatchAllUri()
@@ -924,7 +928,12 @@ public class QueryTypeImpl implements QueryType
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
+        return myTypes();
+    }
+    
+    private static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
         
         results.add(QueryTypeImpl.getQueryTypeUri());
         

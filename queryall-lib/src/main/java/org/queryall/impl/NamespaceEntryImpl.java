@@ -18,7 +18,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.NamespaceEntry;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
-import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;

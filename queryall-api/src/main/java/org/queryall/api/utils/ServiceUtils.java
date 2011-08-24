@@ -3,16 +3,13 @@
  */
 package org.queryall.api.utils;
 
-import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.UnsupportedQueryLanguageException;
-import org.openrdf.query.parser.QueryParser;
-import org.openrdf.query.parser.QueryParserFactory;
-import org.openrdf.query.parser.QueryParserRegistry;
+import org.queryall.exception.UnsupportedQueryTypeException;
 
 /**
+ * Provides helper methods to interact with the various dynamic services in QueryAll
  * 
  * 
- * http://solitarygeek.com/java/a-simple-pluggable-java-application
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ServiceUtils 
 {
@@ -26,16 +23,16 @@ public class ServiceUtils
 
 	}
 
-	public static QueryTypeParser createParser(QueryTypeEnum queryType)
-			throws UnsupportedQueryLanguageException
-		{
+	public static QueryTypeParser createQueryTypeParser(QueryTypeEnum queryType)
+			throws UnsupportedQueryTypeException
+	{
 			QueryTypeFactory factory = QueryTypeRegistry.getInstance().get(queryType);
 
 			if (factory != null) 
 			{
 				return factory.getParser();
 			}
-
-			throw new UnsupportedQueryLanguageException("No factory available for query type " + queryType);
-		}
+			
+			throw new UnsupportedQueryTypeException("No factory available for query type " + queryType);
+	}
 }
