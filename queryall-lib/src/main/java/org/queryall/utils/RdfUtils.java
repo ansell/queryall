@@ -1117,7 +1117,7 @@ public final class RdfUtils
 
                 Collection<Value> nextQueryTypeValues = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE, (URI)nextDeclaredQueryTypeSubject.getSubject());
                 List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
-                for(Value nextQueryTypeValue : nextQueryTypeUris)
+                for(Value nextQueryTypeValue : nextQueryTypeValues)
                 {
                     if(nextQueryTypeValue instanceof URI)
                     {

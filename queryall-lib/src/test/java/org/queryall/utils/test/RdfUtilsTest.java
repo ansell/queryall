@@ -754,7 +754,7 @@ public class RdfUtilsTest
             
             final Map<URI, QueryType> results = RdfUtils.getQueryTypes(this.testRepository);
             
-            Assert.assertEquals(1, results.size());
+            Assert.assertEquals("RdfUtils did not create the expected number of query types.", 1, results.size());
             
             for(final URI nextQueryTypeUri : results.keySet())
             {

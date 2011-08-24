@@ -3,20 +3,14 @@
  */
 package org.queryall.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.vocabulary.RDF;
 import org.queryall.api.Profile;
 import org.queryall.api.QueryType;
-import org.queryall.api.utils.QueryTypeEnum;
-import org.queryall.api.utils.QueryTypeParser;
-import org.queryall.api.utils.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
