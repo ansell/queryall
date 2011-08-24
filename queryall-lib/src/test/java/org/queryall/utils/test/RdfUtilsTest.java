@@ -40,10 +40,10 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
-import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.ProviderImpl;
+import org.queryall.impl.provider.ProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
+import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.RdfUtils;
 
 /**

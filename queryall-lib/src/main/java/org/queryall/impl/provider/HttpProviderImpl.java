@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl;
+package org.queryall.impl.provider;
 
 import java.util.Collection;
 import java.util.Collections;

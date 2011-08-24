@@ -15,7 +15,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.enumerations.SortOrder;
-import org.queryall.impl.NormalisationRuleImpl;
+import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

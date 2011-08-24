@@ -7,9 +7,9 @@ import org.openrdf.model.URI;
 import org.queryall.api.Profile;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.test.AbstractSparqlNormalisationRuleTest;
-import org.queryall.impl.NormalisationRuleImpl;
 import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.SparqlNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.NormalisationRuleImpl;
+import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with

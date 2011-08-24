@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,9 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.exception.InvalidStageException;
+import org.queryall.impl.NamespaceEntryImpl;
+import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.ProjectImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;

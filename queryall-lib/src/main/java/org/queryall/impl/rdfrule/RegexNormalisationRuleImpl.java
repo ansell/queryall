@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.rdfrule;
 
 import java.util.Collection;
 import java.util.HashSet;

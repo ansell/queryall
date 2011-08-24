@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.ruletest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +18,8 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
+import org.queryall.impl.ProjectImpl;
+import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

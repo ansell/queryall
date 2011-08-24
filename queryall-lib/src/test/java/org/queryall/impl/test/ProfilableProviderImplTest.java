@@ -6,7 +6,7 @@ package org.queryall.impl.test;
 import org.openrdf.model.URI;
 import org.queryall.api.ProfilableInterface;
 import org.queryall.api.Profile;
-import org.queryall.impl.HttpProviderImpl;
+import org.queryall.impl.provider.HttpProviderImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with

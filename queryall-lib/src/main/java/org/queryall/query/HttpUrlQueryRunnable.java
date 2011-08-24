@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.queryall.api.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.HttpProviderImpl;
+import org.queryall.impl.provider.HttpProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

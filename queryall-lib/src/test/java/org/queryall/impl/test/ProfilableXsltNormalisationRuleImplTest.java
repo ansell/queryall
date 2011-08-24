@@ -4,7 +4,7 @@
 package org.queryall.impl.test;
 
 import org.queryall.api.ProfilableInterface;
-import org.queryall.impl.XsltNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.XsltNormalisationRuleImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with

@@ -1,4 +1,4 @@
-package org.queryall.impl;
+package org.queryall.impl.provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +21,11 @@ import org.queryall.api.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
+import org.queryall.impl.NamespaceEntryImpl;
+import org.queryall.impl.ProfileImpl;
+import org.queryall.impl.ProjectImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
+import org.queryall.impl.rdfrule.NormalisationRuleImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;

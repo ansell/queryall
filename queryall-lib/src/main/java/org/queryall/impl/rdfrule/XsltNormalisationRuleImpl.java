@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl;
+package org.queryall.impl.rdfrule;
 
 import java.io.StringReader;
 import java.io.StringWriter;
