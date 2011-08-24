@@ -54,6 +54,7 @@ import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
+import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
@@ -880,7 +881,7 @@ public final class RdfUtils
             }
             
             // Then do the same thing for XSLT Normalisation Rules
-            final URI xsltRuleTypeUri = XsltNormalisationRuleImpl.getXsltRuleTypeUri();
+            final URI xsltRuleTypeUri = XsltNormalisationRuleSchema.getXsltRuleTypeUri();
             for(final Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri, true).asList())
             {
                 final URI nextSubjectUri = (URI)nextXsltRule.getSubject();
@@ -1412,7 +1413,7 @@ public final class RdfUtils
         
         try
         {
-            if(!XsltNormalisationRuleImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!XsltNormalisationRuleSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("XsltNormalisationRuleImpl schema was not placed correctly in the rdf store");
             }

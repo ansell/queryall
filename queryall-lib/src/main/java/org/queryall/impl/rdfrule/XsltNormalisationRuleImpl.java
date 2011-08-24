@@ -19,16 +19,13 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
-import org.queryall.api.utils.Constants;
-import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -45,22 +42,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     private static final boolean _DEBUG = XsltNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = XsltNormalisationRuleImpl.log.isInfoEnabled();
-    
-    /**
-     * @return the xsltRuleStylesheetUri
-     */
-    public static URI getXsltRuleStylesheetUri()
-    {
-        return XsltNormalisationRuleImpl.xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @return the xsltRuleTypeUri
-     */
-    public static URI getXsltRuleTypeUri()
-    {
-        return XsltNormalisationRuleImpl.xsltRuleTypeUri;
-    }
     
     /**
      * @param args
@@ -93,97 +74,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
     }
     
-    // public static String rdfruleNamespace;
-    
-    /**
-     * @param xsltRuleStylesheetUri
-     *            the xsltRuleStylesheetUri to set
-     */
-    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
-    {
-        XsltNormalisationRuleImpl.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @param xsltRuleTypeUri
-     *            the xsltRuleTypeUri to set
-     */
-    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
-    {
-        XsltNormalisationRuleImpl.xsltRuleTypeUri = xsltRuleTypeUri;
-    }
-    
     private String xsltStylesheet;
     
-    private static URI xsltRuleTypeUri;
-    
-    private static URI xsltRuleStylesheetUri;
-    
-    static
-    {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
-        
-        XsltNormalisationRuleImpl.setXsltRuleTypeUri(f.createURI(baseUri, "XsltNormalisationRule"));
-        XsltNormalisationRuleImpl.setXsltRuleStylesheetUri(f.createURI(baseUri, "xsltStylesheet"));
-        
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-        throws OpenRDFException
-    {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = myRepository.getValueFactory();
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.LABEL,
-                    f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."),
-                    contextUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), RDFS.DOMAIN,
-                    XsltNormalisationRuleImpl.getXsltRuleTypeUri(), contextUri);
-            con.add(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("An XSLT stylesheet that will be used to transform textual queries or result documents"),
-                    contextUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            XsltNormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
     
     public XsltNormalisationRuleImpl()
     {
@@ -226,7 +118,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(XsltNormalisationRuleImpl.getXsltRuleTypeUri()))
+                    && nextStatement.getObject().equals(XsltNormalisationRuleSchema.getXsltRuleTypeUri()))
             {
                 if(XsltNormalisationRuleImpl._TRACE)
                 {
@@ -236,7 +128,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(XsltNormalisationRuleImpl.getXsltRuleStylesheetUri()))
+            else if(nextStatement.getPredicate().equals(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri()))
             {
                 this.setXsltStylesheet(nextStatement.getObject().stringValue());
             }
@@ -267,7 +159,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     {
         final Collection<URI> results = super.getElementTypes();
         
-        results.add(XsltNormalisationRuleImpl.getXsltRuleTypeUri());
+        results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
         return results;
     }
     
@@ -455,9 +347,9 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, XsltNormalisationRuleImpl.getXsltRuleTypeUri(), keyToUse);
+            con.add(keyUri, RDF.TYPE, XsltNormalisationRuleSchema.getXsltRuleTypeUri(), keyToUse);
             
-            con.add(keyUri, XsltNormalisationRuleImpl.getXsltRuleStylesheetUri(), xsltStylesheetLiteral, keyToUse);
+            con.add(keyUri, XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), xsltStylesheetLiteral, keyToUse);
             
             // If everything went as planned, we can commit the result
             con.commit();
