@@ -1,7 +1,9 @@
 /**
  * 
  */
-package org.queryall.api.utils;
+package org.queryall.api.querytype;
+
+import org.queryall.api.services.AbstractServiceLoader;
 
 /**
  * Dynamically loads and keeps a track of the different QueryType's that are available.

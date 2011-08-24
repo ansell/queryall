@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.api.utils;
+package org.queryall.api.querytype;
 
 import java.util.ArrayList;
 import java.util.Collection;

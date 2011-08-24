@@ -1,8 +1,12 @@
 /**
  * 
  */
-package org.queryall.api.utils;
+package org.queryall.api.services;
 
+import org.queryall.api.querytype.QueryTypeEnum;
+import org.queryall.api.querytype.QueryTypeFactory;
+import org.queryall.api.querytype.QueryTypeParser;
+import org.queryall.api.querytype.QueryTypeRegistry;
 import org.queryall.exception.UnsupportedQueryTypeException;
 
 /**
@@ -23,6 +27,13 @@ public class ServiceUtils
 
 	}
 
+	/**
+	 * Creates a query type parser for the given query type enum
+	 * 
+	 * @param queryType
+	 * @return
+	 * @throws UnsupportedQueryTypeException
+	 */
 	public static QueryTypeParser createQueryTypeParser(QueryTypeEnum queryType)
 			throws UnsupportedQueryTypeException
 	{

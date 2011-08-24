@@ -3,9 +3,9 @@
  */
 package org.queryall.impl;
 
-import org.queryall.api.utils.QueryTypeEnum;
-import org.queryall.api.utils.QueryTypeFactory;
-import org.queryall.api.utils.QueryTypeParser;
+import org.queryall.api.querytype.QueryTypeEnum;
+import org.queryall.api.querytype.QueryTypeFactory;
+import org.queryall.api.querytype.QueryTypeParser;
 
 /**
  * @author uqpanse1

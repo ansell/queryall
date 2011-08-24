@@ -1,7 +1,8 @@
 /**
  * 
  */
-package org.queryall.api.utils;
+package org.queryall.api.querytype;
+
 
 /**
  *

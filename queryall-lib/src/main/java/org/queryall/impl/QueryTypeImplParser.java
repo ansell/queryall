@@ -9,7 +9,7 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryType;
-import org.queryall.api.utils.QueryTypeParser;
+import org.queryall.api.querytype.QueryTypeParser;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
