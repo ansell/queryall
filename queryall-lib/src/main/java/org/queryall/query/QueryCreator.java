@@ -9,12 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
 import org.openrdf.model.URI;
-import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.api.QueryType;
-import org.queryall.api.SparqlProvider;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.enumerations.Constants;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.utils.RuleUtils;

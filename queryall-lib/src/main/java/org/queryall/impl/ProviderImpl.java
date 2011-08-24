@@ -18,7 +18,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
+import org.queryall.api.provider.Provider;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.impl.querytype.QueryTypeImpl;

@@ -3,7 +3,6 @@
  */
 package org.queryall.api.querytype;
 
-import org.queryall.api.QueryType;
 import org.queryall.api.services.QueryAllParser;
 
 /**

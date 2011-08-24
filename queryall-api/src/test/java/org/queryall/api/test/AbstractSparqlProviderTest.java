@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.SparqlProvider;
+import org.queryall.api.provider.SparqlProvider;
 
 /**
  * Abstract unit test for SparqlProvider API

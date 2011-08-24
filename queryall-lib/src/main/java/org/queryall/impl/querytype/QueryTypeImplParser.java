@@ -8,7 +8,7 @@ import java.util.Collection;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.queryall.api.QueryType;
+import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeParser;
 
 /**

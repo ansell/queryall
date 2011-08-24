@@ -1,4 +1,5 @@
-package org.queryall.api;
+package org.queryall.api.provider;
+
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

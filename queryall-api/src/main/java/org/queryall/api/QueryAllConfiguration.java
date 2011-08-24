@@ -6,6 +6,10 @@ import java.util.regex.Pattern;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.ruletest.RuleTest;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

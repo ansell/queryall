@@ -1,4 +1,4 @@
-package org.queryall.api;
+package org.queryall.api.rdfrule;
 
 import java.util.List;
 

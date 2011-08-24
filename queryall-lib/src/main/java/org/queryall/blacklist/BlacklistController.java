@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.api.QueryType;
+import org.queryall.api.querytype.QueryType;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;

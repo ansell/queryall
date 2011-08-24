@@ -4,7 +4,7 @@
 package org.queryall.impl.test;
 
 import org.openrdf.model.URI;
-import org.queryall.api.QueryType;
+import org.queryall.api.querytype.QueryType;
 import org.queryall.api.test.AbstractQueryTypeTest;
 import org.queryall.impl.querytype.QueryTypeImpl;
 

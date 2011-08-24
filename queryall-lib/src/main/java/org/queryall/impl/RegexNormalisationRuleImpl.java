@@ -15,7 +15,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.queryall.api.RegexNormalisationRule;
+import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.enumerations.Constants;
 import org.queryall.utils.StringUtils;

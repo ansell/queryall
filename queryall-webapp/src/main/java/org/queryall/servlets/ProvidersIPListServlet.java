@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.queryall.api.HttpProvider;
-import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.api.SparqlProvider;
+import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.SparqlProvider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;

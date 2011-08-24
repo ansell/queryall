@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.queryall.api.NormalisationRule;
 import org.queryall.api.ProfilableInterface;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
-import org.queryall.api.QueryType;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.enumerations.ProfileMatch;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.impl.ProfileImpl;

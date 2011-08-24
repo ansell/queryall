@@ -1,9 +1,10 @@
 /**
  * 
  */
-package org.queryall.api;
+package org.queryall.api.provider;
 
 import java.util.Collection;
+
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

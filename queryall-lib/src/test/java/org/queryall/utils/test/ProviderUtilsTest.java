@@ -26,8 +26,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
-import org.queryall.api.QueryType;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.QueryType;
 import org.queryall.impl.ProfileImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.utils.ProviderUtils;
@@ -172,7 +172,7 @@ public class ProviderUtilsTest
     
     /**
      * Test method for
-     * {@link org.queryall.utils.ProviderUtils#getDefaultProviders(java.util.Map, org.queryall.api.QueryType, java.util.List, boolean, boolean)}
+     * {@link org.queryall.utils.ProviderUtils#getDefaultProviders(java.util.Map, org.queryall.api.querytype.QueryType, java.util.List, boolean, boolean)}
      * .
      */
     @Test
@@ -407,7 +407,7 @@ public class ProviderUtilsTest
     
     /**
      * Test method for
-     * {@link org.queryall.utils.ProviderUtils#getProvidersForQueryNamespaceSpecific(java.util.Map, java.util.List, org.queryall.api.QueryType, java.util.Map, java.lang.String, boolean, boolean)}
+     * {@link org.queryall.utils.ProviderUtils#getProvidersForQueryNamespaceSpecific(java.util.Map, java.util.List, org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, boolean, boolean)}
      * .
      */
     @Test

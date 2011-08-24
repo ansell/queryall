@@ -1,4 +1,5 @@
-package org.queryall.api;
+package org.queryall.api.rdfrule;
+
 
 public interface RegexNormalisationRule extends NormalisationRule
 {

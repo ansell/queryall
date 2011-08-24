@@ -1,10 +1,12 @@
-package org.queryall.api;
+package org.queryall.api.querytype;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
+import org.queryall.api.BaseQueryAllInterface;
+import org.queryall.api.ProfilableInterface;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

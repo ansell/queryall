@@ -256,7 +256,7 @@ public abstract class AbstractProfilableTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.Provider#isUsedWithProfileList(org.openrdf.model.URI, boolean, boolean)}
+     * {@link org.queryall.api.provider.Provider#isUsedWithProfileList(org.openrdf.model.URI, boolean, boolean)}
      * .
      * 
      * This method contains a matrix of single and multiple profile configurations that are designed

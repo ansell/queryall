@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.Provider;
+import org.queryall.api.provider.Provider;
 
 /**
  * Abstract unit test for Provider API
@@ -94,7 +94,7 @@ public abstract class AbstractProviderTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}.
+     * {@link org.queryall.api.provider.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}.
      */
     @Test
     public void testContainsNamespaceOrDefault()
@@ -108,7 +108,7 @@ public abstract class AbstractProviderTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Provider#containsNamespaceUri(org.openrdf.model.URI)}
+     * Test method for {@link org.queryall.api.provider.Provider#containsNamespaceUri(org.openrdf.model.URI)}
      * .
      */
     @Test
@@ -123,7 +123,7 @@ public abstract class AbstractProviderTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.Provider#containsQueryTypeUri(org.openrdf.model.URI)}
+     * Test method for {@link org.queryall.api.provider.Provider#containsQueryTypeUri(org.openrdf.model.URI)}
      * .
      */
     @Test

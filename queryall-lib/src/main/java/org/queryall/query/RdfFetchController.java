@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.queryall.api.HttpProvider;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.api.QueryType;
-import org.queryall.api.SparqlProvider;
+import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.querytype.QueryType;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.enumerations.Constants;
 import org.queryall.enumerations.SortOrder;

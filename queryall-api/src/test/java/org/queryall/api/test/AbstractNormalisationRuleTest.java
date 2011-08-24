@@ -14,8 +14,8 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
+import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.exception.InvalidStageException;
 
 /**

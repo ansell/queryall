@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.model.URI;
-import org.queryall.api.NormalisationRule;
 import org.queryall.api.Profile;
-import org.queryall.api.Provider;
 import org.queryall.api.QueryAllConfiguration;
-import org.queryall.api.QueryType;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.enumerations.SortOrder;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProfileUtils;

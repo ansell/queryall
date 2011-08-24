@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.openrdf.model.URI;
-import org.queryall.api.NormalisationRule;
+import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
  * 

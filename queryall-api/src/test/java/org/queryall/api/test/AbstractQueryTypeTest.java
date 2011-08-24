@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.QueryType;
+import org.queryall.api.querytype.QueryType;
 
 /**
  * Abstract unit test for QueryType API
@@ -377,7 +377,7 @@ public abstract class AbstractQueryTypeTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.QueryType#handlesNamespacesSpecifically(java.util.Collection)}.
+     * {@link org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Collection)}.
      * 
      * This test requires the namespaces to be specifically declared for the test to succeed
      */
@@ -662,7 +662,7 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.QueryType#handlesNamespaceUris(java.util.Collection)}
+     * Test method for {@link org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Collection)}
      * .
      * 
      * This test does not require the namespaces to be specifically declared for the test to succeed
@@ -925,7 +925,7 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.QueryType#getIncludeDefaults()}.
+     * Test method for {@link org.queryall.api.querytype.QueryType#getIncludeDefaults()}.
      */
     @Test
     public void testIncludeDefaults()
@@ -935,7 +935,7 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.QueryType#isInputVariablePublic(int)}.
+     * Test method for {@link org.queryall.api.querytype.QueryType#isInputVariablePublic(int)}.
      */
     @Test
     public void testIsInputVariablePublic()
@@ -945,7 +945,7 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.QueryType#getNamespaceInputIndexes()}.
+     * Test method for {@link org.queryall.api.querytype.QueryType#getNamespaceInputIndexes()}.
      */
     @Test
     public void testNamespaceVariables()
