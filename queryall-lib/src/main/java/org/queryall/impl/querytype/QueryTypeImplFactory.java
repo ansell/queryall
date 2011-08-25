@@ -14,10 +14,10 @@ import org.queryall.api.querytype.QueryTypeParser;
 //@MetaInfServices
 public class QueryTypeImplFactory implements QueryTypeFactory
 {
-    static
-    {
-        QueryTypeEnum.register(QueryTypeImplEnum.QUERY_TYPE_IMPL_ENUM);
-    }
+//    static
+//    {
+//        QueryTypeEnum.register(QueryTypeImplEnum.QUERY_TYPE_IMPL_ENUM);
+//    }
     
     /**
      * Returns the enumeration from the enumeration that matches this factory

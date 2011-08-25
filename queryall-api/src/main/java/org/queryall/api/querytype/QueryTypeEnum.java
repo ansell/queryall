@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * QueryType implementations register themselves with this enumeration when they are loaded.
@@ -20,21 +22,50 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class QueryTypeEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(QueryTypeEnum.class);
+    @SuppressWarnings("unused")
+	private static final boolean _TRACE = QueryTypeEnum.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+	private static final boolean _DEBUG = QueryTypeEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+	private static final boolean _INFO = QueryTypeEnum.log.isInfoEnabled();
+    
     protected static final Collection<QueryTypeEnum> ALL_QUERY_TYPES = new ArrayList<QueryTypeEnum>(5);
     
     public static Collection<QueryTypeEnum> byTypeUris(final List<URI> nextQueryTypeUris)
     {
+    	if(nextQueryTypeUris.size() == 0)
+    	{
+    		log.info("found an empty URI set for nextQueryTypeUris="+nextQueryTypeUris);
+    		return Collections.emptyList();
+    	}
+    	
         final List<QueryTypeEnum> results = new ArrayList<QueryTypeEnum>(QueryTypeEnum.ALL_QUERY_TYPES.size());
         
         for(final QueryTypeEnum nextQueryTypeEnum : QueryTypeEnum.ALL_QUERY_TYPES)
         {
-            if(nextQueryTypeEnum.getTypeURIs().equals(nextQueryTypeUris))
-            {
-                results.add(nextQueryTypeEnum);
-            }
+        	boolean matching = (nextQueryTypeEnum.getTypeURIs().size() == nextQueryTypeUris.size());
+        	
+        	for(URI nextURI : nextQueryTypeEnum.getTypeURIs())
+        	{
+        		if(!nextQueryTypeUris.contains(nextURI))
+        		{
+            		log.info("found an empty URI set for nextURI="+nextURI.stringValue());
+        			
+        			matching = false;
+        		}
+        	}
+        	
+        	if(matching)
+        	{
+        		log.info("found an matching URI set for nextQueryTypeUris="+nextQueryTypeUris);
+        		results.add(nextQueryTypeEnum);
+        	}
         }
         
-        return results;
+		log.info("returning results.size()="+results.size()+" for nextQueryTypeUris="+nextQueryTypeUris);
+
+		return results;
     }
     
     /**
