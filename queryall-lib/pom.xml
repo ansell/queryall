@@ -153,8 +153,10 @@
             <groupId>org.kohsuke.metainf-services</groupId>
             <artifactId>metainf-services</artifactId>
             <version>1.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
             <!-- Optional because it is only needed for compilation, and is not needed at runtime -->
-            <optional>true</optional>
+            <!-- <optional>true</optional> -->
         </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
