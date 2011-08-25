@@ -65,15 +65,19 @@ public class QueryAllEnum
                 return false;
             }
         }
-        else 
+        else
         {
             if(this.typeURIs.size() != other.typeURIs.size())
+            {
                 return false;
+            }
             
-            for(URI nextUri : this.typeURIs)
+            for(final URI nextUri : this.typeURIs)
             {
                 if(!other.typeURIs.contains(nextUri))
+                {
                     return false;
+                }
             }
         }
         return true;
