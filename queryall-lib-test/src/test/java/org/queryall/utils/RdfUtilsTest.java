@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils.test;
+package org.queryall.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
