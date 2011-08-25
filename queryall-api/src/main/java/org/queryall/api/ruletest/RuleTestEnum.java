@@ -38,13 +38,13 @@ public class RuleTestEnum extends QueryAllEnum
     }
     
     /**
-     * Registers the specified query type.
+     * Registers the specified rule test.
      */
     public static void register(final RuleTestEnum nextRuleTest)
     {
         if(RuleTestEnum.valueOf(nextRuleTest.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this project again name=" + nextRuleTest.getName());
+            QueryAllEnum.log.error("Cannot register this rule test again name=" + nextRuleTest.getName());
         }
         else
         {
@@ -73,7 +73,7 @@ public class RuleTestEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered query types.
+     * Returns all known/registered rule tests.
      */
     public static Collection<RuleTestEnum> values()
     {

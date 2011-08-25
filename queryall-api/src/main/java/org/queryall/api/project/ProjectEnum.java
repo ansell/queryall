@@ -38,7 +38,7 @@ public class ProjectEnum extends QueryAllEnum
     }
     
     /**
-     * Registers the specified query type.
+     * Registers the specified project.
      */
     public static void register(final ProjectEnum nextProject)
     {
@@ -73,7 +73,7 @@ public class ProjectEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered query types.
+     * Returns all known/registered projects.
      */
     public static Collection<ProjectEnum> values()
     {

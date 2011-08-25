@@ -39,13 +39,13 @@ public class NamespaceEntryEnum extends QueryAllEnum
     }
     
     /**
-     * Registers the specified query type.
+     * Registers the specified namespace entry.
      */
     public static void register(final NamespaceEntryEnum nextNamespaceEntry)
     {
         if(NamespaceEntryEnum.valueOf(nextNamespaceEntry.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this project again name=" + nextNamespaceEntry.getName());
+            QueryAllEnum.log.error("Cannot register this namespace entry again name=" + nextNamespaceEntry.getName());
         }
         else
         {
@@ -74,7 +74,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered query types.
+     * Returns all known/registered namespace entrys.
      */
     public static Collection<NamespaceEntryEnum> values()
     {

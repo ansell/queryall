@@ -38,13 +38,13 @@ public class ProfileEnum extends QueryAllEnum
     }
     
     /**
-     * Registers the specified query type.
+     * Registers the specified profile.
      */
     public static void register(final ProfileEnum nextProfile)
     {
         if(ProfileEnum.valueOf(nextProfile.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this project again name=" + nextProfile.getName());
+            QueryAllEnum.log.error("Cannot register this profile again name=" + nextProfile.getName());
         }
         else
         {
@@ -73,7 +73,7 @@ public class ProfileEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered query types.
+     * Returns all known/registered profiles.
      */
     public static Collection<ProfileEnum> values()
     {

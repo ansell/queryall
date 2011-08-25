@@ -30,6 +30,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
         
         for(final NormalisationRuleEnum nextRdfRuleEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
         {
+            // FIXME: This logic doesn't seem to be working. May need to compare the lists more intelligently
             if(nextRdfRuleEnum.getTypeURIs().equals(nextRdfRuleUris))
             {
                 results.add(nextRdfRuleEnum);

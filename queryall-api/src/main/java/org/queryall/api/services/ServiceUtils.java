@@ -3,6 +3,8 @@
  */
 package org.queryall.api.services;
 
+import java.util.Collection;
+
 import org.queryall.api.namespace.NamespaceEntryEnum;
 import org.queryall.api.namespace.NamespaceEntryFactory;
 import org.queryall.api.namespace.NamespaceEntryParser;
@@ -47,6 +49,11 @@ import org.queryall.exception.UnsupportedRuleTestException;
  */
 public class ServiceUtils
 {
+    public static Collection<QueryAllEnum> getAllEnums()
+    {
+        return EnumServiceLoader.getInstance().getAll();
+    }
+    
     /**
      * Creates a namespace entry parser for the given namespace entry enum
      * 

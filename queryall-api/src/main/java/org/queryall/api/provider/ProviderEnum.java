@@ -12,7 +12,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
- * RdfRule implementations register themselves with this enumeration when they are loaded.
+ * Provider implementations register themselves with this enumeration when they are loaded.
  * 
  * NOTE: This is not an enumeration as java does not support extensible enumerations, but it should
  * act like one for all purposes other than java's underpowered switch case statement.
@@ -22,15 +22,15 @@ public class ProviderEnum extends QueryAllEnum
 {
     protected static final Collection<ProviderEnum> ALL_PROVIDERS = new ArrayList<ProviderEnum>(5);
     
-    public static Collection<ProviderEnum> byTypeUris(final List<URI> nextRdfRuleUris)
+    public static Collection<ProviderEnum> byTypeUris(final List<URI> nextProviderUris)
     {
         final List<ProviderEnum> results = new ArrayList<ProviderEnum>(ProviderEnum.ALL_PROVIDERS.size());
         
-        for(final ProviderEnum nextRdfRuleEnum : ProviderEnum.ALL_PROVIDERS)
+        for(final ProviderEnum nextProviderEnum : ProviderEnum.ALL_PROVIDERS)
         {
-            if(nextRdfRuleEnum.getTypeURIs().equals(nextRdfRuleUris))
+            if(nextProviderEnum.getTypeURIs().equals(nextProviderUris))
             {
-                results.add(nextRdfRuleEnum);
+                results.add(nextProviderEnum);
             }
         }
         
@@ -38,34 +38,34 @@ public class ProviderEnum extends QueryAllEnum
     }
     
     /**
-     * Registers the specified query type.
+     * Registers the specified provider.
      */
-    public static void register(final ProviderEnum nextRdfRule)
+    public static void register(final ProviderEnum nextProvider)
     {
-        if(ProviderEnum.valueOf(nextRdfRule.getName()) != null)
+        if(ProviderEnum.valueOf(nextProvider.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this query type again name=" + nextRdfRule.getName());
+            QueryAllEnum.log.error("Cannot register this provider again name=" + nextProvider.getName());
         }
         else
         {
-            ProviderEnum.ALL_PROVIDERS.add(nextRdfRule);
+            ProviderEnum.ALL_PROVIDERS.add(nextProvider);
         }
     }
     
     public static ProviderEnum register(final String name, final List<URI> typeURIs)
     {
-        final ProviderEnum newRdfRuleEnum = new ProviderEnum(name, typeURIs);
-        ProviderEnum.register(newRdfRuleEnum);
-        return newRdfRuleEnum;
+        final ProviderEnum newProviderEnum = new ProviderEnum(name, typeURIs);
+        ProviderEnum.register(newProviderEnum);
+        return newProviderEnum;
     }
     
     public static ProviderEnum valueOf(final String string)
     {
-        for(final ProviderEnum nextRdfRuleEnum : ProviderEnum.ALL_PROVIDERS)
+        for(final ProviderEnum nextProviderEnum : ProviderEnum.ALL_PROVIDERS)
         {
-            if(nextRdfRuleEnum.getName().equals(string))
+            if(nextProviderEnum.getName().equals(string))
             {
-                return nextRdfRuleEnum;
+                return nextProviderEnum;
             }
         }
         
@@ -73,7 +73,7 @@ public class ProviderEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered query types.
+     * Returns all known/registered providers.
      */
     public static Collection<ProviderEnum> values()
     {
@@ -81,7 +81,7 @@ public class ProviderEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new RdfRule enum using the given name, which must be unique
+     * Create a new Provider enum using the given name, which must be unique
      * 
      * @param nextName
      * @param nextTypeURIs

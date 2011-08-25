@@ -59,6 +59,7 @@ import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.services.EnumServiceLoader;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -870,6 +871,8 @@ public final class RdfUtils
             
             Map<URI, Collection<NormalisationRuleEnum>> uriToNormalisationRuleEnums = new HashMap<URI, Collection<NormalisationRuleEnum>>();
             
+            ServiceUtils.getAllEnums();
+            
             for(final Statement nextDeclaredNormalisationRuleSubject : allDeclaredNormalisationRuleSubjects)
             {
                 if(!(nextDeclaredNormalisationRuleSubject.getSubject() instanceof URI))
@@ -1226,6 +1229,8 @@ public final class RdfUtils
                     con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList();
             
             Map<URI, Collection<QueryTypeEnum>> uriToQueryTypeEnums = new HashMap<URI, Collection<QueryTypeEnum>>();
+            
+            ServiceUtils.getAllEnums();
             
             for(final Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
             {
