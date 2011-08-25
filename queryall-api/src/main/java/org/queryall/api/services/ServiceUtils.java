@@ -49,11 +49,6 @@ import org.queryall.exception.UnsupportedRuleTestException;
  */
 public class ServiceUtils
 {
-    public static Collection<QueryAllEnum> getAllEnums()
-    {
-        return EnumServiceLoader.getInstance().getAll();
-    }
-    
     /**
      * Creates a namespace entry parser for the given namespace entry enum
      * 
@@ -189,6 +184,11 @@ public class ServiceUtils
         }
         
         throw new UnsupportedRuleTestException("No factory available for rule test " + ruleTest);
+    }
+    
+    public static Collection<QueryAllEnum> getAllEnums()
+    {
+        return EnumServiceLoader.getInstance().getAll();
     }
     
     /**

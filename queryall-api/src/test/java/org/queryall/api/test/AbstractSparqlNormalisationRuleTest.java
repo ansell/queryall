@@ -160,7 +160,8 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         Assert.assertEquals(constructQueries.size(), 2);
         
-        // TODO: this should be insensitive to spaces, possibly by using regular expression
+        // TODO: this should be insensitive to spaces, possibly by using regular
+        // expression
         // matchers, or by removing spaces
         // Matcher matcher = new Matcher();
         // assertThat(actual, matcher)

@@ -33,24 +33,28 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     private static final boolean _DEBUG = RegexNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
-//    public static final NormalisationRuleEnum REGEX_NORMALISATION_RULE_IMPL_ENUM = NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
     
-//    static
-//    {
-//        // register this normalisation rule implementation with the central register
-//        NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
-//    }
+    // public static final NormalisationRuleEnum REGEX_NORMALISATION_RULE_IMPL_ENUM =
+    // NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(),
+    // RegexNormalisationRuleImpl.myTypes());
+    
+    // static
+    // {
+    // // register this normalisation rule implementation with the central register
+    // NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(),
+    // RegexNormalisationRuleImpl.myTypes());
+    // }
     
     public static List<URI> myTypes()
     {
-        List<URI> results = new ArrayList<URI>(2);
+        final List<URI> results = new ArrayList<URI>(2);
         
         results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         results.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
         
         return results;
     }
-
+    
     private String inputMatchRegex = "";
     
     private String inputReplaceRegex = "";
@@ -229,7 +233,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
+        return RegexNormalisationRuleImpl.myTypes();
     }
     
     /*

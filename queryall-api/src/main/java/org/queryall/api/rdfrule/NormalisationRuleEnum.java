@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
@@ -26,38 +25,41 @@ public class NormalisationRuleEnum extends QueryAllEnum
     
     public static Collection<NormalisationRuleEnum> byTypeUris(final List<URI> nextNormalisationRuleUris)
     {
-    	if(nextNormalisationRuleUris.size() == 0)
-    	{
-    		log.info("found an empty URI set for nextNormalisationRuleUris="+nextNormalisationRuleUris);
-    		return Collections.emptyList();
-    	}
-    	
-        final List<NormalisationRuleEnum> results = new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
+        if(nextNormalisationRuleUris.size() == 0)
+        {
+            QueryAllEnum.log.info("found an empty URI set for nextNormalisationRuleUris=" + nextNormalisationRuleUris);
+            return Collections.emptyList();
+        }
+        
+        final List<NormalisationRuleEnum> results =
+                new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
         
         for(final NormalisationRuleEnum nextNormalisationRuleEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
         {
-        	boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() == nextNormalisationRuleUris.size());
-        	
-        	for(URI nextURI : nextNormalisationRuleEnum.getTypeURIs())
-        	{
-        		if(!nextNormalisationRuleUris.contains(nextURI))
-        		{
-            		log.info("found an empty URI set for nextURI="+nextURI.stringValue());
-        			
-        			matching = false;
-        		}
-        	}
-        	
-        	if(matching)
-        	{
-        		log.info("found an matching URI set for nextNormalisationRuleUris="+nextNormalisationRuleUris);
-        		results.add(nextNormalisationRuleEnum);
-        	}
+            boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() == nextNormalisationRuleUris.size());
+            
+            for(final URI nextURI : nextNormalisationRuleEnum.getTypeURIs())
+            {
+                if(!nextNormalisationRuleUris.contains(nextURI))
+                {
+                    QueryAllEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                QueryAllEnum.log.info("found an matching URI set for nextNormalisationRuleUris="
+                        + nextNormalisationRuleUris);
+                results.add(nextNormalisationRuleEnum);
+            }
         }
         
-		log.info("returning results.size()="+results.size()+" for nextNormalisationRuleUris="+nextNormalisationRuleUris);
-
-		return results;
+        QueryAllEnum.log.info("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
+                + nextNormalisationRuleUris);
+        
+        return results;
     }
     
     /**

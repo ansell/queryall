@@ -59,7 +59,6 @@ import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.api.services.EnumServiceLoader;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -858,18 +857,20 @@ public final class RdfUtils
                 RdfUtils.log.debug("getNormalisationRules: started parsing normalisation rules");
             }
             
-            // This is the base normalisation rule URI, extensions or plugins must include this URI alongside
+            // This is the base normalisation rule URI, extensions or plugins must include this URI
+            // alongside
             // their customised type URIs
             final URI normalisationRuleUri = NormalisationRuleSchema.getNormalisationRuleTypeUri();
-
+            
             final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
-
+            
             con = myRepository.getConnection();
             
             final List<Statement> allDeclaredNormalisationRuleSubjects =
                     con.getStatements(null, RDF.TYPE, normalisationRuleUri, true).asList();
             
-            Map<URI, Collection<NormalisationRuleEnum>> uriToNormalisationRuleEnums = new HashMap<URI, Collection<NormalisationRuleEnum>>();
+            final Map<URI, Collection<NormalisationRuleEnum>> uriToNormalisationRuleEnums =
+                    new HashMap<URI, Collection<NormalisationRuleEnum>>();
             
             ServiceUtils.getAllEnums();
             
@@ -882,12 +883,12 @@ public final class RdfUtils
                 }
                 
                 final URI nextSubjectUri = (URI)nextDeclaredNormalisationRuleSubject.getSubject();
-
-                Collection<Value> nextNormalisationRuleValues =
+                
+                final Collection<Value> nextNormalisationRuleValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredNormalisationRuleSubject.getSubject());
-                List<URI> nextNormalisationRuleUris = new ArrayList<URI>(nextNormalisationRuleValues.size());
-                for(Value nextNormalisationRuleValue : nextNormalisationRuleValues)
+                final List<URI> nextNormalisationRuleUris = new ArrayList<URI>(nextNormalisationRuleValues.size());
+                for(final Value nextNormalisationRuleValue : nextNormalisationRuleValues)
                 {
                     if(nextNormalisationRuleValue instanceof URI)
                     {
@@ -895,24 +896,27 @@ public final class RdfUtils
                     }
                 }
                 
-                Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums = NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
-
+                final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
+                        NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
+                
                 if(matchingNormalisationRuleEnums.size() > 0)
                 {
                     uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
-                    log.info("Found {} rule enums for {}", matchingNormalisationRuleEnums.size(), nextSubjectUri.stringValue());
+                    RdfUtils.log.info("Found {} rule enums for {}", matchingNormalisationRuleEnums.size(),
+                            nextSubjectUri.stringValue());
                 }
                 else
                 {
-                    log.warn("No normalisation rule enums found for {}", nextSubjectUri.stringValue());
+                    RdfUtils.log.warn("No normalisation rule enums found for {}", nextSubjectUri.stringValue());
                 }
             }
-
-            for(URI nextSubjectUri : uriToNormalisationRuleEnums.keySet())
+            
+            for(final URI nextSubjectUri : uriToNormalisationRuleEnums.keySet())
             {
-                Collection<NormalisationRuleEnum> nextNormalisationRuleEnums = uriToNormalisationRuleEnums.get(nextSubjectUri);
+                final Collection<NormalisationRuleEnum> nextNormalisationRuleEnums =
+                        uriToNormalisationRuleEnums.get(nextSubjectUri);
                 
-                for(NormalisationRuleEnum nextNormalisationRuleEnum : nextNormalisationRuleEnums)
+                for(final NormalisationRuleEnum nextNormalisationRuleEnum : nextNormalisationRuleEnums)
                 {
                     results.put(
                             nextSubjectUri,
@@ -921,7 +925,7 @@ public final class RdfUtils
                                     nextSubjectUri, Settings.CONFIG_API_VERSION));
                 }
             }
-
+            
             if(RdfUtils._INFO)
             {
                 final long end = System.currentTimeMillis();
@@ -947,78 +951,84 @@ public final class RdfUtils
                 {
                     con.close();
                 }
-                catch(RepositoryException e)
+                catch(final RepositoryException e)
                 {
-                    log.error("RepositoryException", e);
+                    RdfUtils.log.error("RepositoryException", e);
                 }
             }
         }
         
         return Collections.emptyMap();
     }
-
-    //    public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
-//    {
-//        if(RdfUtils._DEBUG)
-//        {
-//            RdfUtils.log.debug("getNormalisationRules: started parsing rdf normalisation rules");
-//        }
-//        
-//        final long start = System.currentTimeMillis();
-//        
-//        final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
-//        
-//        try
-//        {
-//            final RepositoryConnection con = myRepository.getConnection();
-//            
-//            // Import Regular Expression Normalisation Rules first
-//            final URI regexRuleTypeUri = RegexNormalisationRuleSchema.getRegexRuleTypeUri();
-//            for(final Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri, true).asList())
-//            {
-//                final URI nextSubjectUri = (URI)nextRegexRule.getSubject();
-//                results.put(nextSubjectUri,
-//                        new RegexNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-//                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-//            }
-//            
-//            // Then do the same thing for SPARQL Normalisation Rules
-//            final URI sparqlRuleTypeUri = SparqlNormalisationRuleSchema.getSparqlRuleTypeUri();
-//            for(final Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri, true).asList())
-//            {
-//                final URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
-//                results.put(nextSubjectUri,
-//                        new SparqlNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-//                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-//            }
-//            
-//            // Then do the same thing for XSLT Normalisation Rules
-//            final URI xsltRuleTypeUri = XsltNormalisationRuleSchema.getXsltRuleTypeUri();
-//            for(final Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri, true).asList())
-//            {
-//                final URI nextSubjectUri = (URI)nextXsltRule.getSubject();
-//                results.put(nextSubjectUri,
-//                        new XsltNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-//                                .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-//            }
-//        }
-//        catch(final OpenRDFException e)
-//        {
-//            // handle exception
-//            RdfUtils.log.error("getNormalisationRules:", e);
-//        }
-//        if(RdfUtils._INFO)
-//        {
-//            final long end = System.currentTimeMillis();
-//            RdfUtils.log.info(String.format("%s: timing=%10d", "getNormalisationRules", (end - start)));
-//        }
-//        if(RdfUtils._DEBUG)
-//        {
-//            RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
-//        }
-//        
-//        return results;
-//    }
+    
+    // public static Map<URI, NormalisationRule> getNormalisationRules(final Repository
+    // myRepository)
+    // {
+    // if(RdfUtils._DEBUG)
+    // {
+    // RdfUtils.log.debug("getNormalisationRules: started parsing rdf normalisation rules");
+    // }
+    //
+    // final long start = System.currentTimeMillis();
+    //
+    // final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
+    //
+    // try
+    // {
+    // final RepositoryConnection con = myRepository.getConnection();
+    //
+    // // Import Regular Expression Normalisation Rules first
+    // final URI regexRuleTypeUri = RegexNormalisationRuleSchema.getRegexRuleTypeUri();
+    // for(final Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri,
+    // true).asList())
+    // {
+    // final URI nextSubjectUri = (URI)nextRegexRule.getSubject();
+    // results.put(nextSubjectUri,
+    // new RegexNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+    // true)
+    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
+    // }
+    //
+    // // Then do the same thing for SPARQL Normalisation Rules
+    // final URI sparqlRuleTypeUri = SparqlNormalisationRuleSchema.getSparqlRuleTypeUri();
+    // for(final Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri,
+    // true).asList())
+    // {
+    // final URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
+    // results.put(nextSubjectUri,
+    // new SparqlNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+    // true)
+    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
+    // }
+    //
+    // // Then do the same thing for XSLT Normalisation Rules
+    // final URI xsltRuleTypeUri = XsltNormalisationRuleSchema.getXsltRuleTypeUri();
+    // for(final Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri,
+    // true).asList())
+    // {
+    // final URI nextSubjectUri = (URI)nextXsltRule.getSubject();
+    // results.put(nextSubjectUri,
+    // new XsltNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
+    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
+    // }
+    // }
+    // catch(final OpenRDFException e)
+    // {
+    // // handle exception
+    // RdfUtils.log.error("getNormalisationRules:", e);
+    // }
+    // if(RdfUtils._INFO)
+    // {
+    // final long end = System.currentTimeMillis();
+    // RdfUtils.log.info(String.format("%s: timing=%10d", "getNormalisationRules", (end - start)));
+    // }
+    // if(RdfUtils._DEBUG)
+    // {
+    // RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
+    // }
+    //
+    // return results;
+    // }
     
     /**
      * @param nextRepository
@@ -1217,18 +1227,20 @@ public final class RdfUtils
                 RdfUtils.log.debug("getQueryTypes: started parsing query types");
             }
             
-            // This is the base query type URI, extensions or plugins must include this URI alongside
+            // This is the base query type URI, extensions or plugins must include this URI
+            // alongside
             // their customised type URIs
             final URI queryTypeUri = QueryTypeSchema.getQueryTypeUri();
-
+            
             final Map<URI, QueryType> results = new ConcurrentHashMap<URI, QueryType>();
-
+            
             con = myRepository.getConnection();
             
             final List<Statement> allDeclaredQueryTypeSubjects =
                     con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList();
             
-            Map<URI, Collection<QueryTypeEnum>> uriToQueryTypeEnums = new HashMap<URI, Collection<QueryTypeEnum>>();
+            final Map<URI, Collection<QueryTypeEnum>> uriToQueryTypeEnums =
+                    new HashMap<URI, Collection<QueryTypeEnum>>();
             
             ServiceUtils.getAllEnums();
             
@@ -1241,12 +1253,12 @@ public final class RdfUtils
                 }
                 
                 final URI nextSubjectUri = (URI)nextDeclaredQueryTypeSubject.getSubject();
-
-                Collection<Value> nextQueryTypeValues =
+                
+                final Collection<Value> nextQueryTypeValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredQueryTypeSubject.getSubject());
-                List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
-                for(Value nextQueryTypeValue : nextQueryTypeValues)
+                final List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
+                for(final Value nextQueryTypeValue : nextQueryTypeValues)
                 {
                     if(nextQueryTypeValue instanceof URI)
                     {
@@ -1254,16 +1266,16 @@ public final class RdfUtils
                     }
                 }
                 
-                Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
-
+                final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
+                
                 uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
             }
-
-            for(URI nextSubjectUri : uriToQueryTypeEnums.keySet())
+            
+            for(final URI nextSubjectUri : uriToQueryTypeEnums.keySet())
             {
-                Collection<QueryTypeEnum> nextQueryTypeEnums = uriToQueryTypeEnums.get(nextSubjectUri);
+                final Collection<QueryTypeEnum> nextQueryTypeEnums = uriToQueryTypeEnums.get(nextSubjectUri);
                 
-                for(QueryTypeEnum nextQueryTypeEnum : nextQueryTypeEnums)
+                for(final QueryTypeEnum nextQueryTypeEnum : nextQueryTypeEnums)
                 {
                     results.put(
                             nextSubjectUri,
@@ -1272,7 +1284,7 @@ public final class RdfUtils
                                     nextSubjectUri, Settings.CONFIG_API_VERSION));
                 }
             }
-
+            
             if(RdfUtils._INFO)
             {
                 final long end = System.currentTimeMillis();
@@ -1298,9 +1310,9 @@ public final class RdfUtils
                 {
                     con.close();
                 }
-                catch(RepositoryException e)
+                catch(final RepositoryException e)
                 {
-                    log.error("RepositoryException", e);
+                    RdfUtils.log.error("RepositoryException", e);
                 }
             }
         }

@@ -50,19 +50,20 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     static
     {
         // register this query type implementation with the central register
-        //NormalisationRuleEnum.register(SparqlNormalisationRuleImpl.class.getName(), SparqlNormalisationRuleImpl.myTypes());
+        // NormalisationRuleEnum.register(SparqlNormalisationRuleImpl.class.getName(),
+        // SparqlNormalisationRuleImpl.myTypes());
     }
     
     public static List<URI> myTypes()
     {
-        List<URI> results = new ArrayList<URI>(2);
+        final List<URI> results = new ArrayList<URI>(2);
         
         results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         results.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
         
         return results;
     }
-
+    
     public SparqlNormalisationRuleImpl()
     {
         super();
@@ -295,7 +296,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
+        return SparqlNormalisationRuleImpl.myTypes();
     }
     
     /*

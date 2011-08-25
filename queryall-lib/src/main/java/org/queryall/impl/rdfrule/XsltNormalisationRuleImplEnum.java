@@ -18,10 +18,10 @@ public class XsltNormalisationRuleImplEnum extends NormalisationRuleEnum
 {
     public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM = new XsltNormalisationRuleImplEnum();
     
-//    static
-//    {
-//        NormalisationRuleEnum.register(XSLT_NORMALISATION_RULE_IMPL_ENUM);
-//    }
+    // static
+    // {
+    // NormalisationRuleEnum.register(XSLT_NORMALISATION_RULE_IMPL_ENUM);
+    // }
     
     public XsltNormalisationRuleImplEnum()
     {
@@ -32,7 +32,7 @@ public class XsltNormalisationRuleImplEnum extends NormalisationRuleEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public XsltNormalisationRuleImplEnum(String nextName, List<URI> nextTypeURIs)
+    public XsltNormalisationRuleImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

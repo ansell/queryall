@@ -3,7 +3,6 @@
  */
 package org.queryall.impl.rdfrule;
 
-import org.kohsuke.MetaInfServices;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleFactory;
 import org.queryall.api.rdfrule.NormalisationRuleParser;
@@ -11,7 +10,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-//@MetaInfServices
+// @MetaInfServices
 public class SparqlNormalisationRuleImplFactory implements NormalisationRuleFactory
 {
     /**
@@ -21,7 +20,7 @@ public class SparqlNormalisationRuleImplFactory implements NormalisationRuleFact
     public NormalisationRuleEnum getEnum()
     {
         return SparqlNormalisationRuleImplEnum.SPARQL_NORMALISATION_RULE_IMPL_ENUM;
-        //return NormalisationRuleEnum.valueOf(SparqlNormalisationRuleImpl.class.getName());
+        // return NormalisationRuleEnum.valueOf(SparqlNormalisationRuleImpl.class.getName());
     }
     
     /**

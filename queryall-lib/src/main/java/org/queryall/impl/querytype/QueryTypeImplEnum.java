@@ -8,9 +8,7 @@ import java.util.List;
 import org.kohsuke.MetaInfServices;
 import org.openrdf.model.URI;
 import org.queryall.api.querytype.QueryTypeEnum;
-import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.services.QueryAllEnum;
-import org.queryall.impl.rdfrule.RegexNormalisationRuleImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -20,10 +18,10 @@ public class QueryTypeImplEnum extends QueryTypeEnum
 {
     public static final QueryTypeEnum QUERY_TYPE_IMPL_ENUM = new QueryTypeImplEnum();
     
-//    static
-//    {
-//        QueryTypeEnum.register(QUERY_TYPE_IMPL_ENUM);
-//    }
+    // static
+    // {
+    // QueryTypeEnum.register(QUERY_TYPE_IMPL_ENUM);
+    // }
     
     public QueryTypeImplEnum()
     {
@@ -34,7 +32,7 @@ public class QueryTypeImplEnum extends QueryTypeEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public QueryTypeImplEnum(String nextName, List<URI> nextTypeURIs)
+    public QueryTypeImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

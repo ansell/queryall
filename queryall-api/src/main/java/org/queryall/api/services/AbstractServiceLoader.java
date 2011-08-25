@@ -28,14 +28,17 @@ public abstract class AbstractServiceLoader<K, S>
     
     protected AbstractServiceLoader(final Class<S> serviceClass)
     {
-        ServiceLoader<S> serviceLoader =
+        final ServiceLoader<S> serviceLoader =
                 java.util.ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
         
-        Iterator<S> services = serviceLoader.iterator();
+        final Iterator<S> services = serviceLoader.iterator();
         
-//        Iterator<S> services = javax.imageio.spi.ServiceRegistry.lookupProviders(serviceClass, serviceClass.getClassLoader());
+        // Iterator<S> services =
+        // javax.imageio.spi.ServiceRegistry.lookupProviders(serviceClass,
+        // serviceClass.getClassLoader());
         
-        // Loop through this way so we can catch all errors for each iteration and only discard
+        // Loop through this way so we can catch all errors for each iteration
+        // and only discard
         // plugins that are invalid
         while(true)
         {

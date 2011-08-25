@@ -18,10 +18,10 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
 {
     public static final NormalisationRuleEnum REGEX_NORMALISATION_RULE_IMPL_ENUM = new RegexNormalisationRuleImplEnum();
     
-//    static
-//    {
-//        NormalisationRuleEnum.register(REGEX_NORMALISATION_RULE_IMPL_ENUM);
-//    }
+    // static
+    // {
+    // NormalisationRuleEnum.register(REGEX_NORMALISATION_RULE_IMPL_ENUM);
+    // }
     
     public RegexNormalisationRuleImplEnum()
     {
@@ -32,7 +32,7 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public RegexNormalisationRuleImplEnum(String nextName, List<URI> nextTypeURIs)
+    public RegexNormalisationRuleImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

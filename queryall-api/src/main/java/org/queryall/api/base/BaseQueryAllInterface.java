@@ -17,10 +17,12 @@ public interface BaseQueryAllInterface
      * Changes the schema used to represent objects of this class into RDF, and inserts the relevant
      * triples into myRepository
      **/
-    // public static abstract boolean schemaToRdf(Repository myRepository, String keyToUse, int
+    // public static abstract boolean schemaToRdf(Repository myRepository,
+    // String keyToUse, int
     // modelVersion) throws OpenRDFException;
     
-    // <T extends BaseQueryAllInterface> T fromRdf(Collection<Statement> relevantStatements, URI
+    // <T extends BaseQueryAllInterface> T fromRdf(Collection<Statement>
+    // relevantStatements, URI
     // keyToUse, int modelVerson) throws OpenRDFException;
     
     void addUnrecognisedStatement(Statement unrecognisedStatement);

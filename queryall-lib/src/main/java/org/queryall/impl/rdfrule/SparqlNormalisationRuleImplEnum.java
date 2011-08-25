@@ -16,7 +16,8 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class SparqlNormalisationRuleImplEnum extends NormalisationRuleEnum
 {
-    public static final NormalisationRuleEnum SPARQL_NORMALISATION_RULE_IMPL_ENUM = new SparqlNormalisationRuleImplEnum();
+    public static final NormalisationRuleEnum SPARQL_NORMALISATION_RULE_IMPL_ENUM =
+            new SparqlNormalisationRuleImplEnum();
     
     public SparqlNormalisationRuleImplEnum()
     {
@@ -27,7 +28,7 @@ public class SparqlNormalisationRuleImplEnum extends NormalisationRuleEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public SparqlNormalisationRuleImplEnum(String nextName, List<URI> nextTypeURIs)
+    public SparqlNormalisationRuleImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

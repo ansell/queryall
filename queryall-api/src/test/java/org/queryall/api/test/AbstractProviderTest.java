@@ -94,7 +94,8 @@ public abstract class AbstractProviderTest
     
     /**
      * Test method for
-     * {@link org.queryall.api.provider.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}.
+     * {@link org.queryall.api.provider.Provider#containsNamespaceOrDefault(org.openrdf.model.URI)}
+     * .
      */
     @Test
     public void testContainsNamespaceOrDefault()

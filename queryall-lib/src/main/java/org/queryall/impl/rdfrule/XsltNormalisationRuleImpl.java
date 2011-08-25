@@ -44,18 +44,11 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     private static final boolean _DEBUG = XsltNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = XsltNormalisationRuleImpl.log.isInfoEnabled();
-//    public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM = NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(), XsltNormalisationRuleImpl.myTypes());
     
-    public static List<URI> myTypes()
-    {
-        List<URI> results = new ArrayList<URI>(2);
-        
-        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
-        
-        return results;
-    }
-
+    // public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM =
+    // NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(),
+    // XsltNormalisationRuleImpl.myTypes());
+    
     /**
      * @param args
      */
@@ -85,6 +78,16 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         System.out.println("input=\n" + input);
         System.out.println("result=\n" + result);
         
+    }
+    
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(2);
+        
+        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
+        
+        return results;
     }
     
     private String xsltStylesheet;
@@ -169,7 +172,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
+        return XsltNormalisationRuleImpl.myTypes();
     }
     
     /*

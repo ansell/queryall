@@ -25,9 +25,9 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     {
         super(QueryAllEnum.class);
     }
-
+    
     @Override
-    protected String getKey(QueryAllEnum service)
+    protected String getKey(final QueryAllEnum service)
     {
         return service.getName();
     }

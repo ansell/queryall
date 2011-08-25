@@ -28,8 +28,8 @@ public interface ProfilableInterface extends BaseQueryAllInterface
      *            this object will be used
      * @param allowImplicitInclusions
      *            true if implicit inclusions are acceptable, and false if implicit inclusions
-     *            should be ignored and the profile list should be processed until an explicit
-     *            match is found
+     *            should be ignored and the profile list should be processed until an explicit match
+     *            is found
      * @param includeNonProfileMatched
      *            true if this object should be included even if no profiles matched, and false if
      *            there were no matches, including implicit inclusions if they are acceptable

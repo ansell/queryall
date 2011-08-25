@@ -83,7 +83,8 @@ public class ProviderSchema
         ProviderSchema.setProviderNoCommunication(f.createURI(baseUri, "nocommunication"));
         ProviderSchema.setProviderAssumedContentType(f.createURI(baseUri, "assumedContentType"));
         
-        // NOTE: This was deprecated after API version 1 in favour of dc elements title
+        // NOTE: This was deprecated after API version 1 in favour of dc
+        // elements title
         ProviderSchema.setProviderTitle(f.createURI(baseUri, "Title"));
     }
     
@@ -199,9 +200,11 @@ public class ProviderSchema
         return ProviderSchema.providerTypeUri;
     }
     
-    // Use these to include information based on whether or not the provider was actually used to
+    // Use these to include information based on whether or not the provider was
+    // actually used to
     // provide information for particular user queries
-    // public Collection<String> providerQueryInclusions = new HashSet<String>();
+    // public Collection<String> providerQueryInclusions = new
+    // HashSet<String>();
     // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
