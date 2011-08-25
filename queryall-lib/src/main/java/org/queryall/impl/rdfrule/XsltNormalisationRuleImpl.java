@@ -25,7 +25,6 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
@@ -45,14 +44,9 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     private static final boolean _DEBUG = XsltNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = XsltNormalisationRuleImpl.log.isInfoEnabled();
+//    public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM = NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(), XsltNormalisationRuleImpl.myTypes());
     
-    static
-    {
-        // register this query type implementation with the central register
-        NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(), XsltNormalisationRuleImpl.myTypes());
-    }
-    
-    private static List<URI> myTypes()
+    public static List<URI> myTypes()
     {
         List<URI> results = new ArrayList<URI>(2);
         

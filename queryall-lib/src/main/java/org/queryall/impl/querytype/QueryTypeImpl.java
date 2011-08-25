@@ -42,7 +42,7 @@ public class QueryTypeImpl implements QueryType
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
     
-    private static List<URI> myTypes()
+    public static List<URI> myTypes()
     {
         final List<URI> results = new ArrayList<URI>(1);
         

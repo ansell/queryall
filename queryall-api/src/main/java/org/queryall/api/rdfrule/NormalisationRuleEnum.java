@@ -91,5 +91,6 @@ public class NormalisationRuleEnum extends QueryAllEnum
     public NormalisationRuleEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        NormalisationRuleEnum.ALL_NORMALISATION_RULES.add(this);
     }
 }

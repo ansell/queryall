@@ -894,7 +894,15 @@ public final class RdfUtils
                 
                 Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums = NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
 
-                uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
+                if(matchingNormalisationRuleEnums.size() > 0)
+                {
+                    uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
+                    log.info("Found {} rule enums for {}", matchingNormalisationRuleEnums.size(), nextSubjectUri.stringValue());
+                }
+                else
+                {
+                    log.warn("No normalisation rule enums found for {}", nextSubjectUri.stringValue());
+                }
             }
 
             for(URI nextSubjectUri : uriToNormalisationRuleEnums.keySet())

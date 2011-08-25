@@ -20,7 +20,8 @@ public class RegexNormalisationRuleImplFactory implements NormalisationRuleFacto
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return NormalisationRuleEnum.valueOf(RegexNormalisationRuleImpl.class.getName());
+        return RegexNormalisationRuleImplEnum.REGEX_NORMALISATION_RULE_IMPL_ENUM;
+        //return NormalisationRuleEnum.valueOf(RegexNormalisationRuleImpl.class.getName());
     }
     
     /**

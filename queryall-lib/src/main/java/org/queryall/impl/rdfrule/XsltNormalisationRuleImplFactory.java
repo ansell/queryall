@@ -20,7 +20,7 @@ public class XsltNormalisationRuleImplFactory implements NormalisationRuleFactor
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return NormalisationRuleEnum.valueOf(XsltNormalisationRuleImpl.class.getName());
+        return XsltNormalisationRuleImplEnum.XSLT_NORMALISATION_RULE_IMPL_ENUM;
     }
     
     /**

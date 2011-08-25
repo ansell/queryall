@@ -20,7 +20,7 @@ public class QueryTypeImplFactory implements QueryTypeFactory
     @Override
     public QueryTypeEnum getEnum()
     {
-        return QueryTypeEnum.valueOf(QueryTypeImpl.class.getName());
+        return QueryTypeImplEnum.QUERY_TYPE_IMPL_ENUM;
     }
     
     /**

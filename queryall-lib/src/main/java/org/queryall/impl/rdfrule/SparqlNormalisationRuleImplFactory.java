@@ -20,7 +20,8 @@ public class SparqlNormalisationRuleImplFactory implements NormalisationRuleFact
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return NormalisationRuleEnum.valueOf(SparqlNormalisationRuleImpl.class.getName());
+        return SparqlNormalisationRuleImplEnum.SPARQL_NORMALISATION_RULE_IMPL_ENUM;
+        //return NormalisationRuleEnum.valueOf(SparqlNormalisationRuleImpl.class.getName());
     }
     
     /**

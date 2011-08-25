@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall</artifactId>
@@ -11,7 +11,8 @@
 		<module>queryall-webapp</module>
 		<!-- <module>queryall-reasoner</module> -->
 		<!-- <module>queryall-biomart</module> -->
-	</modules>
+    <module>queryall-lib-test</module>
+  </modules>
 	<name>Queryall RDF services</name>
 	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>
 	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
