@@ -11,7 +11,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-@MetaInfServices
+//@MetaInfServices
 public class RegexNormalisationRuleImplFactory implements NormalisationRuleFactory
 {
     /**

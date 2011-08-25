@@ -1,0 +1,3 @@
+org.queryall.impl.rdfrule.RegexNormalisationRuleImplFactory
+org.queryall.impl.rdfrule.SparqlNormalisationRuleImplFactory
+org.queryall.impl.rdfrule.XsltNormalisationRuleImplFactory

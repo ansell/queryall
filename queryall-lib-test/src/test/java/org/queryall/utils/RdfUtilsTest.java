@@ -495,7 +495,7 @@ public class RdfUtilsTest
             
             final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(this.testRepository);
             
-            Assert.assertEquals(1, results.size());
+            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 1, results.size());
             
             for(final URI nextNormalisationRuleUri : results.keySet())
             {
