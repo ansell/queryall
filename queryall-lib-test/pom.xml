@@ -13,15 +13,31 @@
 	<name>queryall-lib-test</name>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -38,7 +54,6 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 	<description>Created to separate the tests that work best on imported jar files (ie, META-INF/services) from the code that they rely on.</description>
 	<inceptionYear>2011</inceptionYear>
