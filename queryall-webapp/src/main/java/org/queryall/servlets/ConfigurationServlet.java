@@ -1,7 +1,5 @@
 package org.queryall.servlets;
 
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
@@ -39,6 +37,8 @@ import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

@@ -858,8 +858,7 @@ public final class RdfUtils
             }
             
             // This is the base normalisation rule URI, extensions or plugins must include this URI
-            // alongside
-            // their customised type URIs
+            // alongside their customised type URIs
             final URI normalisationRuleUri = NormalisationRuleSchema.getNormalisationRuleTypeUri();
             
             final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
@@ -872,6 +871,7 @@ public final class RdfUtils
             final Map<URI, Collection<NormalisationRuleEnum>> uriToNormalisationRuleEnums =
                     new HashMap<URI, Collection<NormalisationRuleEnum>>();
             
+            // TODO: why is this necessary
             ServiceUtils.getAllEnums();
             
             for(final Statement nextDeclaredNormalisationRuleSubject : allDeclaredNormalisationRuleSubjects)
@@ -1242,6 +1242,7 @@ public final class RdfUtils
             final Map<URI, Collection<QueryTypeEnum>> uriToQueryTypeEnums =
                     new HashMap<URI, Collection<QueryTypeEnum>>();
             
+            // TODO: why is this necessary
             ServiceUtils.getAllEnums();
             
             for(final Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
