@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl.profile;
+package org.queryall.impl.project;
 
 import org.kohsuke.MetaInfServices;
 import org.queryall.api.project.ProjectEnum;

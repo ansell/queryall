@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl.profile;
+package org.queryall.impl.project;
 
 import java.util.Collection;
 
@@ -10,7 +10,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.queryall.api.project.Project;
 import org.queryall.api.project.ProjectParser;
-import org.queryall.impl.project.ProjectImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

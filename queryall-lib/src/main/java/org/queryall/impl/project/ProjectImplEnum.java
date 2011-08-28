@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.impl.profile;
+package org.queryall.impl.project;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import org.kohsuke.MetaInfServices;
 import org.openrdf.model.URI;
 import org.queryall.api.project.ProjectEnum;
 import org.queryall.api.services.QueryAllEnum;
-import org.queryall.impl.project.ProjectImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
