@@ -70,8 +70,9 @@ public abstract class AbstractServiceLoader<K, S>
     
     public S add(final S service)
     {
-        AbstractServiceLoader.log.info("add key {} service class {}", this.getKey(service), service.getClass().getName());
-
+        AbstractServiceLoader.log.info("add key {} service class {}", this.getKey(service), service.getClass()
+                .getName());
+        
         return this.services.put(this.getKey(service), service);
     }
     

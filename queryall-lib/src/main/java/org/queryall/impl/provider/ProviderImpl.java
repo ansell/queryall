@@ -16,11 +16,11 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
@@ -38,6 +38,15 @@ public class ProviderImpl implements Provider
     private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
+    
+    public static List<URI> providerTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProviderSchema.getProviderTypeUri());
+        
+        return results;
+    }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -57,7 +66,7 @@ public class ProviderImpl implements Provider
     
     private boolean isDefaultSourceVar = false;
     
-    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
     // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue()
     // and Provider.providerNoCommunication.stringValue()
@@ -127,7 +136,7 @@ public class ProviderImpl implements Provider
             {
                 this.addNormalisationUri((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
+            else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
@@ -395,19 +404,8 @@ public class ProviderImpl implements Provider
     @Override
     public Collection<URI> getElementTypes()
     {
-        return providerTypes();
+        return ProviderImpl.providerTypes();
     }
-    
-    public static List<URI> providerTypes()
-    {
-        final List<URI> results = new ArrayList<URI>(1);
-        
-        results.add(ProviderSchema.getProviderTypeUri());
-        
-        return results;
-    }
-    
-    
     
     @Override
     public URI getEndpointMethod()
@@ -739,7 +737,7 @@ public class ProviderImpl implements Provider
             
             con.add(providerInstanceUri, ProviderSchema.getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
             
-            con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(),
+            con.add(providerInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
                     profileIncludeExcludeOrderLiteral, keyToUse);
             
             con.add(providerInstanceUri, ProviderSchema.getProviderAssumedContentType(), assumedContentTypeLiteral,

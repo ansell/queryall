@@ -15,10 +15,20 @@ import org.queryall.api.provider.ProviderSchema;
 
 /**
  * @author karina
- *
+ * 
  */
 public class HttpOnlyProviderImpl extends HttpProviderImpl
 {
+    
+    public static List<URI> httpOnlyTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(2);
+        
+        results.add(ProviderSchema.getProviderTypeUri());
+        results.add(HttpProviderSchema.getProviderHttpProviderUri());
+        
+        return results;
+    }
     
     /**
      * 
@@ -33,20 +43,10 @@ public class HttpOnlyProviderImpl extends HttpProviderImpl
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public HttpOnlyProviderImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
+    public HttpOnlyProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
-    }
-
-    public static List<URI> httpOnlyTypes()
-    {
-        List<URI> results = new ArrayList<URI>(2);
-        
-        results.add(ProviderSchema.getProviderTypeUri());
-        results.add(HttpProviderSchema.getProviderHttpProviderUri());
-        
-        return results;
     }
     
 }

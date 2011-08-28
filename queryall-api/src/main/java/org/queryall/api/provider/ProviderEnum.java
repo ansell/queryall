@@ -9,10 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.services.QueryAllEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provider implementations register themselves with this enumeration when they are loaded.
@@ -29,13 +26,13 @@ public class ProviderEnum extends QueryAllEnum
     {
         if(nextProviderUris.size() == 0)
         {
-            ProviderEnum.log.info("found an empty URI set for nextProviderUris=" + nextProviderUris);
+            QueryAllEnum.log.info("found an empty URI set for nextProviderUris=" + nextProviderUris);
             return Collections.emptyList();
         }
         else
         {
-            ProviderEnum.log.info("found a URI set for nextProviderUris.size()=" + nextProviderUris.size());
-            ProviderEnum.log.info("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
+            QueryAllEnum.log.info("found a URI set for nextProviderUris.size()=" + nextProviderUris.size());
+            QueryAllEnum.log.info("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
         }
         
         final List<ProviderEnum> results = new ArrayList<ProviderEnum>(ProviderEnum.ALL_PROVIDERS.size());
@@ -48,7 +45,7 @@ public class ProviderEnum extends QueryAllEnum
             {
                 if(!nextProviderUris.contains(nextURI))
                 {
-                    ProviderEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    QueryAllEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
                     
                     matching = false;
                 }
@@ -56,12 +53,12 @@ public class ProviderEnum extends QueryAllEnum
             
             if(matching)
             {
-                ProviderEnum.log.info("found an matching URI set for nextProviderUris=" + nextProviderUris);
+                QueryAllEnum.log.info("found an matching URI set for nextProviderUris=" + nextProviderUris);
                 results.add(nextProviderEnum);
             }
         }
         
-        ProviderEnum.log.info("returning results.size()=" + results.size() + " for nextProviderUris="
+        QueryAllEnum.log.info("returning results.size()=" + results.size() + " for nextProviderUris="
                 + nextProviderUris);
         
         return results;

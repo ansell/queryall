@@ -26,12 +26,11 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.utils.ProviderUtils;
-import org.queryall.utils.RdfUtils;
 
 /**
  * @author karina
@@ -83,7 +82,8 @@ public class ProviderUtilsTest
         testImplicitAllowAllProfile.setAllowImplicitProviderInclusions(true);
         testImplicitAllowAllProfile.setAllowImplicitQueryTypeInclusions(true);
         testImplicitAllowAllProfile.setAllowImplicitRdfRuleInclusions(true);
-        testImplicitAllowAllProfile.setDefaultProfileIncludeExcludeOrder(ProfileImpl.getProfileExcludeThenIncludeUri());
+        testImplicitAllowAllProfile.setDefaultProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileExcludeThenIncludeUri());
         
         this.singleImplicitAllowAllProfileList.add(testImplicitAllowAllProfile);
         

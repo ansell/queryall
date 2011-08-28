@@ -12,12 +12,12 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.SortOrder;
-import org.queryall.impl.profile.ProfileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,9 +136,10 @@ public class ProfileUtils
         }
         
         final boolean returnValue =
-                (profilableObject.getProfileIncludeExcludeOrder().equals(ProfileImpl.getProfileExcludeThenIncludeUri()) || profilableObject
-                        .getProfileIncludeExcludeOrder()
-                        .equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
+                (profilableObject.getProfileIncludeExcludeOrder().equals(
+                        ProfileSchema.getProfileExcludeThenIncludeUri()) || profilableObject
+                        .getProfileIncludeExcludeOrder().equals(
+                                ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()))
                         && includeNonProfileMatched;
         
         // if(ProfileUtils._DEBUG)
@@ -199,12 +200,12 @@ public class ProfileUtils
         final boolean excludeFound = excludeList.contains(nextUri);
         
         if(nextIncludeExcludeOrder == null
-                || nextIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri()))
+                || nextIncludeExcludeOrder.equals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()))
         {
             nextIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
         }
         
-        if(nextIncludeExcludeOrder.equals(ProfileImpl.getProfileExcludeThenIncludeUri()))
+        if(nextIncludeExcludeOrder.equals(ProfileSchema.getProfileExcludeThenIncludeUri()))
         {
             if(ProfileUtils._DEBUG)
             {
@@ -240,7 +241,7 @@ public class ProfileUtils
                 return ProfileMatch.IMPLICIT_INCLUDE;
             }
         }
-        else if(nextIncludeExcludeOrder.equals(ProfileImpl.getProfileIncludeThenExcludeUri()))
+        else if(nextIncludeExcludeOrder.equals(ProfileSchema.getProfileIncludeThenExcludeUri()))
         {
             if(ProfileUtils._DEBUG)
             {

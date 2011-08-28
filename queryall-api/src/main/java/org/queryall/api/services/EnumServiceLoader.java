@@ -29,18 +29,19 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     }
     
     @Override
-    protected String getKey(final QueryAllEnum service)
-    {
-        return service.getName();
-    }
-    
     public Collection<QueryAllEnum> getAll()
     {
-        for(String nextKey : this.services.keySet())
+        for(final String nextKey : this.services.keySet())
         {
-            log.info("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+            AbstractServiceLoader.log.info("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
         }
         
         return super.getAll();
+    }
+    
+    @Override
+    protected String getKey(final QueryAllEnum service)
+    {
+        return service.getName();
     }
 }

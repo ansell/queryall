@@ -17,12 +17,12 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
@@ -49,7 +49,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
     
-    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
     private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
     
@@ -112,7 +112,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             {
                 tempStages.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
+            else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
@@ -475,7 +475,8 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 con.add(keyUri, RDFS.COMMENT, descriptionLiteral, keyToUse);
             }
             con.add(keyUri, NormalisationRuleSchema.getRdfruleOrder(), orderLiteral, keyToUse);
-            con.add(keyUri, ProfileImpl.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral, keyToUse);
+            con.add(keyUri, ProfileSchema.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral,
+                    keyToUse);
             
             if(this.getRelatedNamespaces() != null)
             {

@@ -46,6 +46,8 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileEnum;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderEnum;
@@ -65,7 +67,6 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.namespace.NamespaceEntryImpl;
-import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.project.ProjectImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
@@ -900,8 +901,8 @@ public final class RdfUtils
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
                         NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
                 
-                RdfUtils.log.info("getQueryTypes: matchingNormalisationRuleEnums="+matchingNormalisationRuleEnums);
-
+                RdfUtils.log.info("getQueryTypes: matchingNormalisationRuleEnums=" + matchingNormalisationRuleEnums);
+                
                 if(matchingNormalisationRuleEnums.size() > 0)
                 {
                     uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
@@ -1131,45 +1132,115 @@ public final class RdfUtils
     
     public static Map<URI, Profile> getProfiles(final Repository myRepository)
     {
-        final Map<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProfiles: started parsing profile configurations");
-        }
         final long start = System.currentTimeMillis();
-        
-        final URI profileTypeUri = ProfileImpl.getProfileTypeUri();
+        RepositoryConnection con = null;
         
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, profileTypeUri, true).asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new ProfileImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getProfiles: started parsing profiles");
             }
+            
+            // This is the base profile URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = ProfileSchema.getProfileTypeUri();
+            
+            final Map<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredProfileSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<ProfileEnum>> uriToProfileEnums = new HashMap<URI, Collection<ProfileEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredProfileSubject : allDeclaredProfileSubjects)
+            {
+                if(!(nextDeclaredProfileSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as profile identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredProfileSubject.getSubject();
+                
+                final Collection<Value> nextProfileValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredProfileSubject.getSubject());
+                final List<URI> nextProfileUris = new ArrayList<URI>(nextProfileValues.size());
+                for(final Value nextProfileValue : nextProfileValues)
+                {
+                    if(nextProfileValue instanceof URI)
+                    {
+                        nextProfileUris.add((URI)nextProfileValue);
+                    }
+                }
+                
+                final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
+                
+                RdfUtils.log.info("getQueryTypes: matchingProfileEnums=" + matchingProfileEnums);
+                
+                if(matchingProfileEnums.size() > 0)
+                {
+                    uriToProfileEnums.put(nextSubjectUri, matchingProfileEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No profile enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToProfileEnums.keySet())
+            {
+                final Collection<ProfileEnum> nextProfileEnums = uriToProfileEnums.get(nextSubjectUri);
+                
+                for(final ProfileEnum nextProfileEnum : nextProfileEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createProfileParser(nextProfileEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getProfiles", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProfiles: finished parsing profiles");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.error("getProviders:" + e.getMessage());
+            RdfUtils.log.error("getProfiles:", e);
+        }
+        finally
+        {
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        if(RdfUtils._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getProfiles", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProfiles: finished parsing profiles");
-        }
-        
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Map<URI, Provider> getProviders(final Repository myRepository)
@@ -1189,8 +1260,8 @@ public final class RdfUtils
             // their customised type URIs
             final URI providerUri = ProviderSchema.getProviderTypeUri();
             
-            RdfUtils.log.info("getProviders: providerUri="+providerUri.stringValue());
-
+            RdfUtils.log.info("getProviders: providerUri=" + providerUri.stringValue());
+            
             final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
             
             con = myRepository.getConnection();
@@ -1198,18 +1269,18 @@ public final class RdfUtils
             final List<Statement> allDeclaredProviderSubjects =
                     con.getStatements(null, RDF.TYPE, providerUri, true).asList();
             
-            RdfUtils.log.info("getProviders: allDeclaredProviderSubjects.size()="+allDeclaredProviderSubjects.size());
-
-            final Map<URI, Collection<ProviderEnum>> uriToProviderEnums =
-                    new HashMap<URI, Collection<ProviderEnum>>();
+            RdfUtils.log.info("getProviders: allDeclaredProviderSubjects.size()=" + allDeclaredProviderSubjects.size());
+            
+            final Map<URI, Collection<ProviderEnum>> uriToProviderEnums = new HashMap<URI, Collection<ProviderEnum>>();
             
             // TODO: why is this necessary
             ServiceUtils.getAllEnums();
             
             for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
             {
-                RdfUtils.log.info("getProviders: nextDeclaredProviderSubject.getSubject()="+nextDeclaredProviderSubject.getSubject().stringValue());
-
+                RdfUtils.log.info("getProviders: nextDeclaredProviderSubject.getSubject()="
+                        + nextDeclaredProviderSubject.getSubject().stringValue());
+                
                 if(!(nextDeclaredProviderSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as provider identifiers");
@@ -1232,8 +1303,8 @@ public final class RdfUtils
                 
                 final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
                 
-                RdfUtils.log.info("getProviders: matchingProviderEnums="+matchingProviderEnums);
-
+                RdfUtils.log.info("getProviders: matchingProviderEnums=" + matchingProviderEnums);
+                
                 uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
             }
             
@@ -1340,8 +1411,8 @@ public final class RdfUtils
                 
                 final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
                 
-                RdfUtils.log.info("getQueryTypes: matchingQueryTypeEnums="+matchingQueryTypeEnums);
-
+                RdfUtils.log.info("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
+                
                 uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
             }
             
@@ -1684,7 +1755,7 @@ public final class RdfUtils
         
         try
         {
-            if(!ProfileImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!ProfileSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("Profile schema was not placed correctly in the rdf store");
             }

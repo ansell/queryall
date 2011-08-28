@@ -17,8 +17,8 @@ import org.queryall.api.provider.ProviderParser;
 public class HttpOnlyProviderImplParser implements ProviderParser
 {
     @Override
-    public Provider createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
-            final int modelVersion) throws IllegalArgumentException
+    public Provider createObject(final Collection<Statement> rdfStatements, final URI subjectKey, final int modelVersion)
+        throws IllegalArgumentException
     {
         try
         {

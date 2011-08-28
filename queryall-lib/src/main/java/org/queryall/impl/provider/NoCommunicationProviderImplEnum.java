@@ -26,8 +26,8 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     public NoCommunicationProviderImplEnum()
     {
         this(NoCommunicationProviderImpl.class.getName(), ProviderImpl.providerTypes());
-
-        log.info("NoCommunicationProviderImplEnum() registered");
+        
+        QueryAllEnum.log.info("NoCommunicationProviderImplEnum() registered");
     }
     
     /**
@@ -37,8 +37,8 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     public NoCommunicationProviderImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-
-        log.info("NoCommunicationProviderImplEnum(String, List<URI>) registered");
+        
+        QueryAllEnum.log.info("NoCommunicationProviderImplEnum(String, List<URI>) registered");
     }
     
 }

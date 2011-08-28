@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.profile.ProfileEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**

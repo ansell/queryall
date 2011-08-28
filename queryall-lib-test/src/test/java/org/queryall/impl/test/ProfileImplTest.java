@@ -5,6 +5,7 @@ package org.queryall.impl.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.test.AbstractProfileTest;
 import org.queryall.impl.profile.ProfileImpl;
 
@@ -22,18 +23,18 @@ public class ProfileImplTest extends AbstractProfileTest
     @Override
     public URI getProfileExcludeThenIncludeURI()
     {
-        return ProfileImpl.getProfileExcludeThenIncludeUri();
+        return ProfileSchema.getProfileExcludeThenIncludeUri();
     }
     
     @Override
     public URI getProfileIncludeExcludeOrderUndefinedUri()
     {
-        return ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+        return ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     }
     
     @Override
     public URI getProfileIncludeThenExcludeURI()
     {
-        return ProfileImpl.getProfileIncludeThenExcludeUri();
+        return ProfileSchema.getProfileIncludeThenExcludeUri();
     }
 }
