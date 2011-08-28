@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
+import org.queryall.api.profile.ProfileEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
@@ -89,5 +90,6 @@ public class RuleTestEnum extends QueryAllEnum
     public RuleTestEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        RuleTestEnum.ALL_RULE_TESTS.add(this);
     }
 }

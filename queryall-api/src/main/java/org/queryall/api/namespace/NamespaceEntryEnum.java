@@ -90,5 +90,6 @@ public class NamespaceEntryEnum extends QueryAllEnum
     public NamespaceEntryEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        NamespaceEntryEnum.ALL_PROJECTS.add(this);
     }
 }

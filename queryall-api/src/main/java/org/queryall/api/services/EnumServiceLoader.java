@@ -3,6 +3,8 @@
  */
 package org.queryall.api.services;
 
+import java.util.Collection;
+
 /**
  *
  */
@@ -32,4 +34,13 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
         return service.getName();
     }
     
+    public Collection<QueryAllEnum> getAll()
+    {
+        for(String nextKey : this.services.keySet())
+        {
+            log.info("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+        }
+        
+        return super.getAll();
+    }
 }

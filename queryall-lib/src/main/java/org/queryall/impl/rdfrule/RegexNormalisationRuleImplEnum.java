@@ -26,6 +26,8 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
     public RegexNormalisationRuleImplEnum()
     {
         this(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
+        
+        log.info("RegexNormalisationRuleImplEnum() registered");
     }
     
     /**
@@ -35,6 +37,8 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
     public RegexNormalisationRuleImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+
+        log.info("RegexNormalisationRuleImplEnum(String, List<URI>) registered");
     }
     
 }

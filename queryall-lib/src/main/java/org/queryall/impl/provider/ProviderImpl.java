@@ -395,12 +395,19 @@ public class ProviderImpl implements Provider
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
+        return providerTypes();
+    }
+    
+    public static List<URI> providerTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
         
         results.add(ProviderSchema.getProviderTypeUri());
         
         return results;
     }
+    
+    
     
     @Override
     public URI getEndpointMethod()

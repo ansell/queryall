@@ -16,8 +16,6 @@ public class ProviderRegistry extends AbstractServiceLoader<ProviderEnum, Provid
 {
     private static ProviderRegistry defaultRegistry;
     
-    // RDFParserRegistry.getInstance();
-    //
     public static synchronized ProviderRegistry getInstance()
     {
         if(ProviderRegistry.defaultRegistry == null)

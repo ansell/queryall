@@ -16,8 +16,6 @@ public class QueryTypeRegistry extends AbstractServiceLoader<QueryTypeEnum, Quer
 {
     private static QueryTypeRegistry defaultRegistry;
     
-    // RDFParserRegistry.getInstance();
-    //
     public static synchronized QueryTypeRegistry getInstance()
     {
         if(QueryTypeRegistry.defaultRegistry == null)

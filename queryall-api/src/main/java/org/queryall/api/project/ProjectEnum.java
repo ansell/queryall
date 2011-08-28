@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
+import org.queryall.api.provider.ProviderEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
@@ -89,5 +90,6 @@ public class ProjectEnum extends QueryAllEnum
     public ProjectEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        ProjectEnum.ALL_PROJECTS.add(this);
     }
 }

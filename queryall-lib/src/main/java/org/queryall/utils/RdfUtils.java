@@ -48,6 +48,7 @@ import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderEnum;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
@@ -899,11 +900,11 @@ public final class RdfUtils
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
                         NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
                 
+                RdfUtils.log.info("getQueryTypes: matchingNormalisationRuleEnums="+matchingNormalisationRuleEnums);
+
                 if(matchingNormalisationRuleEnums.size() > 0)
                 {
                     uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
-                    RdfUtils.log.info("Found {} rule enums for {}", matchingNormalisationRuleEnums.size(),
-                            nextSubjectUri.stringValue());
                 }
                 else
                 {
@@ -1173,46 +1174,116 @@ public final class RdfUtils
     
     public static Map<URI, Provider> getProviders(final Repository myRepository)
     {
-        final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProviders: started parsing provider configurations");
-        }
         final long start = System.currentTimeMillis();
-        
-        // TODO: HACK: treat all providers as HttpProviderImpl for now
-        final URI providerTypeUri = ProviderSchema.getProviderTypeUri();
+        RepositoryConnection con = null;
         
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new HttpProviderImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getProviders: started parsing providers");
             }
+            
+            // This is the base provider URI, extensions or plugins must include this URI
+            // alongside
+            // their customised type URIs
+            final URI providerUri = ProviderSchema.getProviderTypeUri();
+            
+            RdfUtils.log.info("getProviders: providerUri="+providerUri.stringValue());
+
+            final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredProviderSubjects =
+                    con.getStatements(null, RDF.TYPE, providerUri, true).asList();
+            
+            RdfUtils.log.info("getProviders: allDeclaredProviderSubjects.size()="+allDeclaredProviderSubjects.size());
+
+            final Map<URI, Collection<ProviderEnum>> uriToProviderEnums =
+                    new HashMap<URI, Collection<ProviderEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
+            {
+                RdfUtils.log.info("getProviders: nextDeclaredProviderSubject.getSubject()="+nextDeclaredProviderSubject.getSubject().stringValue());
+
+                if(!(nextDeclaredProviderSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as provider identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredProviderSubject.getSubject();
+                
+                final Collection<Value> nextProviderValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredProviderSubject.getSubject());
+                final List<URI> nextProviderUris = new ArrayList<URI>(nextProviderValues.size());
+                for(final Value nextProviderValue : nextProviderValues)
+                {
+                    if(nextProviderValue instanceof URI)
+                    {
+                        nextProviderUris.add((URI)nextProviderValue);
+                    }
+                }
+                
+                final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
+                
+                RdfUtils.log.info("getProviders: matchingProviderEnums="+matchingProviderEnums);
+
+                uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
+            }
+            
+            for(final URI nextSubjectUri : uriToProviderEnums.keySet())
+            {
+                final Collection<ProviderEnum> nextProviderEnums = uriToProviderEnums.get(nextSubjectUri);
+                
+                for(final ProviderEnum nextProviderEnum : nextProviderEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createProviderParser(nextProviderEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getProviders", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProviders: finished parsing providers");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
             RdfUtils.log.error("getProviders:", e);
         }
-        
-        if(RdfUtils._INFO)
+        finally
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getProviders", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProviders: finished parsing provider configurations");
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Map<URI, QueryType> getQueryTypes(final Repository myRepository)
@@ -1269,6 +1340,8 @@ public final class RdfUtils
                 
                 final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
                 
+                RdfUtils.log.info("getQueryTypes: matchingQueryTypeEnums="+matchingQueryTypeEnums);
+
                 uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
             }
             
