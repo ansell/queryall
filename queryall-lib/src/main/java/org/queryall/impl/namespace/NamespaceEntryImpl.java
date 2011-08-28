@@ -3,6 +3,7 @@ package org.queryall.impl.namespace;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -221,10 +222,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
-        results.add(NamespaceEntrySchema.getNamespaceTypeUri());
-        
-        return results;
+        return myTypes();
     }
     
     @Override
@@ -513,6 +511,14 @@ public class NamespaceEntryImpl implements NamespaceEntry
         sb.append("description=" + this.getDescription() + "\n");
         
         return sb.toString();
+    }
+
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        results.add(NamespaceEntrySchema.getNamespaceTypeUri());
+        
+        return results;
     }
     
 }

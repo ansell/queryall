@@ -44,6 +44,7 @@ import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.namespace.NamespaceEntryEnum;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileEnum;
@@ -66,7 +67,6 @@ import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.namespace.NamespaceEntryImpl;
 import org.queryall.impl.project.ProjectImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
@@ -805,46 +805,115 @@ public final class RdfUtils
     
     public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
     {
-        final Map<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entry configurations");
-        }
         final long start = System.currentTimeMillis();
+        RepositoryConnection con = null;
         
-        final URI namespaceEntryTypeUri = NamespaceEntrySchema.getNamespaceTypeUri();
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextNamespaceEntry : con.getStatements(null, RDF.TYPE, namespaceEntryTypeUri, true)
-                    .asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextNamespaceEntry.getSubject();
-                results.put(nextSubjectUri,
-                        new NamespaceEntryImpl(
-                                con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getNamespaceEntrys: started parsing namespace entrys");
             }
+            
+            // This is the base namespace entry URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = NamespaceEntrySchema.getNamespaceTypeUri();
+            
+            final Map<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredNamespaceEntrySubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<NamespaceEntryEnum>> uriToNamespaceEntryEnums = new HashMap<URI, Collection<NamespaceEntryEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredNamespaceEntrySubject : allDeclaredNamespaceEntrySubjects)
+            {
+                if(!(nextDeclaredNamespaceEntrySubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as namespace entry identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredNamespaceEntrySubject.getSubject();
+                
+                final Collection<Value> nextNamespaceEntryValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredNamespaceEntrySubject.getSubject());
+                final List<URI> nextNamespaceEntryUris = new ArrayList<URI>(nextNamespaceEntryValues.size());
+                for(final Value nextNamespaceEntryValue : nextNamespaceEntryValues)
+                {
+                    if(nextNamespaceEntryValue instanceof URI)
+                    {
+                        nextNamespaceEntryUris.add((URI)nextNamespaceEntryValue);
+                    }
+                }
+                
+                final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums = NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
+                
+                RdfUtils.log.info("getNamespaceEntrys: matchingNamespaceEntryEnums=" + matchingNamespaceEntryEnums);
+                
+                if(matchingNamespaceEntryEnums.size() > 0)
+                {
+                    uriToNamespaceEntryEnums.put(nextSubjectUri, matchingNamespaceEntryEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No namespace entry enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToNamespaceEntryEnums.keySet())
+            {
+                final Collection<NamespaceEntryEnum> nextNamespaceEntryEnums = uriToNamespaceEntryEnums.get(nextSubjectUri);
+                
+                for(final NamespaceEntryEnum nextNamespaceEntryEnum : nextNamespaceEntryEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntrys", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getNamespaceEntrys: finished parsing namespace entrys");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.error("getNamespaceEntries:", e);
+            RdfUtils.log.error("getNamespaceEntrys:", e);
         }
-        
-        if(RdfUtils._INFO)
+        finally
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntries", (end - start)));
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getNamespaceEntries: finished getting namespace entry information");
-        }
-        
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
@@ -1182,7 +1251,7 @@ public final class RdfUtils
                 
                 final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
                 
-                RdfUtils.log.info("getQueryTypes: matchingProfileEnums=" + matchingProfileEnums);
+                RdfUtils.log.info("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
                 
                 if(matchingProfileEnums.size() > 0)
                 {
