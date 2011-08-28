@@ -17,9 +17,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     
     private String title = "";
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private int order = 100;
     
@@ -104,7 +104,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
                 // resultIsValid = true;
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -732,7 +732,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             if(this.curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -745,7 +745,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             con.add(profileInstanceUri, RDF.TYPE, ProfileSchema.getProfileTypeUri(), keyToUse);
             
-            con.add(profileInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(profileInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             // log.info("About to add to the repository 2");
             if(modelVersion == 1)

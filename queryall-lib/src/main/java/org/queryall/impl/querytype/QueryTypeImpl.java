@@ -17,12 +17,12 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
@@ -57,7 +57,7 @@ public class QueryTypeImpl implements QueryType
     
     private String title = "";
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private boolean handleAllNamespaces = true;
     
@@ -167,7 +167,7 @@ public class QueryTypeImpl implements QueryType
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -953,7 +953,7 @@ public class QueryTypeImpl implements QueryType
             
             if(this.curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -965,7 +965,7 @@ public class QueryTypeImpl implements QueryType
             con.setAutoCommit(false);
             
             con.add(queryInstanceUri, RDF.TYPE, QueryTypeSchema.getQueryTypeUri(), keyToUse);
-            con.add(queryInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(queryInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             if(modelVersion == 1)
             {
                 con.add(queryInstanceUri, QueryTypeSchema.getQueryTitle(), titleLiteral, keyToUse);

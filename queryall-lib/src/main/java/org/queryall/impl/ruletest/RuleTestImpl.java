@@ -15,11 +15,11 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +133,7 @@ public class RuleTestImpl implements RuleTest
     
     private String testOutputString = "";
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private String title;
     
@@ -249,7 +249,7 @@ public class RuleTestImpl implements RuleTest
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -613,7 +613,7 @@ public class RuleTestImpl implements RuleTest
             
             if(this.curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -623,7 +623,7 @@ public class RuleTestImpl implements RuleTest
             con.setAutoCommit(false);
             
             con.add(keyUri, RDF.TYPE, RuleTestImpl.getRuletestTypeUri(), keyToUse);
-            con.add(keyUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             con.add(keyUri, RuleTestImpl.getRuletestInputTestString(), testInputStringLiteral, keyToUse);
             con.add(keyUri, RuleTestImpl.getRuletestOutputTestString(), testOutputStringLiteral, keyToUse);
             

@@ -3,19 +3,19 @@ package org.queryall.impl.project;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.project.Project;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.utils.StringUtils;
@@ -33,142 +33,6 @@ public class ProjectImpl implements Project
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProjectImpl.log.isInfoEnabled();
     
-    /**
-     * @return the projectAdminCuratedUri
-     */
-    public static URI getProjectAdminCuratedUri()
-    {
-        return ProjectImpl.projectAdminCuratedUri;
-    }
-    
-    /**
-     * @return the projectAuthority
-     */
-    public static URI getProjectAuthority()
-    {
-        return ProjectImpl.projectAuthority;
-    }
-    
-    /**
-     * @return the projectCurationStatusUri
-     */
-    public static URI getProjectCurationStatusUri()
-    {
-        return ProjectImpl.projectCurationStatusUri;
-    }
-    
-    /**
-     * @return the projectDescription
-     */
-    public static URI getProjectDescription()
-    {
-        return ProjectImpl.projectDescription;
-    }
-    
-    /**
-     * @return the projectNotCuratedUri
-     */
-    public static URI getProjectNotCuratedUri()
-    {
-        return ProjectImpl.projectNotCuratedUri;
-    }
-    
-    /**
-     * @return the projectTitle
-     */
-    public static URI getProjectTitle()
-    {
-        return ProjectImpl.projectTitle;
-    }
-    
-    /**
-     * @return the projectTypeUri
-     */
-    public static URI getProjectTypeUri()
-    {
-        return ProjectImpl.projectTypeUri;
-    }
-    
-    /**
-     * @return the projectUserCuratedUri
-     */
-    public static URI getProjectUserCuratedUri()
-    {
-        return ProjectImpl.projectUserCuratedUri;
-    }
-    
-    /**
-     * @param projectAdminCuratedUri
-     *            the projectAdminCuratedUri to set
-     */
-    public static void setProjectAdminCuratedUri(final URI projectAdminCuratedUri)
-    {
-        ProjectImpl.projectAdminCuratedUri = projectAdminCuratedUri;
-    }
-    
-    /**
-     * @param projectAuthority
-     *            the projectAuthority to set
-     */
-    public static void setProjectAuthority(final URI projectAuthority)
-    {
-        ProjectImpl.projectAuthority = projectAuthority;
-    }
-    
-    /**
-     * @param projectCurationStatusUri
-     *            the projectCurationStatusUri to set
-     */
-    public static void setProjectCurationStatusUri(final URI projectCurationStatusUri)
-    {
-        ProjectImpl.projectCurationStatusUri = projectCurationStatusUri;
-    }
-    
-    /**
-     * @param projectDescription
-     *            the projectDescription to set
-     */
-    public static void setProjectDescription(final URI projectDescription)
-    {
-        ProjectImpl.projectDescription = projectDescription;
-    }
-    
-    /**
-     * @param projectNotCuratedUri
-     *            the projectNotCuratedUri to set
-     */
-    public static void setProjectNotCuratedUri(final URI projectNotCuratedUri)
-    {
-        ProjectImpl.projectNotCuratedUri = projectNotCuratedUri;
-    }
-    
-    /**
-     * @param projectTitle
-     *            the projectTitle to set
-     */
-    public static void setProjectTitle(final URI projectTitle)
-    {
-        ProjectImpl.projectTitle = projectTitle;
-    }
-    
-    /**
-     * @param projectTypeUri
-     *            the projectTypeUri to set
-     */
-    public static void setProjectTypeUri(final URI projectTypeUri)
-    {
-        ProjectImpl.projectTypeUri = projectTypeUri;
-    }
-    
-    /**
-     * @param projectUserCuratedUri
-     *            the projectUserCuratedUri to set
-     */
-    public static void setProjectUserCuratedUri(final URI projectUserCuratedUri)
-    {
-        ProjectImpl.projectUserCuratedUri = projectUserCuratedUri;
-    }
-    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key = null;
@@ -181,51 +45,9 @@ public class ProjectImpl implements Project
     
     private URI curationStatus = null;
     
-    private static URI projectTypeUri;
-    
-    private static URI projectAuthority;
-    
-    private static URI projectTitle;
-    
-    private static URI projectDescription;
-    
-    private static URI projectCurationStatusUri;
-    
-    private static URI projectAdminCuratedUri;
-    
-    private static URI projectUserCuratedUri;
-    
-    private static URI projectNotCuratedUri;
-    
-    static
+    public ProjectImpl(Collection<Statement> rdfStatements, URI subjectKey, int modelVersion) throws OpenRDFException
     {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.PROJECT.getBaseURI();
-        
-        ProjectImpl.setProjectTypeUri(f.createURI(baseUri, "Project"));
-        ProjectImpl.setProjectAuthority(f.createURI(baseUri, "authority"));
-        ProjectImpl.setProjectTitle(f.createURI(baseUri, "title"));
-        ProjectImpl.setProjectDescription(f.createURI(baseUri, "description"));
-        
-        ProjectImpl.setProjectCurationStatusUri(f.createURI(baseUri, "hasCurationStatus"));
-        ProjectImpl.setProjectAdminCuratedUri(f.createURI(baseUri, "adminCurated"));
-        ProjectImpl.setProjectUserCuratedUri(f.createURI(baseUri, "userCurated"));
-        ProjectImpl.setProjectNotCuratedUri(f.createURI(baseUri, "notCurated"));
-        
-    }
-    
-    // keyToUse is the URI of the next instance that can be found in myRepository
-    // returns null if the URI is not in the repository or the information is not enough to create a
-    // minimal provider configuration
-    public static Project fromRdf(final Collection<Statement> inputStatements, final URI keyToUse,
-            final int modelVersion) throws OpenRDFException
-    {
-        final Project result = new ProjectImpl();
-        
-        boolean resultIsValid = false;
-        
-        for(final Statement nextStatement : inputStatements)
+        for(final Statement nextStatement : rdfStatements)
         {
             if(ProjectImpl._DEBUG)
             {
@@ -233,130 +55,39 @@ public class ProjectImpl implements Project
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(ProjectImpl.getProjectTypeUri()))
+                    && nextStatement.getObject().equals(ProjectSchema.getProjectTypeUri()))
             {
                 if(ProjectImpl._TRACE)
                 {
-                    ProjectImpl.log.trace("Project: found valid type predicate for URI: " + keyToUse);
+                    ProjectImpl.log.trace("Project: found valid type predicate for URI: " + subjectKey);
                 }
                 
-                resultIsValid = true;
-                result.setKey(keyToUse);
+                this.setKey(subjectKey);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectAuthority()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectAuthority()))
             {
-                result.setAuthority((URI)nextStatement.getObject());
+                this.setAuthority((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectTitle())
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectTitle())
                     || nextStatement.getPredicate().equals(Constants.DC_TITLE))
             {
-                if(result.getTitle().equals(""))
+                if(this.getTitle().equals(""))
                 {
-                    result.setTitle(nextStatement.getObject().stringValue());
+                    this.setTitle(nextStatement.getObject().stringValue());
                 }
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectDescription()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectDescription()))
             {
-                result.setDescription(nextStatement.getObject().stringValue());
+                this.setDescription(nextStatement.getObject().stringValue());
             }
             else
             {
-                result.addUnrecognisedStatement(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
-        }
-        
-        if(ProjectImpl._TRACE)
-        {
-            ProjectImpl.log.trace("Project.fromRdf: would have returned... result=" + result.toString());
-        }
-        
-        if(resultIsValid)
-        {
-            return result;
-        }
-        else
-        {
-            throw new RuntimeException("Project.fromRdf: result was not valid");
         }
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            final URI contextKeyUri = keyToUse;
-            con.setAutoCommit(false);
-            
-            con.add(ProjectImpl.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
-            con.add(ProjectImpl.getProjectTitle(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
-            con.add(ProjectImpl.getProjectTitle(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(ProjectImpl.getProjectTitle(), RDFS.DOMAIN, ProjectImpl.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectImpl.getProjectTitle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(ProjectImpl.getProjectAuthority(), RDFS.DOMAIN, ProjectImpl.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectImpl.getProjectAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
-            con.add(ProjectImpl.getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(ProjectImpl.getProjectDescription(), RDFS.DOMAIN, ProjectImpl.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectImpl.getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectCurationStatusUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectAdminCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectUserCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // TODO: Add description
-            con.add(ProjectImpl.getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectImpl.getProjectNotCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            ProjectImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
+
     
     @Override
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
@@ -415,11 +146,7 @@ public class ProjectImpl implements Project
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
-        
-        results.add(ProjectImpl.getProjectTypeUri());
-        
-        return results;
+        return myTypes();
     }
     
     /**
@@ -538,22 +265,22 @@ public class ProjectImpl implements Project
             
             con.setAutoCommit(false);
             
-            con.add(projectInstanceUri, RDF.TYPE, ProjectImpl.getProjectTypeUri(), keyToUse);
+            con.add(projectInstanceUri, RDF.TYPE, ProjectSchema.getProjectTypeUri(), keyToUse);
             
             if(authorityLiteral != null)
             {
-                con.add(projectInstanceUri, ProjectImpl.getProjectAuthority(), authorityLiteral, keyToUse);
+                con.add(projectInstanceUri, ProjectSchema.getProjectAuthority(), authorityLiteral, keyToUse);
             }
             
             if(modelVersion == 1)
             {
-                con.add(projectInstanceUri, ProjectImpl.getProjectTitle(), titleLiteral, keyToUse);
+                con.add(projectInstanceUri, ProjectSchema.getProjectTitle(), titleLiteral, keyToUse);
             }
             else
             {
                 con.add(projectInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
             }
-            con.add(projectInstanceUri, ProjectImpl.getProjectDescription(), descriptionLiteral, keyToUse);
+            con.add(projectInstanceUri, ProjectSchema.getProjectDescription(), descriptionLiteral, keyToUse);
             
             if(this.unrecognisedStatements != null)
             {
@@ -602,6 +329,15 @@ public class ProjectImpl implements Project
         sb.append("description=" + this.getDescription() + "\n");
         
         return sb.toString();
+    }
+
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProjectSchema.getProjectTypeUri());
+        
+        return results;
     }
     
 }

@@ -17,9 +17,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntrySchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     
     private URI authority;
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private String preferredPrefix = "";
     
@@ -91,7 +91,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -406,7 +406,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
             
             if(this.curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -445,7 +445,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
                     keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceSeparator(), separatorLiteral, keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceUriTemplate(), uriTemplateLiteral, keyToUse);
-            con.add(namespaceInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(namespaceInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             if(modelVersion == 1)
             {
                 con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceDescription(), descriptionLiteral,

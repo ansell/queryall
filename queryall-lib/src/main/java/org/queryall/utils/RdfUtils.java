@@ -49,6 +49,9 @@ import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileEnum;
 import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.Project;
+import org.queryall.api.project.ProjectEnum;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderEnum;
@@ -67,7 +70,6 @@ import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.impl.ruletest.RuleTestImpl;
@@ -1312,6 +1314,119 @@ public final class RdfUtils
         return Collections.emptyMap();
     }
     
+    public static Map<URI, Project> getProjects(final Repository myRepository)
+    {
+        final long start = System.currentTimeMillis();
+        RepositoryConnection con = null;
+        
+        try
+        {
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProjects: started parsing projects");
+            }
+            
+            // This is the base project URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = ProjectSchema.getProjectTypeUri();
+            
+            final Map<URI, Project> results = new ConcurrentHashMap<URI, Project>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredProjectSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<ProjectEnum>> uriToProjectEnums = new HashMap<URI, Collection<ProjectEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredProjectSubject : allDeclaredProjectSubjects)
+            {
+                if(!(nextDeclaredProjectSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as project identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredProjectSubject.getSubject();
+                
+                final Collection<Value> nextProjectValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredProjectSubject.getSubject());
+                final List<URI> nextProjectUris = new ArrayList<URI>(nextProjectValues.size());
+                for(final Value nextProjectValue : nextProjectValues)
+                {
+                    if(nextProjectValue instanceof URI)
+                    {
+                        nextProjectUris.add((URI)nextProjectValue);
+                    }
+                }
+                
+                final Collection<ProjectEnum> matchingProjectEnums = ProjectEnum.byTypeUris(nextProjectUris);
+                
+                RdfUtils.log.info("getProjects: matchingProjectEnums=" + matchingProjectEnums);
+                
+                if(matchingProjectEnums.size() > 0)
+                {
+                    uriToProjectEnums.put(nextSubjectUri, matchingProjectEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No project enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToProjectEnums.keySet())
+            {
+                final Collection<ProjectEnum> nextProjectEnums = uriToProjectEnums.get(nextSubjectUri);
+                
+                for(final ProjectEnum nextProjectEnum : nextProjectEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createProjectParser(nextProjectEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getProjects", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProjects: finished parsing projects");
+            }
+            
+            return results;
+        }
+        catch(final OpenRDFException e)
+        {
+            // handle exception
+            RdfUtils.log.error("getProjects:", e);
+        }
+        finally
+        {
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
+        }
+        
+        return Collections.emptyMap();
+    }
+    
     public static Map<URI, Provider> getProviders(final Repository myRepository)
     {
         final long start = System.currentTimeMillis();
@@ -1737,7 +1852,7 @@ public final class RdfUtils
         
         try
         {
-            if(!ProjectImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!ProjectSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("Project schema was not placed correctly in the rdf store");
             }

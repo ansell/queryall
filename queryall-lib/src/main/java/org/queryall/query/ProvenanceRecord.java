@@ -24,10 +24,10 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -96,7 +96,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     public String hasAuthorOpenID = "";
     public Date recordDate = null;
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     public static URI provenanceTypeUri;
     public static URI provenanceElementTypeUri;
     public static URI provenanceElementKeyUri;

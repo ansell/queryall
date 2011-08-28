@@ -797,6 +797,17 @@ public class RdfUtilsTest
     
     /**
      * Test method for
+     * {@link org.queryall.utils.RdfUtils#getProjects(org.openrdf.repository.Repository)}.
+     */
+    @Test
+    @Ignore
+    public void testGetProjects()
+    {
+        // TODO: Implement me!
+    }
+    
+    /**
+     * Test method for
      * {@link org.queryall.utils.RdfUtils#getProviders(org.openrdf.repository.Repository)}.
      */
     @Test
