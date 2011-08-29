@@ -12,7 +12,7 @@ import org.queryall.api.ruletest.RuleTestParser;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices
-public class RuleTestImplFactory implements RuleTestFactory
+public class RegexRuleTestImplFactory implements RuleTestFactory
 {
     /**
      * Returns the enumeration from the enumeration that matches this factory
@@ -20,7 +20,7 @@ public class RuleTestImplFactory implements RuleTestFactory
     @Override
     public RuleTestEnum getEnum()
     {
-        return RuleTestImplEnum.RULE_TEST_IMPL_ENUM;
+        return RegexRuleTestImplEnum.REGEX_RULE_TEST_IMPL_ENUM;
         // return NormalisationRuleEnum.valueOf(RegexNormalisationRuleImpl.class.getName());
     }
     
@@ -30,7 +30,7 @@ public class RuleTestImplFactory implements RuleTestFactory
     @Override
     public RuleTestParser getParser()
     {
-        return new RuleTestImplParser();
+        return new RegexRuleTestImplParser();
     }
     
 }

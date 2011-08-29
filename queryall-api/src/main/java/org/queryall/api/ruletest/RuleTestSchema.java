@@ -40,22 +40,6 @@ public class RuleTestSchema
     }
     
     /**
-     * @return the ruletestInputTestString
-     */
-    public static URI getRuletestInputTestString()
-    {
-        return RuleTestSchema.ruletestInputTestString;
-    }
-    
-    /**
-     * @return the ruletestOutputTestString
-     */
-    public static URI getRuletestOutputTestString()
-    {
-        return RuleTestSchema.ruletestOutputTestString;
-    }
-    
-    /**
      * @return the ruletestTestsStage
      */
     public static URI getRuletestTestsStage()
@@ -78,24 +62,6 @@ public class RuleTestSchema
     public static void setRuletestHasRuleUri(final URI ruletestHasRuleUri)
     {
         RuleTestSchema.ruletestHasRuleUri = ruletestHasRuleUri;
-    }
-    
-    /**
-     * @param ruletestInputTestString
-     *            the ruletestInputTestString to set
-     */
-    public static void setRuletestInputTestString(final URI ruletestInputTestString)
-    {
-        RuleTestSchema.ruletestInputTestString = ruletestInputTestString;
-    }
-    
-    /**
-     * @param ruletestOutputTestString
-     *            the ruletestOutputTestString to set
-     */
-    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
-    {
-        RuleTestSchema.ruletestOutputTestString = ruletestOutputTestString;
     }
     
     /**
@@ -122,10 +88,6 @@ public class RuleTestSchema
     
     private static URI ruletestTestsStage;
     
-    private static URI ruletestInputTestString;
-    
-    private static URI ruletestOutputTestString;
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
@@ -135,9 +97,6 @@ public class RuleTestSchema
         RuleTestSchema.setRuletestTypeUri(f.createURI(baseUri, "RuleTest"));
         RuleTestSchema.setRuletestHasRuleUri(f.createURI(baseUri, "testsRules"));
         RuleTestSchema.setRuletestTestsStage(f.createURI(baseUri, "testsStages"));
-        
-        RuleTestSchema.setRuletestInputTestString(f.createURI(baseUri, "inputTestString"));
-        RuleTestSchema.setRuletestOutputTestString(f.createURI(baseUri, "outputTestString"));
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
@@ -166,18 +125,6 @@ public class RuleTestSchema
             con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
             con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(), contextKeyUri);
             con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(RuleTestSchema.getRuletestInputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RuleTestSchema.getRuletestInputTestString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RuleTestSchema.getRuletestInputTestString(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(),
-                    contextKeyUri);
-            con.add(RuleTestSchema.getRuletestInputTestString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(RuleTestSchema.getRuletestOutputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RuleTestSchema.getRuletestOutputTestString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RuleTestSchema.getRuletestOutputTestString(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(),
-                    contextKeyUri);
-            con.add(RuleTestSchema.getRuletestOutputTestString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

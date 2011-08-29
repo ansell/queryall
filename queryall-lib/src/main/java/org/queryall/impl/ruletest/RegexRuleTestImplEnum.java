@@ -14,25 +14,25 @@ import org.queryall.api.services.QueryAllEnum;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices(QueryAllEnum.class)
-public class RuleTestImplEnum extends RuleTestEnum
+public class RegexRuleTestImplEnum extends RuleTestEnum
 {
-    public static final RuleTestEnum RULE_TEST_IMPL_ENUM = new RuleTestImplEnum();
+    public static final RuleTestEnum REGEX_RULE_TEST_IMPL_ENUM = new RegexRuleTestImplEnum();
     
     // static
     // {
     // NormalisationRuleEnum.register(REGEX_NORMALISATION_RULE_IMPL_ENUM);
     // }
     
-    public RuleTestImplEnum()
+    public RegexRuleTestImplEnum()
     {
-        this(RuleTestImpl.class.getName(), RuleTestImpl.myTypes());
+        this(RegexRuleTestImpl.class.getName(), RegexRuleTestImpl.myTypes());
     }
     
     /**
      * @param nextName
      * @param nextTypeURIs
      */
-    public RuleTestImplEnum(final String nextName, final List<URI> nextTypeURIs)
+    public RegexRuleTestImplEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

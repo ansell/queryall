@@ -14,7 +14,7 @@ import org.queryall.api.ruletest.RuleTestParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RuleTestImplParser implements RuleTestParser
+public class RegexRuleTestImplParser implements RuleTestParser
 {
     @Override
     public RuleTest createObject(final Collection<Statement> rdfStatements, final URI subjectKey, final int modelVersion)
@@ -22,7 +22,7 @@ public class RuleTestImplParser implements RuleTestParser
     {
         try
         {
-            return new RuleTestImpl(rdfStatements, subjectKey, modelVersion);
+            return new RegexRuleTestImpl(rdfStatements, subjectKey, modelVersion);
         }
         catch(final OpenRDFException ex)
         {

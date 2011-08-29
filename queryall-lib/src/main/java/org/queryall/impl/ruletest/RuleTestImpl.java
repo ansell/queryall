@@ -6,10 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.openrdf.OpenRDFException;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -17,7 +15,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestSchema;
-import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -37,16 +34,12 @@ public class RuleTestImpl implements RuleTest
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
 
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     private URI key = null;
     
     private Collection<URI> rdfRuleUris = new HashSet<URI>();
     
     private Collection<URI> stages = new HashSet<URI>();
-    
-    private String testInputString = "";
-    
-    private String testOutputString = "";
     
     private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
@@ -88,14 +81,6 @@ public class RuleTestImpl implements RuleTest
             {
                 tempStages.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(RuleTestSchema.getRuletestInputTestString()))
-            {
-                this.setTestInputString(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(RuleTestSchema.getRuletestOutputTestString()))
-            {
-                this.setTestOutputString(nextStatement.getObject().stringValue());
-            }
             else
             {
                 this.addUnrecognisedStatement(nextStatement);
@@ -134,84 +119,7 @@ public class RuleTestImpl implements RuleTest
         return this.getKey().stringValue().compareTo(otherRuleTest.getKey().stringValue());
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if(this == obj)
-        {
-            return true;
-        }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(!(obj instanceof RuleTest))
-        {
-            return false;
-        }
-        final RuleTest other = (RuleTest)obj;
-        if(this.curationStatus == null)
-        {
-            if(other.getCurationStatus() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.curationStatus.equals(other.getCurationStatus()))
-        {
-            return false;
-        }
-        if(this.key == null)
-        {
-            if(other.getKey() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.key.equals(other.getKey()))
-        {
-            return false;
-        }
-        if(this.rdfRuleUris == null)
-        {
-            if(other.getRuleUris() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.rdfRuleUris.equals(other.getRuleUris()))
-        {
-            return false;
-        }
-        if(this.testInputString == null)
-        {
-            if(other.getTestInputString() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.testInputString.equals(other.getTestInputString()))
-        {
-            return false;
-        }
-        if(this.testOutputString == null)
-        {
-            if(other.getTestOutputString() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.testOutputString.equals(other.getTestOutputString()))
-        {
-            return false;
-        }
-        return true;
-    }
+
     
     /**
      * @return the curationStatus
@@ -268,24 +176,6 @@ public class RuleTestImpl implements RuleTest
         return this.stages;
     }
     
-    /**
-     * @return the testInputString
-     */
-    @Override
-    public String getTestInputString()
-    {
-        return this.testInputString;
-    }
-    
-    /**
-     * @return the testOutputString
-     */
-    @Override
-    public String getTestOutputString()
-    {
-        return this.testOutputString;
-    }
-    
     @Override
     public String getTitle()
     {
@@ -311,8 +201,6 @@ public class RuleTestImpl implements RuleTest
         result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
         result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
         result = prime * result + ((this.getRuleUris() == null) ? 0 : this.getRuleUris().hashCode());
-        result = prime * result + ((this.testInputString == null) ? 0 : this.testInputString.hashCode());
-        result = prime * result + ((this.testOutputString == null) ? 0 : this.testOutputString.hashCode());
         return result;
     }
     
@@ -362,26 +250,6 @@ public class RuleTestImpl implements RuleTest
         this.stages = stages;
     }
     
-    /**
-     * @param testInputString
-     *            the testInputString to set
-     */
-    @Override
-    public void setTestInputString(final String testInputString)
-    {
-        this.testInputString = testInputString;
-    }
-    
-    /**
-     * @param testOutputString
-     *            the testOutputString to set
-     */
-    @Override
-    public void setTestOutputString(final String testOutputString)
-    {
-        this.testOutputString = testOutputString;
-    }
-    
     @Override
     public void setTitle(final String title)
     {
@@ -397,10 +265,6 @@ public class RuleTestImpl implements RuleTest
         
         sb.append("<div class=\"" + prefix + "rulekey\">Rule Key: "
                 + StringUtils.xmlEncodeString(this.getKey().stringValue()) + "</div>\n");
-        sb.append("<div class=\"" + prefix + "testInputString\">Test Input String: "
-                + StringUtils.xmlEncodeString(this.testInputString + "") + "</div>\n");
-        sb.append("<div class=\"" + prefix + "testOutputString\">Test Output String: "
-                + StringUtils.xmlEncodeString(this.testOutputString + "") + "</div>\n");
         sb.append("<div class=\"" + prefix + "rdfruleuri\">Tests RDF Rules: "
                 + StringUtils.xmlEncodeString(this.rdfRuleUris.toString()) + "</div>\n");
         
@@ -424,13 +288,9 @@ public class RuleTestImpl implements RuleTest
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
-        
         try
         {
             final URI keyUri = this.getKey();
-            final Literal testInputStringLiteral = f.createLiteral(this.testInputString);
-            final Literal testOutputStringLiteral = f.createLiteral(this.testOutputString);
             
             URI curationStatusLiteral = null;
             
@@ -447,8 +307,6 @@ public class RuleTestImpl implements RuleTest
             
             con.add(keyUri, RDF.TYPE, RuleTestSchema.getRuletestTypeUri(), keyToUse);
             con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            con.add(keyUri, RuleTestSchema.getRuletestInputTestString(), testInputStringLiteral, keyToUse);
-            con.add(keyUri, RuleTestSchema.getRuletestOutputTestString(), testOutputStringLiteral, keyToUse);
             
             if(this.rdfRuleUris != null)
             {
@@ -492,8 +350,6 @@ public class RuleTestImpl implements RuleTest
         String result = "\n";
         
         result += "key=" + this.key + "\n";
-        result += "testInputString=" + this.testInputString + "\n";
-        result += "testOutputString=" + this.testOutputString + "\n";
         result += "rdfRuleUris=" + this.rdfRuleUris + "\n";
         
         return result;
