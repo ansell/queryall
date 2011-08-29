@@ -829,7 +829,8 @@ public final class RdfUtils
             final List<Statement> allDeclaredNamespaceEntrySubjects =
                     con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
             
-            final Map<URI, Collection<NamespaceEntryEnum>> uriToNamespaceEntryEnums = new HashMap<URI, Collection<NamespaceEntryEnum>>();
+            final Map<URI, Collection<NamespaceEntryEnum>> uriToNamespaceEntryEnums =
+                    new HashMap<URI, Collection<NamespaceEntryEnum>>();
             
             // TODO: why is this necessary
             ServiceUtils.getAllEnums();
@@ -856,7 +857,8 @@ public final class RdfUtils
                     }
                 }
                 
-                final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums = NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
+                final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums =
+                        NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
                 
                 RdfUtils.log.info("getNamespaceEntrys: matchingNamespaceEntryEnums=" + matchingNamespaceEntryEnums);
                 
@@ -872,7 +874,8 @@ public final class RdfUtils
             
             for(final URI nextSubjectUri : uriToNamespaceEntryEnums.keySet())
             {
-                final Collection<NamespaceEntryEnum> nextNamespaceEntryEnums = uriToNamespaceEntryEnums.get(nextSubjectUri);
+                final Collection<NamespaceEntryEnum> nextNamespaceEntryEnums =
+                        uriToNamespaceEntryEnums.get(nextSubjectUri);
                 
                 for(final NamespaceEntryEnum nextNamespaceEntryEnum : nextNamespaceEntryEnums)
                 {

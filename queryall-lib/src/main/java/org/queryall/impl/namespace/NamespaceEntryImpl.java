@@ -36,6 +36,14 @@ public class NamespaceEntryImpl implements NamespaceEntry
     @SuppressWarnings("unused")
     private static final boolean _INFO = NamespaceEntryImpl.log.isInfoEnabled();
     
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        results.add(NamespaceEntrySchema.getNamespaceTypeUri());
+        
+        return results;
+    }
+    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
@@ -222,7 +230,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
+        return NamespaceEntryImpl.myTypes();
     }
     
     @Override
@@ -511,14 +519,6 @@ public class NamespaceEntryImpl implements NamespaceEntry
         sb.append("description=" + this.getDescription() + "\n");
         
         return sb.toString();
-    }
-
-    public static List<URI> myTypes()
-    {
-        final List<URI> results = new ArrayList<URI>(1);
-        results.add(NamespaceEntrySchema.getNamespaceTypeUri());
-        
-        return results;
     }
     
 }

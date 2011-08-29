@@ -19,6 +19,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.ruletest.RegexRuleTest;
 import org.queryall.api.ruletest.RegexRuleTestSchema;
+import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,21 @@ public class RegexRuleTestImpl extends RuleTestImpl implements RegexRuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexRuleTestImpl.log.isInfoEnabled();
     
-
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(2);
+        
+        results.add(RuleTestSchema.getRuletestTypeUri());
+        results.add(RegexRuleTestSchema.getRegexRuletestTypeUri());
+        
+        return results;
+    }
+    
     private String testInputString = "";
+    
     private String testOutputString = "";
-
-    public RegexRuleTestImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
+    
+    public RegexRuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -49,45 +60,43 @@ public class RegexRuleTestImpl extends RuleTestImpl implements RegexRuleTest
         
         this.unrecognisedStatements = new HashSet<Statement>();
         
-        
-                
-                for(final Statement nextStatement : inputStatements)
-                {
-                    if(RegexRuleTestImpl._DEBUG)
-                    {
-                        RegexRuleTestImpl.log.debug("RegexRuleTestImpl: nextStatement: " + nextStatement.toString());
-                    }
-                    
-                    if(nextStatement.getPredicate().equals(RDF.TYPE)
-                            && nextStatement.getObject().equals(RegexRuleTestSchema.getRegexRuletestTypeUri()))
-                    {
-                        if(RegexRuleTestImpl._TRACE)
-                        {
-                            RegexRuleTestImpl.log.trace("RegexRuleTestImpl: found valid type predicate for URI: " + keyToUse);
-                        }
-                        
-                        this.setKey(keyToUse);
-                    }
-                    else if(nextStatement.getPredicate().equals(RegexRuleTestSchema.getRuletestInputTestString()))
-                    {
-                        this.setTestInputString(nextStatement.getObject().stringValue());
-                    }
-                    else if(nextStatement.getPredicate().equals(RegexRuleTestSchema.getRuletestOutputTestString()))
-                    {
-                        this.setTestOutputString(nextStatement.getObject().stringValue());
-                    }
-                    else
-                    {
-                        this.addUnrecognisedStatement(nextStatement);
-                    }
-                }
-                
+        for(final Statement nextStatement : inputStatements)
+        {
+            if(RegexRuleTestImpl._DEBUG)
+            {
+                RegexRuleTestImpl.log.debug("RegexRuleTestImpl: nextStatement: " + nextStatement.toString());
+            }
+            
+            if(nextStatement.getPredicate().equals(RDF.TYPE)
+                    && nextStatement.getObject().equals(RegexRuleTestSchema.getRegexRuletestTypeUri()))
+            {
                 if(RegexRuleTestImpl._TRACE)
                 {
-                    RegexRuleTestImpl.log.trace("RegexRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
+                    RegexRuleTestImpl.log.trace("RegexRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
+                
+                this.setKey(keyToUse);
+            }
+            else if(nextStatement.getPredicate().equals(RegexRuleTestSchema.getRuletestInputTestString()))
+            {
+                this.setTestInputString(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(RegexRuleTestSchema.getRuletestOutputTestString()))
+            {
+                this.setTestOutputString(nextStatement.getObject().stringValue());
+            }
+            else
+            {
+                this.addUnrecognisedStatement(nextStatement);
+            }
+        }
+        
+        if(RegexRuleTestImpl._TRACE)
+        {
+            RegexRuleTestImpl.log.trace("RegexRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
+        }
     }
-
+    
     /**
      * @return the testInputString
      */
@@ -96,7 +105,7 @@ public class RegexRuleTestImpl extends RuleTestImpl implements RegexRuleTest
     {
         return this.testInputString;
     }
-
+    
     /**
      * @return the testOutputString
      */
@@ -105,7 +114,7 @@ public class RegexRuleTestImpl extends RuleTestImpl implements RegexRuleTest
     {
         return this.testOutputString;
     }
-
+    
     /**
      * @param testInputString
      *            the testInputString to set
@@ -115,7 +124,7 @@ public class RegexRuleTestImpl extends RuleTestImpl implements RegexRuleTest
     {
         this.testInputString = testInputString;
     }
-
+    
     /**
      * @param testOutputString
      *            the testOutputString to set
@@ -174,15 +183,5 @@ public class RegexRuleTestImpl extends RuleTestImpl implements RegexRuleTest
         }
         
         return false;
-    }
-
-    public static List<URI> myTypes()
-    {
-        List<URI> results = new ArrayList<URI>(2);
-        
-        results.addAll(RuleTestImpl.myTypes());
-        results.add(RegexRuleTestSchema.getRegexRuletestTypeUri());
-
-        return results;
     }
 }

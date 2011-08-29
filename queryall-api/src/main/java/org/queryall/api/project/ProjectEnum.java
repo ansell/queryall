@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
+import org.queryall.api.profile.ProfileEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
@@ -24,15 +25,37 @@ public class ProjectEnum extends QueryAllEnum
     
     public static Collection<ProjectEnum> byTypeUris(final List<URI> nextProjectUris)
     {
+        if(nextProjectUris.size() == 0)
+        {
+            ProjectEnum.log.info("found an empty URI set for nextProjectUris=" + nextProjectUris);
+            return Collections.emptyList();
+        }
+        
         final List<ProjectEnum> results = new ArrayList<ProjectEnum>(ProjectEnum.ALL_PROJECTS.size());
         
         for(final ProjectEnum nextProjectEnum : ProjectEnum.ALL_PROJECTS)
         {
-            if(nextProjectEnum.getTypeURIs().equals(nextProjectUris))
+            boolean matching = (nextProjectEnum.getTypeURIs().size() == nextProjectUris.size());
+            
+            for(final URI nextURI : nextProjectEnum.getTypeURIs())
             {
+                if(!nextProjectUris.contains(nextURI))
+                {
+                    ProjectEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                ProjectEnum.log.info("found an matching URI set for nextProjectUris=" + nextProjectUris);
                 results.add(nextProjectEnum);
             }
         }
+        
+        ProjectEnum.log.info("returning results.size()=" + results.size() + " for nextProjectUris="
+                + nextProjectUris);
         
         return results;
     }

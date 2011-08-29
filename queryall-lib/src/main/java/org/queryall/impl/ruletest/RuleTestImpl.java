@@ -33,8 +33,17 @@ public class RuleTestImpl implements RuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
-
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(RuleTestSchema.getRuletestTypeUri());
+        
+        return results;
+    }
+    
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    
     private URI key = null;
     
     private Collection<URI> rdfRuleUris = new HashSet<URI>();
@@ -45,7 +54,6 @@ public class RuleTestImpl implements RuleTest
     
     private String title;
     
-
     public RuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
@@ -119,8 +127,6 @@ public class RuleTestImpl implements RuleTest
         return this.getKey().stringValue().compareTo(otherRuleTest.getKey().stringValue());
     }
     
-
-    
     /**
      * @return the curationStatus
      */
@@ -146,7 +152,7 @@ public class RuleTestImpl implements RuleTest
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
+        return RuleTestImpl.myTypes();
     }
     
     /**
@@ -353,15 +359,6 @@ public class RuleTestImpl implements RuleTest
         result += "rdfRuleUris=" + this.rdfRuleUris + "\n";
         
         return result;
-    }
-
-    public static List<URI> myTypes()
-    {
-        final List<URI> results = new ArrayList<URI>(1);
-        
-        results.add(RuleTestSchema.getRuletestTypeUri());
-        
-        return results;
     }
     
 }

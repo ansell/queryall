@@ -1030,7 +1030,7 @@ public class RdfUtilsTest
                     
                     Assert.assertTrue(nextRuleTest instanceof RegexRuleTest);
                     
-                    RegexRuleTest nextRegexRuleTest = (RegexRuleTest)nextRuleTest;
+                    final RegexRuleTest nextRegexRuleTest = (RegexRuleTest)nextRuleTest;
                     
                     Assert.assertEquals("RuleTest input string was not parsed correctly", "http://example.org/",
                             nextRegexRuleTest.getTestInputString());

@@ -33,6 +33,15 @@ public class ProjectImpl implements Project
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProjectImpl.log.isInfoEnabled();
     
+    public static List<URI> myTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProjectSchema.getProjectTypeUri());
+        
+        return results;
+    }
+    
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key = null;
@@ -45,7 +54,8 @@ public class ProjectImpl implements Project
     
     private URI curationStatus = null;
     
-    public ProjectImpl(Collection<Statement> rdfStatements, URI subjectKey, int modelVersion) throws OpenRDFException
+    public ProjectImpl(final Collection<Statement> rdfStatements, final URI subjectKey, final int modelVersion)
+        throws OpenRDFException
     {
         for(final Statement nextStatement : rdfStatements)
         {
@@ -86,8 +96,6 @@ public class ProjectImpl implements Project
             }
         }
     }
-    
-
     
     @Override
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
@@ -146,7 +154,7 @@ public class ProjectImpl implements Project
     @Override
     public Collection<URI> getElementTypes()
     {
-        return myTypes();
+        return ProjectImpl.myTypes();
     }
     
     /**
@@ -329,15 +337,6 @@ public class ProjectImpl implements Project
         sb.append("description=" + this.getDescription() + "\n");
         
         return sb.toString();
-    }
-
-    public static List<URI> myTypes()
-    {
-        final List<URI> results = new ArrayList<URI>(1);
-        
-        results.add(ProjectSchema.getProjectTypeUri());
-        
-        return results;
     }
     
 }

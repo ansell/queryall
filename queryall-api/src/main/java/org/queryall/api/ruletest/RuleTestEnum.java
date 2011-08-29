@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
+import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
@@ -24,19 +25,42 @@ public class RuleTestEnum extends QueryAllEnum
     
     public static Collection<RuleTestEnum> byTypeUris(final List<URI> nextRuleTestUris)
     {
-        final List<RuleTestEnum> results = new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
+        if(nextRuleTestUris.size() == 0)
+        {
+            QueryAllEnum.log.info("found an empty URI set for nextRuleTestUris=" + nextRuleTestUris);
+            return Collections.emptyList();
+        }
+        
+        final List<RuleTestEnum> results =
+                new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
         
         for(final RuleTestEnum nextRuleTestEnum : RuleTestEnum.ALL_RULE_TESTS)
         {
-            if(nextRuleTestEnum.getTypeURIs().equals(nextRuleTestUris))
+            boolean matching = (nextRuleTestEnum.getTypeURIs().size() == nextRuleTestUris.size());
+            
+            for(final URI nextURI : nextRuleTestEnum.getTypeURIs())
             {
+                if(!nextRuleTestUris.contains(nextURI))
+                {
+                    QueryAllEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                QueryAllEnum.log.info("found an matching URI set for nextRuleTestUris="
+                        + nextRuleTestUris);
                 results.add(nextRuleTestEnum);
             }
         }
         
+        QueryAllEnum.log.info("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
+                + nextRuleTestUris);
+        
         return results;
-    }
-    
+    }    
     /**
      * Registers the specified rule test.
      */

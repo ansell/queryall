@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
+import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.services.QueryAllEnum;
 
 /**
@@ -20,19 +21,41 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class ProfileEnum extends QueryAllEnum
 {
-    protected static final Collection<ProfileEnum> ALL_PROJECTS = new ArrayList<ProfileEnum>(5);
+    protected static final Collection<ProfileEnum> ALL_PROFILES = new ArrayList<ProfileEnum>(5);
     
     public static Collection<ProfileEnum> byTypeUris(final List<URI> nextProfileUris)
     {
-        final List<ProfileEnum> results = new ArrayList<ProfileEnum>(ProfileEnum.ALL_PROJECTS.size());
-        
-        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROJECTS)
+        if(nextProfileUris.size() == 0)
         {
-            if(nextProfileEnum.getTypeURIs().equals(nextProfileUris))
+            ProfileEnum.log.info("found an empty URI set for nextProfileUris=" + nextProfileUris);
+            return Collections.emptyList();
+        }
+        
+        final List<ProfileEnum> results = new ArrayList<ProfileEnum>(ProfileEnum.ALL_PROFILES.size());
+        
+        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROFILES)
+        {
+            boolean matching = (nextProfileEnum.getTypeURIs().size() == nextProfileUris.size());
+            
+            for(final URI nextURI : nextProfileEnum.getTypeURIs())
             {
+                if(!nextProfileUris.contains(nextURI))
+                {
+                    ProfileEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                ProfileEnum.log.info("found an matching URI set for nextProfileUris=" + nextProfileUris);
                 results.add(nextProfileEnum);
             }
         }
+        
+        ProfileEnum.log.info("returning results.size()=" + results.size() + " for nextProfileUris="
+                + nextProfileUris);
         
         return results;
     }
@@ -48,7 +71,7 @@ public class ProfileEnum extends QueryAllEnum
         }
         else
         {
-            ProfileEnum.ALL_PROJECTS.add(nextProfile);
+            ProfileEnum.ALL_PROFILES.add(nextProfile);
         }
     }
     
@@ -61,7 +84,7 @@ public class ProfileEnum extends QueryAllEnum
     
     public static ProfileEnum valueOf(final String string)
     {
-        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROJECTS)
+        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROFILES)
         {
             if(nextProfileEnum.getName().equals(string))
             {
@@ -77,7 +100,7 @@ public class ProfileEnum extends QueryAllEnum
      */
     public static Collection<ProfileEnum> values()
     {
-        return Collections.unmodifiableCollection(ProfileEnum.ALL_PROJECTS);
+        return Collections.unmodifiableCollection(ProfileEnum.ALL_PROFILES);
     }
     
     /**
@@ -89,6 +112,6 @@ public class ProfileEnum extends QueryAllEnum
     public ProfileEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        ProfileEnum.ALL_PROJECTS.add(this);
+        ProfileEnum.ALL_PROFILES.add(this);
     }
 }

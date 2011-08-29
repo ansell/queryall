@@ -34,17 +34,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
-    // public static final NormalisationRuleEnum REGEX_NORMALISATION_RULE_IMPL_ENUM =
-    // NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(),
-    // RegexNormalisationRuleImpl.myTypes());
-    
-    // static
-    // {
-    // // register this normalisation rule implementation with the central register
-    // NormalisationRuleEnum.register(RegexNormalisationRuleImpl.class.getName(),
-    // RegexNormalisationRuleImpl.myTypes());
-    // }
-    
     public static List<URI> myTypes()
     {
         final List<URI> results = new ArrayList<URI>(2);

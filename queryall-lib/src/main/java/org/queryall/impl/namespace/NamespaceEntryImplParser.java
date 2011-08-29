@@ -17,8 +17,8 @@ import org.queryall.api.namespace.NamespaceEntryParser;
 public class NamespaceEntryImplParser implements NamespaceEntryParser
 {
     @Override
-    public NamespaceEntry createObject(final Collection<Statement> rdfStatements, final URI subjectKey, final int modelVersion)
-        throws IllegalArgumentException
+    public NamespaceEntry createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
+            final int modelVersion) throws IllegalArgumentException
     {
         try
         {
