@@ -61,11 +61,17 @@ public abstract class AbstractServiceLoader<K, S>
                 
                 if(oldService != null)
                 {
-                    AbstractServiceLoader.log.warn("New service {} replaces existing service {}", service.getClass(),
+                    if(_DEBUG)
+                    {
+                        AbstractServiceLoader.log.debug("New service {} replaces existing service {}", service.getClass(),
                             oldService.getClass());
+                    }
                 }
                 
-                AbstractServiceLoader.log.info("Registered service class {}", service.getClass().getName());
+                if(_DEBUG)
+                {
+                    AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
+                }
             }
             catch(final Error e)
             {
@@ -76,8 +82,11 @@ public abstract class AbstractServiceLoader<K, S>
     
     public S add(final S service)
     {
-        AbstractServiceLoader.log.info("add key {} service class {}", this.getKey(service), service.getClass()
+        if(_DEBUG)
+        {
+            AbstractServiceLoader.log.debug("add key {} service class {}", this.getKey(service), service.getClass()
                 .getName());
+        }
         
         return this.services.put(this.getKey(service), service);
     }

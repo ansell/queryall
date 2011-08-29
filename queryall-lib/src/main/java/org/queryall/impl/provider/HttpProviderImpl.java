@@ -137,7 +137,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
         }
         else
         {
-            return "";
+            return defaultAcceptHeader;
         }
     }
     
@@ -245,9 +245,6 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             // create some resources and literals to make statements out of
             final URI providerInstanceUri = this.getKey();
             
-            // backwards compatibility check, and use default if nothing was previously specified
-            // NOTE: we assume empty accept header is non-intentional as it doesn't have a
-            // non-trivial purpose
             Literal acceptHeaderLiteral = null;
             
             if(this.acceptHeaderString != null && this.acceptHeaderString.trim().length() > 0)

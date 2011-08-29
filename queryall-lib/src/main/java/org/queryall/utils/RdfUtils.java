@@ -815,7 +815,7 @@ public final class RdfUtils
         {
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("getNamespaceEntrys: started parsing namespace entrys");
+                RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entrys");
             }
             
             // This is the base namespace entry URI, extensions or plugins must include this URI
@@ -860,7 +860,10 @@ public final class RdfUtils
                 final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums =
                         NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
                 
-                RdfUtils.log.info("getNamespaceEntrys: matchingNamespaceEntryEnums=" + matchingNamespaceEntryEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getNamespaceEntries: matchingNamespaceEntryEnums=" + matchingNamespaceEntryEnums);
+                }
                 
                 if(matchingNamespaceEntryEnums.size() > 0)
                 {
@@ -890,11 +893,11 @@ public final class RdfUtils
             if(RdfUtils._INFO)
             {
                 final long end = System.currentTimeMillis();
-                RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntrys", (end - start)));
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntries", (end - start)));
             }
             if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("getNamespaceEntrys: finished parsing namespace entrys");
+                RdfUtils.log.debug("getNamespaceEntries: finished parsing namespace entrys");
             }
             
             return results;
@@ -902,7 +905,7 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.error("getNamespaceEntrys:", e);
+            RdfUtils.log.error("getNamespaceEntries:", e);
         }
         finally
         {
@@ -976,7 +979,10 @@ public final class RdfUtils
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
                         NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
                 
-                RdfUtils.log.info("getQueryTypes: matchingNormalisationRuleEnums=" + matchingNormalisationRuleEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getQueryTypes: matchingNormalisationRuleEnums=" + matchingNormalisationRuleEnums);
+                }
                 
                 if(matchingNormalisationRuleEnums.size() > 0)
                 {
@@ -1037,75 +1043,6 @@ public final class RdfUtils
         
         return Collections.emptyMap();
     }
-    
-    // public static Map<URI, NormalisationRule> getNormalisationRules(final Repository
-    // myRepository)
-    // {
-    // if(RdfUtils._DEBUG)
-    // {
-    // RdfUtils.log.debug("getNormalisationRules: started parsing rdf normalisation rules");
-    // }
-    //
-    // final long start = System.currentTimeMillis();
-    //
-    // final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
-    //
-    // try
-    // {
-    // final RepositoryConnection con = myRepository.getConnection();
-    //
-    // // Import Regular Expression Normalisation Rules first
-    // final URI regexRuleTypeUri = RegexNormalisationRuleSchema.getRegexRuleTypeUri();
-    // for(final Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri,
-    // true).asList())
-    // {
-    // final URI nextSubjectUri = (URI)nextRegexRule.getSubject();
-    // results.put(nextSubjectUri,
-    // new RegexNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
-    // true)
-    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-    // }
-    //
-    // // Then do the same thing for SPARQL Normalisation Rules
-    // final URI sparqlRuleTypeUri = SparqlNormalisationRuleSchema.getSparqlRuleTypeUri();
-    // for(final Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri,
-    // true).asList())
-    // {
-    // final URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
-    // results.put(nextSubjectUri,
-    // new SparqlNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
-    // true)
-    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-    // }
-    //
-    // // Then do the same thing for XSLT Normalisation Rules
-    // final URI xsltRuleTypeUri = XsltNormalisationRuleSchema.getXsltRuleTypeUri();
-    // for(final Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri,
-    // true).asList())
-    // {
-    // final URI nextSubjectUri = (URI)nextXsltRule.getSubject();
-    // results.put(nextSubjectUri,
-    // new XsltNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-    // }
-    // }
-    // catch(final OpenRDFException e)
-    // {
-    // // handle exception
-    // RdfUtils.log.error("getNormalisationRules:", e);
-    // }
-    // if(RdfUtils._INFO)
-    // {
-    // final long end = System.currentTimeMillis();
-    // RdfUtils.log.info(String.format("%s: timing=%10d", "getNormalisationRules", (end - start)));
-    // }
-    // if(RdfUtils._DEBUG)
-    // {
-    // RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
-    // }
-    //
-    // return results;
-    // }
     
     /**
      * @param nextRepository
@@ -1257,7 +1194,10 @@ public final class RdfUtils
                 
                 final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
                 
-                RdfUtils.log.info("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
+                }
                 
                 if(matchingProfileEnums.size() > 0)
                 {
@@ -1370,7 +1310,10 @@ public final class RdfUtils
                 
                 final Collection<ProjectEnum> matchingProjectEnums = ProjectEnum.byTypeUris(nextProjectUris);
                 
-                RdfUtils.log.info("getProjects: matchingProjectEnums=" + matchingProjectEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
+                }
                 
                 if(matchingProjectEnums.size() > 0)
                 {
@@ -1448,7 +1391,10 @@ public final class RdfUtils
             // their customised type URIs
             final URI providerUri = ProviderSchema.getProviderTypeUri();
             
-            RdfUtils.log.info("getProviders: providerUri=" + providerUri.stringValue());
+            if(_DEBUG)
+            {
+                RdfUtils.log.debug("getProviders: providerUri=" + providerUri.stringValue());
+            }
             
             final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
             
@@ -1457,7 +1403,10 @@ public final class RdfUtils
             final List<Statement> allDeclaredProviderSubjects =
                     con.getStatements(null, RDF.TYPE, providerUri, true).asList();
             
-            RdfUtils.log.info("getProviders: allDeclaredProviderSubjects.size()=" + allDeclaredProviderSubjects.size());
+            if(_DEBUG)
+            {
+                RdfUtils.log.debug("getProviders: allDeclaredProviderSubjects.size()=" + allDeclaredProviderSubjects.size());
+            }
             
             final Map<URI, Collection<ProviderEnum>> uriToProviderEnums = new HashMap<URI, Collection<ProviderEnum>>();
             
@@ -1466,8 +1415,11 @@ public final class RdfUtils
             
             for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
             {
-                RdfUtils.log.info("getProviders: nextDeclaredProviderSubject.getSubject()="
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProviders: nextDeclaredProviderSubject.getSubject()="
                         + nextDeclaredProviderSubject.getSubject().stringValue());
+                }
                 
                 if(!(nextDeclaredProviderSubject.getSubject() instanceof URI))
                 {
@@ -1491,7 +1443,10 @@ public final class RdfUtils
                 
                 final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
                 
-                RdfUtils.log.info("getProviders: matchingProviderEnums=" + matchingProviderEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
+                }
                 
                 uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
             }
@@ -1599,7 +1554,10 @@ public final class RdfUtils
                 
                 final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
                 
-                RdfUtils.log.info("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
+                }
                 
                 uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
             }
@@ -1818,7 +1776,10 @@ public final class RdfUtils
                 
                 final Collection<RuleTestEnum> matchingRuleTestEnums = RuleTestEnum.byTypeUris(nextRuleTestUris);
                 
-                RdfUtils.log.info("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
+                }
                 
                 if(matchingRuleTestEnums.size() > 0)
                 {
