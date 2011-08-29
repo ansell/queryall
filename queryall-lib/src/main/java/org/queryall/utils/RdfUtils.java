@@ -66,13 +66,14 @@ import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.ruletest.RuleTestEnum;
+import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
-import org.queryall.impl.ruletest.RuleTestImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.query.QueryBundle;
@@ -1764,44 +1765,115 @@ public final class RdfUtils
     
     public static Map<URI, RuleTest> getRuleTests(final Repository myRepository)
     {
-        final Map<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getRuleTests: started parsing rule test configurations");
-        }
         final long start = System.currentTimeMillis();
+        RepositoryConnection con = null;
         
-        final URI ruleTestTypeUri = RuleTestImpl.getRuletestTypeUri();
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new RuleTestImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getRuleTests: started parsing ruleTests");
             }
+            
+            // This is the base ruleTest URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = RuleTestSchema.getRuletestTypeUri();
+            
+            final Map<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredRuleTestSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<RuleTestEnum>> uriToRuleTestEnums = new HashMap<URI, Collection<RuleTestEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredRuleTestSubject : allDeclaredRuleTestSubjects)
+            {
+                if(!(nextDeclaredRuleTestSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as rule test identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredRuleTestSubject.getSubject();
+                
+                final Collection<Value> nextRuleTestValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredRuleTestSubject.getSubject());
+                final List<URI> nextRuleTestUris = new ArrayList<URI>(nextRuleTestValues.size());
+                for(final Value nextRuleTestValue : nextRuleTestValues)
+                {
+                    if(nextRuleTestValue instanceof URI)
+                    {
+                        nextRuleTestUris.add((URI)nextRuleTestValue);
+                    }
+                }
+                
+                final Collection<RuleTestEnum> matchingRuleTestEnums = RuleTestEnum.byTypeUris(nextRuleTestUris);
+                
+                RdfUtils.log.info("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
+                
+                if(matchingRuleTestEnums.size() > 0)
+                {
+                    uriToRuleTestEnums.put(nextSubjectUri, matchingRuleTestEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No rule test enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToRuleTestEnums.keySet())
+            {
+                final Collection<RuleTestEnum> nextRuleTestEnums = uriToRuleTestEnums.get(nextSubjectUri);
+                
+                for(final RuleTestEnum nextRuleTestEnum : nextRuleTestEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getRuleTests", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getRuleTests: finished parsing rule tests");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
             RdfUtils.log.error("getRuleTests:", e);
         }
-        
-        if(RdfUtils._INFO)
+        finally
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getRuleTests", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getRuleTests: finished getting rdf rule tests");
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Repository getSchemas()
@@ -1915,7 +1987,7 @@ public final class RdfUtils
         
         try
         {
-            if(!RuleTestImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!RuleTestSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("RuleTest schema was not placed correctly in the rdf store");
             }
