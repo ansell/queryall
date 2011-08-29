@@ -9,8 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RuleTest implementations register themselves with this enumeration when they are loaded.
@@ -21,18 +22,28 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class RuleTestEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(RuleTestEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = RuleTestEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = RuleTestEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = RuleTestEnum.log.isInfoEnabled();
+    
     protected static final Collection<RuleTestEnum> ALL_RULE_TESTS = new ArrayList<RuleTestEnum>(5);
     
     public static Collection<RuleTestEnum> byTypeUris(final List<URI> nextRuleTestUris)
     {
         if(nextRuleTestUris.size() == 0)
         {
-            QueryAllEnum.log.info("found an empty URI set for nextRuleTestUris=" + nextRuleTestUris);
+            if(RuleTestEnum._DEBUG)
+            {
+                RuleTestEnum.log.debug("found an empty URI set for nextRuleTestUris=" + nextRuleTestUris);
+            }
+            
             return Collections.emptyList();
         }
         
-        final List<RuleTestEnum> results =
-                new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
+        final List<RuleTestEnum> results = new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
         
         for(final RuleTestEnum nextRuleTestEnum : RuleTestEnum.ALL_RULE_TESTS)
         {
@@ -42,7 +53,10 @@ public class RuleTestEnum extends QueryAllEnum
             {
                 if(!nextRuleTestUris.contains(nextURI))
                 {
-                    QueryAllEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(RuleTestEnum._DEBUG)
+                    {
+                        RuleTestEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -50,17 +64,24 @@ public class RuleTestEnum extends QueryAllEnum
             
             if(matching)
             {
-                QueryAllEnum.log.info("found an matching URI set for nextRuleTestUris="
-                        + nextRuleTestUris);
+                if(RuleTestEnum._DEBUG)
+                {
+                    RuleTestEnum.log.debug("found an matching URI set for nextRuleTestUris=" + nextRuleTestUris);
+                }
+                
                 results.add(nextRuleTestEnum);
             }
         }
         
-        QueryAllEnum.log.info("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
-                + nextRuleTestUris);
+        if(RuleTestEnum._DEBUG)
+        {
+            RuleTestEnum.log.debug("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
+                    + nextRuleTestUris);
+        }
         
         return results;
-    }    
+    }
+    
     /**
      * Registers the specified rule test.
      */
@@ -68,7 +89,10 @@ public class RuleTestEnum extends QueryAllEnum
     {
         if(RuleTestEnum.valueOf(nextRuleTest.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this rule test again name=" + nextRuleTest.getName());
+            if(RuleTestEnum._DEBUG)
+            {
+                RuleTestEnum.log.debug("Cannot register this rule test again name=" + nextRuleTest.getName());
+            }
         }
         else
         {

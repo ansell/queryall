@@ -5,11 +5,21 @@ package org.queryall.api.services;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  */
 public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnum>
 {
+    private static final Logger log = LoggerFactory.getLogger(EnumServiceLoader.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = EnumServiceLoader.log.isTraceEnabled();
+    private static final boolean _DEBUG = EnumServiceLoader.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = EnumServiceLoader.log.isInfoEnabled();
+    
     private static EnumServiceLoader defaultRegistry;
     
     public static synchronized EnumServiceLoader getInstance()
@@ -33,7 +43,10 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     {
         for(final String nextKey : this.services.keySet())
         {
-            AbstractServiceLoader.log.info("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+            if(EnumServiceLoader._DEBUG)
+            {
+                EnumServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+            }
         }
         
         return super.getAll();

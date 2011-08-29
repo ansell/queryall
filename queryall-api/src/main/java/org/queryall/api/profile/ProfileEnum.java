@@ -9,8 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Profile implementations register themselves with this enumeration when they are loaded.
@@ -21,13 +22,24 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class ProfileEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(ProfileEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = ProfileEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = ProfileEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = ProfileEnum.log.isInfoEnabled();
+    
     protected static final Collection<ProfileEnum> ALL_PROFILES = new ArrayList<ProfileEnum>(5);
     
     public static Collection<ProfileEnum> byTypeUris(final List<URI> nextProfileUris)
     {
         if(nextProfileUris.size() == 0)
         {
-            ProfileEnum.log.info("found an empty URI set for nextProfileUris=" + nextProfileUris);
+            if(ProfileEnum._DEBUG)
+            {
+                ProfileEnum.log.debug("found an empty URI set for nextProfileUris=" + nextProfileUris);
+            }
+            
             return Collections.emptyList();
         }
         
@@ -41,7 +53,10 @@ public class ProfileEnum extends QueryAllEnum
             {
                 if(!nextProfileUris.contains(nextURI))
                 {
-                    ProfileEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(ProfileEnum._DEBUG)
+                    {
+                        ProfileEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -49,13 +64,20 @@ public class ProfileEnum extends QueryAllEnum
             
             if(matching)
             {
-                ProfileEnum.log.info("found an matching URI set for nextProfileUris=" + nextProfileUris);
+                if(ProfileEnum._DEBUG)
+                {
+                    ProfileEnum.log.debug("found an matching URI set for nextProfileUris=" + nextProfileUris);
+                }
+                
                 results.add(nextProfileEnum);
             }
         }
         
-        ProfileEnum.log.info("returning results.size()=" + results.size() + " for nextProfileUris="
-                + nextProfileUris);
+        if(ProfileEnum._DEBUG)
+        {
+            ProfileEnum.log.debug("returning results.size()=" + results.size() + " for nextProfileUris="
+                    + nextProfileUris);
+        }
         
         return results;
     }
@@ -67,7 +89,10 @@ public class ProfileEnum extends QueryAllEnum
     {
         if(ProfileEnum.valueOf(nextProfile.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this profile again name=" + nextProfile.getName());
+            if(ProfileEnum._DEBUG)
+            {
+                ProfileEnum.log.debug("Cannot register this profile again name=" + nextProfile.getName());
+            }
         }
         else
         {

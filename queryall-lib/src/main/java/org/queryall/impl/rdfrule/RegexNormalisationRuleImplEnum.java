@@ -9,6 +9,8 @@ import org.kohsuke.MetaInfServices;
 import org.openrdf.model.URI;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -16,6 +18,13 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(RegexNormalisationRuleImplEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = RegexNormalisationRuleImplEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = RegexNormalisationRuleImplEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = RegexNormalisationRuleImplEnum.log.isInfoEnabled();
+    
     public static final NormalisationRuleEnum REGEX_NORMALISATION_RULE_IMPL_ENUM = new RegexNormalisationRuleImplEnum();
     
     // static
@@ -27,7 +36,10 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
     {
         this(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
         
-        QueryAllEnum.log.info("RegexNormalisationRuleImplEnum() registered");
+        if(RegexNormalisationRuleImplEnum._DEBUG)
+        {
+            RegexNormalisationRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum() registered");
+        }
     }
     
     /**
@@ -38,7 +50,10 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
     {
         super(nextName, nextTypeURIs);
         
-        QueryAllEnum.log.info("RegexNormalisationRuleImplEnum(String, List<URI>) registered");
+        if(RegexNormalisationRuleImplEnum._DEBUG)
+        {
+            RegexNormalisationRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum(String, List<URI>) registered");
+        }
     }
     
 }

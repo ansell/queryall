@@ -9,8 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.project.ProjectEnum;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NamespaceEntry implementations register themselves with this enumeration when they are loaded.
@@ -21,17 +22,29 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class NamespaceEntryEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(NamespaceEntryEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = NamespaceEntryEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = NamespaceEntryEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = NamespaceEntryEnum.log.isInfoEnabled();
+    
     protected static final Collection<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new ArrayList<NamespaceEntryEnum>(5);
     
     public static Collection<NamespaceEntryEnum> byTypeUris(final List<URI> nextNamespaceEntryUris)
     {
         if(nextNamespaceEntryUris.size() == 0)
         {
-            NamespaceEntryEnum.log.info("found an empty URI set for nextNamespaceEntryUris=" + nextNamespaceEntryUris);
+            if(NamespaceEntryEnum._DEBUG)
+            {
+                NamespaceEntryEnum.log.debug("found an empty URI set for nextNamespaceEntryUris="
+                        + nextNamespaceEntryUris);
+            }
             return Collections.emptyList();
         }
         
-        final List<NamespaceEntryEnum> results = new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.size());
+        final List<NamespaceEntryEnum> results =
+                new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.size());
         
         for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES)
         {
@@ -41,7 +54,10 @@ public class NamespaceEntryEnum extends QueryAllEnum
             {
                 if(!nextNamespaceEntryUris.contains(nextURI))
                 {
-                    NamespaceEntryEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(NamespaceEntryEnum._DEBUG)
+                    {
+                        NamespaceEntryEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -49,13 +65,20 @@ public class NamespaceEntryEnum extends QueryAllEnum
             
             if(matching)
             {
-                NamespaceEntryEnum.log.info("found an matching URI set for nextNamespaceEntryUris=" + nextNamespaceEntryUris);
+                if(NamespaceEntryEnum._DEBUG)
+                {
+                    NamespaceEntryEnum.log.debug("found an matching URI set for nextNamespaceEntryUris="
+                            + nextNamespaceEntryUris);
+                }
                 results.add(nextNamespaceEntryEnum);
             }
         }
         
-        NamespaceEntryEnum.log.info("returning results.size()=" + results.size() + " for nextNamespaceEntryUris="
-                + nextNamespaceEntryUris);
+        if(NamespaceEntryEnum._DEBUG)
+        {
+            NamespaceEntryEnum.log.debug("returning results.size()=" + results.size() + " for nextNamespaceEntryUris="
+                    + nextNamespaceEntryUris);
+        }
         
         return results;
     }
@@ -67,7 +90,11 @@ public class NamespaceEntryEnum extends QueryAllEnum
     {
         if(NamespaceEntryEnum.valueOf(nextNamespaceEntry.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this namespace entry again name=" + nextNamespaceEntry.getName());
+            if(NamespaceEntryEnum._DEBUG)
+            {
+                NamespaceEntryEnum.log.debug("Cannot register this namespace entry again name="
+                        + nextNamespaceEntry.getName());
+            }
         }
         else
         {

@@ -22,7 +22,13 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractServiceLoader<K, S>
 {
-    protected static Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = AbstractServiceLoader.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = AbstractServiceLoader.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = AbstractServiceLoader.log.isInfoEnabled();
     
     protected Map<K, S> services = Collections.synchronizedMap(new HashMap<K, S>());
     

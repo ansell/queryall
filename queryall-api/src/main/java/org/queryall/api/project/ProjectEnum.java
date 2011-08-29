@@ -9,8 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openrdf.model.URI;
-import org.queryall.api.profile.ProfileEnum;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Project implementations register themselves with this enumeration when they are loaded.
@@ -21,13 +22,23 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class ProjectEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(ProjectEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = ProjectEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = ProjectEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = ProjectEnum.log.isInfoEnabled();
+    
     protected static final Collection<ProjectEnum> ALL_PROJECTS = new ArrayList<ProjectEnum>(5);
     
     public static Collection<ProjectEnum> byTypeUris(final List<URI> nextProjectUris)
     {
         if(nextProjectUris.size() == 0)
         {
-            ProjectEnum.log.info("found an empty URI set for nextProjectUris=" + nextProjectUris);
+            if(ProjectEnum._DEBUG)
+            {
+                ProjectEnum.log.debug("found an empty URI set for nextProjectUris=" + nextProjectUris);
+            }
             return Collections.emptyList();
         }
         
@@ -41,7 +52,10 @@ public class ProjectEnum extends QueryAllEnum
             {
                 if(!nextProjectUris.contains(nextURI))
                 {
-                    ProjectEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(ProjectEnum._DEBUG)
+                    {
+                        ProjectEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -49,13 +63,19 @@ public class ProjectEnum extends QueryAllEnum
             
             if(matching)
             {
-                ProjectEnum.log.info("found an matching URI set for nextProjectUris=" + nextProjectUris);
+                if(ProjectEnum._DEBUG)
+                {
+                    ProjectEnum.log.debug("found an matching URI set for nextProjectUris=" + nextProjectUris);
+                }
                 results.add(nextProjectEnum);
             }
         }
         
-        ProjectEnum.log.info("returning results.size()=" + results.size() + " for nextProjectUris="
-                + nextProjectUris);
+        if(ProjectEnum._DEBUG)
+        {
+            ProjectEnum.log.debug("returning results.size()=" + results.size() + " for nextProjectUris="
+                    + nextProjectUris);
+        }
         
         return results;
     }
@@ -67,7 +87,10 @@ public class ProjectEnum extends QueryAllEnum
     {
         if(ProjectEnum.valueOf(nextProject.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this project again name=" + nextProject.getName());
+            if(ProjectEnum._DEBUG)
+            {
+                ProjectEnum.log.debug("Cannot register this project again name=" + nextProject.getName());
+            }
         }
         else
         {

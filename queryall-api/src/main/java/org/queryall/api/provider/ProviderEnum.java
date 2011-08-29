@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provider implementations register themselves with this enumeration when they are loaded.
@@ -20,19 +22,32 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class ProviderEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(ProviderEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = ProviderEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = ProviderEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = ProviderEnum.log.isInfoEnabled();
+    
     protected static final Collection<ProviderEnum> ALL_PROVIDERS = new ArrayList<ProviderEnum>(5);
     
     public static Collection<ProviderEnum> byTypeUris(final List<URI> nextProviderUris)
     {
         if(nextProviderUris.size() == 0)
         {
-            QueryAllEnum.log.info("found an empty URI set for nextProviderUris=" + nextProviderUris);
+            if(ProviderEnum._DEBUG)
+            {
+                ProviderEnum.log.debug("found an empty URI set for nextProviderUris=" + nextProviderUris);
+            }
             return Collections.emptyList();
         }
         else
         {
-            QueryAllEnum.log.info("found a URI set for nextProviderUris.size()=" + nextProviderUris.size());
-            QueryAllEnum.log.info("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
+            if(ProviderEnum._DEBUG)
+            {
+                ProviderEnum.log.debug("found a URI set for nextProviderUris.size()=" + nextProviderUris.size());
+                ProviderEnum.log.debug("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
+            }
         }
         
         final List<ProviderEnum> results = new ArrayList<ProviderEnum>(ProviderEnum.ALL_PROVIDERS.size());
@@ -45,7 +60,10 @@ public class ProviderEnum extends QueryAllEnum
             {
                 if(!nextProviderUris.contains(nextURI))
                 {
-                    QueryAllEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(ProviderEnum._DEBUG)
+                    {
+                        ProviderEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -53,13 +71,19 @@ public class ProviderEnum extends QueryAllEnum
             
             if(matching)
             {
-                QueryAllEnum.log.info("found an matching URI set for nextProviderUris=" + nextProviderUris);
+                if(ProviderEnum._DEBUG)
+                {
+                    ProviderEnum.log.debug("found an matching URI set for nextProviderUris=" + nextProviderUris);
+                }
                 results.add(nextProviderEnum);
             }
         }
         
-        QueryAllEnum.log.info("returning results.size()=" + results.size() + " for nextProviderUris="
-                + nextProviderUris);
+        if(ProviderEnum._DEBUG)
+        {
+            ProviderEnum.log.debug("returning results.size()=" + results.size() + " for nextProviderUris="
+                    + nextProviderUris);
+        }
         
         return results;
     }
@@ -71,7 +95,10 @@ public class ProviderEnum extends QueryAllEnum
     {
         if(ProviderEnum.valueOf(nextProvider.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this provider again name=" + nextProvider.getName());
+            if(ProviderEnum._DEBUG)
+            {
+                ProviderEnum.log.debug("Cannot register this provider again name=" + nextProvider.getName());
+            }
         }
         else
         {
