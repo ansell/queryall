@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
+import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.blacklist.BlacklistController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 HttpUrlQueryRunnable.log.trace("HttpUrlQueryRunnable.run: about to fetch");
             }
             
-            if(this.httpOperation.equals(HttpProviderSchema.getProviderHttpPostSparqlUri().stringValue()))
+            if(this.httpOperation.equals(SparqlProviderSchema.getProviderHttpPostSparql().stringValue()))
             {
                 this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "",
                         this.maxRowsParameter, this.getAcceptHeader()));

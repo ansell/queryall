@@ -49,6 +49,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
@@ -223,7 +224,7 @@ public final class RdfUtils
         
         nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
-        dummyProvider.setEndpointMethod(HttpProviderSchema.getProviderHttpPostSparql());
+        dummyProvider.setEndpointMethod(SparqlProviderSchema.getProviderHttpPostSparql());
         dummyProvider.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));
         dummyProvider.setIsDefaultSource(true);

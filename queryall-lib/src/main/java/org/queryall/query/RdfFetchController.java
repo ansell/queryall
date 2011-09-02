@@ -16,6 +16,7 @@ import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
@@ -292,7 +293,7 @@ public class RdfFetchController
             boolean addToFetchQueue = false;
             
             if(nextBundle.getOriginalProvider().getEndpointMethod()
-                    .equals(HttpProviderSchema.getProviderHttpPostSparql()))
+                    .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,

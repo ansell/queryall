@@ -20,6 +20,7 @@ import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
@@ -78,7 +79,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(HttpProviderSchema.getProviderHttpProviderUri()))
+                    && nextStatement.getObject().equals(HttpProviderSchema.getProviderHttpTypeUri()))
             {
                 if(HttpProviderImpl._TRACE)
                 {
@@ -88,11 +89,11 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
                 // resultIsValid = true;
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderAcceptHeader()))
+            else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderHttpAcceptHeader()))
             {
                 this.setAcceptHeaderString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderEndpointUrl()))
+            else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderHttpEndpointUrl()))
             {
                 this.addEndpointUrl(nextStatement.getObject().stringValue());
             }
@@ -150,8 +151,8 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     {
         final Collection<URI> results = super.getElementTypes();
         
-        results.add(HttpProviderSchema.getProviderHttpProviderUri());
-        results.add(HttpProviderSchema.getProviderSparqlProviderUri());
+        results.add(HttpProviderSchema.getProviderHttpTypeUri());
+        results.add(SparqlProviderSchema.getProviderSparqlTypeUri());
         
         return results;
     }
@@ -196,7 +197,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     @Override
     public boolean isHttpPostSparql()
     {
-        return this.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpPostSparql());
+        return this.getEndpointMethod().equals(SparqlProviderSchema.getProviderHttpPostSparql());
     }
     
     @Override
@@ -264,7 +265,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             
             if(acceptHeaderLiteral != null)
             {
-                con.add(providerInstanceUri, HttpProviderSchema.getProviderAcceptHeader(), acceptHeaderLiteral,
+                con.add(providerInstanceUri, HttpProviderSchema.getProviderHttpAcceptHeader(), acceptHeaderLiteral,
                         keyToUse);
             }
             
@@ -279,7 +280,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
                 {
                     if(nextEndpointUrl != null)
                     {
-                        con.add(providerInstanceUri, HttpProviderSchema.getProviderEndpointUrl(),
+                        con.add(providerInstanceUri, HttpProviderSchema.getProviderHttpEndpointUrl(),
                                 f.createLiteral(nextEndpointUrl), keyToUse);
                     }
                 }

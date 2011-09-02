@@ -29,14 +29,10 @@ public class HttpProviderSchema
     private static final boolean _INFO = HttpProviderSchema.log.isInfoEnabled();
     
     private static URI providerHttpProviderUri;
-    // FIXME: Move this to SparqlProviderSchema
-    private static URI providerHttpPostSparql;
     private static URI providerHttpGetUrl;
     private static URI providerHttpPostUrl;
     private static URI providerAcceptHeader;
     private static URI providerEndpointUrl;
-    // FIXME: Move this to SparqlProviderSchema
-    private static URI providerSparqlProviderUri;
     
     static
     {
@@ -45,10 +41,8 @@ public class HttpProviderSchema
         final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
         HttpProviderSchema.setProviderHttpProviderUri(f.createURI(baseUri, "HttpProvider"));
-        HttpProviderSchema.setProviderSparqlProviderUri(f.createURI(baseUri, "SparqlProvider"));
         HttpProviderSchema.setProviderEndpointUrl(f.createURI(baseUri, "endpointUrl"));
         HttpProviderSchema.setProviderAcceptHeader(f.createURI(baseUri, "acceptHeader"));
-        HttpProviderSchema.setProviderHttpPostSparql(f.createURI(baseUri, "httppostsparql"));
         HttpProviderSchema.setProviderHttpGetUrl(f.createURI(baseUri, "httpgeturl"));
         HttpProviderSchema.setProviderHttpPostUrl(f.createURI(baseUri, "httpposturl"));
     }
@@ -56,7 +50,7 @@ public class HttpProviderSchema
     /**
      * @return the providerAcceptHeader
      */
-    public static URI getProviderAcceptHeader()
+    public static URI getProviderHttpAcceptHeader()
     {
         return HttpProviderSchema.providerAcceptHeader;
     }
@@ -64,7 +58,7 @@ public class HttpProviderSchema
     /**
      * @return the providerEndpointUrl
      */
-    public static URI getProviderEndpointUrl()
+    public static URI getProviderHttpEndpointUrl()
     {
         return HttpProviderSchema.providerEndpointUrl;
     }
@@ -81,20 +75,7 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.getProviderHttpGetUrl();
     }
-    
-    /**
-     * @return the providerHttpPostSparql
-     */
-    public static URI getProviderHttpPostSparql()
-    {
-        return HttpProviderSchema.providerHttpPostSparql;
-    }
-    
-    public static URI getProviderHttpPostSparqlUri()
-    {
-        return HttpProviderSchema.getProviderHttpPostSparql();
-    }
-    
+
     /**
      * @return the providerHttpPostUrl
      */
@@ -111,17 +92,9 @@ public class HttpProviderSchema
     /**
      * @return the providerHttpProviderUri
      */
-    public static URI getProviderHttpProviderUri()
+    public static URI getProviderHttpTypeUri()
     {
         return HttpProviderSchema.providerHttpProviderUri;
-    }
-    
-    /**
-     * @return the providerSparqlProviderUri
-     */
-    public static URI getProviderSparqlProviderUri()
-    {
-        return HttpProviderSchema.providerSparqlProviderUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -137,22 +110,24 @@ public class HttpProviderSchema
         {
             con.setAutoCommit(false);
             
-            con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(HttpProviderSchema.getProviderHttpProviderUri(), RDFS.SUBCLASSOF,
+            con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDFS.LABEL,
+                    f.createLiteral("The class of HTTP based Data Providers."), contextUri);
+            con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDFS.SUBCLASSOF,
                     ProviderSchema.getProviderTypeUri(), contextUri);
             
-            con.add(HttpProviderSchema.getProviderAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(HttpProviderSchema.getProviderAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(HttpProviderSchema.getProviderAcceptHeader(), RDFS.DOMAIN,
-                    HttpProviderSchema.getProviderHttpProviderUri(), contextUri);
-            con.add(HttpProviderSchema.getProviderAcceptHeader(), RDFS.LABEL,
+            con.add(HttpProviderSchema.getProviderHttpAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(HttpProviderSchema.getProviderHttpAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(HttpProviderSchema.getProviderHttpAcceptHeader(), RDFS.DOMAIN,
+                    HttpProviderSchema.getProviderHttpTypeUri(), contextUri);
+            con.add(HttpProviderSchema.getProviderHttpAcceptHeader(), RDFS.LABEL,
                     f.createLiteral("The HTTP Accept header to send to this provider."), contextUri);
             
-            con.add(HttpProviderSchema.getProviderEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(HttpProviderSchema.getProviderEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(HttpProviderSchema.getProviderEndpointUrl(), RDFS.DOMAIN,
-                    HttpProviderSchema.getProviderHttpProviderUri(), contextUri);
-            con.add(HttpProviderSchema.getProviderEndpointUrl(),
+            con.add(HttpProviderSchema.getProviderHttpEndpointUrl(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(HttpProviderSchema.getProviderHttpEndpointUrl(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(HttpProviderSchema.getProviderHttpEndpointUrl(), RDFS.DOMAIN,
+                    HttpProviderSchema.getProviderHttpTypeUri(), contextUri);
+            con.add(HttpProviderSchema.getProviderHttpEndpointUrl(),
                     RDFS.LABEL,
                     f.createLiteral("The URL template for this provider. If it contains variables, these may be replaced when executing a query."),
                     contextUri);
@@ -212,15 +187,6 @@ public class HttpProviderSchema
     }
     
     /**
-     * @param providerHttpPostSparql
-     *            the providerHttpPostSparql to set
-     */
-    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
-    {
-        HttpProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
-    }
-    
-    /**
      * @param providerHttpPostUrl
      *            the providerHttpPostUrl to set
      */
@@ -236,14 +202,5 @@ public class HttpProviderSchema
     public static void setProviderHttpProviderUri(final URI providerHttpProviderUri)
     {
         HttpProviderSchema.providerHttpProviderUri = providerHttpProviderUri;
-    }
-    
-    /**
-     * @param providerSparqlProviderUri
-     *            the providerSparqlProviderUri to set
-     */
-    public static void setProviderSparqlProviderUri(final URI providerSparqlProviderUri)
-    {
-        HttpProviderSchema.providerSparqlProviderUri = providerSparqlProviderUri;
     }
 }

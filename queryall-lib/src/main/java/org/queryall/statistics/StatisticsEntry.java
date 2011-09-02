@@ -24,6 +24,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
+import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
@@ -705,8 +706,8 @@ public class StatisticsEntry implements BaseQueryAllInterface
     public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
-        if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostSparqlUri())
-                .equals(HttpProviderSchema.getProviderHttpPostSparqlUri()))
+        if(localSettings.getURIProperty("statisticsServerMethod", SparqlProviderSchema.getProviderHttpPostSparql())
+                .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
         {
             final Repository myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();

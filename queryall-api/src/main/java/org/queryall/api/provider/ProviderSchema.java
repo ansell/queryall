@@ -46,9 +46,9 @@ public class ProviderSchema
     
     private static URI providerResolutionMethod;
     
-    private static URI providerRequiresSparqlGraphURI;
+    private static URI providerSparqlRequiresGraphURI;
     
-    private static URI providerGraphUri;
+    private static URI providerSparqlGraphUri;
     
     private static URI providerIncludedInQuery;
     
@@ -104,7 +104,7 @@ public class ProviderSchema
      */
     public static URI getProviderSparqlGraphUri()
     {
-        return ProviderSchema.providerGraphUri;
+        return ProviderSchema.providerSparqlGraphUri;
     }
     
     /**
@@ -168,7 +168,7 @@ public class ProviderSchema
      */
     public static URI getProviderSparqlRequiresGraphURI()
     {
-        return ProviderSchema.providerRequiresSparqlGraphURI;
+        return ProviderSchema.providerSparqlRequiresGraphURI;
     }
     
     /**
@@ -346,7 +346,7 @@ public class ProviderSchema
      */
     public static void setProviderSparqlGraphUri(final URI providerGraphUri)
     {
-        ProviderSchema.providerGraphUri = providerGraphUri;
+        ProviderSchema.providerSparqlGraphUri = providerGraphUri;
     }
     
     /**
@@ -418,7 +418,7 @@ public class ProviderSchema
      */
     public static void setProviderSparqlRequiresGraphURI(final URI providerRequiresSparqlGraphURI)
     {
-        ProviderSchema.providerRequiresSparqlGraphURI = providerRequiresSparqlGraphURI;
+        ProviderSchema.providerSparqlRequiresGraphURI = providerRequiresSparqlGraphURI;
     }
     
     /**
