@@ -25,7 +25,6 @@ public abstract class AbstractServiceLoader<K, S>
     private static final Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
     @SuppressWarnings("unused")
     private static final boolean _TRACE = AbstractServiceLoader.log.isTraceEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _DEBUG = AbstractServiceLoader.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = AbstractServiceLoader.log.isInfoEnabled();

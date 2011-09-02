@@ -25,7 +25,7 @@ public class HttpOnlyProviderImpl extends HttpProviderImpl
         final List<URI> results = new ArrayList<URI>(2);
         
         results.add(ProviderSchema.getProviderTypeUri());
-        results.add(HttpProviderSchema.getProviderHttpProviderUri());
+        results.add(HttpProviderSchema.getProviderHttpTypeUri());
         
         return results;
     }
