@@ -120,7 +120,7 @@ public class ProviderImpl implements Provider
             {
                 this.setRedirectOrProxy((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderHandledNamespace()))
+            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderHandlesNamespace()))
             {
                 this.addNamespace((URI)nextStatement.getObject());
             }
@@ -749,7 +749,7 @@ public class ProviderImpl implements Provider
                 {
                     if(nextNamespace != null)
                     {
-                        con.add(providerInstanceUri, ProviderSchema.getProviderHandledNamespace(), nextNamespace,
+                        con.add(providerInstanceUri, ProviderSchema.getProviderHandlesNamespace(), nextNamespace,
                                 keyToUse);
                     }
                 }

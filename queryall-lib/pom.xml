@@ -76,42 +76,42 @@
 			<artifactId>sesame-rio-rdfxml</artifactId>
 			<version>${sesame.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-n3</artifactId>
 			<version>${sesame.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-trix</artifactId>
 			<version>${sesame.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-trig</artifactId>
 			<version>${sesame.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.fortytwo.sesametools</groupId>
 			<artifactId>rdfjson</artifactId>
 			<version>${sesametools.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.fortytwo.sesametools</groupId>
 			<artifactId>nquads</artifactId>
 			<version>${sesametools.version}</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
@@ -122,7 +122,42 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-query</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryparser-sparql</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>info.aduna.commons</groupId>
+			<artifactId>aduna-commons-iteration</artifactId>
+			<version>2.10.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-sail-api</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-rio-api</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-api</artifactId>
 			<version>${sesame.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
@@ -142,7 +177,7 @@
 			<type>jar</type>
 			<scope>compile</scope>
             <!-- Optional because it is only needed for compilation, and is not needed at runtime -->
-            <!-- <optional>true</optional> -->
+            <optional>true</optional>
         </dependency>
 	</dependencies>
 	<build>
