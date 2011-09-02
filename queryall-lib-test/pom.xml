@@ -8,7 +8,6 @@
 		<groupId>org.queryall</groupId>
 		<version>1</version>
 	</parent>
-	<groupId>org.queryall</groupId>
 	<artifactId>queryall-lib-test</artifactId>
 	<version>1.0.2-SNAPSHOT</version>
 	<name>queryall-lib-test</name>
@@ -21,8 +20,21 @@
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
+			<artifactId>queryall-api</artifactId>
+			<version>1.0.2-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -39,7 +51,48 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-sail</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-sail-api</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-rio-api</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-repository-api</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-model</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-sail-memory</artifactId>
+			<version>${sesame.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<description>Created to separate the tests that work best on imported jar files (ie, META-INF/services) from the code that they rely on.</description>
 	<inceptionYear>2011</inceptionYear>
