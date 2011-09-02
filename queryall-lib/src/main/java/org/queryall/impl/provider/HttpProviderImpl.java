@@ -96,11 +96,11 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
             {
                 this.addEndpointUrl(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderRequiresSparqlGraphURI()))
+            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderSparqlRequiresGraphURI()))
             {
                 this.setUseSparqlGraph(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderGraphUri()))
+            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderSparqlGraphUri()))
             {
                 this.setSparqlGraphUri(nextStatement.getObject().stringValue());
             }
@@ -268,10 +268,10 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
                         keyToUse);
             }
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderRequiresSparqlGraphURI(), useSparqlGraphLiteral,
+            con.add(providerInstanceUri, ProviderSchema.getProviderSparqlRequiresGraphURI(), useSparqlGraphLiteral,
                     keyToUse);
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderGraphUri(), sparqlGraphUriLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderSparqlGraphUri(), sparqlGraphUriLiteral, keyToUse);
             
             if(this.getEndpointUrls() != null)
             {
