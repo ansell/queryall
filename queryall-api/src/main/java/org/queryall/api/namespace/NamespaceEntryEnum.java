@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NamespaceEntry implementations register themselves with this enumeration when they are loaded.
@@ -20,19 +22,62 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class NamespaceEntryEnum extends QueryAllEnum
 {
-    protected static final Collection<NamespaceEntryEnum> ALL_PROJECTS = new ArrayList<NamespaceEntryEnum>(5);
+    private static final Logger log = LoggerFactory.getLogger(NamespaceEntryEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = NamespaceEntryEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = NamespaceEntryEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = NamespaceEntryEnum.log.isInfoEnabled();
+    
+    protected static final Collection<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new ArrayList<NamespaceEntryEnum>(5);
     
     public static Collection<NamespaceEntryEnum> byTypeUris(final List<URI> nextNamespaceEntryUris)
     {
-        final List<NamespaceEntryEnum> results =
-                new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_PROJECTS.size());
-        
-        for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_PROJECTS)
+        if(nextNamespaceEntryUris.size() == 0)
         {
-            if(nextNamespaceEntryEnum.getTypeURIs().equals(nextNamespaceEntryUris))
+            if(NamespaceEntryEnum._DEBUG)
             {
+                NamespaceEntryEnum.log.debug("found an empty URI set for nextNamespaceEntryUris="
+                        + nextNamespaceEntryUris);
+            }
+            return Collections.emptyList();
+        }
+        
+        final List<NamespaceEntryEnum> results =
+                new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.size());
+        
+        for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES)
+        {
+            boolean matching = (nextNamespaceEntryEnum.getTypeURIs().size() == nextNamespaceEntryUris.size());
+            
+            for(final URI nextURI : nextNamespaceEntryEnum.getTypeURIs())
+            {
+                if(!nextNamespaceEntryUris.contains(nextURI))
+                {
+                    if(NamespaceEntryEnum._DEBUG)
+                    {
+                        NamespaceEntryEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                if(NamespaceEntryEnum._DEBUG)
+                {
+                    NamespaceEntryEnum.log.debug("found an matching URI set for nextNamespaceEntryUris="
+                            + nextNamespaceEntryUris);
+                }
                 results.add(nextNamespaceEntryEnum);
             }
+        }
+        
+        if(NamespaceEntryEnum._DEBUG)
+        {
+            NamespaceEntryEnum.log.debug("returning results.size()=" + results.size() + " for nextNamespaceEntryUris="
+                    + nextNamespaceEntryUris);
         }
         
         return results;
@@ -45,11 +90,15 @@ public class NamespaceEntryEnum extends QueryAllEnum
     {
         if(NamespaceEntryEnum.valueOf(nextNamespaceEntry.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this namespace entry again name=" + nextNamespaceEntry.getName());
+            if(NamespaceEntryEnum._DEBUG)
+            {
+                NamespaceEntryEnum.log.debug("Cannot register this namespace entry again name="
+                        + nextNamespaceEntry.getName());
+            }
         }
         else
         {
-            NamespaceEntryEnum.ALL_PROJECTS.add(nextNamespaceEntry);
+            NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.add(nextNamespaceEntry);
         }
     }
     
@@ -62,7 +111,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     
     public static NamespaceEntryEnum valueOf(final String string)
     {
-        for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_PROJECTS)
+        for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES)
         {
             if(nextNamespaceEntryEnum.getName().equals(string))
             {
@@ -78,7 +127,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
      */
     public static Collection<NamespaceEntryEnum> values()
     {
-        return Collections.unmodifiableCollection(NamespaceEntryEnum.ALL_PROJECTS);
+        return Collections.unmodifiableCollection(NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES);
     }
     
     /**
@@ -90,5 +139,6 @@ public class NamespaceEntryEnum extends QueryAllEnum
     public NamespaceEntryEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.add(this);
     }
 }

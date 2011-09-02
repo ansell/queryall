@@ -1144,7 +1144,7 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.separator = this.getStringProperty("defaultSeparator", ":");
+                this.separator = this.getStringProperty("separator", ":");
             }
         }
         
@@ -1585,7 +1585,7 @@ public class Settings implements QueryAllConfiguration
         
         if(values.size() != 1)
         {
-            Settings.log.error("Settings.getUriPropertyFromConfig: Did not find a unique result for key=" + key
+            Settings.log.warn("Settings.getUriPropertyFromConfig: Did not find a unique result for key=" + key
                     + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
             return defaultValue;
         }

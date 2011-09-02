@@ -3,8 +3,6 @@
  */
 package org.queryall.servlets.helpers;
 
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -15,6 +13,8 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.Settings;
 import org.queryall.servlets.html.VelocityHelper;
+
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 
 /**
  * Wraps up a QueryAllConfiguration, a BlacklistController, and a VelocityEngine object in the

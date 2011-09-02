@@ -9,8 +9,14 @@ import org.slf4j.LoggerFactory;
 
 public class QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = QueryAllEnum.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = QueryAllEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = QueryAllEnum.log.isInfoEnabled();
     
-    protected static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
     private List<URI> typeURIs;
     private String name;
     

@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RdfRule implementations register themselves with this enumeration when they are loaded.
@@ -20,6 +22,13 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class NormalisationRuleEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(NormalisationRuleEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = NormalisationRuleEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = NormalisationRuleEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = NormalisationRuleEnum.log.isInfoEnabled();
+    
     protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
             new ArrayList<NormalisationRuleEnum>(5);
     
@@ -27,7 +36,12 @@ public class NormalisationRuleEnum extends QueryAllEnum
     {
         if(nextNormalisationRuleUris.size() == 0)
         {
-            QueryAllEnum.log.info("found an empty URI set for nextNormalisationRuleUris=" + nextNormalisationRuleUris);
+            if(NormalisationRuleEnum._DEBUG)
+            {
+                NormalisationRuleEnum.log.debug("found an empty URI set for nextNormalisationRuleUris="
+                        + nextNormalisationRuleUris);
+            }
+            
             return Collections.emptyList();
         }
         
@@ -42,7 +56,10 @@ public class NormalisationRuleEnum extends QueryAllEnum
             {
                 if(!nextNormalisationRuleUris.contains(nextURI))
                 {
-                    QueryAllEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(NormalisationRuleEnum._DEBUG)
+                    {
+                        NormalisationRuleEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -50,14 +67,20 @@ public class NormalisationRuleEnum extends QueryAllEnum
             
             if(matching)
             {
-                QueryAllEnum.log.info("found an matching URI set for nextNormalisationRuleUris="
-                        + nextNormalisationRuleUris);
+                if(NormalisationRuleEnum._DEBUG)
+                {
+                    NormalisationRuleEnum.log.debug("found an matching URI set for nextNormalisationRuleUris="
+                            + nextNormalisationRuleUris);
+                }
                 results.add(nextNormalisationRuleEnum);
             }
         }
         
-        QueryAllEnum.log.info("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
-                + nextNormalisationRuleUris);
+        if(NormalisationRuleEnum._DEBUG)
+        {
+            NormalisationRuleEnum.log.debug("returning results.size()=" + results.size()
+                    + " for nextNormalisationRuleUris=" + nextNormalisationRuleUris);
+        }
         
         return results;
     }
@@ -69,7 +92,11 @@ public class NormalisationRuleEnum extends QueryAllEnum
     {
         if(NormalisationRuleEnum.valueOf(nextRdfRule.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this normalisation rule again name=" + nextRdfRule.getName());
+            if(NormalisationRuleEnum._DEBUG)
+            {
+                NormalisationRuleEnum.log.debug("Cannot register this normalisation rule again name="
+                        + nextRdfRule.getName());
+            }
         }
         else
         {

@@ -44,10 +44,17 @@ import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.namespace.NamespaceEntryEnum;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileEnum;
+import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.Project;
+import org.queryall.api.project.ProjectEnum;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderEnum;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.querytype.QueryType;
@@ -60,16 +67,14 @@ import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.ruletest.RuleTestEnum;
+import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.namespace.NamespaceEntryImpl;
-import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
-import org.queryall.impl.ruletest.RuleTestImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.query.QueryBundle;
@@ -804,46 +809,121 @@ public final class RdfUtils
     
     public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
     {
-        final Map<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entry configurations");
-        }
         final long start = System.currentTimeMillis();
+        RepositoryConnection con = null;
         
-        final URI namespaceEntryTypeUri = NamespaceEntrySchema.getNamespaceTypeUri();
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextNamespaceEntry : con.getStatements(null, RDF.TYPE, namespaceEntryTypeUri, true)
-                    .asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextNamespaceEntry.getSubject();
-                results.put(nextSubjectUri,
-                        new NamespaceEntryImpl(
-                                con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entrys");
             }
+            
+            // This is the base namespace entry URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = NamespaceEntrySchema.getNamespaceTypeUri();
+            
+            final Map<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredNamespaceEntrySubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<NamespaceEntryEnum>> uriToNamespaceEntryEnums =
+                    new HashMap<URI, Collection<NamespaceEntryEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredNamespaceEntrySubject : allDeclaredNamespaceEntrySubjects)
+            {
+                if(!(nextDeclaredNamespaceEntrySubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as namespace entry identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredNamespaceEntrySubject.getSubject();
+                
+                final Collection<Value> nextNamespaceEntryValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredNamespaceEntrySubject.getSubject());
+                final List<URI> nextNamespaceEntryUris = new ArrayList<URI>(nextNamespaceEntryValues.size());
+                for(final Value nextNamespaceEntryValue : nextNamespaceEntryValues)
+                {
+                    if(nextNamespaceEntryValue instanceof URI)
+                    {
+                        nextNamespaceEntryUris.add((URI)nextNamespaceEntryValue);
+                    }
+                }
+                
+                final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums =
+                        NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
+                
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getNamespaceEntries: matchingNamespaceEntryEnums=" + matchingNamespaceEntryEnums);
+                }
+                
+                if(matchingNamespaceEntryEnums.size() > 0)
+                {
+                    uriToNamespaceEntryEnums.put(nextSubjectUri, matchingNamespaceEntryEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No namespace entry enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToNamespaceEntryEnums.keySet())
+            {
+                final Collection<NamespaceEntryEnum> nextNamespaceEntryEnums =
+                        uriToNamespaceEntryEnums.get(nextSubjectUri);
+                
+                for(final NamespaceEntryEnum nextNamespaceEntryEnum : nextNamespaceEntryEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntries", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getNamespaceEntries: finished parsing namespace entrys");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
             RdfUtils.log.error("getNamespaceEntries:", e);
         }
-        
-        if(RdfUtils._INFO)
+        finally
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntries", (end - start)));
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getNamespaceEntries: finished getting namespace entry information");
-        }
-        
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
@@ -859,8 +939,7 @@ public final class RdfUtils
             }
             
             // This is the base normalisation rule URI, extensions or plugins must include this URI
-            // alongside
-            // their customised type URIs
+            // alongside their customised type URIs
             final URI normalisationRuleUri = NormalisationRuleSchema.getNormalisationRuleTypeUri();
             
             final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
@@ -873,6 +952,7 @@ public final class RdfUtils
             final Map<URI, Collection<NormalisationRuleEnum>> uriToNormalisationRuleEnums =
                     new HashMap<URI, Collection<NormalisationRuleEnum>>();
             
+            // TODO: why is this necessary
             ServiceUtils.getAllEnums();
             
             for(final Statement nextDeclaredNormalisationRuleSubject : allDeclaredNormalisationRuleSubjects)
@@ -900,11 +980,14 @@ public final class RdfUtils
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
                         NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
                 
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getQueryTypes: matchingNormalisationRuleEnums=" + matchingNormalisationRuleEnums);
+                }
+                
                 if(matchingNormalisationRuleEnums.size() > 0)
                 {
                     uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
-                    RdfUtils.log.info("Found {} rule enums for {}", matchingNormalisationRuleEnums.size(),
-                            nextSubjectUri.stringValue());
                 }
                 else
                 {
@@ -961,75 +1044,6 @@ public final class RdfUtils
         
         return Collections.emptyMap();
     }
-    
-    // public static Map<URI, NormalisationRule> getNormalisationRules(final Repository
-    // myRepository)
-    // {
-    // if(RdfUtils._DEBUG)
-    // {
-    // RdfUtils.log.debug("getNormalisationRules: started parsing rdf normalisation rules");
-    // }
-    //
-    // final long start = System.currentTimeMillis();
-    //
-    // final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
-    //
-    // try
-    // {
-    // final RepositoryConnection con = myRepository.getConnection();
-    //
-    // // Import Regular Expression Normalisation Rules first
-    // final URI regexRuleTypeUri = RegexNormalisationRuleSchema.getRegexRuleTypeUri();
-    // for(final Statement nextRegexRule : con.getStatements(null, RDF.TYPE, regexRuleTypeUri,
-    // true).asList())
-    // {
-    // final URI nextSubjectUri = (URI)nextRegexRule.getSubject();
-    // results.put(nextSubjectUri,
-    // new RegexNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
-    // true)
-    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-    // }
-    //
-    // // Then do the same thing for SPARQL Normalisation Rules
-    // final URI sparqlRuleTypeUri = SparqlNormalisationRuleSchema.getSparqlRuleTypeUri();
-    // for(final Statement nextSparqlRule : con.getStatements(null, RDF.TYPE, sparqlRuleTypeUri,
-    // true).asList())
-    // {
-    // final URI nextSubjectUri = (URI)nextSparqlRule.getSubject();
-    // results.put(nextSubjectUri,
-    // new SparqlNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
-    // true)
-    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-    // }
-    //
-    // // Then do the same thing for XSLT Normalisation Rules
-    // final URI xsltRuleTypeUri = XsltNormalisationRuleSchema.getXsltRuleTypeUri();
-    // for(final Statement nextXsltRule : con.getStatements(null, RDF.TYPE, xsltRuleTypeUri,
-    // true).asList())
-    // {
-    // final URI nextSubjectUri = (URI)nextXsltRule.getSubject();
-    // results.put(nextSubjectUri,
-    // new XsltNormalisationRuleImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true)
-    // .asList(), nextSubjectUri, Settings.CONFIG_API_VERSION));
-    // }
-    // }
-    // catch(final OpenRDFException e)
-    // {
-    // // handle exception
-    // RdfUtils.log.error("getNormalisationRules:", e);
-    // }
-    // if(RdfUtils._INFO)
-    // {
-    // final long end = System.currentTimeMillis();
-    // RdfUtils.log.info(String.format("%s: timing=%10d", "getNormalisationRules", (end - start)));
-    // }
-    // if(RdfUtils._DEBUG)
-    // {
-    // RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
-    // }
-    //
-    // return results;
-    // }
     
     /**
      * @param nextRepository
@@ -1131,89 +1145,360 @@ public final class RdfUtils
     
     public static Map<URI, Profile> getProfiles(final Repository myRepository)
     {
-        final Map<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProfiles: started parsing profile configurations");
-        }
         final long start = System.currentTimeMillis();
-        
-        final URI profileTypeUri = ProfileImpl.getProfileTypeUri();
+        RepositoryConnection con = null;
         
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, profileTypeUri, true).asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new ProfileImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getProfiles: started parsing profiles");
             }
+            
+            // This is the base profile URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = ProfileSchema.getProfileTypeUri();
+            
+            final Map<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredProfileSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<ProfileEnum>> uriToProfileEnums = new HashMap<URI, Collection<ProfileEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredProfileSubject : allDeclaredProfileSubjects)
+            {
+                if(!(nextDeclaredProfileSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as profile identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredProfileSubject.getSubject();
+                
+                final Collection<Value> nextProfileValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredProfileSubject.getSubject());
+                final List<URI> nextProfileUris = new ArrayList<URI>(nextProfileValues.size());
+                for(final Value nextProfileValue : nextProfileValues)
+                {
+                    if(nextProfileValue instanceof URI)
+                    {
+                        nextProfileUris.add((URI)nextProfileValue);
+                    }
+                }
+                
+                final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
+                
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
+                }
+                
+                if(matchingProfileEnums.size() > 0)
+                {
+                    uriToProfileEnums.put(nextSubjectUri, matchingProfileEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No profile enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToProfileEnums.keySet())
+            {
+                final Collection<ProfileEnum> nextProfileEnums = uriToProfileEnums.get(nextSubjectUri);
+                
+                for(final ProfileEnum nextProfileEnum : nextProfileEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createProfileParser(nextProfileEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getProfiles", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProfiles: finished parsing profiles");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
-            RdfUtils.log.error("getProviders:" + e.getMessage());
+            RdfUtils.log.error("getProfiles:", e);
+        }
+        finally
+        {
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        if(RdfUtils._INFO)
+        return Collections.emptyMap();
+    }
+    
+    public static Map<URI, Project> getProjects(final Repository myRepository)
+    {
+        final long start = System.currentTimeMillis();
+        RepositoryConnection con = null;
+        
+        try
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getProfiles", (end - start)));
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProjects: started parsing projects");
+            }
+            
+            // This is the base project URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = ProjectSchema.getProjectTypeUri();
+            
+            final Map<URI, Project> results = new ConcurrentHashMap<URI, Project>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredProjectSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<ProjectEnum>> uriToProjectEnums = new HashMap<URI, Collection<ProjectEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredProjectSubject : allDeclaredProjectSubjects)
+            {
+                if(!(nextDeclaredProjectSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as project identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredProjectSubject.getSubject();
+                
+                final Collection<Value> nextProjectValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredProjectSubject.getSubject());
+                final List<URI> nextProjectUris = new ArrayList<URI>(nextProjectValues.size());
+                for(final Value nextProjectValue : nextProjectValues)
+                {
+                    if(nextProjectValue instanceof URI)
+                    {
+                        nextProjectUris.add((URI)nextProjectValue);
+                    }
+                }
+                
+                final Collection<ProjectEnum> matchingProjectEnums = ProjectEnum.byTypeUris(nextProjectUris);
+                
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
+                }
+                
+                if(matchingProjectEnums.size() > 0)
+                {
+                    uriToProjectEnums.put(nextSubjectUri, matchingProjectEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No project enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToProjectEnums.keySet())
+            {
+                final Collection<ProjectEnum> nextProjectEnums = uriToProjectEnums.get(nextSubjectUri);
+                
+                for(final ProjectEnum nextProjectEnum : nextProjectEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createProjectParser(nextProjectEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getProjects", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProjects: finished parsing projects");
+            }
+            
+            return results;
         }
-        if(RdfUtils._DEBUG)
+        catch(final OpenRDFException e)
         {
-            RdfUtils.log.debug("getProfiles: finished parsing profiles");
+            // handle exception
+            RdfUtils.log.error("getProjects:", e);
+        }
+        finally
+        {
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Map<URI, Provider> getProviders(final Repository myRepository)
     {
-        final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProviders: started parsing provider configurations");
-        }
         final long start = System.currentTimeMillis();
-        
-        // TODO: HACK: treat all providers as HttpProviderImpl for now
-        final URI providerTypeUri = ProviderSchema.getProviderTypeUri();
+        RepositoryConnection con = null;
         
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new HttpProviderImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getProviders: started parsing providers");
             }
+            
+            // This is the base provider URI, extensions or plugins must include this URI
+            // alongside
+            // their customised type URIs
+            final URI providerUri = ProviderSchema.getProviderTypeUri();
+            
+            if(_DEBUG)
+            {
+                RdfUtils.log.debug("getProviders: providerUri=" + providerUri.stringValue());
+            }
+            
+            final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredProviderSubjects =
+                    con.getStatements(null, RDF.TYPE, providerUri, true).asList();
+            
+            if(_DEBUG)
+            {
+                RdfUtils.log.debug("getProviders: allDeclaredProviderSubjects.size()=" + allDeclaredProviderSubjects.size());
+            }
+            
+            final Map<URI, Collection<ProviderEnum>> uriToProviderEnums = new HashMap<URI, Collection<ProviderEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
+            {
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProviders: nextDeclaredProviderSubject.getSubject()="
+                        + nextDeclaredProviderSubject.getSubject().stringValue());
+                }
+                
+                if(!(nextDeclaredProviderSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as provider identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredProviderSubject.getSubject();
+                
+                final Collection<Value> nextProviderValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredProviderSubject.getSubject());
+                final List<URI> nextProviderUris = new ArrayList<URI>(nextProviderValues.size());
+                for(final Value nextProviderValue : nextProviderValues)
+                {
+                    if(nextProviderValue instanceof URI)
+                    {
+                        nextProviderUris.add((URI)nextProviderValue);
+                    }
+                }
+                
+                final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
+                
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
+                }
+                
+                uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
+            }
+            
+            for(final URI nextSubjectUri : uriToProviderEnums.keySet())
+            {
+                final Collection<ProviderEnum> nextProviderEnums = uriToProviderEnums.get(nextSubjectUri);
+                
+                for(final ProviderEnum nextProviderEnum : nextProviderEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createProviderParser(nextProviderEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getProviders", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getProviders: finished parsing providers");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
             RdfUtils.log.error("getProviders:", e);
         }
-        
-        if(RdfUtils._INFO)
+        finally
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getProviders", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getProviders: finished parsing provider configurations");
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Map<URI, QueryType> getQueryTypes(final Repository myRepository)
@@ -1243,6 +1528,7 @@ public final class RdfUtils
             final Map<URI, Collection<QueryTypeEnum>> uriToQueryTypeEnums =
                     new HashMap<URI, Collection<QueryTypeEnum>>();
             
+            // TODO: why is this necessary
             ServiceUtils.getAllEnums();
             
             for(final Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
@@ -1268,6 +1554,11 @@ public final class RdfUtils
                 }
                 
                 final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
+                
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
+                }
                 
                 uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
             }
@@ -1436,44 +1727,118 @@ public final class RdfUtils
     
     public static Map<URI, RuleTest> getRuleTests(final Repository myRepository)
     {
-        final Map<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
-        
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getRuleTests: started parsing rule test configurations");
-        }
         final long start = System.currentTimeMillis();
+        RepositoryConnection con = null;
         
-        final URI ruleTestTypeUri = RuleTestImpl.getRuletestTypeUri();
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, ruleTestTypeUri, true).asList())
+            if(RdfUtils._DEBUG)
             {
-                final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new RuleTestImpl(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                RdfUtils.log.debug("getRuleTests: started parsing ruleTests");
             }
+            
+            // This is the base ruleTest URI, extensions or plugins must include this URI
+            // alongside their customised type URIs
+            final URI providerTypeUri = RuleTestSchema.getRuletestTypeUri();
+            
+            final Map<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
+            
+            con = myRepository.getConnection();
+            
+            final List<Statement> allDeclaredRuleTestSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            
+            final Map<URI, Collection<RuleTestEnum>> uriToRuleTestEnums = new HashMap<URI, Collection<RuleTestEnum>>();
+            
+            // TODO: why is this necessary
+            ServiceUtils.getAllEnums();
+            
+            for(final Statement nextDeclaredRuleTestSubject : allDeclaredRuleTestSubjects)
+            {
+                if(!(nextDeclaredRuleTestSubject.getSubject() instanceof URI))
+                {
+                    RdfUtils.log.error("We do not support blank nodes as rule test identifiers");
+                    continue;
+                }
+                
+                final URI nextSubjectUri = (URI)nextDeclaredRuleTestSubject.getSubject();
+                
+                final Collection<Value> nextRuleTestValues =
+                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                (URI)nextDeclaredRuleTestSubject.getSubject());
+                final List<URI> nextRuleTestUris = new ArrayList<URI>(nextRuleTestValues.size());
+                for(final Value nextRuleTestValue : nextRuleTestValues)
+                {
+                    if(nextRuleTestValue instanceof URI)
+                    {
+                        nextRuleTestUris.add((URI)nextRuleTestValue);
+                    }
+                }
+                
+                final Collection<RuleTestEnum> matchingRuleTestEnums = RuleTestEnum.byTypeUris(nextRuleTestUris);
+                
+                if(_DEBUG)
+                {
+                    RdfUtils.log.debug("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
+                }
+                
+                if(matchingRuleTestEnums.size() > 0)
+                {
+                    uriToRuleTestEnums.put(nextSubjectUri, matchingRuleTestEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No rule test enums found for {}", nextSubjectUri.stringValue());
+                }
+            }
+            
+            for(final URI nextSubjectUri : uriToRuleTestEnums.keySet())
+            {
+                final Collection<RuleTestEnum> nextRuleTestEnums = uriToRuleTestEnums.get(nextSubjectUri);
+                
+                for(final RuleTestEnum nextRuleTestEnum : nextRuleTestEnums)
+                {
+                    results.put(
+                            nextSubjectUri,
+                            ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
+                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                }
+            }
+            
+            if(RdfUtils._INFO)
+            {
+                final long end = System.currentTimeMillis();
+                RdfUtils.log.info(String.format("%s: timing=%10d", "getRuleTests", (end - start)));
+            }
+            if(RdfUtils._DEBUG)
+            {
+                RdfUtils.log.debug("getRuleTests: finished parsing rule tests");
+            }
+            
+            return results;
         }
         catch(final OpenRDFException e)
         {
             // handle exception
             RdfUtils.log.error("getRuleTests:", e);
         }
-        
-        if(RdfUtils._INFO)
+        finally
         {
-            final long end = System.currentTimeMillis();
-            RdfUtils.log.info(String.format("%s: timing=%10d", "getRuleTests", (end - start)));
-        }
-        if(RdfUtils._DEBUG)
-        {
-            RdfUtils.log.debug("getRuleTests: finished getting rdf rule tests");
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("RepositoryException", e);
+                }
+            }
         }
         
-        return results;
+        return Collections.emptyMap();
     }
     
     public static Repository getSchemas()
@@ -1524,7 +1889,7 @@ public final class RdfUtils
         
         try
         {
-            if(!ProjectImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!ProjectSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("Project schema was not placed correctly in the rdf store");
             }
@@ -1587,7 +1952,7 @@ public final class RdfUtils
         
         try
         {
-            if(!RuleTestImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!RuleTestSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("RuleTest schema was not placed correctly in the rdf store");
             }
@@ -1611,7 +1976,7 @@ public final class RdfUtils
         
         try
         {
-            if(!ProfileImpl.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
+            if(!ProfileSchema.schemaToRdf(myRepository, contextUri, Settings.CONFIG_API_VERSION))
             {
                 RdfUtils.log.error("Profile schema was not placed correctly in the rdf store");
             }

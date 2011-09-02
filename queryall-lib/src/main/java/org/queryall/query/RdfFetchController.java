@@ -13,6 +13,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
+import org.queryall.api.provider.NoCommunicationProvider;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
@@ -395,11 +396,10 @@ public class RdfFetchController
         
         for(final Provider nextProvider : chosenProviders)
         {
-            final boolean isHttpWithNoEndpoint =
-                    nextProvider instanceof HttpProvider && !((HttpProvider)nextProvider).hasEndpointUrl();
+//            final boolean isHttpWithNoEndpoint =
+//                    nextProvider instanceof HttpProvider && !((HttpProvider)nextProvider).hasEndpointUrl();
             
-            if(nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication())
-                    && isHttpWithNoEndpoint)
+            if(nextProvider instanceof NoCommunicationProvider)
             {
                 String nextStaticRdfXmlString = "";
                 
@@ -443,12 +443,7 @@ public class RdfFetchController
                 
                 results.add(nextProviderQueryBundle);
             }
-            // // check if there is an endpoint, as we allow for providers which are really
-            // placeholders for static RDF/XML additions, and they are configured without endpoint
-            // URL's and with NO_COMMUNICATION
-            // //else if( nextProvider.hasEndpointUrl() )
-            // else if(nextProvider instanceof HttpProvider)
-            else
+            else if(nextProvider instanceof HttpProvider)
             {
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
@@ -604,6 +599,10 @@ public class RdfFetchController
                     results.add(nextProviderQueryBundle);
                     
                 }
+            }
+            else
+            {
+                log.warn("Unrecognised provider type nextProvider.getElementTypes="+nextProvider.getElementTypes()+" nextProvider.getClass().getName()="+nextProvider.getClass().getName());
             }
             // end for(String nextEndpoint : nextProvider.endpointUrls)
             // } // end if(nextProvider.hasEndpointUrl())

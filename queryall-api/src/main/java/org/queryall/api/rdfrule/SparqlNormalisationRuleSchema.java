@@ -62,7 +62,7 @@ public class SparqlNormalisationRuleSchema
                 .setOLDSparqlRuleSparqlConstructQuery(f.createURI(baseUri, "sparqlConstructQuery"));
         SparqlNormalisationRuleSchema.setSparqlRuleSparqlConstructQueryTarget(f.createURI(baseUri,
                 "sparqlConstructQueryTarget"));
-        SparqlNormalisationRuleSchema.setSparqlRuleSparqlWherePattern(f.createURI(baseUri, "sparqlWherePatterns"));
+        SparqlNormalisationRuleSchema.setSparqlRuleSparqlWherePattern(f.createURI(baseUri, "sparqlWherePattern"));
         SparqlNormalisationRuleSchema.setSparqlRuleSparqlPrefixes(f.createURI(baseUri, "sparqlPrefixes"));
         SparqlNormalisationRuleSchema.setSparqlRuleMode(f.createURI(baseUri, "mode"));
         SparqlNormalisationRuleSchema.setSparqlRuleModeOnlyDeleteMatches(f.createURI(baseUri,

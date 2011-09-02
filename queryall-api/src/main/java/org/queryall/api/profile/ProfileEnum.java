@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Profile implementations register themselves with this enumeration when they are loaded.
@@ -20,18 +22,61 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class ProfileEnum extends QueryAllEnum
 {
-    protected static final Collection<ProfileEnum> ALL_PROJECTS = new ArrayList<ProfileEnum>(5);
+    private static final Logger log = LoggerFactory.getLogger(ProfileEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = ProfileEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = ProfileEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = ProfileEnum.log.isInfoEnabled();
+    
+    protected static final Collection<ProfileEnum> ALL_PROFILES = new ArrayList<ProfileEnum>(5);
     
     public static Collection<ProfileEnum> byTypeUris(final List<URI> nextProfileUris)
     {
-        final List<ProfileEnum> results = new ArrayList<ProfileEnum>(ProfileEnum.ALL_PROJECTS.size());
-        
-        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROJECTS)
+        if(nextProfileUris.size() == 0)
         {
-            if(nextProfileEnum.getTypeURIs().equals(nextProfileUris))
+            if(ProfileEnum._DEBUG)
             {
+                ProfileEnum.log.debug("found an empty URI set for nextProfileUris=" + nextProfileUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final List<ProfileEnum> results = new ArrayList<ProfileEnum>(ProfileEnum.ALL_PROFILES.size());
+        
+        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROFILES)
+        {
+            boolean matching = (nextProfileEnum.getTypeURIs().size() == nextProfileUris.size());
+            
+            for(final URI nextURI : nextProfileEnum.getTypeURIs())
+            {
+                if(!nextProfileUris.contains(nextURI))
+                {
+                    if(ProfileEnum._DEBUG)
+                    {
+                        ProfileEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                if(ProfileEnum._DEBUG)
+                {
+                    ProfileEnum.log.debug("found an matching URI set for nextProfileUris=" + nextProfileUris);
+                }
+                
                 results.add(nextProfileEnum);
             }
+        }
+        
+        if(ProfileEnum._DEBUG)
+        {
+            ProfileEnum.log.debug("returning results.size()=" + results.size() + " for nextProfileUris="
+                    + nextProfileUris);
         }
         
         return results;
@@ -44,11 +89,14 @@ public class ProfileEnum extends QueryAllEnum
     {
         if(ProfileEnum.valueOf(nextProfile.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this profile again name=" + nextProfile.getName());
+            if(ProfileEnum._DEBUG)
+            {
+                ProfileEnum.log.debug("Cannot register this profile again name=" + nextProfile.getName());
+            }
         }
         else
         {
-            ProfileEnum.ALL_PROJECTS.add(nextProfile);
+            ProfileEnum.ALL_PROFILES.add(nextProfile);
         }
     }
     
@@ -61,7 +109,7 @@ public class ProfileEnum extends QueryAllEnum
     
     public static ProfileEnum valueOf(final String string)
     {
-        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROJECTS)
+        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROFILES)
         {
             if(nextProfileEnum.getName().equals(string))
             {
@@ -77,7 +125,7 @@ public class ProfileEnum extends QueryAllEnum
      */
     public static Collection<ProfileEnum> values()
     {
-        return Collections.unmodifiableCollection(ProfileEnum.ALL_PROJECTS);
+        return Collections.unmodifiableCollection(ProfileEnum.ALL_PROFILES);
     }
     
     /**
@@ -89,5 +137,6 @@ public class ProfileEnum extends QueryAllEnum
     public ProfileEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        ProfileEnum.ALL_PROFILES.add(this);
     }
 }

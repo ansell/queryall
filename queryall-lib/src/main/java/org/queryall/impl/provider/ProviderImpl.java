@@ -16,12 +16,12 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -39,13 +39,22 @@ public class ProviderImpl implements Provider
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
     
+    public static List<URI> providerTypes()
+    {
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(ProviderSchema.getProviderTypeUri());
+        
+        return results;
+    }
+    
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key = null;
     
     private String title = "";
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private Collection<URI> namespaces = new HashSet<URI>();
     
@@ -57,7 +66,7 @@ public class ProviderImpl implements Provider
     
     private boolean isDefaultSourceVar = false;
     
-    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
     // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue()
     // and Provider.providerNoCommunication.stringValue()
@@ -98,7 +107,7 @@ public class ProviderImpl implements Provider
                 // resultIsValid = true;
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -127,7 +136,7 @@ public class ProviderImpl implements Provider
             {
                 this.addNormalisationUri((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
+            else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
@@ -395,11 +404,7 @@ public class ProviderImpl implements Provider
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
-        
-        results.add(ProviderSchema.getProviderTypeUri());
-        
-        return results;
+        return ProviderImpl.providerTypes();
     }
     
     @Override
@@ -708,7 +713,7 @@ public class ProviderImpl implements Provider
             
             if(this.getCurationStatus() == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -721,7 +726,7 @@ public class ProviderImpl implements Provider
             
             con.add(providerInstanceUri, RDF.TYPE, ProviderSchema.getProviderTypeUri(), keyToUse);
             
-            con.add(providerInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(providerInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
             
@@ -732,7 +737,7 @@ public class ProviderImpl implements Provider
             
             con.add(providerInstanceUri, ProviderSchema.getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
             
-            con.add(providerInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(),
+            con.add(providerInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
                     profileIncludeExcludeOrderLiteral, keyToUse);
             
             con.add(providerInstanceUri, ProviderSchema.getProviderAssumedContentType(), assumedContentTypeLiteral,

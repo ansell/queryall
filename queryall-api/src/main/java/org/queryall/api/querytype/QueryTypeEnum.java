@@ -25,7 +25,6 @@ public class QueryTypeEnum extends QueryAllEnum
     private static final Logger log = LoggerFactory.getLogger(QueryTypeEnum.class);
     @SuppressWarnings("unused")
     private static final boolean _TRACE = QueryTypeEnum.log.isTraceEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _DEBUG = QueryTypeEnum.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeEnum.log.isInfoEnabled();
@@ -36,7 +35,10 @@ public class QueryTypeEnum extends QueryAllEnum
     {
         if(nextQueryTypeUris.size() == 0)
         {
-            QueryTypeEnum.log.info("found an empty URI set for nextQueryTypeUris=" + nextQueryTypeUris);
+            if(QueryTypeEnum._DEBUG)
+            {
+                QueryTypeEnum.log.debug("found an empty URI set for nextQueryTypeUris=" + nextQueryTypeUris);
+            }
             return Collections.emptyList();
         }
         
@@ -50,7 +52,10 @@ public class QueryTypeEnum extends QueryAllEnum
             {
                 if(!nextQueryTypeUris.contains(nextURI))
                 {
-                    QueryTypeEnum.log.info("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    if(QueryTypeEnum._DEBUG)
+                    {
+                        QueryTypeEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
                     
                     matching = false;
                 }
@@ -58,13 +63,20 @@ public class QueryTypeEnum extends QueryAllEnum
             
             if(matching)
             {
-                QueryTypeEnum.log.info("found an matching URI set for nextQueryTypeUris=" + nextQueryTypeUris);
+                if(QueryTypeEnum._DEBUG)
+                {
+                    QueryTypeEnum.log.debug("found an matching URI set for nextQueryTypeUris=" + nextQueryTypeUris);
+                }
+                
                 results.add(nextQueryTypeEnum);
             }
         }
         
-        QueryTypeEnum.log.info("returning results.size()=" + results.size() + " for nextQueryTypeUris="
-                + nextQueryTypeUris);
+        if(QueryTypeEnum._DEBUG)
+        {
+            QueryTypeEnum.log.debug("returning results.size()=" + results.size() + " for nextQueryTypeUris="
+                    + nextQueryTypeUris);
+        }
         
         return results;
     }
@@ -76,7 +88,10 @@ public class QueryTypeEnum extends QueryAllEnum
     {
         if(QueryTypeEnum.valueOf(nextQueryType.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this query type again name=" + nextQueryType.getName());
+            if(QueryTypeEnum._DEBUG)
+            {
+                QueryTypeEnum.log.debug("Cannot register this query type again name=" + nextQueryType.getName());
+            }
         }
         else
         {

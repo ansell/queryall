@@ -3,23 +3,19 @@ package org.queryall.impl.ruletest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.openrdf.OpenRDFException;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.api.utils.Constants;
+import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,200 +27,32 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleTestImpl implements RuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(RuleTest.class);
+    private static final Logger log = LoggerFactory.getLogger(RuleTestImpl.class);
     private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = RuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
-    /**
-     * @return the ruletestHasRuleUri
-     */
-    public static URI getRuletestHasRuleUri()
+    public static List<URI> myTypes()
     {
-        return RuleTestImpl.ruletestHasRuleUri;
+        final List<URI> results = new ArrayList<URI>(1);
+        
+        results.add(RuleTestSchema.getRuletestTypeUri());
+        
+        return results;
     }
     
-    /**
-     * @return the ruletestInputTestString
-     */
-    public static URI getRuletestInputTestString()
-    {
-        return RuleTestImpl.ruletestInputTestString;
-    }
+    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
-    /**
-     * @return the ruletestOutputTestString
-     */
-    public static URI getRuletestOutputTestString()
-    {
-        return RuleTestImpl.ruletestOutputTestString;
-    }
-    
-    /**
-     * @return the ruletestTestsStage
-     */
-    public static URI getRuletestTestsStage()
-    {
-        return RuleTestImpl.ruletestTestsStage;
-    }
-    
-    /**
-     * @return the ruletestTypeUri
-     */
-    public static URI getRuletestTypeUri()
-    {
-        return RuleTestImpl.ruletestTypeUri;
-    }
-    
-    /**
-     * @param ruletestHasRuleUri
-     *            the ruletestHasRuleUri to set
-     */
-    public static void setRuletestHasRuleUri(final URI ruletestHasRuleUri)
-    {
-        RuleTestImpl.ruletestHasRuleUri = ruletestHasRuleUri;
-    }
-    
-    /**
-     * @param ruletestInputTestString
-     *            the ruletestInputTestString to set
-     */
-    public static void setRuletestInputTestString(final URI ruletestInputTestString)
-    {
-        RuleTestImpl.ruletestInputTestString = ruletestInputTestString;
-    }
-    
-    /**
-     * @param ruletestOutputTestString
-     *            the ruletestOutputTestString to set
-     */
-    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
-    {
-        RuleTestImpl.ruletestOutputTestString = ruletestOutputTestString;
-    }
-    
-    /**
-     * @param ruletestTestsStage
-     *            the ruletestTestsStage to set
-     */
-    public static void setRuletestTestsStage(final URI ruletestTestsStage)
-    {
-        RuleTestImpl.ruletestTestsStage = ruletestTestsStage;
-    }
-    
-    /**
-     * @param ruletestTypeUri
-     *            the ruletestTypeUri to set
-     */
-    public static void setRuletestTypeUri(final URI ruletestTypeUri)
-    {
-        RuleTestImpl.ruletestTypeUri = ruletestTypeUri;
-    }
-    
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     private URI key = null;
     
     private Collection<URI> rdfRuleUris = new HashSet<URI>();
     
     private Collection<URI> stages = new HashSet<URI>();
     
-    private String testInputString = "";
-    
-    private String testOutputString = "";
-    
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private String title;
-    
-    private static URI ruletestTypeUri;
-    
-    private static URI ruletestHasRuleUri;
-    
-    private static URI ruletestTestsStage;
-    
-    private static URI ruletestInputTestString;
-    
-    private static URI ruletestOutputTestString;
-    
-    static
-    {
-        final ValueFactory f = Constants.valueFactory;
-        
-        final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
-        
-        RuleTestImpl.setRuletestTypeUri(f.createURI(baseUri, "RuleTest"));
-        RuleTestImpl.setRuletestHasRuleUri(f.createURI(baseUri, "testsRules"));
-        RuleTestImpl.setRuletestTestsStage(f.createURI(baseUri, "testsStages"));
-        
-        RuleTestImpl.setRuletestInputTestString(f.createURI(baseUri, "inputTestString"));
-        RuleTestImpl.setRuletestOutputTestString(f.createURI(baseUri, "outputTestString"));
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            final URI contextKeyUri = keyToUse;
-            con.setAutoCommit(false);
-            
-            con.add(RuleTestImpl.getRuletestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestTypeUri(), RDFS.LABEL,
-                    f.createLiteral("A test case for normalisation rules."), contextKeyUri);
-            
-            con.add(RuleTestImpl.getRuletestHasRuleUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestHasRuleUri(), RDFS.RANGE,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextKeyUri);
-            con.add(RuleTestImpl.getRuletestHasRuleUri(), RDFS.DOMAIN, RuleTestImpl.getRuletestTypeUri(), contextKeyUri);
-            con.add(RuleTestImpl.getRuletestHasRuleUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(RuleTestImpl.getRuletestTestsStage(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestTestsStage(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestTestsStage(), RDFS.DOMAIN, RuleTestImpl.getRuletestTypeUri(), contextKeyUri);
-            con.add(RuleTestImpl.getRuletestTestsStage(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(RuleTestImpl.getRuletestInputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestInputTestString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestInputTestString(), RDFS.DOMAIN, RuleTestImpl.getRuletestTypeUri(),
-                    contextKeyUri);
-            con.add(RuleTestImpl.getRuletestInputTestString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(RuleTestImpl.getRuletestOutputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestOutputTestString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RuleTestImpl.getRuletestOutputTestString(), RDFS.DOMAIN, RuleTestImpl.getRuletestTypeUri(),
-                    contextKeyUri);
-            con.add(RuleTestImpl.getRuletestOutputTestString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            RuleTestImpl.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
     
     public RuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -240,7 +68,7 @@ public class RuleTestImpl implements RuleTest
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(RuleTestImpl.getRuletestTypeUri()))
+                    && nextStatement.getObject().equals(RuleTestSchema.getRuletestTypeUri()))
             {
                 if(RuleTestImpl._TRACE)
                 {
@@ -249,25 +77,17 @@ public class RuleTestImpl implements RuleTest
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(RuleTestImpl.getRuletestHasRuleUri()))
+            else if(nextStatement.getPredicate().equals(RuleTestSchema.getRuletestHasRuleUri()))
             {
                 tempTestUris.add((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(RuleTestImpl.getRuletestTestsStage()))
+            else if(nextStatement.getPredicate().equals(RuleTestSchema.getRuletestTestsStage()))
             {
                 tempStages.add((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(RuleTestImpl.getRuletestInputTestString()))
-            {
-                this.setTestInputString(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(RuleTestImpl.getRuletestOutputTestString()))
-            {
-                this.setTestOutputString(nextStatement.getObject().stringValue());
             }
             else
             {
@@ -307,85 +127,6 @@ public class RuleTestImpl implements RuleTest
         return this.getKey().stringValue().compareTo(otherRuleTest.getKey().stringValue());
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if(this == obj)
-        {
-            return true;
-        }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(!(obj instanceof RuleTest))
-        {
-            return false;
-        }
-        final RuleTest other = (RuleTest)obj;
-        if(this.curationStatus == null)
-        {
-            if(other.getCurationStatus() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.curationStatus.equals(other.getCurationStatus()))
-        {
-            return false;
-        }
-        if(this.key == null)
-        {
-            if(other.getKey() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.key.equals(other.getKey()))
-        {
-            return false;
-        }
-        if(this.rdfRuleUris == null)
-        {
-            if(other.getRuleUris() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.rdfRuleUris.equals(other.getRuleUris()))
-        {
-            return false;
-        }
-        if(this.testInputString == null)
-        {
-            if(other.getTestInputString() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.testInputString.equals(other.getTestInputString()))
-        {
-            return false;
-        }
-        if(this.testOutputString == null)
-        {
-            if(other.getTestOutputString() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.testOutputString.equals(other.getTestOutputString()))
-        {
-            return false;
-        }
-        return true;
-    }
-    
     /**
      * @return the curationStatus
      */
@@ -411,11 +152,7 @@ public class RuleTestImpl implements RuleTest
     @Override
     public Collection<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
-        
-        results.add(RuleTestImpl.getRuletestTypeUri());
-        
-        return results;
+        return RuleTestImpl.myTypes();
     }
     
     /**
@@ -445,24 +182,6 @@ public class RuleTestImpl implements RuleTest
         return this.stages;
     }
     
-    /**
-     * @return the testInputString
-     */
-    @Override
-    public String getTestInputString()
-    {
-        return this.testInputString;
-    }
-    
-    /**
-     * @return the testOutputString
-     */
-    @Override
-    public String getTestOutputString()
-    {
-        return this.testOutputString;
-    }
-    
     @Override
     public String getTitle()
     {
@@ -488,8 +207,6 @@ public class RuleTestImpl implements RuleTest
         result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
         result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
         result = prime * result + ((this.getRuleUris() == null) ? 0 : this.getRuleUris().hashCode());
-        result = prime * result + ((this.testInputString == null) ? 0 : this.testInputString.hashCode());
-        result = prime * result + ((this.testOutputString == null) ? 0 : this.testOutputString.hashCode());
         return result;
     }
     
@@ -539,26 +256,6 @@ public class RuleTestImpl implements RuleTest
         this.stages = stages;
     }
     
-    /**
-     * @param testInputString
-     *            the testInputString to set
-     */
-    @Override
-    public void setTestInputString(final String testInputString)
-    {
-        this.testInputString = testInputString;
-    }
-    
-    /**
-     * @param testOutputString
-     *            the testOutputString to set
-     */
-    @Override
-    public void setTestOutputString(final String testOutputString)
-    {
-        this.testOutputString = testOutputString;
-    }
-    
     @Override
     public void setTitle(final String title)
     {
@@ -574,10 +271,6 @@ public class RuleTestImpl implements RuleTest
         
         sb.append("<div class=\"" + prefix + "rulekey\">Rule Key: "
                 + StringUtils.xmlEncodeString(this.getKey().stringValue()) + "</div>\n");
-        sb.append("<div class=\"" + prefix + "testInputString\">Test Input String: "
-                + StringUtils.xmlEncodeString(this.testInputString + "") + "</div>\n");
-        sb.append("<div class=\"" + prefix + "testOutputString\">Test Output String: "
-                + StringUtils.xmlEncodeString(this.testOutputString + "") + "</div>\n");
         sb.append("<div class=\"" + prefix + "rdfruleuri\">Tests RDF Rules: "
                 + StringUtils.xmlEncodeString(this.rdfRuleUris.toString()) + "</div>\n");
         
@@ -601,19 +294,15 @@ public class RuleTestImpl implements RuleTest
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
-        
         try
         {
             final URI keyUri = this.getKey();
-            final Literal testInputStringLiteral = f.createLiteral(this.testInputString);
-            final Literal testOutputStringLiteral = f.createLiteral(this.testOutputString);
             
             URI curationStatusLiteral = null;
             
             if(this.curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -622,16 +311,14 @@ public class RuleTestImpl implements RuleTest
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, RuleTestImpl.getRuletestTypeUri(), keyToUse);
-            con.add(keyUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            con.add(keyUri, RuleTestImpl.getRuletestInputTestString(), testInputStringLiteral, keyToUse);
-            con.add(keyUri, RuleTestImpl.getRuletestOutputTestString(), testOutputStringLiteral, keyToUse);
+            con.add(keyUri, RDF.TYPE, RuleTestSchema.getRuletestTypeUri(), keyToUse);
+            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             if(this.rdfRuleUris != null)
             {
                 for(final URI nextRdfRuleUri : this.rdfRuleUris)
                 {
-                    con.add(keyUri, RuleTestImpl.getRuletestHasRuleUri(), nextRdfRuleUri, keyToUse);
+                    con.add(keyUri, RuleTestSchema.getRuletestHasRuleUri(), nextRdfRuleUri, keyToUse);
                 }
             }
             
@@ -669,8 +356,6 @@ public class RuleTestImpl implements RuleTest
         String result = "\n";
         
         result += "key=" + this.key + "\n";
-        result += "testInputString=" + this.testInputString + "\n";
-        result += "testOutputString=" + this.testOutputString + "\n";
         result += "rdfRuleUris=" + this.rdfRuleUris + "\n";
         
         return result;

@@ -16,13 +16,13 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.project.ProjectImpl;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
@@ -57,7 +57,7 @@ public class QueryTypeImpl implements QueryType
     
     private String title = "";
     
-    private URI curationStatus = ProjectImpl.getProjectNotCuratedUri();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private boolean handleAllNamespaces = true;
     
@@ -112,7 +112,7 @@ public class QueryTypeImpl implements QueryType
     // type queries, but not to others for instance
     private Collection<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
     
-    private URI profileIncludeExcludeOrder = ProfileImpl.getProfileIncludeExcludeOrderUndefinedUri();
+    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
     private String inputRegex = "";
     
@@ -167,7 +167,7 @@ public class QueryTypeImpl implements QueryType
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectImpl.getProjectCurationStatusUri()))
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
                 this.setCurationStatus((URI)nextStatement.getObject());
             }
@@ -240,7 +240,7 @@ public class QueryTypeImpl implements QueryType
             {
                 this.setIsDummyQueryType(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(ProfileImpl.getProfileIncludeExcludeOrderUri()))
+            else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
@@ -878,7 +878,7 @@ public class QueryTypeImpl implements QueryType
                 + "profileIncludeExcludeOrder_span\">Use by default on all profiles?:</span><input type=\"checkbox\" name=\""
                 + prefix + "profileIncludeExcludeOrder\" value=\"profileIncludeExcludeOrder\" ");
         
-        if(this.profileIncludeExcludeOrder.equals(ProfileImpl.getProfileExcludeThenIncludeUri()))
+        if(this.profileIncludeExcludeOrder.equals(ProfileSchema.getProfileExcludeThenIncludeUri()))
         {
             sb.append(" checked=\"checked\" ");
         }
@@ -953,7 +953,7 @@ public class QueryTypeImpl implements QueryType
             
             if(this.curationStatus == null)
             {
-                curationStatusLiteral = ProjectImpl.getProjectNotCuratedUri();
+                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
@@ -965,7 +965,7 @@ public class QueryTypeImpl implements QueryType
             con.setAutoCommit(false);
             
             con.add(queryInstanceUri, RDF.TYPE, QueryTypeSchema.getQueryTypeUri(), keyToUse);
-            con.add(queryInstanceUri, ProjectImpl.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(queryInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             if(modelVersion == 1)
             {
                 con.add(queryInstanceUri, QueryTypeSchema.getQueryTitle(), titleLiteral, keyToUse);
@@ -992,7 +992,7 @@ public class QueryTypeImpl implements QueryType
             con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
             
-            con.add(queryInstanceUri, ProfileImpl.getProfileIncludeExcludeOrderUri(),
+            con.add(queryInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
                     profileIncludeExcludeOrderLiteral, keyToUse);
             
             // log.info("after single URIs created");

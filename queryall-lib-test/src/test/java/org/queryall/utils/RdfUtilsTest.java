@@ -34,17 +34,21 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.RegexNormalisationRule;
+import org.queryall.api.rdfrule.SparqlNormalisationRule;
+import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
+import org.queryall.api.rdfrule.XsltNormalisationRule;
+import org.queryall.api.ruletest.RegexRuleTest;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.utils.RdfUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -103,6 +107,9 @@ public class RdfUtilsTest
     private URI testProviderUri1;
     private URI testRuleTestUri1;
     private URI testQueryTypeUri1;
+    private URI testNormalisationRule1;
+    private URI testNormalisationRule2;
+    private URI testNormalisationRule3;
     
     /**
      * @throws java.lang.Exception
@@ -182,6 +189,11 @@ public class RdfUtilsTest
         this.testRuleTestUri1 = this.testValueFactory.createURI("http://example.org/ruletest:test-1");
         
         this.testQueryTypeUri1 = this.testValueFactory.createURI("http://example.org/query:test-1");
+        
+        this.testNormalisationRule1 = this.testValueFactory.createURI("http://example.org/rdfrule:abc_issn");
+        this.testNormalisationRule2 =
+                this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri");
+        this.testNormalisationRule3 = this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:xsltNlmPubmed");
     }
     
     /**
@@ -237,6 +249,9 @@ public class RdfUtilsTest
         this.testRuleTestUri1 = null;
         
         this.testQueryTypeUri1 = null;
+        this.testNormalisationRule1 = null;
+        this.testNormalisationRule2 = null;
+        this.testNormalisationRule3 = null;
     }
     
     /**
@@ -495,14 +510,11 @@ public class RdfUtilsTest
             
             final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(this.testRepository);
             
-            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 1, results.size());
+            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 3,
+                    results.size());
             
             for(final URI nextNormalisationRuleUri : results.keySet())
             {
-                Assert.assertEquals("Results did not contain correct normalisation rule URI",
-                        this.testValueFactory.createURI("http://example.org/rdfrule:abc_issn"),
-                        nextNormalisationRuleUri);
-                
                 final NormalisationRule nextNormalisationRule = results.get(nextNormalisationRuleUri);
                 
                 Assert.assertNotNull("Normalisation rule was null", nextNormalisationRule);
@@ -510,25 +522,141 @@ public class RdfUtilsTest
                 Assert.assertEquals("Normalisation rule key was not the same as its map URI", nextNormalisationRuleUri,
                         nextNormalisationRule.getKey());
                 
-                Assert.assertTrue(
-                        "Could not find expected stage",
-                        nextNormalisationRule.getStages().contains(
-                                NormalisationRuleSchema.getRdfruleStageQueryVariables()));
-                Assert.assertTrue(
-                        "Could not find expected stage",
-                        nextNormalisationRule.getStages().contains(
-                                NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
-                
-                Assert.assertEquals("Description was not parsed correctly",
-                        "Converts between the URIs used by the ABC ISSN's and the Example organisation ISSN namespace",
-                        nextNormalisationRule.getDescription());
-                Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
-                Assert.assertEquals("Include exclude order was not parsed correctly",
-                        ProfileImpl.getProfileIncludeThenExcludeUri(),
-                        nextNormalisationRule.getProfileIncludeExcludeOrder());
-                
-                Assert.assertTrue("Related namespace was not parsed correctly", nextNormalisationRule
-                        .getRelatedNamespaces().contains(this.testValueFactory.createURI("http://example.org/ns:issn")));
+                if(nextNormalisationRuleUri.equals(this.testNormalisationRule1))
+                {
+                    Assert.assertEquals("Results did not contain correct normalisation rule URI",
+                            this.testNormalisationRule1, nextNormalisationRuleUri);
+                    
+                    Assert.assertEquals("Did not find expected number of stages", 2, nextNormalisationRule.getStages()
+                            .size());
+                    Assert.assertTrue(
+                            "Could not find expected stage",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageQueryVariables()));
+                    Assert.assertTrue(
+                            "Could not find expected stage",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
+                    
+                    Assert.assertEquals(
+                            "Description was not parsed correctly",
+                            "Converts between the URIs used by the ABC ISSN's and the Example organisation ISSN namespace",
+                            nextNormalisationRule.getDescription());
+                    Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
+                    Assert.assertEquals("Include exclude order was not parsed correctly",
+                            ProfileSchema.getProfileIncludeThenExcludeUri(),
+                            nextNormalisationRule.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
+                            .getRelatedNamespaces().size());
+                    
+                    Assert.assertTrue(
+                            "Related namespace was not parsed correctly",
+                            nextNormalisationRule.getRelatedNamespaces().contains(
+                                    this.testValueFactory.createURI("http://example.org/ns:issn")));
+                    
+                    final RegexNormalisationRule nextRegexRule = (RegexNormalisationRule)nextNormalisationRule;
+                    
+                    Assert.assertEquals("Regex rule input match regex was not parsed correctly",
+                            "http://example\\.org/issn:", nextRegexRule.getInputMatchRegex());
+                    Assert.assertEquals("Regex rule input replace regex was not parsed correctly",
+                            "http://id\\.abc\\.org/issn/", nextRegexRule.getInputReplaceRegex());
+                    
+                    Assert.assertEquals("Regex rule output match regex was not parsed correctly",
+                            "http://id\\.abc\\.org/issn/", nextRegexRule.getOutputMatchRegex());
+                    Assert.assertEquals("Regex rule output replace regex was not parsed correctly",
+                            "http://example\\.org/issn:", nextRegexRule.getOutputReplaceRegex());
+                }
+                else if(nextNormalisationRuleUri.equals(this.testNormalisationRule2))
+                {
+                    Assert.assertEquals("Results did not contain correct normalisation rule URI",
+                            this.testNormalisationRule2, nextNormalisationRuleUri);
+                    
+                    Assert.assertEquals("Did not find expected number of stages", 1, nextNormalisationRule.getStages()
+                            .size());
+                    Assert.assertTrue(
+                            "Could not find expected stage",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageAfterResultsToPool()));
+                    
+                    Assert.assertEquals("Description was not parsed correctly",
+                            "Add symbol URI based on Neurocommons gene symbol literals",
+                            nextNormalisationRule.getDescription());
+                    Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
+                    Assert.assertEquals("Include exclude order was not parsed correctly",
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            nextNormalisationRule.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
+                            .getRelatedNamespaces().size());
+                    
+                    Assert.assertTrue(
+                            "Related namespace was not parsed correctly",
+                            nextNormalisationRule.getRelatedNamespaces().contains(
+                                    this.testValueFactory.createURI("http://example.org/ns:symbol")));
+                    
+                    Assert.assertTrue(
+                            "Normalisation rule was not implemented using the SparqlNormalisationRule interface",
+                            nextNormalisationRule instanceof SparqlNormalisationRule);
+                    
+                    final SparqlNormalisationRule nextSparqlRule = (SparqlNormalisationRule)nextNormalisationRule;
+                    
+                    Assert.assertEquals("Sparql mode not parsed correctly",
+                            SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                            nextSparqlRule.getMode());
+                    
+                    Assert.assertEquals("Sparql construct query target was not parsed correctly",
+                            "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . ",
+                            nextSparqlRule.getSparqlConstructQueryTarget());
+                    
+                    Assert.assertEquals("Did not parse the correct number of sparql where patterns", 1, nextSparqlRule
+                            .getSparqlWherePatterns().size());
+                    
+                    Assert.assertEquals(
+                            "Sparql construct query where pattern was not parsed correctly",
+                            " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri)",
+                            nextSparqlRule.getSparqlWherePatterns().get(0));
+                }
+                else if(nextNormalisationRuleUri.equals(this.testNormalisationRule3))
+                {
+                    Assert.assertEquals("Results did not contain correct normalisation rule URI",
+                            this.testNormalisationRule3, nextNormalisationRuleUri);
+                    
+                    Assert.assertEquals("Did not find expected number of stages", 1, nextNormalisationRule.getStages()
+                            .size());
+                    Assert.assertTrue(
+                            "Could not find expected stage",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
+                    
+                    Assert.assertEquals("Description was not parsed correctly",
+                            "XSLT transformation of a Pubmed XML document into RDF NTriples",
+                            nextNormalisationRule.getDescription());
+                    Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
+                    Assert.assertEquals("Include exclude order was not parsed correctly",
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            nextNormalisationRule.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
+                            .getRelatedNamespaces().size());
+                    
+                    Assert.assertTrue(
+                            "Related namespace was not parsed correctly",
+                            nextNormalisationRule.getRelatedNamespaces().contains(
+                                    this.testValueFactory.createURI("http://example.org/ns:pubmed")));
+                    
+                    Assert.assertTrue(
+                            "Normalisation rule was not implemented using the XsltNormalisationRule interface",
+                            nextNormalisationRule instanceof XsltNormalisationRule);
+                    
+                    final XsltNormalisationRule nextXsltRule = (XsltNormalisationRule)nextNormalisationRule;
+                    
+                    Assert.assertTrue("Xslt transform was not parsed correctly", nextXsltRule.getXsltStylesheet()
+                            .startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"));
+                    
+                    Assert.assertTrue("Xslt transform was not parsed correctly", nextXsltRule.getXsltStylesheet()
+                            .contains("</xsl:stylesheet>"));
+                }
             }
         }
         catch(final RDFParseException ex)
@@ -585,7 +713,7 @@ public class RdfUtilsTest
                     Assert.assertEquals("Order was not parsed correctly", 120, nextProfile.getOrder());
                     
                     Assert.assertEquals("Default profile include exclude order was not parsed correctly",
-                            ProfileImpl.getProfileIncludeThenExcludeUri(),
+                            ProfileSchema.getProfileIncludeThenExcludeUri(),
                             nextProfile.getDefaultProfileIncludeExcludeOrder());
                     
                     Assert.assertFalse("Allow implicit provider inclusions was not parsed correctly",
@@ -622,7 +750,7 @@ public class RdfUtilsTest
                     Assert.assertEquals("Order was not parsed correctly", 230, nextProfile.getOrder());
                     
                     Assert.assertEquals("Default profile include exclude order was not parsed correctly",
-                            ProfileImpl.getProfileExcludeThenIncludeUri(),
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
                             nextProfile.getDefaultProfileIncludeExcludeOrder());
                     
                     Assert.assertTrue("Allow implicit provider inclusions was not parsed correctly",
@@ -670,6 +798,17 @@ public class RdfUtilsTest
     
     /**
      * Test method for
+     * {@link org.queryall.utils.RdfUtils#getProjects(org.openrdf.repository.Repository)}.
+     */
+    @Test
+    @Ignore
+    public void testGetProjects()
+    {
+        // TODO: Implement me!
+    }
+    
+    /**
+     * Test method for
      * {@link org.queryall.utils.RdfUtils#getProviders(org.openrdf.repository.Repository)}.
      */
     @Test
@@ -712,7 +851,8 @@ public class RdfUtilsTest
                             nextProvider.getIsDefaultSource());
                     
                     Assert.assertEquals("Profile include exclude order was not parsed correctly",
-                            ProfileImpl.getProfileExcludeThenIncludeUri(), nextProvider.getProfileIncludeExcludeOrder());
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            nextProvider.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Namespaces were not parsed correctly", 1, nextProvider.getNamespaces().size());
                     Assert.assertEquals("Query Types were not parsed correctly", 1, nextProvider
@@ -814,7 +954,7 @@ public class RdfUtilsTest
                             nextQueryType.getInRobotsTxt());
                     
                     Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
-                            ProfileImpl.getProfileExcludeThenIncludeUri(),
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
                             nextQueryType.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1,
@@ -888,11 +1028,15 @@ public class RdfUtilsTest
                     Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris()
                             .size());
                     
+                    Assert.assertTrue(nextRuleTest instanceof RegexRuleTest);
+                    
+                    final RegexRuleTest nextRegexRuleTest = (RegexRuleTest)nextRuleTest;
+                    
                     Assert.assertEquals("RuleTest input string was not parsed correctly", "http://example.org/",
-                            nextRuleTest.getTestInputString());
+                            nextRegexRuleTest.getTestInputString());
                     
                     Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/",
-                            nextRuleTest.getTestOutputString());
+                            nextRegexRuleTest.getTestOutputString());
                 }
             }
         }

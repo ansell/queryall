@@ -22,7 +22,13 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractServiceLoader<K, S>
 {
-    protected static Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    private static final Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = AbstractServiceLoader.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = AbstractServiceLoader.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = AbstractServiceLoader.log.isInfoEnabled();
     
     protected Map<K, S> services = Collections.synchronizedMap(new HashMap<K, S>());
     
@@ -55,11 +61,17 @@ public abstract class AbstractServiceLoader<K, S>
                 
                 if(oldService != null)
                 {
-                    AbstractServiceLoader.log.warn("New service {} replaces existing service {}", service.getClass(),
+                    if(_DEBUG)
+                    {
+                        AbstractServiceLoader.log.debug("New service {} replaces existing service {}", service.getClass(),
                             oldService.getClass());
+                    }
                 }
                 
-                AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
+                if(_DEBUG)
+                {
+                    AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
+                }
             }
             catch(final Error e)
             {
@@ -70,6 +82,12 @@ public abstract class AbstractServiceLoader<K, S>
     
     public S add(final S service)
     {
+        if(_DEBUG)
+        {
+            AbstractServiceLoader.log.debug("add key {} service class {}", this.getKey(service), service.getClass()
+                .getName());
+        }
+        
         return this.services.put(this.getKey(service), service);
     }
     

@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RuleTest implementations register themselves with this enumeration when they are loaded.
@@ -20,18 +22,61 @@ import org.queryall.api.services.QueryAllEnum;
  */
 public class RuleTestEnum extends QueryAllEnum
 {
+    private static final Logger log = LoggerFactory.getLogger(RuleTestEnum.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = RuleTestEnum.log.isTraceEnabled();
+    private static final boolean _DEBUG = RuleTestEnum.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = RuleTestEnum.log.isInfoEnabled();
+    
     protected static final Collection<RuleTestEnum> ALL_RULE_TESTS = new ArrayList<RuleTestEnum>(5);
     
     public static Collection<RuleTestEnum> byTypeUris(final List<URI> nextRuleTestUris)
     {
+        if(nextRuleTestUris.size() == 0)
+        {
+            if(RuleTestEnum._DEBUG)
+            {
+                RuleTestEnum.log.debug("found an empty URI set for nextRuleTestUris=" + nextRuleTestUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
         final List<RuleTestEnum> results = new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
         
         for(final RuleTestEnum nextRuleTestEnum : RuleTestEnum.ALL_RULE_TESTS)
         {
-            if(nextRuleTestEnum.getTypeURIs().equals(nextRuleTestUris))
+            boolean matching = (nextRuleTestEnum.getTypeURIs().size() == nextRuleTestUris.size());
+            
+            for(final URI nextURI : nextRuleTestEnum.getTypeURIs())
             {
+                if(!nextRuleTestUris.contains(nextURI))
+                {
+                    if(RuleTestEnum._DEBUG)
+                    {
+                        RuleTestEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
+                    }
+                    
+                    matching = false;
+                }
+            }
+            
+            if(matching)
+            {
+                if(RuleTestEnum._DEBUG)
+                {
+                    RuleTestEnum.log.debug("found an matching URI set for nextRuleTestUris=" + nextRuleTestUris);
+                }
+                
                 results.add(nextRuleTestEnum);
             }
+        }
+        
+        if(RuleTestEnum._DEBUG)
+        {
+            RuleTestEnum.log.debug("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
+                    + nextRuleTestUris);
         }
         
         return results;
@@ -44,7 +89,10 @@ public class RuleTestEnum extends QueryAllEnum
     {
         if(RuleTestEnum.valueOf(nextRuleTest.getName()) != null)
         {
-            QueryAllEnum.log.error("Cannot register this rule test again name=" + nextRuleTest.getName());
+            if(RuleTestEnum._DEBUG)
+            {
+                RuleTestEnum.log.debug("Cannot register this rule test again name=" + nextRuleTest.getName());
+            }
         }
         else
         {
@@ -89,5 +137,6 @@ public class RuleTestEnum extends QueryAllEnum
     public RuleTestEnum(final String nextName, final List<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        RuleTestEnum.ALL_RULE_TESTS.add(this);
     }
 }
