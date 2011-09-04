@@ -361,11 +361,6 @@ public class QueryTypeSchema
                     contextKeyUri);
             con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
-            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
@@ -387,13 +382,25 @@ public class QueryTypeSchema
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL, f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."), contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL, f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.LABEL, f.createLiteral("Defines the tags that are to be identified as public, and hence convertable according to public registries and rules."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.LABEL, f.createLiteral("Defines the tags that are to be identified as namespaces, and hence convertable according to namespace registries."), contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
