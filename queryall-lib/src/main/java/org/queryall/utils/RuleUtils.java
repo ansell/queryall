@@ -14,7 +14,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.ruletest.RegexRuleTest;
+import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.SortOrder;
 import org.slf4j.Logger;
@@ -183,8 +183,8 @@ public final class RuleUtils
         for(final RuleTest nextRuleTest : myRuleTests)
         {
             // TODO: remove cast to RegexRuleTest here
-            final String nextTestInputString = ((RegexRuleTest)nextRuleTest).getTestInputString();
-            final String nextTestOutputString = ((RegexRuleTest)nextRuleTest).getTestOutputString();
+            final String nextTestInputString = ((StringRuleTest)nextRuleTest).getTestInputString();
+            final String nextTestOutputString = ((StringRuleTest)nextRuleTest).getTestOutputString();
             
             String nextInputTestResult = nextTestInputString;
             

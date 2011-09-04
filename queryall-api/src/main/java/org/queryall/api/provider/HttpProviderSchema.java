@@ -75,7 +75,7 @@ public class HttpProviderSchema
     {
         return HttpProviderSchema.getProviderHttpGetUrl();
     }
-
+    
     /**
      * @return the providerHttpPostUrl
      */
@@ -113,8 +113,8 @@ public class HttpProviderSchema
             con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDFS.LABEL,
                     f.createLiteral("The class of HTTP based Data Providers."), contextUri);
-            con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDFS.SUBCLASSOF,
-                    ProviderSchema.getProviderTypeUri(), contextUri);
+            con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDFS.SUBCLASSOF, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
             
             con.add(HttpProviderSchema.getProviderHttpAcceptHeader(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(HttpProviderSchema.getProviderHttpAcceptHeader(), RDFS.RANGE, RDFS.LITERAL, contextUri);

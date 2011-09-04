@@ -60,14 +60,14 @@ public abstract class AbstractServiceLoader<K, S>
                 
                 if(oldService != null)
                 {
-                    if(_DEBUG)
+                    if(AbstractServiceLoader._DEBUG)
                     {
-                        AbstractServiceLoader.log.debug("New service {} replaces existing service {}", service.getClass(),
-                            oldService.getClass());
+                        AbstractServiceLoader.log.debug("New service {} replaces existing service {}",
+                                service.getClass(), oldService.getClass());
                     }
                 }
                 
-                if(_DEBUG)
+                if(AbstractServiceLoader._DEBUG)
                 {
                     AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
                 }
@@ -81,10 +81,10 @@ public abstract class AbstractServiceLoader<K, S>
     
     public S add(final S service)
     {
-        if(_DEBUG)
+        if(AbstractServiceLoader._DEBUG)
         {
             AbstractServiceLoader.log.debug("add key {} service class {}", this.getKey(service), service.getClass()
-                .getName());
+                    .getName());
         }
         
         return this.services.put(this.getKey(service), service);

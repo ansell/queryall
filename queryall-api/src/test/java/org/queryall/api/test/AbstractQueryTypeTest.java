@@ -188,7 +188,7 @@ public abstract class AbstractQueryTypeTest
         testNamespaceIdentifierIndexes[0] = 2;
         
         this.queryTypeNamespaceInputIndexes = this.getNewTestQueryType();
-        this.queryTypeNamespaceInputIndexes.setNamespaceInputIndexes(testNamespaceIdentifierIndexes);
+        this.queryTypeNamespaceInputIndexes.setNamespaceInputTags(testNamespaceIdentifierIndexes);
         
         this.queryTypeIncludeDefaults = this.getNewTestQueryType();
         this.queryTypeIncludeDefaults.setIncludeDefaults(true);
@@ -936,7 +936,7 @@ public abstract class AbstractQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.querytype.QueryType#isInputVariablePublic(int)}.
+     * Test method for {@link org.queryall.api.querytype.QueryType#isInputVariablePublic(String)}.
      */
     @Test
     public void testIsInputVariablePublic()

@@ -71,7 +71,6 @@ public class RdfsNormalisationRuleSchema
                     f.createLiteral("An RDFS normalisation rule intended to entail extra triples into query results based on an RDFS ontology."),
                     contextUri);
             
-            
             // If everything went as planned, we can commit the result
             con.commit();
             

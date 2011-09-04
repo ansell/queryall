@@ -71,7 +71,6 @@ public class OwlNormalisationRuleSchema
                     f.createLiteral("An OWL normalisation rule intended to entail extra triples into query results based on an OWL ontology."),
                     contextUri);
             
-            
             // If everything went as planned, we can commit the result
             con.commit();
             

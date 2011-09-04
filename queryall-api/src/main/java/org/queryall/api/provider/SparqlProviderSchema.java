@@ -50,16 +50,6 @@ public class SparqlProviderSchema
         
     }
     
-    
-    /**
-     * @param providerHttpPostSparql
-     *            the providerHttpPostSparql to set
-     */
-    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
-    {
-        SparqlProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
-    }
-    
     /**
      * @return the providerHttpPostSparql
      */
@@ -104,19 +94,25 @@ public class SparqlProviderSchema
             con.setAutoCommit(false);
             
             con.add(SparqlProviderSchema.getProviderSparqlTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(SparqlProviderSchema.getProviderSparqlTypeUri(), RDFS.LABEL, f.createLiteral("The class of SPARQL data providers."),
-                    contextUri);
+            con.add(SparqlProviderSchema.getProviderSparqlTypeUri(), RDFS.LABEL,
+                    f.createLiteral("The class of SPARQL data providers."), contextUri);
             
-            con.add(SparqlProviderSchema.getProviderSparqlRequiresGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(SparqlProviderSchema.getProviderSparqlRequiresGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextUri);
             con.add(SparqlProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(SparqlProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.DOMAIN,
                     SparqlProviderSchema.getProviderSparqlTypeUri(), contextUri);
-            con.add(SparqlProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.LABEL, f.createLiteral("This SPARQL provider declares that it needs to have a specific sparql graph URI configured before it can operate."), contextUri);
+            con.add(SparqlProviderSchema.getProviderSparqlRequiresGraphURI(),
+                    RDFS.LABEL,
+                    f.createLiteral("This SPARQL provider declares that it needs to have a specific sparql graph URI configured before it can operate."),
+                    contextUri);
             
             con.add(SparqlProviderSchema.getProviderSparqlGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(SparqlProviderSchema.getProviderSparqlGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(SparqlProviderSchema.getProviderSparqlGraphUri(), RDFS.DOMAIN, SparqlProviderSchema.getProviderSparqlTypeUri(), contextUri);
-            con.add(SparqlProviderSchema.getProviderSparqlGraphUri(), RDFS.LABEL, f.createLiteral("This SPARQL provider has this SPARQL graph URI as its target."), contextUri);
+            con.add(SparqlProviderSchema.getProviderSparqlGraphUri(), RDFS.DOMAIN,
+                    SparqlProviderSchema.getProviderSparqlTypeUri(), contextUri);
+            con.add(SparqlProviderSchema.getProviderSparqlGraphUri(), RDFS.LABEL,
+                    f.createLiteral("This SPARQL provider has this SPARQL graph URI as its target."), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -146,6 +142,15 @@ public class SparqlProviderSchema
     }
     
     /**
+     * @param providerHttpPostSparql
+     *            the providerHttpPostSparql to set
+     */
+    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
+    {
+        SparqlProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
+    }
+    
+    /**
      * @param providerSparqlGraphUri
      *            the providerSparqlGraphUri to set
      */
@@ -153,6 +158,7 @@ public class SparqlProviderSchema
     {
         SparqlProviderSchema.providerSparqlGraphUri = providerSparqlGraphUri;
     }
+    
     /**
      * @param providerSparqlRequiresGraphURI
      *            the providerSparqlRequiresGraphURI to set

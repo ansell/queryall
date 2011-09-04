@@ -252,7 +252,7 @@ public class QueryTypeImpl implements QueryType
         
         this.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes
                 .toArray(new Integer[0])));
-        this.setNamespaceInputIndexes(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes
+        this.setNamespaceInputTags(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes
                 .toArray(new Integer[0])));
         
         this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
@@ -616,7 +616,7 @@ public class QueryTypeImpl implements QueryType
     
     // returns true if the input variable is in the list of public input variables
     @Override
-    public boolean isInputVariablePublic(final int inputNumber)
+    public boolean isInputVariablePublic(final String inputNumber)
     {
         if(this.publicIdentifierIndexes != null)
         {
@@ -721,9 +721,9 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public void setNamespaceInputIndexes(final int[] namespaceInputIndexes)
+    public void setNamespaceInputTags(final Collection<String> namespaceInputTags)
     {
-        this.namespaceInputIndexes = namespaceInputIndexes;
+        this.namespaceInputIndexes = namespaceInputTags;
     }
     
     @Override

@@ -80,11 +80,10 @@ public class ProviderSchema
         ProviderSchema.setProviderProxy(f.createURI(baseUri, "proxy"));
         ProviderSchema.setProviderNoCommunication(f.createURI(baseUri, "nocommunication"));
         ProviderSchema.setProviderAssumedContentType(f.createURI(baseUri, "assumedContentType"));
-
+        
         // TODO: move these to SparqlProviderSchema
         ProviderSchema.setProviderSparqlRequiresGraphURI(f.createURI(baseUri, "requiresGraphUri"));
         ProviderSchema.setProviderSparqlGraphUri(f.createURI(baseUri, "graphUri"));
-        
         
         // NOTE: This was deprecated after API version 1 in favour of dc
         // elements title
@@ -97,14 +96,6 @@ public class ProviderSchema
     public static URI getProviderAssumedContentType()
     {
         return ProviderSchema.providerAssumedContentType;
-    }
-    
-    /**
-     * @return the providerGraphUri
-     */
-    public static URI getProviderSparqlGraphUri()
-    {
-        return ProviderSchema.providerSparqlGraphUri;
     }
     
     /**
@@ -164,14 +155,6 @@ public class ProviderSchema
     }
     
     /**
-     * @return the providerRequiresSparqlGraphURI
-     */
-    public static URI getProviderSparqlRequiresGraphURI()
-    {
-        return ProviderSchema.providerSparqlRequiresGraphURI;
-    }
-    
-    /**
      * @return the providerResolutionMethod
      */
     public static URI getProviderResolutionMethod()
@@ -185,6 +168,22 @@ public class ProviderSchema
     public static URI getProviderResolutionStrategy()
     {
         return ProviderSchema.providerResolutionStrategy;
+    }
+    
+    /**
+     * @return the providerGraphUri
+     */
+    public static URI getProviderSparqlGraphUri()
+    {
+        return ProviderSchema.providerSparqlGraphUri;
+    }
+    
+    /**
+     * @return the providerRequiresSparqlGraphURI
+     */
+    public static URI getProviderSparqlRequiresGraphURI()
+    {
+        return ProviderSchema.providerSparqlRequiresGraphURI;
     }
     
     /**
@@ -245,21 +244,30 @@ public class ProviderSchema
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
             con.add(ProviderSchema.getProviderHandlesNamespace(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
                     contextUri);
-            con.add(ProviderSchema.getProviderHandlesNamespace(), RDFS.LABEL, f.createLiteral("The provider declares it is able to handle this namespace. If it is a default provider, it may leave this list of namespaces empty, as long as all of the relevant query types are compatible with default providers."), contextUri);
+            con.add(ProviderSchema.getProviderHandlesNamespace(),
+                    RDFS.LABEL,
+                    f.createLiteral("The provider declares it is able to handle this namespace. If it is a default provider, it may leave this list of namespaces empty, as long as all of the relevant query types are compatible with default providers."),
+                    contextUri);
             
             con.add(ProviderSchema.getProviderIncludedInQuery(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
                     contextUri);
             con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
                     contextUri);
-            con.add(ProviderSchema.getProviderIncludedInQuery(), RDFS.LABEL, f.createLiteral("The provider declares that it is able to handle these queries. This list cannot be empty in a useful configuration, as the provider would never be used."), contextUri);
+            con.add(ProviderSchema.getProviderIncludedInQuery(),
+                    RDFS.LABEL,
+                    f.createLiteral("The provider declares that it is able to handle these queries. This list cannot be empty in a useful configuration, as the provider would never be used."),
+                    contextUri);
             
             con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.RANGE,
                     NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.DOMAIN,
                     ProviderSchema.getProviderTypeUri(), contextUri);
-            con.add(ProviderSchema.getProviderNeedsRdfNormalisation(), RDFS.LABEL, f.createLiteral("The provider declares that it needs these rules to process input and/or output data."), contextUri);
+            con.add(ProviderSchema.getProviderNeedsRdfNormalisation(),
+                    RDFS.LABEL,
+                    f.createLiteral("The provider declares that it needs these rules to process input and/or output data."),
+                    contextUri);
             
             con.add(ProviderSchema.getProviderResolutionMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderResolutionMethod(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
@@ -274,18 +282,26 @@ public class ProviderSchema
             con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.DOMAIN,
                     ProviderSchema.getProviderTypeUri(), contextUri);
-            con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.LABEL, f.createLiteral("This SPARQL provider declares that it needs to have a specific sparql graph URI configured before it can operate."), contextUri);
+            con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(),
+                    RDFS.LABEL,
+                    f.createLiteral("This SPARQL provider declares that it needs to have a specific sparql graph URI configured before it can operate."),
+                    contextUri);
             
             con.add(ProviderSchema.getProviderSparqlGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(), contextUri);
-            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.LABEL, f.createLiteral("This SPARQL provider has this SPARQL graph URI as its target."), contextUri);
+            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
+                    contextUri);
+            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.LABEL,
+                    f.createLiteral("This SPARQL provider has this SPARQL graph URI as its target."), contextUri);
             
             con.add(ProviderSchema.getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
                     contextUri);
-            con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.LABEL, f.createLiteral("If this provider can operate over any of the namespaces supported by its query types, it can declare that it is a default provider and may be used even when the provider namespace list is not declared."), contextUri);
+            con.add(ProviderSchema.getProviderIsDefaultSource(),
+                    RDFS.LABEL,
+                    f.createLiteral("If this provider can operate over any of the namespaces supported by its query types, it can declare that it is a default provider and may be used even when the provider namespace list is not declared."),
+                    contextUri);
             
             con.add(ProviderSchema.getProviderAssumedContentType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderAssumedContentType(), RDFS.RANGE, RDFS.LITERAL, contextUri);
@@ -338,15 +354,6 @@ public class ProviderSchema
     public static void setProviderAssumedContentType(final URI providerAssumedContentType)
     {
         ProviderSchema.providerAssumedContentType = providerAssumedContentType;
-    }
-    
-    /**
-     * @param providerGraphUri
-     *            the providerGraphUri to set
-     */
-    public static void setProviderSparqlGraphUri(final URI providerGraphUri)
-    {
-        ProviderSchema.providerSparqlGraphUri = providerGraphUri;
     }
     
     /**
@@ -413,15 +420,6 @@ public class ProviderSchema
     }
     
     /**
-     * @param providerRequiresSparqlGraphURI
-     *            the providerRequiresSparqlGraphURI to set
-     */
-    public static void setProviderSparqlRequiresGraphURI(final URI providerRequiresSparqlGraphURI)
-    {
-        ProviderSchema.providerSparqlRequiresGraphURI = providerRequiresSparqlGraphURI;
-    }
-    
-    /**
      * @param providerResolutionMethod
      *            the providerResolutionMethod to set
      */
@@ -437,6 +435,24 @@ public class ProviderSchema
     public static void setProviderResolutionStrategy(final URI providerResolutionStrategy)
     {
         ProviderSchema.providerResolutionStrategy = providerResolutionStrategy;
+    }
+    
+    /**
+     * @param providerGraphUri
+     *            the providerGraphUri to set
+     */
+    public static void setProviderSparqlGraphUri(final URI providerGraphUri)
+    {
+        ProviderSchema.providerSparqlGraphUri = providerGraphUri;
+    }
+    
+    /**
+     * @param providerRequiresSparqlGraphURI
+     *            the providerRequiresSparqlGraphURI to set
+     */
+    public static void setProviderSparqlRequiresGraphURI(final URI providerRequiresSparqlGraphURI)
+    {
+        ProviderSchema.providerSparqlRequiresGraphURI = providerRequiresSparqlGraphURI;
     }
     
     /**

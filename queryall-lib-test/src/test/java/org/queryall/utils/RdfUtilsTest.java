@@ -45,7 +45,7 @@ import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
-import org.queryall.api.ruletest.RegexRuleTest;
+import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -1028,9 +1028,9 @@ public class RdfUtilsTest
                     Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris()
                             .size());
                     
-                    Assert.assertTrue(nextRuleTest instanceof RegexRuleTest);
+                    Assert.assertTrue(nextRuleTest instanceof StringRuleTest);
                     
-                    final RegexRuleTest nextRegexRuleTest = (RegexRuleTest)nextRuleTest;
+                    final StringRuleTest nextRegexRuleTest = (StringRuleTest)nextRuleTest;
                     
                     Assert.assertEquals("RuleTest input string was not parsed correctly", "http://example.org/",
                             nextRegexRuleTest.getTestInputString());

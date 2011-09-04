@@ -32,7 +32,8 @@ public interface ProfilableInterface extends BaseQueryAllInterface
      *            is found
      * @param includeNonProfileMatched
      *            true if this object should be included even if no profiles matched, and false if
-     *            there were no matches, including implicit inclusions if they are acceptable
+     *            it is not included when there were no matches, including implicit inclusions if
+     *            they are acceptable
      * @return true if this object should be used and false if it should not
      */
     boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,

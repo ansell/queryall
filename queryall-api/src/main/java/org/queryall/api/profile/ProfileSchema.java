@@ -261,21 +261,27 @@ public class ProfileSchema
             con.add(ProfileSchema.getProfileOrderUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileOrderUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(ProfileSchema.getProfileOrderUri(), RDFS.DOMAIN, ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileOrderUri(), RDFS.LABEL, f.createLiteral("A number that defines the order that this profile will be applied in. This is optional if the implementation defines another method for aligning profiles."), contextUri);
+            con.add(ProfileSchema.getProfileOrderUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("A number that defines the order that this profile will be applied in. This is optional if the implementation defines another method for aligning profiles."),
+                    contextUri);
             
             // TODO: Add description
             con.add(ProfileSchema.getProfileAdministratorUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileAdministratorUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
             con.add(ProfileSchema.getProfileAdministratorUri(), RDFS.DOMAIN, ProfileSchema.getProfileTypeUri(),
                     contextUri);
-            con.add(ProfileSchema.getProfileAdministratorUri(), RDFS.LABEL, f.createLiteral("The URI of the administrator for this profile."), contextUri);
+            con.add(ProfileSchema.getProfileAdministratorUri(), RDFS.LABEL,
+                    f.createLiteral("The URI of the administrator for this profile."), contextUri);
             
             // TODO: Add description
             con.add(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
             con.add(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(), RDFS.DOMAIN,
                     ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(), RDFS.LABEL, f.createLiteral("This property defines the default include or exclude order to use if an item does not define it."),
+            con.add(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property defines the default include or exclude order to use if an item does not define it."),
                     contextUri);
             
             con.add(ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY,
@@ -283,7 +289,9 @@ public class ProfileSchema
             con.add(ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(), RDFS.DOMAIN,
                     ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(), RDFS.LABEL, f.createLiteral("This property defines whether query types that aren't explicitly included or explicitly excluded will included by this profile. If they are not included, then they may be included by other profiles."),
+            con.add(ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property defines whether query types that aren't explicitly included or explicitly excluded will included by this profile. If they are not included, then they may be included by other profiles."),
                     contextUri);
             
             con.add(ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY,
@@ -291,7 +299,9 @@ public class ProfileSchema
             con.add(ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(), RDFS.DOMAIN,
                     ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(), RDFS.LABEL, f.createLiteral("This property defines whether providers that aren't explicitly included or explicitly excluded will included by this profile. If they are not included, then they may be included by other profiles."),
+            con.add(ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property defines whether providers that aren't explicitly included or explicitly excluded will included by this profile. If they are not included, then they may be included by other profiles."),
                     contextUri);
             
             con.add(ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(), RDF.TYPE, OWL.DATATYPEPROPERTY,
@@ -299,7 +309,9 @@ public class ProfileSchema
             con.add(ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
             con.add(ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.DOMAIN,
                     ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(), RDFS.LABEL, f.createLiteral("This property defines whether rdf rules that aren't explicitly included or explicitly excluded will included by this profile. If they are not included, then they may be included by other profiles."),
+            con.add(ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property defines whether rdf rules that aren't explicitly included or explicitly excluded will included by this profile. If they are not included, then they may be included by other profiles."),
                     contextUri);
             
             con.add(ProfileSchema.getProfileIncludeProviderInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
@@ -307,51 +319,75 @@ public class ProfileSchema
                     ProviderSchema.getProviderTypeUri(), contextUri);
             con.add(ProfileSchema.getProfileIncludeProviderInProfile(), RDFS.DOMAIN, ProfileSchema.getProfileTypeUri(),
                     contextUri);
-            con.add(ProfileSchema.getProfileIncludeProviderInProfile(), RDFS.LABEL, f.createLiteral("This property specifies that the provider is included in this profile."), contextUri);
+            con.add(ProfileSchema.getProfileIncludeProviderInProfile(), RDFS.LABEL,
+                    f.createLiteral("This property specifies that the provider is included in this profile."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileExcludeProviderFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileExcludeProviderFromProfile(), RDFS.RANGE,
                     ProviderSchema.getProviderTypeUri(), contextUri);
             con.add(ProfileSchema.getProfileExcludeProviderFromProfile(), RDFS.DOMAIN,
                     ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileExcludeProviderFromProfile(), RDFS.LABEL, f.createLiteral("This property specifies that the rdf rule is excluded by this profile. Further profiles will not be processed for this provider."), contextUri);
+            con.add(ProfileSchema.getProfileExcludeProviderFromProfile(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property specifies that the rdf rule is excluded by this profile. Further profiles will not be processed for this provider."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileIncludeQueryInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileIncludeQueryInProfile(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
                     contextUri);
             con.add(ProfileSchema.getProfileIncludeQueryInProfile(), RDFS.DOMAIN, ProfileSchema.getProfileTypeUri(),
                     contextUri);
-            con.add(ProfileSchema.getProfileIncludeQueryInProfile(), RDFS.LABEL, f.createLiteral("This property specifies that the query type is included in this profile."), contextUri);
+            con.add(ProfileSchema.getProfileIncludeQueryInProfile(), RDFS.LABEL,
+                    f.createLiteral("This property specifies that the query type is included in this profile."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileExcludeQueryFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileExcludeQueryFromProfile(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
                     contextUri);
             con.add(ProfileSchema.getProfileExcludeQueryFromProfile(), RDFS.DOMAIN, ProfileSchema.getProfileTypeUri(),
                     contextUri);
-            con.add(ProfileSchema.getProfileExcludeQueryFromProfile(), RDFS.LABEL, f.createLiteral("This property specifies that the query type is excluded by this profile. Further profiles will not be processed for this query type."), contextUri);
+            con.add(ProfileSchema.getProfileExcludeQueryFromProfile(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property specifies that the query type is excluded by this profile. Further profiles will not be processed for this query type."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileIncludeRdfRuleInProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileIncludeRdfRuleInProfile(), RDFS.RANGE,
                     NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(ProfileSchema.getProfileIncludeRdfRuleInProfile(), RDFS.DOMAIN, ProfileSchema.getProfileTypeUri(),
                     contextUri);
-            con.add(ProfileSchema.getProfileIncludeRdfRuleInProfile(), RDFS.LABEL, f.createLiteral("This property specifies that the rdf rule is included in this profile."), contextUri);
+            con.add(ProfileSchema.getProfileIncludeRdfRuleInProfile(), RDFS.LABEL,
+                    f.createLiteral("This property specifies that the rdf rule is included in this profile."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileExcludeRdfRuleFromProfile(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
             con.add(ProfileSchema.getProfileExcludeRdfRuleFromProfile(), RDFS.RANGE,
                     NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(ProfileSchema.getProfileExcludeRdfRuleFromProfile(), RDFS.DOMAIN,
                     ProfileSchema.getProfileTypeUri(), contextUri);
-            con.add(ProfileSchema.getProfileExcludeRdfRuleFromProfile(), RDFS.LABEL, f.createLiteral("This property specifies that the rdf rule is excluded by this profile. Further profiles will not be processed for this rdf rule."), contextUri);
+            con.add(ProfileSchema.getProfileExcludeRdfRuleFromProfile(),
+                    RDFS.LABEL,
+                    f.createLiteral("This property specifies that the rdf rule is excluded by this profile. Further profiles will not be processed for this rdf rule."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileExcludeThenIncludeUri(), RDF.TYPE, OWL.INDIVIDUAL, contextUri);
-            con.add(ProfileSchema.getProfileExcludeThenIncludeUri(), RDFS.LABEL, f.createLiteral("This is a marker that defines that this item will be processed against exclude rules first, but if it doesn't match it will be assumed to match and possibly be included implicitly."), contextUri);
+            con.add(ProfileSchema.getProfileExcludeThenIncludeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This is a marker that defines that this item will be processed against exclude rules first, but if it doesn't match it will be assumed to match and possibly be included implicitly."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileIncludeThenExcludeUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileSchema.getProfileIncludeThenExcludeUri(), RDFS.LABEL, f.createLiteral("This is a marker that defines that this item will be processed against include rules first, but if it doesn't match it will be excluded by this profile and should be processed by other profiles."), contextUri);
+            con.add(ProfileSchema.getProfileIncludeThenExcludeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This is a marker that defines that this item will be processed against include rules first, but if it doesn't match it will be excluded by this profile and should be processed by other profiles."),
+                    contextUri);
             
             con.add(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(), RDFS.LABEL, f.createLiteral("This is a marker that defines that this item will be processed using the default include or exclude order of each profile that it is defined in."), contextUri);
+            con.add(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("This is a marker that defines that this item will be processed using the default include or exclude order of each profile that it is defined in."),
+                    contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

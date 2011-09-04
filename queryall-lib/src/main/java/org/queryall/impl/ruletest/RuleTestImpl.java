@@ -33,6 +33,7 @@ public class RuleTestImpl implements RuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
+    // TODO: optimise to a static final List<URI>
     public static List<URI> myTypes()
     {
         final List<URI> results = new ArrayList<URI>(1);

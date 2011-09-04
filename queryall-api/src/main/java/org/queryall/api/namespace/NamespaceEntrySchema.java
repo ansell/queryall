@@ -161,7 +161,6 @@ public class NamespaceEntrySchema
             
             con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE,
                     contextKeyUri);
@@ -171,55 +170,65 @@ public class NamespaceEntrySchema
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.LABEL, f.createLiteral("This property defines the preferred prefix, and the label for this namespace."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.LABEL,
+                    f.createLiteral("This property defines the preferred prefix, and the label for this namespace."),
+                    contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.SUBPROPERTYOF, Constants.SKOS_ALTLABEL,
                     contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.LABEL, f.createLiteral("A range of alternative prefixes for this namespace."),
-                    contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceAlternativePrefix(), RDFS.LABEL,
+                    f.createLiteral("A range of alternative prefixes for this namespace."), contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceAuthority(), RDFS.LABEL, f.createLiteral("This namespace is controlled by this authority, although the authority may represent a community."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceAuthority(),
+                    RDFS.LABEL,
+                    f.createLiteral("This namespace is controlled by this authority, although the authority may represent a community."),
+                    contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.LABEL, f.createLiteral("This namespace contains valid identifiers that match this regex. It may be used to identify before querying, whether this namespace and identifier combination is actually relevant."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(),
+                    RDFS.LABEL,
+                    f.createLiteral("This namespace contains valid identifiers that match this regex. It may be used to identify before querying, whether this namespace and identifier combination is actually relevant."),
+                    contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.RANGE, RDFS.LITERAL,
                     contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDFS.LABEL,
-                    f.createLiteral("If this property is defined as true, then alternative prefixes that match this namespace should be converted to the preferred prefix."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(),
+                    RDFS.LABEL,
+                    f.createLiteral("If this property is defined as true, then alternative prefixes that match this namespace should be converted to the preferred prefix."),
+                    contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.LABEL, f.createLiteral("This template combines the authority, prefix, separator and identifier templates to create the desired URI structure for this namespace."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceUriTemplate(),
+                    RDFS.LABEL,
+                    f.createLiteral("This template combines the authority, prefix, separator and identifier templates to create the desired URI structure for this namespace."),
+                    contextKeyUri);
             
-
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.LABEL, f.createLiteral("This value is used as the separator between the namespace and the identifier portion of the URI."), contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceSeparator(),
+                    RDFS.LABEL,
+                    f.createLiteral("This value is used as the separator between the namespace and the identifier portion of the URI."),
+                    contextKeyUri);
             
             if(modelVersion == 1)
             {
