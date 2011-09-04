@@ -51,8 +51,6 @@ public class QueryTypeSchema
     
     private static URI queryIncludeDefaults;
     
-    private static URI queryInputRegex;
-    
     private static URI queryIncludeQueryType;
     
     private static URI queryTemplateString;
@@ -99,7 +97,6 @@ public class QueryTypeSchema
         QueryTypeSchema.setQueryNamespaceSpecific(f.createURI(baseUri, "isNamespaceSpecific"));
         QueryTypeSchema.setQueryIncludeDefaults(f.createURI(baseUri, "includeDefaults"));
         QueryTypeSchema.setQueryIncludeQueryType(f.createURI(baseUri, "includeQueryType"));
-        QueryTypeSchema.setQueryInputRegex(f.createURI(baseUri, "inputRegex"));
         QueryTypeSchema.setQueryTemplateString(f.createURI(baseUri, "templateString"));
         QueryTypeSchema.setQueryQueryUriTemplateString(f.createURI(baseUri, "queryUriTemplateString"));
         QueryTypeSchema.setQueryStandardUriTemplateString(f.createURI(baseUri, "standardUriTemplateString"));
@@ -152,14 +149,6 @@ public class QueryTypeSchema
     public static URI getQueryIncludeQueryType()
     {
         return QueryTypeSchema.queryIncludeQueryType;
-    }
-    
-    /**
-     * @return the queryInputRegex
-     */
-    public static URI getQueryInputRegex()
-    {
-        return QueryTypeSchema.queryInputRegex;
     }
     
     /**
@@ -372,10 +361,10 @@ public class QueryTypeSchema
                     contextKeyUri);
             con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
-            con.add(QueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInputRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
@@ -483,15 +472,6 @@ public class QueryTypeSchema
     public static void setQueryIncludeQueryType(final URI queryIncludeQueryType)
     {
         QueryTypeSchema.queryIncludeQueryType = queryIncludeQueryType;
-    }
-    
-    /**
-     * @param queryInputRegex
-     *            the queryInputRegex to set
-     */
-    public static void setQueryInputRegex(final URI queryInputRegex)
-    {
-        QueryTypeSchema.queryInputRegex = queryInputRegex;
     }
     
     /**

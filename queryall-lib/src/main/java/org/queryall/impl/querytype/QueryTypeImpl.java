@@ -23,6 +23,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RegexInputQueryType;
+import org.queryall.api.querytype.RegexInputQueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.query.ProvenanceRecord;
@@ -48,6 +49,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
         final List<URI> results = new ArrayList<URI>(1);
         
         results.add(QueryTypeSchema.getQueryTypeUri());
+        results.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
         
         return results;
     }
@@ -75,11 +77,11 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     // identifiers that are not untouchable internal private identifiers
     // among other things, it can be used to make sure that these are lowercased per a given policy
     // (in this case the Banff Manifesto)
-    private Collection<String> publicIdentifierTags;
+    private Collection<String> publicIdentifierTags = new ArrayList<String>(2);
     
     // these are the input_NN indexes that we will use to determine which namespace providers to
     // perform this query using
-    private Collection<String> namespaceInputTags;
+    private Collection<String> namespaceInputTags = new ArrayList<String>(2);
     
     // This is the method by which we determine whether any or all of the namespaces are required on
     // a particular endpoint before we utilise it
@@ -210,7 +212,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
             {
                 this.setIncludeDefaults(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryInputRegex()))
+            else if(nextStatement.getPredicate().equals(RegexInputQueryTypeSchema.getQueryInputRegex()))
             {
                 this.setInputRegex(nextStatement.getObject().stringValue());
             }
@@ -978,7 +980,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
             con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
                     keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
+            con.add(queryInstanceUri, RegexInputQueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral,
                     keyToUse);
