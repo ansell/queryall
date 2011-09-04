@@ -3,7 +3,6 @@ package org.queryall.api.querytype;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
@@ -32,6 +31,16 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     Collection<URI> getNamespacesToHandle();
     
+    Collection<String> getNamespaceInputTags();
+    
+    Collection<String> getPublicIdentifierTags();
+    
+    String getQueryUriTemplateString();
+    
+    String getStandardUriTemplateString();
+    
+    String getTemplateString();
+    
     // TODO: extract this into a new interface called RdfXmlOutputQueryType
     String getOutputRdfXmlString();
 
@@ -59,28 +68,21 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     void setIsPageable(boolean isPageable);
     
-    // TODO: extract this into a new interface called RegexInputQueryType
-    void setNamespaceInputTags(Collection<String> namespaceInputTags);
+    void addNamespaceInputTag(String namespaceInputTag);
     
     void setNamespaceMatchMethod(URI namespaceMatchMethod);
-    
-    void setNamespacesToHandle(Collection<URI> namespacesToHandle);
     
     // TODO: extract this into a new interface called RdfXmlOutputQueryType
     void setOutputRdfXmlString(String outputRdfXmlString);
     
-    // TODO: extract this into a new interface called RegexInputQueryType
-    void setPublicIdentifierIndexes(int[] publicIdentifierIndexes);
+    void addPublicIdentifierTag(String publicIdentifierTag);
     
-    // TODO: extract this into a new interface called RegexInputQueryType
     void setQueryUriTemplateString(String queryUriTemplateString);
     
-    void setSemanticallyLinkedQueryTypes(Collection<URI> semanticallyLinkedQueryTypes);
+    void addSemanticallyLinkedQueryType(URI semanticallyLinkedQueryTypes);
     
-    // TODO: extract this into a new interface called RegexInputQueryType
     void setStandardUriTemplateString(String standardUriTemplateString);
     
-    // TODO: extract this into a new interface called RegexInputQueryType
     void setTemplateString(String templateString);
     
 }

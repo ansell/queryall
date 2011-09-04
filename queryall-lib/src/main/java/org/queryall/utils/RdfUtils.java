@@ -167,14 +167,19 @@ public final class RdfUtils
         final String namespaceAndIdentifier =
                 nextQueryKey.stringValue().substring(localSettings.getDefaultHostAddress().length());
         
-        final List<String> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
+        final Map<String, List<String>> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
+        
+        if(nsAndIdList == null)
+        {
+            throw new IllegalArgumentException("nextQueryKey did not contain a namespace and identifier nextQueryKey="+nextQueryKey);
+        }
         
         if(nsAndIdList.size() == 2)
         {
-            endpointUrls.add(hostToUse + new QueryTypeImpl().getDefaultNamespace() + localSettings.getSeparator()
-                    + StringUtils.percentEncode(nsAndIdList.get(1)));
-            nextQueryBundle.setQueryEndpoint(hostToUse + new QueryTypeImpl().getDefaultNamespace()
-                    + localSettings.getSeparator() + StringUtils.percentEncode(nsAndIdList.get(1)));
+            endpointUrls.add(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
+                    + StringUtils.percentEncode(nsAndIdList.get("input_1").get(0)));
+            nextQueryBundle.setQueryEndpoint(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
+                    + localSettings.getSeparator() + StringUtils.percentEncode(nsAndIdList.get("input1").get(0)));
         }
         // }
         // else

@@ -178,17 +178,11 @@ public abstract class AbstractQueryTypeTest
         this.namespaces45.add(namespace4Inner);
         this.namespaces45.add(namespace5Inner);
         
-        final int[] testPublicIdentifierIndexes = new int[1];
-        testPublicIdentifierIndexes[0] = 2;
-        
         this.queryTypePublicIdentifiers = this.getNewTestQueryType();
-        this.queryTypePublicIdentifiers.setPublicIdentifierIndexes(testPublicIdentifierIndexes);
-        
-        final int[] testNamespaceIdentifierIndexes = new int[1];
-        testNamespaceIdentifierIndexes[0] = 2;
+        this.queryTypePublicIdentifiers.addPublicIdentifierTag("input_2");
         
         this.queryTypeNamespaceInputIndexes = this.getNewTestQueryType();
-        this.queryTypeNamespaceInputIndexes.setNamespaceInputTags(testNamespaceIdentifierIndexes);
+        this.queryTypeNamespaceInputIndexes.addNamespaceInputTag("input_2");
         
         this.queryTypeIncludeDefaults = this.getNewTestQueryType();
         this.queryTypeIncludeDefaults.setIncludeDefaults(true);
@@ -941,17 +935,17 @@ public abstract class AbstractQueryTypeTest
     @Test
     public void testIsInputVariablePublic()
     {
-        Assert.assertTrue(this.queryTypePublicIdentifiers.isInputVariablePublic(2));
-        Assert.assertFalse(this.queryTypePublicIdentifiers.isInputVariablePublic(1));
+        Assert.assertTrue(this.queryTypePublicIdentifiers.isInputVariablePublic("input_2"));
+        Assert.assertFalse(this.queryTypePublicIdentifiers.isInputVariablePublic("input_1"));
     }
     
     /**
-     * Test method for {@link org.queryall.api.querytype.QueryType#getNamespaceInputIndexes()}.
+     * Test method for {@link org.queryall.api.querytype.QueryType#getNamespaceInputTags()}.
      */
     @Test
     public void testNamespaceVariables()
     {
-        Assert.assertEquals(1, this.queryTypeNamespaceInputIndexes.getNamespaceInputIndexes().length);
+        Assert.assertEquals(1, this.queryTypeNamespaceInputIndexes.getNamespaceInputTags().size());
     }
     
 }

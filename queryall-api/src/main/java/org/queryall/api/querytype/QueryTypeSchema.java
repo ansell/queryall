@@ -41,6 +41,7 @@ public class QueryTypeSchema
     private static URI queryNamespaceToHandle;
     
     private static URI queryPublicIdentifierIndex;
+    private static URI queryPublicIdentifierTag;
     
     private static URI queryNamespaceInputIndex;
     
@@ -77,6 +78,7 @@ public class QueryTypeSchema
     private static URI queryNamespaceMatchAny;
     
     private static URI queryNamespaceMatchAll;
+    private static URI queryNamespaceInputTag;
     
     static
     {
@@ -89,7 +91,10 @@ public class QueryTypeSchema
         QueryTypeSchema.setQueryHandleAllNamespaces(f.createURI(baseUri, "handleAllNamespaces"));
         QueryTypeSchema.setQueryNamespaceToHandle(f.createURI(baseUri, "namespaceToHandle"));
         QueryTypeSchema.setQueryPublicIdentifierIndex(f.createURI(baseUri, "hasPublicIdentifierIndex"));
+        QueryTypeSchema.setQueryPublicIdentifierTag(f.createURI(baseUri, "hasPublicIdentifierTag"));
+        
         QueryTypeSchema.setQueryNamespaceInputIndex(f.createURI(baseUri, "hasNamespaceInputIndex"));
+        QueryTypeSchema.setQueryNamespaceInputTag(f.createURI(baseUri, "hasNamespaceInputTag"));
         QueryTypeSchema.setQueryNamespaceMatchMethod(f.createURI(baseUri, "namespaceMatchMethod"));
         QueryTypeSchema.setQueryNamespaceSpecific(f.createURI(baseUri, "isNamespaceSpecific"));
         QueryTypeSchema.setQueryIncludeDefaults(f.createURI(baseUri, "includeDefaults"));
@@ -115,6 +120,11 @@ public class QueryTypeSchema
         return QueryTypeSchema.getQueryNamespaceMatchAll();
     }
     
+    private static void setQueryNamespaceInputTag(URI queryNamespaceInputTag)
+    {
+        QueryTypeSchema.queryNamespaceInputTag = queryNamespaceInputTag;
+    }
+
     public static URI getNamespaceMatchAnyUri()
     {
         return QueryTypeSchema.getQueryNamespaceMatchAny();
@@ -653,6 +663,27 @@ public class QueryTypeSchema
     public static void setQueryTypeUri(final URI queryTypeUri)
     {
         QueryTypeSchema.queryTypeUri = queryTypeUri;
+    }
+
+    public static URI getQueryNamespaceInputTag()
+    {
+        return QueryTypeSchema.queryNamespaceInputTag;
+    }
+
+    /**
+     * @return the queryPublicIdentifierTag
+     */
+    public static URI getQueryPublicIdentifierTag()
+    {
+        return queryPublicIdentifierTag;
+    }
+
+    /**
+     * @param queryPublicIdentifierTag the queryPublicIdentifierTag to set
+     */
+    public static void setQueryPublicIdentifierTag(URI queryPublicIdentifierTag)
+    {
+        QueryTypeSchema.queryPublicIdentifierTag = queryPublicIdentifierTag;
     }
     
 }

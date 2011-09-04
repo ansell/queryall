@@ -12,6 +12,8 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,13 +42,13 @@ public class StringUtils
         return Constants.valueFactory.createURI(stringForm);
     }
     
-    public static List<String> getNamespaceAndIdentifier(final String nsAndId, final QueryAllConfiguration localSettings)
+    public static Map<String, List<String>> getNamespaceAndIdentifier(final String nsAndId, final QueryAllConfiguration localSettings)
     {
         return StringUtils.matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(),
-                localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", ""), nsAndId);
+                localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"), nsAndId);
     }
     
-    public static List<String> getNamespaceAndIdentifierFromUri(final String nextUri,
+    public static Map<String, List<String>> getNamespaceAndIdentifierFromUri(final String nextUri,
             final QueryAllConfiguration localSettings)
     {
         if(nextUri.startsWith(localSettings.getDefaultHostAddress()))
@@ -108,10 +110,10 @@ public class StringUtils
         return buffer;
     }
     
-    public static List<String> matchesForRegexOnString(final Pattern nextRegexPattern, final String nextRegex,
+    public static Map<String, List<String>> matchesForRegexOnString(final Pattern nextRegexPattern, final String nextRegex,
             final String nextQueryString)
     {
-        final List<String> results = new ArrayList<String>();
+        final Map<String, List<String>> results = new ConcurrentHashMap<String, List<String>>();
         
         if(nextRegex == null || nextRegex.trim().equals(""))
         {
@@ -137,8 +139,11 @@ public class StringUtils
                             + "\" starting at " + "index=" + matcher.start(i + 1) + " and ending at index="
                             + matcher.end(i + 1) + ".\n");
                 }
+                List<String> matches = new ArrayList<String>(1);
+                matches.add(matcher.group(i+1));
                 
-                results.add(matcher.group(i + 1));
+                // TODO: is there any way we can make this cleaner?
+                results.put("input_"+(i + 1), matches);
                 
                 found = true;
             }

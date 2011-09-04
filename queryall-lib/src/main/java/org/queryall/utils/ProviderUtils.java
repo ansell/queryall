@@ -184,41 +184,42 @@ public final class ProviderUtils
     {
         final Collection<Provider> results = new LinkedList<Provider>();
         
-        final List<String> queryStringMatches = nextQueryType.matchesForQueryString(queryString);
-        
-        final int queryStringMatchesSize = queryStringMatches.size();
+        final Map<String, List<String>> queryStringMatches = nextQueryType.matchesForQueryString(queryString);
         
         final Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
         
-        for(final int nextNamespaceInputIndex : nextQueryType.getNamespaceInputIndexes())
+        for(final String nextNamespaceInputTag : nextQueryType.getNamespaceInputTags())
         {
-            if(queryStringMatchesSize >= nextNamespaceInputIndex && nextNamespaceInputIndex > 0)
+            if(queryStringMatches.containsKey(nextNamespaceInputTag))
             {
-                final String nextTitle = queryStringMatches.get(nextNamespaceInputIndex - 1);
+                final Collection<String> nextInputNamespaces = queryStringMatches.get(nextNamespaceInputTag);
                 
-                final Collection<URI> nextUriFromTitleNamespaceList =
-                        NamespaceUtils.getNamespaceUrisForPrefix(namespacePrefixToUriMap, nextTitle);
-                
-                if(nextUriFromTitleNamespaceList != null)
+                for(String nextInputNamespace : nextInputNamespaces)
                 {
-                    nextQueryNamespaceUris.add(nextUriFromTitleNamespaceList);
-                }
-                else if(ProviderUtils._DEBUG)
-                {
-                    ProviderUtils.log
-                            .debug("getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="
-                                    + nextTitle + " nextQueryType.getKey()=" + nextQueryType.getKey());
+                    final Collection<URI> nextUriFromTitleNamespaceList =
+                            NamespaceUtils.getNamespaceUrisForPrefix(namespacePrefixToUriMap, nextInputNamespace);
+                    
+                    if(nextUriFromTitleNamespaceList != null)
+                    {
+                        nextQueryNamespaceUris.add(nextUriFromTitleNamespaceList);
+                    }
+                    else if(ProviderUtils._DEBUG)
+                    {
+                        ProviderUtils.log
+                                .debug("getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="
+                                        + nextInputNamespaces + " nextQueryType.getKey()=" + nextQueryType.getKey());
+                    }
                 }
             }
             else
             {
                 ProviderUtils.log
-                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input index was invalid nextNamespaceInputIndex="
-                                + nextNamespaceInputIndex + " queryStringMatches.size()=" + queryStringMatches.size());
+                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input tag was invalid nextNamespaceInputTag="
+                                + nextNamespaceInputTag + " queryStringMatches.size()=" + queryStringMatches.size());
                 
                 throw new RuntimeException(
-                        "Could not match the namespace because the input index was invalid nextNamespaceInputIndex="
-                                + nextNamespaceInputIndex + " queryStringMatches.size()=" + queryStringMatches.size());
+                        "Could not match the namespace because the input tag was invalid nextNamespaceInputTag="
+                                + nextNamespaceInputTag + " queryStringMatches.size()=" + queryStringMatches.size());
             }
         }
         

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -133,13 +134,14 @@ public class HtmlPageRenderer
             {
                 is_plainnsid = true;
                 
-                final List<String> namespaceAndIdentifier =
+                final Map<String, List<String>> namespaceAndIdentifier =
                         StringUtils.getNamespaceAndIdentifier(queryString, localSettings);
                 
                 if(namespaceAndIdentifier.size() == 2)
                 {
-                    velocityContext.put("namespace", namespaceAndIdentifier.get(0));
-                    velocityContext.put("identifier", namespaceAndIdentifier.get(1));
+                    // HACK FIXME: these may not always be returned as input_1 and input_2
+                    velocityContext.put("namespace", namespaceAndIdentifier.get("input_1").get(0));
+                    velocityContext.put("identifier", namespaceAndIdentifier.get("input_2").get(0));
                 }
                 else
                 {

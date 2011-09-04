@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.openrdf.OpenRDFException;
@@ -21,10 +22,10 @@ import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.query.ProvenanceRecord;
-import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -34,7 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeImpl implements QueryType
+public class QueryTypeImpl implements QueryType, RegexInputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
@@ -74,11 +75,11 @@ public class QueryTypeImpl implements QueryType
     // identifiers that are not untouchable internal private identifiers
     // among other things, it can be used to make sure that these are lowercased per a given policy
     // (in this case the Banff Manifesto)
-    private int[] publicIdentifierIndexes;
+    private Collection<String> publicIdentifierTags;
     
     // these are the input_NN indexes that we will use to determine which namespace providers to
     // perform this query using
-    private int[] namespaceInputIndexes;
+    private Collection<String> namespaceInputTags;
     
     // This is the method by which we determine whether any or all of the namespaces are required on
     // a particular endpoint before we utilise it
@@ -145,11 +146,6 @@ public class QueryTypeImpl implements QueryType
     public QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final Collection<Integer> tempPublicIdentifierIndexes = new HashSet<Integer>();
-        final Collection<Integer> tempNamespaceInputIndexes = new HashSet<Integer>();
-        
-        final Collection<URI> tempsemanticallyLinkedCustomQueries = new HashSet<URI>();
-        
         for(final Statement nextStatement : inputStatements)
         {
             if(QueryTypeImpl._DEBUG)
@@ -186,11 +182,21 @@ public class QueryTypeImpl implements QueryType
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryPublicIdentifierIndex()))
             {
-                tempPublicIdentifierIndexes.add(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
+                // BACKWARDS COMPATIBILITY
+                this.addPublicIdentifierTag("input_"+Integer.toString(RdfUtils.getIntegerFromValue(nextStatement.getObject())));
+            }
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryPublicIdentifierTag()))
+            {
+                this.addPublicIdentifierTag(RdfUtils.getUTF8StringValueFromSesameValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceInputIndex()))
             {
-                tempNamespaceInputIndexes.add(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
+                // BACKWARDS COMPATIBILITY
+                this.addNamespaceInputTag("input_"+Integer.toString(RdfUtils.getIntegerFromValue(nextStatement.getObject())));
+            }
+            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceInputTag()))
+            {
+                this.addNamespaceInputTag(RdfUtils.getUTF8StringValueFromSesameValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceMatchMethod()))
             {
@@ -210,7 +216,7 @@ public class QueryTypeImpl implements QueryType
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIncludeQueryType()))
             {
-                tempsemanticallyLinkedCustomQueries.add((URI)nextStatement.getObject());
+                this.addSemanticallyLinkedQueryType((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTemplateString()))
             {
@@ -250,12 +256,7 @@ public class QueryTypeImpl implements QueryType
             }
         }
         
-        this.setPublicIdentifierIndexes(ListUtils.getIntArrayFromArrayInteger(tempPublicIdentifierIndexes
-                .toArray(new Integer[0])));
-        this.setNamespaceInputTags(ListUtils.getIntArrayFromArrayInteger(tempNamespaceInputIndexes
-                .toArray(new Integer[0])));
-        
-        this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
+//        this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
         if(QueryTypeImpl._DEBUG)
         {
@@ -386,9 +387,9 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public int[] getNamespaceInputIndexes()
+    public Collection<String> getNamespaceInputTags()
     {
-        return this.namespaceInputIndexes;
+        return this.namespaceInputTags;
     }
     
     @Override
@@ -416,9 +417,9 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public int[] getPublicIdentifierIndexes()
+    public Collection<String> getPublicIdentifierTags()
     {
-        return this.publicIdentifierIndexes;
+        return this.publicIdentifierTags;
     }
     
     @Override
@@ -616,14 +617,16 @@ public class QueryTypeImpl implements QueryType
     
     // returns true if the input variable is in the list of public input variables
     @Override
-    public boolean isInputVariablePublic(final String inputNumber)
+    public boolean isInputVariablePublic(final String inputVariable)
     {
-        if(this.publicIdentifierIndexes != null)
+        if(inputVariable == null)
+            throw new IllegalArgumentException("Cannot have null input variables");
+        
+        if(this.publicIdentifierTags != null)
         {
-            
-            for(final int nextPublicIdentifierIndex : this.publicIdentifierIndexes)
+            for(final String nextPublicIdentifierTag : this.getPublicIdentifierTags())
             {
-                if(inputNumber == nextPublicIdentifierIndex)
+                if(inputVariable.equals(nextPublicIdentifierTag))
                 {
                     return true;
                 }
@@ -644,7 +647,7 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public List<String> matchesForQueryString(final String nextQueryString)
+    public Map<String, List<String>> matchesForQueryString(final String nextQueryString)
     {
         return StringUtils.matchesForRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryString);
     }
@@ -721,21 +724,15 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public void setNamespaceInputTags(final Collection<String> namespaceInputTags)
+    public void addNamespaceInputTag(String namespaceInputTag)
     {
-        this.namespaceInputIndexes = namespaceInputTags;
+        this.namespaceInputTags.add(namespaceInputTag);
     }
     
     @Override
     public void setNamespaceMatchMethod(final URI namespaceMatchMethod)
     {
         this.namespaceMatchMethod = namespaceMatchMethod;
-    }
-    
-    @Override
-    public void setNamespacesToHandle(final Collection<URI> namespacesToHandle)
-    {
-        this.namespacesToHandle = namespacesToHandle;
     }
     
     @Override
@@ -751,9 +748,9 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public void setPublicIdentifierIndexes(final int[] publicIdentifierIndexes)
+    public void addPublicIdentifierTag(String publicIdentifierTag)
     {
-        this.publicIdentifierIndexes = publicIdentifierIndexes;
+        this.publicIdentifierTags.add(publicIdentifierTag);
     }
     
     @Override
@@ -763,9 +760,9 @@ public class QueryTypeImpl implements QueryType
     }
     
     @Override
-    public void setSemanticallyLinkedQueryTypes(final Collection<URI> semanticallyLinkedCustomQueries)
+    public void addSemanticallyLinkedQueryType(URI semanticallyLinkedCustomQuery)
     {
-        this.semanticallyLinkedCustomQueries = semanticallyLinkedCustomQueries;
+        this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
     }
     
     @Override
@@ -1010,22 +1007,21 @@ public class QueryTypeImpl implements QueryType
                 }
             }
             
-            if(this.publicIdentifierIndexes != null)
+            if(this.publicIdentifierTags != null)
             {
-                
-                for(final int nextPublicIdentifierIndex : this.publicIdentifierIndexes)
+                for(final String nextPublicIdentifierTag : this.publicIdentifierTags)
                 {
-                    con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierIndex(),
-                            f.createLiteral(nextPublicIdentifierIndex), keyToUse);
+                    con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
+                            f.createLiteral(nextPublicIdentifierTag), keyToUse);
                 }
             }
             
-            if(this.namespaceInputIndexes != null)
+            if(this.namespaceInputTags != null)
             {
-                for(final int nextNamespaceInputIndex : this.namespaceInputIndexes)
+                for(final String nextNamespaceInputTag : this.namespaceInputTags)
                 {
-                    con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputIndex(),
-                            f.createLiteral(nextNamespaceInputIndex), keyToUse);
+                    con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
+                            f.createLiteral(nextNamespaceInputTag), keyToUse);
                 }
             }
             
