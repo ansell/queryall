@@ -38,7 +38,7 @@ public class RegexInputQueryTypeSchema
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
-        RegexInputQueryTypeSchema.setRegexQueryTypeUri(f.createURI(baseUri, "Query"));
+        RegexInputQueryTypeSchema.setRegexQueryTypeUri(f.createURI(baseUri, "RegexInputQuery"));
         RegexInputQueryTypeSchema.setQueryInputRegex(f.createURI(baseUri, "inputRegex"));
 
     }
