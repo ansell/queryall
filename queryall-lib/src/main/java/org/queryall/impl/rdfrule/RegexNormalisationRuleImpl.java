@@ -1,9 +1,8 @@
 package org.queryall.impl.rdfrule;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 import java.util.regex.PatternSyntaxException;
 
 import org.openrdf.OpenRDFException;
@@ -34,9 +33,9 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
-    public static List<URI> myTypes()
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(2);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         results.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
@@ -220,7 +219,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return RegexNormalisationRuleImpl.myTypes();
     }

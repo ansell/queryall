@@ -3,7 +3,7 @@
  */
 package org.queryall.impl.querytype;
 
-import java.util.List;
+import java.util.Set;
 
 import org.kohsuke.MetaInfServices;
 import org.openrdf.model.URI;
@@ -32,7 +32,7 @@ public class QueryTypeImplEnum extends QueryTypeEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public QueryTypeImplEnum(final String nextName, final List<URI> nextTypeURIs)
+    public QueryTypeImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

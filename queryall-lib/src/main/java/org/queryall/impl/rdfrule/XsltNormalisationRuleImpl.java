@@ -5,10 +5,9 @@ package org.queryall.impl.rdfrule;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -80,9 +79,9 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
     }
     
-    public static List<URI> myTypes()
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(2);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
@@ -170,7 +169,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return XsltNormalisationRuleImpl.myTypes();
     }

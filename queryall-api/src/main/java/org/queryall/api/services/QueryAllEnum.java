@@ -1,7 +1,7 @@
 package org.queryall.api.services;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ public class QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryAllEnum.log.isInfoEnabled();
     
-    private List<URI> typeURIs;
+    private Set<URI> typeURIs;
     private String name;
     
     /**
@@ -26,10 +26,10 @@ public class QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public QueryAllEnum(final String nextName, final List<URI> nextTypeURIs)
+    public QueryAllEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         this.setName(nextName);
-        this.setTypeURI(nextTypeURIs);
+        this.setTypeURIs(nextTypeURIs);
     }
     
     /*
@@ -101,9 +101,9 @@ public class QueryAllEnum
      * 
      * @return the typeURIs
      */
-    public List<URI> getTypeURIs()
+    public Set<URI> getTypeURIs()
     {
-        return Collections.unmodifiableList(this.typeURIs);
+        return Collections.unmodifiableSet(this.typeURIs);
     }
     
     /*
@@ -138,9 +138,9 @@ public class QueryAllEnum
      * @param typeURIs
      *            the typeURIs to set
      */
-    protected void setTypeURI(final List<URI> typeURI)
+    protected void setTypeURIs(final Set<URI> typeURIs)
     {
-        this.typeURIs = typeURI;
+        this.typeURIs = typeURIs;
     }
     
 }

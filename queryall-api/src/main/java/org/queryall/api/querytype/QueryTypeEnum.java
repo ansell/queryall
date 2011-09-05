@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -31,7 +32,7 @@ public class QueryTypeEnum extends QueryAllEnum
     
     protected static final Collection<QueryTypeEnum> ALL_QUERY_TYPES = new ArrayList<QueryTypeEnum>(5);
     
-    public static Collection<QueryTypeEnum> byTypeUris(final List<URI> nextQueryTypeUris)
+    public static Collection<QueryTypeEnum> byTypeUris(final Set<URI> nextQueryTypeUris)
     {
         if(nextQueryTypeUris.size() == 0)
         {
@@ -99,7 +100,7 @@ public class QueryTypeEnum extends QueryAllEnum
         }
     }
     
-    public static QueryTypeEnum register(final String name, final List<URI> typeURIs)
+    public static QueryTypeEnum register(final String name, final Set<URI> typeURIs)
     {
         final QueryTypeEnum newQueryTypeEnum = new QueryTypeEnum(name, typeURIs);
         QueryTypeEnum.register(newQueryTypeEnum);
@@ -133,8 +134,9 @@ public class QueryTypeEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public QueryTypeEnum(final String nextName, final List<URI> nextTypeURIs)
+    public QueryTypeEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
+        QueryTypeEnum.ALL_QUERY_TYPES.add(this);
     }
 }

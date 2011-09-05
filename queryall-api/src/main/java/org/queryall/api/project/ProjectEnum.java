@@ -6,7 +6,8 @@ package org.queryall.api.project;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -31,7 +32,7 @@ public class ProjectEnum extends QueryAllEnum
     
     protected static final Collection<ProjectEnum> ALL_PROJECTS = new ArrayList<ProjectEnum>(5);
     
-    public static Collection<ProjectEnum> byTypeUris(final List<URI> nextProjectUris)
+    public static Collection<ProjectEnum> byTypeUris(final Set<URI> nextProjectUris)
     {
         if(nextProjectUris.size() == 0)
         {
@@ -39,10 +40,10 @@ public class ProjectEnum extends QueryAllEnum
             {
                 ProjectEnum.log.debug("found an empty URI set for nextProjectUris=" + nextProjectUris);
             }
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         
-        final List<ProjectEnum> results = new ArrayList<ProjectEnum>(ProjectEnum.ALL_PROJECTS.size());
+        final Set<ProjectEnum> results = new HashSet<ProjectEnum>();
         
         for(final ProjectEnum nextProjectEnum : ProjectEnum.ALL_PROJECTS)
         {
@@ -98,7 +99,7 @@ public class ProjectEnum extends QueryAllEnum
         }
     }
     
-    public static ProjectEnum register(final String name, final List<URI> typeURIs)
+    public static ProjectEnum register(final String name, final Set<URI> typeURIs)
     {
         final ProjectEnum newProjectEnum = new ProjectEnum(name, typeURIs);
         ProjectEnum.register(newProjectEnum);
@@ -132,7 +133,7 @@ public class ProjectEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public ProjectEnum(final String nextName, final List<URI> nextTypeURIs)
+    public ProjectEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         ProjectEnum.ALL_PROJECTS.add(this);

@@ -1,10 +1,10 @@
 package org.queryall.impl.provider;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -39,9 +39,9 @@ public class ProviderImpl implements Provider
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
     
-    public static List<URI> providerTypes()
+    public static Set<URI> providerTypes()
     {
-        final List<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(ProviderSchema.getProviderTypeUri());
         
@@ -402,7 +402,7 @@ public class ProviderImpl implements Provider
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return ProviderImpl.providerTypes();
     }

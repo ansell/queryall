@@ -396,8 +396,9 @@ public class RdfFetchController
         
         for(final Provider nextProvider : chosenProviders)
         {
-//            final boolean isHttpWithNoEndpoint =
-//                    nextProvider instanceof HttpProvider && !((HttpProvider)nextProvider).hasEndpointUrl();
+            // final boolean isHttpWithNoEndpoint =
+            // nextProvider instanceof HttpProvider &&
+            // !((HttpProvider)nextProvider).hasEndpointUrl();
             
             if(nextProvider instanceof NoCommunicationProvider)
             {
@@ -602,7 +603,9 @@ public class RdfFetchController
             }
             else
             {
-                log.warn("Unrecognised provider type nextProvider.getElementTypes="+nextProvider.getElementTypes()+" nextProvider.getClass().getName()="+nextProvider.getClass().getName());
+                RdfFetchController.log.warn("Unrecognised provider type nextProvider.getElementTypes="
+                        + nextProvider.getElementTypes() + " nextProvider.getClass().getName()="
+                        + nextProvider.getClass().getName());
             }
             // end for(String nextEndpoint : nextProvider.endpointUrls)
             // } // end if(nextProvider.hasEndpointUrl())

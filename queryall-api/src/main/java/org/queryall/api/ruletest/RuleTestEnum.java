@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -31,7 +32,7 @@ public class RuleTestEnum extends QueryAllEnum
     
     protected static final Collection<RuleTestEnum> ALL_RULE_TESTS = new ArrayList<RuleTestEnum>(5);
     
-    public static Collection<RuleTestEnum> byTypeUris(final List<URI> nextRuleTestUris)
+    public static Collection<RuleTestEnum> byTypeUris(final Set<URI> nextRuleTestUris)
     {
         if(nextRuleTestUris.size() == 0)
         {
@@ -100,7 +101,7 @@ public class RuleTestEnum extends QueryAllEnum
         }
     }
     
-    public static RuleTestEnum register(final String name, final List<URI> typeURIs)
+    public static RuleTestEnum register(final String name, final Set<URI> typeURIs)
     {
         final RuleTestEnum newRuleTestEnum = new RuleTestEnum(name, typeURIs);
         RuleTestEnum.register(newRuleTestEnum);
@@ -134,7 +135,7 @@ public class RuleTestEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public RuleTestEnum(final String nextName, final List<URI> nextTypeURIs)
+    public RuleTestEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         RuleTestEnum.ALL_RULE_TESTS.add(this);

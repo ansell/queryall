@@ -1,10 +1,10 @@
 package org.queryall.query;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.openrdf.OpenRDFException;
@@ -393,9 +393,9 @@ public class ProvenanceRecord implements BaseQueryAllInterface
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(ProvenanceRecord.provenanceTypeUri);
         

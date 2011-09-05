@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -32,7 +33,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
     protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
             new ArrayList<NormalisationRuleEnum>(5);
     
-    public static Collection<NormalisationRuleEnum> byTypeUris(final List<URI> nextNormalisationRuleUris)
+    public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextNormalisationRuleUris)
     {
         if(nextNormalisationRuleUris.size() == 0)
         {
@@ -104,7 +105,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
         }
     }
     
-    public static NormalisationRuleEnum register(final String name, final List<URI> typeURIs)
+    public static NormalisationRuleEnum register(final String name, final Set<URI> typeURIs)
     {
         final NormalisationRuleEnum newRdfRuleEnum = new NormalisationRuleEnum(name, typeURIs);
         NormalisationRuleEnum.register(newRdfRuleEnum);
@@ -138,7 +139,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public NormalisationRuleEnum(final String nextName, final List<URI> nextTypeURIs)
+    public NormalisationRuleEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         NormalisationRuleEnum.ALL_NORMALISATION_RULES.add(this);

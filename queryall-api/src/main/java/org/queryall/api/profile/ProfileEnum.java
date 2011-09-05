@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -31,7 +32,7 @@ public class ProfileEnum extends QueryAllEnum
     
     protected static final Collection<ProfileEnum> ALL_PROFILES = new ArrayList<ProfileEnum>(5);
     
-    public static Collection<ProfileEnum> byTypeUris(final List<URI> nextProfileUris)
+    public static Collection<ProfileEnum> byTypeUris(final Set<URI> nextProfileUris)
     {
         if(nextProfileUris.size() == 0)
         {
@@ -100,7 +101,7 @@ public class ProfileEnum extends QueryAllEnum
         }
     }
     
-    public static ProfileEnum register(final String name, final List<URI> typeURIs)
+    public static ProfileEnum register(final String name, final Set<URI> typeURIs)
     {
         final ProfileEnum newProfileEnum = new ProfileEnum(name, typeURIs);
         ProfileEnum.register(newProfileEnum);
@@ -134,7 +135,7 @@ public class ProfileEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public ProfileEnum(final String nextName, final List<URI> nextTypeURIs)
+    public ProfileEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         ProfileEnum.ALL_PROFILES.add(this);

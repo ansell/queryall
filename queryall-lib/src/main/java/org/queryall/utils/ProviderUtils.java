@@ -194,7 +194,7 @@ public final class ProviderUtils
             {
                 final Collection<String> nextInputNamespaces = queryStringMatches.get(nextNamespaceInputTag);
                 
-                for(String nextInputNamespace : nextInputNamespaces)
+                for(final String nextInputNamespace : nextInputNamespaces)
                 {
                     final Collection<URI> nextUriFromTitleNamespaceList =
                             NamespaceUtils.getNamespaceUrisForPrefix(namespacePrefixToUriMap, nextInputNamespace);

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -233,9 +234,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
-        final Collection<URI> ruleTypes = new ArrayList<URI>(2);
+        final Set<URI> ruleTypes = new HashSet<URI>(2);
         ruleTypes.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         
         return ruleTypes;

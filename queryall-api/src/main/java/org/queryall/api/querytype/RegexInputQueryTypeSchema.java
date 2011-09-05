@@ -26,12 +26,6 @@ public class RegexInputQueryTypeSchema
     
     private static URI regexQueryTypeUri;
     
-
-    public static URI getRegexInputQueryTypeUri()
-    {
-        return regexQueryTypeUri;
-    }
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
@@ -40,14 +34,77 @@ public class RegexInputQueryTypeSchema
         
         RegexInputQueryTypeSchema.setRegexQueryTypeUri(f.createURI(baseUri, "RegexInputQuery"));
         RegexInputQueryTypeSchema.setQueryInputRegex(f.createURI(baseUri, "inputRegex"));
-
+        
     }
-
-    private static void setRegexQueryTypeUri(URI regexQueryTypeUri)
+    
+    static URI queryInputRegex;
+    
+    /**
+     * @return the queryInputRegex
+     */
+    public static URI getQueryInputRegex()
     {
-        RegexInputQueryTypeSchema.regexQueryTypeUri = regexQueryTypeUri;
+        return RegexInputQueryTypeSchema.queryInputRegex;
     }
-
+    
+    public static URI getRegexInputQueryTypeUri()
+    {
+        return RegexInputQueryTypeSchema.regexQueryTypeUri;
+    }
+    
+    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
+    {
+        QueryTypeSchema.schemaToRdf(myRepository, keyToUse, modelVersion);
+        
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            final URI contextKeyUri = keyToUse;
+            con.setAutoCommit(false);
+            
+            // TODO: add label for this type
+            con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(),
+                    RDFS.LABEL,
+                    f.createLiteral("This input regex contains matching groups that correlate with the input_NN tags, where NN is the index of the matching group."),
+                    contextKeyUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            RegexInputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
+    }
+    
     /**
      * @param queryInputRegex
      *            the queryInputRegex to set
@@ -56,65 +113,10 @@ public class RegexInputQueryTypeSchema
     {
         RegexInputQueryTypeSchema.queryInputRegex = queryInputRegex;
     }
-
-    static URI queryInputRegex;
-
-
-    /**
-     * @return the queryInputRegex
-     */
-    public static URI getQueryInputRegex()
-    {
-        return queryInputRegex;
-    }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-            throws OpenRDFException
-        {
-            QueryTypeSchema.schemaToRdf(myRepository, keyToUse, modelVersion);
-        
-            final RepositoryConnection con = myRepository.getConnection();
-            
-            final ValueFactory f = Constants.valueFactory;
-            
-            try
-            {
-                final URI contextKeyUri = keyToUse;
-                con.setAutoCommit(false);
-                
-                // TODO: add label for this type
-                con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-                
-                con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-                con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-                con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-                con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.LABEL, f.createLiteral("This input regex contains matching groups that correlate with the input_NN tags, where NN is the index of the matching group."), contextKeyUri);
-                
-                // If everything went as planned, we can commit the result
-                con.commit();
-                
-                return true;
-            }
-            catch(final RepositoryException re)
-            {
-                // Something went wrong during the transaction, so we roll it back
-                
-                if(con != null)
-                {
-                    con.rollback();
-                }
-                
-                RegexInputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
-            }
-            finally
-            {
-                if(con != null)
-                {
-                    con.close();
-                }
-            }
-            
-            return false;
-        }
+    private static void setRegexQueryTypeUri(final URI regexQueryTypeUri)
+    {
+        RegexInputQueryTypeSchema.regexQueryTypeUri = regexQueryTypeUri;
+    }
     
 }

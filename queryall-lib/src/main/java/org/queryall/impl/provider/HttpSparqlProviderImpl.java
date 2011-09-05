@@ -1,8 +1,8 @@
 package org.queryall.impl.provider;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -15,9 +15,9 @@ import org.queryall.api.provider.SparqlProviderSchema;
 public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSparqlProvider
 {
     
-    public static List<URI> httpAndSparqlTypes()
+    public static Set<URI> httpAndSparqlTypes()
     {
-        final List<URI> results = new ArrayList<URI>(3);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(ProviderSchema.getProviderTypeUri());
         results.add(HttpProviderSchema.getProviderHttpTypeUri());

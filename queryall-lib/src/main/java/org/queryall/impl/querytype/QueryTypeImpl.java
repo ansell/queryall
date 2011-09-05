@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.openrdf.OpenRDFException;
@@ -20,7 +21,6 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.querytype.RegexInputQueryTypeSchema;
@@ -44,9 +44,9 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
     
-    public static List<URI> myTypes()
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(QueryTypeSchema.getQueryTypeUri());
         results.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
@@ -134,11 +134,11 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     
     private boolean isDummyQueryType = false;
     
-    static
-    {
-        // register this query type implementation with the central register
-        QueryTypeEnum.register(QueryTypeImpl.class.getName(), QueryTypeImpl.myTypes());
-    }
+    // static
+    // {
+    // // register this query type implementation with the central register
+    // QueryTypeEnum.register(QueryTypeImpl.class.getName(), QueryTypeImpl.myTypes());
+    // }
     
     public QueryTypeImpl()
     {
@@ -185,7 +185,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryPublicIdentifierIndex()))
             {
                 // BACKWARDS COMPATIBILITY
-                this.addPublicIdentifierTag("input_"+Integer.toString(RdfUtils.getIntegerFromValue(nextStatement.getObject())));
+                this.addPublicIdentifierTag("input_"
+                        + Integer.toString(RdfUtils.getIntegerFromValue(nextStatement.getObject())));
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryPublicIdentifierTag()))
             {
@@ -194,7 +195,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceInputIndex()))
             {
                 // BACKWARDS COMPATIBILITY
-                this.addNamespaceInputTag("input_"+Integer.toString(RdfUtils.getIntegerFromValue(nextStatement.getObject())));
+                this.addNamespaceInputTag("input_"
+                        + Integer.toString(RdfUtils.getIntegerFromValue(nextStatement.getObject())));
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceInputTag()))
             {
@@ -258,13 +260,19 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
             }
         }
         
-//        this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
+        // this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
         if(QueryTypeImpl._DEBUG)
         {
             QueryTypeImpl.log.debug("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
+    }
+    
+    @Override
+    public void addNamespaceInputTag(final String namespaceInputTag)
+    {
+        this.namespaceInputTags.add(namespaceInputTag);
     }
     
     @Override
@@ -276,6 +284,18 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
         }
         
         this.namespacesToHandle.add(namespaceToHandle);
+    }
+    
+    @Override
+    public void addPublicIdentifierTag(final String publicIdentifierTag)
+    {
+        this.publicIdentifierTags.add(publicIdentifierTag);
+    }
+    
+    @Override
+    public void addSemanticallyLinkedQueryType(final URI semanticallyLinkedCustomQuery)
+    {
+        this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
     }
     
     @Override
@@ -321,7 +341,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return QueryTypeImpl.myTypes();
     }
@@ -622,7 +642,9 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     public boolean isInputVariablePublic(final String inputVariable)
     {
         if(inputVariable == null)
+        {
             throw new IllegalArgumentException("Cannot have null input variables");
+        }
         
         if(this.publicIdentifierTags != null)
         {
@@ -726,12 +748,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     }
     
     @Override
-    public void addNamespaceInputTag(String namespaceInputTag)
-    {
-        this.namespaceInputTags.add(namespaceInputTag);
-    }
-    
-    @Override
     public void setNamespaceMatchMethod(final URI namespaceMatchMethod)
     {
         this.namespaceMatchMethod = namespaceMatchMethod;
@@ -750,21 +766,9 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     }
     
     @Override
-    public void addPublicIdentifierTag(String publicIdentifierTag)
-    {
-        this.publicIdentifierTags.add(publicIdentifierTag);
-    }
-    
-    @Override
     public void setQueryUriTemplateString(final String queryUriTemplateString)
     {
         this.queryUriTemplateString = queryUriTemplateString;
-    }
-    
-    @Override
-    public void addSemanticallyLinkedQueryType(URI semanticallyLinkedCustomQuery)
-    {
-        this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
     }
     
     @Override

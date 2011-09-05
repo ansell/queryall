@@ -3,10 +3,9 @@
  */
 package org.queryall.impl.ruletest;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -17,9 +16,9 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.ruletest.StringRuleTestSchema;
-import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +34,10 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = StringRuleTestImpl.log.isInfoEnabled();
     
-    // TODO: optimise to a static final List<URI>
-    public static List<URI> myTypes()
+    // TODO: optimise to a static final Set<URI>
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(2);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(RuleTestSchema.getRuletestTypeUri());
         results.add(StringRuleTestSchema.getStringRuleTestTypeUri());

@@ -6,6 +6,7 @@ package org.queryall.impl.provider;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -147,9 +148,9 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
-        final Collection<URI> results = super.getElementTypes();
+        final Set<URI> results = super.getElementTypes();
         
         results.add(HttpProviderSchema.getProviderHttpTypeUri());
         results.add(SparqlProviderSchema.getProviderSparqlTypeUri());

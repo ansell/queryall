@@ -1,10 +1,10 @@
 package org.queryall.statistics;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -810,9 +810,9 @@ public class StatisticsEntry implements BaseQueryAllInterface
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
-        final Collection<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(StatisticsEntry.statisticsTypeUri);
         

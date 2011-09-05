@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -54,9 +55,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         // SparqlNormalisationRuleImpl.myTypes());
     }
     
-    public static List<URI> myTypes()
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(2);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         results.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
@@ -294,7 +295,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return SparqlNormalisationRuleImpl.myTypes();
     }

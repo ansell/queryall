@@ -13,7 +13,13 @@ import org.queryall.api.base.ProfilableInterface;
  */
 public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
+    void addNamespaceInputTag(String namespaceInputTag);
+    
     void addNamespaceToHandle(URI namespaceToHandle);
+    
+    void addPublicIdentifierTag(String publicIdentifierTag);
+    
+    void addSemanticallyLinkedQueryType(URI semanticallyLinkedQueryTypes);
     
     boolean getHandleAllNamespaces();
     
@@ -27,24 +33,24 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     boolean getIsPageable();
     
+    Collection<String> getNamespaceInputTags();
+    
     URI getNamespaceMatchMethod();
     
     Collection<URI> getNamespacesToHandle();
     
-    Collection<String> getNamespaceInputTags();
+    // TODO: extract this into a new interface called RdfXmlOutputQueryType
+    String getOutputRdfXmlString();
     
     Collection<String> getPublicIdentifierTags();
     
     String getQueryUriTemplateString();
     
+    Collection<URI> getSemanticallyLinkedQueryTypes();
+    
     String getStandardUriTemplateString();
     
     String getTemplateString();
-    
-    // TODO: extract this into a new interface called RdfXmlOutputQueryType
-    String getOutputRdfXmlString();
-
-    Collection<URI> getSemanticallyLinkedQueryTypes();
     
     boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
     
@@ -68,18 +74,12 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     void setIsPageable(boolean isPageable);
     
-    void addNamespaceInputTag(String namespaceInputTag);
-    
     void setNamespaceMatchMethod(URI namespaceMatchMethod);
     
     // TODO: extract this into a new interface called RdfXmlOutputQueryType
     void setOutputRdfXmlString(String outputRdfXmlString);
     
-    void addPublicIdentifierTag(String publicIdentifierTag);
-    
     void setQueryUriTemplateString(String queryUriTemplateString);
-    
-    void addSemanticallyLinkedQueryType(URI semanticallyLinkedQueryTypes);
     
     void setStandardUriTemplateString(String standardUriTemplateString);
     

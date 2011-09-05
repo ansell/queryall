@@ -42,7 +42,8 @@ public class StringUtils
         return Constants.valueFactory.createURI(stringForm);
     }
     
-    public static Map<String, List<String>> getNamespaceAndIdentifier(final String nsAndId, final QueryAllConfiguration localSettings)
+    public static Map<String, List<String>> getNamespaceAndIdentifier(final String nsAndId,
+            final QueryAllConfiguration localSettings)
     {
         return StringUtils.matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(),
                 localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"), nsAndId);
@@ -110,8 +111,8 @@ public class StringUtils
         return buffer;
     }
     
-    public static Map<String, List<String>> matchesForRegexOnString(final Pattern nextRegexPattern, final String nextRegex,
-            final String nextQueryString)
+    public static Map<String, List<String>> matchesForRegexOnString(final Pattern nextRegexPattern,
+            final String nextRegex, final String nextQueryString)
     {
         final Map<String, List<String>> results = new ConcurrentHashMap<String, List<String>>();
         
@@ -139,11 +140,11 @@ public class StringUtils
                             + "\" starting at " + "index=" + matcher.start(i + 1) + " and ending at index="
                             + matcher.end(i + 1) + ".\n");
                 }
-                List<String> matches = new ArrayList<String>(1);
-                matches.add(matcher.group(i+1));
+                final List<String> matches = new ArrayList<String>(1);
+                matches.add(matcher.group(i + 1));
                 
                 // TODO: is there any way we can make this cleaner?
-                results.put("input_"+(i + 1), matches);
+                results.put("input_" + (i + 1), matches);
                 
                 found = true;
             }

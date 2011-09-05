@@ -3,7 +3,7 @@
  */
 package org.queryall.impl.rdfrule;
 
-import java.util.List;
+import java.util.Set;
 
 import org.kohsuke.MetaInfServices;
 import org.openrdf.model.URI;
@@ -46,7 +46,7 @@ public class RegexNormalisationRuleImplEnum extends NormalisationRuleEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public RegexNormalisationRuleImplEnum(final String nextName, final List<URI> nextTypeURIs)
+    public RegexNormalisationRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         

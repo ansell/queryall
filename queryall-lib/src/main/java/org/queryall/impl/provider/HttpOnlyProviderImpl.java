@@ -3,9 +3,9 @@
  */
 package org.queryall.impl.provider;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -14,15 +14,14 @@ import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
 
 /**
- * @author karina
- * 
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class HttpOnlyProviderImpl extends HttpProviderImpl
 {
     
-    public static List<URI> httpOnlyTypes()
+    public static Set<URI> httpOnlyTypes()
     {
-        final List<URI> results = new ArrayList<URI>(2);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(ProviderSchema.getProviderTypeUri());
         results.add(HttpProviderSchema.getProviderHttpTypeUri());

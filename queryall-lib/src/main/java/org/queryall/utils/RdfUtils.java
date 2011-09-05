@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.openrdf.OpenRDFException;
@@ -167,11 +168,13 @@ public final class RdfUtils
         final String namespaceAndIdentifier =
                 nextQueryKey.stringValue().substring(localSettings.getDefaultHostAddress().length());
         
-        final Map<String, List<String>> nsAndIdList = StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
+        final Map<String, List<String>> nsAndIdList =
+                StringUtils.getNamespaceAndIdentifier(namespaceAndIdentifier, localSettings);
         
         if(nsAndIdList == null)
         {
-            throw new IllegalArgumentException("nextQueryKey did not contain a namespace and identifier nextQueryKey="+nextQueryKey);
+            throw new IllegalArgumentException("nextQueryKey did not contain a namespace and identifier nextQueryKey="
+                    + nextQueryKey);
         }
         
         if(nsAndIdList.size() == 2)
@@ -854,7 +857,7 @@ public final class RdfUtils
                 final Collection<Value> nextNamespaceEntryValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredNamespaceEntrySubject.getSubject());
-                final List<URI> nextNamespaceEntryUris = new ArrayList<URI>(nextNamespaceEntryValues.size());
+                final Set<URI> nextNamespaceEntryUris = new HashSet<URI>();
                 for(final Value nextNamespaceEntryValue : nextNamespaceEntryValues)
                 {
                     if(nextNamespaceEntryValue instanceof URI)
@@ -866,9 +869,10 @@ public final class RdfUtils
                 final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums =
                         NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
-                    RdfUtils.log.debug("getNamespaceEntries: matchingNamespaceEntryEnums=" + matchingNamespaceEntryEnums);
+                    RdfUtils.log.debug("getNamespaceEntries: matchingNamespaceEntryEnums="
+                            + matchingNamespaceEntryEnums);
                 }
                 
                 if(matchingNamespaceEntryEnums.size() > 0)
@@ -973,7 +977,7 @@ public final class RdfUtils
                 final Collection<Value> nextNormalisationRuleValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredNormalisationRuleSubject.getSubject());
-                final List<URI> nextNormalisationRuleUris = new ArrayList<URI>(nextNormalisationRuleValues.size());
+                final Set<URI> nextNormalisationRuleUris = new HashSet<URI>();
                 for(final Value nextNormalisationRuleValue : nextNormalisationRuleValues)
                 {
                     if(nextNormalisationRuleValue instanceof URI)
@@ -985,9 +989,10 @@ public final class RdfUtils
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
                         NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
-                    RdfUtils.log.debug("getQueryTypes: matchingNormalisationRuleEnums=" + matchingNormalisationRuleEnums);
+                    RdfUtils.log.debug("getQueryTypes: matchingNormalisationRuleEnums="
+                            + matchingNormalisationRuleEnums);
                 }
                 
                 if(matchingNormalisationRuleEnums.size() > 0)
@@ -1189,7 +1194,7 @@ public final class RdfUtils
                 final Collection<Value> nextProfileValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredProfileSubject.getSubject());
-                final List<URI> nextProfileUris = new ArrayList<URI>(nextProfileValues.size());
+                final Set<URI> nextProfileUris = new HashSet<URI>();
                 for(final Value nextProfileValue : nextProfileValues)
                 {
                     if(nextProfileValue instanceof URI)
@@ -1200,7 +1205,7 @@ public final class RdfUtils
                 
                 final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
                     RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
                 }
@@ -1305,7 +1310,7 @@ public final class RdfUtils
                 final Collection<Value> nextProjectValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredProjectSubject.getSubject());
-                final List<URI> nextProjectUris = new ArrayList<URI>(nextProjectValues.size());
+                final Set<URI> nextProjectUris = new HashSet<URI>();
                 for(final Value nextProjectValue : nextProjectValues)
                 {
                     if(nextProjectValue instanceof URI)
@@ -1316,7 +1321,7 @@ public final class RdfUtils
                 
                 final Collection<ProjectEnum> matchingProjectEnums = ProjectEnum.byTypeUris(nextProjectUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
                     RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
                 }
@@ -1397,7 +1402,7 @@ public final class RdfUtils
             // their customised type URIs
             final URI providerUri = ProviderSchema.getProviderTypeUri();
             
-            if(_DEBUG)
+            if(RdfUtils._DEBUG)
             {
                 RdfUtils.log.debug("getProviders: providerUri=" + providerUri.stringValue());
             }
@@ -1409,9 +1414,10 @@ public final class RdfUtils
             final List<Statement> allDeclaredProviderSubjects =
                     con.getStatements(null, RDF.TYPE, providerUri, true).asList();
             
-            if(_DEBUG)
+            if(RdfUtils._DEBUG)
             {
-                RdfUtils.log.debug("getProviders: allDeclaredProviderSubjects.size()=" + allDeclaredProviderSubjects.size());
+                RdfUtils.log.debug("getProviders: allDeclaredProviderSubjects.size()="
+                        + allDeclaredProviderSubjects.size());
             }
             
             final Map<URI, Collection<ProviderEnum>> uriToProviderEnums = new HashMap<URI, Collection<ProviderEnum>>();
@@ -1421,10 +1427,10 @@ public final class RdfUtils
             
             for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
             {
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
                     RdfUtils.log.debug("getProviders: nextDeclaredProviderSubject.getSubject()="
-                        + nextDeclaredProviderSubject.getSubject().stringValue());
+                            + nextDeclaredProviderSubject.getSubject().stringValue());
                 }
                 
                 if(!(nextDeclaredProviderSubject.getSubject() instanceof URI))
@@ -1438,7 +1444,7 @@ public final class RdfUtils
                 final Collection<Value> nextProviderValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredProviderSubject.getSubject());
-                final List<URI> nextProviderUris = new ArrayList<URI>(nextProviderValues.size());
+                final Set<URI> nextProviderUris = new HashSet<URI>();
                 for(final Value nextProviderValue : nextProviderValues)
                 {
                     if(nextProviderValue instanceof URI)
@@ -1449,7 +1455,7 @@ public final class RdfUtils
                 
                 final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
                     RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
                 }
@@ -1549,7 +1555,7 @@ public final class RdfUtils
                 final Collection<Value> nextQueryTypeValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredQueryTypeSubject.getSubject());
-                final List<URI> nextQueryTypeUris = new ArrayList<URI>(nextQueryTypeValues.size());
+                final Set<URI> nextQueryTypeUris = new HashSet<URI>();
                 for(final Value nextQueryTypeValue : nextQueryTypeValues)
                 {
                     if(nextQueryTypeValue instanceof URI)
@@ -1560,7 +1566,7 @@ public final class RdfUtils
                 
                 final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
                     RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
                 }
@@ -1771,7 +1777,7 @@ public final class RdfUtils
                 final Collection<Value> nextRuleTestValues =
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredRuleTestSubject.getSubject());
-                final List<URI> nextRuleTestUris = new ArrayList<URI>(nextRuleTestValues.size());
+                final Set<URI> nextRuleTestUris = new HashSet<URI>();
                 for(final Value nextRuleTestValue : nextRuleTestValues)
                 {
                     if(nextRuleTestValue instanceof URI)
@@ -1782,7 +1788,7 @@ public final class RdfUtils
                 
                 final Collection<RuleTestEnum> matchingRuleTestEnums = RuleTestEnum.byTypeUris(nextRuleTestUris);
                 
-                if(_DEBUG)
+                if(RdfUtils._DEBUG)
                 {
                     RdfUtils.log.debug("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
                 }

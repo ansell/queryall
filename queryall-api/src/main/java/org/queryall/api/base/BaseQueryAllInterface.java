@@ -1,6 +1,7 @@
 package org.queryall.api.base;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -35,7 +36,7 @@ public interface BaseQueryAllInterface
      **/
     QueryAllNamespaces getDefaultNamespace();
     
-    Collection<URI> getElementTypes();
+    Set<URI> getElementTypes();
     
     /**
      * Returns the org.openrdf.model.URI string key for the object, and this can optionally be used

@@ -1,9 +1,8 @@
 package org.queryall.impl.namespace;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -36,9 +35,9 @@ public class NamespaceEntryImpl implements NamespaceEntry
     @SuppressWarnings("unused")
     private static final boolean _INFO = NamespaceEntryImpl.log.isInfoEnabled();
     
-    public static List<URI> myTypes()
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>(1);
         results.add(NamespaceEntrySchema.getNamespaceTypeUri());
         
         return results;
@@ -228,7 +227,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return NamespaceEntryImpl.myTypes();
     }

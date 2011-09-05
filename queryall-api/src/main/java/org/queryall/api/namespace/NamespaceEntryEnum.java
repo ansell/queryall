@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -31,7 +32,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     
     protected static final Collection<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new ArrayList<NamespaceEntryEnum>(5);
     
-    public static Collection<NamespaceEntryEnum> byTypeUris(final List<URI> nextNamespaceEntryUris)
+    public static Collection<NamespaceEntryEnum> byTypeUris(final Set<URI> nextNamespaceEntryUris)
     {
         if(nextNamespaceEntryUris.size() == 0)
         {
@@ -102,7 +103,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
         }
     }
     
-    public static NamespaceEntryEnum register(final String name, final List<URI> typeURIs)
+    public static NamespaceEntryEnum register(final String name, final Set<URI> typeURIs)
     {
         final NamespaceEntryEnum newNamespaceEntryEnum = new NamespaceEntryEnum(name, typeURIs);
         NamespaceEntryEnum.register(newNamespaceEntryEnum);
@@ -136,7 +137,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public NamespaceEntryEnum(final String nextName, final List<URI> nextTypeURIs)
+    public NamespaceEntryEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.add(this);

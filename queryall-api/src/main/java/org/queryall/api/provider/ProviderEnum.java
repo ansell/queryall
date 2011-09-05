@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
@@ -31,7 +32,7 @@ public class ProviderEnum extends QueryAllEnum
     
     protected static final Collection<ProviderEnum> ALL_PROVIDERS = new ArrayList<ProviderEnum>(5);
     
-    public static Collection<ProviderEnum> byTypeUris(final List<URI> nextProviderUris)
+    public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextProviderUris)
     {
         if(nextProviderUris.size() == 0)
         {
@@ -106,7 +107,7 @@ public class ProviderEnum extends QueryAllEnum
         }
     }
     
-    public static ProviderEnum register(final String name, final List<URI> typeURIs)
+    public static ProviderEnum register(final String name, final Set<URI> typeURIs)
     {
         final ProviderEnum newProviderEnum = new ProviderEnum(name, typeURIs);
         ProviderEnum.register(newProviderEnum);
@@ -140,7 +141,7 @@ public class ProviderEnum extends QueryAllEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public ProviderEnum(final String nextName, final List<URI> nextTypeURIs)
+    public ProviderEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
         ProviderEnum.ALL_PROVIDERS.add(this);

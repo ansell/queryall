@@ -1,10 +1,9 @@
 package org.queryall.impl.profile;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -36,9 +35,9 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProfileImpl.log.isInfoEnabled();
     
-    public static List<URI> myTypes()
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>();
         
         results.add(ProfileSchema.getProfileTypeUri());
         
@@ -512,7 +511,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return ProfileImpl.myTypes();
     }

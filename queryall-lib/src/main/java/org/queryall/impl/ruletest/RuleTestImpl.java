@@ -1,9 +1,8 @@
 package org.queryall.impl.ruletest;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -33,10 +32,10 @@ public class RuleTestImpl implements RuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
-    // TODO: optimise to a static final List<URI>
-    public static List<URI> myTypes()
+    // TODO: optimise to a static final Set<URI>
+    public static Set<URI> myTypes()
     {
-        final List<URI> results = new ArrayList<URI>(1);
+        final Set<URI> results = new HashSet<URI>(1);
         
         results.add(RuleTestSchema.getRuletestTypeUri());
         
@@ -151,7 +150,7 @@ public class RuleTestImpl implements RuleTest
      *         including abstract implementations
      */
     @Override
-    public Collection<URI> getElementTypes()
+    public Set<URI> getElementTypes()
     {
         return RuleTestImpl.myTypes();
     }

@@ -117,11 +117,6 @@ public class QueryTypeSchema
         return QueryTypeSchema.getQueryNamespaceMatchAll();
     }
     
-    private static void setQueryNamespaceInputTag(URI queryNamespaceInputTag)
-    {
-        QueryTypeSchema.queryNamespaceInputTag = queryNamespaceInputTag;
-    }
-
     public static URI getNamespaceMatchAnyUri()
     {
         return QueryTypeSchema.getQueryNamespaceMatchAny();
@@ -181,6 +176,11 @@ public class QueryTypeSchema
     public static URI getQueryNamespaceInputIndex()
     {
         return QueryTypeSchema.queryNamespaceInputIndex;
+    }
+    
+    public static URI getQueryNamespaceInputTag()
+    {
+        return QueryTypeSchema.queryNamespaceInputTag;
     }
     
     /**
@@ -245,6 +245,14 @@ public class QueryTypeSchema
     public static URI getQueryPublicIdentifierIndex()
     {
         return QueryTypeSchema.queryPublicIdentifierIndex;
+    }
+    
+    /**
+     * @return the queryPublicIdentifierTag
+     */
+    public static URI getQueryPublicIdentifierTag()
+    {
+        return QueryTypeSchema.queryPublicIdentifierTag;
     }
     
     /**
@@ -382,25 +390,35 @@ public class QueryTypeSchema
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL, f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL,
+                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."),
+                    contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL, f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL,
+                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."),
+                    contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.LABEL, f.createLiteral("Defines the tags that are to be identified as public, and hence convertable according to public registries and rules."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(),
+                    RDFS.LABEL,
+                    f.createLiteral("Defines the tags that are to be identified as public, and hence convertable according to public registries and rules."),
+                    contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.LABEL, f.createLiteral("Defines the tags that are to be identified as namespaces, and hence convertable according to namespace registries."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(),
+                    RDFS.LABEL,
+                    f.createLiteral("Defines the tags that are to be identified as namespaces, and hence convertable according to namespace registries."),
+                    contextKeyUri);
             
             con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
@@ -517,6 +535,11 @@ public class QueryTypeSchema
         QueryTypeSchema.queryNamespaceInputIndex = queryNamespaceInputIndex;
     }
     
+    private static void setQueryNamespaceInputTag(final URI queryNamespaceInputTag)
+    {
+        QueryTypeSchema.queryNamespaceInputTag = queryNamespaceInputTag;
+    }
+    
     /**
      * @param queryNamespaceMatchAll
      *            the queryNamespaceMatchAll to set
@@ -590,6 +613,15 @@ public class QueryTypeSchema
     }
     
     /**
+     * @param queryPublicIdentifierTag
+     *            the queryPublicIdentifierTag to set
+     */
+    public static void setQueryPublicIdentifierTag(final URI queryPublicIdentifierTag)
+    {
+        QueryTypeSchema.queryPublicIdentifierTag = queryPublicIdentifierTag;
+    }
+    
+    /**
      * @param queryQueryUriTemplateString
      *            the queryQueryUriTemplateString to set
      */
@@ -650,27 +682,6 @@ public class QueryTypeSchema
     public static void setQueryTypeUri(final URI queryTypeUri)
     {
         QueryTypeSchema.queryTypeUri = queryTypeUri;
-    }
-
-    public static URI getQueryNamespaceInputTag()
-    {
-        return QueryTypeSchema.queryNamespaceInputTag;
-    }
-
-    /**
-     * @return the queryPublicIdentifierTag
-     */
-    public static URI getQueryPublicIdentifierTag()
-    {
-        return queryPublicIdentifierTag;
-    }
-
-    /**
-     * @param queryPublicIdentifierTag the queryPublicIdentifierTag to set
-     */
-    public static void setQueryPublicIdentifierTag(URI queryPublicIdentifierTag)
-    {
-        QueryTypeSchema.queryPublicIdentifierTag = queryPublicIdentifierTag;
     }
     
 }

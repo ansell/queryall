@@ -3,7 +3,7 @@
  */
 package org.queryall.impl.namespace;
 
-import java.util.List;
+import java.util.Set;
 
 import org.kohsuke.MetaInfServices;
 import org.openrdf.model.URI;
@@ -32,7 +32,7 @@ public class NamespaceEntryImplEnum extends NamespaceEntryEnum
      * @param nextName
      * @param nextTypeURIs
      */
-    public NamespaceEntryImplEnum(final String nextName, final List<URI> nextTypeURIs)
+    public NamespaceEntryImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }
