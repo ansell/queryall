@@ -569,6 +569,8 @@ public class Settings implements QueryAllConfiguration
                 this.addNamespaceEntryAndPrefix(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
             }
             
+            this.cachedNamespaceEntries = results;
+            
             return Collections.unmodifiableMap(this.cachedNamespaceEntries);
         }
         catch(final java.lang.InterruptedException ie)
