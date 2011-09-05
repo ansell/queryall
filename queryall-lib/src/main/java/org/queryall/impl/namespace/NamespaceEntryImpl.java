@@ -35,12 +35,11 @@ public class NamespaceEntryImpl implements NamespaceEntry
     @SuppressWarnings("unused")
     private static final boolean _INFO = NamespaceEntryImpl.log.isInfoEnabled();
     
+    private static final Set<URI> NAMESPACE_ENTRY_IMPL_TYPES = new HashSet<URI>();
+    
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>(1);
-        results.add(NamespaceEntrySchema.getNamespaceTypeUri());
-        
-        return results;
+        return NAMESPACE_ENTRY_IMPL_TYPES;
     }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -70,6 +69,11 @@ public class NamespaceEntryImpl implements NamespaceEntry
     private boolean convertQueriesToPreferredPrefix = true;
     
     private String title;
+    
+    static
+    {
+        NAMESPACE_ENTRY_IMPL_TYPES.add(NamespaceEntrySchema.getNamespaceTypeUri());
+    }
     
     public NamespaceEntryImpl()
     {

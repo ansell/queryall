@@ -39,13 +39,11 @@ public class ProviderImpl implements Provider
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
     
+    private static final Set<URI> PROVIDER_IMPL_TYPES = new HashSet<URI>();
+    
     public static Set<URI> providerTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(ProviderSchema.getProviderTypeUri());
-        
-        return results;
+        return PROVIDER_IMPL_TYPES;
     }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -76,7 +74,7 @@ public class ProviderImpl implements Provider
     
     static
     {
-        ;
+        PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
     }
     
     public ProviderImpl()

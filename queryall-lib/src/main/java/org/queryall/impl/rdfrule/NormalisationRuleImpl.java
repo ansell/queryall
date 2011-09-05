@@ -42,6 +42,8 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     protected static final boolean _DEBUG = NormalisationRuleImpl.log.isDebugEnabled();
     protected static final boolean _INFO = NormalisationRuleImpl.log.isInfoEnabled();
     
+    private static final Set<URI> NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
@@ -61,6 +63,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     private int order = 100;
     
     private String title;
+    
+    static
+    {
+        NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+    }
     
     protected NormalisationRuleImpl()
     {
@@ -236,10 +243,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> ruleTypes = new HashSet<URI>(2);
-        ruleTypes.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        
-        return ruleTypes;
+        return NORMALISATION_RULE_IMPL_TYPES;
     }
     
     /**

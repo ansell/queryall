@@ -39,7 +39,10 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     @SuppressWarnings("unused")
     private static final boolean _INFO = HttpProviderImpl.log.isInfoEnabled();
     
+    private static final Set<URI> HTTP_PROVIDER_IMPL_TYPES = new HashSet<URI>();
+    
     private Collection<String> endpointUrls = new HashSet<String>();
+
     // Use these to include information based on whether or not the provider was actually used to
     // provide information for particular user queries
     // public Collection<String> providerQueryInclusions = new HashSet<String>();
@@ -53,7 +56,9 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     
     static
     {
-        ;
+        HTTP_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
+        HTTP_PROVIDER_IMPL_TYPES.add(HttpProviderSchema.getProviderHttpTypeUri());
+        HTTP_PROVIDER_IMPL_TYPES.add(SparqlProviderSchema.getProviderSparqlTypeUri());
     }
     
     public HttpProviderImpl()
@@ -150,12 +155,7 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> results = super.getElementTypes();
-        
-        results.add(HttpProviderSchema.getProviderHttpTypeUri());
-        results.add(SparqlProviderSchema.getProviderSparqlTypeUri());
-        
-        return results;
+        return HTTP_PROVIDER_IMPL_TYPES;
     }
     
     @Override

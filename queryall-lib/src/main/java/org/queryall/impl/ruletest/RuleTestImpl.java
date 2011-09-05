@@ -32,14 +32,16 @@ public class RuleTestImpl implements RuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
     
-    // TODO: optimise to a static final Set<URI>
+    private static final Set<URI> RULE_TEST_IMPL_TYPES = new HashSet<URI>();
+    
+    static
+    {
+        RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
+    }
+    
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>(1);
-        
-        results.add(RuleTestSchema.getRuletestTypeUri());
-        
-        return results;
+        return RULE_TEST_IMPL_TYPES;
     }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();

@@ -12,21 +12,24 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.provider.SparqlProviderSchema;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class HttpOnlyProviderImpl extends HttpProviderImpl
 {
+    private static final Set<URI> HTTP_ONLY_PROVIDER_IMPL_TYPES = new HashSet<URI>();
+
+    static
+    {
+        HTTP_ONLY_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
+        HTTP_ONLY_PROVIDER_IMPL_TYPES.add(HttpProviderSchema.getProviderHttpTypeUri());
+    }
     
     public static Set<URI> httpOnlyTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(ProviderSchema.getProviderTypeUri());
-        results.add(HttpProviderSchema.getProviderHttpTypeUri());
-        
-        return results;
+        return HTTP_ONLY_PROVIDER_IMPL_TYPES;
     }
     
     /**
