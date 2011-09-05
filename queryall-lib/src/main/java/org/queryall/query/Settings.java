@@ -1583,6 +1583,7 @@ public class Settings implements QueryAllConfiguration
             return this.cachedTagPattern;
         }
         
+        // TODO: Do we need to split this into two patterns so that we can identify the parameter names as separate matching groups from the entire tag with braces etc.?
         final Pattern tempPattern =
                 Pattern.compile(this.getStringProperty("tagPatternRegex", ".*(\\$\\{[\\w_-]+\\}).*"));
         
