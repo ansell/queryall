@@ -35,13 +35,16 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProfileImpl.log.isInfoEnabled();
     
+    private static final Set<URI> PROFILE_IMPL_TYPES = new HashSet<URI>();
+    
+    static
+    {
+        PROFILE_IMPL_TYPES.add(ProfileSchema.getProfileTypeUri());
+    }
+    
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(ProfileSchema.getProfileTypeUri());
-        
-        return results;
+        return PROFILE_IMPL_TYPES;
     }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
