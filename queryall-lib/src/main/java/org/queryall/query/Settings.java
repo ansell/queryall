@@ -43,7 +43,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Settings implements QueryAllConfiguration
 {
-    // Wrap up the singleton in its own inner static class
+    // Wrap up a singleton instance in its own inner static class
+    // Note: this class does not need to be used as a singleton
     private static class SettingsHolder
     {
         public static final QueryAllConfiguration helper = new Settings();
@@ -109,7 +110,6 @@ public class Settings implements QueryAllConfiguration
         return PropertyUtils.getSystemOrPropertyString("queryall.Version", "0.0.1");
     }
     
-    // These properties are pulled out of the queryall.properties file
     private volatile String baseConfigLocation = Settings.getDefaultBaseConfigLocationProperty();
     
     private volatile String baseConfigUri = Settings.getDefaultBaseConfigUriProperty();
@@ -130,11 +130,9 @@ public class Settings implements QueryAllConfiguration
     private volatile Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
     private volatile Pattern cachedTagPattern = null;
     
-    // TODO: monitor this for size and see whether we should be resetting it
-    // regularly
     private volatile Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
     
-    private long initialisedTimestamp = System.currentTimeMillis();
+    private volatile long initialisedTimestamp = System.currentTimeMillis();
     
     private volatile String separator;
     
@@ -256,36 +254,86 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void addNormalisationRule(final NormalisationRule nextNormalisationRule)
     {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("TODO: Implement me!");
+        if(this.cachedNormalisationRules == null)
+        {
+            synchronized(this)
+            {
+                this.cachedNormalisationRules = new ConcurrentHashMap<URI, NormalisationRule>(200);
+            }
+        }
+        
+        synchronized(this.cachedNormalisationRules)
+        {
+            this.cachedNormalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
+        }
     }
     
     @Override
     public void addProfile(final Profile nextProfile)
     {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("TODO: Implement me!");
+        if(this.cachedProfiles == null)
+        {
+            synchronized(this)
+            {
+                this.cachedProfiles = new ConcurrentHashMap<URI, Profile>(200);
+            }
+        }
+        
+        synchronized(this.cachedProfiles)
+        {
+            this.cachedProfiles.put(nextProfile.getKey(), nextProfile);
+        }
     }
     
     @Override
     public void addProvider(final Provider nextProvider)
     {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("TODO: Implement me!");
+        if(this.cachedProviders == null)
+        {
+            synchronized(this)
+            {
+                this.cachedProviders = new ConcurrentHashMap<URI, Provider>(200);
+            }
+        }
+        
+        synchronized(this.cachedProviders)
+        {
+            this.cachedProviders.put(nextProvider.getKey(), nextProvider);
+        }
     }
     
     @Override
     public void addQueryType(final QueryType nextQueryType)
     {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("TODO: Implement me!");
+        if(this.cachedCustomQueries == null)
+        {
+            synchronized(this)
+            {
+                this.cachedCustomQueries = new ConcurrentHashMap<URI, QueryType>(200);
+            }
+        }
+        
+        synchronized(this.cachedCustomQueries)
+        {
+            this.cachedCustomQueries.put(nextQueryType.getKey(), nextQueryType);
+        }
     }
     
     @Override
     public void addRuleTest(final RuleTest nextRuleTest)
     {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("TODO: Implement me!");
+        if(this.cachedRuleTests == null)
+        {
+            synchronized(this)
+            {
+                this.cachedRuleTests = new ConcurrentHashMap<URI, RuleTest>(200);
+            }
+        }
+        
+        synchronized(this.cachedRuleTests)
+        {
+            this.cachedRuleTests.put(nextRuleTest.getKey(), nextRuleTest);
+        }
     }
     
     public boolean configRefreshCheck(final boolean tryToForceRefresh)
