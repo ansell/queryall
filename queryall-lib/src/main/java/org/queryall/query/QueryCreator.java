@@ -2,6 +2,7 @@ package org.queryall.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -163,12 +164,12 @@ public class QueryCreator
             normalisedQueryUri = includedQueryType.getQueryUriTemplateString();
         }
         
-        if(QueryCreator._DEBUG)
+        if(QueryCreator._TRACE)
         {
-            QueryCreator.log.debug("QueryCreator.createQuery: initial value of replacedString=" + replacedString);
-            QueryCreator.log.debug("QueryCreator.createQuery: initial value of normalisedStandardUri="
+            QueryCreator.log.trace("QueryCreator.createQuery: initial value of replacedString=" + replacedString);
+            QueryCreator.log.trace("QueryCreator.createQuery: initial value of normalisedStandardUri="
                     + normalisedStandardUri);
-            QueryCreator.log.debug("QueryCreator.createQuery: initial value of normalisedQueryUri="
+            QueryCreator.log.trace("QueryCreator.createQuery: initial value of normalisedQueryUri="
                     + normalisedQueryUri);
         }
         
@@ -1012,7 +1013,10 @@ public class QueryCreator
             QueryCreator.log.debug(String.format("%s: timing=%10d", "QueryCreator.doReplacementsOnString",
                     (end - start)));
             
-            QueryCreator.log.trace("QueryCreator.doReplacementsOnString: returning replacedString=" + replacedString);
+            if(QueryCreator._TRACE)
+            {
+                QueryCreator.log.trace("QueryCreator.doReplacementsOnString: returning replacedString=" + replacedString);
+            }
         }
         
         return replacedString;
@@ -1031,14 +1035,16 @@ public class QueryCreator
             final Provider nextProvider, final String queryString, final String nextEndpoint,
             final String realHostName, final int pageOffset, final QueryAllConfiguration localSettings)
     {
-        if(QueryCreator._DEBUG)
+        if(QueryCreator._TRACE)
         {
-            QueryCreator.log.debug("QueryCreator.getAttributeListFor: called with nextProvider="
+            QueryCreator.log.trace("QueryCreator.getAttributeListFor: called with nextProvider="
                     + nextProvider.toString() + " queryString=" + queryString + " nextEndpoint=" + nextEndpoint
                     + " realHostName=" + realHostName + " pageOffset=" + pageOffset);
         }
         
-        final Map<String, String> attributeList = new ConcurrentHashMap<String, String>();
+        final long start = System.currentTimeMillis();
+        
+        final Map<String, String> attributeList = new HashMap<String, String>(50);
         
         if(nextIncludedQueryType != null && nextIncludedQueryType.getKey() != null)
         {
@@ -1118,6 +1124,15 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_QUERY_STRING,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(queryString)));
         
+        if(QueryCreator._DEBUG)
+        {
+            final long end = System.currentTimeMillis();
+            
+            QueryCreator.log.debug(String.format("%s: timing=%10d",
+                    "QueryCreator.getAttributeListFor", (end - start)));
+            
+        }
+        
         return attributeList;
     }
     
@@ -1131,9 +1146,9 @@ public class QueryCreator
     public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
             final String queryString, final String templateString, final List<String> specialInstructions)
     {
-        if(QueryCreator._DEBUG)
+        if(QueryCreator._TRACE)
         {
-            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryString=" + queryString
+            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryString=" + queryString
                     + " templateString=" + templateString);
         }
         
@@ -1345,9 +1360,9 @@ public class QueryCreator
                 // End uppercase region
                 /***********************/
                 
-                if(QueryCreator._DEBUG)
+                if(QueryCreator._TRACE)
                 {
-                    QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
+                    QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
                             + replacedString);
                     // log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedStandardUri="+normalisedStandardUri);
                     // log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedQueryUri="+normalisedQueryUri);
@@ -1375,14 +1390,14 @@ public class QueryCreator
                 replacedString.replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING,
                         StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         
-        if(QueryCreator._DEBUG)
+        if(QueryCreator._TRACE)
         {
             final long end = System.currentTimeMillis();
             
-            QueryCreator.log.debug(String.format("%s: timing=%10d",
+            QueryCreator.log.trace(String.format("%s: timing=%10d",
                     "QueryCreator.matchAndReplaceInputVariablesForQueryType", (end - start)));
             
-            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
+            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
                     + replacedString);
         }
         
