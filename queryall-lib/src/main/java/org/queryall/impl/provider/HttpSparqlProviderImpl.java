@@ -15,17 +15,17 @@ import org.queryall.api.provider.SparqlProviderSchema;
 public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSparqlProvider
 {
     private static final Set<URI> HTTP_SPARQL_PROVIDER_IMPL_TYPES = new HashSet<URI>();
-
+    
     static
     {
-        HTTP_SPARQL_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
-        HTTP_SPARQL_PROVIDER_IMPL_TYPES.add(HttpProviderSchema.getProviderHttpTypeUri());
-        HTTP_SPARQL_PROVIDER_IMPL_TYPES.add(SparqlProviderSchema.getProviderSparqlTypeUri());
+        HttpSparqlProviderImpl.HTTP_SPARQL_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
+        HttpSparqlProviderImpl.HTTP_SPARQL_PROVIDER_IMPL_TYPES.add(HttpProviderSchema.getProviderHttpTypeUri());
+        HttpSparqlProviderImpl.HTTP_SPARQL_PROVIDER_IMPL_TYPES.add(SparqlProviderSchema.getProviderSparqlTypeUri());
     }
     
     public static Set<URI> httpAndSparqlTypes()
     {
-        return HTTP_SPARQL_PROVIDER_IMPL_TYPES;
+        return HttpSparqlProviderImpl.HTTP_SPARQL_PROVIDER_IMPL_TYPES;
     }
     
     public HttpSparqlProviderImpl()

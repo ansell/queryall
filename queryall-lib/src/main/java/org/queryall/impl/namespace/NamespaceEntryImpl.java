@@ -39,7 +39,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     
     public static Set<URI> myTypes()
     {
-        return NAMESPACE_ENTRY_IMPL_TYPES;
+        return NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES;
     }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -72,7 +72,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     
     static
     {
-        NAMESPACE_ENTRY_IMPL_TYPES.add(NamespaceEntrySchema.getNamespaceTypeUri());
+        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(NamespaceEntrySchema.getNamespaceTypeUri());
     }
     
     public NamespaceEntryImpl()

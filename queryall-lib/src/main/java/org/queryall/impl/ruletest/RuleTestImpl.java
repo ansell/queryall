@@ -36,12 +36,12 @@ public class RuleTestImpl implements RuleTest
     
     static
     {
-        RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
+        RuleTestImpl.RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return RULE_TEST_IMPL_TYPES;
+        return RuleTestImpl.RULE_TEST_IMPL_TYPES;
     }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();

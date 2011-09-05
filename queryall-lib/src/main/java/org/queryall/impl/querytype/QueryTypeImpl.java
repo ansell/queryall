@@ -44,11 +44,11 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
     
-    private static final Set<URI> QUERY_TYPE_IMPL_TYPES = new HashSet<URI>(); 
+    private static final Set<URI> QUERY_TYPE_IMPL_TYPES = new HashSet<URI>();
     
     public static Set<URI> myTypes()
     {
-        return QUERY_TYPE_IMPL_TYPES;
+        return QueryTypeImpl.QUERY_TYPE_IMPL_TYPES;
     }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -133,8 +133,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     
     static
     {
-        QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
-        QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
+        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
+        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
     }
     
     public QueryTypeImpl()

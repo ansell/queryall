@@ -46,8 +46,8 @@ import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
-import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 
@@ -955,29 +955,29 @@ public class RdfUtilsTest
                             ProfileSchema.getProfileExcludeThenIncludeUri(),
                             nextQueryType.getProfileIncludeExcludeOrder());
                     
-                    Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1,
-                            nextQueryType.getPublicIdentifierTags().size());
+                    Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType
+                            .getPublicIdentifierTags().size());
                     
-                    Assert.assertTrue("Query type public identifiers were not parsed correctly",
-                            nextQueryType.getPublicIdentifierTags().contains("input_1"));
+                    Assert.assertTrue("Query type public identifiers were not parsed correctly", nextQueryType
+                            .getPublicIdentifierTags().contains("input_1"));
                     
                     Assert.assertEquals("Query type namespace input indexes size was not parsed correctly", 1,
                             nextQueryType.getNamespaceInputTags().size());
                     
-                    Assert.assertTrue("Query type namespace input indexes were not parsed correctly",
-                            nextQueryType.getNamespaceInputTags().contains("input_1"));
+                    Assert.assertTrue("Query type namespace input indexes were not parsed correctly", nextQueryType
+                            .getNamespaceInputTags().contains("input_1"));
                     
                     Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1,
                             nextQueryType.getSemanticallyLinkedQueryTypes().size());
                     
-                    Assert.assertTrue("Query type was not parsed into a RegexInputQueryType", nextQueryType instanceof RegexInputQueryType);
+                    Assert.assertTrue("Query type was not parsed into a RegexInputQueryType",
+                            nextQueryType instanceof RegexInputQueryType);
                     
-                    RegexInputQueryType nextRegexQueryType = (RegexInputQueryType)nextQueryType;
+                    final RegexInputQueryType nextRegexQueryType = (RegexInputQueryType)nextQueryType;
                     
                     Assert.assertEquals("Query type input regex was not parsed correctly", "^([\\w-]+):(.+)",
                             nextRegexQueryType.getInputRegex());
                     
-
                 }
             }
         }

@@ -43,7 +43,7 @@ public class ProviderImpl implements Provider
     
     public static Set<URI> providerTypes()
     {
-        return PROVIDER_IMPL_TYPES;
+        return ProviderImpl.PROVIDER_IMPL_TYPES;
     }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
@@ -74,7 +74,7 @@ public class ProviderImpl implements Provider
     
     static
     {
-        PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
+        ProviderImpl.PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
     }
     
     public ProviderImpl()

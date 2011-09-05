@@ -10,9 +10,7 @@ import java.util.Set;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.NoCommunicationProvider;
-import org.queryall.api.provider.ProviderEnum;
 import org.queryall.api.provider.ProviderSchema;
 
 /**
@@ -21,20 +19,22 @@ import org.queryall.api.provider.ProviderSchema;
 public class NoCommunicationProviderImpl extends ProviderImpl implements NoCommunicationProvider
 {
     private static final Set<URI> NO_COMMUNICATION_PROVIDER_IMPL_TYPES = new HashSet<URI>();
-
+    
     static
     {
-        NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
+        NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
     }
     
     public static Set<URI> noCommunicationTypes()
     {
-        return NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
+        return NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
     }
-//    static
-//    {
-//        ProviderEnum.register(NoCommunicationProviderImpl.class.getName(), ProviderImpl.providerTypes());
-//    }
+    
+    // static
+    // {
+    // ProviderEnum.register(NoCommunicationProviderImpl.class.getName(),
+    // ProviderImpl.providerTypes());
+    // }
     
     /**
      * 

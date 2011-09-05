@@ -66,7 +66,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     static
     {
-        NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        NormalisationRuleImpl.NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
     }
     
     protected NormalisationRuleImpl()
@@ -243,7 +243,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     @Override
     public Set<URI> getElementTypes()
     {
-        return NORMALISATION_RULE_IMPL_TYPES;
+        return NormalisationRuleImpl.NORMALISATION_RULE_IMPL_TYPES;
     }
     
     /**
