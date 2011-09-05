@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -123,19 +124,20 @@ public class QueryCreator
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
             final boolean includeNonProfileMatchedRdfRules, final QueryAllConfiguration localSettings)
     {
-        if(QueryCreator._DEBUG)
+        if(QueryCreator._TRACE)
         {
-            QueryCreator.log.debug("QueryCreator.doReplacementsOnString: queryString=" + queryString
+            QueryCreator.log.trace("QueryCreator.doReplacementsOnString: queryString=" + queryString
                     + " templateString=" + templateString + " normalisationUrisNeeded=" + normalisationUrisNeeded);
         }
         
         if(!(localSettings.getTagPattern().matcher(templateString).matches()))
         {
-            if(QueryCreator._DEBUG)
+            if(QueryCreator._TRACE)
             {
-                QueryCreator.log.debug("tag pattern " + ((Settings)localSettings).getTagPattern().toString()
-                        + " does not match template string=" + templateString);
-                QueryCreator.log.debug("returning templateString unchanged");
+                QueryCreator.log.trace("tag pattern " + ((Settings)localSettings).getTagPattern().toString()
+                        + " does not match template string");
+                QueryCreator.log.trace("templateString="+templateString);
+                QueryCreator.log.trace("returning templateString unchanged");
             }
             
             return templateString;
@@ -147,25 +149,7 @@ public class QueryCreator
         
         String normalisedStandardUri = originalQueryType.getStandardUriTemplateString();
         
-        // StringBuilder replacedString = new StringBuilder(templateString);
-        //
-        // StringBuilder normalisedStandardUri = new
-        // StringBuilder(originalQueryType.getStandardUriTemplateString());
-        
-        // final String normalisedOntologyUriPrefix = queryall.ontologyPrefix;
-        //
-        // final String normalisedOntologyUriSuffix = queryall.ontologySuffix;
-        
         String normalisedQueryUri = "";
-        
-        // TODO: include allowance for the input_NN variables which match
-        // namespaces here using originalQueryType.publicIdentifierIndexes
-        // and/or originalQueryType.namespaceInputIndexes??
-        // NOTE: CONVENTION: We assume that both of the template strings will
-        // contain the same ${input_N} values as they really represent the
-        // identifiers
-        // If queries can't keep to this convention they shouldn't be included
-        // together and should be performed and created separately
         
         // If they want to do the replacements on a different custom query to
         // the one from the custom query for similar includes then we do the
@@ -1494,9 +1478,9 @@ public class QueryCreator
      * @return
      */
     public static String replaceTags(String inputString, final Map<String, String> tags,
-            final QueryAllConfiguration localSettings)
+            Pattern nextTagPattern)
     {
-        final Matcher m = localSettings.getTagPattern().matcher(inputString);
+        final Matcher m = nextTagPattern.matcher(inputString);
         boolean result = m.find();
         
         if(result)
@@ -1542,7 +1526,7 @@ public class QueryCreator
         myTestMap.put("${input_2}", "YourInput2");
         myTestMap.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
         
-        final String returnString = QueryCreator.replaceTags(inputString, myTestMap, localSettings);
+        final String returnString = QueryCreator.replaceTags(inputString, myTestMap, localSettings.getTagPattern());
         
         // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
         
