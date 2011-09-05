@@ -1168,10 +1168,10 @@ public class QueryCreator
                 final String matchString = "${" + nextMatchTag + "}";
                 
                 final String urlEncodedReplaceString = StringUtils.percentEncode(inputReplaceString);
-                final String urlEncodedMatchString = "${urlEncoded_input_" + nextMatchTag + "}";
+                final String urlEncodedMatchString = "${urlEncoded_" + nextMatchTag + "}";
                 
                 final String plusUrlEncodedReplaceString = StringUtils.plusPercentEncode(inputReplaceString);
-                final String plusUrlEncodedMatchString = "${plusUrlEncoded_input_" + nextMatchTag + "}";
+                final String plusUrlEncodedMatchString = "${plusUrlEncoded_" + nextMatchTag + "}";
                 
                 // final String plusSpaceEncodedReplaceString =
                 // RdfUtils.plusSpaceEncode(inputReplaceString);
@@ -1180,73 +1180,73 @@ public class QueryCreator
                 // "}";
                 
                 final String xmlEncodedReplaceString = StringUtils.xmlEncodeString(inputReplaceString);
-                final String xmlEncodedMatchString = "${xmlEncoded_input_" + nextMatchTag + "}";
+                final String xmlEncodedMatchString = "${xmlEncoded_" + nextMatchTag + "}";
                 
                 final String xmlEncodedUrlEncodedReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString));
                 
-                final String xmlEncodedUrlEncodedMatchString = "${xmlEncoded_urlEncoded_input_" + nextMatchTag + "}";
+                final String xmlEncodedUrlEncodedMatchString = "${xmlEncoded_urlEncoded_" + nextMatchTag + "}";
                 
                 final String xmlEncodedPlusUrlEncodedReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.plusPercentEncode(inputReplaceString));
                 
                 final String xmlEncodedPlusUrlEncodedMatchString =
-                        "${xmlEncoded_plusUrlEncoded_input_" + nextMatchTag + "}";
+                        "${xmlEncoded_plusUrlEncoded_" + nextMatchTag + "}";
                 
                 final String xmlEncodedNTriplesReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString));
-                final String xmlEncodedNTriplesMatchString = "${xmlEncoded_ntriplesEncoded_input_" + nextMatchTag + "}";
+                final String xmlEncodedNTriplesMatchString = "${xmlEncoded_ntriplesEncoded_" + nextMatchTag + "}";
                 
                 final String nTriplesReplaceString = StringUtils.ntriplesEncode(inputReplaceString);
-                final String nTriplesMatchString = "${ntriplesEncoded_input_" + nextMatchTag + "}";
+                final String nTriplesMatchString = "${ntriplesEncoded_" + nextMatchTag + "}";
                 
                 // Start lowercase region
                 /***********************/
                 
                 final String lowercaseReplaceString = inputReplaceString.toLowerCase();
-                final String lowercaseMatchString = "${lowercase_input_" + nextMatchTag + "}";
+                final String lowercaseMatchString = "${lowercase_" + nextMatchTag + "}";
                 
                 final String urlEncodedLowercaseReplaceString =
                         StringUtils.percentEncode(inputReplaceString.toLowerCase());
-                final String urlEncodedLowercaseMatchString = "${urlEncoded_lowercase_input_" + nextMatchTag + "}";
+                final String urlEncodedLowercaseMatchString = "${urlEncoded_lowercase_" + nextMatchTag + "}";
                 
                 final String xmlEncodedLowercaseReplaceString =
                         StringUtils.xmlEncodeString(inputReplaceString.toLowerCase());
-                final String xmlEncodedLowercaseMatchString = "${xmlEncoded_lowercase_input_" + nextMatchTag + "}";
+                final String xmlEncodedLowercaseMatchString = "${xmlEncoded_lowercase_" + nextMatchTag + "}";
                 
                 final String xmlEncodedUrlEncodedLowercaseReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toLowerCase()));
                 final String xmlEncodedUrlEncodedLowercaseMatchString =
-                        "${xmlEncoded_urlEncoded_lowercase_input_" + nextMatchTag + "}";
+                        "${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag + "}";
                 
                 final String xmlEncodedNTriplesLowercaseReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toLowerCase()));
                 final String xmlEncodedNTriplesLowercaseMatchString =
-                        "${xmlEncoded_ntriplesEncoded_lowercase_input_" + nextMatchTag + "}";
+                        "${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag + "}";
                 
                 // End lowercase region
                 /***********************/
                 // Start uppercase region
                 final String uppercaseReplaceString = inputReplaceString.toUpperCase();
-                final String uppercaseMatchString = "${uppercase_input_" + nextMatchTag + "}";
+                final String uppercaseMatchString = "${uppercase_" + nextMatchTag + "}";
                 
                 final String urlEncodedUppercaseReplaceString =
                         StringUtils.percentEncode(inputReplaceString.toUpperCase());
-                final String urlEncodedUppercaseMatchString = "${urlEncoded_uppercase_input_" + nextMatchTag + "}";
+                final String urlEncodedUppercaseMatchString = "${urlEncoded_uppercase_" + nextMatchTag + "}";
                 
                 final String xmlEncodedUppercaseReplaceString =
                         StringUtils.xmlEncodeString(inputReplaceString.toUpperCase());
-                final String xmlEncodedUppercaseMatchString = "${xmlEncoded_uppercase_input_" + nextMatchTag + "}";
+                final String xmlEncodedUppercaseMatchString = "${xmlEncoded_uppercase_" + nextMatchTag + "}";
                 
                 final String xmlEncodedUrlEncodedUppercaseReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toUpperCase()));
                 final String xmlEncodedUrlEncodedUppercaseMatchString =
-                        "${xmlEncoded_urlEncoded_uppercase_input_" + nextMatchTag + "}";
+                        "${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag + "}";
                 
                 final String xmlEncodedNTriplesUppercaseReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toUpperCase()));
                 final String xmlEncodedNTriplesUppercaseMatchString =
-                        "${xmlEncoded_ntriplesEncoded_uppercase_input_" + nextMatchTag + "}";
+                        "${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag + "}";
                 
                 // End uppercase region
                 /***********************/
