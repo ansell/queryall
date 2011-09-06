@@ -22,6 +22,8 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.querytype.RdfXmlOutputQueryType;
+import org.queryall.api.querytype.RdfXmlOutputQueryTypeSchema;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.querytype.RegexInputQueryTypeSchema;
 import org.queryall.api.utils.Constants;
@@ -36,7 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeImpl implements QueryType, RegexInputQueryType
+public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
@@ -135,6 +137,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     {
         QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
         QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
+        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri());
+        
     }
     
     public QueryTypeImpl()
@@ -233,7 +237,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryOutputRdfXmlString()))
             {
-                this.setOutputRdfXmlString(nextStatement.getObject().stringValue());
+                this.setOutputString(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryInRobotsTxt()))
             {
@@ -424,7 +428,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     }
     
     @Override
-    public String getOutputRdfXmlString()
+    public String getOutputString()
     {
         return this.outputRdfXmlString;
     }
@@ -751,7 +755,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType
     }
     
     @Override
-    public void setOutputRdfXmlString(final String outputRdfXmlString)
+    public void setOutputString(final String outputRdfXmlString)
     {
         this.outputRdfXmlString = outputRdfXmlString;
     }

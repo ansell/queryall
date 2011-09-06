@@ -18,6 +18,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.provider.SparqlProviderSchema;
+import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
@@ -425,18 +426,26 @@ public class RdfFetchController
                         // than naming them as ${namespace} and ${identifier} and ${searchTerm}, but
                         // these can be worked around by only offering compatible services as
                         // alternatives with the static rdf/xml portions
-                        nextStaticRdfXmlString +=
-                                QueryCreator.createStaticRdfXmlString(nextQueryType, nextCustomIncludeType,
-                                        nextProvider, attributeList, this.sortedIncludedProfiles,
-                                        localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                        localSettings);
+                        
+                        if(nextCustomIncludeType instanceof OutputQueryType)
+                        {
+                            nextStaticRdfXmlString +=
+                                    QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextCustomIncludeType,
+                                            nextProvider, attributeList, this.sortedIncludedProfiles,
+                                            localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
+                                            localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                            localSettings);
+                        }
+                        else
+                        {
+                            log.warn("Attempted to include a query type that was not parsed as an output query type key="+nextCustomIncludeType.getKey()+" types="+nextCustomIncludeType.getElementTypes());
+                        }
                     }
                 }
                 
                 final QueryBundle nextProviderQueryBundle = new QueryBundle();
                 
-                nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+                nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
                 nextProviderQueryBundle.setProvider(nextProvider);
                 nextProviderQueryBundle.setQueryType(nextQueryType);
                 nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
@@ -530,12 +539,20 @@ public class RdfFetchController
                         // than naming them as ${namespace} and ${identifier} and ${searchTerm}, but
                         // these can be worked around by only offering compatible services as
                         // alternatives with the static rdf/xml portions
-                        nextStaticRdfXmlString +=
-                                QueryCreator.createStaticRdfXmlString(nextQueryType, nextCustomIncludeType,
+                        if(nextCustomIncludeType instanceof OutputQueryType)
+                        {
+                            nextStaticRdfXmlString +=
+                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextCustomIncludeType,
                                         nextProvider, attributeList, this.sortedIncludedProfiles,
                                         localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                         localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
                                         localSettings);
+                        }
+                        else
+                        {
+                            log.warn("Attempted to include a query type that was not parsed as an output query type key="+nextCustomIncludeType.getKey()+" types="+nextCustomIncludeType.getElementTypes());
+                        }
+                        
                     }
                 }
                 
@@ -551,7 +568,7 @@ public class RdfFetchController
                             final QueryBundle nextProviderQueryBundle = new QueryBundle();
                             
                             nextProviderQueryBundle.setQuery(endpointEntries.get(nextReplacedEndpoint));
-                            nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+                            nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
                             nextProviderQueryBundle.setQueryEndpoint(nextReplacedEndpoint);
                             nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
                             nextProviderQueryBundle.setOriginalProvider(nextProvider);
@@ -591,7 +608,7 @@ public class RdfFetchController
                 {
                     final QueryBundle nextProviderQueryBundle = new QueryBundle();
                     
-                    nextProviderQueryBundle.setStaticRdfXmlString(nextStaticRdfXmlString);
+                    nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
                     nextProviderQueryBundle.setProvider(nextProvider);
                     nextProviderQueryBundle.setQueryType(nextQueryType);
                     nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);

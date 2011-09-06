@@ -33,14 +33,14 @@ public class NormalisationRuleEnum extends QueryAllEnum
     protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
             new ArrayList<NormalisationRuleEnum>(5);
     
-    public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextNormalisationRuleUris)
+    public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextNormalisationRuleUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(NormalisationRuleEnum._DEBUG)
             {
                 NormalisationRuleEnum.log.debug("found an empty URI set for nextNormalisationRuleUris="
-                        + nextNormalisationRuleUris);
+                        + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -49,13 +49,17 @@ public class NormalisationRuleEnum extends QueryAllEnum
         final List<NormalisationRuleEnum> results =
                 new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
         
-        for(final NormalisationRuleEnum nextNormalisationRuleEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
+        for(final NormalisationRuleEnum nextEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
         {
-            boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() == nextNormalisationRuleUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+           //    boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() == nextNormalisationRuleUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextNormalisationRuleEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextNormalisationRuleUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(NormalisationRuleEnum._DEBUG)
                     {
@@ -71,16 +75,16 @@ public class NormalisationRuleEnum extends QueryAllEnum
                 if(NormalisationRuleEnum._DEBUG)
                 {
                     NormalisationRuleEnum.log.debug("found an matching URI set for nextNormalisationRuleUris="
-                            + nextNormalisationRuleUris);
+                            + nextTypeUris);
                 }
-                results.add(nextNormalisationRuleEnum);
+                results.add(nextEnum);
             }
         }
         
         if(NormalisationRuleEnum._DEBUG)
         {
             NormalisationRuleEnum.log.debug("returning results.size()=" + results.size()
-                    + " for nextNormalisationRuleUris=" + nextNormalisationRuleUris);
+                    + " for nextNormalisationRuleUris=" + nextTypeUris);
         }
         
         return results;

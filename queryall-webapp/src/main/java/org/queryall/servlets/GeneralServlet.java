@@ -27,6 +27,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
@@ -844,34 +845,42 @@ public class GeneralServlet extends HttpServlet
                 // query bundles they matched the query string somehow
                 for(final QueryType nextQueryType : allCustomRdfXmlIncludeTypes)
                 {
-                    final Map<String, String> attributeList =
-                            QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString,
-                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
-                                    pageOffset, localSettings);
-                    
-                    String nextBackupString =
-                            QueryCreator.createStaticRdfXmlString(nextQueryType, nextQueryType, new ProviderImpl(),
-                                    attributeList, includedProfiles,
-                                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    localSettings)
-                                    + "\n";
-                    
-                    nextBackupString =
-                            "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">"
-                                    + nextBackupString + "</rdf:RDF>";
-                    
-                    try
+                    if(nextQueryType instanceof OutputQueryType)
                     {
-                        myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
-                                localSettings.getDefaultHostAddress() + queryString, RDFFormat.RDFXML,
-                                nextQueryType.getKey());
+                        final Map<String, String> attributeList =
+                                QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString,
+                                        localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
+                                        pageOffset, localSettings);
+                        
+                        String nextBackupString =
+                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType, new ProviderImpl(),
+                                        attributeList, includedProfiles,
+                                        localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
+                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                        localSettings)
+                                        + "\n";
+                        
+                        nextBackupString =
+                                "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">"
+                                        + nextBackupString + "</rdf:RDF>";
+                        
+                        try
+                        {
+                            myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
+                                    localSettings.getDefaultHostAddress() + queryString, RDFFormat.RDFXML,
+                                    nextQueryType.getKey());
+                        }
+                        catch(final org.openrdf.rio.RDFParseException rdfpe)
+                        {
+                            GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
+                            GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
+                        }
                     }
-                    catch(final org.openrdf.rio.RDFParseException rdfpe)
+                    else
                     {
-                        GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
-                        GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
+                        log.warn("Attempted to include a query type that was not parsed as an output query type key="+nextQueryType.getKey()+" types="+nextQueryType.getElementTypes());
                     }
+                    
                 }
             }
             

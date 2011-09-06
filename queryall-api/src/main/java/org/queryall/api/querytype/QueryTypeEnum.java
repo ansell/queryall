@@ -32,26 +32,30 @@ public class QueryTypeEnum extends QueryAllEnum
     
     protected static final Collection<QueryTypeEnum> ALL_QUERY_TYPES = new ArrayList<QueryTypeEnum>(5);
     
-    public static Collection<QueryTypeEnum> byTypeUris(final Set<URI> nextQueryTypeUris)
+    public static Collection<QueryTypeEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextQueryTypeUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(QueryTypeEnum._DEBUG)
             {
-                QueryTypeEnum.log.debug("found an empty URI set for nextQueryTypeUris=" + nextQueryTypeUris);
+                QueryTypeEnum.log.debug("found an empty URI set for nextQueryTypeUris=" + nextTypeUris);
             }
             return Collections.emptyList();
         }
         
         final List<QueryTypeEnum> results = new ArrayList<QueryTypeEnum>(QueryTypeEnum.ALL_QUERY_TYPES.size());
         
-        for(final QueryTypeEnum nextQueryTypeEnum : QueryTypeEnum.ALL_QUERY_TYPES)
+        for(final QueryTypeEnum nextEnum : QueryTypeEnum.ALL_QUERY_TYPES)
         {
-            boolean matching = (nextQueryTypeEnum.getTypeURIs().size() == nextQueryTypeUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // boolean matching = (nextQueryTypeEnum.getTypeURIs().size() == nextQueryTypeUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextQueryTypeEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextQueryTypeUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(QueryTypeEnum._DEBUG)
                     {
@@ -66,17 +70,17 @@ public class QueryTypeEnum extends QueryAllEnum
             {
                 if(QueryTypeEnum._DEBUG)
                 {
-                    QueryTypeEnum.log.debug("found an matching URI set for nextQueryTypeUris=" + nextQueryTypeUris);
+                    QueryTypeEnum.log.debug("found an matching URI set for nextQueryTypeUris=" + nextTypeUris);
                 }
                 
-                results.add(nextQueryTypeEnum);
+                results.add(nextEnum);
             }
         }
         
         if(QueryTypeEnum._DEBUG)
         {
             QueryTypeEnum.log.debug("returning results.size()=" + results.size() + " for nextQueryTypeUris="
-                    + nextQueryTypeUris);
+                    + nextTypeUris);
         }
         
         return results;

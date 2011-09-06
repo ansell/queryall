@@ -143,4 +143,13 @@ public class QueryAllEnum
         this.typeURIs = typeURIs;
     }
     
+    /**
+     * Returns the list of type URIs
+     */
+    @Override
+    public String toString()
+    {
+        return this.name+" {" +this.typeURIs.toString()+"}";
+    }
+    
 }

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +14,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.utils.Constants;
@@ -94,7 +94,7 @@ public class QueryCreator
      * @param includedProfiles
      * @return
      */
-    public static String createStaticRdfXmlString(final QueryType originalQueryType, final QueryType includedQueryType,
+    public static String createStaticRdfXmlString(final QueryType originalQueryType, final OutputQueryType includedQueryType,
             final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final QueryAllConfiguration localSettings)
@@ -106,7 +106,7 @@ public class QueryCreator
             QueryCreator.log.error("QueryCreator.createQuery: queryString was empty");
         }
         
-        if(includedQueryType.getOutputRdfXmlString() == null)
+        if(includedQueryType.getOutputString() == null)
         {
             QueryCreator.log.error("QueryCreator.createQuery: no outputRdfXmlString defined queryType="
                     + includedQueryType.getKey().stringValue());
@@ -114,7 +114,7 @@ public class QueryCreator
             return "";
         }
         
-        return QueryCreator.doReplacementsOnString(queryString, includedQueryType.getOutputRdfXmlString(),
+        return QueryCreator.doReplacementsOnString(queryString, includedQueryType.getOutputString(),
                 originalQueryType, includedQueryType, nextProvider.getNormalisationUris(), attributeList,
                 includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }

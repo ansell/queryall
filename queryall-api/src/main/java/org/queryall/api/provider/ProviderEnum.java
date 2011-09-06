@@ -32,13 +32,13 @@ public class ProviderEnum extends QueryAllEnum
     
     protected static final Collection<ProviderEnum> ALL_PROVIDERS = new ArrayList<ProviderEnum>(5);
     
-    public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextProviderUris)
+    public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextProviderUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(ProviderEnum._DEBUG)
             {
-                ProviderEnum.log.debug("found an empty URI set for nextProviderUris=" + nextProviderUris);
+                ProviderEnum.log.debug("found an empty URI set for nextProviderUris=" + nextTypeUris);
             }
             return Collections.emptyList();
         }
@@ -46,20 +46,24 @@ public class ProviderEnum extends QueryAllEnum
         {
             if(ProviderEnum._DEBUG)
             {
-                ProviderEnum.log.debug("found a URI set for nextProviderUris.size()=" + nextProviderUris.size());
+                ProviderEnum.log.debug("found a URI set for nextProviderUris.size()=" + nextTypeUris.size());
                 ProviderEnum.log.debug("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
             }
         }
         
         final List<ProviderEnum> results = new ArrayList<ProviderEnum>(ProviderEnum.ALL_PROVIDERS.size());
         
-        for(final ProviderEnum nextProviderEnum : ProviderEnum.ALL_PROVIDERS)
+        for(final ProviderEnum nextEnum : ProviderEnum.ALL_PROVIDERS)
         {
-            boolean matching = (nextProviderEnum.getTypeURIs().size() == nextProviderUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // boolean matching = (nextProviderEnum.getTypeURIs().size() == nextProviderUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextProviderEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextProviderUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(ProviderEnum._DEBUG)
                     {
@@ -74,16 +78,16 @@ public class ProviderEnum extends QueryAllEnum
             {
                 if(ProviderEnum._DEBUG)
                 {
-                    ProviderEnum.log.debug("found an matching URI set for nextProviderUris=" + nextProviderUris);
+                    ProviderEnum.log.debug("found an matching URI set for nextProviderUris=" + nextTypeUris);
                 }
-                results.add(nextProviderEnum);
+                results.add(nextEnum);
             }
         }
         
         if(ProviderEnum._DEBUG)
         {
             ProviderEnum.log.debug("returning results.size()=" + results.size() + " for nextProviderUris="
-                    + nextProviderUris);
+                    + nextTypeUris);
         }
         
         return results;

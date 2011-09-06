@@ -338,7 +338,7 @@ public class QueryBundle
      * @param staticRdfXmlString
      *            the staticRdfXmlString to set
      */
-    public void setStaticRdfXmlString(final String staticRdfXmlString)
+    public void setOutputString(final String staticRdfXmlString)
     {
         this.staticRdfXmlString = staticRdfXmlString;
     }

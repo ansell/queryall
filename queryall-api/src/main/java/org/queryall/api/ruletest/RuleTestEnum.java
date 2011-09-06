@@ -32,13 +32,13 @@ public class RuleTestEnum extends QueryAllEnum
     
     protected static final Collection<RuleTestEnum> ALL_RULE_TESTS = new ArrayList<RuleTestEnum>(5);
     
-    public static Collection<RuleTestEnum> byTypeUris(final Set<URI> nextRuleTestUris)
+    public static Collection<RuleTestEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextRuleTestUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(RuleTestEnum._DEBUG)
             {
-                RuleTestEnum.log.debug("found an empty URI set for nextRuleTestUris=" + nextRuleTestUris);
+                RuleTestEnum.log.debug("found an empty URI set for nextRuleTestUris=" + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -46,13 +46,17 @@ public class RuleTestEnum extends QueryAllEnum
         
         final List<RuleTestEnum> results = new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
         
-        for(final RuleTestEnum nextRuleTestEnum : RuleTestEnum.ALL_RULE_TESTS)
+        for(final RuleTestEnum nextEnum : RuleTestEnum.ALL_RULE_TESTS)
         {
-            boolean matching = (nextRuleTestEnum.getTypeURIs().size() == nextRuleTestUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            //boolean matching = (nextRuleTestEnum.getTypeURIs().size() == nextRuleTestUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextRuleTestEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextRuleTestUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(RuleTestEnum._DEBUG)
                     {
@@ -67,17 +71,17 @@ public class RuleTestEnum extends QueryAllEnum
             {
                 if(RuleTestEnum._DEBUG)
                 {
-                    RuleTestEnum.log.debug("found an matching URI set for nextRuleTestUris=" + nextRuleTestUris);
+                    RuleTestEnum.log.debug("found an matching URI set for nextRuleTestUris=" + nextTypeUris);
                 }
                 
-                results.add(nextRuleTestEnum);
+                results.add(nextEnum);
             }
         }
         
         if(RuleTestEnum._DEBUG)
         {
             RuleTestEnum.log.debug("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
-                    + nextRuleTestUris);
+                    + nextTypeUris);
         }
         
         return results;

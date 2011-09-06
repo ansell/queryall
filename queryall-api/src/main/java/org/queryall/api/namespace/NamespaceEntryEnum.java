@@ -32,14 +32,14 @@ public class NamespaceEntryEnum extends QueryAllEnum
     
     protected static final Collection<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new ArrayList<NamespaceEntryEnum>(5);
     
-    public static Collection<NamespaceEntryEnum> byTypeUris(final Set<URI> nextNamespaceEntryUris)
+    public static Collection<NamespaceEntryEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextNamespaceEntryUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(NamespaceEntryEnum._DEBUG)
             {
                 NamespaceEntryEnum.log.debug("found an empty URI set for nextNamespaceEntryUris="
-                        + nextNamespaceEntryUris);
+                        + nextTypeUris);
             }
             return Collections.emptyList();
         }
@@ -47,13 +47,17 @@ public class NamespaceEntryEnum extends QueryAllEnum
         final List<NamespaceEntryEnum> results =
                 new ArrayList<NamespaceEntryEnum>(NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES.size());
         
-        for(final NamespaceEntryEnum nextNamespaceEntryEnum : NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES)
+        for(final NamespaceEntryEnum nextEnum : NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES)
         {
-            boolean matching = (nextNamespaceEntryEnum.getTypeURIs().size() == nextNamespaceEntryUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // boolean matching = (nextNamespaceEntryEnum.getTypeURIs().size() == nextNamespaceEntryUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextNamespaceEntryEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextNamespaceEntryUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(NamespaceEntryEnum._DEBUG)
                     {
@@ -69,16 +73,16 @@ public class NamespaceEntryEnum extends QueryAllEnum
                 if(NamespaceEntryEnum._DEBUG)
                 {
                     NamespaceEntryEnum.log.debug("found an matching URI set for nextNamespaceEntryUris="
-                            + nextNamespaceEntryUris);
+                            + nextTypeUris);
                 }
-                results.add(nextNamespaceEntryEnum);
+                results.add(nextEnum);
             }
         }
         
         if(NamespaceEntryEnum._DEBUG)
         {
             NamespaceEntryEnum.log.debug("returning results.size()=" + results.size() + " for nextNamespaceEntryUris="
-                    + nextNamespaceEntryUris);
+                    + nextTypeUris);
         }
         
         return results;

@@ -32,26 +32,30 @@ public class ProjectEnum extends QueryAllEnum
     
     protected static final Collection<ProjectEnum> ALL_PROJECTS = new ArrayList<ProjectEnum>(5);
     
-    public static Collection<ProjectEnum> byTypeUris(final Set<URI> nextProjectUris)
+    public static Collection<ProjectEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextProjectUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(ProjectEnum._DEBUG)
             {
-                ProjectEnum.log.debug("found an empty URI set for nextProjectUris=" + nextProjectUris);
+                ProjectEnum.log.debug("found an empty URI set for nextProjectUris=" + nextTypeUris);
             }
             return Collections.emptySet();
         }
         
         final Set<ProjectEnum> results = new HashSet<ProjectEnum>();
         
-        for(final ProjectEnum nextProjectEnum : ProjectEnum.ALL_PROJECTS)
+        for(final ProjectEnum nextEnum : ProjectEnum.ALL_PROJECTS)
         {
-            boolean matching = (nextProjectEnum.getTypeURIs().size() == nextProjectUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // boolean matching = (nextProjectEnum.getTypeURIs().size() == nextProjectUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextProjectEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextProjectUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(ProjectEnum._DEBUG)
                     {
@@ -66,16 +70,16 @@ public class ProjectEnum extends QueryAllEnum
             {
                 if(ProjectEnum._DEBUG)
                 {
-                    ProjectEnum.log.debug("found an matching URI set for nextProjectUris=" + nextProjectUris);
+                    ProjectEnum.log.debug("found an matching URI set for nextProjectUris=" + nextTypeUris);
                 }
-                results.add(nextProjectEnum);
+                results.add(nextEnum);
             }
         }
         
         if(ProjectEnum._DEBUG)
         {
             ProjectEnum.log.debug("returning results.size()=" + results.size() + " for nextProjectUris="
-                    + nextProjectUris);
+                    + nextTypeUris);
         }
         
         return results;

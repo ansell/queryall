@@ -58,17 +58,14 @@ public abstract class AbstractServiceLoader<K, S>
                 
                 final S oldService = this.add(service);
                 
-                if(oldService != null)
+                if(AbstractServiceLoader._DEBUG)
                 {
-                    if(AbstractServiceLoader._DEBUG)
+                    if(oldService != null)
                     {
                         AbstractServiceLoader.log.debug("New service {} replaces existing service {}",
                                 service.getClass(), oldService.getClass());
                     }
-                }
-                
-                if(AbstractServiceLoader._DEBUG)
-                {
+                    
                     AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
                 }
             }

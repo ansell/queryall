@@ -39,9 +39,6 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     Collection<URI> getNamespacesToHandle();
     
-    // TODO: extract this into a new interface called RdfXmlOutputQueryType
-    String getOutputRdfXmlString();
-    
     Collection<String> getPublicIdentifierTags();
     
     String getQueryUriTemplateString();
@@ -75,9 +72,6 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     void setIsPageable(boolean isPageable);
     
     void setNamespaceMatchMethod(URI namespaceMatchMethod);
-    
-    // TODO: extract this into a new interface called RdfXmlOutputQueryType
-    void setOutputRdfXmlString(String outputRdfXmlString);
     
     void setQueryUriTemplateString(String queryUriTemplateString);
     

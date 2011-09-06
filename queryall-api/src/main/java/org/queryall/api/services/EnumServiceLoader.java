@@ -41,11 +41,11 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     @Override
     public Collection<QueryAllEnum> getAll()
     {
-        for(final String nextKey : this.services.keySet())
+        if(EnumServiceLoader._DEBUG)
         {
-            if(EnumServiceLoader._DEBUG)
+            for(final String nextKey : this.services.keySet())
             {
-                EnumServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+                    EnumServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
             }
         }
         

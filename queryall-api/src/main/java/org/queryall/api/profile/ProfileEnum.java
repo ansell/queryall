@@ -32,13 +32,13 @@ public class ProfileEnum extends QueryAllEnum
     
     protected static final Collection<ProfileEnum> ALL_PROFILES = new ArrayList<ProfileEnum>(5);
     
-    public static Collection<ProfileEnum> byTypeUris(final Set<URI> nextProfileUris)
+    public static Collection<ProfileEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextProfileUris.size() == 0)
+        if(nextTypeUris.size() == 0)
         {
             if(ProfileEnum._DEBUG)
             {
-                ProfileEnum.log.debug("found an empty URI set for nextProfileUris=" + nextProfileUris);
+                ProfileEnum.log.debug("found an empty URI set for nextProfileUris=" + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -46,13 +46,17 @@ public class ProfileEnum extends QueryAllEnum
         
         final List<ProfileEnum> results = new ArrayList<ProfileEnum>(ProfileEnum.ALL_PROFILES.size());
         
-        for(final ProfileEnum nextProfileEnum : ProfileEnum.ALL_PROFILES)
+        for(final ProfileEnum nextEnum : ProfileEnum.ALL_PROFILES)
         {
-            boolean matching = (nextProfileEnum.getTypeURIs().size() == nextProfileUris.size());
+            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // This is not likely to be practical or useful, so it is not implemented
+            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // boolean matching = (nextProfileEnum.getTypeURIs().size() == nextProfileUris.size());
+            boolean matching = true;
             
-            for(final URI nextURI : nextProfileEnum.getTypeURIs())
+            for(final URI nextURI : nextTypeUris)
             {
-                if(!nextProfileUris.contains(nextURI))
+                if(!nextEnum.getTypeURIs().contains(nextURI))
                 {
                     if(ProfileEnum._DEBUG)
                     {
@@ -67,17 +71,17 @@ public class ProfileEnum extends QueryAllEnum
             {
                 if(ProfileEnum._DEBUG)
                 {
-                    ProfileEnum.log.debug("found an matching URI set for nextProfileUris=" + nextProfileUris);
+                    ProfileEnum.log.debug("found an matching URI set for nextProfileUris=" + nextTypeUris);
                 }
                 
-                results.add(nextProfileEnum);
+                results.add(nextEnum);
             }
         }
         
         if(ProfileEnum._DEBUG)
         {
             ProfileEnum.log.debug("returning results.size()=" + results.size() + " for nextProfileUris="
-                    + nextProfileUris);
+                    + nextTypeUris);
         }
         
         return results;
