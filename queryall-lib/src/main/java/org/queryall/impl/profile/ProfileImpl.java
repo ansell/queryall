@@ -39,12 +39,12 @@ public class ProfileImpl implements Profile, Comparable<Profile>
     
     static
     {
-        PROFILE_IMPL_TYPES.add(ProfileSchema.getProfileTypeUri());
+        ProfileImpl.PROFILE_IMPL_TYPES.add(ProfileSchema.getProfileTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return PROFILE_IMPL_TYPES;
+        return ProfileImpl.PROFILE_IMPL_TYPES;
     }
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();

@@ -1,9 +1,10 @@
-<http://example.org/ns:abc> a <http://purl.org/queryall/ns:Namespace> ;
+<http://example.org/ns:abc> a <http://purl.org/queryall/ns:Namespace> , <http://purl.org/queryall/ns:ValidatingNamespace> , <http://purl.org/queryall/ns:RegexValidatingNamespace> ;
 	<http://purl.org/queryall/ns:authority> <http://example.org/> ;
 	<http://purl.org/queryall/ns:uriTemplate> "${authority}${namespace}${separator}${identifier}" ;
 	<http://purl.org/queryall/ns:separator> ":" ;
 	<http://purl.org/queryall/ns:preferredPrefix> "abc" ;
 	<http://purl.org/queryall/ns:convertToPreferred> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/ns:validationPossible> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
 	<http://purl.org/queryall/ns:identifierRegex> "[zyx][qrs][tuv]" ;
 	<http://purl.org/queryall/ns:description> "ABC Example Database" .
 

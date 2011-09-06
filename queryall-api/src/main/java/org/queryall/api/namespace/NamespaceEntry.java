@@ -18,8 +18,6 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
     
     String getDescription();
     
-    String getIdentifierRegex();
-    
     String getPreferredPrefix();
     
     String getSeparator();
@@ -33,8 +31,6 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
     void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
     
     void setDescription(String description);
-    
-    void setIdentifierRegex(String identifierRegex);
     
     void setPreferredPrefix(String preferredPrefix);
     

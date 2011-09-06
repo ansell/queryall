@@ -287,6 +287,15 @@ public class QueryBundle
         this.originalProvider = originalProvider;
     }
     
+    /**
+     * @param staticRdfXmlString
+     *            the staticRdfXmlString to set
+     */
+    public void setOutputString(final String staticRdfXmlString)
+    {
+        this.staticRdfXmlString = staticRdfXmlString;
+    }
+    
     public void setProvider(final Provider originalProvider)
     {
         this.setOriginalProvider(originalProvider);
@@ -332,15 +341,6 @@ public class QueryBundle
     public void setRelevantProfiles(final Collection<Profile> relevantProfiles)
     {
         this.relevantProfiles = relevantProfiles;
-    }
-    
-    /**
-     * @param staticRdfXmlString
-     *            the staticRdfXmlString to set
-     */
-    public void setOutputString(final String staticRdfXmlString)
-    {
-        this.staticRdfXmlString = staticRdfXmlString;
     }
     
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)

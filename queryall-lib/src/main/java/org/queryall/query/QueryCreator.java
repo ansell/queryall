@@ -94,8 +94,9 @@ public class QueryCreator
      * @param includedProfiles
      * @return
      */
-    public static String createStaticRdfXmlString(final QueryType originalQueryType, final OutputQueryType includedQueryType,
-            final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
+    public static String createStaticRdfXmlString(final QueryType originalQueryType,
+            final OutputQueryType includedQueryType, final Provider nextProvider,
+            final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final QueryAllConfiguration localSettings)
     {
@@ -137,7 +138,7 @@ public class QueryCreator
             {
                 QueryCreator.log.trace("tag pattern " + ((Settings)localSettings).getTagPattern().toString()
                         + " does not match template string");
-                QueryCreator.log.trace("templateString="+templateString);
+                QueryCreator.log.trace("templateString=" + templateString);
                 QueryCreator.log.trace("returning templateString unchanged");
             }
             
@@ -412,8 +413,8 @@ public class QueryCreator
         String inputXmlEncoded_privateuppercase_normalisedQueryUri = normalisedQueryUri;
         
         replacedString =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters, replacedString,
-                        new ArrayList<String>());
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
+                        replacedString, new ArrayList<String>());
         
         normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
@@ -1015,7 +1016,8 @@ public class QueryCreator
             
             if(QueryCreator._TRACE)
             {
-                QueryCreator.log.trace("QueryCreator.doReplacementsOnString: returning replacedString=" + replacedString);
+                QueryCreator.log.trace("QueryCreator.doReplacementsOnString: returning replacedString="
+                        + replacedString);
             }
         }
         
@@ -1096,7 +1098,8 @@ public class QueryCreator
                 StringUtils.percentEncode(localSettings.getStringProperty("separator", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils.percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils.percentEncode(realHostName));
-        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING, StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING,
+                StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME,
                 StringUtils.xmlEncodeString(localSettings.getStringProperty("hostName", "")));
@@ -1106,7 +1109,8 @@ public class QueryCreator
                 StringUtils.xmlEncodeString(localSettings.getSeparator()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils.xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils.xmlEncodeString(realHostName));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING, StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING,
+                StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
         
         attributeList
                 .put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
@@ -1128,8 +1132,7 @@ public class QueryCreator
         {
             final long end = System.currentTimeMillis();
             
-            QueryCreator.log.debug(String.format("%s: timing=%10d",
-                    "QueryCreator.getAttributeListFor", (end - start)));
+            QueryCreator.log.debug(String.format("%s: timing=%10d", "QueryCreator.getAttributeListFor", (end - start)));
             
         }
         
@@ -1144,12 +1147,13 @@ public class QueryCreator
      * @return
      */
     public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
-            final Map<String, String> queryParameters, final String templateString, final List<String> specialInstructions)
+            final Map<String, String> queryParameters, final String templateString,
+            final List<String> specialInstructions)
     {
         if(QueryCreator._TRACE)
         {
-            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryParameters=" + queryParameters
-                    + " templateString=" + templateString);
+            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryParameters="
+                    + queryParameters + " templateString=" + templateString);
         }
         
         final long start = System.currentTimeMillis();
@@ -1189,8 +1193,7 @@ public class QueryCreator
                 final String xmlEncodedPlusUrlEncodedReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.plusPercentEncode(inputReplaceString));
                 
-                final String xmlEncodedPlusUrlEncodedMatchString =
-                        "${xmlEncoded_plusUrlEncoded_" + nextMatchTag + "}";
+                final String xmlEncodedPlusUrlEncodedMatchString = "${xmlEncoded_plusUrlEncoded_" + nextMatchTag + "}";
                 
                 final String xmlEncodedNTriplesReplaceString =
                         StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString));
@@ -1370,7 +1373,7 @@ public class QueryCreator
             } // end for(String nextMatch : allMatches.get(nextMatchTag)
         } // end for(String nextMatchTag : allMatches.keySet())
         
-        String queryString = queryParameters.get(Constants.QUERY);
+        final String queryString = queryParameters.get(Constants.QUERY);
         
         // lastly put in the actual query string if they want us to do that
         replacedString = replacedString.replace(Constants.TEMPLATE_QUERY_STRING, queryString);
@@ -1494,8 +1497,7 @@ public class QueryCreator
      * @param tags
      * @return
      */
-    public static String replaceTags(String inputString, final Map<String, String> tags,
-            Pattern nextTagPattern)
+    public static String replaceTags(String inputString, final Map<String, String> tags, final Pattern nextTagPattern)
     {
         final Matcher m = nextTagPattern.matcher(inputString);
         boolean result = m.find();

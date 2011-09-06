@@ -64,10 +64,9 @@ public final class QueryTypeUtils
             {
                 if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log
-                            .trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
-                                    + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
-                                    + queryParameters);
+                    QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
+                            + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
+                            + queryParameters);
                 }
                 if(nextQuery.isUsedWithProfileList(profileList, recogniseImplicitQueryInclusions,
                         includeNonProfileMatchedQueries))
@@ -82,10 +81,9 @@ public final class QueryTypeUtils
                 }
                 else if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log
-                            .trace("getQueryTypesMatchingQueryString: profileList not suitable for"
-                                    + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
-                                    + queryParameters);
+                    QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: profileList not suitable for"
+                            + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
+                            + queryParameters);
                 }
             }
         }

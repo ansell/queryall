@@ -59,8 +59,6 @@ public class QueryTypeSchema
     
     private static URI queryStandardUriTemplateString;
     
-    private static URI queryOutputRdfXmlString;
-    
     private static URI queryTemplateTerm;
     
     private static URI queryParameterTemplateTerm;
@@ -100,7 +98,6 @@ public class QueryTypeSchema
         QueryTypeSchema.setQueryTemplateString(f.createURI(baseUri, "templateString"));
         QueryTypeSchema.setQueryQueryUriTemplateString(f.createURI(baseUri, "queryUriTemplateString"));
         QueryTypeSchema.setQueryStandardUriTemplateString(f.createURI(baseUri, "standardUriTemplateString"));
-        QueryTypeSchema.setQueryOutputRdfXmlString(f.createURI(baseUri, "outputRdfXmlString"));
         QueryTypeSchema.setQueryInRobotsTxt(f.createURI(baseUri, "inRobotsTxt"));
         QueryTypeSchema.setQueryIsPageable(f.createURI(baseUri, "isPageable"));
         QueryTypeSchema.setQueryNamespaceMatchAny(f.createURI(baseUri, "namespaceMatchAny"));
@@ -221,14 +218,6 @@ public class QueryTypeSchema
     public static URI getQueryNamespaceToHandle()
     {
         return QueryTypeSchema.queryNamespaceToHandle;
-    }
-    
-    /**
-     * @return the queryOutputRdfXmlString
-     */
-    public static URI getQueryOutputRdfXmlString()
-    {
-        return QueryTypeSchema.queryOutputRdfXmlString;
     }
     
     /**
@@ -439,12 +428,6 @@ public class QueryTypeSchema
             con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."),
                     contextKeyUri);
             
-            con.add(QueryTypeSchema.getQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
             // If everything went as planned, we can commit the result
             con.commit();
             
@@ -583,15 +566,6 @@ public class QueryTypeSchema
     public static void setQueryNamespaceToHandle(final URI queryNamespaceToHandle)
     {
         QueryTypeSchema.queryNamespaceToHandle = queryNamespaceToHandle;
-    }
-    
-    /**
-     * @param queryOutputRdfXmlString
-     *            the queryOutputRdfXmlString to set
-     */
-    public static void setQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
-    {
-        QueryTypeSchema.queryOutputRdfXmlString = queryOutputRdfXmlString;
     }
     
     /**

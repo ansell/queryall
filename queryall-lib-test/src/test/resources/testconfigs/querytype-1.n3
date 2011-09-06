@@ -1,4 +1,4 @@
-<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:RegexInputQuery> ;
+<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:RegexInputQuery> , <http://purl.org/queryall/query:SparqlProcessorQuery> , <http://purl.org/queryall/query:RdfXmlOutputQuery> ;
     <http://purl.org/queryall/query:isDummyQueryType> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
     <http://purl.org/queryall/query:isPageable> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
 	<http://purl.org/dc/elements/1.1/title> "Test 1 query type" ;

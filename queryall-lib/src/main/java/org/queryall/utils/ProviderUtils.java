@@ -261,7 +261,9 @@ public final class ProviderUtils
                     {
                         ProviderUtils.log
                                 .debug("getProvidersForQueryNamespaceSpecific: profileList suitable for nextNamespaceSpecificProvider.getKey()="
-                                        + nextNamespaceSpecificProvider.getKey() + " queryParameters=" + queryParameters);
+                                        + nextNamespaceSpecificProvider.getKey()
+                                        + " queryParameters="
+                                        + queryParameters);
                     }
                     
                     results.add(nextNamespaceSpecificProvider);

@@ -26,6 +26,7 @@ import org.queryall.api.querytype.RdfXmlOutputQueryType;
 import org.queryall.api.querytype.RdfXmlOutputQueryTypeSchema;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.querytype.RegexInputQueryTypeSchema;
+import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.query.ProvenanceRecord;
@@ -138,7 +139,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
         QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
         QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
         QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri());
-        
+        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri());
     }
     
     public QueryTypeImpl()
@@ -235,7 +236,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             {
                 this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryOutputRdfXmlString()))
+            else if(nextStatement.getPredicate().equals(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString()))
             {
                 this.setOutputString(nextStatement.getObject().stringValue());
             }
@@ -271,6 +272,12 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     }
     
     @Override
+    public void addLinkedQueryType(final URI semanticallyLinkedCustomQuery)
+    {
+        this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
+    }
+    
+    @Override
     public void addNamespaceInputTag(final String namespaceInputTag)
     {
         this.namespaceInputTags.add(namespaceInputTag);
@@ -291,12 +298,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     public void addPublicIdentifierTag(final String publicIdentifierTag)
     {
         this.publicIdentifierTags.add(publicIdentifierTag);
-    }
-    
-    @Override
-    public void addLinkedQueryType(final URI semanticallyLinkedCustomQuery)
-    {
-        this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
     }
     
     @Override
@@ -410,6 +411,12 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     }
     
     @Override
+    public Collection<URI> getLinkedQueryTypes()
+    {
+        return this.semanticallyLinkedCustomQueries;
+    }
+    
+    @Override
     public Collection<String> getNamespaceInputTags()
     {
         return this.namespaceInputTags;
@@ -449,12 +456,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     public String getQueryUriTemplateString()
     {
         return this.queryUriTemplateString;
-    }
-    
-    @Override
-    public Collection<URI> getLinkedQueryTypes()
-    {
-        return this.semanticallyLinkedCustomQueries;
     }
     
     @Override
@@ -676,7 +677,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     {
         if(nextQueryParameters.containsKey(Constants.QUERY))
         {
-            return StringUtils.matchesForRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryParameters.get(Constants.QUERY));
+            return StringUtils.matchesForRegexOnString(this.getInputRegexPattern(), this.inputRegex,
+                    nextQueryParameters.get(Constants.QUERY));
         }
         else
         {
@@ -689,13 +691,14 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     {
         if(nextQueryParameters.containsKey(Constants.QUERY))
         {
-            return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryParameters.get(Constants.QUERY));
+            return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
+                    nextQueryParameters.get(Constants.QUERY));
         }
         else
         {
             throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
         }
-            
+        
     }
     
     @Override
@@ -945,28 +948,23 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             // create some resources and literals to make statements out of
             final URI queryInstanceUri = this.getKey();
             
-            /***
-             * title handleAllNamespaces isNamespaceSpecific namespaceMatchMethod includeDefaults
-             * inputRegex templateString queryUriTemplateString standardUriTemplateString
-             * outputRdfXmlString inRobotsTxt profileIncludeExcludeOrder
-             ***/
-            
             final Literal titleLiteral = f.createLiteral(this.title);
             final Literal handleAllNamespacesLiteral = f.createLiteral(this.handleAllNamespaces);
             final Literal isNamespaceSpecificLiteral = f.createLiteral(this.isNamespaceSpecific);
             final URI namespaceMatchMethodLiteral = this.namespaceMatchMethod;
             final Literal includeDefaultsLiteral = f.createLiteral(this.includeDefaults);
-            final Literal inputRegexLiteral = f.createLiteral(this.inputRegex);
-            
             final Literal templateStringLiteral = f.createLiteral(this.templateString);
             final Literal queryUriTemplateStringLiteral = f.createLiteral(this.queryUriTemplateString);
             final Literal standardUriTemplateStringLiteral = f.createLiteral(this.standardUriTemplateString);
-            final Literal outputRdfXmlStringLiteral = f.createLiteral(this.outputRdfXmlString);
             
             final Literal inRobotsTxtLiteral = f.createLiteral(this.inRobotsTxt);
             final Literal isPageableLiteral = f.createLiteral(this.isPageable);
             final Literal isDummyQueryTypeLiteral = f.createLiteral(this.isDummyQueryType);
             final URI profileIncludeExcludeOrderLiteral = this.profileIncludeExcludeOrder;
+            
+            final Literal outputRdfXmlStringLiteral = f.createLiteral(this.outputRdfXmlString);
+
+            final Literal inputRegexLiteral = f.createLiteral(this.inputRegex);
             
             URI curationStatusLiteral = null;
             
@@ -1000,13 +998,11 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
                     keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
-            con.add(queryInstanceUri, RegexInputQueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral,
                     keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryStandardUriTemplateString(),
                     standardUriTemplateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryOutputRdfXmlString(), outputRdfXmlStringLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, keyToUse);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
@@ -1014,6 +1010,9 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             con.add(queryInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
                     profileIncludeExcludeOrderLiteral, keyToUse);
             
+            con.add(queryInstanceUri, RegexInputQueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
+            con.add(queryInstanceUri, RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), outputRdfXmlStringLiteral, keyToUse);
+
             // log.info("after single URIs created");
             
             if(this.namespacesToHandle != null)

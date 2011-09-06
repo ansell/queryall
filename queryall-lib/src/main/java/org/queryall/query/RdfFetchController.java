@@ -415,8 +415,8 @@ public class RdfFetchController
                     for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
                     {
                         final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider, this.queryParameters,
-                                        "", this.realHostName, this.pageOffset, localSettings);
+                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,
+                                        this.queryParameters, "", this.realHostName, this.pageOffset, localSettings);
                         
                         // then also create the statically defined rdf/xml string to go with this
                         // query based on the current attributes, we assume that both queries have
@@ -430,15 +430,20 @@ public class RdfFetchController
                         if(nextCustomIncludeType instanceof OutputQueryType)
                         {
                             nextStaticRdfXmlString +=
-                                    QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextCustomIncludeType,
-                                            nextProvider, attributeList, this.sortedIncludedProfiles,
-                                            localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                            localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                    QueryCreator.createStaticRdfXmlString(nextQueryType,
+                                            (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
+                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
+                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
                                             localSettings);
                         }
                         else
                         {
-                            log.warn("Attempted to include a query type that was not parsed as an output query type key="+nextCustomIncludeType.getKey()+" types="+nextCustomIncludeType.getElementTypes());
+                            RdfFetchController.log
+                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
+                                            + nextCustomIncludeType.getKey()
+                                            + " types="
+                                            + nextCustomIncludeType.getElementTypes());
                         }
                     }
                 }
@@ -542,15 +547,20 @@ public class RdfFetchController
                         if(nextCustomIncludeType instanceof OutputQueryType)
                         {
                             nextStaticRdfXmlString +=
-                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextCustomIncludeType,
-                                        nextProvider, attributeList, this.sortedIncludedProfiles,
-                                        localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                        localSettings);
+                                    QueryCreator.createStaticRdfXmlString(nextQueryType,
+                                            (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
+                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
+                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                            localSettings);
                         }
                         else
                         {
-                            log.warn("Attempted to include a query type that was not parsed as an output query type key="+nextCustomIncludeType.getKey()+" types="+nextCustomIncludeType.getElementTypes());
+                            RdfFetchController.log
+                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
+                                            + nextCustomIncludeType.getKey()
+                                            + " types="
+                                            + nextCustomIncludeType.getElementTypes());
                         }
                         
                     }

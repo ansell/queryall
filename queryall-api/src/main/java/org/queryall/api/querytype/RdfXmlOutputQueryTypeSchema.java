@@ -8,6 +8,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -31,6 +32,7 @@ public class RdfXmlOutputQueryTypeSchema
     private static final boolean _INFO = RdfXmlOutputQueryTypeSchema.log.isInfoEnabled();
     
     private static URI rdfXmlOutputQueryTypeUri;
+    private static URI queryOutputRdfXmlString;
     
     static
     {
@@ -39,6 +41,24 @@ public class RdfXmlOutputQueryTypeSchema
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
         RdfXmlOutputQueryTypeSchema.setRdfXmlOutputQueryTypeUri(f.createURI(baseUri, "RdfXmlOutputQuery"));
+        RdfXmlOutputQueryTypeSchema.setQueryOutputRdfXmlString(f.createURI(baseUri, "outputRdfXmlString"));
+    }
+    
+    /**
+     * @return the queryOutputRdfXmlString
+     */
+    public static URI getQueryOutputRdfXmlString()
+    {
+        return RdfXmlOutputQueryTypeSchema.queryOutputRdfXmlString;
+    }
+    
+    /**
+     * @param queryOutputRdfXmlString
+     *            the queryOutputRdfXmlString to set
+     */
+    public static void setQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
+    {
+        RdfXmlOutputQueryTypeSchema.queryOutputRdfXmlString = queryOutputRdfXmlString;
     }
     
 
@@ -55,7 +75,7 @@ public class RdfXmlOutputQueryTypeSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-//        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
@@ -63,6 +83,13 @@ public class RdfXmlOutputQueryTypeSchema
             con.setAutoCommit(false);
             
             con.add(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.DOMAIN, SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(),
+                    contextKeyUri);
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -32,6 +32,7 @@ public class SparqlProcessorQueryTypeSchema
     
     private static URI sparqlProcessorQueryTypeUri;
     
+    
     static
     {
         final ValueFactory f = Constants.valueFactory;

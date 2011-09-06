@@ -3,6 +3,7 @@ package org.queryall.impl.namespace;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -16,6 +17,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntrySchema;
+import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
+import org.queryall.api.namespace.RegexValidatingNamespaceEntrySchema;
+import org.queryall.api.namespace.ValidatingNamespaceEntrySchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -27,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NamespaceEntryImpl implements NamespaceEntry
+public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamespaceEntry
 {
     private static final Logger log = LoggerFactory.getLogger(NamespaceEntryImpl.class);
     private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();
@@ -66,13 +70,18 @@ public class NamespaceEntryImpl implements NamespaceEntry
     // converted to the preferred prefix
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of
     // the alternative prefixes
+    // TODO: implement me!
     private boolean convertQueriesToPreferredPrefix = true;
     
     private String title;
+    private Pattern identifierRegexPattern = null;
+    private boolean validationPossible = false;
     
     static
     {
         NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(NamespaceEntrySchema.getNamespaceTypeUri());
+        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri());
+        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri());
     }
     
     public NamespaceEntryImpl()
@@ -133,7 +142,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
             {
                 this.setDescription(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(NamespaceEntrySchema.getNamespaceIdentifierRegex()))
+            else if(nextStatement.getPredicate().equals(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex()))
             {
                 this.setIdentifierRegex(nextStatement.getObject().stringValue());
             }
@@ -150,6 +159,10 @@ public class NamespaceEntryImpl implements NamespaceEntry
             {
                 this.setConvertQueriesToPreferredPrefix(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
+            else if(nextStatement.getPredicate().equals(ValidatingNamespaceEntrySchema.getValidationPossibleUri()))
+            {
+                this.setValidationPossible(true);
+            }
             else
             {
                 this.addUnrecognisedStatement(nextStatement);
@@ -164,6 +177,18 @@ public class NamespaceEntryImpl implements NamespaceEntry
         }
     }
     
+    @Override
+    public void setValidationPossible(boolean validationPossible)
+    {
+        this.validationPossible = validationPossible;
+    }
+
+    @Override
+    public boolean getValidationPossible()
+    {
+        return this.validationPossible;
+    }
+
     @Override
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
@@ -315,6 +340,7 @@ public class NamespaceEntryImpl implements NamespaceEntry
     public void setIdentifierRegex(final String identifierRegex)
     {
         this.identifierRegex = identifierRegex;
+        this.identifierRegexPattern = Pattern.compile(identifierRegex);
     }
     
     /**
@@ -431,6 +457,9 @@ public class NamespaceEntryImpl implements NamespaceEntry
             final Literal convertQueriesToPreferredPrefixLiteral =
                     f.createLiteral(this.getConvertQueriesToPreferredPrefix());
             
+            final Literal validationPossibleLiteral =
+                    f.createLiteral(this.getValidationPossible());
+
             final Literal uriTemplateLiteral = f.createLiteral(this.getUriTemplate());
             final Literal separatorLiteral = f.createLiteral(this.getSeparator());
             
@@ -452,11 +481,15 @@ public class NamespaceEntryImpl implements NamespaceEntry
                     keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(),
                     convertQueriesToPreferredPrefixLiteral, keyToUse);
-            con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceIdentifierRegex(), identifierRegexLiteral,
-                    keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceSeparator(), separatorLiteral, keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceUriTemplate(), uriTemplateLiteral, keyToUse);
             con.add(namespaceInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+
+            con.add(namespaceInstanceUri, ValidatingNamespaceEntrySchema.getValidationPossibleUri(),
+                    validationPossibleLiteral, keyToUse);
+            con.add(namespaceInstanceUri, RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), identifierRegexLiteral,
+                    keyToUse);
+            
             if(modelVersion == 1)
             {
                 con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceDescription(), descriptionLiteral,
@@ -522,6 +555,27 @@ public class NamespaceEntryImpl implements NamespaceEntry
         sb.append("description=" + this.getDescription() + "\n");
         
         return sb.toString();
+    }
+    
+    @Override
+    public boolean validateIdentifier(final String identifier)
+    {
+        // if we can't validate this namespace, assume that all identifiers are valid
+        if(!this.validationPossible)
+        {
+            return true;
+        }
+        // if we don't have a regex but we can validate this namespace, assume the identifier is invalid
+        else if(this.identifierRegexPattern == null)
+        {
+            log.warn("Validation was possible, but no regular expression was found for the namespace key="+this.getKey().stringValue()+" identifier="+identifier);
+            
+            return false;
+        }
+        else
+        {
+            return StringUtils.matchesRegexOnString(this.identifierRegexPattern, this.getIdentifierRegex(), identifier);
+        }
     }
     
 }

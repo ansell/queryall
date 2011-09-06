@@ -33,7 +33,6 @@ public class NamespaceEntrySchema
     
     private static URI namespaceTypeUri;
     private static URI namespaceAuthority;
-    private static URI namespaceIdentifierRegex;
     private static URI oldNamespaceTitle;
     private static URI namespacePreferredPrefix;
     private static URI namespaceAlternativePrefix;
@@ -50,8 +49,6 @@ public class NamespaceEntrySchema
                 "Namespace"));
         NamespaceEntrySchema.setNamespaceAuthority(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "authority"));
-        NamespaceEntrySchema.setNamespaceIdentifierRegex(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
-                "identifierRegex"));
         NamespaceEntrySchema.setNamespacePreferredPrefix(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "preferredPrefix"));
         NamespaceEntrySchema.setNamespaceAlternativePrefix(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
@@ -97,14 +94,6 @@ public class NamespaceEntrySchema
     public static URI getNamespaceDescription()
     {
         return NamespaceEntrySchema.namespaceDescription;
-    }
-    
-    /**
-     * @return the namespaceIdentifierRegex
-     */
-    public static URI getNamespaceIdentifierRegex()
-    {
-        return NamespaceEntrySchema.namespaceIdentifierRegex;
     }
     
     /**
@@ -190,15 +179,6 @@ public class NamespaceEntrySchema
             con.add(NamespaceEntrySchema.getNamespaceAuthority(),
                     RDFS.LABEL,
                     f.createLiteral("This namespace is controlled by this authority, although the authority may represent a community."),
-                    contextKeyUri);
-            
-            con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.DOMAIN,
-                    NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(NamespaceEntrySchema.getNamespaceIdentifierRegex(),
-                    RDFS.LABEL,
-                    f.createLiteral("This namespace contains valid identifiers that match this regex. It may be used to identify before querying, whether this namespace and identifier combination is actually relevant."),
                     contextKeyUri);
             
             con.add(NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY,
@@ -297,15 +277,6 @@ public class NamespaceEntrySchema
     public static void setNamespaceDescription(final URI namespaceDescription)
     {
         NamespaceEntrySchema.namespaceDescription = namespaceDescription;
-    }
-    
-    /**
-     * @param namespaceIdentifierRegex
-     *            the namespaceIdentifierRegex to set
-     */
-    public static void setNamespaceIdentifierRegex(final URI namespaceIdentifierRegex)
-    {
-        NamespaceEntrySchema.namespaceIdentifierRegex = namespaceIdentifierRegex;
     }
     
     /**

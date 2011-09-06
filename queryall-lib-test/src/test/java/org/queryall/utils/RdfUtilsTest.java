@@ -33,6 +33,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
+import org.queryall.api.namespace.ValidatingNamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
@@ -457,14 +459,27 @@ public class RdfUtilsTest
                 Assert.assertTrue("Convert queries to preferred prefix setting was not parsed correctly",
                         nextNamespaceEntry.getConvertQueriesToPreferredPrefix());
                 
-                Assert.assertEquals("Identifier regex was not parsed correctly", "[zyx][qrs][tuv]",
-                        nextNamespaceEntry.getIdentifierRegex());
-                
                 Assert.assertEquals("Description was not parsed correctly", "ABC Example Database",
                         nextNamespaceEntry.getDescription());
                 
                 Assert.assertEquals("QueryAllNamespace was not implemented correctly for this object",
                         QueryAllNamespaces.NAMESPACEENTRY, nextNamespaceEntry.getDefaultNamespace());
+
+                Assert.assertTrue("Was not a validating namespace", nextNamespaceEntry instanceof ValidatingNamespaceEntry);
+                
+                ValidatingNamespaceEntry nextValidatingNamespaceEntry = (ValidatingNamespaceEntry)nextNamespaceEntry;
+                
+                Assert.assertTrue("Was not a regex validating namespace", nextNamespaceEntry instanceof ValidatingNamespaceEntry);
+                
+                Assert.assertTrue("Validation possible field was not parsed correctly", nextValidatingNamespaceEntry.getValidationPossible());
+                
+                RegexValidatingNamespaceEntry nextRegexValidatingNamespaceEntry = (RegexValidatingNamespaceEntry)nextValidatingNamespaceEntry;
+                
+                Assert.assertEquals("Identifier Regex was not parsed correctly", "[zyx][qrs][tuv]", nextRegexValidatingNamespaceEntry.getIdentifierRegex());
+                
+                // once we have found that the regex was parsed correctly through the RegexValidatingNamespaceEntry interface, go back through ValidatingNamespaceEntry and validate a test identifier
+                Assert.assertTrue("Validation failed", nextValidatingNamespaceEntry.validateIdentifier("zrv"));
+
             }
         }
         catch(final RDFParseException ex)
