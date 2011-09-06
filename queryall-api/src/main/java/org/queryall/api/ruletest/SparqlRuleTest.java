@@ -1,6 +1,6 @@
 package org.queryall.api.ruletest;
 
-public interface RdfRuleTest
+public interface SparqlRuleTest
 {
     
 }

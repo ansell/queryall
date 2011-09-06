@@ -7,15 +7,27 @@ import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.namespace.NamespaceEntrySchema;
+import org.queryall.api.namespace.RegexValidatingNamespaceEntrySchema;
+import org.queryall.api.namespace.ValidatingNamespaceEntrySchema;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.querytype.RdfXmlOutputQueryTypeSchema;
+import org.queryall.api.querytype.RegexInputQueryTypeSchema;
+import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.OwlNormalisationRuleSchema;
+import org.queryall.api.rdfrule.RdfsNormalisationRuleSchema;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
+import org.queryall.api.ruletest.SparqlRuleTestSchema;
+import org.queryall.api.ruletest.RegexRuleTestSchema;
 import org.queryall.api.ruletest.RuleTestSchema;
+import org.queryall.api.ruletest.StringRuleTestSchema;
 //import org.queryall.query.QueryBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,12 +82,25 @@ public class Schema
         {
             if(!HttpProviderSchema.schemaToRdf(myRepository, contextUri, configVersion))
             {
-                Schema.log.error("HttpProviderImpl schema was not placed correctly in the rdf store");
+                Schema.log.error("HttpProvider schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating HttpProviderImpl schema RDF with type=" + ex.getClass().getName(),
+            Schema.log.error("Problem generating HttpProvider schema RDF with type=" + ex.getClass().getName(),
+                    ex);
+        }
+        
+        try
+        {
+            if(!SparqlProviderSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("SparqlProvider schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating SparqlProvider schema RDF with type=" + ex.getClass().getName(),
                     ex);
         }
         
@@ -101,6 +126,81 @@ public class Schema
         catch(final Exception ex)
         {
             Schema.log.error("Problem generating QueryType schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!RegexInputQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("RegexInputQueryType schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating RegexInputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!RdfXmlOutputQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("RdfXmlOutputQueryType schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating RdfXmlOutputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!SparqlProcessorQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("SparqlProcessorQueryType schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating SparqlProcessorQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("NormalisationRule schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating NormalisationRule schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!OwlNormalisationRuleSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("OwlNormalisationRule schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating OwlNormalisationRule schema RDF with type="
+                    + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!RdfsNormalisationRuleSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("RdfsNormalisationRule schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating RdfsNormalisationRule schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
@@ -156,6 +256,30 @@ public class Schema
         
         try
         {
+            if(!SparqlRuleTestSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("SparqlRuleTest schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating SparqlRuleTest schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!StringRuleTestSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("StringRuleTest schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating StringRuleTest schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+
+        try
+        {
             if(!NamespaceEntrySchema.schemaToRdf(myRepository, contextUri, configVersion))
             {
                 Schema.log.error("NamespaceEntry schema was not placed correctly in the rdf store");
@@ -164,6 +288,30 @@ public class Schema
         catch(final Exception ex)
         {
             Schema.log.error("Problem generating NamespaceEntry schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!ValidatingNamespaceEntrySchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("ValidatingNamespaceEntry schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating ValidatingNamespaceEntry schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!RegexValidatingNamespaceEntrySchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("RegexValidatingNamespaceEntry schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating RegexValidatingNamespaceEntry schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try

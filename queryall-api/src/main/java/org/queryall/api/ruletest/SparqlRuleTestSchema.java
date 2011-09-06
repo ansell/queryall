@@ -20,15 +20,15 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfRuleTestSchema
+public class SparqlRuleTestSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfRuleTestSchema.class);
+    private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfRuleTestSchema.log.isTraceEnabled();
+    private static final boolean _TRACE = SparqlRuleTestSchema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfRuleTestSchema.log.isDebugEnabled();
+    private static final boolean _DEBUG = SparqlRuleTestSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfRuleTestSchema.log.isInfoEnabled();
+    private static final boolean _INFO = SparqlRuleTestSchema.log.isInfoEnabled();
     
     private static URI rdfRuletestSparqlSelectPattern;
     
@@ -42,9 +42,9 @@ public class RdfRuleTestSchema
         
         final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
         
-        RdfRuleTestSchema.setRdfRuleTestTypeUri(f.createURI(baseUri, "RdfRuleTest"));
-        RdfRuleTestSchema.setRdfRuletestSparqlSelectPattern(f.createURI(baseUri, "sparqlSelectPattern"));
-        RdfRuleTestSchema.setRdfRuletestExpectedResultVariables(f.createURI(baseUri, "expectedResultVariables"));
+        SparqlRuleTestSchema.setRdfRuleTestTypeUri(f.createURI(baseUri, "SparqlRuleTest"));
+        SparqlRuleTestSchema.setRdfRuletestSparqlSelectPattern(f.createURI(baseUri, "sparqlSelectPattern"));
+        SparqlRuleTestSchema.setRdfRuletestExpectedResultVariables(f.createURI(baseUri, "expectedResultVariables"));
     }
     
     /**
@@ -52,7 +52,7 @@ public class RdfRuleTestSchema
      */
     public static URI getRdfRuletestExpectedResultVariables()
     {
-        return RdfRuleTestSchema.rdfRuletestExpectedResultVariables;
+        return SparqlRuleTestSchema.rdfRuletestExpectedResultVariables;
     }
     
     /**
@@ -60,7 +60,7 @@ public class RdfRuleTestSchema
      */
     public static URI getRdfRuletestSparqlSelectPattern()
     {
-        return RdfRuleTestSchema.rdfRuletestSparqlSelectPattern;
+        return SparqlRuleTestSchema.rdfRuletestSparqlSelectPattern;
     }
     
     /**
@@ -68,7 +68,7 @@ public class RdfRuleTestSchema
      */
     public static URI getRdfRuleTestTypeUri()
     {
-        return RdfRuleTestSchema.rdfRuletestTypeUri;
+        return SparqlRuleTestSchema.rdfRuletestTypeUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
@@ -83,24 +83,24 @@ public class RdfRuleTestSchema
             final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(RdfRuleTestSchema.getRdfRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuleTestTypeUri(), RDFS.LABEL,
+            con.add(SparqlRuleTestSchema.getRdfRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getRdfRuleTestTypeUri(), RDFS.LABEL,
                     f.createLiteral("A test case for RDF triples, based on a SPARQL select pattern."), contextKeyUri);
             
-            con.add(RdfRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+            con.add(SparqlRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDFS.DOMAIN,
-                    RdfRuleTestSchema.getRdfRuleTestTypeUri(), contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDFS.LABEL, f.createLiteral("."),
+            con.add(SparqlRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDFS.DOMAIN,
+                    SparqlRuleTestSchema.getRdfRuleTestTypeUri(), contextKeyUri);
+            con.add(SparqlRuleTestSchema.getRdfRuletestSparqlSelectPattern(), RDFS.LABEL, f.createLiteral("."),
                     contextKeyUri);
             
-            con.add(RdfRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+            con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.DOMAIN,
-                    RdfRuleTestSchema.getRdfRuleTestTypeUri(), contextKeyUri);
-            con.add(RdfRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.LABEL, f.createLiteral("."),
+            con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.DOMAIN,
+                    SparqlRuleTestSchema.getRdfRuleTestTypeUri(), contextKeyUri);
+            con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.LABEL, f.createLiteral("."),
                     contextKeyUri);
             
             // If everything went as planned, we can commit the result
@@ -116,7 +116,7 @@ public class RdfRuleTestSchema
                 con.rollback();
             }
             
-            RdfRuleTestSchema.log.error("RepositoryException: " + re.getMessage());
+            SparqlRuleTestSchema.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -135,7 +135,7 @@ public class RdfRuleTestSchema
      */
     public static void setRdfRuletestExpectedResultVariables(final URI ruletestOutputTestString)
     {
-        RdfRuleTestSchema.rdfRuletestExpectedResultVariables = ruletestOutputTestString;
+        SparqlRuleTestSchema.rdfRuletestExpectedResultVariables = ruletestOutputTestString;
     }
     
     /**
@@ -144,7 +144,7 @@ public class RdfRuleTestSchema
      */
     public static void setRdfRuletestSparqlSelectPattern(final URI ruletestInputTestString)
     {
-        RdfRuleTestSchema.rdfRuletestSparqlSelectPattern = ruletestInputTestString;
+        SparqlRuleTestSchema.rdfRuletestSparqlSelectPattern = ruletestInputTestString;
     }
     
     /**
@@ -153,7 +153,7 @@ public class RdfRuleTestSchema
      */
     public static void setRdfRuleTestTypeUri(final URI ruletestTypeUri)
     {
-        RdfRuleTestSchema.rdfRuletestTypeUri = ruletestTypeUri;
+        SparqlRuleTestSchema.rdfRuletestTypeUri = ruletestTypeUri;
     }
     
 }
