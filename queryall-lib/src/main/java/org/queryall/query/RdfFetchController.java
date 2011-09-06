@@ -13,6 +13,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
+import org.queryall.api.provider.HttpSparqlProvider;
 import org.queryall.api.provider.NoCommunicationProvider;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
@@ -294,7 +295,7 @@ public class RdfFetchController
             
             boolean addToFetchQueue = false;
             
-            if(nextBundle.getOriginalProvider().getEndpointMethod()
+            if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider && nextBundle.getOriginalProvider().getEndpointMethod()
                     .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
                 nextThread =
@@ -316,7 +317,7 @@ public class RdfFetchController
                                     + nextEndpoint + " provider.getKey()=" + nextBundle.getOriginalProvider().getKey());
                 }
             }
-            else if(nextBundle.getOriginalProvider().getEndpointMethod()
+            else if(nextBundle.getOriginalProvider() instanceof HttpProvider && nextBundle.getOriginalProvider().getEndpointMethod()
                     .equals(HttpProviderSchema.getProviderHttpGetUrl()))
             {
                 nextThread =
@@ -335,7 +336,7 @@ public class RdfFetchController
                                     + nextEndpoint + " provider.getKey()=" + nextBundle.getOriginalProvider().getKey());
                 }
             }
-            else if(nextBundle.getOriginalProvider().getEndpointMethod()
+            else if(nextBundle.getOriginalProvider() instanceof NoCommunicationProvider && nextBundle.getOriginalProvider().getEndpointMethod()
                     .equals(ProviderSchema.getProviderNoCommunication()))
             {
                 if(RdfFetchController._TRACE)

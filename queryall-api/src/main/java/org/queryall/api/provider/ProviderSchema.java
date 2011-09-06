@@ -46,10 +46,6 @@ public class ProviderSchema
     
     private static URI providerResolutionMethod;
     
-    private static URI providerSparqlRequiresGraphURI;
-    
-    private static URI providerSparqlGraphUri;
-    
     private static URI providerIncludedInQuery;
     
     private static URI providerIsDefaultSource;
@@ -171,22 +167,6 @@ public class ProviderSchema
     }
     
     /**
-     * @return the providerGraphUri
-     */
-    public static URI getProviderSparqlGraphUri()
-    {
-        return ProviderSchema.providerSparqlGraphUri;
-    }
-    
-    /**
-     * @return the providerRequiresSparqlGraphURI
-     */
-    public static URI getProviderSparqlRequiresGraphURI()
-    {
-        return ProviderSchema.providerSparqlRequiresGraphURI;
-    }
-    
-    /**
      * @return the providerTitle
      */
     public static URI getProviderTitle()
@@ -277,22 +257,6 @@ public class ProviderSchema
                     RDFS.LABEL,
                     f.createLiteral("The provider may either use no-communication, or one of the supported resolution methods, for example, HTTP GET or HTTP POST."),
                     contextUri);
-            
-            con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(), RDFS.DOMAIN,
-                    ProviderSchema.getProviderTypeUri(), contextUri);
-            con.add(ProviderSchema.getProviderSparqlRequiresGraphURI(),
-                    RDFS.LABEL,
-                    f.createLiteral("This SPARQL provider declares that it needs to have a specific sparql graph URI configured before it can operate."),
-                    contextUri);
-            
-            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.DOMAIN, ProviderSchema.getProviderTypeUri(),
-                    contextUri);
-            con.add(ProviderSchema.getProviderSparqlGraphUri(), RDFS.LABEL,
-                    f.createLiteral("This SPARQL provider has this SPARQL graph URI as its target."), contextUri);
             
             con.add(ProviderSchema.getProviderIsDefaultSource(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(ProviderSchema.getProviderIsDefaultSource(), RDFS.RANGE, RDFS.LITERAL, contextUri);
@@ -435,24 +399,6 @@ public class ProviderSchema
     public static void setProviderResolutionStrategy(final URI providerResolutionStrategy)
     {
         ProviderSchema.providerResolutionStrategy = providerResolutionStrategy;
-    }
-    
-    /**
-     * @param providerGraphUri
-     *            the providerGraphUri to set
-     */
-    public static void setProviderSparqlGraphUri(final URI providerGraphUri)
-    {
-        ProviderSchema.providerSparqlGraphUri = providerGraphUri;
-    }
-    
-    /**
-     * @param providerRequiresSparqlGraphURI
-     *            the providerRequiresSparqlGraphURI to set
-     */
-    public static void setProviderSparqlRequiresGraphURI(final URI providerRequiresSparqlGraphURI)
-    {
-        ProviderSchema.providerSparqlRequiresGraphURI = providerRequiresSparqlGraphURI;
     }
     
     /**
