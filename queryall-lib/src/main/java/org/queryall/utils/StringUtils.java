@@ -30,9 +30,7 @@ import org.slf4j.LoggerFactory;
 public class StringUtils
 {
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
-    @SuppressWarnings("unused")
     private static final boolean _TRACE = StringUtils.log.isTraceEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _DEBUG = StringUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = StringUtils.log.isInfoEnabled();
@@ -134,9 +132,9 @@ public class StringUtils
         {
             for(int i = 0; i < matcher.groupCount(); i++)
             {
-                if(RdfUtils._TRACE)
+                if(StringUtils._TRACE)
                 {
-                    RdfUtils.log.trace("RdfUtils.matchesForRegexOnString: Found the text \"" + matcher.group(i + 1)
+                    StringUtils.log.trace("RdfUtils.matchesForRegexOnString: Found the text \"" + matcher.group(i + 1)
                             + "\" starting at " + "index=" + matcher.start(i + 1) + " and ending at index="
                             + matcher.end(i + 1) + ".\n");
                 }
@@ -152,15 +150,15 @@ public class StringUtils
         
         if(!found)
         {
-            if(RdfUtils._DEBUG)
+            if(StringUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.matchesForRegexOnString: could not find a match for queryString="
+                StringUtils.log.debug("RdfUtils.matchesForRegexOnString: could not find a match for queryString="
                         + nextQueryString);
             }
         }
-        else if(RdfUtils._DEBUG)
+        else if(StringUtils._DEBUG)
         {
-            RdfUtils.log.debug("RdfUtils.matchesForRegexOnString: found " + results.size()
+            StringUtils.log.debug("RdfUtils.matchesForRegexOnString: found " + results.size()
                     + " matches for queryString=" + nextQueryString);
         }
         
@@ -194,22 +192,22 @@ public class StringUtils
                 hash = "0" + hash;
             }
             
-            if(RdfUtils._DEBUG)
+            if(StringUtils._DEBUG)
             {
-                RdfUtils.log.debug("RdfUtils.md5: inputString=" + inputString + " hash=" + hash);
+                StringUtils.log.debug("RdfUtils.md5: inputString=" + inputString + " hash=" + hash);
             }
             
             return hash;
         }
         catch(final NoSuchAlgorithmException nsae)
         {
-            RdfUtils.log.error("RdfUtils.md5: could not find md5 algorithm");
+            StringUtils.log.error("RdfUtils.md5: could not find md5 algorithm");
             
             throw new RuntimeException(nsae);
         }
         catch(final java.io.UnsupportedEncodingException uee)
         {
-            RdfUtils.log.error("RdfUtils.md5: invalid JRE, does not support UTF-8");
+            StringUtils.log.error("RdfUtils.md5: invalid JRE, does not support UTF-8");
             
             throw new RuntimeException(uee);
         }
@@ -315,9 +313,9 @@ public class StringUtils
                 }
             }
             
-            if(RdfUtils._TRACE)
+            if(StringUtils._TRACE)
             {
-                RdfUtils.log.trace("RdfUtils.replaceAll: replacing from " + (bufferPosition + 1) + " to "
+                StringUtils.log.trace("RdfUtils.replaceAll: replacing from " + (bufferPosition + 1) + " to "
                         + (bufferPosition + 1 + offset) + " with (" + replacement + ")");
             }
             
@@ -352,9 +350,9 @@ public class StringUtils
             
             for(int i = 0; i < matcher.groupCount(); i++)
             {
-                if(RdfUtils._TRACE)
+                if(StringUtils._TRACE)
                 {
-                    RdfUtils.log.trace("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
+                    StringUtils.log.trace("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
                             + " Found the text \"" + matcher.group(i + 1) + "\" starting at " + "index="
                             + matcher.start(i + 1) + " and ending at index=" + matcher.end(i + 1) + ".");
                 }
@@ -362,9 +360,9 @@ public class StringUtils
                 // buffer.replace(matcher.start(i+1), matcher.end(i+1), replaceString);
                 buffer.replace(matcher.start(i + 1), matcher.end(i + 1), matcher.group(i + 1));
                 
-                if(RdfUtils._TRACE)
+                if(StringUtils._TRACE)
                 {
-                    RdfUtils.log.trace("Buffer after replacement=" + buffer.toString());
+                    StringUtils.log.trace("Buffer after replacement=" + buffer.toString());
                 }
                 // results.add(matcher.group(i+1));
                 

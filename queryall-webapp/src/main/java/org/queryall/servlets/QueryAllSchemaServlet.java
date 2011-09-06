@@ -14,10 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
+import org.queryall.api.utils.Schema;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
@@ -172,7 +175,9 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         try
         {
-            final Repository myRepository = RdfUtils.getSchemas();
+            final Repository myRepository = new SailRepository(new MemoryStore());
+            
+            Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
             
             final java.io.StringWriter stBuff = new java.io.StringWriter();
             

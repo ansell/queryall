@@ -32,6 +32,7 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.api.utils.Schema;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1219,7 +1220,9 @@ public class Settings implements QueryAllConfiguration
             try
             {
                 // start off with the schemas in the repository
-                tempConfigurationRepository = RdfUtils.getSchemas();
+                tempConfigurationRepository = new SailRepository(new MemoryStore());
+                
+                Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
                 
                 final Collection<String> queryConfigLocationsList = this.getStringProperties("queryConfigLocations");
                 
@@ -1325,7 +1328,9 @@ public class Settings implements QueryAllConfiguration
                 // Try again with the backup configuration list...
                 try
                 {
-                    tempConfigurationRepository = RdfUtils.getSchemas();
+                    tempConfigurationRepository = new SailRepository(new MemoryStore());
+                    
+                    Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
                     
                     for(final String nextLocation : this.getStringProperties("backupQueryConfigLocations"))
                     {
