@@ -516,9 +516,9 @@ public class GeneralServlet extends HttpServlet
             {
                 GeneralServlet.log.info("GeneralServlet: query complete requesterIpAddress=" + requesterIpAddress
                         + " queryString=" + queryString + " pageOffset=" + pageOffset + " totalTime=" + nextTotalTime);
-                GeneralServlet.log.info("GeneralServlet: finished returning information to client requesterIpAddress="
-                        + requesterIpAddress + " queryString=" + queryString + " pageOffset=" + pageOffset
-                        + " totalTime=" + nextTotalTime);
+//                GeneralServlet.log.info("GeneralServlet: finished returning information to client requesterIpAddress="
+//                        + requesterIpAddress + " queryString=" + queryString + " pageOffset=" + pageOffset
+//                        + " totalTime=" + nextTotalTime);
             }
             
             // Housekeeping
