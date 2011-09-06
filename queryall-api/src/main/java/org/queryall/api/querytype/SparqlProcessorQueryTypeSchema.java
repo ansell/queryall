@@ -32,7 +32,6 @@ public class SparqlProcessorQueryTypeSchema
     
     private static URI sparqlProcessorQueryTypeUri;
     
-    
     static
     {
         final ValueFactory f = Constants.valueFactory;
@@ -42,7 +41,6 @@ public class SparqlProcessorQueryTypeSchema
         SparqlProcessorQueryTypeSchema.setSparqlProcessorQueryTypeUri(f.createURI(baseUri, "SparqlProcessorQuery"));
     }
     
-
     /**
      * @return the queryTypeUri
      */
@@ -56,7 +54,7 @@ public class SparqlProcessorQueryTypeSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-//        final ValueFactory f = Constants.valueFactory;
+        // final ValueFactory f = Constants.valueFactory;
         
         try
         {

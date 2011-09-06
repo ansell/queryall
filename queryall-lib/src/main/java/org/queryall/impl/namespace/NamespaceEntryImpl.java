@@ -80,8 +80,10 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     static
     {
         NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(NamespaceEntrySchema.getNamespaceTypeUri());
-        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri());
-        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri());
+        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(ValidatingNamespaceEntrySchema
+                .getValidatingNamespaceTypeUri());
+        NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES.add(RegexValidatingNamespaceEntrySchema
+                .getRegexValidatingNamespaceTypeUri());
     }
     
     public NamespaceEntryImpl()
@@ -142,7 +144,8 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             {
                 this.setDescription(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex()))
+            else if(nextStatement.getPredicate().equals(
+                    RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex()))
             {
                 this.setIdentifierRegex(nextStatement.getObject().stringValue());
             }
@@ -177,18 +180,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
         }
     }
     
-    @Override
-    public void setValidationPossible(boolean validationPossible)
-    {
-        this.validationPossible = validationPossible;
-    }
-
-    @Override
-    public boolean getValidationPossible()
-    {
-        return this.validationPossible;
-    }
-
     @Override
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
@@ -307,6 +298,12 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     }
     
     @Override
+    public boolean getValidationPossible()
+    {
+        return this.validationPossible;
+    }
+    
+    @Override
     public void setAlternativePrefixes(final Collection<String> alternativePrefixes)
     {
         this.alternativePrefixes = alternativePrefixes;
@@ -384,6 +381,12 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     }
     
     @Override
+    public void setValidationPossible(final boolean validationPossible)
+    {
+        this.validationPossible = validationPossible;
+    }
+    
+    @Override
     public String toHtml()
     {
         return "";
@@ -457,9 +460,8 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             final Literal convertQueriesToPreferredPrefixLiteral =
                     f.createLiteral(this.getConvertQueriesToPreferredPrefix());
             
-            final Literal validationPossibleLiteral =
-                    f.createLiteral(this.getValidationPossible());
-
+            final Literal validationPossibleLiteral = f.createLiteral(this.getValidationPossible());
+            
             final Literal uriTemplateLiteral = f.createLiteral(this.getUriTemplate());
             final Literal separatorLiteral = f.createLiteral(this.getSeparator());
             
@@ -484,11 +486,11 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceSeparator(), separatorLiteral, keyToUse);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceUriTemplate(), uriTemplateLiteral, keyToUse);
             con.add(namespaceInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-
+            
             con.add(namespaceInstanceUri, ValidatingNamespaceEntrySchema.getValidationPossibleUri(),
                     validationPossibleLiteral, keyToUse);
-            con.add(namespaceInstanceUri, RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), identifierRegexLiteral,
-                    keyToUse);
+            con.add(namespaceInstanceUri, RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(),
+                    identifierRegexLiteral, keyToUse);
             
             if(modelVersion == 1)
             {
@@ -565,10 +567,13 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
         {
             return true;
         }
-        // if we don't have a regex but we can validate this namespace, assume the identifier is invalid
+        // if we don't have a regex but we can validate this namespace, assume the identifier is
+        // invalid
         else if(this.identifierRegexPattern == null)
         {
-            log.warn("Validation was possible, but no regular expression was found for the namespace key="+this.getKey().stringValue()+" identifier="+identifier);
+            NamespaceEntryImpl.log
+                    .warn("Validation was possible, but no regular expression was found for the namespace key="
+                            + this.getKey().stringValue() + " identifier=" + identifier);
             
             return false;
         }

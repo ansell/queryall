@@ -39,8 +39,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
         {
             if(NormalisationRuleEnum._DEBUG)
             {
-                NormalisationRuleEnum.log.debug("found an empty URI set for nextNormalisationRuleUris="
-                        + nextTypeUris);
+                NormalisationRuleEnum.log.debug("found an empty URI set for nextNormalisationRuleUris=" + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -51,10 +50,13 @@ public class NormalisationRuleEnum extends QueryAllEnum
         
         for(final NormalisationRuleEnum nextEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
         {
-            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // NOTE: This restriction would force developers to include implementations for every
+            // possible combination of functionalities
             // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
-           //    boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() == nextNormalisationRuleUris.size());
+            // The minimum restriction is that there is at least one URI, ie, the standard default
+            // URI for this type of object
+            // boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() ==
+            // nextNormalisationRuleUris.size());
             boolean matching = true;
             
             for(final URI nextURI : nextTypeUris)

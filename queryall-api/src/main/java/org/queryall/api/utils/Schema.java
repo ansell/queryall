@@ -24,11 +24,9 @@ import org.queryall.api.rdfrule.RdfsNormalisationRuleSchema;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
-import org.queryall.api.ruletest.SparqlRuleTestSchema;
-import org.queryall.api.ruletest.RegexRuleTestSchema;
 import org.queryall.api.ruletest.RuleTestSchema;
+import org.queryall.api.ruletest.SparqlRuleTestSchema;
 import org.queryall.api.ruletest.StringRuleTestSchema;
-//import org.queryall.query.QueryBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,17 +42,17 @@ public class Schema
     private static final boolean _DEBUG = Schema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = Schema.log.isInfoEnabled();
-
-    public static Repository getSchemas(Repository myRepository, int configVersion)
+    
+    public static Repository getSchemas(final Repository myRepository, final int configVersion)
     {
         return Schema.getSchemas(myRepository, null, configVersion);
     }
-
-    public static Repository getSchemas(Repository myRepository, final URI contextUri, int configVersion)
+    
+    public static Repository getSchemas(final Repository myRepository, final URI contextUri, final int configVersion)
     {
         // Repository myRepository = new SailRepository(new ForwardChainingRDFSInferencer(new
         // MemoryStore()));
-        //final Repository myRepository = new SailRepository(new MemoryStore());
+        // final Repository myRepository = new SailRepository(new MemoryStore());
         
         try
         {
@@ -87,8 +85,7 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating HttpProvider schema RDF with type=" + ex.getClass().getName(),
-                    ex);
+            Schema.log.error("Problem generating HttpProvider schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -100,8 +97,7 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating SparqlProvider schema RDF with type=" + ex.getClass().getName(),
-                    ex);
+            Schema.log.error("Problem generating SparqlProvider schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -137,7 +133,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating RegexInputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+            Schema.log.error("Problem generating RegexInputQueryType schema RDF with type=" + ex.getClass().getName(),
+                    ex);
         }
         
         try
@@ -149,7 +146,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating RdfXmlOutputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+            Schema.log.error(
+                    "Problem generating RdfXmlOutputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -161,7 +159,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating SparqlProcessorQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+            Schema.log.error("Problem generating SparqlProcessorQueryType schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
@@ -173,8 +172,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating NormalisationRule schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            Schema.log
+                    .error("Problem generating NormalisationRule schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -186,8 +185,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating OwlNormalisationRule schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            Schema.log.error("Problem generating OwlNormalisationRule schema RDF with type=" + ex.getClass().getName(),
+                    ex);
         }
         
         try
@@ -199,8 +198,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating RdfsNormalisationRule schema RDF with type="
-                    + ex.getClass().getName(), ex);
+            Schema.log.error(
+                    "Problem generating RdfsNormalisationRule schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -277,7 +276,7 @@ public class Schema
         {
             Schema.log.error("Problem generating StringRuleTest schema RDF with type=" + ex.getClass().getName(), ex);
         }
-
+        
         try
         {
             if(!NamespaceEntrySchema.schemaToRdf(myRepository, contextUri, configVersion))
@@ -299,7 +298,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating ValidatingNamespaceEntry schema RDF with type=" + ex.getClass().getName(), ex);
+            Schema.log.error("Problem generating ValidatingNamespaceEntry schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
@@ -311,7 +311,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating RegexValidatingNamespaceEntry schema RDF with type=" + ex.getClass().getName(), ex);
+            Schema.log.error("Problem generating RegexValidatingNamespaceEntry schema RDF with type="
+                    + ex.getClass().getName(), ex);
         }
         
         try
@@ -326,41 +327,44 @@ public class Schema
             Schema.log.error("Problem generating Profile schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
-//        try
-//        {
-//            if(!StatisticsEntry.schemaToRdf(myRepository, contextUri, configVersion))
-//            {
-//                Schema.log.error("Statistics schema was not placed correctly in the rdf store");
-//            }
-//        }
-//        catch(final Exception ex)
-//        {
-//            Schema.log.error("Problem generating Statistics schema RDF with type=" + ex.getClass().getName(), ex);
-//        }
-//        
-//        try
-//        {
-//            if(!ProvenanceRecord.schemaToRdf(myRepository, contextUri, configVersion))
-//            {
-//                Schema.log.error("Provenance schema was not placed correctly in the rdf store");
-//            }
-//        }
-//        catch(final Exception ex)
-//        {
-//            Schema.log.error("Problem generating Provenance schema RDF with type=" + ex.getClass().getName(), ex);
-//        }
-//        
-//        try
-//        {
-//            if(!QueryBundle.schemaToRdf(myRepository, contextUri, configVersion))
-//            {
-//                Schema.log.error("QueryBundle schema was not placed correctly in the rdf store");
-//            }
-//        }
-//        catch(final Exception ex)
-//        {
-//            Schema.log.error("Problem generating QueryBundle schema RDF with type=" + ex.getClass().getName(), ex);
-//        }
+        // try
+        // {
+        // if(!StatisticsEntry.schemaToRdf(myRepository, contextUri, configVersion))
+        // {
+        // Schema.log.error("Statistics schema was not placed correctly in the rdf store");
+        // }
+        // }
+        // catch(final Exception ex)
+        // {
+        // Schema.log.error("Problem generating Statistics schema RDF with type=" +
+        // ex.getClass().getName(), ex);
+        // }
+        //
+        // try
+        // {
+        // if(!ProvenanceRecord.schemaToRdf(myRepository, contextUri, configVersion))
+        // {
+        // Schema.log.error("Provenance schema was not placed correctly in the rdf store");
+        // }
+        // }
+        // catch(final Exception ex)
+        // {
+        // Schema.log.error("Problem generating Provenance schema RDF with type=" +
+        // ex.getClass().getName(), ex);
+        // }
+        //
+        // try
+        // {
+        // if(!QueryBundle.schemaToRdf(myRepository, contextUri, configVersion))
+        // {
+        // Schema.log.error("QueryBundle schema was not placed correctly in the rdf store");
+        // }
+        // }
+        // catch(final Exception ex)
+        // {
+        // Schema.log.error("Problem generating QueryBundle schema RDF with type=" +
+        // ex.getClass().getName(), ex);
+        // }
         
         return myRepository;
     }

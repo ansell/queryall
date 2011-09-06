@@ -315,7 +315,7 @@ public final class Constants
     public static final String TEXT_PLAIN = "text/plain";
     
     public static final String TEXT_X_NQUADS = "text/x-nquads";
-
+    
     public static final String QUERY = "queryString";
     
     public static final SimpleDateFormat ISO8601UTC()

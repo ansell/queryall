@@ -55,10 +55,13 @@ public class ProviderEnum extends QueryAllEnum
         
         for(final ProviderEnum nextEnum : ProviderEnum.ALL_PROVIDERS)
         {
-            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // NOTE: This restriction would force developers to include implementations for every
+            // possible combination of functionalities
             // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
-            // boolean matching = (nextProviderEnum.getTypeURIs().size() == nextProviderUris.size());
+            // The minimum restriction is that there is at least one URI, ie, the standard default
+            // URI for this type of object
+            // boolean matching = (nextProviderEnum.getTypeURIs().size() ==
+            // nextProviderUris.size());
             boolean matching = true;
             
             for(final URI nextURI : nextTypeUris)

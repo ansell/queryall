@@ -8,9 +8,9 @@ package org.queryall.api.namespace;
  */
 public interface ValidatingNamespaceEntry extends NamespaceEntry
 {
-    boolean validateIdentifier(String identifier);
-
-    void setValidationPossible(boolean b);
-
     boolean getValidationPossible();
+    
+    void setValidationPossible(boolean b);
+    
+    boolean validateIdentifier(String identifier);
 }

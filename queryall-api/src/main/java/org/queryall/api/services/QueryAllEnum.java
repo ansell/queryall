@@ -149,7 +149,7 @@ public class QueryAllEnum
     @Override
     public String toString()
     {
-        return this.name+" {" +this.typeURIs.toString()+"}";
+        return this.name + " {" + this.typeURIs.toString() + "}";
     }
     
 }

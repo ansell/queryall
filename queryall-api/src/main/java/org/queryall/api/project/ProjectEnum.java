@@ -47,9 +47,11 @@ public class ProjectEnum extends QueryAllEnum
         
         for(final ProjectEnum nextEnum : ProjectEnum.ALL_PROJECTS)
         {
-            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // NOTE: This restriction would force developers to include implementations for every
+            // possible combination of functionalities
             // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // The minimum restriction is that there is at least one URI, ie, the standard default
+            // URI for this type of object
             // boolean matching = (nextProjectEnum.getTypeURIs().size() == nextProjectUris.size());
             boolean matching = true;
             
@@ -78,8 +80,8 @@ public class ProjectEnum extends QueryAllEnum
         
         if(ProjectEnum._DEBUG)
         {
-            ProjectEnum.log.debug("returning results.size()=" + results.size() + " for nextProjectUris="
-                    + nextTypeUris);
+            ProjectEnum.log
+                    .debug("returning results.size()=" + results.size() + " for nextProjectUris=" + nextTypeUris);
         }
         
         return results;

@@ -38,10 +38,10 @@ public class RegexValidatingNamespaceEntrySchema
     {
         final ValueFactory f = Constants.valueFactory;
         
-        RegexValidatingNamespaceEntrySchema.setRegexValidatingNamespaceTypeUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
-                "RegexValidatingNamespace"));
-        RegexValidatingNamespaceEntrySchema.setNamespaceIdentifierRegex(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
-                "identifierRegex"));
+        RegexValidatingNamespaceEntrySchema.setRegexValidatingNamespaceTypeUri(f.createURI(
+                QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "RegexValidatingNamespace"));
+        RegexValidatingNamespaceEntrySchema.setNamespaceIdentifierRegex(f.createURI(
+                QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "identifierRegex"));
     }
     
     /**
@@ -51,7 +51,7 @@ public class RegexValidatingNamespaceEntrySchema
     {
         return RegexValidatingNamespaceEntrySchema.namespaceIdentifierRegex;
     }
-
+    
     /**
      * @return the regexValidatingNamespaceTypeUri
      */
@@ -72,10 +72,13 @@ public class RegexValidatingNamespaceEntrySchema
             final URI contextKeyUri = contextUri;
             con.setAutoCommit(false);
             
-            con.add(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS,
+                    contextKeyUri);
             
-            con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextKeyUri);
+            con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL,
+                    contextKeyUri);
             con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.DOMAIN,
                     RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), contextKeyUri);
             con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(),

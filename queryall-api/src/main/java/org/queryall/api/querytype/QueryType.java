@@ -13,13 +13,13 @@ import org.queryall.api.base.ProfilableInterface;
  */
 public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
 {
+    void addLinkedQueryType(URI semanticallyLinkedQueryTypes);
+    
     void addNamespaceInputTag(String namespaceInputTag);
     
     void addNamespaceToHandle(URI namespaceToHandle);
     
     void addPublicIdentifierTag(String publicIdentifierTag);
-    
-    void addLinkedQueryType(URI semanticallyLinkedQueryTypes);
     
     boolean getHandleAllNamespaces();
     
@@ -33,6 +33,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     boolean getIsPageable();
     
+    Collection<URI> getLinkedQueryTypes();
+    
     Collection<String> getNamespaceInputTags();
     
     URI getNamespaceMatchMethod();
@@ -42,8 +44,6 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     Collection<String> getPublicIdentifierTags();
     
     String getQueryUriTemplateString();
-    
-    Collection<URI> getLinkedQueryTypes();
     
     String getStandardUriTemplateString();
     

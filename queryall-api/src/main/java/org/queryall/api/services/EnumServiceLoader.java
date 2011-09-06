@@ -45,7 +45,7 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
         {
             for(final String nextKey : this.services.keySet())
             {
-                    EnumServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+                EnumServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
             }
         }
         

@@ -963,7 +963,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             final URI profileIncludeExcludeOrderLiteral = this.profileIncludeExcludeOrder;
             
             final Literal outputRdfXmlStringLiteral = f.createLiteral(this.outputRdfXmlString);
-
+            
             final Literal inputRegexLiteral = f.createLiteral(this.inputRegex);
             
             URI curationStatusLiteral = null;
@@ -1011,8 +1011,9 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
                     profileIncludeExcludeOrderLiteral, keyToUse);
             
             con.add(queryInstanceUri, RegexInputQueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
-            con.add(queryInstanceUri, RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), outputRdfXmlStringLiteral, keyToUse);
-
+            con.add(queryInstanceUri, RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(),
+                    outputRdfXmlStringLiteral, keyToUse);
+            
             // log.info("after single URIs created");
             
             if(this.namespacesToHandle != null)

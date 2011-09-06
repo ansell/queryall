@@ -329,7 +329,7 @@ public class GeneralServlet extends HttpServlet
         final int pageOffset = requestQueryOptions.getPageOffset();
         String acceptHeader = "";
         RDFFormat writerFormat = null;
-        Map<String, String> queryParameters = new HashMap<String, String>();
+        final Map<String, String> queryParameters = new HashMap<String, String>();
         queryParameters.put(Constants.QUERY, queryString);
         
         if(userAgentHeader == null)
@@ -516,9 +516,10 @@ public class GeneralServlet extends HttpServlet
             {
                 GeneralServlet.log.info("GeneralServlet: query complete requesterIpAddress=" + requesterIpAddress
                         + " queryString=" + queryString + " pageOffset=" + pageOffset + " totalTime=" + nextTotalTime);
-//                GeneralServlet.log.info("GeneralServlet: finished returning information to client requesterIpAddress="
-//                        + requesterIpAddress + " queryString=" + queryString + " pageOffset=" + pageOffset
-//                        + " totalTime=" + nextTotalTime);
+                // GeneralServlet.log.info("GeneralServlet: finished returning information to client requesterIpAddress="
+                // + requesterIpAddress + " queryString=" + queryString + " pageOffset=" +
+                // pageOffset
+                // + " totalTime=" + nextTotalTime);
             }
             
             // Housekeeping
@@ -856,8 +857,8 @@ public class GeneralServlet extends HttpServlet
                                         pageOffset, localSettings);
                         
                         String nextBackupString =
-                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType, new ProviderImpl(),
-                                        attributeList, includedProfiles,
+                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType,
+                                        new ProviderImpl(), attributeList, includedProfiles,
                                         localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                         localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
                                         localSettings)
@@ -870,18 +871,21 @@ public class GeneralServlet extends HttpServlet
                         try
                         {
                             myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
-                                    localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY), RDFFormat.RDFXML,
-                                    nextQueryType.getKey());
+                                    localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY),
+                                    RDFFormat.RDFXML, nextQueryType.getKey());
                         }
                         catch(final org.openrdf.rio.RDFParseException rdfpe)
                         {
-                            GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
+                            GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF "
+                                    + rdfpe.getMessage());
                             GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
                         }
                     }
                     else
                     {
-                        log.warn("Attempted to include a query type that was not parsed as an output query type key="+nextQueryType.getKey()+" types="+nextQueryType.getElementTypes());
+                        GeneralServlet.log
+                                .warn("Attempted to include a query type that was not parsed as an output query type key="
+                                        + nextQueryType.getKey() + " types=" + nextQueryType.getElementTypes());
                     }
                     
                 }

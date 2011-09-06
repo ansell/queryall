@@ -48,9 +48,11 @@ public class ProfileEnum extends QueryAllEnum
         
         for(final ProfileEnum nextEnum : ProfileEnum.ALL_PROFILES)
         {
-            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // NOTE: This restriction would force developers to include implementations for every
+            // possible combination of functionalities
             // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
+            // The minimum restriction is that there is at least one URI, ie, the standard default
+            // URI for this type of object
             // boolean matching = (nextProfileEnum.getTypeURIs().size() == nextProfileUris.size());
             boolean matching = true;
             
@@ -80,8 +82,8 @@ public class ProfileEnum extends QueryAllEnum
         
         if(ProfileEnum._DEBUG)
         {
-            ProfileEnum.log.debug("returning results.size()=" + results.size() + " for nextProfileUris="
-                    + nextTypeUris);
+            ProfileEnum.log
+                    .debug("returning results.size()=" + results.size() + " for nextProfileUris=" + nextTypeUris);
         }
         
         return results;

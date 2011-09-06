@@ -38,10 +38,18 @@ public class ValidatingNamespaceEntrySchema
     {
         final ValueFactory f = Constants.valueFactory;
         
-        ValidatingNamespaceEntrySchema.setValidatingNamespaceTypeUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
-                "ValidatingNamespace"));
-        ValidatingNamespaceEntrySchema.setValidationPossibleUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
-                "validationPossible"));
+        ValidatingNamespaceEntrySchema.setValidatingNamespaceTypeUri(f.createURI(
+                QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "ValidatingNamespace"));
+        ValidatingNamespaceEntrySchema.setValidationPossibleUri(f.createURI(
+                QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "validationPossible"));
+    }
+    
+    /**
+     * @return the validatingNamespaceTypeUri
+     */
+    public static URI getValidatingNamespaceTypeUri()
+    {
+        return ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri;
     }
     
     /**
@@ -50,14 +58,6 @@ public class ValidatingNamespaceEntrySchema
     public static URI getValidationPossibleUri()
     {
         return ValidatingNamespaceEntrySchema.namespaceValidationPossible;
-    }
-
-    /**
-     * @return the validatingNamespaceTypeUri
-     */
-    public static URI getValidatingNamespaceTypeUri()
-    {
-        return ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -74,7 +74,8 @@ public class ValidatingNamespaceEntrySchema
             
             con.add(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             
-            con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextKeyUri);
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.DOMAIN,
                     ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), contextKeyUri);
@@ -111,21 +112,21 @@ public class ValidatingNamespaceEntrySchema
     }
     
     /**
-     * @param namespaceValidationPossible
-     *            the namespaceValidationPossible to set
-     */
-    public static void setValidationPossibleUri(final URI namespaceIdentifierRegex)
-    {
-        ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
-    }
-    
-    /**
      * @param validatingNamespaceTypeUri
      *            the validatingNamespaceTypeUri to set
      */
     public static void setValidatingNamespaceTypeUri(final URI namespaceTypeUri)
     {
         ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri = namespaceTypeUri;
+    }
+    
+    /**
+     * @param namespaceValidationPossible
+     *            the namespaceValidationPossible to set
+     */
+    public static void setValidationPossibleUri(final URI namespaceIdentifierRegex)
+    {
+        ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
     }
     
 }

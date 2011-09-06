@@ -53,16 +53,6 @@ public class RdfXmlOutputQueryTypeSchema
     }
     
     /**
-     * @param queryOutputRdfXmlString
-     *            the queryOutputRdfXmlString to set
-     */
-    public static void setQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
-    {
-        RdfXmlOutputQueryTypeSchema.queryOutputRdfXmlString = queryOutputRdfXmlString;
-    }
-    
-
-    /**
      * @return the queryTypeUri
      */
     public static URI getRdfXmlOutputQueryTypeUri()
@@ -83,13 +73,14 @@ public class RdfXmlOutputQueryTypeSchema
             con.setAutoCommit(false);
             
             con.add(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-
-            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.DOMAIN, SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(),
-                    contextKeyUri);
-            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
             
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextKeyUri);
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.DOMAIN,
+                    SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), contextKeyUri);
+            con.add(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("."),
+                    contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -116,6 +107,15 @@ public class RdfXmlOutputQueryTypeSchema
         }
         
         return false;
+    }
+    
+    /**
+     * @param queryOutputRdfXmlString
+     *            the queryOutputRdfXmlString to set
+     */
+    public static void setQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
+    {
+        RdfXmlOutputQueryTypeSchema.queryOutputRdfXmlString = queryOutputRdfXmlString;
     }
     
     /**

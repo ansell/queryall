@@ -97,7 +97,8 @@ public class SparqlRuleTestSchema
             
             con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
-            con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.RANGE, RDFS.LITERAL,
+                    contextKeyUri);
             con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getRdfRuleTestTypeUri(), contextKeyUri);
             con.add(SparqlRuleTestSchema.getRdfRuletestExpectedResultVariables(), RDFS.LABEL, f.createLiteral("."),

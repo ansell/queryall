@@ -38,8 +38,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
         {
             if(NamespaceEntryEnum._DEBUG)
             {
-                NamespaceEntryEnum.log.debug("found an empty URI set for nextNamespaceEntryUris="
-                        + nextTypeUris);
+                NamespaceEntryEnum.log.debug("found an empty URI set for nextNamespaceEntryUris=" + nextTypeUris);
             }
             return Collections.emptyList();
         }
@@ -49,10 +48,13 @@ public class NamespaceEntryEnum extends QueryAllEnum
         
         for(final NamespaceEntryEnum nextEnum : NamespaceEntryEnum.ALL_NAMESPACE_ENTRIES)
         {
-            // NOTE: This restriction would force developers to include implementations for every possible combination of functionalities
+            // NOTE: This restriction would force developers to include implementations for every
+            // possible combination of functionalities
             // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default URI for this type of object
-            // boolean matching = (nextNamespaceEntryEnum.getTypeURIs().size() == nextNamespaceEntryUris.size());
+            // The minimum restriction is that there is at least one URI, ie, the standard default
+            // URI for this type of object
+            // boolean matching = (nextNamespaceEntryEnum.getTypeURIs().size() ==
+            // nextNamespaceEntryUris.size());
             boolean matching = true;
             
             for(final URI nextURI : nextTypeUris)
@@ -72,8 +74,8 @@ public class NamespaceEntryEnum extends QueryAllEnum
             {
                 if(NamespaceEntryEnum._DEBUG)
                 {
-                    NamespaceEntryEnum.log.debug("found an matching URI set for nextNamespaceEntryUris="
-                            + nextTypeUris);
+                    NamespaceEntryEnum.log
+                            .debug("found an matching URI set for nextNamespaceEntryUris=" + nextTypeUris);
                 }
                 results.add(nextEnum);
             }
