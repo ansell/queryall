@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -328,6 +329,8 @@ public class GeneralServlet extends HttpServlet
         final int pageOffset = requestQueryOptions.getPageOffset();
         String acceptHeader = "";
         RDFFormat writerFormat = null;
+        Map<String, String> queryParameters = new HashMap<String, String>();
+        queryParameters.put(Constants.QUERY, queryString);
         
         if(userAgentHeader == null)
         {
@@ -406,7 +409,7 @@ public class GeneralServlet extends HttpServlet
                         SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
         
         final RdfFetchController fetchController =
-                new RdfFetchController(localSettings, localBlacklistController, queryString, includedProfiles,
+                new RdfFetchController(localSettings, localBlacklistController, queryParameters, includedProfiles,
                         useDefaultProviders, realHostName, pageOffset);
         
         final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
@@ -460,7 +463,7 @@ public class GeneralServlet extends HttpServlet
                 
                 this.sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                this.doQueryUnknown(localSettings, realHostName, queryString, pageOffset, requestedContentType,
+                this.doQueryUnknown(localSettings, realHostName, queryParameters, pageOffset, requestedContentType,
                         includedProfiles, fetchController, debugStrings, myRepository);
             }
             else
@@ -806,7 +809,7 @@ public class GeneralServlet extends HttpServlet
      * @throws RepositoryException
      */
     private void doQueryUnknown(final QueryAllConfiguration localSettings, final String realHostName,
-            final String queryString, final int pageOffset, final String requestedContentType,
+            final Map<String, String> queryParameters, final int pageOffset, final String requestedContentType,
             final List<Profile> includedProfiles, final RdfFetchController fetchController,
             final Collection<String> debugStrings, final Repository myRepository) throws IOException,
         RepositoryException
@@ -848,7 +851,7 @@ public class GeneralServlet extends HttpServlet
                     if(nextQueryType instanceof OutputQueryType)
                     {
                         final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryString,
+                                QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryParameters,
                                         localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
                                         pageOffset, localSettings);
                         
@@ -867,7 +870,7 @@ public class GeneralServlet extends HttpServlet
                         try
                         {
                             myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
-                                    localSettings.getDefaultHostAddress() + queryString, RDFFormat.RDFXML,
+                                    localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY), RDFFormat.RDFXML,
                                     nextQueryType.getKey());
                         }
                         catch(final org.openrdf.rio.RDFParseException rdfpe)
@@ -887,7 +890,7 @@ public class GeneralServlet extends HttpServlet
             if(currentStaticStrings.size() == 0)
             {
                 GeneralServlet.log.error("Could not find anything at all to match at query level queryString="
-                        + queryString);
+                        + queryParameters.get(Constants.QUERY));
                 
                 if(requestedContentType.equals("application/rdf+xml") || requestedContentType.equals("text/html"))
                 {

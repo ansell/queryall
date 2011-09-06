@@ -964,7 +964,7 @@ public class RdfUtilsTest
                             .getNamespaceInputTags().contains("input_1"));
                     
                     Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1,
-                            nextQueryType.getSemanticallyLinkedQueryTypes().size());
+                            nextQueryType.getLinkedQueryTypes().size());
                     
                     Assert.assertTrue("Query type was not parsed into a RegexInputQueryType",
                             nextQueryType instanceof RegexInputQueryType);

@@ -19,7 +19,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     void addPublicIdentifierTag(String publicIdentifierTag);
     
-    void addSemanticallyLinkedQueryType(URI semanticallyLinkedQueryTypes);
+    void addLinkedQueryType(URI semanticallyLinkedQueryTypes);
     
     boolean getHandleAllNamespaces();
     
@@ -43,7 +43,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     String getQueryUriTemplateString();
     
-    Collection<URI> getSemanticallyLinkedQueryTypes();
+    Collection<URI> getLinkedQueryTypes();
     
     String getStandardUriTemplateString();
     
@@ -55,9 +55,9 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     boolean isInputVariablePublic(String inputVariableTag);
     
-    Map<String, List<String>> matchesForQueryString(String queryString);
+    Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
     
-    boolean matchesQueryString(String queryString);
+    boolean matchesQueryParameters(Map<String, String> queryString);
     
     void setHandleAllNamespaces(boolean handleAllNamespaces);
     

@@ -81,7 +81,7 @@ public class QueryCreator
                     + queryType.getKey().stringValue());
         }
         
-        return QueryCreator.doReplacementsOnString(queryString, queryType.getTemplateString(), queryType, null,
+        return QueryCreator.doReplacementsOnString(attributeList, queryType.getTemplateString(), queryType, null,
                 nextProvider.getNormalisationUris(), attributeList, includedProfiles,
                 recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }
@@ -114,12 +114,12 @@ public class QueryCreator
             return "";
         }
         
-        return QueryCreator.doReplacementsOnString(queryString, includedQueryType.getOutputString(),
+        return QueryCreator.doReplacementsOnString(attributeList, includedQueryType.getOutputString(),
                 originalQueryType, includedQueryType, nextProvider.getNormalisationUris(), attributeList,
                 includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }
     
-    public static String doReplacementsOnString(final String queryString, final String templateString,
+    public static String doReplacementsOnString(final Map<String, String> queryParameters, final String templateString,
             final QueryType originalQueryType, final QueryType includedQueryType,
             final Collection<URI> normalisationUrisNeeded, final Map<String, String> attributeList,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
@@ -127,7 +127,7 @@ public class QueryCreator
     {
         if(QueryCreator._TRACE)
         {
-            QueryCreator.log.trace("QueryCreator.doReplacementsOnString: queryString=" + queryString
+            QueryCreator.log.trace("QueryCreator.doReplacementsOnString: queryString=" + queryParameters
                     + " templateString=" + templateString + " normalisationUrisNeeded=" + normalisationUrisNeeded);
         }
         
@@ -412,102 +412,102 @@ public class QueryCreator
         String inputXmlEncoded_privateuppercase_normalisedQueryUri = normalisedQueryUri;
         
         replacedString =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString, replacedString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters, replacedString,
                         new ArrayList<String>());
         
         normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         normalisedStandardUri, new ArrayList<String>());
         
         inputUrlEncoded_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_normalisedStandardUri, inputUrlEncodeInstructions);
         
         inputXmlEncoded_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_normalisedStandardUri, inputXmlEncodeInstructions);
         
         normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         normalisedQueryUri, new ArrayList<String>());
         
         inputUrlEncoded_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_normalisedQueryUri, inputUrlEncodeInstructions);
         
         inputPlusUrlEncoded_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputPlusUrlEncoded_normalisedStandardUri, inputPlusUrlEncodeInstructions);
         
         inputPlusUrlEncoded_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputPlusUrlEncoded_normalisedQueryUri, inputPlusUrlEncodeInstructions);
         
         inputXmlEncoded_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_normalisedQueryUri, inputXmlEncodeInstructions);
         
         inputUrlEncoded_lowercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_lowercase_normalisedStandardUri, inputUrlEncodedlowercaseInstructions);
         inputUrlEncoded_lowercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_lowercase_normalisedQueryUri, inputUrlEncodedlowercaseInstructions);
         
         inputXmlEncoded_lowercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_lowercase_normalisedStandardUri, inputXmlEncodedlowercaseInstructions);
         inputXmlEncoded_lowercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_lowercase_normalisedQueryUri, inputXmlEncodedlowercaseInstructions);
         
         inputUrlEncoded_uppercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_uppercase_normalisedStandardUri, inputUrlEncodeduppercaseInstructions);
         inputUrlEncoded_uppercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_uppercase_normalisedQueryUri, inputUrlEncodeduppercaseInstructions);
         
         inputXmlEncoded_uppercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_uppercase_normalisedStandardUri, inputXmlEncodeduppercaseInstructions);
         inputXmlEncoded_uppercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_uppercase_normalisedQueryUri, inputXmlEncodeduppercaseInstructions);
         
         inputUrlEncoded_privatelowercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privatelowercase_normalisedStandardUri,
                         inputUrlEncodedprivatelowercaseInstructions);
         inputUrlEncoded_privatelowercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privatelowercase_normalisedQueryUri,
                         inputUrlEncodedprivatelowercaseInstructions);
         
         inputXmlEncoded_privatelowercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privatelowercase_normalisedStandardUri,
                         inputXmlEncodedprivatelowercaseInstructions);
         inputXmlEncoded_privatelowercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privatelowercase_normalisedQueryUri,
                         inputXmlEncodedprivatelowercaseInstructions);
         
         inputUrlEncoded_privateuppercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privateuppercase_normalisedStandardUri,
                         inputUrlEncodedprivateuppercaseInstructions);
         inputUrlEncoded_privateuppercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privateuppercase_normalisedQueryUri,
                         inputUrlEncodedprivateuppercaseInstructions);
         
         inputXmlEncoded_privateuppercase_normalisedStandardUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privateuppercase_normalisedStandardUri,
                         inputXmlEncodedprivateuppercaseInstructions);
         inputXmlEncoded_privateuppercase_normalisedQueryUri =
-                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryString,
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privateuppercase_normalisedQueryUri,
                         inputXmlEncodedprivateuppercaseInstructions);
         
@@ -1025,20 +1025,20 @@ public class QueryCreator
     /**
      * @param nextQueryType
      * @param nextProvider
-     * @param queryString
+     * @param queryParameters
      * @param nextEndpoint
      * @param realHostName
      * @param pageOffset
      * @return
      */
     public static Map<String, String> getAttributeListFor(final QueryType nextIncludedQueryType,
-            final Provider nextProvider, final String queryString, final String nextEndpoint,
+            final Provider nextProvider, final Map<String, String> queryParameters, final String nextEndpoint,
             final String realHostName, final int pageOffset, final QueryAllConfiguration localSettings)
     {
         if(QueryCreator._TRACE)
         {
             QueryCreator.log.trace("QueryCreator.getAttributeListFor: called with nextProvider="
-                    + nextProvider.toString() + " queryString=" + queryString + " nextEndpoint=" + nextEndpoint
+                    + nextProvider.toString() + " queryParameters=" + queryParameters + " nextEndpoint=" + nextEndpoint
                     + " realHostName=" + realHostName + " pageOffset=" + pageOffset);
         }
         
@@ -1057,7 +1057,7 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringProperty("separator", ":"));
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
-        attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryString);
+        attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryParameters.get(Constants.QUERY));
         
         // TODO: make this section extensible
         if(nextProvider instanceof SparqlProvider)
@@ -1096,7 +1096,7 @@ public class QueryCreator
                 StringUtils.percentEncode(localSettings.getStringProperty("separator", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils.percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils.percentEncode(realHostName));
-        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING, StringUtils.percentEncode(queryString));
+        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING, StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME,
                 StringUtils.xmlEncodeString(localSettings.getStringProperty("hostName", "")));
@@ -1106,7 +1106,7 @@ public class QueryCreator
                 StringUtils.xmlEncodeString(localSettings.getSeparator()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils.xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils.xmlEncodeString(realHostName));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING, StringUtils.xmlEncodeString(queryString));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING, StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
         
         attributeList
                 .put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
@@ -1122,7 +1122,7 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(realHostName)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_QUERY_STRING,
-                StringUtils.xmlEncodeString(StringUtils.percentEncode(queryString)));
+                StringUtils.xmlEncodeString(StringUtils.percentEncode(queryParameters.get(Constants.QUERY))));
         
         if(QueryCreator._DEBUG)
         {
@@ -1144,11 +1144,11 @@ public class QueryCreator
      * @return
      */
     public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
-            final String queryString, final String templateString, final List<String> specialInstructions)
+            final Map<String, String> queryParameters, final String templateString, final List<String> specialInstructions)
     {
         if(QueryCreator._TRACE)
         {
-            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryString=" + queryString
+            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryParameters=" + queryParameters
                     + " templateString=" + templateString);
         }
         
@@ -1156,7 +1156,7 @@ public class QueryCreator
         
         String replacedString = templateString;
         
-        final Map<String, List<String>> allMatches = originalQueryType.matchesForQueryString(queryString);
+        final Map<String, List<String>> allMatches = originalQueryType.matchesForQueryParameters(queryParameters);
         
         for(final String nextMatchTag : allMatches.keySet())
         {
@@ -1370,6 +1370,8 @@ public class QueryCreator
             } // end for(String nextMatch : allMatches.get(nextMatchTag)
         } // end for(String nextMatchTag : allMatches.keySet())
         
+        String queryString = queryParameters.get(Constants.QUERY);
+        
         // lastly put in the actual query string if they want us to do that
         replacedString = replacedString.replace(Constants.TEMPLATE_QUERY_STRING, queryString);
         replacedString = replacedString.replace(Constants.TEMPLATE_LOWERCASE_QUERY_STRING, queryString.toLowerCase());
@@ -1481,7 +1483,7 @@ public class QueryCreator
                     + queryType.getKey().stringValue());
         }
         
-        return QueryCreator.doReplacementsOnString(queryString, replacementString, queryType, null,
+        return QueryCreator.doReplacementsOnString(attributeList, replacementString, queryType, null,
                 nextProvider.getNormalisationUris(), attributeList, includedProfiles,
                 recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
     }

@@ -179,12 +179,12 @@ public final class ProviderUtils
      */
     public static Collection<Provider> getProvidersForQueryNamespaceSpecific(final Map<URI, Provider> allProviders,
             final List<Profile> sortedIncludedProfiles, final QueryType nextQueryType,
-            final Map<String, Collection<URI>> namespacePrefixToUriMap, final String queryString,
+            final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
         final Collection<Provider> results = new LinkedList<Provider>();
         
-        final Map<String, List<String>> queryStringMatches = nextQueryType.matchesForQueryString(queryString);
+        final Map<String, List<String>> queryStringMatches = nextQueryType.matchesForQueryParameters(queryParameters);
         
         final Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
         
@@ -261,7 +261,7 @@ public final class ProviderUtils
                     {
                         ProviderUtils.log
                                 .debug("getProvidersForQueryNamespaceSpecific: profileList suitable for nextNamespaceSpecificProvider.getKey()="
-                                        + nextNamespaceSpecificProvider.getKey() + " queryString=" + queryString);
+                                        + nextNamespaceSpecificProvider.getKey() + " queryParameters=" + queryParameters);
                     }
                     
                     results.add(nextNamespaceSpecificProvider);

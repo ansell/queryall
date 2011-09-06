@@ -221,7 +221,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIncludeQueryType()))
             {
-                this.addSemanticallyLinkedQueryType((URI)nextStatement.getObject());
+                this.addLinkedQueryType((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTemplateString()))
             {
@@ -294,7 +294,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     }
     
     @Override
-    public void addSemanticallyLinkedQueryType(final URI semanticallyLinkedCustomQuery)
+    public void addLinkedQueryType(final URI semanticallyLinkedCustomQuery)
     {
         this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
     }
@@ -452,7 +452,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     }
     
     @Override
-    public Collection<URI> getSemanticallyLinkedQueryTypes()
+    public Collection<URI> getLinkedQueryTypes()
     {
         return this.semanticallyLinkedCustomQueries;
     }
@@ -672,15 +672,30 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     }
     
     @Override
-    public Map<String, List<String>> matchesForQueryString(final String nextQueryString)
+    public Map<String, List<String>> matchesForQueryParameters(final Map<String, String> nextQueryParameters)
     {
-        return StringUtils.matchesForRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryString);
+        if(nextQueryParameters.containsKey(Constants.QUERY))
+        {
+            return StringUtils.matchesForRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryParameters.get(Constants.QUERY));
+        }
+        else
+        {
+            throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
+        }
     }
     
     @Override
-    public boolean matchesQueryString(final String nextQueryString)
+    public boolean matchesQueryParameters(final Map<String, String> nextQueryParameters)
     {
-        return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryString);
+        if(nextQueryParameters.containsKey(Constants.QUERY))
+        {
+            return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex, nextQueryParameters.get(Constants.QUERY));
+        }
+        else
+        {
+            throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
+        }
+            
     }
     
     @Override

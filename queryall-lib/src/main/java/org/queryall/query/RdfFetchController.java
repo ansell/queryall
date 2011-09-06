@@ -123,7 +123,7 @@ public class RdfFetchController
     private Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new HashSet<RdfFetcherQueryRunnable>(20);
     
     private volatile Collection<QueryBundle> queryBundles = null;
-    private String queryString;
+    private Map<String, String> queryParameters;
     private List<Profile> sortedIncludedProfiles;
     private boolean useDefaultProviders = true;
     private String realHostName;
@@ -145,13 +145,13 @@ public class RdfFetchController
     }
     
     public RdfFetchController(final QueryAllConfiguration settingsClass,
-            final BlacklistController localBlacklistController, final String nextQueryString,
+            final BlacklistController localBlacklistController, final Map<String, String> nextQueryParameters,
             final List<Profile> nextIncludedSortedProfiles, final boolean nextUseDefaultProviders,
             final String nextRealHostName, final int nextPageOffset)
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
-        this.queryString = nextQueryString;
+        this.queryParameters = nextQueryParameters;
         this.sortedIncludedProfiles = nextIncludedSortedProfiles;
         this.useDefaultProviders = nextUseDefaultProviders;
         this.realHostName = nextRealHostName;
@@ -405,7 +405,7 @@ public class RdfFetchController
             {
                 String nextStaticRdfXmlString = "";
                 
-                for(final URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes())
+                for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
                 {
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
@@ -415,7 +415,7 @@ public class RdfFetchController
                     for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
                     {
                         final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider, this.queryString,
+                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider, this.queryParameters,
                                         "", this.realHostName, this.pageOffset, localSettings);
                         
                         // then also create the statically defined rdf/xml string to go with this
@@ -472,11 +472,11 @@ public class RdfFetchController
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc
                     // replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint =
-                            QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryString,
+                            QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryParameters,
                                     replacedEndpoint, new ArrayList<String>());
                     
                     attributeList =
-                            QueryCreator.getAttributeListFor(nextQueryType, nextProvider, this.queryString,
+                            QueryCreator.getAttributeListFor(nextQueryType, nextProvider, this.queryParameters,
                                     replacedEndpoint, this.realHostName, this.pageOffset, localSettings);
                     
                     // This step is needed in order to replace endpointSpecific related template
@@ -515,7 +515,7 @@ public class RdfFetchController
                 
                 String nextStaticRdfXmlString = "";
                 
-                for(final URI nextCustomInclude : nextQueryType.getSemanticallyLinkedQueryTypes())
+                for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
                 {
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
@@ -714,7 +714,7 @@ public class RdfFetchController
             // FIXME: need to integrate NamespaceEntry list with this method so we can substitute
             // preferred namespaces for alternates
             final Collection<QueryType> allCustomQueries =
-                    QueryTypeUtils.getQueryTypesMatchingQueryString(this.queryString, this.sortedIncludedProfiles,
+                    QueryTypeUtils.getQueryTypesMatchingQueryString(this.queryParameters, this.sortedIncludedProfiles,
                             this.localSettings.getAllQueryTypes(),
                             this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true),
                             this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true));
@@ -759,7 +759,7 @@ public class RdfFetchController
                 {
                     chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(
                             this.localSettings.getAllProviders(), this.sortedIncludedProfiles, nextQueryType,
-                            this.localSettings.getNamespacePrefixesToUris(), this.queryString,
+                            this.localSettings.getNamespacePrefixesToUris(), this.queryParameters,
                             this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
                             this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
                 }

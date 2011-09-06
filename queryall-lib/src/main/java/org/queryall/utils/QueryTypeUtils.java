@@ -38,7 +38,7 @@ public final class QueryTypeUtils
         return results;
     }
     
-    public static Collection<QueryType> getQueryTypesMatchingQueryString(final String queryString,
+    public static Collection<QueryType> getQueryTypesMatchingQueryString(final Map<String, String> queryParameters,
             final List<Profile> profileList, final Map<URI, QueryType> allQueryTypes,
             final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
     {
@@ -60,14 +60,14 @@ public final class QueryTypeUtils
         
         for(final QueryType nextQuery : allQueryTypes.values())
         {
-            if(nextQuery.matchesQueryString(queryString))
+            if(nextQuery.matchesQueryParameters(queryParameters))
             {
                 if(QueryTypeUtils._TRACE)
                 {
                     QueryTypeUtils.log
                             .trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
-                                    + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryString="
-                                    + queryString);
+                                    + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
+                                    + queryParameters);
                 }
                 if(nextQuery.isUsedWithProfileList(profileList, recogniseImplicitQueryInclusions,
                         includeNonProfileMatchedQueries))
@@ -75,8 +75,8 @@ public final class QueryTypeUtils
                     if(QueryTypeUtils._DEBUG)
                     {
                         QueryTypeUtils.log.debug("getQueryTypesMatchingQueryString: profileList suitable for"
-                                + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryString="
-                                + queryString);
+                                + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
+                                + queryParameters);
                     }
                     results.add(nextQuery);
                 }
@@ -84,8 +84,8 @@ public final class QueryTypeUtils
                 {
                     QueryTypeUtils.log
                             .trace("getQueryTypesMatchingQueryString: profileList not suitable for"
-                                    + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryString="
-                                    + queryString);
+                                    + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
+                                    + queryParameters);
                 }
             }
         }
