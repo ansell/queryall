@@ -100,6 +100,26 @@ public class RuleTestImpl implements RuleTest
         }
     }
     
+    /**
+     * @param rdfRuleUri
+     *            the rdfRuleUris to set
+     */
+    @Override
+    public void addRuleUri(final URI rdfRuleUri)
+    {
+        this.rdfRuleUris.add(rdfRuleUri);
+    }
+    
+    /**
+     * @param stage
+     *            the stages to set
+     */
+    @Override
+    public void addStage(final URI stage)
+    {
+        this.stages.add(stage);
+    }
+    
     @Override
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
@@ -230,26 +250,6 @@ public class RuleTestImpl implements RuleTest
     public void setKey(final URI nextKey)
     {
         this.key = nextKey;
-    }
-    
-    /**
-     * @param rdfRuleUri
-     *            the rdfRuleUris to set
-     */
-    @Override
-    public void addRuleUri(final URI rdfRuleUri)
-    {
-        this.rdfRuleUris.add(rdfRuleUri);
-    }
-    
-    /**
-     * @param stage
-     *            the stages to set
-     */
-    @Override
-    public void addStage(final URI stage)
-    {
-        this.stages.add(stage);
     }
     
     @Override

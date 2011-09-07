@@ -267,10 +267,11 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
                         keyToUse);
             }
             
-            con.add(providerInstanceUri, SparqlProviderSchema.getProviderSparqlRequiresGraphURI(), useSparqlGraphLiteral,
-                    keyToUse);
+            con.add(providerInstanceUri, SparqlProviderSchema.getProviderSparqlRequiresGraphURI(),
+                    useSparqlGraphLiteral, keyToUse);
             
-            con.add(providerInstanceUri, SparqlProviderSchema.getProviderSparqlGraphUri(), sparqlGraphUriLiteral, keyToUse);
+            con.add(providerInstanceUri, SparqlProviderSchema.getProviderSparqlGraphUri(), sparqlGraphUriLiteral,
+                    keyToUse);
             
             if(this.getEndpointUrls() != null)
             {

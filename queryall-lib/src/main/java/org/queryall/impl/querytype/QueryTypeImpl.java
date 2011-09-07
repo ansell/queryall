@@ -20,7 +20,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
-import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfXmlOutputQueryType;
@@ -160,10 +159,10 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && (nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri())
-                    || nextStatement.getObject().equals(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri())
-                    || nextStatement.getObject().equals(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri())
-                    || nextStatement.getObject().equals(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri())
-                    ))
+                            || nextStatement.getObject().equals(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri())
+                            || nextStatement.getObject().equals(
+                                    SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri()) || nextStatement
+                            .getObject().equals(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri())))
             {
                 if(QueryTypeImpl._TRACE)
                 {

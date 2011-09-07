@@ -89,7 +89,8 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             {
                 if(StringRuleTestImpl._DEBUG)
                 {
-                    StringRuleTestImpl.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: " + nextStatement.toString());
+                    StringRuleTestImpl.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: "
+                            + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
@@ -97,7 +98,8 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         if(StringRuleTestImpl._TRACE)
         {
-            StringRuleTestImpl.log.trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
+            StringRuleTestImpl.log
+                    .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
