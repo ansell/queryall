@@ -209,7 +209,7 @@ public class RdfFetchController
                             queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                         }
                         
-                        nextThread.setResultDebugString("Error occured with querykey=" + queryKey + " on endpoint="
+                        nextThread.setResultDebugString("FAILURE: querykey=" + queryKey + " on endpoint="
                                 + nextThread.getEndpointUrl() + " query=" + nextThread.getQuery() + " message="
                                 + nextThread.getLastException().getMessage());
                         
@@ -254,7 +254,7 @@ public class RdfFetchController
                         queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                     }
                     
-                    nextThread.setResultDebugString("Query queryKey=" + queryKey + " successful on endpoint="
+                    nextThread.setResultDebugString("SUCCESS: queryKey=" + queryKey + " on endpoint="
                             + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " query="
                             + nextThread.getOriginalQueryBundle().getQuery());
                     
