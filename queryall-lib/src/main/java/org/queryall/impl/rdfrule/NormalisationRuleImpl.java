@@ -76,7 +76,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+    protected NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final Collection<URI> tempStages = new HashSet<URI>();

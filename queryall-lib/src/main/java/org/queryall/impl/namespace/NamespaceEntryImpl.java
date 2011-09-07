@@ -104,7 +104,10 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(NamespaceEntrySchema.getNamespaceTypeUri()))
+                    && 
+                    (nextStatement.getObject().equals(NamespaceEntrySchema.getNamespaceTypeUri())
+                    || nextStatement.getObject().equals(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri())
+                    || nextStatement.getObject().equals(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri())))
             {
                 if(NamespaceEntryImpl._TRACE)
                 {

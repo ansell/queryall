@@ -38,11 +38,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     @SuppressWarnings("unused")
     private static final boolean _INFO = SparqlNormalisationRuleImpl.log.isInfoEnabled();
     
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
     private String sparqlConstructQueryTarget = "";
     
-    private List<String> sparqlWherePatterns = new ArrayList<String>();
+    private List<String> sparqlWherePatterns = new ArrayList<String>(2);
     
     private String sparqlPrefixes = "";
     
@@ -144,13 +142,13 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             }
             else
             {
-                if(SparqlNormalisationRuleImpl._TRACE)
+                if(SparqlNormalisationRuleImpl._INFO)
                 {
                     SparqlNormalisationRuleImpl.log
-                            .trace("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
+                            .info("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
-                this.unrecognisedStatements.add(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
         
@@ -619,7 +617,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         result += "key=" + this.getKey() + "\n";
         result += "order=" + this.getOrder() + "\n";
-        result += "sparqlConstructQueryTarget=" + this.getSparqlConstructQuery() + "\n";
         result += "mode=" + this.getMode() + "\n";
         result += "description=" + this.getDescription() + "\n";
         

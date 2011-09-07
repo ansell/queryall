@@ -59,9 +59,6 @@ public class RuleTestImpl implements RuleTest
     public RuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final Collection<URI> tempTestUris = new HashSet<URI>();
-        final Collection<URI> tempStages = new HashSet<URI>();
-        
         for(final Statement nextStatement : inputStatements)
         {
             if(RuleTestImpl._DEBUG)
@@ -85,20 +82,17 @@ public class RuleTestImpl implements RuleTest
             }
             else if(nextStatement.getPredicate().equals(RuleTestSchema.getRuletestHasRuleUri()))
             {
-                tempTestUris.add((URI)nextStatement.getObject());
+                this.addRuleUri((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(RuleTestSchema.getRuletestTestsStage()))
             {
-                tempStages.add((URI)nextStatement.getObject());
+                this.addStage((URI)nextStatement.getObject());
             }
             else
             {
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
-        
-        this.setRuleUris(tempTestUris);
-        this.setStages(tempStages);
         
         if(RuleTestImpl._TRACE)
         {
@@ -239,23 +233,23 @@ public class RuleTestImpl implements RuleTest
     }
     
     /**
-     * @param rdfRuleUris
+     * @param rdfRuleUri
      *            the rdfRuleUris to set
      */
     @Override
-    public void setRuleUris(final Collection<URI> rdfRuleUris)
+    public void addRuleUri(final URI rdfRuleUri)
     {
-        this.rdfRuleUris = rdfRuleUris;
+        this.rdfRuleUris.add(rdfRuleUri);
     }
     
     /**
-     * @param stages
+     * @param stage
      *            the stages to set
      */
     @Override
-    public void setStages(final Collection<URI> stages)
+    public void addStage(final URI stage)
     {
-        this.stages = stages;
+        this.stages.add(stage);
     }
     
     @Override

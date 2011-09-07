@@ -60,11 +60,11 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         this.unrecognisedStatements = new HashSet<Statement>();
         
-        for(final Statement nextStatement : inputStatements)
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(StringRuleTestImpl._DEBUG)
             {
-                StringRuleTestImpl.log.debug("RegexRuleTestImpl: nextStatement: " + nextStatement.toString());
+                StringRuleTestImpl.log.debug("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
@@ -72,7 +72,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             {
                 if(StringRuleTestImpl._TRACE)
                 {
-                    StringRuleTestImpl.log.trace("RegexRuleTestImpl: found valid type predicate for URI: " + keyToUse);
+                    StringRuleTestImpl.log.trace("StringRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -87,13 +87,17 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             }
             else
             {
+                if(StringRuleTestImpl._DEBUG)
+                {
+                    StringRuleTestImpl.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: " + nextStatement.toString());
+                }
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
         
         if(StringRuleTestImpl._TRACE)
         {
-            StringRuleTestImpl.log.trace("RegexRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
+            StringRuleTestImpl.log.trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
         }
     }
     

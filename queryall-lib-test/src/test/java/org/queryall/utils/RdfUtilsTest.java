@@ -59,6 +59,12 @@ import org.queryall.api.utils.QueryAllNamespaces;
  */
 public class RdfUtilsTest
 {
+    /**
+     * There will always be cases where unexpected triples appear, so this is FALSE by default
+     * If you want to test a new feature is being parsed correctly, you can temporarily turn this on
+     */
+    private static final boolean FAIL_ON_UNEXPECTED_TRIPLES = false;
+    
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
@@ -488,6 +494,10 @@ public class RdfUtilsTest
                 // and validate a test identifier
                 Assert.assertTrue("Validation failed", nextValidatingNamespaceEntry.validateIdentifier("zrv"));
                 
+                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                {
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextNamespaceEntry.getUnrecognisedStatements(), 0, nextNamespaceEntry.getUnrecognisedStatements().size());
+                }
             }
         }
         catch(final RDFParseException ex)
@@ -682,6 +692,11 @@ public class RdfUtilsTest
                     Assert.assertTrue("Xslt transform was not parsed correctly", nextXsltRule.getXsltStylesheet()
                             .contains("</xsl:stylesheet>"));
                 }
+
+                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                {
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. nextNormalisationRule.class="+nextNormalisationRule.getClass().getName()+" "+nextNormalisationRule.getUnrecognisedStatements(), 0, nextNormalisationRule.getUnrecognisedStatements().size());
+                }
             }
         }
         catch(final RDFParseException ex)
@@ -805,6 +820,11 @@ public class RdfUtilsTest
                 {
                     Assert.fail("Found unexpected profile URI=" + nextProfileUri);
                 }
+
+                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                {
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen.", 0, nextProfile.getUnrecognisedStatements().size());
+                }
             }
         }
         catch(final RDFParseException ex)
@@ -884,6 +904,11 @@ public class RdfUtilsTest
                             .getIncludedInQueryTypes().size());
                     Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider
                             .getNormalisationUris().size());
+                }
+
+                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                {
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen.", 0, nextProvider.getUnrecognisedStatements().size());
                 }
             }
         }
@@ -1007,6 +1032,11 @@ public class RdfUtilsTest
                             "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>",
                             nextRdfXmlQueryType.getOutputString());
                 }
+                
+                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                {
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextQueryType.getUnrecognisedStatements(), 0, nextQueryType.getUnrecognisedStatements().size());
+                }
             }
         }
         catch(final RDFParseException ex)
@@ -1071,6 +1101,11 @@ public class RdfUtilsTest
                     
                     Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/",
                             nextRegexRuleTest.getTestOutputString());
+                }
+
+                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                {
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextRuleTest.getUnrecognisedStatements(), 0, nextRuleTest.getUnrecognisedStatements().size());
                 }
             }
         }

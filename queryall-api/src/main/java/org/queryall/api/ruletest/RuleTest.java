@@ -2,6 +2,7 @@ package org.queryall.api.ruletest;
 
 import java.util.Collection;
 
+import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
@@ -9,12 +10,12 @@ import org.queryall.api.base.BaseQueryAllInterface;
  */
 public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>
 {
-    Collection<org.openrdf.model.URI> getRuleUris();
+    Collection<URI> getRuleUris();
     
-    Collection<org.openrdf.model.URI> getStages();
+    Collection<URI> getStages();
     
-    void setRuleUris(Collection<org.openrdf.model.URI> rdfRuleUris);
+    void addRuleUri(URI rdfRuleUri);
     
-    void setStages(Collection<org.openrdf.model.URI> stages);
+    void addStage(URI stage);
     
 }

@@ -18,11 +18,6 @@ public class StringRuleTestImplEnum extends RuleTestEnum
 {
     public static final RuleTestEnum STRING_RULE_TEST_IMPL_ENUM = new StringRuleTestImplEnum();
     
-    // static
-    // {
-    // NormalisationRuleEnum.register(REGEX_NORMALISATION_RULE_IMPL_ENUM);
-    // }
-    
     public StringRuleTestImplEnum()
     {
         this(StringRuleTestImpl.class.getName(), StringRuleTestImpl.myTypes());
