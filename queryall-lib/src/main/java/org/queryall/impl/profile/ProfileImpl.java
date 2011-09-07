@@ -745,7 +745,10 @@ public class ProfileImpl implements Profile, Comparable<Profile>
             
             con.setAutoCommit(false);
             
-            con.add(profileInstanceUri, RDF.TYPE, ProfileSchema.getProfileTypeUri(), keyToUse);
+            for(URI nextElementType : this.getElementTypes())
+            {
+                con.add(profileInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+            }
             
             con.add(profileInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             

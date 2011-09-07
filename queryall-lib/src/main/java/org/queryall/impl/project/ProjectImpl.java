@@ -272,7 +272,10 @@ public class ProjectImpl implements Project
             
             con.setAutoCommit(false);
             
-            con.add(projectInstanceUri, RDF.TYPE, ProjectSchema.getProjectTypeUri(), keyToUse);
+            for(URI nextElementType : this.getElementTypes())
+            {
+                con.add(projectInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+            }
             
             if(authorityLiteral != null)
             {

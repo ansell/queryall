@@ -476,7 +476,10 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             
             con.setAutoCommit(false);
             
-            con.add(namespaceInstanceUri, RDF.TYPE, NamespaceEntrySchema.getNamespaceTypeUri(), keyToUse);
+            for(URI nextElementType : this.getElementTypes())
+            {
+                con.add(namespaceInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+            }
             
             if(authorityLiteral != null)
             {

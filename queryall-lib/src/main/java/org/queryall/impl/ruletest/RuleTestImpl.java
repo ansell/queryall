@@ -307,7 +307,11 @@ public class RuleTestImpl implements RuleTest
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, RuleTestSchema.getRuletestTypeUri(), keyToUse);
+            for(URI nextElementType : this.getElementTypes())
+            {
+                con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
+            }
+
             con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             if(this.rdfRuleUris != null)

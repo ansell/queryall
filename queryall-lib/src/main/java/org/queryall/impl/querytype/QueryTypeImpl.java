@@ -985,7 +985,11 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             
             con.setAutoCommit(false);
             
-            con.add(queryInstanceUri, RDF.TYPE, QueryTypeSchema.getQueryTypeUri(), keyToUse);
+            for(URI nextElementType : this.getElementTypes())
+            {
+                con.add(queryInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+            }
+            
             con.add(queryInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             if(modelVersion == 1)
             {

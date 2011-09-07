@@ -466,7 +466,10 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
             else
             {
-                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.getNormalisationRuleTypeUri(), keyToUse);
+                for(URI nextElementType : this.getElementTypes())
+                {
+                    con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
+                }
             }
             
             con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);

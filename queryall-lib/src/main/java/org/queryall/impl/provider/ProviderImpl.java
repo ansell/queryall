@@ -699,7 +699,10 @@ public abstract class ProviderImpl implements Provider
             
             con.setAutoCommit(false);
             
-            con.add(providerInstanceUri, RDF.TYPE, ProviderSchema.getProviderTypeUri(), keyToUse);
+            for(URI nextElementType : this.getElementTypes())
+            {
+                con.add(providerInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+            }
             
             con.add(providerInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
