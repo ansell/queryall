@@ -209,8 +209,8 @@ public class RdfFetchController
                             queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                         }
                         
-                        nextThread.setResultDebugString("FAILURE: querykey=" + queryKey + " on endpoint="
-                                + nextThread.getEndpointUrl() + " query=" + nextThread.getQuery() + " message="
+                        nextThread.setResultDebugString("FAILURE: endpoint="
+                                + nextThread.getEndpointUrl() + " querykey=" + queryKey + " query=" + nextThread.getQuery() + " message="
                                 + nextThread.getLastException().getMessage());
                         
                     }
@@ -254,8 +254,8 @@ public class RdfFetchController
                         queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                     }
                     
-                    nextThread.setResultDebugString("SUCCESS: queryKey=" + queryKey + " on endpoint="
-                            + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " query="
+                    nextThread.setResultDebugString("SUCCESS: endpoint="
+                            + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " queryKey=" + queryKey + " query="
                             + nextThread.getOriginalQueryBundle().getQuery());
                     
                     this.getSuccessfulResults().add(nextThread);
