@@ -77,10 +77,6 @@ public class ProviderSchema
         ProviderSchema.setProviderNoCommunication(f.createURI(baseUri, "nocommunication"));
         ProviderSchema.setProviderAssumedContentType(f.createURI(baseUri, "assumedContentType"));
         
-        // TODO: move these to SparqlProviderSchema
-        ProviderSchema.setProviderSparqlRequiresGraphURI(f.createURI(baseUri, "requiresGraphUri"));
-        ProviderSchema.setProviderSparqlGraphUri(f.createURI(baseUri, "graphUri"));
-        
         // NOTE: This was deprecated after API version 1 in favour of dc
         // elements title
         ProviderSchema.setProviderTitle(f.createURI(baseUri, "Title"));
