@@ -407,76 +407,21 @@ public class RdfFetchController
             
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
-            final boolean httpGetProvider =
-                    nextProvider.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpGetUrl());
-            final boolean httpPostProvider =
-                    nextProvider.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpPostUrl());
-            final boolean httpPostSparqlProvider =
-                    nextProvider.getEndpointMethod().equals(SparqlProviderSchema.getProviderHttpPostSparql());
+//            final boolean httpGetProvider =
+//                    nextProvider.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpGetUrl());
+//            final boolean httpPostProvider =
+//                    nextProvider.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpPostUrl());
+//            final boolean httpPostSparqlProvider =
+//                    nextProvider.getEndpointMethod().equals(SparqlProviderSchema.getProviderHttpPostSparql());
             
             // if(nextProvider instanceof NoCommunicationProvider)
-            if(noCommunicationProvider)
+            if(nextProvider instanceof HttpProvider)
+            //else if(httpGetProvider || httpPostProvider || httpPostSparqlProvider)
             {
-                String nextStaticRdfXmlString = "";
-                
-                for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
-                {
-                    // pick out all of the QueryType's which have been delegated for this particular
-                    // query as static includes
-                    final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextCustomInclude);
-                    
-                    for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
-                    {
-                        final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,
-                                        this.queryParameters, "", this.realHostName, this.pageOffset, localSettings);
-                        
-                        // then also create the statically defined rdf/xml string to go with this
-                        // query based on the current attributes, we assume that both queries have
-                        // been intelligently put into the configuration file so that they have an
-                        // equivalent number of arguments as ${input_1} etc, in them.
-                        // There is no general solution for determining how these should work other
-                        // than naming them as ${namespace} and ${identifier} and ${searchTerm}, but
-                        // these can be worked around by only offering compatible services as
-                        // alternatives with the static rdf/xml portions
-                        
-                        if(nextCustomIncludeType instanceof OutputQueryType)
-                        {
-                            nextStaticRdfXmlString +=
-                                    QueryCreator.createStaticRdfXmlString(nextQueryType,
-                                            (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
-                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
-                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            localSettings);
-                        }
-                        else
-                        {
-                            RdfFetchController.log
-                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                            + nextCustomIncludeType.getKey()
-                                            + " types="
-                                            + nextCustomIncludeType.getElementTypes());
-                        }
-                    }
-                }
-                
-                final QueryBundle nextProviderQueryBundle = new QueryBundle();
-                
-                nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
-                nextProviderQueryBundle.setProvider(nextProvider);
-                nextProviderQueryBundle.setQueryType(nextQueryType);
-                nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
-                nextProviderQueryBundle.setQueryallSettings(localSettings);
-                
-                results.add(nextProviderQueryBundle);
-            }
-            // else if(nextProvider instanceof HttpProvider)
-            else if(httpGetProvider || httpPostProvider || httpPostSparqlProvider)
-            {
-                if(nextProvider instanceof HttpProvider)
-                {
+//                if(nextProvider instanceof HttpProvider)
+//                {
+
+                    log.info("instanceof HttpProvider key="+nextProvider.getKey());
                     final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                     Map<String, String> attributeList = new HashMap<String, String>();
                     
@@ -620,7 +565,7 @@ public class RdfFetchController
                                 // ||
                                 // !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                                 // Then test whether the endpoint is blacklisted before accepting it
-                                if(!this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
+                                if(noCommunicationProvider || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                                 {
                                     // setup all of the alternatives replaced endpoints and queries
                                     // for
@@ -662,13 +607,71 @@ public class RdfFetchController
                         results.add(nextProviderQueryBundle);
                         
                     }
-                }// end if(nextProvider instanceof HttpProvider
-                else
+//                }// end if(nextProvider instanceof HttpProvider
+//                else
+//                {
+//                    RdfFetchController.log
+//                            .error("Provider had HTTP endpoint method but was not parsed as an HttpProvider key="
+//                                    + nextProvider.getKey());
+//                }
+            }
+            else if(noCommunicationProvider)
+            {
+                log.info("endpoint method = noCommunication key="+nextProvider.getKey());
+                String nextStaticRdfXmlString = "";
+                
+                for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
                 {
-                    RdfFetchController.log
-                            .error("Provider had HTTP endpoint method but was not parsed as an HttpProvider key="
-                                    + nextProvider.getKey());
+                    // pick out all of the QueryType's which have been delegated for this particular
+                    // query as static includes
+                    final Collection<QueryType> allCustomRdfXmlIncludeTypes =
+                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextCustomInclude);
+                    
+                    for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
+                    {
+                        final Map<String, String> attributeList =
+                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,
+                                        this.queryParameters, "", this.realHostName, this.pageOffset, localSettings);
+                        
+                        // then also create the statically defined rdf/xml string to go with this
+                        // query based on the current attributes, we assume that both queries have
+                        // been intelligently put into the configuration file so that they have an
+                        // equivalent number of arguments as ${input_1} etc, in them.
+                        // There is no general solution for determining how these should work other
+                        // than naming them as ${namespace} and ${identifier} and ${searchTerm}, but
+                        // these can be worked around by only offering compatible services as
+                        // alternatives with the static rdf/xml portions
+                        
+                        if(nextCustomIncludeType instanceof OutputQueryType)
+                        {
+                            nextStaticRdfXmlString +=
+                                    QueryCreator.createStaticRdfXmlString(nextQueryType,
+                                            (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
+                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
+                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                            localSettings);
+                        }
+                        else
+                        {
+                            RdfFetchController.log
+                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
+                                            + nextCustomIncludeType.getKey()
+                                            + " types="
+                                            + nextCustomIncludeType.getElementTypes());
+                        }
+                    }
                 }
+                
+                final QueryBundle nextProviderQueryBundle = new QueryBundle();
+                
+                nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
+                nextProviderQueryBundle.setProvider(nextProvider);
+                nextProviderQueryBundle.setQueryType(nextQueryType);
+                nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
+                nextProviderQueryBundle.setQueryallSettings(localSettings);
+                
+                results.add(nextProviderQueryBundle);
             }
             else
             {

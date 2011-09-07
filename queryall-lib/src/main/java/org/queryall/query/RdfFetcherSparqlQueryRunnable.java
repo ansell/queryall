@@ -11,7 +11,7 @@ import org.queryall.blacklist.BlacklistController;
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
     public String graphUri = "";
-    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
+    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 500);
     
     public RdfFetcherSparqlQueryRunnable(final String nextEndpointUrl, final String nextGraphUri,
             final String nextQuery, final String nextDebug, final String nextAcceptHeader,

@@ -123,7 +123,7 @@ public class RdfFetcherQueryRunnable extends Thread
         if(this.normalisedResult == null || this.normalisedResult.trim().length() == 0)
         {
             RdfFetcherQueryRunnable.log
-                    .info("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
+                    .debug("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
             return this.rawResult;
         }
         else
