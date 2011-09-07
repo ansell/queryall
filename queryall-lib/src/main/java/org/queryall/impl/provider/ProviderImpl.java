@@ -77,12 +77,12 @@ public class ProviderImpl implements Provider
         ProviderImpl.PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
     }
     
-    public ProviderImpl()
+    protected ProviderImpl()
     {
         super();
     }
     
-    public ProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+    protected ProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final ValueFactory f = Constants.valueFactory;

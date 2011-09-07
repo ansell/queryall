@@ -34,7 +34,6 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.provider.ProviderImpl;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.QueryCreator;
@@ -852,13 +851,13 @@ public class GeneralServlet extends HttpServlet
                     if(nextQueryType instanceof OutputQueryType)
                     {
                         final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextQueryType, new ProviderImpl(), queryParameters,
+                                QueryCreator.getAttributeListFor(nextQueryType, null, queryParameters,
                                         localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
                                         pageOffset, localSettings);
                         
                         String nextBackupString =
                                 QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType,
-                                        new ProviderImpl(), attributeList, includedProfiles,
+                                        null, attributeList, includedProfiles,
                                         localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                         localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
                                         localSettings)
