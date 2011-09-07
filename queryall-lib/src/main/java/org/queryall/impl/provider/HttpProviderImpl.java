@@ -6,7 +6,6 @@ package org.queryall.impl.provider;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -30,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpProviderImpl extends ProviderImpl implements HttpProvider, SparqlProvider
+public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvider, SparqlProvider
 {
     static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
     private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
@@ -38,8 +37,6 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     private static final boolean _DEBUG = HttpProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = HttpProviderImpl.log.isInfoEnabled();
-    
-    private static final Set<URI> HTTP_PROVIDER_IMPL_TYPES = new HashSet<URI>();
     
     private Collection<String> endpointUrls = new HashSet<String>();
     
@@ -54,19 +51,12 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
     
     private String sparqlGraphUri = "";
     
-    static
-    {
-        HttpProviderImpl.HTTP_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
-        HttpProviderImpl.HTTP_PROVIDER_IMPL_TYPES.add(HttpProviderSchema.getProviderHttpTypeUri());
-        HttpProviderImpl.HTTP_PROVIDER_IMPL_TYPES.add(SparqlProviderSchema.getProviderSparqlTypeUri());
-    }
-    
-    public HttpProviderImpl()
+    protected HttpProviderImpl()
     {
         super();
     }
     
-    public HttpProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+    protected HttpProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -146,16 +136,6 @@ public class HttpProviderImpl extends ProviderImpl implements HttpProvider, Spar
         {
             return defaultAcceptHeader;
         }
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return HttpProviderImpl.HTTP_PROVIDER_IMPL_TYPES;
     }
     
     @Override

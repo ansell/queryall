@@ -5,7 +5,7 @@ package org.queryall.impl.test;
 
 import org.queryall.api.provider.Provider;
 import org.queryall.api.test.AbstractProviderTest;
-import org.queryall.impl.provider.HttpProviderImpl;
+import org.queryall.impl.provider.HttpOnlyProviderImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -18,6 +18,6 @@ public class ProviderImplTest extends AbstractProviderTest
     @Override
     public Provider getNewTestProvider()
     {
-        return new HttpProviderImpl();
+        return new HttpOnlyProviderImpl();
     }
 }

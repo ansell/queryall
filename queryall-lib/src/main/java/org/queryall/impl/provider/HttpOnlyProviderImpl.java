@@ -49,5 +49,11 @@ public class HttpOnlyProviderImpl extends HttpProviderImpl
     {
         super(inputStatements, keyToUse, modelVersion);
     }
+
+    @Override
+    public Set<URI> getElementTypes()
+    {
+        return HTTP_ONLY_PROVIDER_IMPL_TYPES;
+    }
     
 }

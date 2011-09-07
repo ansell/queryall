@@ -11,6 +11,7 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.queryall.api.provider.NoCommunicationProvider;
+import org.queryall.api.provider.NoCommunicationProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
 
 /**
@@ -23,6 +24,7 @@ public class NoCommunicationProviderImpl extends ProviderImpl implements NoCommu
     static
     {
         NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
+        NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri());
     }
     
     public static Set<URI> noCommunicationTypes()
@@ -53,6 +55,12 @@ public class NoCommunicationProviderImpl extends ProviderImpl implements NoCommu
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
+    }
+
+    @Override
+    public Set<URI> getElementTypes()
+    {
+        return NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
     }
     
 }

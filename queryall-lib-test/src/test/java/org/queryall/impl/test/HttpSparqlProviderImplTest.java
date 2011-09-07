@@ -5,7 +5,7 @@ package org.queryall.impl.test;
 
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.test.AbstractSparqlProviderTest;
-import org.queryall.impl.provider.HttpProviderImpl;
+import org.queryall.impl.provider.HttpSparqlProviderImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -13,11 +13,11 @@ import org.queryall.impl.provider.HttpProviderImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlProviderImplTest extends AbstractSparqlProviderTest
+public class HttpSparqlProviderImplTest extends AbstractSparqlProviderTest
 {
     @Override
     public SparqlProvider getNewTestSparqlProvider()
     {
-        return new HttpProviderImpl();
+        return new HttpSparqlProviderImpl();
     }
 }

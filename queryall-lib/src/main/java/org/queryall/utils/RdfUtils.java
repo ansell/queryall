@@ -71,6 +71,7 @@ import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.impl.provider.HttpOnlyProviderImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.QueryTypeImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
@@ -154,7 +155,7 @@ public final class RdfUtils
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-        final HttpProviderImpl dummyProvider = new HttpProviderImpl();
+        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         
@@ -222,7 +223,7 @@ public final class RdfUtils
         
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-        final HttpProviderImpl dummyProvider = new HttpProviderImpl();
+        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         

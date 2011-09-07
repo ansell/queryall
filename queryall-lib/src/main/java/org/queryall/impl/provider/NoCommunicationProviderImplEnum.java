@@ -34,7 +34,7 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     
     public NoCommunicationProviderImplEnum()
     {
-        this(NoCommunicationProviderImpl.class.getName(), ProviderImpl.providerTypes());
+        this(NoCommunicationProviderImpl.class.getName(), NoCommunicationProviderImpl.noCommunicationTypes());
         
         if(NoCommunicationProviderImplEnum._DEBUG)
         {

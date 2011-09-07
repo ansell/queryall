@@ -6,7 +6,7 @@ package org.queryall.impl.test;
 import org.openrdf.model.URI;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.impl.provider.HttpProviderImpl;
+import org.queryall.impl.provider.HttpOnlyProviderImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -19,7 +19,7 @@ public class ProfilableProviderImplTest extends BaseProfilableTest
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
-        return new HttpProviderImpl();
+        return new HttpOnlyProviderImpl();
     }
     
     @Override

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -31,20 +30,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProviderImpl implements Provider
+public abstract class ProviderImpl implements Provider
 {
     private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class);
     private static final boolean _TRACE = ProviderImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
-    
-    private static final Set<URI> PROVIDER_IMPL_TYPES = new HashSet<URI>();
-    
-    public static Set<URI> providerTypes()
-    {
-        return ProviderImpl.PROVIDER_IMPL_TYPES;
-    }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -71,11 +63,6 @@ public class ProviderImpl implements Provider
     private URI endpointMethod = ProviderSchema.getProviderNoCommunication();
     
     private String assumedContentType = "";
-    
-    static
-    {
-        ProviderImpl.PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
-    }
     
     protected ProviderImpl()
     {
@@ -393,16 +380,6 @@ public class ProviderImpl implements Provider
     public QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.PROVIDER;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return ProviderImpl.providerTypes();
     }
     
     @Override

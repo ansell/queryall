@@ -28,6 +28,7 @@ import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.impl.provider.HttpOnlyProviderImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -122,7 +123,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-        final HttpProviderImpl dummyProvider = new HttpProviderImpl();
+        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         
