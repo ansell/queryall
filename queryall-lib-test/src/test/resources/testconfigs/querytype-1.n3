@@ -17,5 +17,6 @@
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> ;
 	<http://purl.org/queryall/query:hasPublicIdentifierTag> "input_1" ;
 	<http://purl.org/queryall/query:hasNamespaceInputTag> "input_1" ;
+	<http://purl.org/queryall/query:expectedInputParameters> "input_1", "input_2" ;
 	<http://purl.org/queryall/query:includeQueryType> <http://example.org/query:test-1> .
 

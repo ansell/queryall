@@ -39,6 +39,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryType;
@@ -1013,6 +1014,13 @@ public class RdfUtilsTest
                     
                     Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1,
                             nextQueryType.getLinkedQueryTypes().size());
+                    
+                    Assert.assertTrue("Query type was not parsed into a InputQueryType",
+                            nextQueryType instanceof InputQueryType);
+
+                    final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
+                    
+                    Assert.assertEquals("Query type expected input parameters were not parsed correctly", 2, nextInputQueryType.getExpectedInputParameters().size());
                     
                     Assert.assertTrue("Query type was not parsed into a RegexInputQueryType",
                             nextQueryType instanceof RegexInputQueryType);
