@@ -15,7 +15,7 @@ import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeImplTest extends AbstractQueryTypeTest
+public class RegexInputQueryTypeImplTest extends AbstractQueryTypeTest
 {
     @Override
     public URI getAllNamespaceMatchMethodUri()
