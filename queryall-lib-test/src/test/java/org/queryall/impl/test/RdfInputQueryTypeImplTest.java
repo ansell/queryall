@@ -8,7 +8,6 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.test.AbstractQueryTypeTest;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
-import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
