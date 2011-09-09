@@ -40,7 +40,7 @@ public class RdfInputQueryTypeSchema
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
-        RdfInputQueryTypeSchema.setRdfOutputQueryTypeUri(f.createURI(baseUri, "RdfInputQuery"));
+        RdfInputQueryTypeSchema.setRdfInputQueryTypeUri(f.createURI(baseUri, "RdfInputQuery"));
         RdfInputQueryTypeSchema.setQuerySparqlInputSelect(f.createURI(baseUri, "sparqlInputSelect"));
     }
     
@@ -117,7 +117,7 @@ public class RdfInputQueryTypeSchema
      * @param queryTypeUri
      *            the queryTypeUri to set
      */
-    public static void setRdfOutputQueryTypeUri(final URI queryTypeUri)
+    public static void setRdfInputQueryTypeUri(final URI queryTypeUri)
     {
         RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
     }

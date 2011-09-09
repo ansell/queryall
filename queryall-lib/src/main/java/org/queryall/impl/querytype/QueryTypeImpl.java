@@ -2,6 +2,7 @@ package org.queryall.impl.querytype;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
+import org.queryall.api.querytype.InputQueryType;
+import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryType;
@@ -34,7 +37,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryType, RdfOutputQueryType
+public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
@@ -119,6 +122,7 @@ public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryTy
     private boolean isDummyQueryType = false;
     // default to universally available RDF/XML, and for backwards compatibility with previous versions (<5) that only supported RDF/XML output
     private String outputRdfFormat = Constants.APPLICATION_RDF_XML;
+    private Collection<String> expectedInputParameters = new ArrayList<String>(5);
     
     protected QueryTypeImpl()
     {
@@ -144,10 +148,6 @@ public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryTy
                 }
                 
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTitle())
                     || nextStatement.getPredicate().equals(Constants.DC_TITLE))
@@ -210,15 +210,6 @@ public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryTy
             {
                 this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getQueryOutputRdfString())
-                    || nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString()))
-            {
-                this.setOutputString(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat()))
-            {
-                this.setOutputRdfFormat(nextStatement.getObject().stringValue());
-            }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryInRobotsTxt()))
             {
                 this.setInRobotsTxt(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
@@ -231,9 +222,26 @@ public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryTy
             {
                 this.setIsDummyQueryType(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
+            else if(nextStatement.getPredicate().equals(InputQueryTypeSchema.getQueryExpectedInputParameters()))
+            {
+                this.addExpectedInputParameter(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getQueryOutputRdfString())
+                    || nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString()))
+            {
+                this.setOutputString(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat()))
+            {
+                this.setOutputRdfFormat(nextStatement.getObject().stringValue());
+            }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
+            {
+                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else
             {
@@ -948,6 +956,19 @@ public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryTy
             
             // log.info("after single URIs created");
             
+            if(this.expectedInputParameters != null)
+            {
+                
+                for(final String nextExpectedInputParameter : this.expectedInputParameters)
+                {
+                    if(nextExpectedInputParameter != null)
+                    {
+                        con.add(queryInstanceUri, InputQueryTypeSchema.getQueryExpectedInputParameters(), f.createLiteral(nextExpectedInputParameter),
+                                keyToUse);
+                    }
+                }
+            }
+
             if(this.namespacesToHandle != null)
             {
                 
@@ -1142,5 +1163,17 @@ public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryTy
     {
         // Wrappers around the setTemplateString function for now
         setTemplateString(templateString);
+    }
+
+    @Override
+    public Collection<String> getExpectedInputParameters()
+    {
+        return Collections.unmodifiableCollection(this.expectedInputParameters);
+    }
+
+    @Override
+    public void addExpectedInputParameter(String expectedInputParameter)
+    {
+        this.expectedInputParameters.add(expectedInputParameter);
     }
 }

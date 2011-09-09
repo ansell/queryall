@@ -14,7 +14,9 @@ import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
+import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.querytype.RdfInputQueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.querytype.RegexInputQueryTypeSchema;
 import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
@@ -122,6 +124,32 @@ public class Schema
         catch(final Exception ex)
         {
             Schema.log.error("Problem generating QueryType schema RDF with type=" + ex.getClass().getName(), ex);
+        }
+        
+        try
+        {
+            if(!InputQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("InputQueryType schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating InputQueryType schema RDF with type=" + ex.getClass().getName(),
+                    ex);
+        }
+        
+        try
+        {
+            if(!RdfInputQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            {
+                Schema.log.error("RdfInputQueryType schema was not placed correctly in the rdf store");
+            }
+        }
+        catch(final Exception ex)
+        {
+            Schema.log.error("Problem generating RdfInputQueryType schema RDF with type=" + ex.getClass().getName(),
+                    ex);
         }
         
         try

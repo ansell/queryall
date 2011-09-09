@@ -171,6 +171,13 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
         return false;
     }
 
+    /**
+     * Returns a list of bindings for parameter names based on the input
+     * 
+     * if a binding is explicitly set to a valid in the map, it will be returned,
+     * otherwise, a SPARQL query will be performed in the RDF document obtained from the 
+     * queryParameters.get("query") String
+     */
     @Override
     public Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters)
     {
@@ -196,4 +203,5 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
     {
         return sparqlInputSelect;
     }
+
 }
