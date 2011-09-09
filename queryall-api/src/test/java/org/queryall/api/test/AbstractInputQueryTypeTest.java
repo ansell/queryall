@@ -35,6 +35,11 @@ public abstract class AbstractInputQueryTypeTest
 //        final ValueFactory f = new MemValueFactory();
         
         this.testQueryType1 = getNewTestInputQueryType();
+
+        this.testQueryType1.addExpectedInputParameter("input_1");
+        this.testQueryType1.addExpectedInputParameter("input_2");
+        this.testQueryType1.addExpectedInputParameter("namespace");
+        this.testQueryType1.addExpectedInputParameter("identifier");
     }
     
     /**
@@ -44,11 +49,6 @@ public abstract class AbstractInputQueryTypeTest
     public void tearDown() throws Exception
     {
         this.testQueryType1 = null;
-        
-        this.testQueryType1.addExpectedInputParameter("input_1");
-        this.testQueryType1.addExpectedInputParameter("input_2");
-        this.testQueryType1.addExpectedInputParameter("namespace");
-        this.testQueryType1.addExpectedInputParameter("identifier");
     }
     
     /**

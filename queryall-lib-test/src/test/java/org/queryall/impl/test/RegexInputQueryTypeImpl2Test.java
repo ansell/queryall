@@ -5,17 +5,17 @@ package org.queryall.impl.test;
 
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.test.AbstractInputQueryTypeTest;
-import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
+import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeImplTest2 extends AbstractInputQueryTypeTest
+public class RegexInputQueryTypeImpl2Test extends AbstractInputQueryTypeTest
 {
     @Override
     public InputQueryType getNewTestInputQueryType()
     {
-        return new RdfInputQueryTypeImpl();
+        return new RegexInputQueryTypeImpl();
     }
     
 }
