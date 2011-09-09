@@ -42,6 +42,7 @@ import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
@@ -61,8 +62,8 @@ import org.queryall.api.utils.QueryAllNamespaces;
 public class RdfUtilsTest
 {
     /**
-     * There will always be cases where unexpected triples appear, so this is FALSE by default
-     * If you want to test a new feature is being parsed correctly, you can temporarily turn this on
+     * There will always be cases where unexpected triples appear, so this is FALSE by default If
+     * you want to test a new feature is being parsed correctly, you can temporarily turn this on
      */
     private static final boolean FAIL_ON_UNEXPECTED_TRIPLES = false;
     
@@ -118,6 +119,7 @@ public class RdfUtilsTest
     private URI testProviderUri1;
     private URI testRuleTestUri1;
     private URI testQueryTypeUri1;
+    private URI testQueryTypeUri2;
     private URI testNormalisationRule1;
     private URI testNormalisationRule2;
     private URI testNormalisationRule3;
@@ -200,6 +202,7 @@ public class RdfUtilsTest
         this.testRuleTestUri1 = this.testValueFactory.createURI("http://example.org/ruletest:test-1");
         
         this.testQueryTypeUri1 = this.testValueFactory.createURI("http://example.org/query:test-1");
+        this.testQueryTypeUri2 = this.testValueFactory.createURI("http://example.org/query:test-2");
         
         this.testNormalisationRule1 = this.testValueFactory.createURI("http://example.org/rdfrule:abc_issn");
         this.testNormalisationRule2 =
@@ -495,9 +498,11 @@ public class RdfUtilsTest
                 // and validate a test identifier
                 Assert.assertTrue("Validation failed", nextValidatingNamespaceEntry.validateIdentifier("zrv"));
                 
-                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextNamespaceEntry.getUnrecognisedStatements(), 0, nextNamespaceEntry.getUnrecognisedStatements().size());
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "
+                            + nextNamespaceEntry.getUnrecognisedStatements(), 0, nextNamespaceEntry
+                            .getUnrecognisedStatements().size());
                 }
             }
         }
@@ -693,10 +698,14 @@ public class RdfUtilsTest
                     Assert.assertTrue("Xslt transform was not parsed correctly", nextXsltRule.getXsltStylesheet()
                             .contains("</xsl:stylesheet>"));
                 }
-
-                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                
+                if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. nextNormalisationRule.class="+nextNormalisationRule.getClass().getName()+" "+nextNormalisationRule.getUnrecognisedStatements(), 0, nextNormalisationRule.getUnrecognisedStatements().size());
+                    Assert.assertEquals(
+                            "There were unexpected triples in the test file. This should not happen. nextNormalisationRule.class="
+                                    + nextNormalisationRule.getClass().getName() + " "
+                                    + nextNormalisationRule.getUnrecognisedStatements(), 0, nextNormalisationRule
+                                    .getUnrecognisedStatements().size());
                 }
             }
         }
@@ -821,10 +830,11 @@ public class RdfUtilsTest
                 {
                     Assert.fail("Found unexpected profile URI=" + nextProfileUri);
                 }
-
-                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                
+                if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen.", 0, nextProfile.getUnrecognisedStatements().size());
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen.", 0,
+                            nextProfile.getUnrecognisedStatements().size());
                 }
             }
         }
@@ -906,10 +916,11 @@ public class RdfUtilsTest
                     Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider
                             .getNormalisationUris().size());
                 }
-
-                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                
+                if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen.", 0, nextProvider.getUnrecognisedStatements().size());
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen.", 0,
+                            nextProvider.getUnrecognisedStatements().size());
                 }
             }
         }
@@ -945,7 +956,7 @@ public class RdfUtilsTest
             
             final Map<URI, QueryType> results = RdfUtils.getQueryTypes(this.testRepository);
             
-            Assert.assertEquals("RdfUtils did not create the expected number of query types.", 1, results.size());
+            Assert.assertEquals("RdfUtils did not create the expected number of query types.", 2, results.size());
             
             for(final URI nextQueryTypeUri : results.keySet())
             {
@@ -1040,8 +1051,94 @@ public class RdfUtilsTest
                             "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>",
                             nextRdfXmlQueryType.getOutputString());
                 }
+                else if(nextQueryTypeUri.equals(this.testQueryTypeUri2))
+                {
+                    Assert.assertEquals("Results did not contain correct query type URI", this.testQueryTypeUri2,
+                            nextQueryTypeUri);
+                    
+                    Assert.assertFalse("Query type is dummy query type was not parsed correctly",
+                            nextQueryType.getIsDummyQueryType());
+                    
+                    Assert.assertFalse("Query type is pageable was not parsed correctly", nextQueryType.getIsPageable());
+                    
+                    Assert.assertEquals("Query type title was not parsed correctly", "Test 2 query type",
+                            nextQueryType.getTitle());
+                    
+                    Assert.assertTrue("Query type handle all namespaces was not parsed correctly",
+                            nextQueryType.getHandleAllNamespaces());
+                    
+                    Assert.assertTrue("Query type is namespace specific was not parsed correctly",
+                            nextQueryType.getIsNamespaceSpecific());
+                    
+                    Assert.assertEquals("Query type namespace match method was not parsed correctly",
+                            QueryTypeSchema.getNamespaceMatchAnyUri(), nextQueryType.getNamespaceMatchMethod());
+                    
+                    Assert.assertFalse("Query type include defaults was not parsed correctly",
+                            nextQueryType.getIncludeDefaults());
+                    
+                    Assert.assertEquals("Query type template string was not parsed correctly",
+                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
+                            nextQueryType.getTemplateString());
+                    
+                    Assert.assertEquals("Query type query uri template string was not parsed correctly",
+                            "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}",
+                            nextQueryType.getQueryUriTemplateString());
+                    
+                    Assert.assertEquals("Query type standard uri template string was not parsed correctly",
+                            "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}",
+                            nextQueryType.getStandardUriTemplateString());
+                    
+                    Assert.assertTrue("Query type in robots txt was not parsed correctly",
+                            nextQueryType.getInRobotsTxt());
+                    
+                    Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            nextQueryType.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType
+                            .getPublicIdentifierTags().size());
+                    
+                    Assert.assertTrue("Query type public identifiers were not parsed correctly", nextQueryType
+                            .getPublicIdentifierTags().contains("input_1"));
+                    
+                    Assert.assertEquals("Query type namespace input indexes size was not parsed correctly", 1,
+                            nextQueryType.getNamespaceInputTags().size());
+                    
+                    Assert.assertTrue("Query type namespace input indexes were not parsed correctly", nextQueryType
+                            .getNamespaceInputTags().contains("input_1"));
+                    
+                    Assert.assertEquals("Query type semantically linked query types were not parsed correctly", 1,
+                            nextQueryType.getLinkedQueryTypes().size());
+                    
+                    Assert.assertTrue("Query type was not parsed into a InputQueryType",
+                            nextQueryType instanceof InputQueryType);
+
+                    final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
+                    
+                    Assert.assertEquals("Query type expected input parameters were not parsed correctly", 2, nextInputQueryType.getExpectedInputParameters().size());
+                    
+                    Assert.assertTrue("Query type was not parsed into a RdfInputQueryType",
+                            nextQueryType instanceof RdfInputQueryType);
+                    
+                    final RdfInputQueryType nextRdfQueryType = (RdfInputQueryType)nextQueryType;
+                    
+                    Assert.assertEquals("Query type input sparql select was not parsed correctly", "SELECT ?input_1 ?input_2 WHERE { ?testObjects rdf:type <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }",
+                            nextRdfQueryType.getSparqlInputSelect());
+                    
+                    Assert.assertTrue("Query type was not parsed into a RdfOutputQueryType",
+                            nextQueryType instanceof RdfOutputQueryType);
+                    
+                    final RdfOutputQueryType nextRdfOutputQueryType = (RdfOutputQueryType)nextQueryType;
+                    
+                    Assert.assertEquals("Query type output format was not parsed correctly", "text/rdf+n3", nextRdfOutputQueryType.getOutputRdfFormat());
+                    
+                    Assert.assertEquals(
+                            "Query type output rdf n3 string was not parsed correctly",
+                            "<${ntriplesEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}> a <http://purl.org/queryall/query:QueryType>",
+                            nextRdfOutputQueryType.getOutputString());
+                }
                 
-                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
                     Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextQueryType.getUnrecognisedStatements(), 0, nextQueryType.getUnrecognisedStatements().size());
                 }
@@ -1110,10 +1207,12 @@ public class RdfUtilsTest
                     Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/",
                             nextRegexRuleTest.getTestOutputString());
                 }
-
-                if(FAIL_ON_UNEXPECTED_TRIPLES)
+                
+                if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextRuleTest.getUnrecognisedStatements(), 0, nextRuleTest.getUnrecognisedStatements().size());
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "
+                            + nextRuleTest.getUnrecognisedStatements(), 0, nextRuleTest.getUnrecognisedStatements()
+                            .size());
                 }
             }
         }
