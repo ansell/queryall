@@ -57,6 +57,7 @@ public abstract class AbstractRegexInputQueryTypeTest
     {
         this.testRegexInputQueryType1 = null;
         this.testRegex = null;
+        this.testQueryParameters = null;
     }
     
     /**
