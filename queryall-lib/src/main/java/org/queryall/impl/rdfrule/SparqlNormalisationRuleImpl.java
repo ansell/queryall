@@ -258,6 +258,12 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         }
     }
     
+    /**
+     * Performs changes to the input repository based on the mode of this rule
+     * 
+     * @param input A repository containing the current set of RDF statements
+     * @return A repository  containing the output set of RDF statements, after normalisation by this rule
+     */
     private Repository doWorkBasedOnMode(final Repository input)
     {
         if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))

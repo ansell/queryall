@@ -12,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.queryall.api.querytype.RdfInputQueryType;
-import org.queryall.api.querytype.RegexInputQueryType;
+import org.queryall.api.utils.Constants;
 
 /**
  * Abstract unit test for InputQueryType API
@@ -52,11 +52,15 @@ public abstract class AbstractRdfInputQueryTypeTest
         		"</rdf:Description>" + 
         		"</rdf:RDF>";
 
-        this.testSparqlInputSelect = "SELECT ?input_1 ?input_2 WHERE { ?testObjects rdf:type <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }";
+        this.testSparqlInputSelect = "SELECT ?input_1 ?input_2 WHERE { ?testObjects a <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }";
         this.testRdfInputQueryType1.setSparqlInputSelect(this.testSparqlInputSelect);
         
+        this.testRdfInputQueryType1.addExpectedInputParameter("input_1");
+        this.testRdfInputQueryType1.addExpectedInputParameter("input_2");
+        
         testQueryParameters = new HashMap<String, String>();
-        testQueryParameters.put("query", this.testRdfDocument);
+        testQueryParameters.put(Constants.QUERY, this.testRdfDocument);
+        testQueryParameters.put("inputMimeType", Constants.APPLICATION_RDF_XML);
     }
     
     /**
@@ -77,6 +81,7 @@ public abstract class AbstractRdfInputQueryTypeTest
         Assert.assertEquals("SPARQL SELECT query input was not set properly", this.testSparqlInputSelect, this.testRdfInputQueryType1.getSparqlInputSelect());
         
         Assert.assertTrue("RDF document does not match for query parameters", this.testRdfInputQueryType1.matchesQueryParameters(testQueryParameters));
+        
         Map<String, List<String>> matchingQueryParams = this.testRdfInputQueryType1.matchesForQueryParameters(testQueryParameters);
         
         Assert.assertEquals("Query parameters were not parsed correctly", 2, matchingQueryParams.size());

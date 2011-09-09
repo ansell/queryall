@@ -3,7 +3,11 @@
  */
 package org.queryall.impl.querytype;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +19,18 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RdfInputQueryTypeSchema;
@@ -37,7 +50,6 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
 {
     private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeImpl.class);
     private static final boolean _TRACE = RdfInputQueryTypeImpl.log.isTraceEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _DEBUG = RdfInputQueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfInputQueryTypeImpl.log.isInfoEnabled();
@@ -96,7 +108,7 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
             {
                 if(_TRACE)
                 {
-                    log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
+                    log.trace("RdfInputQueryTypeImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -181,15 +193,13 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
     @Override
     public Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getBindingsForInput(queryParameters.get(Constants.QUERY), RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML));
     }
 
     @Override
-    public boolean matchesQueryParameters(Map<String, String> queryString)
+    public boolean matchesQueryParameters(Map<String, String> queryParameters)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return (getBindingsForInput(queryParameters.get(Constants.QUERY), RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML)).size() > 0);
     }
 
     @Override
@@ -204,4 +214,143 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
         return sparqlInputSelect;
     }
 
+    /**
+     * Returns a map of bindings as strings mapped to lists of strings.
+     * 
+     * @param myRepository The repository to 
+     * @return
+     */
+    private Map<String, List<String>> getBindingsForInput(String input, RDFFormat inputFormat)
+    {
+        Map<String, List<String>> results = new HashMap<String, List<String>>();
+        
+        Repository myRepository = new SailRepository(new MemoryStore());
+        
+        RepositoryConnection addConnection = null;
+        try
+        {
+            myRepository.initialize();
+            
+            addConnection = myRepository.getConnection();
+            
+            addConnection.add(new StringReader(input),"http://purl.org/queryall/baseUri#", inputFormat);
+
+            addConnection.commit();
+        }
+        catch(RDFParseException e1)
+        {
+            throw new RuntimeException("Could not initialise in memory repository with the query document due to an RDF parsing exception", e1);
+        }
+        catch(RepositoryException e1)
+        {
+            throw new RuntimeException("Could not initialise in memory repository with the query document due to a Repository exception", e1);
+        }
+        catch(IOException e1)
+        {
+            throw new RuntimeException("Could not initialise in memory repository with the query document due to an IO exception", e1);
+        }
+        finally
+        {
+            if(addConnection != null)
+            {
+                try
+                {
+                    addConnection.close();
+                }
+                catch(RepositoryException e)
+                {
+                    log.error("Found repository exception while trying to close add connection", e);
+                }
+            }
+        }
+        
+        RepositoryConnection selectConnection = null;
+        try
+        {
+            selectConnection = myRepository.getConnection();
+            
+            final TupleQueryResult tupleResult =
+                    selectConnection.prepareTupleQuery(QueryLanguage.SPARQL, this.getSparqlInputSelect()).evaluate();
+            
+            int selectBindings = 0;
+            int actualBindings = 0;
+            
+            while(tupleResult.hasNext())
+            {
+                BindingSet nextBinding = tupleResult.next();
+                
+                selectBindings++;
+                for(String nextExpectedBinding : this.getExpectedInputParameters())
+                {
+                    if(nextBinding.hasBinding(nextExpectedBinding))
+                    {
+                        String nextBindingValue = nextBinding.getBinding(nextExpectedBinding).getValue().stringValue();
+                        
+                        if(results.containsKey(nextExpectedBinding))
+                        {
+                            results.get(nextExpectedBinding).add(nextBindingValue);
+                        }
+                        else
+                        {
+                            List<String> nextList = new ArrayList<String>(5);
+                            nextList.add(nextBindingValue);
+                            
+                            results.put(nextExpectedBinding, nextList);
+                        }
+                        actualBindings++;
+                    }
+                }
+            }
+            
+            if(RdfInputQueryTypeImpl._DEBUG)
+            {
+                RdfInputQueryTypeImpl.log.debug("RdfInputQueryTypeImpl: found "
+                        + selectBindings + " results sets with a total of "+ actualBindings + " bound values");
+            }
+        }
+        catch(final org.openrdf.repository.RepositoryException rex)
+        {
+            RdfInputQueryTypeImpl.log.error(
+                    "RdfInputQueryTypeImpl: RepositoryException exception adding statements", rex);
+        }
+        catch(QueryEvaluationException e)
+        {
+            if(this.getKey() != null)
+            {
+                log.error("QueryEvaluationException queryType.getKey()="+this.getKey().stringValue(), e);
+            }
+            else
+            {
+                log.error("QueryEvaluationException queryType unknown selectQuery="+input, e);
+            }
+        }
+        catch(MalformedQueryException e)
+        {
+            if(this.getKey() != null)
+            {
+                log.error("MalformedQueryException queryType.getKey()="+this.getKey().stringValue(), e);
+            }
+            else
+            {
+                log.error("MalformedQueryException queryType unknown selectQuery="+this.getSparqlInputSelect(), e);
+            }
+        }
+        finally
+        {
+            try
+            {
+                if(selectConnection != null)
+                {
+                    selectConnection.close();
+                }
+            }
+            catch(RepositoryException e)
+            {
+                log.error("RepositoryException while trying to close selectConnection", e);
+            }
+        }
+        
+        return results;
+    }
+    
 }
