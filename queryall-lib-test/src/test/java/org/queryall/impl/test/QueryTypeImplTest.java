@@ -7,7 +7,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.test.AbstractQueryTypeTest;
-import org.queryall.impl.querytype.QueryTypeImpl;
+import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -32,6 +32,6 @@ public class QueryTypeImplTest extends AbstractQueryTypeTest
     @Override
     public QueryType getNewTestQueryType()
     {
-        return new QueryTypeImpl();
+        return new RegexInputQueryTypeImpl();
     }
 }

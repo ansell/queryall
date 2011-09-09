@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -22,11 +19,9 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
-import org.queryall.api.querytype.RdfXmlOutputQueryType;
-import org.queryall.api.querytype.RdfXmlOutputQueryTypeSchema;
-import org.queryall.api.querytype.RegexInputQueryType;
-import org.queryall.api.querytype.RegexInputQueryTypeSchema;
-import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
+import org.queryall.api.querytype.RdfOutputQueryType;
+import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
+import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.query.ProvenanceRecord;
@@ -39,7 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutputQueryType
+public abstract class QueryTypeImpl implements QueryType, SparqlProcessorQueryType, RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
@@ -47,14 +42,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
     
-    private static final Set<URI> QUERY_TYPE_IMPL_TYPES = new HashSet<URI>();
-    
-    public static Set<URI> myTypes()
-    {
-        return QueryTypeImpl.QUERY_TYPE_IMPL_TYPES;
-    }
-    
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
     
@@ -117,37 +105,27 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
-    private String inputRegex = "";
-    
-    private Pattern inputRegexPattern = null;
-    
     private String templateString = "";
     
     private String queryUriTemplateString = "";
     
     private String standardUriTemplateString = "";
     
-    private String outputRdfXmlString = "";
+    private String outputRdfString = "";
     
     @SuppressWarnings("unused")
     private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
     
     private boolean isDummyQueryType = false;
+    // default to universally available RDF/XML, and for backwards compatibility with previous versions (<5) that only supported RDF/XML output
+    private String outputRdfFormat = Constants.APPLICATION_RDF_XML;
     
-    static
-    {
-        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
-        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
-        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri());
-        QueryTypeImpl.QUERY_TYPE_IMPL_TYPES.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri());
-    }
-    
-    public QueryTypeImpl()
+    protected QueryTypeImpl()
     {
         // TODO Auto-generated constructor stub
     }
     
-    public QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+    protected QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         for(final Statement nextStatement : inputStatements)
@@ -158,11 +136,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && (nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri())
-                            || nextStatement.getObject().equals(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri())
-                            || nextStatement.getObject().equals(
-                                    SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri()) || nextStatement
-                            .getObject().equals(RdfXmlOutputQueryTypeSchema.getRdfXmlOutputQueryTypeUri())))
+                    && nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri()))
             {
                 if(QueryTypeImpl._TRACE)
                 {
@@ -220,10 +194,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             {
                 this.setIncludeDefaults(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
-            else if(nextStatement.getPredicate().equals(RegexInputQueryTypeSchema.getQueryInputRegex()))
-            {
-                this.setInputRegex(nextStatement.getObject().stringValue());
-            }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryIncludeQueryType()))
             {
                 this.addLinkedQueryType((URI)nextStatement.getObject());
@@ -240,9 +210,14 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             {
                 this.setStandardUriTemplateString(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString()))
+            else if(nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getQueryOutputRdfString())
+                    || nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString()))
             {
                 this.setOutputString(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat()))
+            {
+                this.setOutputRdfFormat(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryInRobotsTxt()))
             {
@@ -342,16 +317,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
         return QueryAllNamespaces.QUERY;
     }
     
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return QueryTypeImpl.myTypes();
-    }
-    
     @Override
     public boolean getHandleAllNamespaces()
     {
@@ -362,23 +327,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     public boolean getIncludeDefaults()
     {
         return this.includeDefaults;
-    }
-    
-    @Override
-    public String getInputRegex()
-    {
-        return this.inputRegex;
-    }
-    
-    @Override
-    public Pattern getInputRegexPattern()
-    {
-        if(this.inputRegexPattern == null && this.inputRegex != null)
-        {
-            this.inputRegexPattern = Pattern.compile(this.inputRegex);
-        }
-        
-        return this.inputRegexPattern;
     }
     
     @Override
@@ -441,7 +389,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     @Override
     public String getOutputString()
     {
-        return this.outputRdfXmlString;
+        return this.outputRdfString;
     }
     
     @Override
@@ -677,35 +625,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     }
     
     @Override
-    public Map<String, List<String>> matchesForQueryParameters(final Map<String, String> nextQueryParameters)
-    {
-        if(nextQueryParameters.containsKey(Constants.QUERY))
-        {
-            return StringUtils.matchesForRegexOnString(this.getInputRegexPattern(), this.inputRegex,
-                    nextQueryParameters.get(Constants.QUERY));
-        }
-        else
-        {
-            throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
-        }
-    }
-    
-    @Override
-    public boolean matchesQueryParameters(final Map<String, String> nextQueryParameters)
-    {
-        if(nextQueryParameters.containsKey(Constants.QUERY))
-        {
-            return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
-                    nextQueryParameters.get(Constants.QUERY));
-        }
-        else
-        {
-            throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
-        }
-        
-    }
-    
-    @Override
     public void setCurationStatus(final URI curationStatus)
     {
         this.curationStatus = curationStatus;
@@ -721,13 +640,6 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     public void setIncludeDefaults(final boolean includeDefaults)
     {
         this.includeDefaults = includeDefaults;
-    }
-    
-    @Override
-    public void setInputRegex(final String nextInputRegex)
-    {
-        this.inputRegex = nextInputRegex;
-        this.inputRegexPattern = Pattern.compile(nextInputRegex);
     }
     
     @Override
@@ -779,7 +691,7 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
     @Override
     public void setOutputString(final String outputRdfXmlString)
     {
-        this.outputRdfXmlString = outputRdfXmlString;
+        this.outputRdfString = outputRdfXmlString;
     }
     
     @Override
@@ -857,12 +769,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
                 + "\" /></div>\n");
         sb.append("<div class=\"" + prefix + "outputRdfXmlString_div\"><span class=\"" + prefix
                 + "outputRdfXmlString_span\">Static output RDF/XML Template:</span><input type=\"text\" name=\""
-                + prefix + "outputRdfXmlString\" value=\"" + StringUtils.xmlEncodeString(this.outputRdfXmlString)
+                + prefix + "outputRdfString\" value=\"" + StringUtils.xmlEncodeString(this.outputRdfString)
                 + "\" /></div>\n");
-        
-        sb.append("<div class=\"" + prefix + "inputRegex_div\"><span class=\"" + prefix
-                + "inputRegex_span\">Input Regular Expression:</span><input type=\"text\" name=\"" + prefix
-                + "inputRegex\" value=\"" + StringUtils.xmlEncodeString(this.inputRegex) + "\" /></div>\n");
         
         sb.append("<div class=\"" + prefix + "isNamespaceSpecific_div\"><span class=\"" + prefix
                 + "isNamespaceSpecific_span\">Is Namespace Specific:</span><input type=\"checkbox\" name=\"" + prefix
@@ -966,9 +874,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             final Literal isDummyQueryTypeLiteral = f.createLiteral(this.isDummyQueryType);
             final URI profileIncludeExcludeOrderLiteral = this.profileIncludeExcludeOrder;
             
-            final Literal outputRdfXmlStringLiteral = f.createLiteral(this.outputRdfXmlString);
-            
-            final Literal inputRegexLiteral = f.createLiteral(this.inputRegex);
+            final Literal outputRdfStringLiteral = f.createLiteral(this.outputRdfString);
+            final Literal outputRdfFormatLiteral = f.createLiteral(this.outputRdfFormat);
             
             URI curationStatusLiteral = null;
             
@@ -1018,9 +925,26 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             con.add(queryInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
                     profileIncludeExcludeOrderLiteral, keyToUse);
             
-            con.add(queryInstanceUri, RegexInputQueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
-            con.add(queryInstanceUri, RdfXmlOutputQueryTypeSchema.getQueryOutputRdfXmlString(),
-                    outputRdfXmlStringLiteral, keyToUse);
+            if(modelVersion < 5)
+            {
+                if(this.getOutputRdfFormat().equals(Constants.APPLICATION_RDF_XML))
+                {
+                    con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(),
+                            outputRdfStringLiteral, keyToUse);
+                }
+                else
+                {
+                    log.info("Unable to supply RDF Output string to this user as they requested an old version of the api, and the template was not in application/rdf+xml format");
+                }
+            }
+            else
+            {
+                    con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfString(),
+                            outputRdfStringLiteral, keyToUse);
+                    con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(),
+                            outputRdfFormatLiteral, keyToUse);
+                
+            }
             
             // log.info("after single URIs created");
             
@@ -1039,19 +963,61 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
             
             if(this.publicIdentifierTags != null)
             {
-                for(final String nextPublicIdentifierTag : this.publicIdentifierTags)
+                if(modelVersion < 5)
                 {
-                    con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
-                            f.createLiteral(nextPublicIdentifierTag), keyToUse);
+                    for(final String nextPublicIdentifierTag : this.publicIdentifierTags)
+                    {
+                        if(nextPublicIdentifierTag.startsWith("input_"))
+                        {
+                            try
+                            {
+                                con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
+                                        f.createLiteral(Integer.parseInt(nextPublicIdentifierTag.substring("input_".length()))), keyToUse);
+                            }
+                            catch(NumberFormatException nfe)
+                            {
+                                log.info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextPublicIdentifierTag="+nextPublicIdentifierTag+ " querytype.getKey()="+this.getKey().stringValue());
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for(final String nextPublicIdentifierTag : this.publicIdentifierTags)
+                    {
+                        con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
+                                f.createLiteral(nextPublicIdentifierTag), keyToUse);
+                    }
                 }
             }
             
             if(this.namespaceInputTags != null)
             {
-                for(final String nextNamespaceInputTag : this.namespaceInputTags)
+                if(modelVersion < 5)
                 {
-                    con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
-                            f.createLiteral(nextNamespaceInputTag), keyToUse);
+                    for(final String nextNamespaceInputTag : this.namespaceInputTags)
+                    {
+                        if(nextNamespaceInputTag.startsWith("input_"))
+                        {
+                            try
+                            {
+                                con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
+                                        f.createLiteral(Integer.parseInt(nextNamespaceInputTag.substring("input_".length()))), keyToUse);
+                            }
+                            catch(NumberFormatException nfe)
+                            {
+                                log.info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextNamespaceInputTag="+nextNamespaceInputTag+ " querytype.getKey()="+this.getKey().stringValue());
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for(final String nextNamespaceInputTag : this.namespaceInputTags)
+                    {
+                        con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
+                                f.createLiteral(nextNamespaceInputTag), keyToUse);
+                    }
                 }
             }
             
@@ -1116,8 +1082,8 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
         // sb.append("templateString=" + templateString + "\n");
         // sb.append("standardUriTemplateString=" + standardUriTemplateString + "\n");
         // sb.append("queryUriTemplateString=" + queryUriTemplateString + "\n");
-        // sb.append("outputRdfXmlString=" + outputRdfXmlString + "\n");
-        sb.append("inputRegex=" + this.inputRegex + "\n");
+        // sb.append("outputRdfString=" + outputRdfString + "\n");
+//        sb.append("inputRegex=" + this.inputRegex + "\n");
         
         // if(semanticallyLinkedCustomQueries == null)
         // {
@@ -1150,5 +1116,31 @@ public class QueryTypeImpl implements QueryType, RegexInputQueryType, RdfXmlOutp
         // }
         
         return sb.toString();
+    }
+
+    @Override
+    public String getOutputRdfFormat()
+    {
+        return outputRdfFormat;
+    }
+
+    @Override
+    public void setOutputRdfFormat(String rdfFormat)
+    {
+        this.outputRdfFormat = rdfFormat;
+    }
+
+    @Override
+    public String getSparqlTemplateString()
+    {
+        // Wrappers around the getTemplateString function for now
+        return getTemplateString();
+    }
+
+    @Override
+    public void setSparqlTemplateString(String templateString)
+    {
+        // Wrappers around the setTemplateString function for now
+        setTemplateString(templateString);
     }
 }

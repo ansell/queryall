@@ -14,25 +14,25 @@ import org.queryall.api.services.QueryAllEnum;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices(QueryAllEnum.class)
-public class QueryTypeImplEnum extends QueryTypeEnum
+public class RdfInputQueryTypeImplEnum extends QueryTypeEnum
 {
-    public static final QueryTypeEnum QUERY_TYPE_IMPL_ENUM = new QueryTypeImplEnum();
+    public static final QueryTypeEnum RDF_INPUT_QUERY_TYPE_IMPL_ENUM = new RdfInputQueryTypeImplEnum();
     
     // static
     // {
-    // QueryTypeEnum.register(QUERY_TYPE_IMPL_ENUM);
+    // QueryTypeEnum.register(RDF_INPUT_QUERY_TYPE_IMPL_ENUM);
     // }
     
-    public QueryTypeImplEnum()
+    public RdfInputQueryTypeImplEnum()
     {
-        this(QueryTypeImpl.class.getName(), QueryTypeImpl.myTypes());
+        this(RdfInputQueryTypeImpl.class.getName(), RdfInputQueryTypeImpl.myTypes());
     }
     
     /**
      * @param nextName
      * @param nextTypeURIs
      */
-    public QueryTypeImplEnum(final String nextName, final Set<URI> nextTypeURIs)
+    public RdfInputQueryTypeImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

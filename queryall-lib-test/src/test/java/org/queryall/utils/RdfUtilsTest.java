@@ -41,7 +41,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
-import org.queryall.api.querytype.RdfXmlOutputQueryType;
+import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -1022,10 +1022,10 @@ public class RdfUtilsTest
                     Assert.assertEquals("Query type input regex was not parsed correctly", "^([\\w-]+):(.+)",
                             nextRegexQueryType.getInputRegex());
                     
-                    Assert.assertTrue("Query type was not parsed into a RdfXmlOutputQueryType",
-                            nextQueryType instanceof RdfXmlOutputQueryType);
+                    Assert.assertTrue("Query type was not parsed into a RdfOutputQueryType",
+                            nextQueryType instanceof RdfOutputQueryType);
                     
-                    final RdfXmlOutputQueryType nextRdfXmlQueryType = (RdfXmlOutputQueryType)nextQueryType;
+                    final RdfOutputQueryType nextRdfXmlQueryType = (RdfOutputQueryType)nextQueryType;
                     
                     Assert.assertEquals(
                             "Query type output rdf xml string was not parsed correctly",

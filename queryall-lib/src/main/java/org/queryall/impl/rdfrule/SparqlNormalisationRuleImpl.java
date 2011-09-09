@@ -35,7 +35,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleImpl.class);
     private static final boolean _TRACE = SparqlNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = SparqlNormalisationRuleImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _INFO = SparqlNormalisationRuleImpl.log.isInfoEnabled();
     
     private String sparqlConstructQueryTarget = "";

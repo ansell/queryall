@@ -15,7 +15,7 @@ import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
-import org.queryall.api.querytype.RdfXmlOutputQueryTypeSchema;
+import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.querytype.RegexInputQueryTypeSchema;
 import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -139,15 +139,15 @@ public class Schema
         
         try
         {
-            if(!RdfXmlOutputQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
+            if(!RdfOutputQueryTypeSchema.schemaToRdf(myRepository, contextUri, configVersion))
             {
-                Schema.log.error("RdfXmlOutputQueryType schema was not placed correctly in the rdf store");
+                Schema.log.error("RdfOutputQueryType schema was not placed correctly in the rdf store");
             }
         }
         catch(final Exception ex)
         {
             Schema.log.error(
-                    "Problem generating RdfXmlOutputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+                    "Problem generating RdfOutputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
