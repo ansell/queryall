@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.servlets.helpers.SettingsContextListener;
@@ -33,6 +34,8 @@ public class IndexPageServlet extends HttpServlet
     {
         final QueryAllConfiguration localSettings =
                 (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final VelocityEngine localVelocity =
+                (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
         
         final PrintWriter out = response.getWriter();
         response.setContentType("text/html");
@@ -43,7 +46,7 @@ public class IndexPageServlet extends HttpServlet
         
         try
         {
-            HtmlPageRenderer.renderIndexPage(localSettings, this.getServletContext(), out, new LinkedList<String>(),
+            HtmlPageRenderer.renderIndexPage(localSettings, localVelocity, out, new LinkedList<String>(),
                     realHostName, request.getContextPath());
         }
         catch(final OpenRDFException ordfe)
