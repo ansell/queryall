@@ -47,19 +47,19 @@ public class HtmlPageRenderer
     @SuppressWarnings("unused")
     private static final boolean _INFO = HtmlPageRenderer.log.isInfoEnabled();
     
-    public static void renderHtml(final VelocityEngine nextEngine, final Repository nextRepository,
-            final java.io.Writer nextWriter, final Collection<String> debugStrings, final String queryString,
+    public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final Repository nextRepository, final java.io.Writer nextWriter, final String queryString,
             final String resolvedUri, final String realHostName, final String contextPath, final int pageoffset,
-            final QueryAllConfiguration localSettings) throws OpenRDFException
+            final Collection<String> debugStrings) throws OpenRDFException
     {
-        HtmlPageRenderer.renderHtml(nextEngine, nextRepository, nextWriter, null, debugStrings, queryString,
-                resolvedUri, realHostName, contextPath, pageoffset, localSettings);
+        HtmlPageRenderer.renderHtml(nextEngine, localSettings, null, nextRepository, nextWriter, queryString,
+                resolvedUri, realHostName, contextPath, pageoffset, debugStrings);
     }
     
-    public static void renderHtml(final VelocityEngine nextEngine, final Repository nextRepository,
-            final java.io.Writer nextWriter, final RdfFetchController fetchController,
-            final Collection<String> debugStrings, final String queryString, final String resolvedUri,
-            String realHostName, String contextPath, int pageoffset, final QueryAllConfiguration localSettings)
+    public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final RdfFetchController fetchController, final Repository nextRepository,
+            final java.io.Writer nextWriter, final String queryString, final String resolvedUri,
+            String realHostName, String contextPath, int pageoffset, final Collection<String> debugStrings)
         throws OpenRDFException
     {
         boolean nextpagelinkuseful = false;

@@ -575,9 +575,9 @@ public class ConfigurationServlet extends HttpServlet
                 
                 try
                 {
-                    HtmlPageRenderer.renderHtml(localVelocityEngine, myRepository, stBuff, debugStrings, queryString,
+                    HtmlPageRenderer.renderHtml(localVelocityEngine, localSettings, myRepository, stBuff, queryString,
                             localSettings.getDefaultHostAddress() + queryString, realHostName,
-                            request.getContextPath(), -1, localSettings);
+                            request.getContextPath(), -1, debugStrings);
                 }
                 catch(final OpenRDFException ordfe)
                 {
