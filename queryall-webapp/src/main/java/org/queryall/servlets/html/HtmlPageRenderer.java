@@ -263,7 +263,7 @@ public class HtmlPageRenderer
         velocityContext.put("bio2rdfutil", new org.queryall.utils.RdfUtils());
         
         // our only way of guessing if other pages are available without doing an explicit count
-        if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0))
+        if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500))
         {
             nextpagelinkuseful = true;
         }
