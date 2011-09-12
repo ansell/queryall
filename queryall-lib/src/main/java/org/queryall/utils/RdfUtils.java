@@ -73,7 +73,7 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.provider.HttpOnlyProviderImpl;
 import org.queryall.impl.provider.HttpProviderImpl;
-import org.queryall.impl.querytype.QueryTypeImpl;
+import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
@@ -198,7 +198,7 @@ public final class RdfUtils
         
         nextQueryBundle.setProvider(dummyProvider);
         
-        final QueryType dummyQuery = new QueryTypeImpl();
+        final QueryType dummyQuery = new RegexInputQueryTypeImpl();
         
         dummyQuery.setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
                 + StringUtils.percentEncode(namespaceAndIdentifier));
@@ -240,7 +240,7 @@ public final class RdfUtils
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
         
-        final QueryType dummyQuery = new QueryTypeImpl();
+        final QueryType dummyQuery = new RegexInputQueryTypeImpl();
         
         dummyQuery.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));

@@ -1,4 +1,4 @@
-<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:RegexInputQuery> , <http://purl.org/queryall/query:SparqlProcessorQuery> , <http://purl.org/queryall/query:RdfXmlOutputQuery> ;
+<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:RegexInputQuery> , <http://purl.org/queryall/query:SparqlProcessorQuery> , <http://purl.org/queryall/query:RdfOutputQuery> ;
     <http://purl.org/queryall/query:isDummyQueryType> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
     <http://purl.org/queryall/query:isPageable> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
 	<http://purl.org/dc/elements/1.1/title> "Test 1 query type" ;
@@ -11,10 +11,35 @@
 	<http://purl.org/queryall/query:templateString> "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }" ;
 	<http://purl.org/queryall/query:queryUriTemplateString> "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}" ;
 	<http://purl.org/queryall/query:standardUriTemplateString> "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}" ;
-	<http://purl.org/queryall/query:outputRdfXmlString> "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>" ;
+	<http://purl.org/queryall/query:outputRdfFormat> "application/rdf+xml" ;
+	<http://purl.org/queryall/query:outputRdfString> "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>" ;
 	<http://purl.org/queryall/query:inRobotsTxt> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> ;
-	<http://purl.org/queryall/query:hasPublicIdentifierIndex> "1"^^<http://www.w3.org/2001/XMLSchema#int> ;
-	<http://purl.org/queryall/query:hasNamespaceInputIndex> "1"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://purl.org/queryall/query:hasPublicIdentifierTag> "input_1" ;
+	<http://purl.org/queryall/query:hasNamespaceInputTag> "input_1" ;
+	<http://purl.org/queryall/query:expectedInputParameters> "input_1", "input_2" ;
 	<http://purl.org/queryall/query:includeQueryType> <http://example.org/query:test-1> .
 
+<http://example.org/query:test-2> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:RdfInputQuery> , <http://purl.org/queryall/query:SparqlProcessorQuery> , <http://purl.org/queryall/query:RdfOutputQuery> ;
+    <http://purl.org/queryall/query:isDummyQueryType> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+    <http://purl.org/queryall/query:isPageable> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/dc/elements/1.1/title> "Test 2 query type" ;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Test 2 query type description." ;
+	<http://purl.org/queryall/query:handleAllNamespaces> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/query:isNamespaceSpecific> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/query:namespaceMatchMethod> <http://purl.org/queryall/query:namespaceMatchAny> ;
+	<http://purl.org/queryall/query:includeDefaults> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/query:templateString> "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }" ;
+	<http://purl.org/queryall/query:queryUriTemplateString> "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}" ;
+	<http://purl.org/queryall/query:standardUriTemplateString> "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}" ;
+	<http://purl.org/queryall/query:outputRdfFormat> "text/rdf+n3" ;
+	<http://purl.org/queryall/query:outputRdfString> "<${ntriplesEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}> a <http://purl.org/queryall/query:QueryType>" ;
+	<http://purl.org/queryall/query:inRobotsTxt> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> ;
+	<http://purl.org/queryall/query:sparqlInputSelect> "SELECT ?input_1 ?input_2 WHERE { ?testObjects rdf:type <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }" ;
+	<http://purl.org/queryall/query:hasPublicIdentifierTag> "input_1" ;
+	<http://purl.org/queryall/query:hasNamespaceInputTag> "input_1" ;
+	<http://purl.org/queryall/query:expectedInputParameters> "input_1", "input_2" ;
+	<http://purl.org/queryall/query:includeQueryType> <http://example.org/query:test-2> .
+
+# TODO: defaults for query type test

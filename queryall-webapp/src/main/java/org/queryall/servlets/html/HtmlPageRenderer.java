@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
@@ -21,8 +19,6 @@ import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.Settings;
-import org.queryall.servlets.GeneralServlet;
-import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -47,19 +43,19 @@ public class HtmlPageRenderer
     @SuppressWarnings("unused")
     private static final boolean _INFO = HtmlPageRenderer.log.isInfoEnabled();
     
-    public static void renderHtml(final VelocityEngine nextEngine, final Repository nextRepository,
-            final java.io.Writer nextWriter, final Collection<String> debugStrings, final String queryString,
+    public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final Repository nextRepository, final java.io.Writer nextWriter, final String queryString,
             final String resolvedUri, final String realHostName, final String contextPath, final int pageoffset,
-            final QueryAllConfiguration localSettings) throws OpenRDFException
+            final Collection<String> debugStrings) throws OpenRDFException
     {
-        HtmlPageRenderer.renderHtml(nextEngine, nextRepository, nextWriter, null, debugStrings, queryString,
-                resolvedUri, realHostName, contextPath, pageoffset, localSettings);
+        HtmlPageRenderer.renderHtml(nextEngine, localSettings, null, nextRepository, nextWriter, queryString,
+                resolvedUri, realHostName, contextPath, pageoffset, debugStrings);
     }
     
-    public static void renderHtml(final VelocityEngine nextEngine, final Repository nextRepository,
-            final java.io.Writer nextWriter, final RdfFetchController fetchController,
-            final Collection<String> debugStrings, final String queryString, final String resolvedUri,
-            String realHostName, String contextPath, int pageoffset, final QueryAllConfiguration localSettings)
+    public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final RdfFetchController fetchController, final Repository nextRepository,
+            final java.io.Writer nextWriter, final String queryString, final String resolvedUri,
+            String realHostName, String contextPath, int pageoffset, final Collection<String> debugStrings)
         throws OpenRDFException
     {
         boolean nextpagelinkuseful = false;
@@ -107,9 +103,9 @@ public class HtmlPageRenderer
         
         final Context velocityContext = new VelocityContext();
         
-        velocityContext.put("debug_level_info", GeneralServlet._INFO);
-        velocityContext.put("debug_level_debug", GeneralServlet._DEBUG);
-        velocityContext.put("debug_level_trace", GeneralServlet._TRACE);
+        velocityContext.put("debug_level_info", _INFO);
+        velocityContext.put("debug_level_debug", _DEBUG);
+        velocityContext.put("debug_level_trace", _TRACE);
         
         velocityContext.put("project_name", localSettings.getStringProperty("projectName", "queryall"));
         velocityContext.put("project_base_url",
@@ -263,7 +259,7 @@ public class HtmlPageRenderer
         velocityContext.put("bio2rdfutil", new org.queryall.utils.RdfUtils());
         
         // our only way of guessing if other pages are available without doing an explicit count
-        if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 0))
+        if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500))
         {
             nextpagelinkuseful = true;
         }
@@ -406,7 +402,7 @@ public class HtmlPageRenderer
         }
     }
     
-    public static void renderIndexPage(final QueryAllConfiguration localSettings, final ServletContext servletContext,
+    public static void renderIndexPage(final QueryAllConfiguration localSettings, final VelocityEngine nextEngine,
             final java.io.Writer nextWriter, final Collection<String> debugStrings, String realHostName,
             String contextPath) throws OpenRDFException
     {
@@ -445,9 +441,9 @@ public class HtmlPageRenderer
                 Integer.toString(localSettings.getAllRuleTests().size()));
         velocityContext.put("statistics_querytypes", Integer.toString(localSettings.getAllQueryTypes().size()));
         
-        velocityContext.put("debug_level_info", GeneralServlet._INFO);
-        velocityContext.put("debug_level_debug", GeneralServlet._DEBUG);
-        velocityContext.put("debug_level_trace", GeneralServlet._TRACE);
+        velocityContext.put("debug_level_info", _INFO);
+        velocityContext.put("debug_level_debug", _DEBUG);
+        velocityContext.put("debug_level_trace", _TRACE);
         
         velocityContext.put("title", localSettings.getStringProperty("projectName", "Bio2RDF"));
         
@@ -483,9 +479,6 @@ public class HtmlPageRenderer
         
         try
         {
-            final VelocityEngine nextEngine =
-                    (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
-            
             VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
         }
         catch(final Exception ex)

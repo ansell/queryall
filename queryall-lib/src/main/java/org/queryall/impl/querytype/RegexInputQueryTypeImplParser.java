@@ -14,7 +14,7 @@ import org.queryall.api.querytype.QueryTypeParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeImplParser implements QueryTypeParser
+public class RegexInputQueryTypeImplParser implements QueryTypeParser
 {
     @Override
     public QueryType createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
@@ -22,7 +22,7 @@ public class QueryTypeImplParser implements QueryTypeParser
     {
         try
         {
-            return new QueryTypeImpl(rdfStatements, subjectKey, modelVersion);
+            return new RegexInputQueryTypeImpl(rdfStatements, subjectKey, modelVersion);
         }
         catch(final OpenRDFException ex)
         {

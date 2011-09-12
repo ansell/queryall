@@ -616,7 +616,7 @@ public class BlacklistController
                 final BlacklistEntry currentCount = this.accumulatedBlacklistStatistics.get(nextEndpointUrl);
                 
                 return (currentCount.numberOfFailures >= this.localSettings.getIntProperty(
-                        "blacklistMaxAccumulatedFailures", 0));
+                        "blacklistMaxAccumulatedFailures", 5));
             }
             else
             {

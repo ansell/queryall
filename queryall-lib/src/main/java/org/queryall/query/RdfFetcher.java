@@ -47,7 +47,7 @@ public class RdfFetcher
         {
             RdfFetcher.log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
                     + " Settings.getStringPropertyFromConfig(\"connectTimeout\")="
-                    + this.localSettings.getIntProperty("connectTimeout", 0));
+                    + this.localSettings.getIntProperty("connectTimeout", 3000));
         }
         
         final long start = System.currentTimeMillis();
@@ -104,7 +104,7 @@ public class RdfFetcher
             conn.setRequestProperty("Accept", acceptHeader);
             
             conn.setUseCaches(this.localSettings.getBooleanProperty("useRequestCache", true));
-            conn.setConnectTimeout(this.localSettings.getIntProperty("connectTimeout", 2000));
+            conn.setConnectTimeout(this.localSettings.getIntProperty("connectTimeout", 3000));
             conn.setReadTimeout(this.localSettings.getIntProperty("readTimeout", 30000));
             
             if(postInformation != null && !postInformation.trim().equals(""))

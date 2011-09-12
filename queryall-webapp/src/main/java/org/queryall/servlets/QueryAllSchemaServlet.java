@@ -192,14 +192,14 @@ public class QueryAllSchemaServlet extends HttpServlet
                 {
                     HtmlPageRenderer.renderHtml(
                             localVelocityEngine,
+                            localSettings,
                             myRepository,
                             stBuff,
-                            debugStrings,
                             PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
                                     "http://purl.org/queryall/") + queryString,
                             PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
                                     "http://purl.org/queryall/") + queryString, realHostName, request.getContextPath(),
-                            -1, localSettings);
+                            -1, debugStrings);
                 }
                 catch(final OpenRDFException ordfe)
                 {

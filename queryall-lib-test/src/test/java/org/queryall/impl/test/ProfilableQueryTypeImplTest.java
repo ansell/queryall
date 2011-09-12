@@ -6,7 +6,7 @@ package org.queryall.impl.test;
 import org.openrdf.model.URI;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.impl.querytype.QueryTypeImpl;
+import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -19,7 +19,7 @@ public class ProfilableQueryTypeImplTest extends BaseProfilableTest
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
-        return new QueryTypeImpl();
+        return new RegexInputQueryTypeImpl();
     }
     
     @Override

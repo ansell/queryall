@@ -38,7 +38,7 @@ public final class QueryTypeUtils
         return results;
     }
     
-    public static Collection<QueryType> getQueryTypesMatchingQueryString(final Map<String, String> queryParameters,
+    public static Collection<QueryType> getQueryTypesMatchingQuery(final Map<String, String> queryParameters,
             final List<Profile> profileList, final Map<URI, QueryType> allQueryTypes,
             final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
     {

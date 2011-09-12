@@ -22,7 +22,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     private static final boolean _INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
     
     public String httpOperation = "GET";
-    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 0);
+    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 500);
     
     public HttpUrlQueryRunnable(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,

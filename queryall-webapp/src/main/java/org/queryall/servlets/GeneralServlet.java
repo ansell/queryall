@@ -997,9 +997,9 @@ public class GeneralServlet extends HttpServlet
             
             try
             {
-                HtmlPageRenderer.renderHtml(nextEngine, convertedPool, cleanOutput, fetchController, debugStrings,
+                HtmlPageRenderer.renderHtml(nextEngine, localSettings, fetchController, convertedPool, cleanOutput,
                         queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath,
-                        pageOffset, localSettings);
+                        pageOffset, debugStrings);
             }
             catch(final OpenRDFException ordfe)
             {

@@ -199,11 +199,11 @@ public class QueryCreator
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_LIMIT,
-                        "LIMIT " + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 50));
+                        "LIMIT " + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT,
-                        "limit/" + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 50));
+                        "limit/" + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {

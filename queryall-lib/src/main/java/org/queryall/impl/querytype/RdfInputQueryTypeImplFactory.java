@@ -12,11 +12,11 @@ import org.queryall.api.querytype.QueryTypeParser;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices
-public class QueryTypeImplFactory implements QueryTypeFactory
+public class RdfInputQueryTypeImplFactory implements QueryTypeFactory
 {
     // static
     // {
-    // QueryTypeEnum.register(QueryTypeImplEnum.QUERY_TYPE_IMPL_ENUM);
+    // QueryTypeEnum.register(RegexInputQueryTypeImplEnum.QUERY_TYPE_IMPL_ENUM);
     // }
     
     /**
@@ -25,7 +25,7 @@ public class QueryTypeImplFactory implements QueryTypeFactory
     @Override
     public QueryTypeEnum getEnum()
     {
-        return QueryTypeImplEnum.QUERY_TYPE_IMPL_ENUM;
+        return RdfInputQueryTypeImplEnum.RDF_INPUT_QUERY_TYPE_IMPL_ENUM;
     }
     
     /**
@@ -34,7 +34,7 @@ public class QueryTypeImplFactory implements QueryTypeFactory
     @Override
     public QueryTypeParser getParser()
     {
-        return new QueryTypeImplParser();
+        return new RdfInputQueryTypeImplParser();
     }
     
 }
