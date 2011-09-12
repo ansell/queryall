@@ -303,8 +303,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     public ProvenanceRecord(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final Collection<Statement> tempUnrecognisedStatements = new HashSet<Statement>();
-        
         for(final Statement nextStatement : inputStatements)
         {
             if(ProvenanceRecord._DEBUG)

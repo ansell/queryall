@@ -95,8 +95,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     public NamespaceEntryImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final Collection<String> tempAlternativePrefixes = new HashSet<String>();
-        
         for(final Statement nextStatement : inputStatements)
         {
             if(NamespaceEntryImpl._DEBUG)
@@ -142,7 +140,7 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             }
             else if(nextStatement.getPredicate().equals(NamespaceEntrySchema.getNamespaceAlternativePrefix()))
             {
-                tempAlternativePrefixes.add(nextStatement.getObject().stringValue());
+                this.addAlternativePrefix(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(NamespaceEntrySchema.getNamespaceDescription())
                     || nextStatement.getPredicate().equals(RDFS.COMMENT))
@@ -176,8 +174,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
-        
-        this.setAlternativePrefixes(tempAlternativePrefixes);
         
         if(NamespaceEntryImpl._TRACE)
         {
@@ -309,9 +305,9 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     }
     
     @Override
-    public void setAlternativePrefixes(final Collection<String> alternativePrefixes)
+    public void addAlternativePrefix(final String alternativePrefix)
     {
-        this.alternativePrefixes = alternativePrefixes;
+        this.alternativePrefixes.add(alternativePrefix);
     }
     
     @Override

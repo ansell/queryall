@@ -24,7 +24,7 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
     
     String getUriTemplate();
     
-    void setAlternativePrefixes(Collection<String> alternativePrefixes);
+    void addAlternativePrefix(String alternativePrefix);
     
     void setAuthority(URI authority);
     
