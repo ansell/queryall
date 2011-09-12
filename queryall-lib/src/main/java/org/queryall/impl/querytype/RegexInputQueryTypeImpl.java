@@ -111,7 +111,7 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
             }
             else
             {
-                this.unrecognisedStatements.add(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
     }

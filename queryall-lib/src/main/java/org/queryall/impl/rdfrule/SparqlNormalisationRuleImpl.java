@@ -19,6 +19,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implements SparqlNormalisationRule
+public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implements SparqlNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleImpl.class);
     private static final boolean _TRACE = SparqlNormalisationRuleImpl.log.isTraceEnabled();

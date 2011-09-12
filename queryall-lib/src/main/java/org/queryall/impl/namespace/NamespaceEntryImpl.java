@@ -15,6 +15,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamespaceEntry
+public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamespaceEntry, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(NamespaceEntryImpl.class);
     private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();

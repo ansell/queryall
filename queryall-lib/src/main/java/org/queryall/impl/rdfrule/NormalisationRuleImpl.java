@@ -101,16 +101,20 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
             else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
-                this.curationStatus = (URI)nextStatement.getObject();
+                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleOrder()))
             {
-                this.order = RdfUtils.getIntegerFromValue(nextStatement.getObject());
+                this.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleDescription())
                     || nextStatement.getPredicate().equals(RDFS.COMMENT))
             {
-                this.description = nextStatement.getObject().stringValue();
+                this.setDescription(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(Constants.DC_TITLE))
+            {
+                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleHasRelatedNamespace()))
             {
@@ -443,6 +447,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
             
             final URI keyUri = this.getKey();
+            final Literal titleLiteral = f.createLiteral(this.getTitle());
             final Literal descriptionLiteral = f.createLiteral(this.getDescription());
             final Literal orderLiteral = f.createLiteral(this.getOrder());
             final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
@@ -482,6 +487,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             {
                 con.add(keyUri, RDFS.COMMENT, descriptionLiteral, keyToUse);
             }
+
+            con.add(keyUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+            
             con.add(keyUri, NormalisationRuleSchema.getRdfruleOrder(), orderLiteral, keyToUse);
             con.add(keyUri, ProfileSchema.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral,
                     keyToUse);

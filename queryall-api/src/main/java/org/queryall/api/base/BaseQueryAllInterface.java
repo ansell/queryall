@@ -14,18 +14,6 @@ import org.queryall.api.utils.QueryAllNamespaces;
  */
 public interface BaseQueryAllInterface
 {
-    /**
-     * Changes the schema used to represent objects of this class into RDF, and inserts the relevant
-     * triples into myRepository
-     **/
-    // public static abstract boolean schemaToRdf(Repository myRepository,
-    // String keyToUse, int
-    // modelVersion) throws OpenRDFException;
-    
-    // <T extends BaseQueryAllInterface> T fromRdf(Collection<Statement>
-    // relevantStatements, URI
-    // keyToUse, int modelVerson) throws OpenRDFException;
-    
     void addUnrecognisedStatement(Statement unrecognisedStatement);
     
     URI getCurationStatus();
@@ -64,18 +52,10 @@ public interface BaseQueryAllInterface
     void setTitle(String title);
     
     /**
-     * Returns the representation of the object as an XHTML marked up string for display only
-     **/
-    String toHtml();
-    
-    /**
-     * Returns the input fields in XHTML as a string for use in forms designed to edit this object
-     **/
-    String toHtmlFormBody();
-    
-    /**
      * Changes the object into RDF, and inserts the relevant triples into myRepository using the URI
-     * keyToUse as the context URI
+     * contextUri as the context URI.
+     * 
+     * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
      **/
-    boolean toRdf(Repository myRepository, URI keyToUse, int modelVersion) throws OpenRDFException;
+    boolean toRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException;
 }

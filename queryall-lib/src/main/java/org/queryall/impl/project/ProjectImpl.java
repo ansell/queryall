@@ -13,6 +13,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.project.Project;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProjectImpl implements Project
+public class ProjectImpl implements Project, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProjectImpl.class);
     private static final boolean _TRACE = ProjectImpl.log.isTraceEnabled();

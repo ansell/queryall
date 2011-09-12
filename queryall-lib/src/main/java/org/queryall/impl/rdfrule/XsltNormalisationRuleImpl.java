@@ -24,6 +24,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements XsltNormalisationRule
+public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements XsltNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleImpl.class);
     private static final boolean _TRACE = XsltNormalisationRuleImpl.log.isTraceEnabled();
@@ -154,7 +155,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
                             .trace("XsltNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
-                this.unrecognisedStatements.add(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
         

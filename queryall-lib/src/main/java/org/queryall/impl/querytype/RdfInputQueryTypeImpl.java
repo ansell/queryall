@@ -119,7 +119,7 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
             }
             else
             {
-                this.unrecognisedStatements.add(nextStatement);
+                this.addUnrecognisedStatement(nextStatement);
             }
         }
     }

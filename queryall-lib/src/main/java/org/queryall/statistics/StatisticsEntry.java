@@ -22,6 +22,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProviderSchema;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StatisticsEntry implements BaseQueryAllInterface
+public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class);
     @SuppressWarnings("unused")

@@ -14,6 +14,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfileImpl implements Profile, Comparable<Profile>
+public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
     private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();

@@ -15,6 +15,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType
+public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();

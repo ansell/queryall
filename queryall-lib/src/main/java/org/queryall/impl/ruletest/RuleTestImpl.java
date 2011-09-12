@@ -11,6 +11,7 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.HtmlExport;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestSchema;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RuleTestImpl implements RuleTest
+public class RuleTestImpl implements RuleTest, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(RuleTestImpl.class);
     private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
