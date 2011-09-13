@@ -12,7 +12,7 @@
 
 <http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:symbol> ;
-    <http://purl.org/queryall/rdfrule:mode> <http://purl.org/queryall/rdfrule:addAllMatchingTriples> ;
+    <http://purl.org/queryall/rdfrule:sparqlMode> <http://purl.org/queryall/rdfrule:addAllMatchingTriples> ;
     <http://purl.org/queryall/rdfrule:sparqlConstructQueryTarget> "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . " ;
     <http://purl.org/queryall/rdfrule:sparqlWherePattern> " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri)" ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsToPool> ;

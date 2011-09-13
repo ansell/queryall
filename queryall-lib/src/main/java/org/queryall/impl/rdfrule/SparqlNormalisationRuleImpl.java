@@ -95,11 +95,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(SparqlNormalisationRuleImpl._DEBUG)
-            {
-                SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
-                        + nextStatement.toString());
-            }
+//            if(SparqlNormalisationRuleImpl._DEBUG)
+//            {
+//                SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
+//                        + nextStatement.toString());
+//            }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
@@ -148,10 +148,10 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             }
             else
             {
-                if(SparqlNormalisationRuleImpl._INFO)
+                if(SparqlNormalisationRuleImpl._DEBUG)
                 {
                     SparqlNormalisationRuleImpl.log
-                            .info("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
+                            .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);

@@ -202,7 +202,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             
             if(RegexNormalisationRuleImpl._DEBUG)
             {
-                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete input="
+                RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex start input="
                         + debugInputText);
                 RegexNormalisationRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete result="
                         + inputText);

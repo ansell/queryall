@@ -118,7 +118,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 }
                 catch(InvalidStageException ise)
                 {
-                    log.error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="+nextStatement.getObject().stringValue()+ " validStages="+this.validStages.toString()+" this.getElementTypes()="+this.getElementTypes());
+                    log.error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="+nextStatement.getObject().stringValue()+ " validStages="+this.validStages.toString()+" this.getElementTypes()="+this.getElementTypes()+" keyToUse="+keyToUse.stringValue());
                 }
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))

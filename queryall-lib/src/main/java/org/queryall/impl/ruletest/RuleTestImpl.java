@@ -2,7 +2,6 @@ package org.queryall.impl.ruletest;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -25,25 +24,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RuleTestImpl implements RuleTest, HtmlExport
+public abstract class RuleTestImpl implements RuleTest, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(RuleTestImpl.class);
     private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = RuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
-    
-    private static final Set<URI> RULE_TEST_IMPL_TYPES = new HashSet<URI>();
-    
-    static
-    {
-        RuleTestImpl.RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
-    }
-    
-    public static Set<URI> myTypes()
-    {
-        return RuleTestImpl.RULE_TEST_IMPL_TYPES;
-    }
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -55,7 +42,7 @@ public class RuleTestImpl implements RuleTest, HtmlExport
     
     private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
-    private String title;
+    private String title = "";
     
     public RuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -160,16 +147,6 @@ public class RuleTestImpl implements RuleTest, HtmlExport
     public QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.RULETEST;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return RuleTestImpl.myTypes();
     }
     
     /**

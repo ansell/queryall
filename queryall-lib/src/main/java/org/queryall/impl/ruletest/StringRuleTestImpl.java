@@ -34,15 +34,17 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
     @SuppressWarnings("unused")
     private static final boolean _INFO = StringRuleTestImpl.log.isInfoEnabled();
     
-    // TODO: optimise to a static final Set<URI>
+    private static final Set<URI> STRING_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
+    
+    static
+    {
+        STRING_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
+        STRING_RULE_TEST_IMPL_TYPES.add(StringRuleTestSchema.getStringRuleTestTypeUri());
+    }
+    
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(RuleTestSchema.getRuletestTypeUri());
-        results.add(StringRuleTestSchema.getStringRuleTestTypeUri());
-        
-        return results;
+        return STRING_RULE_TEST_IMPL_TYPES;
     }
     
     private String testInputString = "";
@@ -189,5 +191,12 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         }
         
         return false;
+    }
+
+    @Override
+    public Set<URI> getElementTypes()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
