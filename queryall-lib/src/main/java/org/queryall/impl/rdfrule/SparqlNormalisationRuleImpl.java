@@ -47,21 +47,17 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     
     private URI mode = SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches();
     
+    private static final Set<URI> SPARQL_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    
     static
     {
-        // register this query type implementation with the central register
-        // NormalisationRuleEnum.register(SparqlNormalisationRuleImpl.class.getName(),
-        // SparqlNormalisationRuleImpl.myTypes());
+        SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        results.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
-        
-        return results;
+        return SPARQL_NORMALISATION_RULE_IMPL_TYPES;
     }
     
     /**

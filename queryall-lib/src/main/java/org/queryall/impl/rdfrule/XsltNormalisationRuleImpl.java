@@ -51,6 +51,8 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     // XsltNormalisationRuleImpl.myTypes());
     
     /**
+     * Test method
+     * 
      * @param args
      */
     public static void main(final String[] args)
@@ -81,14 +83,17 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
     }
     
+    private static final Set<URI> XSLT_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    
+    static
+    {
+        XSLT_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        XSLT_NORMALISATION_RULE_IMPL_TYPES.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
+    }
+    
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        results.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
-        
-        return results;
+        return XSLT_NORMALISATION_RULE_IMPL_TYPES;
     }
     
     /**

@@ -35,14 +35,17 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexNormalisationRuleImpl.log.isInfoEnabled();
     
+    private static final Set<URI> REGEX_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    
+    static
+    {
+        REGEX_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        REGEX_NORMALISATION_RULE_IMPL_TYPES.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
+    }
+    
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        results.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
-        
-        return results;
+        return REGEX_NORMALISATION_RULE_IMPL_TYPES;
     }
     
     /**
