@@ -9,10 +9,17 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.sail.memory.model.MemValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 
@@ -58,6 +65,9 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     private String testStartingUriPOBase;
     
     private String testFinalUriPOBase;
+    private Repository testRepository;
+    private RepositoryConnection testRepositoryConnection;
+    private ValueFactory testValueFactory;
     
     /**
      * Final method, so that implementing test cases must supply a SparqlNormalisationRule instead,
@@ -93,12 +103,15 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     {
         super.setUp();
         
-        final ValueFactory f = new MemValueFactory();
+        this.testRepository = new SailRepository(new MemoryStore());
+        this.testRepository.initialize();
+        this.testRepositoryConnection = this.testRepository.getConnection();
+        this.testValueFactory = new ValueFactoryImpl();
         
         this.testMultipleWherePatternsSparqlNormalisationRuleUri =
-                f.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
+                testValueFactory.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
         this.testStageEmptyConstructQuerySetSparqlNormalisationRuleUri =
-                f.createURI("http://example.org/test/emptyConstructQuerySetSparqlNormalisationRule");
+                testValueFactory.createURI("http://example.org/test/emptyConstructQuerySetSparqlNormalisationRule");
         
         this.testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
         this.testFinalUriAEOBase = "http://bio2rdf.org/obo_aeo:";
@@ -128,6 +141,25 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     {
         super.tearDown();
         
+        if(this.testRepositoryConnection != null)
+        {
+            try
+            {
+                this.testRepositoryConnection.close();
+            }
+            catch(final RepositoryException ex)
+            {
+                ex.printStackTrace();
+            }
+            finally
+            {
+                this.testRepositoryConnection = null;
+            }
+        }
+        
+        this.testRepository = null;
+        this.testValueFactory = null;
+        
         this.testMultipleWherePatternsSparqlNormalisationRuleUri = null;
         
         this.testStartingUriAEOBase = null;
@@ -136,20 +168,53 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         this.testFinalUriPOBase = null;
     }
     
+    /**
+     * TODO: Implement me!
+     * 
+     * @throws RepositoryException
+     */
+    @Ignore
+    @Test 
+    public void testAddMatchingTriples() throws RepositoryException
+    {
+        URI subjectUri = testValueFactory.createURI("http://example.org/po:0000198");
+        
+        URI predicateUri = testValueFactory.createURI("http://bio2rdf.org/ns/obo#is_a");
+        
+        URI objectUri = testValueFactory.createURI("http://example.org/po:0009089");
+        
+        Statement testStatement = testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
+        
+        testRepositoryConnection.add(testStatement);
+        
+        testRepositoryConnection.commit();
+        
+        Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
+        
+        final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
+        
+        sparqlRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
+        
+        sparqlRule.setSparqlConstructQueryTarget(" ?subjectUri ?normalisedPropertyUri ?objectUri . ");
+        sparqlRule.addSparqlWherePattern(" ?subjectUri ?propertyUri ?objectUri . filter(strStarts(?propertyUri , \"http://bio2rdf.org/ns/obo#\")) . bind(iri(concat(\"http://oas.example.org/obo_resource:\", encode_for_uri(lcase(substr(?propertyUri, 26))))) AS ?normalisedPropertyUri)");
+        
+        sparqlRule.addStage(getRdfruleStageAfterResultsImportURI());
+        
+        sparqlRule.normaliseByStage(getRdfruleStageAfterResultsImportURI(), testRepository);
+
+        Assert.assertEquals("The test statement was not added to the repository", 2, testRepositoryConnection.size());
+    
+    }
+    
     @Test
     public void testConstructQueryMultipleWherePatterns()
     {
         final String testQueryConstructGraph =
                 "?myUri ?property ?convertedUri . ?convertedUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
         
-        final NormalisationRule queryallRule = this.getNewTestRule();
+        final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
         
-        Assert.assertTrue(queryallRule instanceof NormalisationRule);
-        Assert.assertTrue(queryallRule instanceof SparqlNormalisationRule);
-        
-        final SparqlNormalisationRule sparqlRule = (SparqlNormalisationRule)queryallRule;
-        
-        queryallRule.setKey(this.testMultipleWherePatternsSparqlNormalisationRuleUri);
+        sparqlRule.setKey(this.testMultipleWherePatternsSparqlNormalisationRuleUri);
         sparqlRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
         sparqlRule.addSparqlWherePattern(AbstractSparqlNormalisationRuleTest.generateConversionPattern(
                 this.testStartingUriAEOBase, this.testFinalUriAEOBase));

@@ -62,7 +62,7 @@ import org.queryall.api.utils.QueryAllNamespaces;
 public class RdfUtilsTest
 {
     /**
-     * There will always be cases where unexpected triples appear, so this is FALSE by default If
+     * There will always be cases where unexpected triples appear in annotated configurations, so this is FALSE by default to match reality If
      * you want to test a new feature is being parsed correctly, you can temporarily turn this on
      */
     private static final boolean FAIL_ON_UNEXPECTED_TRIPLES = false;
