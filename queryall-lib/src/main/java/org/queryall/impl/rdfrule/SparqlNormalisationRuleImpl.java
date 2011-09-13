@@ -2,6 +2,7 @@ package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,12 +64,24 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         return results;
     }
     
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
+    }
+
     public SparqlNormalisationRuleImpl()
     {
         super();
-        
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -77,9 +90,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
-        
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
         
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         

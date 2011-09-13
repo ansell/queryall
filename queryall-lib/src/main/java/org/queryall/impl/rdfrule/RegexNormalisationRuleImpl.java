@@ -1,6 +1,7 @@
 package org.queryall.impl.rdfrule;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.PatternSyntaxException;
@@ -44,6 +45,24 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
         return results;
     }
     
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
+    }
+    
+    
     private String inputMatchRegex = "";
     
     private String inputReplaceRegex = "";
@@ -55,11 +74,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     public RegexNormalisationRuleImpl()
     {
         super();
-        
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -68,11 +82,6 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
-        
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         

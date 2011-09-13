@@ -6,6 +6,7 @@ package org.queryall.impl.rdfrule;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -90,16 +91,29 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         return results;
     }
     
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
+    }
+
     private String xsltStylesheet;
     
     public XsltNormalisationRuleImpl()
     {
         super();
-        
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+
     }
     
     /**
@@ -112,11 +126,6 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
-        
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         

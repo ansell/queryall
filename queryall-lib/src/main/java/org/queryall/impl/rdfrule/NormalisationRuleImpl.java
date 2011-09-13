@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -42,13 +41,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     protected static final boolean _DEBUG = NormalisationRuleImpl.log.isDebugEnabled();
     protected static final boolean _INFO = NormalisationRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
-    
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
     private URI key;
     
-    private String description;
+    private String description = "";
     
     private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
@@ -56,18 +53,13 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
     
-    protected Collection<URI> stages = new ArrayList<URI>(3);
+    protected final Collection<URI> stages = new ArrayList<URI>(3);
     
-    private Collection<URI> validStages = new ArrayList<URI>(7);
+    protected final Collection<URI> validStages = new ArrayList<URI>(7);
     
     private int order = 100;
     
-    private String title;
-    
-    static
-    {
-        NormalisationRuleImpl.NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-    }
+    private String title = "";
     
     protected NormalisationRuleImpl()
     {
@@ -79,8 +71,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     protected NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
             final int modelVersion) throws OpenRDFException
     {
-        final Collection<URI> tempStages = new HashSet<URI>();
-        
         for(final Statement nextStatement : inputStatements)
         {
             if(NormalisationRuleImpl._DEBUG)
@@ -122,7 +112,14 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleStage()))
             {
-                tempStages.add((URI)nextStatement.getObject());
+                try
+                {
+                    this.addStage((URI)nextStatement.getObject());
+                }
+                catch(InvalidStageException ise)
+                {
+                    log.error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="+nextStatement.getObject().stringValue()+ " validStages="+this.validStages.toString()+" this.getElementTypes()="+this.getElementTypes());
+                }
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
@@ -133,9 +130,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
-        
-        // this.setRelatedNamespaces(tempRelatedNamespaces);
-        this.stages = tempStages;
         
         if(NormalisationRuleImpl._DEBUG)
         {
@@ -160,11 +154,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     @Override
     public void addStage(final URI stage) throws InvalidStageException
     {
-        if(this.stages == null)
-        {
-            this.stages = new ArrayList<URI>();
-        }
-        
         if(this.validInStage(stage))
         {
             this.stages.add(stage);
@@ -182,15 +171,12 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     }
     
     /**
+     * Internal method used by subclasses to add each of their valid stages to the internal list
+     * 
      * @return the validStages
      */
     protected void addValidStage(final URI validStage)
     {
-        if(this.validStages == null)
-        {
-            this.validStages = new ArrayList<URI>();
-        }
-        
         this.validStages.add(validStage);
     }
     
@@ -238,16 +224,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public String getDescription()
     {
         return this.description;
-    }
-    
-    /**
-     * @return a collection of the relevant element types that are implemented by this class,
-     *         including abstract implementations
-     */
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return NormalisationRuleImpl.NORMALISATION_RULE_IMPL_TYPES;
     }
     
     /**
@@ -299,15 +275,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     public Collection<Statement> getUnrecognisedStatements()
     {
         return this.unrecognisedStatements;
-    }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Collection<URI> getValidStages()
-    {
-        return Collections.unmodifiableCollection(this.validStages);
     }
     
     @Override
@@ -422,15 +389,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         this.title = title;
     }
     
-    /**
-     * @param validStages
-     *            the validStages to set
-     */
-    protected void setValidStages(final Collection<URI> nextValidStages)
-    {
-        this.validStages = nextValidStages;
-    }
-    
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -542,12 +500,12 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     @Override
     public boolean usedInStage(final org.openrdf.model.URI stage)
     {
-        return this.stages.contains(stage);
+        return this.getStages().contains(stage);
     }
     
     @Override
     public boolean validInStage(final org.openrdf.model.URI stage)
     {
-        return this.validStages.contains(stage);
+        return this.getValidStages().contains(stage);
     }
 }
