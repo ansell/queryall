@@ -1,6 +1,17 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
 <http://example.org/ruletest:test-1> a <http://purl.org/queryall/ruletest:RuleTest> , <http://purl.org/queryall/ruletest:StringRuleTest> ;
     <http://purl.org/queryall/ruletest:testsStages> <http://purl.org/queryall/rdfrule:queryVariables> , <http://purl.org/queryall/rdfrule:beforeResultsImport> ;
 	<http://purl.org/queryall/ruletest:testsRules> <http://example.org/rdfrule:test-1> ;
 	<http://purl.org/queryall/ruletest:inputTestString> "http://example.org/" ;
 	<http://purl.org/queryall/ruletest:outputTestString> "http://otherexample.net/" .
 
+<http://example.org/ruletest:test-2> a <http://purl.org/queryall/ruletest:RuleTest> , <http://purl.org/queryall/ruletest:SparqlRuleTest> ;
+    <http://purl.org/queryall/ruletest:testsStages> <http://purl.org/queryall/rdfrule:afterResultsImport> ;
+	<http://purl.org/queryall/ruletest:testsRules> <http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri> ;
+	<http://purl.org/queryall/ruletest:sparqlAskPattern> " ?bio2rdfUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . " ;
+	<http://purl.org/queryall/ruletest:expectedResult> "true"^^xsd:boolean ;
+	<http://purl.org/queryall/ruletest:inputTriples> " <http://bio2rdf.org/geneid:12334> <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> \"Capn2\" . " ;
+	<http://purl.org/queryall/ruletest:inputMimeType> "text/rdf+n3" .
+	
+	

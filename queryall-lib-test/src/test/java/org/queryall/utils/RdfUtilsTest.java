@@ -52,6 +52,7 @@ import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.ruletest.SparqlRuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -118,11 +119,13 @@ public class RdfUtilsTest
     
     private URI testProviderUri1;
     private URI testRuleTestUri1;
+    private URI testRuleTestUri2;
     private URI testQueryTypeUri1;
     private URI testQueryTypeUri2;
     private URI testNormalisationRule1;
     private URI testNormalisationRule2;
     private URI testNormalisationRule3;
+
     
     /**
      * @throws java.lang.Exception
@@ -200,6 +203,7 @@ public class RdfUtilsTest
         this.testProviderUri1 = this.testValueFactory.createURI("http://example.org/provider:test-1");
         
         this.testRuleTestUri1 = this.testValueFactory.createURI("http://example.org/ruletest:test-1");
+        this.testRuleTestUri2 = this.testValueFactory.createURI("http://example.org/ruletest:test-2");
         
         this.testQueryTypeUri1 = this.testValueFactory.createURI("http://example.org/query:test-1");
         this.testQueryTypeUri2 = this.testValueFactory.createURI("http://example.org/query:test-2");
@@ -1176,7 +1180,7 @@ public class RdfUtilsTest
             
             final Map<URI, RuleTest> results = RdfUtils.getRuleTests(this.testRepository);
             
-            Assert.assertEquals(1, results.size());
+            Assert.assertEquals(2, results.size());
             
             for(final URI nextRuleTestUri : results.keySet())
             {
@@ -1206,6 +1210,24 @@ public class RdfUtilsTest
                     
                     Assert.assertEquals("RuleTest output string was not parsed correctly", "http://otherexample.net/",
                             nextRegexRuleTest.getTestOutputString());
+                }
+                else if(nextRuleTestUri.equals(this.testRuleTestUri2))
+                {
+                    Assert.assertEquals("Results did not contain correct rule test URI", this.testRuleTestUri2,
+                            nextRuleTestUri);
+                    
+                    Assert.assertEquals("RuleTest stages were not parsed correctly", 1, nextRuleTest.getStages().size());
+                    
+                    Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris()
+                            .size());
+                    
+                    Assert.assertTrue(nextRuleTest instanceof SparqlRuleTest);
+                    
+                    final SparqlRuleTest nextSparqlRuleTest = (SparqlRuleTest)nextRuleTest;
+                    
+                    Assert.assertTrue("Expected result was not parsed correctly", nextSparqlRuleTest.getExpectedResult());
+                    
+                    // TODO: Implement me for the other SparqlRuleTest methods
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
