@@ -15,6 +15,10 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.query.GraphQueryResult;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -169,13 +173,14 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     }
     
     /**
-     * TODO: Implement me!
+     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
      * 
      * @throws RepositoryException
+     * @throws QueryEvaluationException 
+     * @throws MalformedQueryException 
      */
-    @Ignore
     @Test 
-    public void testAddMatchingTriples() throws RepositoryException
+    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
     {
         URI subjectUri = testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -195,10 +200,37 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         sparqlRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
         
-        sparqlRule.setSparqlConstructQueryTarget(" ?subjectUri ?normalisedPropertyUri ?objectUri . ");
-        sparqlRule.addSparqlWherePattern(" ?subjectUri ?propertyUri ?objectUri . filter(strStarts(?propertyUri , \"http://bio2rdf.org/ns/obo#\")) . bind(iri(concat(\"http://oas.example.org/obo_resource:\", encode_for_uri(lcase(substr(?propertyUri, 26))))) AS ?normalisedPropertyUri)");
+        String sparqlConstructQueryTarget = " ?subjectUri ?normalisedPropertyUri ?objectUri . ?normalisedPropertyUri <http://www.w3.org/2002/07/owl#sameAs> ?propertyUri . ";
+        String sparqlWherePattern = " ?subjectUri ?propertyUri ?objectUri . " +
+        		"filter(strStarts(str(?propertyUri) , \"http://bio2rdf.org/ns/obo#\")) . " +
+        		"bind(" +
+        		"iri(" +
+        		"concat(\"http://oas.example.org/obo_resource:\", " +
+        		"encode_for_uri(lcase(substr(str(?propertyUri), 26))))) " +
+        		"AS ?normalisedPropertyUri) . ";
+
+        String nextConstructQuery = "CONSTRUCT { "+sparqlConstructQueryTarget+" } WHERE { "+sparqlWherePattern+" }";
+        
+        final GraphQueryResult graphResult =
+                testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+        
+        int selectedStatements = 0;
+        
+        while(graphResult.hasNext())
+        {
+            selectedStatements++;
+        }
+
+        Assert.assertTrue("Query was not executed properly by Sesame", (selectedStatements > 0));
+        
+        sparqlRule.setSparqlConstructQueryTarget(sparqlConstructQueryTarget);
+        sparqlRule.addSparqlWherePattern(sparqlWherePattern);
+        
+        Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries().size());
         
         sparqlRule.addStage(getRdfruleStageAfterResultsImportURI());
+        
+        Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(getRdfruleStageAfterResultsImportURI()));
         
         sparqlRule.normaliseByStage(getRdfruleStageAfterResultsImportURI(), testRepository);
 

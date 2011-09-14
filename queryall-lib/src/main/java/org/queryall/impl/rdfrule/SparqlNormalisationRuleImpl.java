@@ -191,13 +191,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                 resultRepository.initialize();
             }
             
-            if(SparqlNormalisationRuleImpl._DEBUG)
-            {
-                SparqlNormalisationRuleImpl.log
-                        .debug("SparqlNormalisationRuleImpl: selecting statements according to sparqlConstructQueryTarget="
-                                + this.getSparqlConstructQuery());
-            }
-            
             final RepositoryConnection selectConnection = myRepository.getConnection();
             RepositoryConnection addConnection = null;
             
@@ -216,6 +209,9 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             {
                 for(final String nextConstructQuery : this.getSparqlConstructQueries())
                 {
+                    if(_DEBUG)
+                        log.debug("chooseStatementsFromRepository nextConstructQueries="+nextConstructQuery);
+                    
                     try
                     {
                         final GraphQueryResult graphResult =
@@ -239,6 +235,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                     }
                     catch(final Exception ex)
                     {
+                        addConnection.rollback();
                         SparqlNormalisationRuleImpl.log.error(
                                 "SparqlNormalisationRuleImpl: exception adding statements", ex);
                     }
@@ -253,7 +250,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         catch(final org.openrdf.repository.RepositoryException rex)
         {
             SparqlNormalisationRuleImpl.log.error(
-                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
+                    "SparqlNormalisationRuleImpl: RepositoryException exception before adding statements", rex);
         }
         
         if(addToMyRepository)
@@ -276,14 +273,20 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     {
         if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
         {
+            if(_DEBUG)
+                log.debug("doWorkBasedOnMode: only delete matches");
             return this.removeStatementsFromRepository(input);
         }
         else if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
         {
+            if(_DEBUG)
+                log.debug("doWorkBasedOnMode: only include matches");
             return this.chooseStatementsFromRepository(input, false);
         }
         else if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
         {
+            if(_DEBUG)
+                log.debug("doWorkBasedOnMode: add all matches");
             return this.chooseStatementsFromRepository(input, true);
         }
         

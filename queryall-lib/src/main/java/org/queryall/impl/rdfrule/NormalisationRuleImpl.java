@@ -73,10 +73,10 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     {
         for(final Statement nextStatement : inputStatements)
         {
-            if(NormalisationRuleImpl._DEBUG)
-            {
-                NormalisationRuleImpl.log.debug("NormalisationRule: nextStatement: " + nextStatement.toString());
-            }
+//            if(NormalisationRuleImpl._DEBUG)
+//            {
+//                NormalisationRuleImpl.log.debug("NormalisationRule: nextStatement: " + nextStatement.toString());
+//            }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(NormalisationRuleSchema.getNormalisationRuleTypeUri()))
@@ -131,11 +131,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
         }
         
-        if(NormalisationRuleImpl._DEBUG)
-        {
-            NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
-                    + this.toString());
-        }
+//        if(NormalisationRuleImpl._DEBUG)
+//        {
+//            NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
+//                    + this.toString());
+//        }
     }
     
     /**
@@ -288,19 +288,19 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     @Override
     public Object normaliseByStage(final URI stage, final Object input)
     {
-        if(!this.validStages.contains(stage))
+        if(!this.validInStage(stage))
         {
             if(NormalisationRuleImpl._TRACE)
             {
                 NormalisationRuleImpl.log
-                        .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule stage="
+                        .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
                                 + stage);
             }
             
             return input;
         }
         
-        if(!this.stages.contains(stage))
+        if(!this.usedInStage(stage))
         {
             if(NormalisationRuleImpl._DEBUG)
             {
@@ -341,7 +341,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             return this.stageAfterResultsToDocument(input);
         }
         
-        throw new RuntimeException("Normalisation rule stage unknown : stage=" + stage);
+        throw new InvalidStageException("Normalisation rule stage unknown : stage=" + stage);
     }
     
     @Override

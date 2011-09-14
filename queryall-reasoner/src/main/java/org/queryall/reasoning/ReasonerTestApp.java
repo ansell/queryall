@@ -3,9 +3,12 @@ package org.queryall.reasoning;
 import java.util.Iterator;
 
 import org.mindswap.pellet.jena.PelletReasonerFactory;
+import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.SparqlNormalisationRule;
+import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.impl.ProfileImpl;
-import org.queryall.impl.SparqlNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -75,26 +78,26 @@ public class ReasonerTestApp
     	String testStartingUri = "http://purl.obolibrary.org/obo/AEO_";
     	String testFinalUri = "http://bio2rdf.org/obo_aeo:";
     	String testQueryConstructGraph = "?myUri ?property ?convertedUri . ?convertedUri <http://www.w3.org/2002/07/owl#sameAs> ?object . ";
-    	String testQueryWherePattern = generateConversionPattern(testStartingUri, testFinalUri);
+    	String testQueryWherePattern = generateObjectConversionPattern(testStartingUri, testFinalUri);
     	
-    	SparqlNormalisationRuleImpl queryallRule = new SparqlNormalisationRuleImpl();
+    	SparqlNormalisationRule queryallRule = new SparqlNormalisationRuleImpl();
     	
     	queryallRule.setKey("http://bio2rdf.org/rdfrule:oboaeosparqlrule");
-    	queryallRule.setMode(SparqlNormalisationRuleImpl.getSparqlRuleModeAddAllMatchingTriples());
+    	queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
     	queryallRule.setOrder(100);
     	queryallRule.setSparqlConstructQueryTarget(testQueryConstructGraph);
     	queryallRule.addSparqlWherePattern(testQueryWherePattern);
     	
     	try
     	{
-    		queryallRule.addStage(SparqlNormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+    		queryallRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
     	}
     	catch(InvalidStageException ise)
     	{
     		System.err.println("Found invalid stage exception");
     	}
     	
-    	queryallRule.setProfileIncludeExcludeOrder(ProfileImpl.getExcludeThenIncludeUri());
+    	queryallRule.setProfileIncludeExcludeOrder(ProfileSchema.getProfileExcludeThenIncludeUri());
     	
     	
     	
@@ -108,15 +111,66 @@ public class ReasonerTestApp
         
     	qe.execConstruct(resultsModel);
     	
-    	printIterator(resultsModel.listStatements(), "sparql 1.1 query results");
+    	printIterator(resultsModel.listStatements(), "sparql 1.1 query object results");
+    	
+        String testStartingPredicateUri = "http://www.w3.org/2004/02/skos/core#";
+        String testFinalPredicateUri = "http://bio2rdf.org/skoscore_resource:";
+        String testPredicateQueryConstructGraph = "?myUri ?convertedUri ?object . ?convertedUri <http://www.w3.org/2002/07/owl#sameAs> ?property . ";
+        String testPredicateQueryWherePattern = generatePredicateConversionPattern(testStartingPredicateUri, testFinalPredicateUri);
+    	
+        Query predicateQuery = QueryFactory.create(
+                mergeQuery(testPredicateQueryConstructGraph, testPredicateQueryWherePattern)
+                , Syntax.syntaxSPARQL_11);
+        
+        QueryExecution predicateQueryExecution = QueryExecutionFactory.create(predicateQuery, oboAeoModel);
+        
+        final Model predicateResultsModel = ModelFactory.createDefaultModel();
+        
+        predicateQueryExecution.execConstruct(predicateResultsModel);
+        
+        printIterator(predicateResultsModel.listStatements(), "sparql 1.1 query predicate results");
+        
     }
 
-	/**
+    /**
+     * @param testStartingUri
+     * @param testFinalUri
+     * @return
+     */
+    private static String generatePredicateConversionPattern(String testStartingUri,
+            String testFinalUri)
+    {
+        return "?myUri ?property ?object . " +
+                " " +
+                "FILTER(strStarts(str(?property), \"" +
+                testStartingUri +
+                "\")) . " +
+                " " +
+                "bind(" +
+                "iri(" +
+                "concat(" +
+                "\"" +
+                testFinalUri +
+                "\"," +
+                " " +
+                "encode_for_uri(" +
+                "lcase(" +
+                "substr(" +
+                "str(?property), " +
+                (testStartingUri.length()+1) +
+                ")))" +
+                " " +
+                ") " +
+                ") " +
+                "AS ?convertedUri) . ";
+    }
+
+    /**
 	 * @param testStartingUri
 	 * @param testFinalUri
 	 * @return
 	 */
-	private static String generateConversionPattern(String testStartingUri,
+	private static String generateObjectConversionPattern(String testStartingUri,
 			String testFinalUri)
 	{
 		return "?myUri ?property ?object . " +
