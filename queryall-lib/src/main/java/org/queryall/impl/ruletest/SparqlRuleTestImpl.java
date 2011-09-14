@@ -17,41 +17,44 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.ruletest.RuleTestSchema;
+import org.queryall.api.ruletest.SparqlRuleTest;
+import org.queryall.api.ruletest.SparqlRuleTestSchema;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.ruletest.StringRuleTestSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
+public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(StringRuleTestImpl.class);
-    private static final boolean _TRACE = StringRuleTestImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = StringRuleTestImpl.log.isDebugEnabled();
+    private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestImpl.class);
+    private static final boolean _TRACE = SparqlRuleTestImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = SparqlRuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = StringRuleTestImpl.log.isInfoEnabled();
+    private static final boolean _INFO = SparqlRuleTestImpl.log.isInfoEnabled();
     
-    private static final Set<URI> STRING_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPARQL_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
     
     static
     {
-        STRING_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
-        STRING_RULE_TEST_IMPL_TYPES.add(StringRuleTestSchema.getStringRuleTestTypeUri());
+        SPARQL_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
+        SPARQL_RULE_TEST_IMPL_TYPES.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return STRING_RULE_TEST_IMPL_TYPES;
+        return SPARQL_RULE_TEST_IMPL_TYPES;
     }
     
-    private String testInputString = "";
+    private String askQuery = "";
     
-    private String testOutputString = "";
+    private boolean expectedResult = false;
     
-    public StringRuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+    public SparqlRuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -64,83 +67,45 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(StringRuleTestImpl._DEBUG)
+            if(SparqlRuleTestImpl._DEBUG)
             {
-                StringRuleTestImpl.log.debug("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
+                SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(StringRuleTestSchema.getStringRuleTestTypeUri()))
+                    && nextStatement.getObject().equals(SparqlRuleTestSchema.getSparqlRuleTestTypeUri()))
             {
-                if(StringRuleTestImpl._TRACE)
+                if(SparqlRuleTestImpl._TRACE)
                 {
-                    StringRuleTestImpl.log.trace("StringRuleTestImpl: found valid type predicate for URI: " + keyToUse);
+                    SparqlRuleTestImpl.log.trace("SparqlRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(StringRuleTestSchema.getRuletestInputTestString()))
+            else if(nextStatement.getPredicate().equals(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern()))
             {
-                this.setTestInputString(nextStatement.getObject().stringValue());
+                this.setTestSparqlAsk(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(StringRuleTestSchema.getRuletestOutputTestString()))
+            else if(nextStatement.getPredicate().equals(SparqlRuleTestSchema.getSparqlRuletestExpectedResult()))
             {
-                this.setTestOutputString(nextStatement.getObject().stringValue());
+                this.setExpectedResult(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else
             {
-                if(StringRuleTestImpl._DEBUG)
+                if(SparqlRuleTestImpl._DEBUG)
                 {
-                    StringRuleTestImpl.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: "
+                    SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: found unexpected Statement nextStatement: "
                             + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
         
-        if(StringRuleTestImpl._TRACE)
+        if(SparqlRuleTestImpl._TRACE)
         {
-            StringRuleTestImpl.log
+            SparqlRuleTestImpl.log
                     .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
         }
-    }
-    
-    /**
-     * @return the testInputString
-     */
-    @Override
-    public String getTestInputString()
-    {
-        return this.testInputString;
-    }
-    
-    /**
-     * @return the testOutputString
-     */
-    @Override
-    public String getTestOutputString()
-    {
-        return this.testOutputString;
-    }
-    
-    /**
-     * @param testInputString
-     *            the testInputString to set
-     */
-    @Override
-    public void setTestInputString(final String testInputString)
-    {
-        this.testInputString = testInputString;
-    }
-    
-    /**
-     * @param testOutputString
-     *            the testOutputString to set
-     */
-    @Override
-    public void setTestOutputString(final String testOutputString)
-    {
-        this.testOutputString = testOutputString;
     }
     
     @Override
@@ -156,14 +121,14 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         try
         {
             final URI keyUri = this.getKey();
-            final Literal testInputStringLiteral = f.createLiteral(this.testInputString);
-            final Literal testOutputStringLiteral = f.createLiteral(this.testOutputString);
+            final Literal testAskQueryLiteral = f.createLiteral(this.askQuery);
+            final Literal testExpectedResultLiteral = f.createLiteral(this.expectedResult);
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, StringRuleTestSchema.getStringRuleTestTypeUri(), keyToUse);
-            con.add(keyUri, StringRuleTestSchema.getRuletestInputTestString(), testInputStringLiteral, keyToUse);
-            con.add(keyUri, StringRuleTestSchema.getRuletestOutputTestString(), testOutputStringLiteral, keyToUse);
+            con.add(keyUri, RDF.TYPE, SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), keyToUse);
+            con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), testAskQueryLiteral, keyToUse);
+            con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), testExpectedResultLiteral, keyToUse);
             
             if(this.unrecognisedStatements != null)
             {
@@ -183,7 +148,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            StringRuleTestImpl.log.error("RepositoryException: " + re.getMessage());
+            SparqlRuleTestImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -197,5 +162,29 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
     public Set<URI> getElementTypes()
     {
         return myTypes();
+    }
+
+    @Override
+    public String getTestSparqlAsk()
+    {
+        return this.askQuery;
+    }
+
+    @Override
+    public void setTestSparqlAsk(String testSparqlAsk)
+    {
+        this.askQuery = testSparqlAsk;
+    }
+
+    @Override
+    public boolean getExpectedResult()
+    {
+        return this.expectedResult;
+    }
+
+    @Override
+    public void setExpectedResult(boolean expectedResult)
+    {
+        this.expectedResult = expectedResult;
     }
 }
