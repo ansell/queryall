@@ -206,7 +206,13 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         		"bind(" +
         		"iri(" +
         		"concat(\"http://oas.example.org/obo_resource:\", " +
-        		"encode_for_uri(lcase(substr(str(?propertyUri), 26))))) " +
+        		"encode_for_uri(" +
+        		"lcase(" +
+        		"substr(str(?propertyUri), 26)" +
+        		")" +
+        		")" +
+        		")" +
+        		") " +
         		"AS ?normalisedPropertyUri) . ";
 
         String nextConstructQuery = "CONSTRUCT { "+sparqlConstructQueryTarget+" } WHERE { "+sparqlWherePattern+" }";
@@ -219,6 +225,7 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         while(graphResult.hasNext())
         {
             selectedStatements++;
+            graphResult.next();
         }
 
         Assert.assertTrue("Query was not executed properly by Sesame", (selectedStatements > 0));
@@ -234,7 +241,7 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         sparqlRule.normaliseByStage(getRdfruleStageAfterResultsImportURI(), testRepository);
 
-        Assert.assertEquals("The test statement was not added to the repository", 2, testRepositoryConnection.size());
+        Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
     
     }
     
