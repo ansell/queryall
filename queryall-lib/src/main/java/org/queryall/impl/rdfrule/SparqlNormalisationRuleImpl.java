@@ -227,7 +227,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
                         
                         if(SparqlNormalisationRuleImpl._DEBUG)
                         {
-                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: slected "
+                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: selected "
                                     + selectedStatements + " statements for results");
                         }
                         

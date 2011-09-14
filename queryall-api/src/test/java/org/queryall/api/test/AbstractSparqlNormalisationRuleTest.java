@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -243,6 +244,71 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
 
         Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
     
+    }
+    
+    @Test
+    public void testAddMatchingTriplesForGeneSymbol() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    {
+            URI subjectUri = testValueFactory.createURI("http://bio2rdf.org/geneid:12334");
+    
+            URI predicateUri = testValueFactory.createURI("http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol");
+            
+            Literal objectLiteral = testValueFactory.createLiteral("Capn2");
+            
+            Statement testStatement = testValueFactory.createStatement(subjectUri, predicateUri, objectLiteral);
+            
+            testRepositoryConnection.add(testStatement);
+            
+            testRepositoryConnection.commit();
+            
+            Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
+            
+            final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
+            
+            sparqlRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
+            
+            String sparqlConstructQueryTarget = " ?subjectUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri .  ?symbolPredicate <http://bio2rdf.org/bio2rdf_resource:propertyMappedTo> <http://bio2rdf.org/bio2rdf_resource:dbxref> . ";
+            String sparqlWherePattern = " ?subjectUri ?symbolPredicate ?primarySymbol . " +
+                    "filter(sameTerm(?symbolPredicate , iri(\""+predicateUri.stringValue()+"\"))) . " +
+                    "bind(" +
+                    "iri(" +
+                    "concat(\"http://bio2rdf.org/symbol:\", " +
+                    "encode_for_uri(" +
+                    "lcase(" +
+                    "str(?primarySymbol)" +
+                    ")" +
+                    ")" +
+                    ")" +
+                    ") " +
+                    "AS ?symbolUri) . ";
+
+            String nextConstructQuery = "CONSTRUCT { "+sparqlConstructQueryTarget+" } WHERE { "+sparqlWherePattern+" }";
+            
+            final GraphQueryResult graphResult =
+                    testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+            
+            int selectedStatements = 0;
+            
+            while(graphResult.hasNext())
+            {
+                selectedStatements++;
+                graphResult.next();
+            }
+
+            Assert.assertTrue("Query was not executed properly by Sesame", (selectedStatements > 0));
+            
+            sparqlRule.setSparqlConstructQueryTarget(sparqlConstructQueryTarget);
+            sparqlRule.addSparqlWherePattern(sparqlWherePattern);
+            
+            Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries().size());
+            
+            sparqlRule.addStage(getRdfruleStageAfterResultsImportURI());
+            
+            Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(getRdfruleStageAfterResultsImportURI()));
+            
+            sparqlRule.normaliseByStage(getRdfruleStageAfterResultsImportURI(), testRepository);
+
+            Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
     }
     
     @Test
