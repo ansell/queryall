@@ -35,6 +35,8 @@ public class SparqlRuleTestSchema
     private static URI sparqlRuletestExpectedResult;
     
     private static URI sparqlRuletestTypeUri;
+    private static URI sparqlRuletestInputTriples;
+    private static URI sparqlRuletestInputMimeType;
     
     static
     {
@@ -45,6 +47,8 @@ public class SparqlRuleTestSchema
         SparqlRuleTestSchema.setSparqlRuleTestTypeUri(f.createURI(baseUri, "SparqlRuleTest"));
         SparqlRuleTestSchema.setSparqlRuletestSparqlAskPattern(f.createURI(baseUri, "sparqlAskPattern"));
         SparqlRuleTestSchema.setSparqlRuletestExpectedResult(f.createURI(baseUri, "expectedResult"));
+        SparqlRuleTestSchema.setSparqlRuletestInputTriples(f.createURI(baseUri, "inputTriples"));
+        SparqlRuleTestSchema.setSparqlRuletestInputMimeType(f.createURI(baseUri, "inputMimeType"));
     }
     
     /**
@@ -61,6 +65,22 @@ public class SparqlRuleTestSchema
     public static URI getSparqlRuletestSparqlAskPattern()
     {
         return SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern;
+    }
+    
+    /**
+     * @return the ruletestOutputTestString
+     */
+    public static URI getSparqlRuletestInputTriples()
+    {
+        return SparqlRuleTestSchema.sparqlRuletestInputTriples;
+    }
+    
+    /**
+     * @return the ruletestInputTestString
+     */
+    public static URI getSparqlRuletestInputMimeType()
+    {
+        return SparqlRuleTestSchema.sparqlRuletestInputMimeType;
     }
     
     /**
@@ -102,6 +122,23 @@ public class SparqlRuleTestSchema
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.LABEL, f.createLiteral("The expected result of the SPARQL ASK query, ie, true or false."),
+                    contextKeyUri);
+            
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.DOMAIN,
+                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.LABEL, f.createLiteral("The RDF triples to normalise using the linked rules and stages before evaluating the ASK query."),
+                    contextKeyUri);
+            
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDF.TYPE, OWL.DATATYPEPROPERTY,
+                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.RANGE, RDFS.LITERAL,
+                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.DOMAIN,
+                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.LABEL, f.createLiteral("The mime type of the input triples."),
                     contextKeyUri);
             
             // If everything went as planned, we can commit the result
@@ -146,6 +183,24 @@ public class SparqlRuleTestSchema
     public static void setSparqlRuletestSparqlAskPattern(final URI ruletestInputTestString)
     {
         SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern = ruletestInputTestString;
+    }
+    
+    /**
+     * @param ruletestOutputTestString
+     *            the ruletestOutputTestString to set
+     */
+    public static void setSparqlRuletestInputTriples(final URI ruletestOutputTestString)
+    {
+        SparqlRuleTestSchema.sparqlRuletestInputTriples = ruletestOutputTestString;
+    }
+    
+    /**
+     * @param ruletestInputTestString
+     *            the ruletestInputTestString to set
+     */
+    public static void setSparqlRuletestInputMimeType(final URI ruletestInputTestString)
+    {
+        SparqlRuleTestSchema.sparqlRuletestInputMimeType = ruletestInputTestString;
     }
     
     /**

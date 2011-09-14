@@ -19,8 +19,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.ruletest.SparqlRuleTest;
 import org.queryall.api.ruletest.SparqlRuleTestSchema;
-import org.queryall.api.ruletest.StringRuleTest;
-import org.queryall.api.ruletest.StringRuleTestSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
@@ -53,6 +51,8 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     private String askQuery = "";
     
     private boolean expectedResult = false;
+    private String testInputTriples;
+    private String testInputMimeType;
     
     public SparqlRuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -90,6 +90,14 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             {
                 this.setExpectedResult(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
+            else if(nextStatement.getPredicate().equals(SparqlRuleTestSchema.getSparqlRuletestInputTriples()))
+            {
+                this.setTestInputTriples(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(SparqlRuleTestSchema.getSparqlRuletestInputMimeType()))
+            {
+                this.setTestInputMimeType(nextStatement.getObject().stringValue());
+            }
             else
             {
                 if(SparqlRuleTestImpl._DEBUG)
@@ -123,12 +131,16 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             final URI keyUri = this.getKey();
             final Literal testAskQueryLiteral = f.createLiteral(this.askQuery);
             final Literal testExpectedResultLiteral = f.createLiteral(this.expectedResult);
+            final Literal testInputTriplesLiteral = f.createLiteral(this.testInputTriples);
+            final Literal testInputMimeTypeLiteral = f.createLiteral(this.testInputMimeType);
             
             con.setAutoCommit(false);
             
             con.add(keyUri, RDF.TYPE, SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), testAskQueryLiteral, keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), testExpectedResultLiteral, keyToUse);
+            con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestInputTriples(), testInputTriplesLiteral, keyToUse);
+            con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), testInputMimeTypeLiteral, keyToUse);
             
             if(this.unrecognisedStatements != null)
             {
@@ -186,5 +198,30 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     public void setExpectedResult(boolean expectedResult)
     {
         this.expectedResult = expectedResult;
+    }
+
+    @Override
+    public String getTestInputMimeType()
+    {
+        return this.testInputMimeType;
+    }
+
+    @Override
+    public void setTestInputMimeType(String testInputMimeType)
+    {
+        this.testInputMimeType = testInputMimeType;
+    }
+
+    @Override
+    public String getTestInputTriples()
+    {
+        return this.testInputTriples;
+    }
+
+    @Override
+    public void setTestInputTriples(String testInputTriples)
+    {
+        this.testInputTriples = testInputTriples;
+        
     }
 }
