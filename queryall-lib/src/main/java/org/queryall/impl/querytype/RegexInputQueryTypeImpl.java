@@ -160,7 +160,7 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
         }
         else
         {
-            throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
+            throw new IllegalArgumentException("Query Parameters must include a value for key='"+Constants.QUERY+"'");
         }
     }
     
