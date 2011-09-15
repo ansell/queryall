@@ -29,7 +29,7 @@ public class SparqlRuleTestImplFactory implements RuleTestFactory
     @Override
     public RuleTestParser getParser()
     {
-        return new StringRuleTestImplParser();
+        return new SparqlRuleTestImplParser();
     }
     
 }
