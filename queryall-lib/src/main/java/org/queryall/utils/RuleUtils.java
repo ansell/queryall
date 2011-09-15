@@ -182,13 +182,11 @@ public final class RuleUtils
         
         for(final RuleTest nextRuleTest : myRuleTests)
         {
-            // TODO: remove cast to RegexRuleTest here
             final String nextTestInputString = ((StringRuleTest)nextRuleTest).getTestInputString();
             final String nextTestOutputString = ((StringRuleTest)nextRuleTest).getTestOutputString();
             
             String nextInputTestResult = nextTestInputString;
             
-            // TODO: only testing two out of the stages here
             if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
             {
                 for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
