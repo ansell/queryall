@@ -1221,13 +1221,17 @@ public class RdfUtilsTest
                     Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris()
                             .size());
                     
-                    Assert.assertTrue(nextRuleTest instanceof SparqlRuleTest);
+                    Assert.assertTrue("Sparql Rule test was not parsed into a SparqlRuleTest object", nextRuleTest instanceof SparqlRuleTest);
                     
                     final SparqlRuleTest nextSparqlRuleTest = (SparqlRuleTest)nextRuleTest;
                     
                     Assert.assertTrue("Expected result was not parsed correctly", nextSparqlRuleTest.getExpectedResult());
                     
-                    // TODO: Implement me for the other SparqlRuleTest methods
+                    Assert.assertEquals("Sparql Ask test query was not parsed correctly", " ?bio2rdfUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . ", nextSparqlRuleTest.getTestSparqlAsk());
+                    
+                    Assert.assertEquals("Test input mime type was not parsed correctly", "text/rdf+n3", nextSparqlRuleTest.getTestInputMimeType());
+                    
+                    Assert.assertEquals("Test triple string was not parsed correctly", " <http://bio2rdf.org/geneid:12334> <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> \"Capn2\" . ", nextSparqlRuleTest.getTestInputTriples());
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
