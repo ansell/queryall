@@ -59,7 +59,8 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
         {
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+            // Not sure how this would be implemented after query parsing, or why it would be different to after query creation, so leave it off the list for now
+            //this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
