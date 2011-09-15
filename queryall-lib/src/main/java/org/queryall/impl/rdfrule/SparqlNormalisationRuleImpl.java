@@ -13,18 +13,15 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.query.GraphQueryResult;
-import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,120 +176,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         this.sparqlWherePatterns.add(sparqlWherePattern);
     }
     
-    private Repository chooseStatementsFromRepository(final Repository myRepository, final boolean addToMyRepository)
-    {
-        Repository resultRepository = null;
-        
-        try
-        {
-            if(!addToMyRepository)
-            {
-                resultRepository = new SailRepository(new MemoryStore());
-                resultRepository.initialize();
-            }
-            
-            final RepositoryConnection selectConnection = myRepository.getConnection();
-            RepositoryConnection addConnection = null;
-            
-            if(addToMyRepository)
-            {
-                addConnection = myRepository.getConnection();
-            }
-            else
-            {
-                addConnection = resultRepository.getConnection();
-            }
-            
-            addConnection.setAutoCommit(false);
-            
-            try
-            {
-                for(final String nextConstructQuery : this.getSparqlConstructQueries())
-                {
-                    if(_DEBUG)
-                        log.debug("chooseStatementsFromRepository nextConstructQueries="+nextConstructQuery);
-                    
-                    try
-                    {
-                        final GraphQueryResult graphResult =
-                                selectConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
-                        
-                        int selectedStatements = 0;
-                        
-                        while(graphResult.hasNext())
-                        {
-                            addConnection.add(graphResult.next());
-                            selectedStatements++;
-                        }
-                        
-                        if(SparqlNormalisationRuleImpl._DEBUG)
-                        {
-                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: selected "
-                                    + selectedStatements + " statements for results");
-                        }
-                        
-                        addConnection.commit();
-                    }
-                    catch(final Exception ex)
-                    {
-                        addConnection.rollback();
-                        SparqlNormalisationRuleImpl.log.error(
-                                "SparqlNormalisationRuleImpl: exception adding statements", ex);
-                    }
-                }
-            }
-            finally
-            {
-                selectConnection.close();
-                addConnection.close();
-            }
-        }
-        catch(final org.openrdf.repository.RepositoryException rex)
-        {
-            SparqlNormalisationRuleImpl.log.error(
-                    "SparqlNormalisationRuleImpl: RepositoryException exception before adding statements", rex);
-        }
-        
-        if(addToMyRepository)
-        {
-            return myRepository;
-        }
-        else
-        {
-            return resultRepository;
-        }
-    }
-    
-    /**
-     * Performs changes to the input repository based on the mode of this rule
-     * 
-     * @param input A repository containing the current set of RDF statements
-     * @return A repository  containing the output set of RDF statements, after normalisation by this rule
-     */
-    private Repository doWorkBasedOnMode(final Repository input)
-    {
-        if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
-        {
-            if(_DEBUG)
-                log.debug("doWorkBasedOnMode: only delete matches");
-            return this.removeStatementsFromRepository(input);
-        }
-        else if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
-        {
-            if(_DEBUG)
-                log.debug("doWorkBasedOnMode: only include matches");
-            return this.chooseStatementsFromRepository(input, false);
-        }
-        else if(this.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
-        {
-            if(_DEBUG)
-                log.debug("doWorkBasedOnMode: add all matches");
-            return this.chooseStatementsFromRepository(input, true);
-        }
-        
-        return input;
-    }
-    
     /**
      * @param wherePattern
      * @return
@@ -378,65 +261,6 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         return this.sparqlWherePatterns;
     }
     
-    private Repository removeStatementsFromRepository(final Repository myRepository)
-    {
-        try
-        {
-            if(SparqlNormalisationRuleImpl._DEBUG)
-            {
-                SparqlNormalisationRuleImpl.log
-                        .debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQueryTarget="
-                                + this.getSparqlConstructQuery());
-            }
-            
-            final RepositoryConnection removeConnection = myRepository.getConnection();
-            
-            try
-            {
-                for(final String nextConstructQuery : this.getSparqlConstructQueries())
-                {
-                    try
-                    {
-                        final GraphQueryResult graphResult =
-                                removeConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
-                        
-                        int deletedStatements = 0;
-                        
-                        while(graphResult.hasNext())
-                        {
-                            removeConnection.remove(graphResult.next());
-                            deletedStatements++;
-                        }
-                        
-                        removeConnection.commit();
-                        if(SparqlNormalisationRuleImpl._DEBUG)
-                        {
-                            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: removed "
-                                    + deletedStatements + " results");
-                        }
-                        
-                    }
-                    catch(final Exception ex)
-                    {
-                        SparqlNormalisationRuleImpl.log.error(
-                                "SparqlNormalisationRuleImpl: exception removing statements", ex);
-                    }
-                }
-            }
-            finally
-            {
-                removeConnection.close();
-            }
-        }
-        catch(final org.openrdf.repository.RepositoryException rex)
-        {
-            SparqlNormalisationRuleImpl.log.error(
-                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
-        }
-        
-        return myRepository;
-    }
-    
     public boolean runTests(final Collection<RuleTest> myRules)
     {
         // TODO: implement me or delete me!
@@ -491,7 +315,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     @Override
     public Object stageAfterResultsImport(final Object input)
     {
-        return this.doWorkBasedOnMode((Repository)input);
+        return RdfUtils.doWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
     }
     
     @Override
@@ -503,7 +327,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     @Override
     public Object stageAfterResultsToPool(final Object input)
     {
-        return this.doWorkBasedOnMode((Repository)input);
+        return RdfUtils.doWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
     }
     
     @Override

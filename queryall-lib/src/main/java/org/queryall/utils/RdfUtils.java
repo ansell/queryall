@@ -64,6 +64,7 @@ import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestEnum;
 import org.queryall.api.ruletest.RuleTestSchema;
@@ -2609,6 +2610,266 @@ public final class RdfUtils
          * 
          * return true;
          *****/
+    }
+
+    public static Repository doMappingQueries(Repository output, String inputUriPrefix, Collection<URI> nextMappingPredicates, String outputUriPrefix)
+    {
+        StringBuilder addSubjectConstructBuilder = new StringBuilder(nextMappingPredicates.size() * 120);
+        
+        for(URI nextMappingPredicate : nextMappingPredicates)
+        {
+            addSubjectConstructBuilder.append(" ?normalisedSubjectUri <"+nextMappingPredicate.stringValue()+"> ?subjectUri . ");
+        }
+        
+        String addSubjectTemplateWhere = " ?subjectUri ?propertyUri ?objectUri . filter(strStarts(str(?subjectUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?subjectUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedSubjectUri) " ;
+        
+        String addSubjectTemplate = "CONSTRUCT { ?normalisedSubjectUri ?propertyUri ?objectUri . " + addSubjectConstructBuilder.toString() + " } WHERE { "+ addSubjectTemplateWhere+" } ";
+        
+        List<String> addSubjectQueries = new ArrayList<String>(1);
+        
+        addSubjectQueries.add(addSubjectTemplate);
+    
+        doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
+    
+        
+        StringBuilder addPredicateConstructBuilder = new StringBuilder(nextMappingPredicates.size() * 120);
+        
+        for(URI nextMappingPredicate : nextMappingPredicates)
+        {
+            addPredicateConstructBuilder.append(" ?normalisedPropertyUri <"+nextMappingPredicate.stringValue()+"> ?propertyUri . ");
+        }
+        
+        String addPredicateTemplateWhere = " ?subjectUri ?propertyUri ?objectUri . filter(strStarts(str(?propertyUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?propertyUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedPropertyUri) " ;
+        
+        String addPredicateTemplate = "CONSTRUCT { ?subjectUri ?normalisedPropertyUri ?objectUri . " + addPredicateConstructBuilder.toString() + " } WHERE { "+ addPredicateTemplateWhere+" } ";
+        
+        List<String> addPredicateQueries = new ArrayList<String>(1);
+        
+        addPredicateQueries.add(addPredicateTemplate);
+    
+        doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
+    
+        
+        StringBuilder addObjectConstructBuilder = new StringBuilder(nextMappingPredicates.size() * 120);
+        
+        for(URI nextMappingPredicate : nextMappingPredicates)
+        {
+            addObjectConstructBuilder.append(" ?normalisedObjectUri <"+nextMappingPredicate.stringValue()+"> ?objectUri . ");
+        }
+        
+        String addObjectTemplateWhere = " ?subjectUri ?propertyUri ?objectUri . filter(strStarts(str(?objectUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?objectUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedObjectUri) " ;
+        
+        String addObjectTemplate = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri . " + addObjectConstructBuilder.toString() + " } WHERE { "+ addObjectTemplateWhere+" } ";
+        
+        List<String> addObjectQueries = new ArrayList<String>(1);
+        
+        addObjectQueries.add(addObjectTemplate);
+    
+        doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
+    
+        
+        String deleteSubjectTemplate = "CONSTRUCT {  ?subjectUri ?propertyUri ?objectUri . } WHERE {  ?subjectUri ?propertyUri ?objectUri . filter(strStarts(str(?subjectUri), \""+inputUriPrefix+"\")) . ) }" ;
+        
+        List<String> deleteSubjectQueries = new ArrayList<String>(1);
+        
+        deleteSubjectQueries.add(deleteSubjectTemplate);
+    
+        doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteSubjectQueries);
+        
+    
+        String deletePredicateTemplate = "CONSTRUCT {  ?subjectUri ?propertyUri ?objectUri . } WHERE { ?subjectUri ?propertyUri ?objectUri . filter(strStarts(str(?propertyUri), \""+inputUriPrefix+"\")) . ) } " ;
+        
+        List<String> deletePredicateQueries = new ArrayList<String>(1);
+        
+        deletePredicateQueries.add(deletePredicateTemplate);
+    
+        doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deletePredicateQueries);
+        
+    
+        String deleteObjectTemplate = "CONSTRUCT {  ?subjectUri ?propertyUri ?objectUri . } WHERE {  ?subjectUri ?propertyUri ?objectUri . filter(strStarts(str(?objectUri), \""+inputUriPrefix+"\")) . ) }" ;
+        
+        List<String> deleteObjectQueries = new ArrayList<String>(1);
+        
+        deleteObjectQueries.add(deleteObjectTemplate);
+    
+        doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteObjectQueries);
+        
+        return output;
+    }
+
+    /**
+     * Performs changes to the input repository based on the mode of this rule
+     * 
+     * @param input A repository containing the current set of RDF statements
+     * @param nextMode TODO
+     * @param sparqlConstructQueries TODO
+     * @return A repository  containing the output set of RDF statements, after normalisation by this rule
+     */
+    public static Repository doWorkBasedOnMode(final Repository input, URI nextMode, List<String> sparqlConstructQueries)
+    {
+        if(nextMode.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
+        {
+            if(_DEBUG)
+                log.debug("doWorkBasedOnMode: only delete matches");
+            return removeStatementsFromRepository(input, sparqlConstructQueries);
+        }
+        else if(nextMode.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
+        {
+            if(_DEBUG)
+                log.debug("doWorkBasedOnMode: only include matches");
+            return chooseStatementsFromRepository(input, false, sparqlConstructQueries);
+        }
+        else if(nextMode.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
+        {
+            if(_DEBUG)
+                log.debug("doWorkBasedOnMode: add all matches");
+            return chooseStatementsFromRepository(input, true, sparqlConstructQueries);
+        }
+        
+        return input;
+    }
+
+    public static Repository chooseStatementsFromRepository(final Repository myRepository, final boolean addToMyRepository, List<String> sparqlConstructQueries)
+    {
+        Repository resultRepository = null;
+        
+        try
+        {
+            if(!addToMyRepository)
+            {
+                resultRepository = new SailRepository(new MemoryStore());
+                resultRepository.initialize();
+            }
+            
+            final RepositoryConnection selectConnection = myRepository.getConnection();
+            RepositoryConnection addConnection = null;
+            
+            if(addToMyRepository)
+            {
+                addConnection = myRepository.getConnection();
+            }
+            else
+            {
+                addConnection = resultRepository.getConnection();
+            }
+            
+            addConnection.setAutoCommit(false);
+            
+            try
+            {
+                for(final String nextConstructQuery : sparqlConstructQueries)
+                {
+                    if(_DEBUG)
+                        log.debug("chooseStatementsFromRepository nextConstructQueries="+nextConstructQuery);
+                    
+                    try
+                    {
+                        final GraphQueryResult graphResult =
+                                selectConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+                        
+                        int selectedStatements = 0;
+                        
+                        while(graphResult.hasNext())
+                        {
+                            addConnection.add(graphResult.next());
+                            selectedStatements++;
+                        }
+                        
+                        if(_DEBUG)
+                        {
+                            log.debug("SparqlNormalisationRuleImpl: selected "
+                                    + selectedStatements + " statements for results");
+                        }
+                        
+                        addConnection.commit();
+                    }
+                    catch(final Exception ex)
+                    {
+                        addConnection.rollback();
+                        log.error(
+                                "SparqlNormalisationRuleImpl: exception adding statements", ex);
+                    }
+                }
+            }
+            finally
+            {
+                selectConnection.close();
+                addConnection.close();
+            }
+        }
+        catch(final org.openrdf.repository.RepositoryException rex)
+        {
+            log.error(
+                    "SparqlNormalisationRuleImpl: RepositoryException exception before adding statements", rex);
+        }
+        
+        if(addToMyRepository)
+        {
+            return myRepository;
+        }
+        else
+        {
+            return resultRepository;
+        }
+    }
+
+    public static Repository removeStatementsFromRepository(final Repository myRepository, List<String> sparqlConstructQueries)
+    {
+        try
+        {
+            if(_DEBUG)
+            {
+                log
+                        .debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQueryTarget="
+                                + sparqlConstructQueries);
+            }
+            
+            final RepositoryConnection removeConnection = myRepository.getConnection();
+            
+            try
+            {
+                for(final String nextConstructQuery : sparqlConstructQueries)
+                {
+                    try
+                    {
+                        final GraphQueryResult graphResult =
+                                removeConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+                        
+                        int deletedStatements = 0;
+                        
+                        while(graphResult.hasNext())
+                        {
+                            removeConnection.remove(graphResult.next());
+                            deletedStatements++;
+                        }
+                        
+                        removeConnection.commit();
+                        if(_DEBUG)
+                        {
+                            log.debug("SparqlNormalisationRuleImpl: removed "
+                                    + deletedStatements + " results");
+                        }
+                        
+                    }
+                    catch(final Exception ex)
+                    {
+                        log.error(
+                                "SparqlNormalisationRuleImpl: exception removing statements", ex);
+                    }
+                }
+            }
+            finally
+            {
+                removeConnection.close();
+            }
+        }
+        catch(final org.openrdf.repository.RepositoryException rex)
+        {
+            log.error(
+                    "SparqlNormalisationRuleImpl: RepositoryException exception adding statements", rex);
+        }
+        
+        return myRepository;
     }
     
 }
