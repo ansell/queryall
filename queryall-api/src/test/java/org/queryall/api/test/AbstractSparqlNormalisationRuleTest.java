@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
@@ -26,7 +25,9 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
+import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 
 /**
  * Abstract unit test for SparqlNormalisationRule API.
@@ -93,12 +94,6 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
      */
     public abstract SparqlNormalisationRule getNewTestSparqlRule();
     
-    public abstract URI getSparqlRuleModeAddAllMatchingTriplesURI();
-    
-    public abstract URI getSparqlRuleModeOnlyDeleteMatchesURI();
-    
-    public abstract URI getSparqlRuleModeOnlyIncludeMatchesURI();
-    
     /**
      * @throws java.lang.Exception
      */
@@ -125,16 +120,16 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         this.invalidStages = new ArrayList<URI>(5);
         
-        this.invalidStages.add(this.getRdfruleStageQueryVariablesURI());
-        this.invalidStages.add(this.getRdfruleStageAfterQueryCreationURI());
-        this.invalidStages.add(this.getRdfruleStageAfterQueryParsingURI());
-        this.invalidStages.add(this.getRdfruleStageBeforeResultsImportURI());
-        this.invalidStages.add(this.getRdfruleStageAfterResultsToDocumentURI());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         
         this.validStages = new ArrayList<URI>(2);
         
-        this.validStages.add(this.getRdfruleStageAfterResultsImportURI());
-        this.validStages.add(this.getRdfruleStageAfterResultsToPoolURI());
+        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     /**
@@ -199,7 +194,7 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
         
-        sparqlRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
+        sparqlRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
         
         String sparqlConstructQueryTarget = " ?subjectUri ?normalisedPropertyUri ?objectUri . ?normalisedPropertyUri <http://www.w3.org/2002/07/owl#sameAs> ?propertyUri . ";
         String sparqlWherePattern = " ?subjectUri ?propertyUri ?objectUri . " +
@@ -236,11 +231,11 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries().size());
         
-        sparqlRule.addStage(getRdfruleStageAfterResultsImportURI());
+        sparqlRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
         
-        Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(getRdfruleStageAfterResultsImportURI()));
+        Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
         
-        sparqlRule.normaliseByStage(getRdfruleStageAfterResultsImportURI(), testRepository);
+        sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), testRepository);
 
         Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
     
@@ -265,7 +260,7 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
             
             final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
             
-            sparqlRule.setMode(getSparqlRuleModeAddAllMatchingTriplesURI());
+            sparqlRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
             
             String sparqlConstructQueryTarget = " ?subjectUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri .  ?symbolPredicate <http://bio2rdf.org/bio2rdf_resource:propertyMappedTo> <http://bio2rdf.org/bio2rdf_resource:dbxref> . ";
             String sparqlWherePattern = " ?subjectUri ?symbolPredicate ?primarySymbol . " +
@@ -302,11 +297,11 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
             
             Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries().size());
             
-            sparqlRule.addStage(getRdfruleStageAfterResultsImportURI());
+            sparqlRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
             
-            Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(getRdfruleStageAfterResultsImportURI()));
+            Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
             
-            sparqlRule.normaliseByStage(getRdfruleStageAfterResultsImportURI(), testRepository);
+            sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), testRepository);
 
             Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
     }
@@ -365,16 +360,16 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     public void testModes()
     {
         SparqlNormalisationRule queryallRule = this.getNewTestSparqlRule();
-        queryallRule.setMode(this.getSparqlRuleModeAddAllMatchingTriplesURI());
-        Assert.assertTrue(queryallRule.getMode().equals(this.getSparqlRuleModeAddAllMatchingTriplesURI()));
+        queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
+        Assert.assertTrue(queryallRule.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()));
         
         queryallRule = this.getNewTestSparqlRule();
-        queryallRule.setMode(this.getSparqlRuleModeOnlyDeleteMatchesURI());
-        Assert.assertTrue(queryallRule.getMode().equals(this.getSparqlRuleModeOnlyDeleteMatchesURI()));
+        queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
+        Assert.assertTrue(queryallRule.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()));
         
         queryallRule = this.getNewTestSparqlRule();
-        queryallRule.setMode(this.getSparqlRuleModeOnlyIncludeMatchesURI());
-        Assert.assertTrue(queryallRule.getMode().equals(this.getSparqlRuleModeOnlyIncludeMatchesURI()));
+        queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
+        Assert.assertTrue(queryallRule.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
     }
     
 }

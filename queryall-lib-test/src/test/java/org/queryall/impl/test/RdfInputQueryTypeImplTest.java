@@ -3,9 +3,7 @@
  */
 package org.queryall.impl.test;
 
-import org.openrdf.model.URI;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.test.AbstractQueryTypeTest;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 
@@ -17,18 +15,6 @@ import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
  */
 public class RdfInputQueryTypeImplTest extends AbstractQueryTypeTest
 {
-    @Override
-    public URI getAllNamespaceMatchMethodUri()
-    {
-        return QueryTypeSchema.getQueryNamespaceMatchAll();
-    }
-    
-    @Override
-    public URI getAnyNamespaceMatchMethodUri()
-    {
-        return QueryTypeSchema.getQueryNamespaceMatchAny();
-    }
-    
     @Override
     public QueryType getNewTestQueryType()
     {

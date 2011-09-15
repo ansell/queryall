@@ -14,6 +14,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.QueryTypeSchema;
 
 /**
  * Abstract unit test for QueryType API
@@ -68,22 +69,6 @@ public abstract class AbstractQueryTypeTest
     
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll;
-    
-    /**
-     * This method must return the URI used by the implementation to indicate that all namespaces
-     * must match for the namespace test to be satisfied
-     * 
-     * @return A URI designating that all namespaces need to match
-     */
-    public abstract URI getAllNamespaceMatchMethodUri();
-    
-    /**
-     * This method must return the URI used by the implementation to indicate that only one (1) or
-     * more namespaces need to match for the namespace test to be satisfied
-     * 
-     * @return A URI designating that any namespace matches are sufficient
-     */
-    public abstract URI getAnyNamespaceMatchMethodUri();
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
@@ -191,7 +176,7 @@ public abstract class AbstractQueryTypeTest
         this.queryTypeNotIncludeDefaults.setIncludeDefaults(false);
         
         this.queryType123NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
+        this.queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryType123NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryType123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
         this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
@@ -199,7 +184,7 @@ public abstract class AbstractQueryTypeTest
         this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryType12345NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryType12345NamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
+        this.queryType12345NamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryType12345NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryType12345NamespacesMatchMethodAll.setHandleAllNamespaces(false);
         this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
@@ -209,12 +194,12 @@ public abstract class AbstractQueryTypeTest
         this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri5);
         
         this.queryTypeNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this.getAllNamespaceMatchMethodUri());
+        this.queryTypeNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryTypeNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryTypeNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
         
         this.queryType123NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryType123NamespacesMatchMethodAny.setNamespaceMatchMethod(this.getAnyNamespaceMatchMethodUri());
+        this.queryType123NamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryType123NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryType123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
         this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
@@ -222,7 +207,7 @@ public abstract class AbstractQueryTypeTest
         this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryType12345NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryType12345NamespacesMatchMethodAny.setNamespaceMatchMethod(this.getAnyNamespaceMatchMethodUri());
+        this.queryType12345NamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryType12345NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryType12345NamespacesMatchMethodAny.setHandleAllNamespaces(false);
         this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
@@ -232,25 +217,22 @@ public abstract class AbstractQueryTypeTest
         this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri5);
         
         this.queryTypeNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this.getAnyNamespaceMatchMethodUri());
+        this.queryTypeNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryTypeNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryTypeNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
         
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this
-                .getAllNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
         
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this
-                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
         
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(this
-                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
@@ -258,8 +240,7 @@ public abstract class AbstractQueryTypeTest
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(this
-                .getAllNamespaceMatchMethodUri());
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
@@ -267,20 +248,17 @@ public abstract class AbstractQueryTypeTest
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this
-                .getAllNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this
-                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(this
-                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(true);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
@@ -291,8 +269,7 @@ public abstract class AbstractQueryTypeTest
                 .addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(this
-                .getAllNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(true);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
@@ -303,14 +280,12 @@ public abstract class AbstractQueryTypeTest
                 .addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setNamespaceMatchMethod(this
-                .getAnyNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
         
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setNamespaceMatchMethod(this
-                .getAllNamespaceMatchMethodUri());
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
         

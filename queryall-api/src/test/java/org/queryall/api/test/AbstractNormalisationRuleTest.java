@@ -16,6 +16,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.exception.InvalidStageException;
 
 /**
@@ -25,8 +26,8 @@ import org.queryall.exception.InvalidStageException;
  */
 public abstract class AbstractNormalisationRuleTest
 {
-    private URI testTrueSparqlNormalisationRuleUri;
-    private URI testFalseSparqlNormalisationRuleUri;
+//    private URI testTrueSparqlNormalisationRuleUri;
+//    private URI testFalseSparqlNormalisationRuleUri;
     private URI testStageInvalidInclusionSparqlNormalisationRuleUri;
     private URI testStageAllValidAndInvalidSparqlNormalisationRuleUri;
     protected List<URI> validStages;
@@ -46,26 +47,6 @@ public abstract class AbstractNormalisationRuleTest
      */
     public abstract NormalisationRule getNewTestRule();
     
-    public abstract URI getProfileExcludeThenIncludeURI();
-    
-    public abstract URI getProfileIncludeExcludeOrderUndefinedUri();
-    
-    public abstract URI getProfileIncludeThenExcludeURI();
-    
-    public abstract URI getRdfruleStageAfterQueryCreationURI();
-    
-    public abstract URI getRdfruleStageAfterQueryParsingURI();
-    
-    public abstract URI getRdfruleStageAfterResultsImportURI();
-    
-    public abstract URI getRdfruleStageAfterResultsToDocumentURI();
-    
-    public abstract URI getRdfruleStageAfterResultsToPoolURI();
-    
-    public abstract URI getRdfruleStageBeforeResultsImportURI();
-    
-    public abstract URI getRdfruleStageQueryVariablesURI();
-    
     /**
      * @throws java.lang.Exception
      */
@@ -74,8 +55,8 @@ public abstract class AbstractNormalisationRuleTest
     {
         final ValueFactory f = new MemValueFactory();
         
-        this.testTrueSparqlNormalisationRuleUri = f.createURI("http://example.org/test/includedNormalisationRule");
-        this.testFalseSparqlNormalisationRuleUri = f.createURI("http://example.org/test/excludedNormalisationRule");
+//        this.testTrueSparqlNormalisationRuleUri = f.createURI("http://example.org/test/includedNormalisationRule");
+//        this.testFalseSparqlNormalisationRuleUri = f.createURI("http://example.org/test/excludedNormalisationRule");
         this.testStageInvalidInclusionSparqlNormalisationRuleUri =
                 f.createURI("http://example.org/test/stageInclusionSparqlNormalisationRule");
         this.testStageAllValidAndInvalidSparqlNormalisationRuleUri =
@@ -83,16 +64,16 @@ public abstract class AbstractNormalisationRuleTest
         
         this.invalidStages = new ArrayList<URI>(5);
         
-        this.invalidStages.add(this.getRdfruleStageQueryVariablesURI());
-        this.invalidStages.add(this.getRdfruleStageAfterQueryCreationURI());
-        this.invalidStages.add(this.getRdfruleStageAfterQueryParsingURI());
-        this.invalidStages.add(this.getRdfruleStageBeforeResultsImportURI());
-        this.invalidStages.add(this.getRdfruleStageAfterResultsToDocumentURI());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         
         this.validStages = new ArrayList<URI>(2);
         
-        this.validStages.add(this.getRdfruleStageAfterResultsImportURI());
-        this.validStages.add(this.getRdfruleStageAfterResultsToPoolURI());
+        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     /**
@@ -101,8 +82,8 @@ public abstract class AbstractNormalisationRuleTest
     @After
     public void tearDown() throws Exception
     {
-        this.testTrueSparqlNormalisationRuleUri = null;
-        this.testFalseSparqlNormalisationRuleUri = null;
+//        this.testTrueSparqlNormalisationRuleUri = null;
+//        this.testFalseSparqlNormalisationRuleUri = null;
         this.testStageInvalidInclusionSparqlNormalisationRuleUri = null;
         this.testStageAllValidAndInvalidSparqlNormalisationRuleUri = null;
         

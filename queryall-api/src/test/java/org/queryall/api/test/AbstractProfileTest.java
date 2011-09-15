@@ -11,6 +11,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -34,12 +35,6 @@ public abstract class AbstractProfileTest
      * @return a new Profile instance
      */
     public abstract Profile getNewTestProfile();
-    
-    public abstract URI getProfileExcludeThenIncludeURI();
-    
-    public abstract URI getProfileIncludeExcludeOrderUndefinedUri();
-    
-    public abstract URI getProfileIncludeThenExcludeURI();
     
     /**
      * @throws java.lang.Exception
@@ -227,7 +222,7 @@ public abstract class AbstractProfileTest
     @Test
     public final void testGetDefaultProfileIncludeExcludeOrder()
     {
-        Assert.assertEquals(this.getProfileIncludeExcludeOrderUndefinedUri(),
+        Assert.assertEquals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(),
                 this.testProfile1.getDefaultProfileIncludeExcludeOrder());
     }
     
@@ -402,17 +397,17 @@ public abstract class AbstractProfileTest
     @Test
     public final void testSetDefaultProfileIncludeExcludeOrder()
     {
-        Assert.assertEquals(this.getProfileIncludeExcludeOrderUndefinedUri(),
+        Assert.assertEquals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(),
                 this.testProfile1.getDefaultProfileIncludeExcludeOrder());
         
-        this.testProfile1.setDefaultProfileIncludeExcludeOrder(this.getProfileExcludeThenIncludeURI());
+        this.testProfile1.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileExcludeThenIncludeUri());
         
-        Assert.assertEquals(this.getProfileExcludeThenIncludeURI(),
+        Assert.assertEquals(ProfileSchema.getProfileExcludeThenIncludeUri(),
                 this.testProfile1.getDefaultProfileIncludeExcludeOrder());
         
-        this.testProfile2.setDefaultProfileIncludeExcludeOrder(this.getProfileIncludeThenExcludeURI());
+        this.testProfile2.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeThenExcludeUri());
         
-        Assert.assertEquals(this.getProfileIncludeThenExcludeURI(),
+        Assert.assertEquals(ProfileSchema.getProfileIncludeThenExcludeUri(),
                 this.testProfile2.getDefaultProfileIncludeExcludeOrder());
     }
     
