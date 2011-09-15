@@ -105,6 +105,11 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         }
     }
     
+    public StringRuleTestImpl()
+    {
+        super();
+    }
+
     /**
      * @return the testInputString
      */

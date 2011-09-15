@@ -88,6 +88,11 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
         }
     }
     
+    public RuleTestImpl()
+    {
+        // TODO Auto-generated constructor stub
+    }
+
     /**
      * @param rdfRuleUri
      *            the rdfRuleUris to set

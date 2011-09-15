@@ -116,6 +116,11 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
         }
     }
     
+    public SparqlRuleTestImpl()
+    {
+        super();
+    }
+
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
