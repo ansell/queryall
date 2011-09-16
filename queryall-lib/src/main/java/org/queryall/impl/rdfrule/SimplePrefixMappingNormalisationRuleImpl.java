@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -21,7 +19,6 @@ import org.queryall.api.rdfrule.SimplePrefixMappingNormalisationRuleSchema;
 import org.queryall.api.rdfrule.SimplePrefixMappingNormalisationRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
-import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +71,9 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
     private String inputPrefix = "";
     
     private String outputPrefix = "";
-    private Collection<URI> mappingPredicates = new HashSet<URI>();
+    private Collection<URI> subjectMappingPredicates = new HashSet<URI>();
+    private Collection<URI> predicateMappingPredicates = new HashSet<URI>();
+    private Collection<URI> objectMappingPredicates = new HashSet<URI>();
     
     public SimplePrefixMappingNormalisationRuleImpl()
     {
@@ -121,9 +120,17 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
             {
                 this.setOutputUriPrefix(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(SimplePrefixMappingNormalisationRuleSchema.getMappingPredicateUri()))
+            else if(nextStatement.getPredicate().equals(SimplePrefixMappingNormalisationRuleSchema.getSubjectMappingPredicateUri()))
             {
-                this.addMappingPredicate((URI)nextStatement.getObject());
+                this.addSubjectMappingPredicate((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(SimplePrefixMappingNormalisationRuleSchema.getObjectMappingPredicateUri()))
+            {
+                this.addObjectMappingPredicate((URI)nextStatement.getObject());
+            }
+            else if(nextStatement.getPredicate().equals(SimplePrefixMappingNormalisationRuleSchema.getPredicateMappingPredicateUri()))
+            {
+                this.addPredicateMappingPredicate((URI)nextStatement.getObject());
             }
             else
             {
@@ -142,86 +149,6 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
             SimplePrefixMappingNormalisationRuleImpl.log.trace("SimplePrefixMappingNormalisationRuleImpl.fromRdf: would have returned... result="
                     + this.toString());
         }
-    }
-    
-    private String applyInputRegexToString(final String inputText)
-    {
-        return this.applyRegex(inputText, Pattern.quote(this.getOutputUriPrefix()), Pattern.quote(this.getInputUriPrefix()));
-    }
-    
-    private String applyOutputRegexToString(final String inputText)
-    {
-        return this.applyRegex(inputText, Pattern.quote(this.getInputUriPrefix()), Pattern.quote(this.getOutputUriPrefix()));
-    }
-    
-    private String applyRegex(String inputText, final String matchRegex, final String replaceRegex)
-    {
-        try
-        {
-            if((matchRegex == null) || (replaceRegex == null))
-            {
-                if(SimplePrefixMappingNormalisationRuleImpl._TRACE)
-                {
-                    SimplePrefixMappingNormalisationRuleImpl.log
-                            .trace("SimplePrefixMappingNormalisationRuleImpl.applyRegex: something was null matchRegex=" + matchRegex
-                                    + ", replaceRegex=" + replaceRegex);
-                }
-                
-                return inputText;
-            }
-            
-            if(SimplePrefixMappingNormalisationRuleImpl._DEBUG)
-            {
-                SimplePrefixMappingNormalisationRuleImpl.log.debug("SimplePrefixMappingNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
-                        + ", replaceRegex=" + replaceRegex);
-            }
-            
-            if(matchRegex.trim().equals(""))
-            {
-                if(SimplePrefixMappingNormalisationRuleImpl._DEBUG)
-                {
-                    SimplePrefixMappingNormalisationRuleImpl.log
-                            .debug("SimplePrefixMappingNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
-                }
-                
-                return inputText;
-            }
-            
-            String debugInputText = "";
-            
-            // only take a copy of the string if we need it for debugging
-            if(SimplePrefixMappingNormalisationRuleImpl._DEBUG)
-            {
-                debugInputText = inputText;
-            }
-            
-            inputText = inputText.replaceAll(matchRegex, replaceRegex);
-            
-            if(SimplePrefixMappingNormalisationRuleImpl._DEBUG)
-            {
-                SimplePrefixMappingNormalisationRuleImpl.log.debug("SimplePrefixMappingNormalisationRuleImpl.applyRegex: regex start input="
-                        + debugInputText);
-                SimplePrefixMappingNormalisationRuleImpl.log.debug("SimplePrefixMappingNormalisationRuleImpl.applyRegex: regex complete result="
-                        + inputText);
-            }
-        }
-        catch(final PatternSyntaxException pse)
-        {
-            SimplePrefixMappingNormalisationRuleImpl.log.error("SimplePrefixMappingNormalisationRuleImpl.applyRegex: PatternSyntaxException="
-                    + pse.getMessage());
-        }
-        catch(final IllegalArgumentException iae)
-        {
-            SimplePrefixMappingNormalisationRuleImpl.log.error("SimplePrefixMappingNormalisationRuleImpl.applyRegex: IllegalArgumentException="
-                    + iae.getMessage());
-        }
-        catch(final IndexOutOfBoundsException ioobe)
-        {
-            SimplePrefixMappingNormalisationRuleImpl.log.error("SimplePrefixMappingNormalisationRuleImpl.applyRegex: IndexOutOfBoundsException="
-                    + ioobe.getMessage());
-        }
-        
-        return inputText;
     }
     
     /**
@@ -284,7 +211,9 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
     @Override
     public Object stageAfterQueryCreation(final Object input)
     {
-        return applyInputRegexToString((String)input);
+        // denormalise the query variables
+        // WARNING: This may destroy/alter mappings that were created in the query variables stage
+        return ((String)input).replace(getInputUriPrefix(), getOutputUriPrefix());
     }
     
     /**
@@ -302,7 +231,7 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
     @Override
     public Object stageAfterResultsImport(final Object output)
     {
-        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), mappingPredicates, this.getOutputUriPrefix());
+        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), this.getOutputUriPrefix(), getSubjectMappingPredicates(), getPredicateMappingPredicates(), getObjectMappingPredicates());
     }
     
     /**
@@ -311,25 +240,26 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
     @Override
     public Object stageAfterResultsToDocument(final Object output)
     {
-        return applyOutputRegexToString((String)output);
+        return ((String)output).replace(getInputUriPrefix(), getOutputUriPrefix());
     }
     
     @Override
     public Object stageAfterResultsToPool(final Object output)
     {
-        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), mappingPredicates, this.getOutputUriPrefix());
+        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), this.getOutputUriPrefix(), getSubjectMappingPredicates(), getPredicateMappingPredicates(), getObjectMappingPredicates());
     }
     
     @Override
     public Object stageBeforeResultsImport(final Object output)
     {
-        return applyOutputRegexToString((String)output);
+        return ((String)output).replace(getInputUriPrefix(), getOutputUriPrefix());
     }
     
     @Override
     public Object stageQueryVariables(final Object input)
     {
-        return applyInputRegexToString((String)input);
+        // denormalise the query variables
+        return ((String)input).replace(getOutputUriPrefix(), getInputUriPrefix());
     }
     
     
@@ -363,11 +293,27 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
             con.add(keyUri, SimplePrefixMappingNormalisationRuleSchema.getOutputPrefixUri(), outputUriPrefixLiteral,
                     keyToUse);
             
-            if(this.mappingPredicates != null)
+            if(this.subjectMappingPredicates != null)
             {
-                for(URI nextMappingPredicate : mappingPredicates)
+                for(URI nextMappingPredicate : subjectMappingPredicates)
                 {
-                    con.add(keyUri, SimplePrefixMappingNormalisationRuleSchema.getMappingPredicateUri(), nextMappingPredicate, keyToUse);
+                    con.add(keyUri, SimplePrefixMappingNormalisationRuleSchema.getSubjectMappingPredicateUri(), nextMappingPredicate, keyToUse);
+                }
+            }
+            
+            if(this.predicateMappingPredicates != null)
+            {
+                for(URI nextMappingPredicate : predicateMappingPredicates)
+                {
+                    con.add(keyUri, SimplePrefixMappingNormalisationRuleSchema.getPredicateMappingPredicateUri(), nextMappingPredicate, keyToUse);
+                }
+            }
+            
+            if(this.objectMappingPredicates != null)
+            {
+                for(URI nextMappingPredicate : objectMappingPredicates)
+                {
+                    con.add(keyUri, SimplePrefixMappingNormalisationRuleSchema.getObjectMappingPredicateUri(), nextMappingPredicate, keyToUse);
                 }
             }
             
@@ -404,20 +350,38 @@ public class SimplePrefixMappingNormalisationRuleImpl extends NormalisationRuleI
     }
 
     @Override
-    public void addMappingPredicate(String mappingPredicateString)
+    public void addSubjectMappingPredicate(URI mappingPredicateUri)
     {
-        this.addMappingPredicate(StringUtils.createURI(mappingPredicateString));
+        this.subjectMappingPredicates.add(mappingPredicateUri);
     }
 
     @Override
-    public void addMappingPredicate(URI mappingPredicateUri)
+    public Collection<URI> getSubjectMappingPredicates()
     {
-        this.mappingPredicates.add(mappingPredicateUri);
+        return Collections.unmodifiableCollection(this.subjectMappingPredicates);
     }
 
     @Override
-    public Collection<URI> getMappingPredicates()
+    public void addPredicateMappingPredicate(URI equivalentproperty)
     {
-        return this.mappingPredicates;
+        this.predicateMappingPredicates.add(equivalentproperty);
+    }
+
+    @Override
+    public Collection<URI> getPredicateMappingPredicates()
+    {
+        return Collections.unmodifiableCollection(this.predicateMappingPredicates);
+    }
+
+    @Override
+    public void addObjectMappingPredicate(URI sameas)
+    {
+        this.objectMappingPredicates.add(sameas);
+    }
+
+    @Override
+    public Collection<URI> getObjectMappingPredicates()
+    {
+        return Collections.unmodifiableCollection(this.objectMappingPredicates);
     }
 }

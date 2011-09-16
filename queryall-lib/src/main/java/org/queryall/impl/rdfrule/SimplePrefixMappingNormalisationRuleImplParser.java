@@ -22,7 +22,7 @@ public class SimplePrefixMappingNormalisationRuleImplParser implements Normalisa
     {
         try
         {
-            return new RegexNormalisationRuleImpl(rdfStatements, subjectKey, modelVersion);
+            return new SimplePrefixMappingNormalisationRuleImpl(rdfStatements, subjectKey, modelVersion);
         }
         catch(final OpenRDFException ex)
         {

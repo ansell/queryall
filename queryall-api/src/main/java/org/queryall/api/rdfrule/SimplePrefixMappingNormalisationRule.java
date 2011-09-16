@@ -14,10 +14,16 @@ public interface SimplePrefixMappingNormalisationRule extends NormalisationRule
     
     String getOutputUriPrefix();
     
-    void addMappingPredicate(String mappingPredicateString);
+    void addSubjectMappingPredicate(URI equivalentclass);
     
-    void addMappingPredicate(URI mappingPredicateUri);
+    Collection<URI> getSubjectMappingPredicates();
 
-    Collection<URI> getMappingPredicates();
+    void addPredicateMappingPredicate(URI equivalentproperty);
+
+    Collection<URI> getPredicateMappingPredicates();
+
+    void addObjectMappingPredicate(URI sameas);
     
+    Collection<URI> getObjectMappingPredicates();
+
 }

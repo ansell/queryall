@@ -20,7 +20,7 @@ public class SimplePrefixMappingNormalisationRuleImplFactory implements Normalis
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return RegexNormalisationRuleImplEnum.REGEX_NORMALISATION_RULE_IMPL_ENUM;
+        return SimplePrefixMappingNormalisationRuleImplEnum.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_ENUM;
         // return NormalisationRuleEnum.valueOf(RegexNormalisationRuleImpl.class.getName());
     }
     
@@ -30,7 +30,7 @@ public class SimplePrefixMappingNormalisationRuleImplFactory implements Normalis
     @Override
     public NormalisationRuleParser getParser()
     {
-        return new RegexNormalisationRuleImplParser();
+        return new SimplePrefixMappingNormalisationRuleImplParser();
     }
     
 }

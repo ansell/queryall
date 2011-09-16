@@ -25,7 +25,7 @@ public class SimplePrefixMappingNormalisationRuleImplEnum extends NormalisationR
     @SuppressWarnings("unused")
     private static final boolean _INFO = SimplePrefixMappingNormalisationRuleImplEnum.log.isInfoEnabled();
     
-    public static final NormalisationRuleEnum REGEX_NORMALISATION_RULE_IMPL_ENUM = new SimplePrefixMappingNormalisationRuleImplEnum();
+    public static final NormalisationRuleEnum SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_ENUM = new SimplePrefixMappingNormalisationRuleImplEnum();
     
     // static
     // {
@@ -34,11 +34,11 @@ public class SimplePrefixMappingNormalisationRuleImplEnum extends NormalisationR
     
     public SimplePrefixMappingNormalisationRuleImplEnum()
     {
-        this(RegexNormalisationRuleImpl.class.getName(), RegexNormalisationRuleImpl.myTypes());
+        this(SimplePrefixMappingNormalisationRuleImpl.class.getName(), SimplePrefixMappingNormalisationRuleImpl.myTypes());
         
         if(SimplePrefixMappingNormalisationRuleImplEnum._DEBUG)
         {
-            SimplePrefixMappingNormalisationRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum() registered");
+            SimplePrefixMappingNormalisationRuleImplEnum.log.debug("SimplePrefixMappingNormalisationRuleImplEnum() registered");
         }
     }
     
@@ -52,7 +52,7 @@ public class SimplePrefixMappingNormalisationRuleImplEnum extends NormalisationR
         
         if(SimplePrefixMappingNormalisationRuleImplEnum._DEBUG)
         {
-            SimplePrefixMappingNormalisationRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum(String, List<URI>) registered");
+            SimplePrefixMappingNormalisationRuleImplEnum.log.debug("SimplePrefixMappingNormalisationRuleImplEnum(String, List<URI>) registered");
         }
     }
     
