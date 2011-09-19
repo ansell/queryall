@@ -221,7 +221,6 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
      * @throws QueryEvaluationException 
      * @throws MalformedQueryException 
      */
-    @Ignore
     @Test 
     public void testMoreAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
     {
@@ -247,7 +246,7 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
         
         Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
         
-        String testQuery = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri .  ?normalisedObjectUri <http://www.w3.org/2002/07/owl#sameAs> ?objectUri .  } WHERE {  ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"http://bio2rdf.org/po:\")) . bind(iri(concat(\"http://oas.example.org/plantotology:\", encode_for_uri(substr(str(?objectUri), 23)))) AS ?normalisedObjectUri)  } ";
+        String testQuery = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri .  ?normalisedObjectUri <http://www.w3.org/2002/07/owl#sameAs> ?objectUri .  } WHERE {  ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"http://bio2rdf.org/po:\")) . bind(iri(concat(\"http://oas.example.org/plantontology:\", encode_for_uri(substr(str(?objectUri), 23)))) AS ?normalisedObjectUri)  } ";
 
         final GraphQueryResult graphResult =
                 testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, testQuery).evaluate();
@@ -275,7 +274,7 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
         Statement testOutputObjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.SAMEAS, predicateUri);
         
         mappingRule.setInputUriPrefix("http://bio2rdf.org/po:");
-        mappingRule.setOutputUriPrefix("http://oas.example.org/plantotology:");
+        mappingRule.setOutputUriPrefix("http://oas.example.org/plantontology:");
         
         mappingRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
 
@@ -288,15 +287,15 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
         
         Assert.assertTrue("The test output statement was not in the resulting repository", testRepositoryConnection.hasStatement(testOutputStatement, false));
 
-        Assert.assertFalse("The test input statement was still in the resulting repository", testRepositoryConnection.hasStatement(testInputStatement, false));
-
         Assert.assertTrue("The test output predicate mapping statement was not in the resulting repository", testRepositoryConnection.hasStatement(testOutputPredicateMappingStatement, false));
 
         Assert.assertFalse("The test output subject mapping statement was in the resulting repository", testRepositoryConnection.hasStatement(testOutputSubjectMappingStatement, false));
 
         Assert.assertFalse("The test output object mapping statement was in the resulting repository", testRepositoryConnection.hasStatement(testOutputObjectMappingStatement, false));
 
-        Assert.assertEquals("The test statements were not added accurately to the repository", 2, testRepositoryConnection.size());
+        Assert.assertFalse("The test input statement was still in the resulting repository", testRepositoryConnection.hasStatement(testInputStatement, false));
+        
+        Assert.assertEquals("The test statements were not added accurately to the repository", 4, testRepositoryConnection.size());
     }    
 
 }

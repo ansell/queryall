@@ -2632,7 +2632,7 @@ public final class RdfUtils
             addObjectConstructBuilder.append(" ?normalisedObjectUri <"+nextMappingPredicate.stringValue()+"> ?objectUri . ");
         }
         
-        String addObjectTemplateWhere = " ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?objectUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedObjectUri) " ;
+        String addObjectTemplateWhere = " ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?objectUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedObjectUri) " ;
         
         String addObjectTemplate = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri . " + addObjectConstructBuilder.toString() + " } WHERE { "+ addObjectTemplateWhere+" } ";
         
@@ -2655,7 +2655,7 @@ public final class RdfUtils
             deleteObjectConstructBuilder.append("MINUS { ?subjectUri <"+nextMappingPredicate.stringValue()+"> ?objectUri . } ");
         }
         
-        String deleteObjectTemplate = "CONSTRUCT {  ?subjectUri ?propertyUri ?objectUri . } WHERE {  ?subjectUri ?propertyUri ?objectUri . "+ deleteObjectConstructBuilder.toString() +" filter(isIRI(?objectUri) && strStarts(str(?objectUri), \""+inputUriPrefix+"\")) . }" ;
+        String deleteObjectTemplate = "CONSTRUCT {  ?subjectUri ?predicateUri ?objectUri . } WHERE {  ?subjectUri ?predicateUri ?objectUri . "+ deleteObjectConstructBuilder.toString() +" filter(isIRI(?objectUri) && strStarts(str(?objectUri), \""+inputUriPrefix+"\")) . }" ;
         
         log.info("deleteObjectTemplate="+deleteObjectTemplate);
         
@@ -2675,9 +2675,9 @@ public final class RdfUtils
             addSubjectConstructBuilder.append(" ?normalisedSubjectUri <"+nextMappingPredicate.stringValue()+"> ?subjectUri . ");
         }
         
-        String addSubjectTemplateWhere = " ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?subjectUri) && strStarts(str(?subjectUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?subjectUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedSubjectUri) " ;
+        String addSubjectTemplateWhere = " ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?subjectUri) && strStarts(str(?subjectUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?subjectUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedSubjectUri) " ;
         
-        String addSubjectTemplate = "CONSTRUCT { ?normalisedSubjectUri ?propertyUri ?objectUri . " + addSubjectConstructBuilder.toString() + " } WHERE { "+ addSubjectTemplateWhere+" } ";
+        String addSubjectTemplate = "CONSTRUCT { ?normalisedSubjectUri ?predicateUri ?objectUri . " + addSubjectConstructBuilder.toString() + " } WHERE { "+ addSubjectTemplateWhere+" } ";
         
         List<String> addSubjectQueries = new ArrayList<String>(1);
         
@@ -2688,7 +2688,7 @@ public final class RdfUtils
         RdfUtils.toOutputStream(output, System.err);
         
         
-        String deleteSubjectTemplate = "CONSTRUCT {  ?subjectUri ?propertyUri ?objectUri . } WHERE {  ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?subjectUri) && strStarts(str(?subjectUri), \""+inputUriPrefix+"\")) . }" ;
+        String deleteSubjectTemplate = "CONSTRUCT {  ?subjectUri ?predicateUri ?objectUri . } WHERE {  ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?subjectUri) && strStarts(str(?subjectUri), \""+inputUriPrefix+"\")) . }" ;
         
         List<String> deleteSubjectQueries = new ArrayList<String>(1);
         
@@ -2703,12 +2703,12 @@ public final class RdfUtils
         
         for(URI nextMappingPredicate : nextPredicateMappingPredicates)
         {
-            addPredicateConstructBuilder.append(" ?normalisedPropertyUri <"+nextMappingPredicate.stringValue()+"> ?propertyUri . ");
+            addPredicateConstructBuilder.append(" ?normalisedPredicateUri <"+nextMappingPredicate.stringValue()+"> ?predicateUri . ");
         }
         
-        String addPredicateTemplateWhere = " ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?propertyUri) && strStarts(str(?propertyUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?propertyUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedPropertyUri) " ;
+        String addPredicateTemplateWhere = " ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?predicateUri) && strStarts(str(?predicateUri), \""+inputUriPrefix+"\")) . bind(iri(concat(\""+outputUriPrefix+"\", encode_for_uri(substr(str(?predicateUri), "+(inputUriPrefix.length()+1)+")))) AS ?normalisedPredicateUri) " ;
         
-        String addPredicateTemplate = "CONSTRUCT { ?subjectUri ?normalisedPropertyUri ?objectUri . " + addPredicateConstructBuilder.toString() + " } WHERE { "+ addPredicateTemplateWhere+" } ";
+        String addPredicateTemplate = "CONSTRUCT { ?subjectUri ?normalisedPredicateUri ?objectUri . " + addPredicateConstructBuilder.toString() + " } WHERE { "+ addPredicateTemplateWhere+" } ";
         
         List<String> addPredicateQueries = new ArrayList<String>(1);
         
@@ -2719,7 +2719,7 @@ public final class RdfUtils
         RdfUtils.toOutputStream(output, System.err);
         
         
-        String deletePredicateTemplate = "CONSTRUCT {  ?subjectUri ?propertyUri ?objectUri . } WHERE { ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?propertyUri) && strStarts(str(?propertyUri), \""+inputUriPrefix+"\")) . } " ;
+        String deletePredicateTemplate = "CONSTRUCT {  ?subjectUri ?predicateUri ?objectUri . } WHERE { ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?predicateUri) && strStarts(str(?predicateUri), \""+inputUriPrefix+"\")) . } " ;
         
         List<String> deletePredicateQueries = new ArrayList<String>(1);
         

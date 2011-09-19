@@ -62,7 +62,6 @@ public class SesameConstructQueryBug
         this.testValueFactory = null;
     }
     
-    @Ignore
     @Test
     public void test() throws RepositoryException, QueryEvaluationException, MalformedQueryException
     {
@@ -86,7 +85,7 @@ public class SesameConstructQueryBug
         
         Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
         
-        String testQuery = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri .  ?normalisedObjectUri <http://www.w3.org/2002/07/owl#sameAs> ?objectUri .  } WHERE {  ?subjectUri ?propertyUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"http://bio2rdf.org/po:\")) . bind(iri(concat(\"http://oas.example.org/plantotology:\", encode_for_uri(substr(str(?objectUri), 23)))) AS ?normalisedObjectUri)  } ";
+        String testQuery = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri .  ?normalisedObjectUri <http://www.w3.org/2002/07/owl#sameAs> ?objectUri .  } WHERE {  ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"http://bio2rdf.org/po:\")) . bind(iri(concat(\"http://oas.example.org/plantontology:\", encode_for_uri(substr(str(?objectUri), 23)))) AS ?normalisedObjectUri)  } ";
 
         final GraphQueryResult graphResult = testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, testQuery).evaluate();
         
@@ -108,6 +107,13 @@ public class SesameConstructQueryBug
         
         Assert.assertEquals("Repository did not contain the expected number of statements", 3, testRepositoryConnection.size());
 
+        for(Statement nextResutStatement : testRepositoryConnection.getStatements(null, null, null, false).asList())
+        {
+            System.out.println(nextResutStatement.toString());
+        }
+        
+
+        
         Assert.assertTrue("Repository did not include test input statement", testRepositoryConnection.hasStatement(testInputStatement, false));
         Assert.assertTrue("Repository did not include test output statement", testRepositoryConnection.hasStatement(testOutputStatement, false));
         Assert.assertTrue("Repository did not include mapping statement", testRepositoryConnection.hasStatement(testMappingStatement, false));
