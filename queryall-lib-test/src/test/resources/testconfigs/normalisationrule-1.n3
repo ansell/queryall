@@ -1,3 +1,13 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix queryall_profile: <http://purl.org/queryall/profile:> .
+@prefix queryall_rdfrule: <http://purl.org/queryall/rdfrule:> .
+@prefix oas_provider: <http://oas.example.org/provider:> .
+@prefix oas_query: <http://oas.example.org/query:> .
+@prefix oas_rdfrule: <http://oas.example.org/rdfrule:> .
+@prefix oas_ns: <http://oas.example.org/ns:> .
+
 <http://example.org/rdfrule:abc_issn> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:RegexNormalisationRule> ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:issn> ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:queryVariables> ;
@@ -6,7 +16,7 @@
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:beforeResultsImport> ;
 	<http://purl.org/queryall/rdfrule:outputMatchRegex> "http://id\\.abc\\.org/issn/" ;
 	<http://purl.org/queryall/rdfrule:outputReplaceRegex> "http://example\\.org/issn:" ;
-	<http://purl.org/queryall/rdfrule:description> "Converts between the URIs used by the ABC ISSN's and the Example organisation ISSN namespace" ;
+	rdfs:comment "Converts between the URIs used by the ABC ISSN's and the Example organisation ISSN namespace" ;
 	<http://purl.org/queryall/rdfrule:order> "110"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:includeThenExclude> .
 
@@ -16,9 +26,21 @@
     <http://purl.org/queryall/rdfrule:sparqlConstructQueryTarget> "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . " ;
     <http://purl.org/queryall/rdfrule:sparqlWherePattern> " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri)" ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsToPool> ;
-	<http://purl.org/queryall/rdfrule:description> "Add symbol URI based on Neurocommons gene symbol literals" ;
+	rdfs:comment "Add symbol URI based on Neurocommons gene symbol literals" ;
 	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
+	
+oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:PrefixMappingNormalisationRule ;
+	queryall_rdfrule:hasRelatedNamespace oas_ns:po ;
+    queryall_rdfrule:inputPrefix "http://bio2rdf.org/po:" ;
+    queryall_rdfrule:outputPrefix "http://oas.example.org/po:" ;
+    queryall_rdfrule:subjectMappingPredicate <http://www.w3.org/2002/07/owl#sameAs> ;
+    queryall_rdfrule:predicateMappingPredicate <http://www.w3.org/2002/07/owl#equivalentProperty> ;
+    queryall_rdfrule:objectMappingPredicate <http://www.w3.org/2002/07/owl#equivalentClass> ;
+	queryall_rdfrule:stage queryall_rdfrule:queryVariables , queryall_rdfrule:beforeResultsImport , queryall_rdfrule:afterResultsImport ;
+	rdfs:comment "Provides conversion between the deprecated Bio2RDF Plant Ontology namespace and the OAS Plant Ontology namespace using a simple prefix mapping." ;
+	queryall_rdfrule:order "100"^^xsd:int ;
+	queryall_profile:profileIncludeExcludeOrder queryall_profile:includeThenExclude .
 	
 <http://bio2rdf.org/rdfrule:xsltNlmPubmed> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:XsltNormalisationRule> ;
     <http://purl.org/queryall/rdfrule:xsltStylesheet> """<?xml version="1.0" encoding="UTF-8" ?>

@@ -25,6 +25,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -47,6 +48,7 @@ import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
@@ -125,6 +127,7 @@ public class RdfUtilsTest
     private URI testNormalisationRule1;
     private URI testNormalisationRule2;
     private URI testNormalisationRule3;
+    private URI testNormalisationRule4;
 
     
     /**
@@ -212,6 +215,7 @@ public class RdfUtilsTest
         this.testNormalisationRule2 =
                 this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri");
         this.testNormalisationRule3 = this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:xsltNlmPubmed");
+        this.testNormalisationRule4 = this.testValueFactory.createURI("http://oas.example.org/rdfrule:bio2rdfpo");
     }
     
     /**
@@ -270,6 +274,7 @@ public class RdfUtilsTest
         this.testNormalisationRule1 = null;
         this.testNormalisationRule2 = null;
         this.testNormalisationRule3 = null;
+        this.testNormalisationRule4 = null;
     }
     
     /**
@@ -555,7 +560,7 @@ public class RdfUtilsTest
             
             final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(this.testRepository);
             
-            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 3,
+            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 4,
                     results.size());
             
             for(final URI nextNormalisationRuleUri : results.keySet())
@@ -702,6 +707,60 @@ public class RdfUtilsTest
                     Assert.assertTrue("Xslt transform was not parsed correctly", nextXsltRule.getXsltStylesheet()
                             .contains("</xsl:stylesheet>"));
                 }
+                else if(nextNormalisationRuleUri.equals(this.testNormalisationRule4))
+                {
+                    Assert.assertEquals("Results did not contain correct normalisation rule URI",
+                            this.testNormalisationRule4, nextNormalisationRuleUri);
+                    
+                    Assert.assertEquals("Did not find expected number of stages", 3, nextNormalisationRule.getStages()
+                            .size());
+                    Assert.assertTrue(
+                            "Could not find expected stage: query variables",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageQueryVariables()));
+                    Assert.assertTrue(
+                            "Could not find expected stage: before results import",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
+                    Assert.assertTrue(
+                            "Could not find expected stage: after results import",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
+                    
+                    Assert.assertEquals("Description was not parsed correctly",
+                            "Provides conversion between the deprecated Bio2RDF Plant Ontology namespace and the OAS Plant Ontology namespace using a simple prefix mapping.",
+                            nextNormalisationRule.getDescription());
+                    Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
+                    Assert.assertEquals("Include exclude order was not parsed correctly",
+                            ProfileSchema.getProfileIncludeThenExcludeUri(),
+                            nextNormalisationRule.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
+                            .getRelatedNamespaces().size());
+                    
+                    Assert.assertTrue(
+                            "Related namespace was not parsed correctly",
+                            nextNormalisationRule.getRelatedNamespaces().contains(
+                                    this.testValueFactory.createURI("http://oas.example.org/ns:po")));
+                    
+                    Assert.assertTrue(
+                            "Normalisation rule was not implemented using the PrefixMappingNormalisationRule interface",
+                            nextNormalisationRule instanceof PrefixMappingNormalisationRule);
+                    
+                    final PrefixMappingNormalisationRule nextPrefixMappingRule = (PrefixMappingNormalisationRule)nextNormalisationRule;
+                    
+                    Assert.assertEquals("Input URI prefix was not parsed correctly", "http://bio2rdf.org/po:", nextPrefixMappingRule.getInputUriPrefix());
+                    Assert.assertEquals("Output URI prefix was not parsed correctly", "http://oas.example.org/po:", nextPrefixMappingRule.getOutputUriPrefix());
+                    
+                    Assert.assertEquals("Subject mapping predicates were not parsed correctly", 1, nextPrefixMappingRule.getSubjectMappingPredicates().size());
+                    Assert.assertEquals("Predicate mapping predicates were not parsed correctly", 1, nextPrefixMappingRule.getPredicateMappingPredicates().size());
+                    Assert.assertEquals("Object mapping predicates were not parsed correctly", 1, nextPrefixMappingRule.getObjectMappingPredicates().size());
+
+                    Assert.assertTrue("Subject mapping predicates were not parsed correctly: owl:sameAs", nextPrefixMappingRule.getSubjectMappingPredicates().contains(OWL.SAMEAS));
+                    Assert.assertTrue("Predicate mapping predicates were not parsed correctly: owl:equivalentProperty", nextPrefixMappingRule.getPredicateMappingPredicates().contains(OWL.EQUIVALENTPROPERTY));
+                    Assert.assertTrue("Object mapping predicates were not parsed correctly: owl:equivalentClass", nextPrefixMappingRule.getObjectMappingPredicates().contains(OWL.EQUIVALENTCLASS));
+                }
+                
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {

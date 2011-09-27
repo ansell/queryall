@@ -14,7 +14,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SimplePrefixMappingNormalisationRuleImplParser implements NormalisationRuleParser
+public class PrefixMappingNormalisationRuleImplParser implements NormalisationRuleParser
 {
     @Override
     public NormalisationRule createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
@@ -22,7 +22,7 @@ public class SimplePrefixMappingNormalisationRuleImplParser implements Normalisa
     {
         try
         {
-            return new SimplePrefixMappingNormalisationRuleImpl(rdfStatements, subjectKey, modelVersion);
+            return new PrefixMappingNormalisationRuleImpl(rdfStatements, subjectKey, modelVersion);
         }
         catch(final OpenRDFException ex)
         {

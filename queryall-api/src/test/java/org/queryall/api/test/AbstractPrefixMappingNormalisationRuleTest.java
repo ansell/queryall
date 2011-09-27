@@ -26,7 +26,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SimplePrefixMappingNormalisationRule;
+import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,12 +35,12 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends AbstractNormalisationRuleTest
+public abstract class AbstractPrefixMappingNormalisationRuleTest extends AbstractNormalisationRuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(AbstractSimplePrefixMappingNormalisationRuleTest.class);
-    private static final boolean _TRACE = AbstractSimplePrefixMappingNormalisationRuleTest.log.isTraceEnabled();
-    private static final boolean _DEBUG = AbstractSimplePrefixMappingNormalisationRuleTest.log.isDebugEnabled();
-    private static final boolean _INFO = AbstractSimplePrefixMappingNormalisationRuleTest.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
+    private static final boolean _TRACE = AbstractPrefixMappingNormalisationRuleTest.log.isTraceEnabled();
+    private static final boolean _DEBUG = AbstractPrefixMappingNormalisationRuleTest.log.isDebugEnabled();
+    private static final boolean _INFO = AbstractPrefixMappingNormalisationRuleTest.log.isInfoEnabled();
 
     @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri1;
@@ -78,7 +78,7 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
      * 
      * @return a new instance of the implemented SparqlNormalisationRule
      */
-    public abstract SimplePrefixMappingNormalisationRule getNewTestMappingRule();
+    public abstract PrefixMappingNormalisationRule getNewTestMappingRule();
     
     /**
      * @throws java.lang.Exception
@@ -183,7 +183,7 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
         
         Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
         
-        final SimplePrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
         
         mappingRule.addSubjectMappingPredicate(OWL.EQUIVALENTCLASS);
         Statement testOutputSubjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTCLASS, predicateUri);
@@ -262,7 +262,7 @@ public abstract class AbstractSimplePrefixMappingNormalisationRuleTest extends A
         
         Assert.assertEquals("Sesame bug", 2, selectedStatements);
         
-        final SimplePrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
         
         mappingRule.addSubjectMappingPredicate(OWL.EQUIVALENTCLASS);
         Statement testOutputSubjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTCLASS, predicateUri);

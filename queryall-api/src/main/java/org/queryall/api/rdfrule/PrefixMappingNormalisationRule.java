@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.openrdf.model.URI;
 
-public interface SimplePrefixMappingNormalisationRule extends NormalisationRule
+public interface PrefixMappingNormalisationRule extends NormalisationRule
 {
     void setInputUriPrefix(String inputUriPrefix);
     
