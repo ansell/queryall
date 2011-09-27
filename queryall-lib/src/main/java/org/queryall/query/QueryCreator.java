@@ -154,8 +154,8 @@ public class QueryCreator
         }
         
         return QueryCreator.doReplacementsOnString(attributeList, queryType.getTemplateString(), queryType, null, nextProvider,
-                attributeList, includedProfiles,
-                recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                attributeList, namespaceInputVariables,
+                includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings);
     }
     
     /**
@@ -163,16 +163,16 @@ public class QueryCreator
      * @param includedQueryType
      * @param nextProvider
      * @param attributeList
+     * @param namespaceInputVariables TODO
      * @param includedProfiles
      * @param convertAlternateToPreferredPrefix TODO
-     * @param namespaceInputVariables TODO
      * @return
      */
     public static String createStaticRdfXmlString(final QueryType originalQueryType,
             final OutputQueryType includedQueryType, final Provider nextProvider,
-            final Map<String, String> attributeList, final List<Profile> includedProfiles,
-            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
-            boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings, Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
+            final Map<String, String> attributeList, Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
+            final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
+            final boolean includeNonProfileMatchedRdfRules, boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -191,14 +191,14 @@ public class QueryCreator
         
         return QueryCreator.doReplacementsOnString(attributeList, includedQueryType.getOutputString(),
                 originalQueryType, includedQueryType, nextProvider, attributeList,
-                includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                namespaceInputVariables, includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings);
     }
     
     public static String doReplacementsOnString(final Map<String, String> queryParameters, final String templateString,
             final QueryType originalQueryType, final QueryType includedQueryType,
             final Provider nextProvider, final Map<String, String> attributeList,
-            final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
-            final boolean includeNonProfileMatchedRdfRules, boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings, Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
+            Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules, boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings)
     {
         if(QueryCreator._TRACE)
         {
@@ -1090,22 +1090,12 @@ public class QueryCreator
         
         attributeList.put(Constants.TEMPLATE_KEY_OFFSET, Integer.toString(pageOffset));
         
-        // if(nextProvider.rdfNormalisationsNeeded != null)
-        // {
-        // attributeList.put("rdfNormalisationsNeeded",RdfUtils.joinStringCollection(nextProvider.rdfNormalisationsNeeded,","));
-        // }
-        // else
-        // {
-        // attributeList.put("rdfNormalisationsNeeded","");
-        // }
-        
         attributeList.put(Constants.TEMPLATE_KEY_ENDPOINT_URL, nextEndpoint);
         
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME,
                 StringUtils.percentEncode(localSettings.getStringProperty("hostName", "")));
-        // TODO: avoid cast here
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS,
-                StringUtils.percentEncode(((Settings)localSettings).getDefaultHostAddress()));
+                StringUtils.percentEncode(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR,
                 StringUtils.percentEncode(localSettings.getStringProperty("separator", "")));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils.percentEncode(nextEndpoint));
@@ -1186,6 +1176,7 @@ public class QueryCreator
                 if(isNamespace && convertAlternateToPreferredPrefix && namespaceInputVariables.containsKey(nextMatchTag))
                 {
                     boolean foundANamespace = false;
+                    // TODO: What happens if there could be more than one match here, as we aren't ordering the NamespaceEntries... could have irregular behaviour
                     for(NamespaceEntry nextNamespaceEntry : namespaceInputVariables.get(nextMatchTag))
                     {
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
@@ -1386,8 +1377,8 @@ public class QueryCreator
         }
         
         return QueryCreator.doReplacementsOnString(attributeList, replacementString, queryType, null,
-                nextProvider, attributeList, includedProfiles,
-                recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                nextProvider, attributeList, namespaceInputVariables,
+                includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings);
     }
     
     /**

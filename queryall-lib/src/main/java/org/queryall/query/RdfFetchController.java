@@ -523,10 +523,10 @@ public class RdfFetchController
                             nextStaticRdfXmlString +=
                                     QueryCreator.createStaticRdfXmlString(nextQueryType,
                                             (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
-                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
-                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                                            namespaceInputVariables, this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                            "recogniseImplicitRdfRuleInclusions", true),
+                                            localSettings
+                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings);
                         }
                         else
                         {
@@ -633,10 +633,10 @@ public class RdfFetchController
                             nextStaticRdfXmlString +=
                                     QueryCreator.createStaticRdfXmlString(nextQueryType,
                                             (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
-                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
-                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                                            namespaceInputVariables, this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                            "recogniseImplicitRdfRuleInclusions", true),
+                                            localSettings
+                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings);
                         }
                         else
                         {

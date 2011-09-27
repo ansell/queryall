@@ -863,10 +863,10 @@ public class GeneralServlet extends HttpServlet
                         
                         String nextBackupString =
                                 QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType,
-                                        null, attributeList, includedProfiles,
+                                        null, attributeList, emptyNamespaceEntryMap,
+                                        includedProfiles,
                                         localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                        convertAlternateToPreferredPrefix, localSettings, emptyNamespaceEntryMap)
+                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings)
                                         + "\n";
                         
                         nextBackupString =
