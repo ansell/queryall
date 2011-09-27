@@ -32,17 +32,24 @@ import org.queryall.query.Settings;
 public class QueryCreatorTest
 {
     
-    private RegexInputQueryType testRegexInputQueryType;
-    private Provider testProvider;
-    private Map<String, String> testAttributeList;
+    private RegexInputQueryType testRegexInputQueryType1;
+    private Provider testProvider1;
+    private Map<String, String> testAttributeList1;
     private List<Profile> testIncludedProfiles;
     private boolean testRecogniseImplicitRdfRuleInclusions;
     private boolean testIncludeNonProfileMatchedRdfRules;
     private boolean testConvertAlternateToPreferredPrefix;
-    private QueryAllConfiguration testLocalSettings;
-    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables;
-    private NamespaceEntryImpl testNamespaceEntry;
-    private Collection<NamespaceEntry> testNamespaceEntries;
+    private QueryAllConfiguration testLocalSettings1;
+    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables1;
+    private NamespaceEntry testNamespaceEntry1;
+    private Collection<NamespaceEntry> testNamespaceEntries1;
+    private RegexInputQueryType testRegexInputQueryType2;
+    private Provider testProvider2;
+    private NamespaceEntry testNamespaceEntry2;
+    private Map<String, String> testAttributeList2;
+    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables2;
+    private Collection<NamespaceEntry> testNamespaceEntries2;
+    private QueryAllConfiguration testLocalSettings2;
 
     /**
      * @throws java.lang.Exception
@@ -50,44 +57,78 @@ public class QueryCreatorTest
     @Before
     public void setUp() throws Exception
     {
-        testNamespaceEntry = new NamespaceEntryImpl();
-        testNamespaceEntry.setKey("http://example.org/test/namespace/1");
-        testNamespaceEntry.setPreferredPrefix("myPreferredNamespace");
-        testNamespaceEntry.addAlternativePrefix("alternateNs");
+        testNamespaceEntry1 = new NamespaceEntryImpl();
+        testNamespaceEntry1.setKey("http://example.org/test/namespace/1");
+        testNamespaceEntry1.setPreferredPrefix("myPreferredNamespace");
+        testNamespaceEntry1.addAlternativePrefix("alternateNs");
         
-        testRegexInputQueryType = new RegexInputQueryTypeImpl();
-        testRegexInputQueryType.setKey("http://example.org/test/query/1");
-        testRegexInputQueryType.addNamespaceInputTag("input_1");
-        testRegexInputQueryType.setIsNamespaceSpecific(true);
-        testRegexInputQueryType.addNamespaceToHandle(testNamespaceEntry.getKey());
-        testRegexInputQueryType.addLinkedQueryType(testRegexInputQueryType.getKey());
-        testRegexInputQueryType.setInputRegex("^([\\w-]+):(.+)$");
-        testRegexInputQueryType.setTemplateString("Select * Where { <http://example.org/ns/${input_1}> dc:identifier \"${input_2}\" . }");
+        testNamespaceEntry2 = new NamespaceEntryImpl();
+        testNamespaceEntry2.setKey("http://example.org/test/namespace/2");
+        testNamespaceEntry2.setPreferredPrefix("myOtherNamespace");
+        testNamespaceEntry2.addAlternativePrefix("otherNs");
+        testNamespaceEntry2.setSeparator("/");
+
+        testRegexInputQueryType1 = new RegexInputQueryTypeImpl();
+        testRegexInputQueryType1.setKey("http://example.org/test/query/1");
+        testRegexInputQueryType1.addNamespaceInputTag("input_1");
+        testRegexInputQueryType1.setIsNamespaceSpecific(true);
+        testRegexInputQueryType1.addNamespaceToHandle(testNamespaceEntry1.getKey());
+        testRegexInputQueryType1.setInputRegex("^([\\w-]+):(.+)$");
+        testRegexInputQueryType1.setTemplateString("Select * Where { <http://example.org/ns/${input_1}> dc:identifier \"${input_2}\" . }");
         
-        testProvider = new HttpSparqlProviderImpl();
-        testProvider.setKey("http://example.org/test/provider/1");
-        testProvider.addIncludedInQueryType(testRegexInputQueryType.getKey());
-        testProvider.addNamespace(testNamespaceEntry.getKey());
+        testRegexInputQueryType2 = new RegexInputQueryTypeImpl();
+        testRegexInputQueryType2.setKey("http://example.org/test/query/2");
+        testRegexInputQueryType2.addNamespaceInputTag("input_1");
+        testRegexInputQueryType2.setStandardUriTemplateString("${defaultHostAddress}${input_1}${separator}${input_2}");
+        testRegexInputQueryType2.setIsNamespaceSpecific(true);
+        testRegexInputQueryType2.addNamespaceToHandle(testNamespaceEntry2.getKey());
+        testRegexInputQueryType2.setInputRegex("^([\\w-]+):(.+)$");
+        testRegexInputQueryType2.setTemplateString("Select * Where { <${normalisedStandardUri}> dc:identifier \"${endpointSpecificUri}\" . }");
         
-        testAttributeList = new HashMap<String, String>();
-        testAttributeList.put(Constants.QUERY, "alternateNs:alternateNsUniqueId");
+        testProvider1 = new HttpSparqlProviderImpl();
+        testProvider1.setKey("http://example.org/test/provider/1");
+        testProvider1.addIncludedInQueryType(testRegexInputQueryType1.getKey());
+        testProvider1.addNamespace(testNamespaceEntry1.getKey());
         
+        testProvider2 = new HttpSparqlProviderImpl();
+        testProvider2.setKey("http://example.org/test/provider/2");
+        testProvider2.addIncludedInQueryType(testRegexInputQueryType2.getKey());
+        testProvider2.addNamespace(testNamespaceEntry2.getKey());
+        
+        testAttributeList1 = new HashMap<String, String>();
+        testAttributeList1.put(Constants.QUERY, "alternateNs:alternateNsUniqueId");
+        
+        testAttributeList2 = new HashMap<String, String>();
+        testAttributeList2.put(Constants.QUERY, "otherNs:otherNsUniqueId");
+        testAttributeList2.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, "http://my.example.org/");
         testIncludedProfiles = new ArrayList<Profile>(1);
         
         testRecogniseImplicitRdfRuleInclusions = true;
         testIncludeNonProfileMatchedRdfRules = true;
         testConvertAlternateToPreferredPrefix = true;
         
-        testLocalSettings = new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3", "http://example.org/test/config/querycreator-1");
+        testLocalSettings1 = new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3", "http://example.org/test/config/querycreator-1");
         
-        testLocalSettings.addQueryType(testRegexInputQueryType);
-        testLocalSettings.addProvider(testProvider);
-        testLocalSettings.addNamespaceEntry(testNamespaceEntry);
+        testLocalSettings1.addQueryType(testRegexInputQueryType1);
+        testLocalSettings1.addProvider(testProvider1);
+        testLocalSettings1.addNamespaceEntry(testNamespaceEntry1);
         
-        testNamespaceInputVariables = new HashMap<String, Collection<NamespaceEntry>>();
-        testNamespaceEntries = new ArrayList<NamespaceEntry>();
-        testNamespaceEntries.add(testNamespaceEntry);
-        testNamespaceInputVariables.put("input_1", testNamespaceEntries);
+        testLocalSettings2 = new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3", "http://example.org/test/config/querycreator-1");
+        
+        testLocalSettings2.addQueryType(testRegexInputQueryType2);
+        testLocalSettings2.addProvider(testProvider2);
+        testLocalSettings2.addNamespaceEntry(testNamespaceEntry2);
+        
+        testNamespaceInputVariables1 = new HashMap<String, Collection<NamespaceEntry>>();
+        testNamespaceEntries1 = new ArrayList<NamespaceEntry>();
+        testNamespaceEntries1.add(testNamespaceEntry1);
+        testNamespaceInputVariables1.put("input_1", testNamespaceEntries1);
+
+        testNamespaceInputVariables2 = new HashMap<String, Collection<NamespaceEntry>>();
+        testNamespaceEntries2 = new ArrayList<NamespaceEntry>();
+        testNamespaceEntries2.add(testNamespaceEntry2);
+        testNamespaceInputVariables2.put("input_1", testNamespaceEntries2);
+    
     }
     
     /**
@@ -104,18 +145,31 @@ public class QueryCreatorTest
     @Test
     public void testCreateQuery()
     {
-        String result = QueryCreator.createQuery(
-                testRegexInputQueryType, 
-                testProvider, 
-                testAttributeList, 
+        String result1 = QueryCreator.createQuery(
+                testRegexInputQueryType1, 
+                testProvider1, 
+                testAttributeList1, 
                 testIncludedProfiles, 
                 testRecogniseImplicitRdfRuleInclusions, 
                 testIncludeNonProfileMatchedRdfRules, 
                 testConvertAlternateToPreferredPrefix, 
-                testLocalSettings, 
-                testNamespaceInputVariables);
+                testLocalSettings1, 
+                testNamespaceInputVariables1);
         
-        Assert.assertEquals("query was not as expected", "Select * Where { <http://example.org/ns/myPreferredNamespace> dc:identifier \"alternateNsUniqueId\" . }", result);
+        Assert.assertEquals("query 1 was not as expected", "Select * Where { <http://example.org/ns/myPreferredNamespace> dc:identifier \"alternateNsUniqueId\" . }", result1);
+
+        String result2 = QueryCreator.createQuery(
+                testRegexInputQueryType2, 
+                testProvider2, 
+                testAttributeList2, 
+                testIncludedProfiles, 
+                testRecogniseImplicitRdfRuleInclusions, 
+                testIncludeNonProfileMatchedRdfRules, 
+                testConvertAlternateToPreferredPrefix, 
+                testLocalSettings2, 
+                testNamespaceInputVariables2);
+        
+        Assert.assertEquals("query 2 was not as expected", "Select * Where { <http://my.example.org/myOtherNamespace/otherNsUniqueId> dc:identifier \"http://my.example.org/myOtherNamespace/otherNsUniqueId\" . }", result2);
     }
     
     /**

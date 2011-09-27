@@ -1026,11 +1026,8 @@ public class QueryCreator
             QueryCreator.log.debug(String.format("%s: timing=%10d", "QueryCreator.doReplacementsOnString",
                     (end - start)));
             
-            if(QueryCreator._TRACE)
-            {
-                QueryCreator.log.trace("QueryCreator.doReplacementsOnString: returning replacedString="
-                        + replacedString);
-            }
+            QueryCreator.log.debug("QueryCreator.doReplacementsOnString: returning replacedString="
+                    + replacedString);
         }
         
         return replacedString;
@@ -1163,6 +1160,7 @@ public class QueryCreator
         final long start = System.currentTimeMillis();
         
         String replacedString = templateString;
+        String separatorString = "";
         
         final Map<String, List<String>> allMatches = originalQueryType.matchesForQueryParameters(queryParameters);
         
@@ -1182,6 +1180,7 @@ public class QueryCreator
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
                         {
                             inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
+                            separatorString = nextNamespaceEntry.getSeparator();
                             
                             foundANamespace = true;
                             
@@ -1250,6 +1249,9 @@ public class QueryCreator
                         }
                     }
                 }
+                
+                // TODO: test this
+                replacedString = replacedString.replace("${separator}", separatorString);
                 
                 replacedString = replacedString.replace("${" + nextMatchTag + "}", inputReplaceString);
                 
