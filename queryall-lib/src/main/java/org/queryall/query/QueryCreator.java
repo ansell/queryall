@@ -1151,10 +1151,9 @@ public class QueryCreator
             final Map<String, String> queryParameters, final String templateString,
             final List<String> specialInstructions, boolean convertAlternateToPreferredPrefix, Map<String, Collection<NamespaceEntry>> namespaceInputVariables, Provider nextProvider)
     {
-        if(QueryCreator._TRACE)
+        if(QueryCreator._DEBUG)
         {
-            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: queryParameters="
-                    + queryParameters + " templateString=" + templateString);
+            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: templateString=" + templateString+" convertAlternateToPreferredPrefix="+convertAlternateToPreferredPrefix);
         }
         
         final long start = System.currentTimeMillis();
@@ -1169,8 +1168,14 @@ public class QueryCreator
             final boolean isPublic = originalQueryType.isInputVariablePublic(nextMatchTag);
             final boolean isNamespace = originalQueryType.isInputVariableNamespace(nextMatchTag);
             
+            if(isNamespace)
+            {
+                log.debug("isNamespace nextMatchTag="+nextMatchTag);
+            }
+            
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
+                // TODO: determine why namespaceInputVariables isn't being sent here properly from RdfFetchController
                 if(isNamespace && convertAlternateToPreferredPrefix && namespaceInputVariables.containsKey(nextMatchTag))
                 {
                     boolean foundANamespace = false;
@@ -1179,8 +1184,12 @@ public class QueryCreator
                     {
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
                         {
+                            log.debug("inputReplaceString="+inputReplaceString);
+
                             inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
                             separatorString = nextNamespaceEntry.getSeparator();
+                            
+                            log.debug("inputReplaceString="+inputReplaceString);
                             
                             foundANamespace = true;
                             
@@ -1336,14 +1345,14 @@ public class QueryCreator
                 replacedString.replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING,
                         StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         
-        if(QueryCreator._TRACE)
+        if(QueryCreator._DEBUG)
         {
             final long end = System.currentTimeMillis();
             
-            QueryCreator.log.trace(String.format("%s: timing=%10d",
+            QueryCreator.log.debug(String.format("%s: timing=%10d",
                     "QueryCreator.matchAndReplaceInputVariablesForQueryType", (end - start)));
             
-            QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
+            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
                     + replacedString);
         }
         
