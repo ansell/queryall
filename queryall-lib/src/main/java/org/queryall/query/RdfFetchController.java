@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
@@ -245,7 +246,7 @@ public class RdfFetchController
                     final String nextResult = nextThread.getRawResult();
                     
                     final String convertedResult =
-                            (String)QueryCreator.normaliseByStage(NormalisationRuleSchema
+                            (String)RuleUtils.normaliseByStage(NormalisationRuleSchema
                                     .getRdfruleStageBeforeResultsImport(), nextResult, RuleUtils.getSortedRulesByUris(
                                     this.localSettings.getAllNormalisationRules(), nextThread.getOriginalQueryBundle()
                                             .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
@@ -410,10 +411,12 @@ public class RdfFetchController
      * @param chosenProviders
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(final QueryAllConfiguration localSettings,
-            final QueryType nextQueryType, final Collection<Provider> chosenProviders,
+            final QueryType nextQueryType, final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Collection<Provider> chosenProviders,
             final boolean useAllEndpointsForEachProvider)
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
+        
+        final boolean convertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
         
         if(RdfFetchController._DEBUG)
         {
@@ -448,7 +451,7 @@ public class RdfFetchController
                     // replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint =
                             QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryParameters,
-                                    replacedEndpoint, new ArrayList<String>());
+                                    replacedEndpoint, new ArrayList<String>(), convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
                     
                     attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, nextProvider, this.queryParameters,
@@ -461,14 +464,14 @@ public class RdfFetchController
                                     attributeList, this.sortedIncludedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    localSettings);
+                                    convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                     
                     final String nextEndpointQuery =
                             QueryCreator.createQuery(nextQueryType, nextProvider, attributeList,
                                     this.sortedIncludedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    localSettings);
+                                    convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                     
                     // replace the query on the endpoint URL if necessary
                     replacedEndpoint =
@@ -523,7 +526,7 @@ public class RdfFetchController
                                             this.sortedIncludedProfiles, localSettings.getBooleanProperty(
                                                     "recogniseImplicitRdfRuleInclusions", true), localSettings
                                                     .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            localSettings);
+                                            convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                         }
                         else
                         {
@@ -633,7 +636,7 @@ public class RdfFetchController
                                             this.sortedIncludedProfiles, localSettings.getBooleanProperty(
                                                     "recogniseImplicitRdfRuleInclusions", true), localSettings
                                                     .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            localSettings);
+                                            convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                         }
                         else
                         {
@@ -743,16 +746,12 @@ public class RdfFetchController
         {
             this.queryBundles = new LinkedList<QueryBundle>();
             
-            // FIXME: need to integrate NamespaceEntry list with this method so we can substitute
-            // preferred namespaces for alternates
-            final Collection<QueryType> allCustomQueries =
+            final Map<QueryType, Map<String, Collection<NamespaceEntry>>> allCustomQueries =
                     QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles,
                             this.localSettings.getAllQueryTypes(),
                             this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true),
-                            this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true));
+                            this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true), localSettings);
             
-            // TODO: figure out how to also get back the NamespaceEntry objects that matched so we
-            // can log this information with the statistics for this query
             if(RdfFetchController._DEBUG)
             {
                 RdfFetchController.log.debug("RdfFetchController.initialise: found " + allCustomQueries.size()
@@ -761,7 +760,7 @@ public class RdfFetchController
             
             // TODO: should we do classification in the results based on the QueryType that
             // generated the particular subset of QueryBundles to make it easier to distinguish them
-            for(final QueryType nextQueryType : allCustomQueries)
+            for(final QueryType nextQueryType : allCustomQueries.keySet())
             {
                 // Non-paged queries are a special case. The caller decides whether
                 // they want to use non-paged queries, for example, they may say no
@@ -840,7 +839,7 @@ public class RdfFetchController
                 
                 // Default to safe setting of useAllEndpointsForEachProvider=true here
                 final Collection<QueryBundle> queryBundlesForQueryType =
-                        this.generateQueryBundlesForQueryTypeAndProviders(this.localSettings, nextQueryType,
+                        this.generateQueryBundlesForQueryTypeAndProviders(this.localSettings, nextQueryType, allCustomQueries.get(nextQueryType),
                                 chosenProviders,
                                 this.localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true));
                 

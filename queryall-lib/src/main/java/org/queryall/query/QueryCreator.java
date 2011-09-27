@@ -10,8 +10,8 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
@@ -35,24 +35,26 @@ public class QueryCreator
     private static final boolean _DEBUG = QueryCreator.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryCreator.log.isInfoEnabled();
-    private static List<String> inputUrlEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> inputPlusUrlEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> inputXmlEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> inputNTriplesEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> xmlEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> urlEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> plusUrlEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> ntriplesEncodeInstructions = new ArrayList<String>(1);
-    private static List<String> lowercaseInstructions = new ArrayList<String>(1);
-    private static List<String> inputUrlEncodedlowercaseInstructions = new ArrayList<String>(2);
-    private static List<String> inputXmlEncodedlowercaseInstructions = new ArrayList<String>(2);
-    private static List<String> inputUrlEncodedprivatelowercaseInstructions = new ArrayList<String>(2);
-    private static List<String> inputXmlEncodedprivatelowercaseInstructions = new ArrayList<String>(2);
-    private static List<String> uppercaseInstructions = new ArrayList<String>(1);
-    private static List<String> inputUrlEncodeduppercaseInstructions = new ArrayList<String>(2);
-    private static List<String> inputXmlEncodeduppercaseInstructions = new ArrayList<String>(2);
-    private static List<String> inputUrlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
-    private static List<String> inputXmlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
+    
+    private static final List<String> inputUrlEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> inputPlusUrlEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> inputXmlEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> inputNTriplesEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> xmlEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> urlEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> plusUrlEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> ntriplesEncodeInstructions = new ArrayList<String>(1);
+    private static final List<String> lowercaseInstructions = new ArrayList<String>(1);
+    private static final List<String> inputUrlEncodedlowercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> inputXmlEncodedlowercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> inputUrlEncodedprivatelowercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> inputXmlEncodedprivatelowercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> uppercaseInstructions = new ArrayList<String>(1);
+    private static final List<String> inputUrlEncodeduppercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> inputXmlEncodeduppercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> inputUrlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> inputXmlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
+    
     private static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
     
     static
@@ -129,12 +131,14 @@ public class QueryCreator
      * @param nextProvider
      * @param attributeList
      * @param includedProfiles
+     * @param convertAlternateToPreferredPrefix TODO
+     * @param namespaceInputVariables TODO
      * @return
      */
     public static String createQuery(final QueryType queryType, final Provider nextProvider,
             final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
-            final QueryAllConfiguration localSettings)
+            boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings, Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -149,9 +153,9 @@ public class QueryCreator
                     + queryType.getKey().stringValue());
         }
         
-        return QueryCreator.doReplacementsOnString(attributeList, queryType.getTemplateString(), queryType, null,
-                nextProvider.getNormalisationUris(), attributeList, includedProfiles,
-                recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
+        return QueryCreator.doReplacementsOnString(attributeList, queryType.getTemplateString(), queryType, null, nextProvider,
+                attributeList, includedProfiles,
+                recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
     }
     
     /**
@@ -160,13 +164,15 @@ public class QueryCreator
      * @param nextProvider
      * @param attributeList
      * @param includedProfiles
+     * @param convertAlternateToPreferredPrefix TODO
+     * @param namespaceInputVariables TODO
      * @return
      */
     public static String createStaticRdfXmlString(final QueryType originalQueryType,
             final OutputQueryType includedQueryType, final Provider nextProvider,
             final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
-            final QueryAllConfiguration localSettings)
+            boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings, Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -177,35 +183,27 @@ public class QueryCreator
         
         if(includedQueryType.getOutputString() == null)
         {
-            QueryCreator.log.error("QueryCreator.createQuery: no outputRdfXmlString defined queryType="
+            QueryCreator.log.error("QueryCreator.createQuery: no outputString defined queryType="
                     + includedQueryType.getKey().stringValue());
             
             return "";
         }
-        if(nextProvider == null)
-        {
-            return QueryCreator.doReplacementsOnString(attributeList, includedQueryType.getOutputString(),
-                    originalQueryType, includedQueryType, null, attributeList,
-                    includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
-        }
-        else
-        {
-            return QueryCreator.doReplacementsOnString(attributeList, includedQueryType.getOutputString(),
-                    originalQueryType, includedQueryType, nextProvider.getNormalisationUris(), attributeList,
-                    includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
-        }
+        
+        return QueryCreator.doReplacementsOnString(attributeList, includedQueryType.getOutputString(),
+                originalQueryType, includedQueryType, nextProvider, attributeList,
+                includedProfiles, recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
     }
     
     public static String doReplacementsOnString(final Map<String, String> queryParameters, final String templateString,
             final QueryType originalQueryType, final QueryType includedQueryType,
-            final Collection<URI> normalisationUrisNeeded, final Map<String, String> attributeList,
+            final Provider nextProvider, final Map<String, String> attributeList,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
-            final boolean includeNonProfileMatchedRdfRules, final QueryAllConfiguration localSettings)
+            final boolean includeNonProfileMatchedRdfRules, boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings, Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
     {
         if(QueryCreator._TRACE)
         {
             QueryCreator.log.trace("QueryCreator.doReplacementsOnString: queryString=" + queryParameters
-                    + " templateString=" + templateString + " normalisationUrisNeeded=" + normalisationUrisNeeded);
+                    + " templateString=" + templateString + " normalisationUrisNeeded=" + nextProvider);
         }
         
         if(!(localSettings.getTagPattern().matcher(templateString).matches()))
@@ -425,103 +423,103 @@ public class QueryCreator
         
         replacedString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        replacedString, EMPTY_STRING_LIST);
+                        replacedString, EMPTY_STRING_LIST, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedStandardUri, EMPTY_STRING_LIST);
+                        normalisedStandardUri, EMPTY_STRING_LIST, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputUrlEncoded_normalisedStandardUri, inputUrlEncodeInstructions);
+                        inputUrlEncoded_normalisedStandardUri, inputUrlEncodeInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputXmlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputXmlEncoded_normalisedStandardUri, inputXmlEncodeInstructions);
+                        inputXmlEncoded_normalisedStandardUri, inputXmlEncodeInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedQueryUri, EMPTY_STRING_LIST);
+                        normalisedQueryUri, EMPTY_STRING_LIST, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputUrlEncoded_normalisedQueryUri, inputUrlEncodeInstructions);
+                        inputUrlEncoded_normalisedQueryUri, inputUrlEncodeInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputPlusUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputPlusUrlEncoded_normalisedStandardUri, inputPlusUrlEncodeInstructions);
+                        inputPlusUrlEncoded_normalisedStandardUri, inputPlusUrlEncodeInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputPlusUrlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputPlusUrlEncoded_normalisedQueryUri, inputPlusUrlEncodeInstructions);
+                        inputPlusUrlEncoded_normalisedQueryUri, inputPlusUrlEncodeInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputXmlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputXmlEncoded_normalisedQueryUri, inputXmlEncodeInstructions);
+                        inputXmlEncoded_normalisedQueryUri, inputXmlEncodeInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_lowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputUrlEncoded_lowercase_normalisedStandardUri, inputUrlEncodedlowercaseInstructions);
+                        inputUrlEncoded_lowercase_normalisedStandardUri, inputUrlEncodedlowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputUrlEncoded_lowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputUrlEncoded_lowercase_normalisedQueryUri, inputUrlEncodedlowercaseInstructions);
+                        inputUrlEncoded_lowercase_normalisedQueryUri, inputUrlEncodedlowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputXmlEncoded_lowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputXmlEncoded_lowercase_normalisedStandardUri, inputXmlEncodedlowercaseInstructions);
+                        inputXmlEncoded_lowercase_normalisedStandardUri, inputXmlEncodedlowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputXmlEncoded_lowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputXmlEncoded_lowercase_normalisedQueryUri, inputXmlEncodedlowercaseInstructions);
+                        inputXmlEncoded_lowercase_normalisedQueryUri, inputXmlEncodedlowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_uppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputUrlEncoded_uppercase_normalisedStandardUri, inputUrlEncodeduppercaseInstructions);
+                        inputUrlEncoded_uppercase_normalisedStandardUri, inputUrlEncodeduppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputUrlEncoded_uppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputUrlEncoded_uppercase_normalisedQueryUri, inputUrlEncodeduppercaseInstructions);
+                        inputUrlEncoded_uppercase_normalisedQueryUri, inputUrlEncodeduppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputXmlEncoded_uppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputXmlEncoded_uppercase_normalisedStandardUri, inputXmlEncodeduppercaseInstructions);
+                        inputXmlEncoded_uppercase_normalisedStandardUri, inputXmlEncodeduppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputXmlEncoded_uppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        inputXmlEncoded_uppercase_normalisedQueryUri, inputXmlEncodeduppercaseInstructions);
+                        inputXmlEncoded_uppercase_normalisedQueryUri, inputXmlEncodeduppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_privatelowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privatelowercase_normalisedStandardUri,
-                        inputUrlEncodedprivatelowercaseInstructions);
+                        inputUrlEncodedprivatelowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputUrlEncoded_privatelowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privatelowercase_normalisedQueryUri,
-                        inputUrlEncodedprivatelowercaseInstructions);
+                        inputUrlEncodedprivatelowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputXmlEncoded_privatelowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privatelowercase_normalisedStandardUri,
-                        inputXmlEncodedprivatelowercaseInstructions);
+                        inputXmlEncodedprivatelowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputXmlEncoded_privatelowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privatelowercase_normalisedQueryUri,
-                        inputXmlEncodedprivatelowercaseInstructions);
+                        inputXmlEncodedprivatelowercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_privateuppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privateuppercase_normalisedStandardUri,
-                        inputUrlEncodedprivateuppercaseInstructions);
+                        inputUrlEncodedprivateuppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputUrlEncoded_privateuppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privateuppercase_normalisedQueryUri,
-                        inputUrlEncodedprivateuppercaseInstructions);
+                        inputUrlEncodedprivateuppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         inputXmlEncoded_privateuppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privateuppercase_normalisedStandardUri,
-                        inputXmlEncodedprivateuppercaseInstructions);
+                        inputXmlEncodedprivateuppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         inputXmlEncoded_privateuppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privateuppercase_normalisedQueryUri,
-                        inputXmlEncodedprivateuppercaseInstructions);
+                        inputXmlEncodedprivateuppercaseInstructions, convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
         if(QueryCreator._TRACE)
         {
@@ -737,10 +735,10 @@ public class QueryCreator
         String inputXmlEncoded_privateuppercase_endpointSpecificQueryUri =
                 inputXmlEncoded_privateuppercase_normalisedQueryUri;
         
-        if(normalisationUrisNeeded != null)
+        if(nextProvider != null)
         {
             final Collection<NormalisationRule> normalisationsNeeded =
-                    RuleUtils.getSortedRulesByUris(localSettings.getAllNormalisationRules(), normalisationUrisNeeded,
+                    RuleUtils.getSortedRulesByUris(localSettings.getAllNormalisationRules(), nextProvider.getNormalisationUris(),
                             SortOrder.LOWEST_ORDER_FIRST);
             
             for(final NormalisationRule nextRule : normalisationsNeeded)
@@ -1081,7 +1079,7 @@ public class QueryCreator
             final SparqlProvider nextSparqlProvider = (SparqlProvider)nextProvider;
             
             attributeList.put(Constants.TEMPLATE_KEY_GRAPH_URI, nextSparqlProvider.getSparqlGraphUri());
-            attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, nextSparqlProvider.getUseSparqlGraph() + "");
+            attributeList.put(Constants.TEMPLATE_KEY_USE_SPARQL_GRAPH, Boolean.toString(nextSparqlProvider.getUseSparqlGraph()));
             attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_GRAPH_URI,
                     StringUtils.percentEncode(nextSparqlProvider.getSparqlGraphUri()));
             attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_GRAPH_URI,
@@ -1090,7 +1088,7 @@ public class QueryCreator
                     StringUtils.xmlEncodeString(StringUtils.percentEncode(nextSparqlProvider.getSparqlGraphUri())));
         }
         
-        attributeList.put(Constants.TEMPLATE_KEY_OFFSET, pageOffset + "");
+        attributeList.put(Constants.TEMPLATE_KEY_OFFSET, Integer.toString(pageOffset));
         
         // if(nextProvider.rdfNormalisationsNeeded != null)
         // {
@@ -1155,14 +1153,16 @@ public class QueryCreator
     
     /**
      * @param originalQueryType
-     * @param queryString
      * @param templateString
      * @param specialInstructions
+     * @param convertAlternateToPreferredPrefix TODO
+     * @param namespaceInputVariables TODO
+     * @param queryString
      * @return
      */
     public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
             final Map<String, String> queryParameters, final String templateString,
-            final List<String> specialInstructions)
+            final List<String> specialInstructions, boolean convertAlternateToPreferredPrefix, Map<String, Collection<NamespaceEntry>> namespaceInputVariables, Provider nextProvider)
     {
         if(QueryCreator._TRACE)
         {
@@ -1179,94 +1179,30 @@ public class QueryCreator
         for(final String nextMatchTag : allMatches.keySet())
         {
             final boolean isPublic = originalQueryType.isInputVariablePublic(nextMatchTag);
+            final boolean isNamespace = originalQueryType.isInputVariableNamespace(nextMatchTag);
             
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
-                final String matchString = "${" + nextMatchTag + "}";
-                
-                final String urlEncodedReplaceString = StringUtils.percentEncode(inputReplaceString);
-                final String urlEncodedMatchString = "${urlEncoded_" + nextMatchTag + "}";
-                
-                final String plusUrlEncodedReplaceString = StringUtils.plusPercentEncode(inputReplaceString);
-                final String plusUrlEncodedMatchString = "${plusUrlEncoded_" + nextMatchTag + "}";
-                
-                // final String plusSpaceEncodedReplaceString =
-                // RdfUtils.plusSpaceEncode(inputReplaceString);
-                // final String plusSpaceEncodedMatchString = "${plusSpaceEncoded_input_" +
-                // nextMatchTag +
-                // "}";
-                
-                final String xmlEncodedReplaceString = StringUtils.xmlEncodeString(inputReplaceString);
-                final String xmlEncodedMatchString = "${xmlEncoded_" + nextMatchTag + "}";
-                
-                final String xmlEncodedUrlEncodedReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString));
-                
-                final String xmlEncodedUrlEncodedMatchString = "${xmlEncoded_urlEncoded_" + nextMatchTag + "}";
-                
-                final String xmlEncodedPlusUrlEncodedReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.plusPercentEncode(inputReplaceString));
-                
-                final String xmlEncodedPlusUrlEncodedMatchString = "${xmlEncoded_plusUrlEncoded_" + nextMatchTag + "}";
-                
-                final String xmlEncodedNTriplesReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString));
-                final String xmlEncodedNTriplesMatchString = "${xmlEncoded_ntriplesEncoded_" + nextMatchTag + "}";
-                
-                final String nTriplesReplaceString = StringUtils.ntriplesEncode(inputReplaceString);
-                final String nTriplesMatchString = "${ntriplesEncoded_" + nextMatchTag + "}";
-                
-                // Start lowercase region
-                /***********************/
-                
-                final String lowercaseReplaceString = inputReplaceString.toLowerCase();
-                final String lowercaseMatchString = "${lowercase_" + nextMatchTag + "}";
-                
-                final String urlEncodedLowercaseReplaceString =
-                        StringUtils.percentEncode(inputReplaceString.toLowerCase());
-                final String urlEncodedLowercaseMatchString = "${urlEncoded_lowercase_" + nextMatchTag + "}";
-                
-                final String xmlEncodedLowercaseReplaceString =
-                        StringUtils.xmlEncodeString(inputReplaceString.toLowerCase());
-                final String xmlEncodedLowercaseMatchString = "${xmlEncoded_lowercase_" + nextMatchTag + "}";
-                
-                final String xmlEncodedUrlEncodedLowercaseReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toLowerCase()));
-                final String xmlEncodedUrlEncodedLowercaseMatchString =
-                        "${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag + "}";
-                
-                final String xmlEncodedNTriplesLowercaseReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toLowerCase()));
-                final String xmlEncodedNTriplesLowercaseMatchString =
-                        "${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag + "}";
-                
-                // End lowercase region
-                /***********************/
-                // Start uppercase region
-                final String uppercaseReplaceString = inputReplaceString.toUpperCase();
-                final String uppercaseMatchString = "${uppercase_" + nextMatchTag + "}";
-                
-                final String urlEncodedUppercaseReplaceString =
-                        StringUtils.percentEncode(inputReplaceString.toUpperCase());
-                final String urlEncodedUppercaseMatchString = "${urlEncoded_uppercase_" + nextMatchTag + "}";
-                
-                final String xmlEncodedUppercaseReplaceString =
-                        StringUtils.xmlEncodeString(inputReplaceString.toUpperCase());
-                final String xmlEncodedUppercaseMatchString = "${xmlEncoded_uppercase_" + nextMatchTag + "}";
-                
-                final String xmlEncodedUrlEncodedUppercaseReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toUpperCase()));
-                final String xmlEncodedUrlEncodedUppercaseMatchString =
-                        "${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag + "}";
-                
-                final String xmlEncodedNTriplesUppercaseReplaceString =
-                        StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toUpperCase()));
-                final String xmlEncodedNTriplesUppercaseMatchString =
-                        "${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag + "}";
-                
-                // End uppercase region
-                /***********************/
-                
+                if(isNamespace && convertAlternateToPreferredPrefix && namespaceInputVariables.containsKey(nextMatchTag))
+                {
+                    boolean foundANamespace = false;
+                    for(NamespaceEntry nextNamespaceEntry : namespaceInputVariables.get(nextMatchTag))
+                    {
+                        if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
+                        {
+                            inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
+                            
+                            foundANamespace = true;
+                            
+                            break;
+                        }
+                    }
+                    
+                    if(!foundANamespace)
+                    {
+                        log.warn("Could not find a namespace for tag="+nextMatchTag+" nextProvider="+nextProvider.getKey()+" inputReplaceString="+inputReplaceString);
+                    }
+                }
                 if(QueryCreator._TRACE)
                 {
                     QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: nextMatchTag="
@@ -1276,7 +1212,7 @@ public class QueryCreator
                                     + allMatches.get(nextMatchTag));
                     QueryCreator.log
                             .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: indexOf matchString="
-                                    + replacedString.indexOf(matchString));
+                                    + replacedString.indexOf("${" + nextMatchTag + "}"));
                 }
                 
                 // in some cases we want to specially encode user input without
@@ -1324,56 +1260,56 @@ public class QueryCreator
                     }
                 }
                 
-                replacedString = replacedString.replace(matchString, inputReplaceString);
+                replacedString = replacedString.replace("${" + nextMatchTag + "}", inputReplaceString);
                 
-                replacedString = replacedString.replace(xmlEncodedMatchString, xmlEncodedReplaceString);
+                replacedString = replacedString.replace("${xmlEncoded_" + nextMatchTag + "}", StringUtils.xmlEncodeString(inputReplaceString));
                 
-                replacedString = replacedString.replace(urlEncodedMatchString, urlEncodedReplaceString);
+                replacedString = replacedString.replace("${urlEncoded_" + nextMatchTag + "}", StringUtils.percentEncode(inputReplaceString));
                 
-                replacedString = replacedString.replace(plusUrlEncodedMatchString, plusUrlEncodedReplaceString);
+                replacedString = replacedString.replace("${plusUrlEncoded_" + nextMatchTag + "}", StringUtils.plusPercentEncode(inputReplaceString));
                 
                 // replacedString = replacedString.replace(plusSpaceEncodedMatchString,
                 // plusSpaceEncodedReplaceString);
                 
-                replacedString = replacedString.replace(nTriplesMatchString, nTriplesReplaceString);
+                replacedString = replacedString.replace("${ntriplesEncoded_" + nextMatchTag + "}", StringUtils.ntriplesEncode(inputReplaceString));
                 
                 replacedString =
-                        replacedString.replace(xmlEncodedUrlEncodedMatchString, xmlEncodedUrlEncodedReplaceString);
+                        replacedString.replace("${xmlEncoded_urlEncoded_" + nextMatchTag + "}", StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString)));
                 replacedString =
-                        replacedString.replace(xmlEncodedPlusUrlEncodedMatchString,
-                                xmlEncodedPlusUrlEncodedReplaceString);
+                        replacedString.replace("${xmlEncoded_plusUrlEncoded_" + nextMatchTag + "}",
+                                StringUtils.xmlEncodeString(StringUtils.plusPercentEncode(inputReplaceString)));
                 
-                replacedString = replacedString.replace(xmlEncodedNTriplesMatchString, xmlEncodedNTriplesReplaceString);
+                replacedString = replacedString.replace("${xmlEncoded_ntriplesEncoded_" + nextMatchTag + "}", StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString)));
                 
                 /***********************/
                 // Start lowercase region
-                replacedString = replacedString.replace(lowercaseMatchString, lowercaseReplaceString);
+                replacedString = replacedString.replace("${lowercase_" + nextMatchTag + "}", inputReplaceString.toLowerCase());
                 replacedString =
-                        replacedString.replace(urlEncodedLowercaseMatchString, urlEncodedLowercaseReplaceString);
+                        replacedString.replace("${urlEncoded_lowercase_" + nextMatchTag + "}", StringUtils.percentEncode(inputReplaceString.toLowerCase()));
                 replacedString =
-                        replacedString.replace(xmlEncodedLowercaseMatchString, xmlEncodedLowercaseReplaceString);
+                        replacedString.replace("${xmlEncoded_lowercase_" + nextMatchTag + "}", StringUtils.xmlEncodeString(inputReplaceString.toLowerCase()));
                 replacedString =
-                        replacedString.replace(xmlEncodedUrlEncodedLowercaseMatchString,
-                                xmlEncodedUrlEncodedLowercaseReplaceString);
+                        replacedString.replace("${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag + "}",
+                                StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toLowerCase())));
                 replacedString =
-                        replacedString.replace(xmlEncodedNTriplesLowercaseMatchString,
-                                xmlEncodedNTriplesLowercaseReplaceString);
+                        replacedString.replace("${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag + "}",
+                                StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toLowerCase())));
                 // End lowercase region
                 /***********************/
                 
                 /***********************/
                 // Start uppercase region
-                replacedString = replacedString.replace(uppercaseMatchString, uppercaseReplaceString);
+                replacedString = replacedString.replace("${uppercase_" + nextMatchTag + "}", inputReplaceString.toUpperCase());
                 replacedString =
-                        replacedString.replace(urlEncodedUppercaseMatchString, urlEncodedUppercaseReplaceString);
+                        replacedString.replace("${urlEncoded_uppercase_" + nextMatchTag + "}", StringUtils.percentEncode(inputReplaceString.toUpperCase()));
                 replacedString =
-                        replacedString.replace(xmlEncodedUppercaseMatchString, xmlEncodedUppercaseReplaceString);
+                        replacedString.replace("${xmlEncoded_uppercase_" + nextMatchTag + "}", StringUtils.xmlEncodeString(inputReplaceString.toUpperCase()));
                 replacedString =
-                        replacedString.replace(xmlEncodedUrlEncodedUppercaseMatchString,
-                                xmlEncodedUrlEncodedUppercaseReplaceString);
+                        replacedString.replace("${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag + "}",
+                                StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toUpperCase())));
                 replacedString =
-                        replacedString.replace(xmlEncodedNTriplesUppercaseMatchString,
-                                xmlEncodedNTriplesUppercaseReplaceString);
+                        replacedString.replace("${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag + "}",
+                                StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toUpperCase())));
                 // End uppercase region
                 /***********************/
                 
@@ -1381,8 +1317,6 @@ public class QueryCreator
                 {
                     QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
                             + replacedString);
-                    // log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedStandardUri="+normalisedStandardUri);
-                    // log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: normalisedQueryUri="+normalisedQueryUri);
                 }
             } // end for(String nextMatch : allMatches.get(nextMatchTag)
         } // end for(String nextMatchTag : allMatches.keySet())
@@ -1424,68 +1358,19 @@ public class QueryCreator
     }
     
     /**
-     * @param normalisationRules
-     *            An ordered list of normalisation rules that need to be applied to the input
-     *            document
-     * @param includedProfiles
-     * @param recogniseImplicitRdfRuleInclusions
-     * @param includeNonProfileMatchedRdfRules
-     * @param basicRdfXml
-     * @return
-     */
-    public static Object normaliseByStage(final URI stage, Object input,
-            final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
-            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
-    {
-        if(QueryCreator._TRACE)
-        {
-            QueryCreator.log.trace("QueryCreator.normaliseByStage: before applying normalisation rules");
-        }
-        
-        final long start = System.currentTimeMillis();
-        
-        // go through the rules
-        for(final NormalisationRule nextRule : normalisationRules)
-        {
-            if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
-                    includeNonProfileMatchedRdfRules))
-            {
-                if(QueryCreator._TRACE)
-                {
-                    QueryCreator.log.trace("QueryCreator.normaliseByStage: nextRule.order=" + nextRule.getOrder());
-                }
-                
-                input = nextRule.normaliseByStage(stage, input);
-            }
-        }
-        
-        if(QueryCreator._DEBUG)
-        {
-            final long end = System.currentTimeMillis();
-            
-            QueryCreator.log.debug(String.format("%s: timing=%10d", "QueryCreator.normaliseByStage", (end - start)));
-        }
-        
-        if(QueryCreator._TRACE)
-        {
-            QueryCreator.log.trace("QueryCreator.normaliseByStage: after applying normalisation rules");
-        }
-        
-        return input;
-    }
-    
-    /**
      * @param replacementString
      * @param queryType
-     * @param nextProvider
+     * @param nextNormalisationRules TODO
      * @param attributeList
      * @param includedProfiles
+     * @param convertAlternateToPreferredPrefix TODO
+     * @param namespaceInputVariables TODO
      * @return
      */
     public static String replaceAttributesOnEndpointUrl(final String replacementString, final QueryType queryType,
-            final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
+            Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
-            final QueryAllConfiguration localSettings)
+            boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings, Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -1501,8 +1386,8 @@ public class QueryCreator
         }
         
         return QueryCreator.doReplacementsOnString(attributeList, replacementString, queryType, null,
-                nextProvider.getNormalisationUris(), attributeList, includedProfiles,
-                recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, localSettings);
+                nextProvider, attributeList, includedProfiles,
+                recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules, convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
     }
     
     /**

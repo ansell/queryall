@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.querytype.OutputQueryType;
@@ -574,7 +576,7 @@ public class GeneralServlet extends HttpServlet
             final List<Profile> includedProfiles, final RdfFetchController fetchController,
             final Repository myRepository)
     {
-        return (Repository)QueryCreator.normaliseByStage(
+        return (Repository)RuleUtils.normaliseByStage(
                 NormalisationRuleSchema.getRdfruleStageAfterResultsToPool(),
                 myRepository,
                 RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
@@ -694,7 +696,7 @@ public class GeneralServlet extends HttpServlet
                 RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
                 
                 tempRepository =
-                        (Repository)QueryCreator.normaliseByStage(NormalisationRuleSchema
+                        (Repository)RuleUtils.normaliseByStage(NormalisationRuleSchema
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
                                 localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle()
                                         .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
@@ -815,6 +817,9 @@ public class GeneralServlet extends HttpServlet
         RepositoryException
     {
         RepositoryConnection myRepositoryConnection = null;
+        
+        final boolean convertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
+        
         try
         {
             myRepositoryConnection = myRepository.getConnection();
@@ -843,6 +848,7 @@ public class GeneralServlet extends HttpServlet
                 final Collection<QueryType> allCustomRdfXmlIncludeTypes =
                         QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(),
                                 nextStaticQueryTypeForUnknown);
+                final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
                 // use the closest matches, even though they didn't eventuate into actual planned
                 // query bundles they matched the query string somehow
@@ -860,7 +866,7 @@ public class GeneralServlet extends HttpServlet
                                         null, attributeList, includedProfiles,
                                         localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                         localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                        localSettings)
+                                        convertAlternateToPreferredPrefix, localSettings, emptyNamespaceEntryMap)
                                         + "\n";
                         
                         nextBackupString =
