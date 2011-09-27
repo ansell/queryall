@@ -2,6 +2,7 @@ package org.queryall.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,73 @@ public class QueryCreator
     private static final boolean _DEBUG = QueryCreator.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryCreator.log.isInfoEnabled();
+    private static List<String> inputUrlEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> inputPlusUrlEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> inputXmlEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> inputNTriplesEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> xmlEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> urlEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> plusUrlEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> ntriplesEncodeInstructions = new ArrayList<String>(1);
+    private static List<String> lowercaseInstructions = new ArrayList<String>(1);
+    private static List<String> inputUrlEncodedlowercaseInstructions = new ArrayList<String>(2);
+    private static List<String> inputXmlEncodedlowercaseInstructions = new ArrayList<String>(2);
+    private static List<String> inputUrlEncodedprivatelowercaseInstructions = new ArrayList<String>(2);
+    private static List<String> inputXmlEncodedprivatelowercaseInstructions = new ArrayList<String>(2);
+    private static List<String> uppercaseInstructions = new ArrayList<String>(1);
+    private static List<String> inputUrlEncodeduppercaseInstructions = new ArrayList<String>(2);
+    private static List<String> inputXmlEncodeduppercaseInstructions = new ArrayList<String>(2);
+    private static List<String> inputUrlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
+    private static List<String> inputXmlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
+    private static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
+    
+    static
+    {
+        
+        inputUrlEncodeInstructions.add(Constants.INPUT_URL_ENCODED);
+        
+        inputPlusUrlEncodeInstructions.add(Constants.INPUT_PLUS_URL_ENCODED);
+        
+        inputXmlEncodeInstructions.add(Constants.INPUT_XML_ENCODED);
+        
+        inputNTriplesEncodeInstructions.add(Constants.INPUT_NTRIPLES_ENCODED);
+        
+        xmlEncodeInstructions.add(Constants.XML_ENCODED);
+        
+        urlEncodeInstructions.add(Constants.URL_ENCODED);
+        
+        plusUrlEncodeInstructions.add(Constants.PLUS_URL_ENCODED);
+        
+        ntriplesEncodeInstructions.add(Constants.NTRIPLES_ENCODED);
+        
+        lowercaseInstructions.add(Constants.LOWERCASE);
+        
+        inputUrlEncodedlowercaseInstructions.add(Constants.LOWERCASE);
+        inputUrlEncodedlowercaseInstructions.add(Constants.INPUT_URL_ENCODED);
+        
+        inputXmlEncodedlowercaseInstructions.add(Constants.LOWERCASE);
+        inputXmlEncodedlowercaseInstructions.add(Constants.INPUT_XML_ENCODED);
+        
+        inputUrlEncodedprivatelowercaseInstructions.add(Constants.PRIVATE_LOWERCASE);
+        inputUrlEncodedprivatelowercaseInstructions.add(Constants.INPUT_URL_ENCODED);
+        
+        inputXmlEncodedprivatelowercaseInstructions.add(Constants.PRIVATE_LOWERCASE);
+        inputXmlEncodedprivatelowercaseInstructions.add(Constants.INPUT_XML_ENCODED);
+        
+        uppercaseInstructions.add(Constants.UPPERCASE);
+        
+        inputUrlEncodeduppercaseInstructions.add(Constants.UPPERCASE);
+        inputUrlEncodeduppercaseInstructions.add(Constants.INPUT_URL_ENCODED);
+        
+        inputXmlEncodeduppercaseInstructions.add(Constants.UPPERCASE);
+        inputXmlEncodeduppercaseInstructions.add(Constants.INPUT_XML_ENCODED);
+        
+        inputUrlEncodedprivateuppercaseInstructions.add(Constants.PRIVATE_UPPERCASE);
+        inputUrlEncodedprivateuppercaseInstructions.add(Constants.INPUT_URL_ENCODED);
+        
+        inputXmlEncodedprivateuppercaseInstructions.add(Constants.PRIVATE_UPPERCASE);
+        inputXmlEncodedprivateuppercaseInstructions.add(Constants.INPUT_XML_ENCODED);
+    }
     
     // takes a query and a dictionary of attributes which may or may not be
     // useful for this query
@@ -326,71 +394,6 @@ public class QueryCreator
             }
         }
         
-        final List<String> inputUrlEncodeInstructions = new ArrayList<String>(1);
-        inputUrlEncodeInstructions.add(Constants.INPUT_URL_ENCODED);
-        
-        final List<String> inputPlusUrlEncodeInstructions = new ArrayList<String>(1);
-        inputPlusUrlEncodeInstructions.add(Constants.INPUT_PLUS_URL_ENCODED);
-        
-        final List<String> inputXmlEncodeInstructions = new ArrayList<String>(1);
-        inputXmlEncodeInstructions.add(Constants.INPUT_XML_ENCODED);
-        
-        final List<String> inputNTriplesEncodeInstructions = new ArrayList<String>(1);
-        inputNTriplesEncodeInstructions.add(Constants.INPUT_NTRIPLES_ENCODED);
-        
-        final List<String> xmlEncodeInstructions = new ArrayList<String>(1);
-        xmlEncodeInstructions.add(Constants.XML_ENCODED);
-        
-        final List<String> urlEncodeInstructions = new ArrayList<String>(1);
-        urlEncodeInstructions.add(Constants.URL_ENCODED);
-        
-        final List<String> plusUrlEncodeInstructions = new ArrayList<String>(1);
-        plusUrlEncodeInstructions.add(Constants.PLUS_URL_ENCODED);
-        
-        final List<String> ntriplesEncodeInstructions = new ArrayList<String>(1);
-        ntriplesEncodeInstructions.add(Constants.NTRIPLES_ENCODED);
-        
-        final List<String> lowercaseInstructions = new ArrayList<String>(1);
-        lowercaseInstructions.add(Constants.LOWERCASE);
-        
-        // NOTE: make sure that LOWERCASE is added before INPUT_URL_ENCODED as
-        // we always want uppercase URL encoded %FF character patterns to match
-        // against the database
-        final List<String> inputUrlEncodedlowercaseInstructions = new ArrayList<String>(1);
-        inputUrlEncodedlowercaseInstructions.add(Constants.LOWERCASE);
-        inputUrlEncodedlowercaseInstructions.add(Constants.INPUT_URL_ENCODED);
-        
-        final List<String> inputXmlEncodedlowercaseInstructions = new ArrayList<String>(1);
-        inputXmlEncodedlowercaseInstructions.add(Constants.LOWERCASE);
-        inputXmlEncodedlowercaseInstructions.add(Constants.INPUT_XML_ENCODED);
-        
-        final List<String> inputUrlEncodedprivatelowercaseInstructions = new ArrayList<String>(1);
-        inputUrlEncodedprivatelowercaseInstructions.add(Constants.PRIVATE_LOWERCASE);
-        inputUrlEncodedprivatelowercaseInstructions.add(Constants.INPUT_URL_ENCODED);
-        
-        final List<String> inputXmlEncodedprivatelowercaseInstructions = new ArrayList<String>(1);
-        inputXmlEncodedprivatelowercaseInstructions.add(Constants.PRIVATE_LOWERCASE);
-        inputXmlEncodedprivatelowercaseInstructions.add(Constants.INPUT_XML_ENCODED);
-        
-        final List<String> uppercaseInstructions = new ArrayList<String>(1);
-        uppercaseInstructions.add(Constants.UPPERCASE);
-        
-        final List<String> inputUrlEncodeduppercaseInstructions = new ArrayList<String>(2);
-        inputUrlEncodeduppercaseInstructions.add(Constants.UPPERCASE);
-        inputUrlEncodeduppercaseInstructions.add(Constants.INPUT_URL_ENCODED);
-        
-        final List<String> inputXmlEncodeduppercaseInstructions = new ArrayList<String>(2);
-        inputXmlEncodeduppercaseInstructions.add(Constants.UPPERCASE);
-        inputXmlEncodeduppercaseInstructions.add(Constants.INPUT_XML_ENCODED);
-        
-        final List<String> inputUrlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
-        inputUrlEncodedprivateuppercaseInstructions.add(Constants.PRIVATE_UPPERCASE);
-        inputUrlEncodedprivateuppercaseInstructions.add(Constants.INPUT_URL_ENCODED);
-        
-        final List<String> inputXmlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
-        inputXmlEncodedprivateuppercaseInstructions.add(Constants.PRIVATE_UPPERCASE);
-        inputXmlEncodedprivateuppercaseInstructions.add(Constants.INPUT_XML_ENCODED);
-        
         String inputUrlEncoded_normalisedStandardUri = normalisedStandardUri;
         
         String inputPlusUrlEncoded_normalisedStandardUri = normalisedStandardUri;
@@ -422,11 +425,11 @@ public class QueryCreator
         
         replacedString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        replacedString, new ArrayList<String>());
+                        replacedString, EMPTY_STRING_LIST);
         
         normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedStandardUri, new ArrayList<String>());
+                        normalisedStandardUri, EMPTY_STRING_LIST);
         
         inputUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
@@ -438,7 +441,7 @@ public class QueryCreator
         
         normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedQueryUri, new ArrayList<String>());
+                        normalisedQueryUri, EMPTY_STRING_LIST);
         
         inputUrlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
