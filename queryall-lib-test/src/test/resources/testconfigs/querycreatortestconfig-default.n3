@@ -1,0 +1,14 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix queryall: <http://purl.org/queryall/webapp_configuration:>.
+@prefix queryall_provider: <http://purl.org/queryall/provider:>.
+@prefix example: <http://example.org/test/config/>.
+@prefix example_profile: <http://example.org/test/profile/>.
+
+example:default a queryall:webappConfig ;
+
+queryall:hostName "1.example.org" ;
+
+queryall:convertAlternateNamespacePrefixesToPreferred "true"^^xsd:boolean  .
+
+

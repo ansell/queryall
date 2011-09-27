@@ -19,7 +19,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
-import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
@@ -59,8 +58,8 @@ public class ConfigurationServlet extends HttpServlet
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings =
-                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final Settings localSettings =
+                (Settings)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         final BlacklistController localBlacklistController =
                 (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
         final ContentTypeNegotiator localContentTypeNegotiator =
@@ -94,10 +93,9 @@ public class ConfigurationServlet extends HttpServlet
         
         if(requestConfigurationQueryOptions.isRefresh())
         {
-            // TODO: avoid cast here
-            if(((Settings)localSettings).isManualRefreshAllowed())
+            if(localSettings.isManualRefreshAllowed())
             {
-                if(((Settings)localSettings).configRefreshCheck(true))
+                if(localSettings.configRefreshCheck(true))
                 {
                     localBlacklistController.doBlacklistExpiry();
                     
@@ -183,8 +181,7 @@ public class ConfigurationServlet extends HttpServlet
             writerFormat = RdfUtils.getWriterFormat(writerFormatString);
         }
         
-        // TODO: avoid cast here
-        ((Settings)localSettings).configRefreshCheck(false);
+        localSettings.configRefreshCheck(false);
         
         response.setContentType(requestedContentType);
         response.setCharacterEncoding("UTF-8");

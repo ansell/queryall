@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
@@ -42,6 +41,22 @@ public interface QueryAllConfiguration
     
     Map<URI, RuleTest> getAllRuleTests();
     
+    void setProperty(String propertyKey, boolean propertyValue);
+    
+    void setProperty(String propertyKey, int propertyValue);
+    
+    void setProperty(String propertyKey, float propertyValue);
+    
+    void setProperty(String propertyKey, long propertyValue);
+
+    void setProperty(String propertyKey, URI propertyValue);
+
+    void setProperty(String propertyKey, String propertyValue);
+
+    void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues);
+
+    void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
+
     boolean getBooleanProperty(String propertyKey, boolean defaultValue);
     
     String getDefaultHostAddress();
@@ -59,8 +74,6 @@ public interface QueryAllConfiguration
     Pattern getPlainNamespacePattern();
     
     String getSeparator();
-    
-    Collection<Statement> getStatementProperties(String string);
     
     Collection<String> getStringProperties(String string);
     

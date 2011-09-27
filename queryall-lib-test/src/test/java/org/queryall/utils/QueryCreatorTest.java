@@ -62,7 +62,7 @@ public class QueryCreatorTest
         testRegexInputQueryType.addNamespaceToHandle(testNamespaceEntry.getKey());
         testRegexInputQueryType.addLinkedQueryType(testRegexInputQueryType.getKey());
         testRegexInputQueryType.setInputRegex("^([\\w-]+):(.+)$");
-        testRegexInputQueryType.setTemplateString("Select * Where { <http://example.org/ns/${input_1}> dc:identifier ${input_2} }");
+        testRegexInputQueryType.setTemplateString("Select * Where { <http://example.org/ns/${input_1}> dc:identifier \"${input_2}\" . }");
         
         testProvider = new HttpSparqlProviderImpl();
         testProvider.setKey("http://example.org/test/provider/1");
@@ -78,7 +78,8 @@ public class QueryCreatorTest
         testIncludeNonProfileMatchedRdfRules = true;
         testConvertAlternateToPreferredPrefix = true;
         
-        testLocalSettings = new Settings();
+        testLocalSettings = new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3", "http://example.org/test/config/querycreator-1");
+        
         testLocalSettings.addQueryType(testRegexInputQueryType);
         testLocalSettings.addProvider(testProvider);
         testLocalSettings.addNamespaceEntry(testNamespaceEntry);
@@ -101,7 +102,6 @@ public class QueryCreatorTest
      * Test method for {@link org.queryall.query.QueryCreator#createQuery(org.queryall.api.querytype.QueryType, org.queryall.api.provider.Provider, java.util.Map, java.util.List, boolean, boolean, boolean, org.queryall.api.base.QueryAllConfiguration, java.util.Map)}.
      */
     @Test
-    @Ignore
     public void testCreateQuery()
     {
         String result = QueryCreator.createQuery(
@@ -115,7 +115,7 @@ public class QueryCreatorTest
                 testLocalSettings, 
                 testNamespaceInputVariables);
         
-        System.out.print("QueryCreator.createQuery: "+result);
+        Assert.assertEquals("query was not as expected", "Select * Where { <http://example.org/ns/myPreferredNamespace> dc:identifier \"alternateNsUniqueId\" . }", result);
     }
     
     /**

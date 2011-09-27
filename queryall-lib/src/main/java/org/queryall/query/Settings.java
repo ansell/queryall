@@ -131,7 +131,7 @@ public class Settings implements QueryAllConfiguration
     private volatile Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
     private volatile Pattern cachedTagPattern = null;
     
-    private volatile Map<URI, Map<URI, Collection<Value>>> cachedWebAppConfigSearches = null;
+    private volatile Map<URI, Map<URI, Collection<Value>>> configProperties = null;
     
     private volatile long initialisedTimestamp = System.currentTimeMillis();
     
@@ -556,14 +556,14 @@ public class Settings implements QueryAllConfiguration
                     + propertyKey);
         }
         
-        if(this.cachedWebAppConfigSearches == null)
+        if(this.configProperties == null)
         {
-            this.cachedWebAppConfigSearches = new ConcurrentHashMap<URI, Map<URI, Collection<Value>>>(200);
+            this.configProperties = new ConcurrentHashMap<URI, Map<URI, Collection<Value>>>(200);
         }
         
-        if(this.cachedWebAppConfigSearches.containsKey(subjectKey))
+        if(this.configProperties.containsKey(subjectKey))
         {
-            final Map<URI, Collection<Value>> currentCache = this.cachedWebAppConfigSearches.get(subjectKey);
+            final Map<URI, Collection<Value>> currentCache = this.configProperties.get(subjectKey);
             
             if(currentCache == null)
             {
@@ -584,7 +584,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Map<URI, Collection<Value>> newCache = new ConcurrentHashMap<URI, Collection<Value>>();
             newCache.put(propertyKey, newObject);
-            this.cachedWebAppConfigSearches.put(subjectKey, newCache);
+            this.configProperties.put(subjectKey, newCache);
             // log.trace("Settings.doConfigKeyCache: New cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
         }
     }
@@ -1019,9 +1019,9 @@ public class Settings implements QueryAllConfiguration
     
     private synchronized Collection<Value> getConfigKeyCached(final URI subjectKey, final URI propertyKey)
     {
-        if(this.cachedWebAppConfigSearches != null && this.cachedWebAppConfigSearches.containsKey(subjectKey))
+        if(this.configProperties != null && this.configProperties.containsKey(subjectKey))
         {
-            final Map<URI, Collection<Value>> currentCache = this.cachedWebAppConfigSearches.get(subjectKey);
+            final Map<URI, Collection<Value>> currentCache = this.configProperties.get(subjectKey);
             
             if(currentCache == null)
             {
@@ -1455,7 +1455,6 @@ public class Settings implements QueryAllConfiguration
         }
     }
     
-    @Override
     public Collection<Statement> getStatementProperties(final String key)
     {
         if(Settings._TRACE)
@@ -1543,7 +1542,7 @@ public class Settings implements QueryAllConfiguration
             results.add(nextValue.stringValue());
             // results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
         }
-        
+
         return results;
     }
     
@@ -1771,7 +1770,7 @@ public class Settings implements QueryAllConfiguration
         {
             // null out this optimisation cached property
             this.cachedTagPattern = null;
-            this.cachedWebAppConfigSearches = null;
+            this.configProperties = null;
             this.separator = null;
             
             if(Settings._DEBUG)
@@ -1889,15 +1888,21 @@ public class Settings implements QueryAllConfiguration
                             }
                             final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
                             
-                            myRepositoryConnection.add(nextInputStream, baseURI,
-                                    RDFFormat.forMIMEType(configMIMEFormat));
-                            if(Settings._INFO)
+                            if(nextInputStream != null)
                             {
-                                Settings.log
-                                        .info("Settings.getWebAppConfigurationRdf: finished getting configuration from file: nextLocation="
-                                                + nextLocation);
+                                myRepositoryConnection.add(nextInputStream, baseURI,
+                                        RDFFormat.forMIMEType(configMIMEFormat));
+                                if(Settings._INFO)
+                                {
+                                    Settings.log
+                                            .info("Settings.getWebAppConfigurationRdf: finished getting configuration from file: nextLocation="
+                                                    + nextLocation);
+                                }
                             }
-                            
+                            else
+                            {
+                                Settings.log.error("Could not resolve config location to an input stream nextLocation="+nextLocation);
+                            }
                         }
                         
                         for(final Value nextValue : activeWebappConfigs)
@@ -2064,5 +2069,61 @@ public class Settings implements QueryAllConfiguration
         {
             Settings.log.error("Interrupted", ex);
         }
+    }
+
+    @Override
+    public void setProperty(String propertyKey, boolean propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProperty(String propertyKey, int propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProperty(String propertyKey, float propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProperty(String propertyKey, long propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProperty(String propertyKey, URI propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setProperty(String propertyKey, String propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }
