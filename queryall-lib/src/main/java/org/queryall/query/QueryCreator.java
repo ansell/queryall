@@ -1153,7 +1153,7 @@ public class QueryCreator
     {
         if(QueryCreator._DEBUG)
         {
-            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: templateString=" + templateString+" convertAlternateToPreferredPrefix="+convertAlternateToPreferredPrefix);
+            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: templateString=" + templateString+" convertAlternateToPreferredPrefix="+convertAlternateToPreferredPrefix+" namespaceInputVariables="+namespaceInputVariables);
         }
         
         final long start = System.currentTimeMillis();
@@ -1177,13 +1177,13 @@ public class QueryCreator
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
                 
-                log.debug("allMatches.get(nextMatchTag)="+inputReplaceString);
+                log.debug("allMatches.get(nextMatchTag)="+allMatches.get(nextMatchTag));
                 
                 // FIXME: determine why namespaceInputVariables isn't being sent here properly from RdfFetchController.generateQueryBundlesForQueryTypeAndProviders
                 // FIXME: determine why namespaceInputVariables isn't being sent here properly from GeneralServlet.doQueryUnknown
                 if(isNamespace && namespaceInputVariables.containsKey(nextMatchTag))
                 {
-                    log.debug("allMatches.get(nextMatchTag)="+inputReplaceString);
+                    log.debug("isNamespace and namespaceInputVariables.containsKey(nextMatchTag)");
 
                     boolean foundANamespace = false;
                     // TODO: What happens if there could be more than one match here, as we aren't ordering the NamespaceEntries... could have irregular behaviour
@@ -1273,6 +1273,7 @@ public class QueryCreator
                 // TODO: test this
                 replacedString = replacedString.replace("${separator}", separatorString);
                 
+                // TODO: test this
                 replacedString = replacedString.replace("${authority}", authorityString);
 
                 replacedString = replacedString.replace("${" + nextMatchTag + "}", inputReplaceString);

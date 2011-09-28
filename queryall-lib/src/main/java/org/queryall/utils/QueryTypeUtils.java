@@ -33,22 +33,29 @@ public final class QueryTypeUtils
     {
         Map<String, Collection<URI>> results = new HashMap<String, Collection<URI>>();
         
-        for(String nextQueryParameter : nextQueryParameters.keySet())
+        Map<String, List<String>> namespaceParameterMatches = nextQueryType.matchesForQueryParameters(nextQueryParameters);
+        
+        for(String nextNamespaceParameter : namespaceParameterMatches.keySet())
         {
-            if(nextQueryType.isInputVariableNamespace(nextQueryParameter))
+            if(nextQueryType.isInputVariableNamespace(nextNamespaceParameter))
             {
-                if(namespacePrefixMap.containsKey(nextQueryParameters.get(nextQueryParameter)))
+                List<String> nextNamespaceParameterMatches = namespaceParameterMatches.get(nextNamespaceParameter);
+
+                for(String nextNamespaceParameterMatch : nextNamespaceParameterMatches)
                 {
-                    if(_TRACE)
+                    if(namespacePrefixMap.containsKey(nextNamespaceParameterMatch))
                     {
-                        log.trace("Found a namespace for nextQueryParameter="+nextQueryParameter+" nextQueryParameters.get(nextQueryParameter)="+nextQueryParameters.get(nextQueryParameter));
+                        if(_TRACE)
+                        {
+                            log.trace("Found a namespace for nextNamespaceParameter="+nextNamespaceParameter+" nextNamespaceParameterMatch="+nextNamespaceParameterMatch);
+                        }
+                        
+                        results.put(nextNamespaceParameter, namespacePrefixMap.get(nextNamespaceParameterMatch));
                     }
-                    
-                    results.put(nextQueryParameter, namespacePrefixMap.get(nextQueryParameters.get(nextQueryParameter)));
-                }
-                else
-                {
-                    log.warn("Could not find a matching namespace for nextQueryParameter="+nextQueryParameter+" nextQueryParameters.get(nextQueryParameter)="+nextQueryParameters.get(nextQueryParameter));
+                    else
+                    {
+                        log.error("Could not find a matching namespace for nextNamespaceParameter="+nextNamespaceParameter+" nextNamespaceParameterMatch="+nextNamespaceParameterMatch);
+                    }
                 }
             }
         }
@@ -101,6 +108,8 @@ public final class QueryTypeUtils
                     // Only try to populate actualNamespaceEntries if the query is namespace specific
                     if(nextQuery.getIsNamespaceSpecific())
                     {
+                        
+                        
                         Map<String, Collection<URI>> namespaceMatches = QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters, namespacePrefixesToUris);
                         
                         actualNamespaceEntries = new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size()*2);
@@ -120,6 +129,10 @@ public final class QueryTypeUtils
                     }
                     else
                     {
+                        if(_DEBUG)
+                        {
+                            log.debug("query type is not namespace specific, creating an empty namespace parameter map");
+                        }
                         // In other cases use an unmodifiable empty map
                         actualNamespaceEntries = Collections.emptyMap();
                     }

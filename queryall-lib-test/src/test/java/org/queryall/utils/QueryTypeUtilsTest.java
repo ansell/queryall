@@ -32,9 +32,9 @@ public class QueryTypeUtilsTest
     private RegexInputQueryType testRegexInputQueryType1;
     private NamespaceEntry testNamespaceEntry1;
     private ValueFactory testValueFactory;
-    private Map<String, String> testInputParametersPreferred;
-    private Map<String, String> testInputParametersAlternate;
-    private Map<String, String> testInputParametersFalse;
+//    private Map<String, String> testInputParametersPreferred;
+//    private Map<String, String> testInputParametersAlternate;
+//    private Map<String, String> testInputParametersFalse;
     private Map<String, Collection<URI>> testNamespacePrefixMap;
     private Map<String, Collection<URI>> testQueryParameterMatchesPreferred;
     private Map<String, Collection<URI>> testQueryParameterMatchesAlternate;
@@ -79,32 +79,32 @@ public class QueryTypeUtilsTest
         testInputParametersRawPreferred = new HashMap<String, String>();
         testInputParametersRawPreferred.put(Constants.QUERY, "myPreferredNamespace:identifier1234567");
         // FIXME: Is this necessary in theory
-        testInputParametersRawPreferred.put("input_1", "myPreferredNamespace");
-        testInputParametersRawPreferred.put("input_2", "identifier1234567");
+//        testInputParametersRawPreferred.put("input_1", "myPreferredNamespace");
+//        testInputParametersRawPreferred.put("input_2", "identifier1234567");
 
         testInputParametersRawAlternate = new HashMap<String, String>();
         testInputParametersRawAlternate.put(Constants.QUERY, "alternateNs:identifier7654321");
         // FIXME: Is this necessary in theory
-        testInputParametersRawAlternate.put("input_1", "alternateNs");
-        testInputParametersRawAlternate.put("input_2", "identifier7654321");
+//        testInputParametersRawAlternate.put("input_1", "alternateNs");
+//        testInputParametersRawAlternate.put("input_2", "identifier7654321");
 
         testInputParametersRawFalse = new HashMap<String, String>();
         testInputParametersRawFalse.put(Constants.QUERY, "unknownfalsenamespace:identifier654");
         // FIXME: Is this necessary in theory
-        testInputParametersRawFalse.put("input_1", "unknownfalsenamespace");
-        testInputParametersRawFalse.put("input_2", "identifier654");
+//        testInputParametersRawFalse.put("input_1", "unknownfalsenamespace");
+//        testInputParametersRawFalse.put("input_2", "identifier654");
 
-        testInputParametersPreferred = new HashMap<String, String>();
-        testInputParametersPreferred.put("input_1", "myPreferredNamespace");
-        testInputParametersPreferred.put("input_2", "identifier1234567");
+//        testInputParametersPreferred = new HashMap<String, String>();
+//        testInputParametersPreferred.put("input_1", "myPreferredNamespace");
+//        testInputParametersPreferred.put("input_2", "identifier1234567");
 
-        testInputParametersAlternate = new HashMap<String, String>();
-        testInputParametersAlternate.put("input_1", "alternateNs");
-        testInputParametersAlternate.put("input_2", "identifier7654321");
+//        testInputParametersAlternate = new HashMap<String, String>();
+//        testInputParametersAlternate.put("input_1", "alternateNs");
+//        testInputParametersAlternate.put("input_2", "identifier7654321");
 
-        testInputParametersFalse = new HashMap<String, String>();
-        testInputParametersFalse.put("input_1", "unknownfalsenamespace");
-        testInputParametersFalse.put("input_2", "identifier654");
+//        testInputParametersFalse = new HashMap<String, String>();
+//        testInputParametersFalse.put("input_1", "unknownfalsenamespace");
+//        testInputParametersFalse.put("input_2", "identifier654");
     
         Collection<URI> preferredNamespaces = new ArrayList<URI>(1);
         preferredNamespaces.add(testNamespaceEntry1.getKey());
@@ -136,15 +136,15 @@ public class QueryTypeUtilsTest
     @Test
     public void testNamespacesMatchesForQueryParameters()
     {
-        Map<String, Collection<URI>> namespacesMatches1 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersPreferred, testNamespacePrefixMap);
+        Map<String, Collection<URI>> namespacesMatches1 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersRawPreferred, testNamespacePrefixMap);
 
         Assert.assertEquals("preferred namespaces did not generate a single result", 1, namespacesMatches1.size());
 
-        Map<String, Collection<URI>> namespacesMatches2 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersAlternate, testNamespacePrefixMap);
+        Map<String, Collection<URI>> namespacesMatches2 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersRawAlternate, testNamespacePrefixMap);
     
         Assert.assertEquals("alternate namespaces did not generate a single result", 1, namespacesMatches2.size());
 
-        Map<String, Collection<URI>> namespacesMatchesFalse = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersFalse, testNamespacePrefixMap);
+        Map<String, Collection<URI>> namespacesMatchesFalse = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersRawFalse, testNamespacePrefixMap);
         
         Assert.assertEquals("false namespaces generated a result", 0, namespacesMatchesFalse.size());
         
