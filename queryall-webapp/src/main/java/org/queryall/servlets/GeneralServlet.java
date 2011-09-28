@@ -828,6 +828,7 @@ public class GeneralServlet extends HttpServlet
             
             Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
             
+            // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
             if(fetchController.anyNamespaceNotRecognised())
             {
                 staticQueryTypesForUnknown = localSettings.getURIProperties("unknownNamespaceStaticAdditions");
@@ -848,6 +849,8 @@ public class GeneralServlet extends HttpServlet
                 final Collection<QueryType> allCustomRdfXmlIncludeTypes =
                         QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(),
                                 nextStaticQueryTypeForUnknown);
+
+                // If we didn't understand the query
                 final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
                 // use the closest matches, even though they didn't eventuate into actual planned

@@ -749,8 +749,8 @@ public class RdfFetchController
             final Map<QueryType, Map<String, Collection<NamespaceEntry>>> allCustomQueries =
                     QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles,
                             this.localSettings.getAllQueryTypes(),
-                            this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true),
-                            this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true), localSettings);
+                            localSettings.getNamespacePrefixesToUris(),
+                            localSettings.getAllNamespaceEntries(), this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true), this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true));
             
             if(RdfFetchController._DEBUG)
             {

@@ -1160,6 +1160,7 @@ public class QueryCreator
         
         String replacedString = templateString;
         String separatorString = "";
+        String authorityString = "";
         
         final Map<String, List<String>> allMatches = originalQueryType.matchesForQueryParameters(queryParameters);
         
@@ -1175,7 +1176,8 @@ public class QueryCreator
             
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
-                // TODO: determine why namespaceInputVariables isn't being sent here properly from RdfFetchController
+                // FIXME: determine why namespaceInputVariables isn't being sent here properly from RdfFetchController.generateQueryBundlesForQueryTypeAndProviders
+                // FIXME: determine why namespaceInputVariables isn't being sent here properly from GeneralServlet.doQueryUnknown
                 if(isNamespace && convertAlternateToPreferredPrefix && namespaceInputVariables.containsKey(nextMatchTag))
                 {
                     boolean foundANamespace = false;
@@ -1188,6 +1190,7 @@ public class QueryCreator
 
                             inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
                             separatorString = nextNamespaceEntry.getSeparator();
+                            authorityString = nextNamespaceEntry.getAuthority().stringValue();
                             
                             log.debug("inputReplaceString="+inputReplaceString);
                             
@@ -1262,6 +1265,8 @@ public class QueryCreator
                 // TODO: test this
                 replacedString = replacedString.replace("${separator}", separatorString);
                 
+                replacedString = replacedString.replace("${authority}", authorityString);
+
                 replacedString = replacedString.replace("${" + nextMatchTag + "}", inputReplaceString);
                 
                 replacedString = replacedString.replace("${xmlEncoded_" + nextMatchTag + "}", StringUtils.xmlEncodeString(inputReplaceString));

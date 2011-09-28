@@ -5,13 +5,14 @@ package org.queryall.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
-import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.QueryType;
@@ -52,6 +53,11 @@ public final class QueryTypeUtils
             {
                 if(namespacePrefixMap.containsKey(nextQueryParameters.get(nextQueryParameter)))
                 {
+                    if(_TRACE)
+                    {
+                        log.trace("Found a namespace for nextQueryParameter="+nextQueryParameter+" nextQueryParameters.get(nextQueryParameter)="+nextQueryParameters.get(nextQueryParameter));
+                    }
+                    
                     results.put(nextQueryParameter, namespacePrefixMap.get(nextQueryParameters.get(nextQueryParameter)));
                 }
                 else
@@ -66,11 +72,11 @@ public final class QueryTypeUtils
 
     public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(final Map<String, String> queryParameters,
             final List<Profile> profileList, final Map<URI, QueryType> allQueryTypes,
-            final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries, QueryAllConfiguration localSettings)
+            Map<String, Collection<URI>> namespacePrefixesToUris, Map<URI, NamespaceEntry> allNamespaceEntries, final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
     {
         if(QueryTypeUtils._DEBUG)
         {
-            QueryTypeUtils.log.debug("getQueryTypesMatchingQueryString: profileList.size()=" + profileList.size());
+            QueryTypeUtils.log.debug("profileList.size()=" + profileList.size());
             
             if(QueryTypeUtils._TRACE)
             {
@@ -90,7 +96,7 @@ public final class QueryTypeUtils
             {
                 if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
+                    QueryTypeUtils.log.trace("tentative, pre-profile-check match for"
                             + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
                             + queryParameters);
                 }
@@ -99,16 +105,19 @@ public final class QueryTypeUtils
                 {
                     if(QueryTypeUtils._DEBUG)
                     {
-                        QueryTypeUtils.log.debug("getQueryTypesMatchingQueryString: profileList suitable for"
+                        QueryTypeUtils.log.debug("profileList suitable for"
                                 + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
                                 + queryParameters);
                     }
                     
+                    Map<String, Collection<NamespaceEntry>> actualNamespaceEntries;
+                    
+                    // Only try to populate actualNamespaceEntries if the query is namespace specific
                     if(nextQuery.getIsNamespaceSpecific())
                     {
-                        Map<String, Collection<URI>> namespaceMatches = QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters, localSettings.getNamespacePrefixesToUris());
+                        Map<String, Collection<URI>> namespaceMatches = QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters, namespacePrefixesToUris);
                         
-                        Map<String, Collection<NamespaceEntry>> actualNamespaceEntries = new HashMap<String, Collection<NamespaceEntry>>();
+                        actualNamespaceEntries = new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size()*2);
                         
                         for(String nextParameter : namespaceMatches.keySet())
                         {
@@ -116,19 +125,24 @@ public final class QueryTypeUtils
 
                             for(URI nextNamespaceUri : namespaceMatches.get(nextParameter))
                             {
-                                namespaceParameterMatches.add(localSettings.getAllNamespaceEntries().get(nextNamespaceUri));
+                                // TODO: make this more efficient by changing the QueryAllConfiguration contract to get by URI for each item
+                                namespaceParameterMatches.add(allNamespaceEntries.get(nextNamespaceUri));
                             }
 
                             actualNamespaceEntries.put(nextParameter, namespaceParameterMatches);
                         }
-
-                        results.put(nextQuery, actualNamespaceEntries);
+                    }
+                    else
+                    {
+                        // In other cases use an unmodifiable empty map
+                        actualNamespaceEntries = Collections.emptyMap();
                     }
                     
+                    results.put(nextQuery, actualNamespaceEntries);
                 }
                 else if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: profileList not suitable for"
+                    QueryTypeUtils.log.trace("profileList not suitable for"
                             + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
                             + queryParameters);
                 }

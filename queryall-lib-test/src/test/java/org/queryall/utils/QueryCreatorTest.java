@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
@@ -31,6 +33,7 @@ import org.queryall.query.Settings;
  */
 public class QueryCreatorTest
 {
+    private ValueFactory testValueFactory;
     
     private RegexInputQueryType testRegexInputQueryType1;
     private Provider testProvider1;
@@ -57,16 +60,21 @@ public class QueryCreatorTest
     @Before
     public void setUp() throws Exception
     {
+        this.testValueFactory = new ValueFactoryImpl();
+
         testNamespaceEntry1 = new NamespaceEntryImpl();
         testNamespaceEntry1.setKey("http://example.org/test/namespace/1");
         testNamespaceEntry1.setPreferredPrefix("myPreferredNamespace");
         testNamespaceEntry1.addAlternativePrefix("alternateNs");
+        testNamespaceEntry1.setSeparator(":");
+        testNamespaceEntry1.setAuthority(testValueFactory.createURI("http://my.example.org/"));
         
         testNamespaceEntry2 = new NamespaceEntryImpl();
         testNamespaceEntry2.setKey("http://example.org/test/namespace/2");
         testNamespaceEntry2.setPreferredPrefix("myOtherNamespace");
         testNamespaceEntry2.addAlternativePrefix("otherNs");
         testNamespaceEntry2.setSeparator("/");
+        testNamespaceEntry2.setAuthority(testValueFactory.createURI("http://other.example.org/"));
 
         testRegexInputQueryType1 = new RegexInputQueryTypeImpl();
         testRegexInputQueryType1.setKey("http://example.org/test/query/1");
@@ -79,7 +87,7 @@ public class QueryCreatorTest
         testRegexInputQueryType2 = new RegexInputQueryTypeImpl();
         testRegexInputQueryType2.setKey("http://example.org/test/query/2");
         testRegexInputQueryType2.addNamespaceInputTag("input_1");
-        testRegexInputQueryType2.setStandardUriTemplateString("${defaultHostAddress}${input_1}${separator}${input_2}");
+        testRegexInputQueryType2.setStandardUriTemplateString("${authority}${input_1}${separator}${input_2}");
         testRegexInputQueryType2.setIsNamespaceSpecific(true);
         testRegexInputQueryType2.addNamespaceToHandle(testNamespaceEntry2.getKey());
         testRegexInputQueryType2.setInputRegex("^([\\w-]+):(.+)$");
@@ -137,6 +145,8 @@ public class QueryCreatorTest
     @After
     public void tearDown() throws Exception
     {
+        this.testValueFactory = null;
+        
     }
     
     /**
@@ -169,7 +179,7 @@ public class QueryCreatorTest
                 testLocalSettings2, 
                 testNamespaceInputVariables2);
         
-        Assert.assertEquals("query 2 was not as expected", "Select * Where { <http://my.example.org/myOtherNamespace/otherNsUniqueId> dc:identifier \"http://my.example.org/myOtherNamespace/otherNsUniqueId\" . }", result2);
+        Assert.assertEquals("query 2 was not as expected", "Select * Where { <http://other.example.org/myOtherNamespace/otherNsUniqueId> dc:identifier \"http://other.example.org/myOtherNamespace/otherNsUniqueId\" . }", result2);
     }
     
     /**

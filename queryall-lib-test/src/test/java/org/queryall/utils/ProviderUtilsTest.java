@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -45,7 +46,7 @@ public class ProviderUtilsTest
     
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
-    private ValueFactoryImpl testValueFactory;
+    private ValueFactory testValueFactory;
     
     private List<Profile> emptyProfileList;
     private List<Profile> singleImplicitAllowAllProfileList;
