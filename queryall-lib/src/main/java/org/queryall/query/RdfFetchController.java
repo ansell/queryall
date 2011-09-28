@@ -498,17 +498,15 @@ public class RdfFetchController
                     // pick out all of the QueryType's which have been delegated for this
                     // particular
                     // query as static includes
-                    final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextCustomInclude);
+                    QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
                     
-                    if(allCustomRdfXmlIncludeTypes.size() == 0)
+                    if(nextCustomIncludeType == null)
                     {
                         RdfFetchController.log
                                 .warn("RdfFetchController: no included queries found for nextCustomInclude="
                                         + nextCustomInclude);
                     }
-                    
-                    for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
+                    else
                     {
                         // then also create the statically defined rdf/xml string to go with this
                         // query based on the current attributes, we assume that both queries have
@@ -536,7 +534,6 @@ public class RdfFetchController
                                             + " types="
                                             + nextCustomIncludeType.getElementTypes());
                         }
-                        
                     }
                 }
                 
@@ -610,10 +607,13 @@ public class RdfFetchController
                 {
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
-                    final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextCustomInclude);
+                    QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
                     
-                    for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
+                    if(nextCustomIncludeType == null)
+                    {
+                        log.warn("Attempted to include an unknown include type using the URI nextCustomInclude="+nextCustomInclude.stringValue());
+                    }
+                    else
                     {
                         final Map<String, String> attributeList =
                                 QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,

@@ -47,7 +47,6 @@ import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.utils.ProfileUtils;
-import org.queryall.utils.QueryTypeUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
 import org.queryall.utils.StringUtils;
@@ -846,56 +845,49 @@ public class GeneralServlet extends HttpServlet
                             + nextStaticQueryTypeForUnknown);
                 }
                 
-                final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                        QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(),
-                                nextStaticQueryTypeForUnknown);
+                final QueryType nextIncludeType = localSettings.getAllQueryTypes().get(nextStaticQueryTypeForUnknown);
 
                 // If we didn't understand the query
                 final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
-                // use the closest matches, even though they didn't eventuate into actual planned
-                // query bundles they matched the query string somehow
-                for(final QueryType nextQueryType : allCustomRdfXmlIncludeTypes)
+                if(nextIncludeType instanceof OutputQueryType)
                 {
-                    if(nextQueryType instanceof OutputQueryType)
-                    {
-                        final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextQueryType, null, queryParameters,
-                                        localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
-                                        pageOffset, localSettings);
-                        
-                        String nextBackupString =
-                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType,
-                                        null, attributeList, emptyNamespaceEntryMap,
-                                        includedProfiles,
-                                        localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings)
-                                        + "\n";
-                        
-                        nextBackupString =
-                                "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">"
-                                        + nextBackupString + "</rdf:RDF>";
-                        
-                        try
-                        {
-                            myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
-                                    localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY),
-                                    RDFFormat.RDFXML, nextQueryType.getKey());
-                        }
-                        catch(final org.openrdf.rio.RDFParseException rdfpe)
-                        {
-                            GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF "
-                                    + rdfpe.getMessage());
-                            GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
-                        }
-                    }
-                    else
-                    {
-                        GeneralServlet.log
-                                .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                        + nextQueryType.getKey() + " types=" + nextQueryType.getElementTypes());
-                    }
+                    final Map<String, String> attributeList =
+                            QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
+                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
+                                    pageOffset, localSettings);
                     
+                    // This is a last ditch solution to giving some meaningful feedback, as we assume that the unknown query type will handle the input, so we pass it in as both parameters
+                    String nextBackupString =
+                            QueryCreator.createStaticRdfXmlString(nextIncludeType, (OutputQueryType)nextIncludeType,
+                                    null, attributeList, emptyNamespaceEntryMap,
+                                    includedProfiles,
+                                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
+                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings)
+                                    + "\n";
+                    
+                    nextBackupString =
+                            "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">"
+                                    + nextBackupString + "</rdf:RDF>";
+                    
+                    try
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
+                                localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY),
+                                RDFFormat.RDFXML, nextIncludeType.getKey());
+                    }
+                    catch(final org.openrdf.rio.RDFParseException rdfpe)
+                    {
+                        GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF "
+                                + rdfpe.getMessage());
+                        GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
+                    }
+                }
+                else
+                {
+                    GeneralServlet.log
+                            .warn("Attempted to include a query type that was not parsed as an output query type key="
+                                    + nextIncludeType.getKey() + " types=" + nextIncludeType.getElementTypes());
                 }
             }
             

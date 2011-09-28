@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,25 +22,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class QueryTypeUtils
 {
-    public static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
-    public static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
-    public static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
-    public static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
+    private static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
+    private static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
     
-    public static Collection<QueryType> getQueryTypesByUri(final Map<URI, QueryType> allQueryTypes,
-            final URI queryTypeUri)
-    {
-        final Collection<QueryType> results = new HashSet<QueryType>();
-        for(final QueryType nextQueryType : allQueryTypes.values())
-        {
-            if(nextQueryType.getKey().equals(queryTypeUri))
-            {
-                results.add(nextQueryType);
-            }
-        }
-        return results;
-    }
-    
+   
     public static Map<String, Collection<URI>> namespacesMatchesForQueryParameters(final QueryType nextQueryType, final Map<String, String> nextQueryParameters, Map<String, Collection<URI>> namespacePrefixMap)
     {
         Map<String, Collection<URI>> results = new HashMap<String, Collection<URI>>();

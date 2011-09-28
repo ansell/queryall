@@ -28,7 +28,6 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProviderUtils;
-import org.queryall.utils.QueryTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -292,109 +291,78 @@ public class NamespaceProvidersServlet extends HttpServlet
             {
                 for(final URI nextUniqueQueryTitle : providersByQueryKey.keySet())
                 {
-                    final Collection<QueryType> queriesForNextTitle =
-                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextUniqueQueryTitle);
+//                    final QueryType queryForNextTitle = localSettings.getAllQueryTypes().get(nextUniqueQueryTitle);
                     
-                    if(queriesForNextTitle.size() == 0)
+                    final Map<URI, Provider> queryTypesForNamespace =
+                            ProviderUtils.getProvidersForQueryType(allProviders, nextUniqueQueryTitle);
+                    
+                    if(queryTypesForNamespace.size() > 0)
                     {
-                        // log.error("No query type definitions were found for the query title "+nextUniqueQueryTitle);
-                        out.write("<span class='error'>No query type definitions were found for the query title "
-                                + nextUniqueQueryTitle + "</span><br />\n");
-                    }
-                    else if(queriesForNextTitle.size() == 1)
-                    {
-                        final Map<URI, Provider> queryTypesForNamespace =
-                                ProviderUtils.getProvidersForQueryType(allProviders, nextUniqueQueryTitle);
-                        
-                        // We use QueryType.handleAllNamespaces to detect whether we are conceivably
-                        // missing query type providers for any of the discovered namespaces
-                        // if(queriesForNextTitle.get(0).handleAllNamespaces &&
-                        // queryTypesForNamespace.size() == 0)
-                        // {
-                        // if(log.isTraceEnabled())
-                        // {
-                        // //
-                        // log.warn("No provider was found for a namespace for a querytitle that is defined to be able to handle all namespaces nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
-                        // out.write("<span class='warn'>No provider was found for a namespace for a querytitle that is defined to be able to handle all namespaces nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace+" </span><br />\n");
-                        // }
-                        // }
-                        // else
-                        if(queryTypesForNamespace.size() > 0)
+                        if(NamespaceProvidersServlet.log.isDebugEnabled())
                         {
-                            if(NamespaceProvidersServlet.log.isDebugEnabled())
+                            out.write("<span class='info'>Provider found for namespace and query : nextUniqueQueryTitle="
+                                    + nextUniqueQueryTitle
+                                    + " nextUniqueNamespace="
+                                    + nextUniqueNamespace
+                                    + "</span><br />\n");
+                            // log.debug("Provider found for namespace and query : nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
+                        }
+                        
+                        for(final Provider nextQueryNamespaceProvider : queryTypesForNamespace.values())
+                        {
+                            if(nextQueryNamespaceProvider instanceof HttpProvider)
                             {
-                                out.write("<span class='info'>Provider found for namespace and query : nextUniqueQueryTitle="
-                                        + nextUniqueQueryTitle
-                                        + " nextUniqueNamespace="
-                                        + nextUniqueNamespace
-                                        + "</span><br />\n");
-                                // log.debug("Provider found for namespace and query : nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
-                            }
-                            
-                            for(final Provider nextQueryNamespaceProvider : queryTypesForNamespace.values())
-                            {
-                                if(nextQueryNamespaceProvider instanceof HttpProvider)
+                                final HttpProvider nextHttpProvider = (HttpProvider)nextQueryNamespaceProvider;
+                                if(nextHttpProvider.getEndpointUrls() != null)
                                 {
-                                    final HttpProvider nextHttpProvider = (HttpProvider)nextQueryNamespaceProvider;
-                                    if(nextHttpProvider.getEndpointUrls() != null)
+                                    for(final String nextEndpointUrl : nextHttpProvider.getEndpointUrls())
                                     {
-                                        for(final String nextEndpointUrl : nextHttpProvider.getEndpointUrls())
+                                        if(NamespaceProvidersServlet.log.isDebugEnabled())
                                         {
-                                            if(NamespaceProvidersServlet.log.isDebugEnabled())
+                                            out.write("<li><span class='debug'><a href='" + nextEndpointUrl + "'>"
+                                                    + nextEndpointUrl);
+                                            
+                                            if(nextQueryNamespaceProvider instanceof SparqlProvider)
                                             {
-                                                out.write("<li><span class='debug'><a href='" + nextEndpointUrl + "'>"
-                                                        + nextEndpointUrl);
-                                                
-                                                if(nextQueryNamespaceProvider instanceof SparqlProvider)
+                                                final SparqlProvider nextSparqlProvider =
+                                                        (SparqlProvider)nextQueryNamespaceProvider;
+                                                if(nextSparqlProvider.getUseSparqlGraph())
                                                 {
-                                                    final SparqlProvider nextSparqlProvider =
-                                                            (SparqlProvider)nextQueryNamespaceProvider;
-                                                    if(nextSparqlProvider.getUseSparqlGraph())
-                                                    {
-                                                        out.write(" graph=" + nextSparqlProvider.getSparqlGraphUri());
-                                                    }
+                                                    out.write(" graph=" + nextSparqlProvider.getSparqlGraphUri());
                                                 }
-                                                
-                                                out.write("</a></span></li>\n");
                                             }
+                                            
+                                            out.write("</a></span></li>\n");
                                         }
                                     }
                                 }
-                                else if(nextQueryNamespaceProvider.getEndpointMethod().equals(
-                                        ProviderSchema.getProviderNoCommunication().stringValue()))
+                            }
+                            else if(nextQueryNamespaceProvider.getEndpointMethod().equals(
+                                    ProviderSchema.getProviderNoCommunication().stringValue()))
+                            {
+                                if(NamespaceProvidersServlet.log.isDebugEnabled())
                                 {
-                                    if(NamespaceProvidersServlet.log.isDebugEnabled())
-                                    {
-                                        out.write("<li><span class='debug'>No communication required</span></li><br />\n");
-                                    }
-                                }
-                                else
-                                {
-                                    if(NamespaceProvidersServlet.log.isDebugEnabled())
-                                    {
-                                        out.write("<li><span class='debug'>No endpoint URL's found for a particular provider</span></li><br />\n");
-                                    }
+                                    out.write("<li><span class='debug'>No communication required</span></li><br />\n");
                                 }
                             }
-                        }
-                        else
-                        {
-                            // Enable this to get some rarely meaningful notices about queries which
-                            // are not designed to handle all namespaces
-                            // if(log.isDebugEnabled())
-                            // {
-                            // log.debug("No provider was found for a namespace for a particular queryTitle nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
-                            // out.write("<span class='debug'>No provider was found for a namespace for a particular queryTitle nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace+" </span><br />\n");
-                            // }
+                            else
+                            {
+                                if(NamespaceProvidersServlet.log.isDebugEnabled())
+                                {
+                                    out.write("<li><span class='debug'>No endpoint URL's found for a particular provider</span></li><br />\n");
+                                }
+                            }
                         }
                     }
                     else
                     {
-                        NamespaceProvidersServlet.log
-                                .warn("More than one query type definition was found for the query title "
-                                        + nextUniqueQueryTitle + " number found=" + queriesForNextTitle.size());
-                        out.write("<span class='error'>More than one query type definition was found for the query title "
-                                + nextUniqueQueryTitle + "</span><br />\n");
+                        // Enable this to get some rarely meaningful notices about queries which
+                        // are not designed to handle all namespaces
+                        // if(log.isDebugEnabled())
+                        // {
+                        // log.debug("No provider was found for a namespace for a particular queryTitle nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
+                        // out.write("<span class='debug'>No provider was found for a namespace for a particular queryTitle nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace+" </span><br />\n");
+                        // }
                     }
                 }
             }
