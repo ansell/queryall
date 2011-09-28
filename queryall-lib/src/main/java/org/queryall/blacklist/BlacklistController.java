@@ -19,7 +19,6 @@ import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.Settings;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
-import org.queryall.utils.QueryTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -391,36 +390,22 @@ public class BlacklistController
                         
                         for(final QueryDebug nextQueryDebug : nextClientQueryList)
                         {
-                            boolean isQueryRobotsTxt = false;
-                            
                             for(final URI nextQueryDebugTitle : nextQueryDebug.getMatchingQueryTitles())
                             {
-                                for(final QueryType nextQueryDebugType : QueryTypeUtils.getQueryTypesByUri(
-                                        localSettings.getAllQueryTypes(), nextQueryDebugTitle))
+                                QueryType nextQueryDebugType = 
+                                        localSettings.getAllQueryTypes().get(nextQueryDebugTitle);
+                                if(nextQueryDebugType.getInRobotsTxt())
                                 {
-                                    if(nextQueryDebugType.getInRobotsTxt())
+                                    if(BlacklistController._TRACE)
                                     {
-                                        if(BlacklistController._TRACE)
-                                        {
-                                            BlacklistController.log
-                                                    .trace("BlacklistController: found query in robots.txt client="
-                                                            + nextKey + " nextQueryDebugTitle=" + nextQueryDebugTitle);
-                                        }
-                                        
-                                        isQueryRobotsTxt = true;
-                                        break;
+                                        BlacklistController.log
+                                                .trace("BlacklistController: found query in robots.txt client="
+                                                        + nextKey + " nextQueryDebugTitle=" + nextQueryDebugTitle);
                                     }
-                                }
-                                
-                                if(isQueryRobotsTxt)
-                                {
+                                    
+                                    robotsTxtCount++;
                                     break;
                                 }
-                            }
-                            
-                            if(isQueryRobotsTxt)
-                            {
-                                robotsTxtCount++;
                             }
                         }
                         

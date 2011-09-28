@@ -3,12 +3,15 @@
  */
 package org.queryall.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
+import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.QueryType;
 import org.slf4j.Logger;
@@ -19,32 +22,54 @@ import org.slf4j.LoggerFactory;
  */
 public final class QueryTypeUtils
 {
-    public static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
-    public static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
-    public static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
-    public static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
+    private static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
+    private static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
     
-    public static Collection<QueryType> getQueryTypesByUri(final Map<URI, QueryType> allQueryTypes,
-            final URI queryTypeUri)
+   
+    public static Map<String, Collection<URI>> namespacesMatchesForQueryParameters(final QueryType nextQueryType, final Map<String, String> nextQueryParameters, Map<String, Collection<URI>> namespacePrefixMap)
     {
-        final Collection<QueryType> results = new HashSet<QueryType>();
-        for(final QueryType nextQueryType : allQueryTypes.values())
+        Map<String, Collection<URI>> results = new HashMap<String, Collection<URI>>();
+        
+        Map<String, List<String>> namespaceParameterMatches = nextQueryType.matchesForQueryParameters(nextQueryParameters);
+        
+        for(String nextNamespaceParameter : namespaceParameterMatches.keySet())
         {
-            if(nextQueryType.getKey().equals(queryTypeUri))
+            if(nextQueryType.isInputVariableNamespace(nextNamespaceParameter))
             {
-                results.add(nextQueryType);
+                List<String> nextNamespaceParameterMatches = namespaceParameterMatches.get(nextNamespaceParameter);
+
+                for(String nextNamespaceParameterMatch : nextNamespaceParameterMatches)
+                {
+                    if(namespacePrefixMap.containsKey(nextNamespaceParameterMatch))
+                    {
+                        if(_TRACE)
+                        {
+                            log.trace("Found a namespace for nextNamespaceParameter="+nextNamespaceParameter+" nextNamespaceParameterMatch="+nextNamespaceParameterMatch);
+                        }
+                        
+                        results.put(nextNamespaceParameter, namespacePrefixMap.get(nextNamespaceParameterMatch));
+                    }
+                    else
+                    {
+                        log.error("Could not find a matching namespace for nextNamespaceParameter="+nextNamespaceParameter+" nextNamespaceParameterMatch="+nextNamespaceParameterMatch);
+                    }
+                }
             }
         }
+        
         return results;
     }
-    
-    public static Collection<QueryType> getQueryTypesMatchingQuery(final Map<String, String> queryParameters,
+
+    public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(final Map<String, String> queryParameters,
             final List<Profile> profileList, final Map<URI, QueryType> allQueryTypes,
-            final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
+            Map<String, Collection<URI>> namespacePrefixesToUris, Map<URI, NamespaceEntry> allNamespaceEntries, final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
     {
         if(QueryTypeUtils._DEBUG)
         {
-            QueryTypeUtils.log.debug("getQueryTypesMatchingQueryString: profileList.size()=" + profileList.size());
+            QueryTypeUtils.log.debug("profileList.size()=" + profileList.size());
             
             if(QueryTypeUtils._TRACE)
             {
@@ -56,7 +81,7 @@ public final class QueryTypeUtils
             }
         }
         
-        final Collection<QueryType> results = new HashSet<QueryType>();
+        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> results = new HashMap<QueryType, Map<String, Collection<NamespaceEntry>>>();
         
         for(final QueryType nextQuery : allQueryTypes.values())
         {
@@ -64,7 +89,7 @@ public final class QueryTypeUtils
             {
                 if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: tentative, pre-profile-check match for"
+                    QueryTypeUtils.log.trace("tentative, pre-profile-check match for"
                             + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
                             + queryParameters);
                 }
@@ -73,15 +98,47 @@ public final class QueryTypeUtils
                 {
                     if(QueryTypeUtils._DEBUG)
                     {
-                        QueryTypeUtils.log.debug("getQueryTypesMatchingQueryString: profileList suitable for"
+                        QueryTypeUtils.log.debug("profileList suitable for"
                                 + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
                                 + queryParameters);
                     }
-                    results.add(nextQuery);
+                    
+                    Map<String, Collection<NamespaceEntry>> actualNamespaceEntries;
+                    
+                    // Only try to populate actualNamespaceEntries if the query is namespace specific
+                    if(nextQuery.getIsNamespaceSpecific())
+                    {
+                        Map<String, Collection<URI>> namespaceMatches = QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters, namespacePrefixesToUris);
+                        
+                        actualNamespaceEntries = new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size()*2);
+                        
+                        for(String nextParameter : namespaceMatches.keySet())
+                        {
+                            Collection<NamespaceEntry> namespaceParameterMatches = new ArrayList<NamespaceEntry>(2);
+
+                            for(URI nextNamespaceUri : namespaceMatches.get(nextParameter))
+                            {
+                                namespaceParameterMatches.add(allNamespaceEntries.get(nextNamespaceUri));
+                            }
+
+                            actualNamespaceEntries.put(nextParameter, namespaceParameterMatches);
+                        }
+                    }
+                    else
+                    {
+                        if(_DEBUG)
+                        {
+                            log.debug("query type is not namespace specific, creating an empty namespace parameter map");
+                        }
+                        // In other cases use an unmodifiable empty map
+                        actualNamespaceEntries = Collections.emptyMap();
+                    }
+                    
+                    results.put(nextQuery, actualNamespaceEntries);
                 }
                 else if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log.trace("getQueryTypesMatchingQueryString: profileList not suitable for"
+                    QueryTypeUtils.log.trace("profileList not suitable for"
                             + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
                             + queryParameters);
                 }
@@ -93,7 +150,7 @@ public final class QueryTypeUtils
     /**
 	 * 
 	 */
-    public QueryTypeUtils()
+    private QueryTypeUtils()
     {
         // TODO Auto-generated constructor stub
     }

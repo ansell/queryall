@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.querytype.OutputQueryType;
@@ -45,7 +47,6 @@ import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.utils.ProfileUtils;
-import org.queryall.utils.QueryTypeUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
 import org.queryall.utils.StringUtils;
@@ -574,7 +575,7 @@ public class GeneralServlet extends HttpServlet
             final List<Profile> includedProfiles, final RdfFetchController fetchController,
             final Repository myRepository)
     {
-        return (Repository)QueryCreator.normaliseByStage(
+        return (Repository)RuleUtils.normaliseByStage(
                 NormalisationRuleSchema.getRdfruleStageAfterResultsToPool(),
                 myRepository,
                 RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
@@ -694,7 +695,7 @@ public class GeneralServlet extends HttpServlet
                 RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
                 
                 tempRepository =
-                        (Repository)QueryCreator.normaliseByStage(NormalisationRuleSchema
+                        (Repository)RuleUtils.normaliseByStage(NormalisationRuleSchema
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
                                 localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle()
                                         .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
@@ -815,6 +816,9 @@ public class GeneralServlet extends HttpServlet
         RepositoryException
     {
         RepositoryConnection myRepositoryConnection = null;
+        
+        final boolean convertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
+        
         try
         {
             myRepositoryConnection = myRepository.getConnection();
@@ -823,6 +827,7 @@ public class GeneralServlet extends HttpServlet
             
             Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
             
+            // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
             if(fetchController.anyNamespaceNotRecognised())
             {
                 staticQueryTypesForUnknown = localSettings.getURIProperties("unknownNamespaceStaticAdditions");
@@ -840,53 +845,49 @@ public class GeneralServlet extends HttpServlet
                             + nextStaticQueryTypeForUnknown);
                 }
                 
-                final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                        QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(),
-                                nextStaticQueryTypeForUnknown);
+                final QueryType nextIncludeType = localSettings.getAllQueryTypes().get(nextStaticQueryTypeForUnknown);
+
+                // If we didn't understand the query
+                final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
-                // use the closest matches, even though they didn't eventuate into actual planned
-                // query bundles they matched the query string somehow
-                for(final QueryType nextQueryType : allCustomRdfXmlIncludeTypes)
+                if(nextIncludeType instanceof OutputQueryType)
                 {
-                    if(nextQueryType instanceof OutputQueryType)
-                    {
-                        final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextQueryType, null, queryParameters,
-                                        localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
-                                        pageOffset, localSettings);
-                        
-                        String nextBackupString =
-                                QueryCreator.createStaticRdfXmlString(nextQueryType, (OutputQueryType)nextQueryType,
-                                        null, attributeList, includedProfiles,
-                                        localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                        localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                        localSettings)
-                                        + "\n";
-                        
-                        nextBackupString =
-                                "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">"
-                                        + nextBackupString + "</rdf:RDF>";
-                        
-                        try
-                        {
-                            myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
-                                    localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY),
-                                    RDFFormat.RDFXML, nextQueryType.getKey());
-                        }
-                        catch(final org.openrdf.rio.RDFParseException rdfpe)
-                        {
-                            GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF "
-                                    + rdfpe.getMessage());
-                            GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
-                        }
-                    }
-                    else
-                    {
-                        GeneralServlet.log
-                                .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                        + nextQueryType.getKey() + " types=" + nextQueryType.getElementTypes());
-                    }
+                    final Map<String, String> attributeList =
+                            QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
+                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
+                                    pageOffset, localSettings);
                     
+                    // This is a last ditch solution to giving some meaningful feedback, as we assume that the unknown query type will handle the input, so we pass it in as both parameters
+                    String nextBackupString =
+                            QueryCreator.createStaticRdfXmlString(nextIncludeType, (OutputQueryType)nextIncludeType,
+                                    null, attributeList, emptyNamespaceEntryMap,
+                                    includedProfiles,
+                                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
+                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings)
+                                    + "\n";
+                    
+                    nextBackupString =
+                            "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">"
+                                    + nextBackupString + "</rdf:RDF>";
+                    
+                    try
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextBackupString),
+                                localSettings.getDefaultHostAddress() + queryParameters.get(Constants.QUERY),
+                                RDFFormat.RDFXML, nextIncludeType.getKey());
+                    }
+                    catch(final org.openrdf.rio.RDFParseException rdfpe)
+                    {
+                        GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF "
+                                + rdfpe.getMessage());
+                        GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
+                    }
+                }
+                else
+                {
+                    GeneralServlet.log
+                            .warn("Attempted to include a query type that was not parsed as an output query type key="
+                                    + nextIncludeType.getKey() + " types=" + nextIncludeType.getElementTypes());
                 }
             }
             

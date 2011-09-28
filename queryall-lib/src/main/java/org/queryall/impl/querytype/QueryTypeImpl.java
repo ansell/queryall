@@ -624,6 +624,31 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         // also default to false if we didn't find the index in the list
         return false;
     }
+
+    // returns true if the input variable is in the list of public input variables
+    @Override
+    public boolean isInputVariableNamespace(final String inputVariable)
+    {
+        if(inputVariable == null)
+        {
+            throw new IllegalArgumentException("Cannot have null input variables");
+        }
+        
+        if(this.namespaceInputTags != null)
+        {
+            for(final String nextNamespaceInputTag : this.getNamespaceInputTags())
+            {
+                if(inputVariable.equals(nextNamespaceInputTag))
+                {
+                    return true;
+                }
+            }
+        }
+        
+        // if there are no defined public indexes we default to false
+        // also default to false if we didn't find the index in the list
+        return false;
+    }
     
     @Override
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,

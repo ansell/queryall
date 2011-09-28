@@ -78,5 +78,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     void setStandardUriTemplateString(String standardUriTemplateString);
     
     void setTemplateString(String templateString);
+
+    boolean isInputVariableNamespace(String nextMatchTag);
     
 }

@@ -32,8 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author peter
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
 public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInputQueryType, SparqlProcessorQueryType,
         RdfOutputQueryType
@@ -169,8 +168,15 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
     {
         if(nextQueryParameters.containsKey(Constants.QUERY))
         {
-            return StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
+            boolean result = StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
                     nextQueryParameters.get(Constants.QUERY));
+            
+            if(_TRACE && result)
+            {
+                log.trace("Returning true for matchesQueryParameters key="+this.getKey().stringValue());
+            }
+            
+            return result;
         }
         else
         {

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.URI;
+import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -25,10 +26,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class RuleUtils
 {
-    public static final Logger log = LoggerFactory.getLogger(RuleUtils.class);
-    public static final boolean _TRACE = RuleUtils.log.isTraceEnabled();
-    public static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
-    public static final boolean _INFO = RuleUtils.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(RuleUtils.class);
+    private static final boolean _TRACE = RuleUtils.log.isTraceEnabled();
+    private static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
+    private static final boolean _INFO = RuleUtils.log.isInfoEnabled();
     
     public static List<NormalisationRule> getSortedRulesByUris(final Map<URI, NormalisationRule> allNormalisationRules,
             final Collection<URI> rdfNormalisationsNeeded, final SortOrder sortOrder)
@@ -271,6 +272,58 @@ public final class RuleUtils
     public RuleUtils()
     {
         // TODO Auto-generated constructor stub
+    }
+
+    /**
+     * @param normalisationRules
+     *            An ordered list of normalisation rules that need to be applied to the input
+     *            document
+     * @param includedProfiles
+     * @param recogniseImplicitRdfRuleInclusions
+     * @param includeNonProfileMatchedRdfRules
+     * @param basicRdfXml
+     * @return
+     */
+    public static Object normaliseByStage(final URI stage, Object input,
+            final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
+    {
+        if(_TRACE)
+        {
+            log.trace("normaliseByStage: before applying normalisation rules");
+        }
+        
+        final long start = System.currentTimeMillis();
+        
+        // go through the rules
+        for(final NormalisationRule nextRule : normalisationRules)
+        {
+            if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
+                    includeNonProfileMatchedRdfRules))
+            {
+                if(_TRACE)
+                {
+                    log.trace("normaliseByStage: nextRule.order=" + nextRule.getOrder());
+                }
+                
+                input = nextRule.normaliseByStage(stage, input);
+            }
+        }
+        
+        if(_DEBUG)
+        {
+            final long end = System.currentTimeMillis();
+            
+            log.debug(String.format("%s: timing=%10d", "normaliseByStage", (end - start)));
+
+            if(_TRACE)
+            {
+                log.trace("normaliseByStage: after applying normalisation rules");
+            }
+        }
+        
+        
+        return input;
     }
     
 }

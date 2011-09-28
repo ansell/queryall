@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
@@ -245,7 +246,7 @@ public class RdfFetchController
                     final String nextResult = nextThread.getRawResult();
                     
                     final String convertedResult =
-                            (String)QueryCreator.normaliseByStage(NormalisationRuleSchema
+                            (String)RuleUtils.normaliseByStage(NormalisationRuleSchema
                                     .getRdfruleStageBeforeResultsImport(), nextResult, RuleUtils.getSortedRulesByUris(
                                     this.localSettings.getAllNormalisationRules(), nextThread.getOriginalQueryBundle()
                                             .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
@@ -410,10 +411,13 @@ public class RdfFetchController
      * @param chosenProviders
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(final QueryAllConfiguration localSettings,
-            final QueryType nextQueryType, final Collection<Provider> chosenProviders,
+            final QueryType nextQueryType, final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Collection<Provider> chosenProviders,
             final boolean useAllEndpointsForEachProvider)
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
+        
+        // Note: We default to converting alternate namespaces to preferred unless it is turned off in the configuration. It can always be turned off for each namespace entry individually
+        final boolean overallConvertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", true);
         
         if(RdfFetchController._DEBUG)
         {
@@ -429,7 +433,10 @@ public class RdfFetchController
             
             if(nextProvider instanceof HttpProvider)
             {
-                log.info("instanceof HttpProvider key=" + nextProvider.getKey());
+                if(_DEBUG)
+                {
+                    log.debug("instanceof HttpProvider key=" + nextProvider.getKey());
+                }
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
@@ -448,7 +455,7 @@ public class RdfFetchController
                     // replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint =
                             QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryParameters,
-                                    replacedEndpoint, new ArrayList<String>());
+                                    replacedEndpoint, new ArrayList<String>(), overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
                     
                     attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, nextProvider, this.queryParameters,
@@ -461,14 +468,14 @@ public class RdfFetchController
                                     attributeList, this.sortedIncludedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    localSettings);
+                                    overallConvertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                     
                     final String nextEndpointQuery =
                             QueryCreator.createQuery(nextQueryType, nextProvider, attributeList,
                                     this.sortedIncludedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    localSettings);
+                                    overallConvertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                     
                     // replace the query on the endpoint URL if necessary
                     replacedEndpoint =
@@ -495,17 +502,15 @@ public class RdfFetchController
                     // pick out all of the QueryType's which have been delegated for this
                     // particular
                     // query as static includes
-                    final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextCustomInclude);
+                    QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
                     
-                    if(allCustomRdfXmlIncludeTypes.size() == 0)
+                    if(nextCustomIncludeType == null)
                     {
                         RdfFetchController.log
                                 .warn("RdfFetchController: no included queries found for nextCustomInclude="
                                         + nextCustomInclude);
                     }
-                    
-                    for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
+                    else
                     {
                         // then also create the statically defined rdf/xml string to go with this
                         // query based on the current attributes, we assume that both queries have
@@ -520,10 +525,10 @@ public class RdfFetchController
                             nextStaticRdfXmlString +=
                                     QueryCreator.createStaticRdfXmlString(nextQueryType,
                                             (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
-                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
-                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            localSettings);
+                                            namespaceInputVariables, this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                            "recogniseImplicitRdfRuleInclusions", true),
+                                            localSettings
+                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), overallConvertAlternateToPreferredPrefix, localSettings);
                         }
                         else
                         {
@@ -533,7 +538,6 @@ public class RdfFetchController
                                             + " types="
                                             + nextCustomIncludeType.getElementTypes());
                         }
-                        
                     }
                 }
                 
@@ -607,10 +611,13 @@ public class RdfFetchController
                 {
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
-                    final Collection<QueryType> allCustomRdfXmlIncludeTypes =
-                            QueryTypeUtils.getQueryTypesByUri(localSettings.getAllQueryTypes(), nextCustomInclude);
+                    QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
                     
-                    for(final QueryType nextCustomIncludeType : allCustomRdfXmlIncludeTypes)
+                    if(nextCustomIncludeType == null)
+                    {
+                        log.warn("Attempted to include an unknown include type using the URI nextCustomInclude="+nextCustomInclude.stringValue());
+                    }
+                    else
                     {
                         final Map<String, String> attributeList =
                                 QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,
@@ -630,10 +637,10 @@ public class RdfFetchController
                             nextStaticRdfXmlString +=
                                     QueryCreator.createStaticRdfXmlString(nextQueryType,
                                             (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            this.sortedIncludedProfiles, localSettings.getBooleanProperty(
-                                                    "recogniseImplicitRdfRuleInclusions", true), localSettings
-                                                    .getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            localSettings);
+                                            namespaceInputVariables, this.sortedIncludedProfiles, localSettings.getBooleanProperty(
+                                                            "recogniseImplicitRdfRuleInclusions", true),
+                                            localSettings
+                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), overallConvertAlternateToPreferredPrefix, localSettings);
                         }
                         else
                         {
@@ -743,16 +750,14 @@ public class RdfFetchController
         {
             this.queryBundles = new LinkedList<QueryBundle>();
             
-            // FIXME: need to integrate NamespaceEntry list with this method so we can substitute
-            // preferred namespaces for alternates
-            final Collection<QueryType> allCustomQueries =
+            // Note: this set contains queries that matched without taking into account the namespaces assigned to each query type
+            // The calculation of the namespace matching is done later
+            final Map<QueryType, Map<String, Collection<NamespaceEntry>>> allCustomQueries =
                     QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles,
                             this.localSettings.getAllQueryTypes(),
-                            this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true),
-                            this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true));
+                            localSettings.getNamespacePrefixesToUris(),
+                            localSettings.getAllNamespaceEntries(), this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true), this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true));
             
-            // TODO: figure out how to also get back the NamespaceEntry objects that matched so we
-            // can log this information with the statistics for this query
             if(RdfFetchController._DEBUG)
             {
                 RdfFetchController.log.debug("RdfFetchController.initialise: found " + allCustomQueries.size()
@@ -761,7 +766,7 @@ public class RdfFetchController
             
             // TODO: should we do classification in the results based on the QueryType that
             // generated the particular subset of QueryBundles to make it easier to distinguish them
-            for(final QueryType nextQueryType : allCustomQueries)
+            for(final QueryType nextQueryType : allCustomQueries.keySet())
             {
                 // Non-paged queries are a special case. The caller decides whether
                 // they want to use non-paged queries, for example, they may say no
@@ -840,7 +845,7 @@ public class RdfFetchController
                 
                 // Default to safe setting of useAllEndpointsForEachProvider=true here
                 final Collection<QueryBundle> queryBundlesForQueryType =
-                        this.generateQueryBundlesForQueryTypeAndProviders(this.localSettings, nextQueryType,
+                        this.generateQueryBundlesForQueryTypeAndProviders(this.localSettings, nextQueryType, allCustomQueries.get(nextQueryType),
                                 chosenProviders,
                                 this.localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true));
                 
