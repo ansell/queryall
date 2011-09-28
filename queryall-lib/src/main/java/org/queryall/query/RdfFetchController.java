@@ -432,7 +432,10 @@ public class RdfFetchController
             
             if(nextProvider instanceof HttpProvider)
             {
-                log.info("instanceof HttpProvider key=" + nextProvider.getKey());
+                if(_DEBUG)
+                {
+                    log.debug("instanceof HttpProvider key=" + nextProvider.getKey());
+                }
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
@@ -746,6 +749,8 @@ public class RdfFetchController
         {
             this.queryBundles = new LinkedList<QueryBundle>();
             
+            // Note: this set contains queries that matched without taking into account the namespaces assigned to each query type
+            // The calculation of the namespace matching is done later
             final Map<QueryType, Map<String, Collection<NamespaceEntry>>> allCustomQueries =
                     QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles,
                             this.localSettings.getAllQueryTypes(),

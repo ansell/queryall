@@ -48,7 +48,7 @@ public final class QueryTypeUtils
                 }
                 else
                 {
-                    log.warn("Could not find a matching namespace for nextQueryParameter="+nextQueryParameter);
+                    log.warn("Could not find a matching namespace for nextQueryParameter="+nextQueryParameter+" nextQueryParameters.get(nextQueryParameter)="+nextQueryParameters.get(nextQueryParameter));
                 }
             }
         }

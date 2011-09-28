@@ -1176,10 +1176,15 @@ public class QueryCreator
             
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
+                
+                log.debug("allMatches.get(nextMatchTag)="+inputReplaceString);
+                
                 // FIXME: determine why namespaceInputVariables isn't being sent here properly from RdfFetchController.generateQueryBundlesForQueryTypeAndProviders
                 // FIXME: determine why namespaceInputVariables isn't being sent here properly from GeneralServlet.doQueryUnknown
-                if(isNamespace && convertAlternateToPreferredPrefix && namespaceInputVariables.containsKey(nextMatchTag))
+                if(isNamespace && namespaceInputVariables.containsKey(nextMatchTag))
                 {
+                    log.debug("allMatches.get(nextMatchTag)="+inputReplaceString);
+
                     boolean foundANamespace = false;
                     // TODO: What happens if there could be more than one match here, as we aren't ordering the NamespaceEntries... could have irregular behaviour
                     for(NamespaceEntry nextNamespaceEntry : namespaceInputVariables.get(nextMatchTag))
@@ -1188,7 +1193,10 @@ public class QueryCreator
                         {
                             log.debug("inputReplaceString="+inputReplaceString);
 
-                            inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
+                            if(convertAlternateToPreferredPrefix)
+                            {
+                                inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
+                            }
                             separatorString = nextNamespaceEntry.getSeparator();
                             authorityString = nextNamespaceEntry.getAuthority().stringValue();
                             
