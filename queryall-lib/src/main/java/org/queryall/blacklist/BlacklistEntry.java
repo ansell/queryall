@@ -27,7 +27,14 @@ public class BlacklistEntry
         
         resultBuffer.append("Failed query key : "
                 + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");
-        resultBuffer.append("Failure message : " + errorRunnable.getLastException().toString() + "<br />\n");
+        if(errorRunnable.getLastException() != null)
+        {
+            resultBuffer.append("Failure message : " + errorRunnable.getLastException().toString() + "<br />\n");
+        }
+        else
+        {
+            resultBuffer.append("Failure message not known <br />\n");
+        }
         
         resultBuffer.append("Time to fail (milliseconds) : "
                 + (errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime())

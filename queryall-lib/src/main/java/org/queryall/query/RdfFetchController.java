@@ -543,16 +543,20 @@ public class RdfFetchController
                 
                 if(replacedEndpoints.size() > 0)
                 {
+                    Map<String, String> chosenAlternativeEndpoints = new HashMap<String, String>();
+                    QueryBundle lastProviderQueryBundle = null;
+                    
                     for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
                     {
-                        final Map<String, String> endpointEntries = replacedEndpoints.get(nextEndpoint);
+                        final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
                         boolean foundAnEndpoint = false;
                         
-                        for(final String nextReplacedEndpoint : endpointEntries.keySet())
+                        
+                        for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
                         {
                             final QueryBundle nextProviderQueryBundle = new QueryBundle();
                             
-                            nextProviderQueryBundle.setQuery(endpointEntries.get(nextReplacedEndpoint));
+                            nextProviderQueryBundle.setQuery(originalEndpointEntries.get(nextReplacedEndpoint));
                             nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
                             nextProviderQueryBundle.setQueryEndpoint(nextReplacedEndpoint);
                             nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
@@ -560,7 +564,7 @@ public class RdfFetchController
                             nextProviderQueryBundle.setQueryType(nextQueryType);
                             nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
                             nextProviderQueryBundle.setQueryallSettings(localSettings);
-                            
+
                             // Then test whether the endpoint is blacklisted before accepting it
                             if(noCommunicationProvider
                                     || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
@@ -569,9 +573,17 @@ public class RdfFetchController
                                 // those endpoints that we know of as alternatives for this
                                 // queryBundle so we can use them if an error occurs with this query
                                 // bundle
-                                nextProviderQueryBundle.setAlternativeEndpointsAndQueries(endpointEntries);
-                                results.add(nextProviderQueryBundle);
-                                foundAnEndpoint = true;
+                                if(foundAnEndpoint && !useAllEndpointsForEachProvider)
+                                {
+                                    chosenAlternativeEndpoints.put(nextEndpoint, originalEndpointEntries.get(nextReplacedEndpoint));
+                                }
+                                else
+                                {
+                                    results.add(nextProviderQueryBundle);
+                                    foundAnEndpoint = true;
+                                }
+                                
+                                lastProviderQueryBundle = nextProviderQueryBundle;
                             }
                             else
                             {
@@ -580,12 +592,12 @@ public class RdfFetchController
                                                 + nextProvider.getKey());
                             }
                         }
-                        // go to next provider if we are not told to use all of the endpoints for
-                        // the provider
-                        if(foundAnEndpoint && !useAllEndpointsForEachProvider)
-                        {
-                            break;
-                        }
+                    }
+                    
+                    if(!useAllEndpointsForEachProvider && lastProviderQueryBundle != null)
+                    {
+                        lastProviderQueryBundle.setAlternativeEndpointsAndQueries(chosenAlternativeEndpoints);
+                        results.add(lastProviderQueryBundle);
                     }
                 }
                 else
