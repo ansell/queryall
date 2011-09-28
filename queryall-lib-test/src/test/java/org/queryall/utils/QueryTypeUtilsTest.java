@@ -54,6 +54,7 @@ public class QueryTypeUtilsTest
 
         testNamespaceEntry1 = new NamespaceEntryImpl();
         testNamespaceEntry1.setKey("http://example.org/test/namespace/1");
+        testNamespaceEntry1.setConvertQueriesToPreferredPrefix(true);
         testNamespaceEntry1.setPreferredPrefix("myPreferredNamespace");
         testNamespaceEntry1.addAlternativePrefix("alternateNs");
         testNamespaceEntry1.setSeparator(":");

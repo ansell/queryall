@@ -416,7 +416,7 @@ public class RdfFetchController
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
-        final boolean convertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
+        final boolean overallConvertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
         
         if(RdfFetchController._DEBUG)
         {
@@ -454,7 +454,7 @@ public class RdfFetchController
                     // replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint =
                             QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryParameters,
-                                    replacedEndpoint, new ArrayList<String>(), convertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                                    replacedEndpoint, new ArrayList<String>(), overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
                     
                     attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, nextProvider, this.queryParameters,
@@ -467,14 +467,14 @@ public class RdfFetchController
                                     attributeList, this.sortedIncludedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                                    overallConvertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                     
                     final String nextEndpointQuery =
                             QueryCreator.createQuery(nextQueryType, nextProvider, attributeList,
                                     this.sortedIncludedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    convertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
+                                    overallConvertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
                     
                     // replace the query on the endpoint URL if necessary
                     replacedEndpoint =
@@ -527,7 +527,7 @@ public class RdfFetchController
                                             namespaceInputVariables, this.sortedIncludedProfiles, localSettings.getBooleanProperty(
                                                             "recogniseImplicitRdfRuleInclusions", true),
                                             localSettings
-                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings);
+                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), overallConvertAlternateToPreferredPrefix, localSettings);
                         }
                         else
                         {
@@ -639,7 +639,7 @@ public class RdfFetchController
                                             namespaceInputVariables, this.sortedIncludedProfiles, localSettings.getBooleanProperty(
                                                             "recogniseImplicitRdfRuleInclusions", true),
                                             localSettings
-                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings);
+                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true), overallConvertAlternateToPreferredPrefix, localSettings);
                         }
                         else
                         {
