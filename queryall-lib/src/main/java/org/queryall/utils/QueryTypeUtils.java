@@ -108,8 +108,6 @@ public final class QueryTypeUtils
                     // Only try to populate actualNamespaceEntries if the query is namespace specific
                     if(nextQuery.getIsNamespaceSpecific())
                     {
-                        
-                        
                         Map<String, Collection<URI>> namespaceMatches = QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters, namespacePrefixesToUris);
                         
                         actualNamespaceEntries = new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size()*2);
@@ -120,7 +118,6 @@ public final class QueryTypeUtils
 
                             for(URI nextNamespaceUri : namespaceMatches.get(nextParameter))
                             {
-                                // TODO: make this more efficient by changing the QueryAllConfiguration contract to get by URI for each item
                                 namespaceParameterMatches.add(allNamespaceEntries.get(nextNamespaceUri));
                             }
 

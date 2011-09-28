@@ -40,9 +40,12 @@ public class QueryTypeUtilsTest
     private Map<String, Collection<URI>> testQueryParameterMatchesAlternate;
     private Map<URI, QueryType> testAllQueryTypes;
     private Map<URI, NamespaceEntry> testAllNamespaceEntries;
-    private Map<String, String> testInputParametersRawPreferred;
-    private Map<String, String> testInputParametersRawAlternate;
-    private Map<String, String> testInputParametersRawFalse;
+    private Map<String, String> testParametersRawPreferredConverted;
+    private Map<String, String> testParametersRawAlternateConverted;
+    private Map<String, String> testParametersRawFalse;
+    private Map<String, String> testParametersRawPreferredUnconverted;
+    private Map<String, String> testParametersRawAlternateUnconverted;
+    private NamespaceEntry testNamespaceEntry2;
     
     /**
      * @throws java.lang.Exception
@@ -59,6 +62,14 @@ public class QueryTypeUtilsTest
         testNamespaceEntry1.addAlternativePrefix("alternateNs");
         testNamespaceEntry1.setSeparator(":");
         testNamespaceEntry1.setAuthority(testValueFactory.createURI("http://my.example.org/"));
+
+        testNamespaceEntry2 = new NamespaceEntryImpl();
+        testNamespaceEntry2.setKey("http://example.org/test/namespace/2");
+        testNamespaceEntry2.setConvertQueriesToPreferredPrefix(true);
+        testNamespaceEntry2.setPreferredPrefix("myCurrentPreferredNamespace");
+        testNamespaceEntry2.addAlternativePrefix("validAlternateNs");
+        testNamespaceEntry2.setSeparator(":");
+        testNamespaceEntry2.setAuthority(testValueFactory.createURI("http://my.example.org/"));
 
         testRegexInputQueryType1 = new RegexInputQueryTypeImpl();
         testRegexInputQueryType1.setKey("http://example.org/test/querytype/1");
@@ -77,44 +88,36 @@ public class QueryTypeUtilsTest
         testAllNamespaceEntries = new HashMap<URI, NamespaceEntry>();
         testAllNamespaceEntries.put(testNamespaceEntry1.getKey(), testNamespaceEntry1);
         
-        testInputParametersRawPreferred = new HashMap<String, String>();
-        testInputParametersRawPreferred.put(Constants.QUERY, "myPreferredNamespace:identifier1234567");
-        // FIXME: Is this necessary in theory
-//        testInputParametersRawPreferred.put("input_1", "myPreferredNamespace");
-//        testInputParametersRawPreferred.put("input_2", "identifier1234567");
+        testParametersRawPreferredConverted = new HashMap<String, String>();
+        testParametersRawPreferredConverted.put(Constants.QUERY, "myPreferredNamespace:identifier1234567");
 
-        testInputParametersRawAlternate = new HashMap<String, String>();
-        testInputParametersRawAlternate.put(Constants.QUERY, "alternateNs:identifier7654321");
-        // FIXME: Is this necessary in theory
-//        testInputParametersRawAlternate.put("input_1", "alternateNs");
-//        testInputParametersRawAlternate.put("input_2", "identifier7654321");
+        testParametersRawAlternateConverted = new HashMap<String, String>();
+        testParametersRawAlternateConverted.put(Constants.QUERY, "alternateNs:identifier7654321");
 
-        testInputParametersRawFalse = new HashMap<String, String>();
-        testInputParametersRawFalse.put(Constants.QUERY, "unknownfalsenamespace:identifier654");
-        // FIXME: Is this necessary in theory
-//        testInputParametersRawFalse.put("input_1", "unknownfalsenamespace");
-//        testInputParametersRawFalse.put("input_2", "identifier654");
+        testParametersRawPreferredUnconverted = new HashMap<String, String>();
+        testParametersRawPreferredUnconverted.put(Constants.QUERY, "myCurrentPreferredNamespace:identifier56789");
 
-//        testInputParametersPreferred = new HashMap<String, String>();
-//        testInputParametersPreferred.put("input_1", "myPreferredNamespace");
-//        testInputParametersPreferred.put("input_2", "identifier1234567");
+        testParametersRawAlternateUnconverted = new HashMap<String, String>();
+        testParametersRawAlternateUnconverted.put(Constants.QUERY, "validAlternateNs:identifier98765");
 
-//        testInputParametersAlternate = new HashMap<String, String>();
-//        testInputParametersAlternate.put("input_1", "alternateNs");
-//        testInputParametersAlternate.put("input_2", "identifier7654321");
+        testParametersRawFalse = new HashMap<String, String>();
+        testParametersRawFalse.put(Constants.QUERY, "unknownfalsenamespace:identifier654");
 
-//        testInputParametersFalse = new HashMap<String, String>();
-//        testInputParametersFalse.put("input_1", "unknownfalsenamespace");
-//        testInputParametersFalse.put("input_2", "identifier654");
-    
         Collection<URI> preferredNamespaces = new ArrayList<URI>(1);
         preferredNamespaces.add(testNamespaceEntry1.getKey());
         Collection<URI> alternateNamespaces = new ArrayList<URI>(1);
         alternateNamespaces.add(testNamespaceEntry1.getKey());
 
+        Collection<URI> preferredUnconvertedNamespaces = new ArrayList<URI>(1);
+        preferredUnconvertedNamespaces.add(testNamespaceEntry2.getKey());
+        Collection<URI> alternateUnconvertedNamespaces = new ArrayList<URI>(1);
+        alternateUnconvertedNamespaces.add(testNamespaceEntry2.getKey());
+
         testNamespacePrefixMap = new HashMap<String, Collection<URI>>();
         testNamespacePrefixMap.put("myPreferredNamespace", preferredNamespaces);
         testNamespacePrefixMap.put("alternateNs", alternateNamespaces);
+        testNamespacePrefixMap.put("myCurrentPreferredNamespace", preferredUnconvertedNamespaces);
+        testNamespacePrefixMap.put("validAlternateNs", alternateUnconvertedNamespaces);
         
         testQueryParameterMatchesPreferred = new HashMap<String, Collection<URI>>();
         testQueryParameterMatchesPreferred.put("input_1", preferredNamespaces);
@@ -137,15 +140,23 @@ public class QueryTypeUtilsTest
     @Test
     public void testNamespacesMatchesForQueryParameters()
     {
-        Map<String, Collection<URI>> namespacesMatches1 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersRawPreferred, testNamespacePrefixMap);
+        Map<String, Collection<URI>> namespacesMatches1 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testParametersRawPreferredConverted, testNamespacePrefixMap);
 
         Assert.assertEquals("preferred namespaces did not generate a single result", 1, namespacesMatches1.size());
 
-        Map<String, Collection<URI>> namespacesMatches2 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersRawAlternate, testNamespacePrefixMap);
+        Map<String, Collection<URI>> namespacesMatches2 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testParametersRawAlternateConverted, testNamespacePrefixMap);
     
         Assert.assertEquals("alternate namespaces did not generate a single result", 1, namespacesMatches2.size());
 
-        Map<String, Collection<URI>> namespacesMatchesFalse = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testInputParametersRawFalse, testNamespacePrefixMap);
+        Map<String, Collection<URI>> namespacesMatchesUnconverted1 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testParametersRawPreferredUnconverted, testNamespacePrefixMap);
+
+        Assert.assertEquals("preferred namespaces unconverted did not generate a single result", 1, namespacesMatchesUnconverted1.size());
+
+        Map<String, Collection<URI>> namespacesMatchesUnconverted2 = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testParametersRawAlternateUnconverted, testNamespacePrefixMap);
+    
+        Assert.assertEquals("alternate namespaces unconverted did not generate a single result", 1, namespacesMatchesUnconverted2.size());
+
+        Map<String, Collection<URI>> namespacesMatchesFalse = QueryTypeUtils.namespacesMatchesForQueryParameters(testRegexInputQueryType1, testParametersRawFalse, testNamespacePrefixMap);
         
         Assert.assertEquals("false namespaces generated a result", 0, namespacesMatchesFalse.size());
         
@@ -157,7 +168,7 @@ public class QueryTypeUtilsTest
     @Test
     public void testGetQueryTypesMatchingQuery()
     {
-        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryPreferred = QueryTypeUtils.getQueryTypesMatchingQuery(testInputParametersRawPreferred, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
+        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryPreferred = QueryTypeUtils.getQueryTypesMatchingQuery(testParametersRawPreferredConverted, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
         
         Assert.assertEquals("preferred namespaces did not generate a single result", 1, queryTypesMatchingQueryPreferred.size());
         
@@ -165,7 +176,7 @@ public class QueryTypeUtilsTest
         
         Assert.assertEquals("preferred namespaces result did not have a parameter to namespace map attached to it", 1, queryTypesMatchingQueryPreferred.get(testRegexInputQueryType1).size());
 
-        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryAlternate = QueryTypeUtils.getQueryTypesMatchingQuery(testInputParametersRawAlternate, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
+        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryAlternate = QueryTypeUtils.getQueryTypesMatchingQuery(testParametersRawAlternateConverted, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
         
         Assert.assertEquals("alternate namespaces did not generate a single result", 1, queryTypesMatchingQueryAlternate.size());
 
@@ -173,7 +184,27 @@ public class QueryTypeUtilsTest
         
         Assert.assertEquals("alternate namespaces result did not have a parameter to namespace map attached to it", 1, queryTypesMatchingQueryAlternate.get(testRegexInputQueryType1).size());
 
-        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryFalse = QueryTypeUtils.getQueryTypesMatchingQuery(testInputParametersRawFalse, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
+
+        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryUnconvertedPreferred = QueryTypeUtils.getQueryTypesMatchingQuery(testParametersRawPreferredConverted, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
+        
+        Assert.assertEquals("preferred namespaces did not generate a single result", 1, queryTypesMatchingQueryUnconvertedPreferred.size());
+        
+        Assert.assertTrue("Query type was not in the preferred namespaces results set", queryTypesMatchingQueryUnconvertedPreferred.containsKey(testRegexInputQueryType1));
+        
+        Assert.assertEquals("preferred namespaces result did not have a parameter to namespace map attached to it", 1, queryTypesMatchingQueryUnconvertedPreferred.get(testRegexInputQueryType1).size());
+
+        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryUnconvertedAlternate = QueryTypeUtils.getQueryTypesMatchingQuery(testParametersRawAlternateConverted, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
+        
+        Assert.assertEquals("alternate namespaces did not generate a single result", 1, queryTypesMatchingQueryUnconvertedAlternate.size());
+
+        Assert.assertTrue("Query type was not in the alternate namespaces results set", queryTypesMatchingQueryUnconvertedAlternate.containsKey(testRegexInputQueryType1));
+        
+        Assert.assertEquals("alternate namespaces result did not have a parameter to namespace map attached to it", 1, queryTypesMatchingQueryUnconvertedAlternate.get(testRegexInputQueryType1).size());
+
+        
+        
+        
+        Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryFalse = QueryTypeUtils.getQueryTypesMatchingQuery(testParametersRawFalse, new ArrayList<Profile>(0), testAllQueryTypes, testNamespacePrefixMap, testAllNamespaceEntries, true, true);
 
         Assert.assertEquals("false namespaces did not generated a single result", 1, queryTypesMatchingQueryFalse.size());
         

@@ -416,7 +416,8 @@ public class RdfFetchController
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
-        final boolean overallConvertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
+        // Note: We default to converting alternate namespaces to preferred unless it is turned off in the configuration. It can always be turned off for each namespace entry individually
+        final boolean overallConvertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", true);
         
         if(RdfFetchController._DEBUG)
         {

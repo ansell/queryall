@@ -69,12 +69,12 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     
     // This setting determines whether input namespace prefixes in the alternatives list should be
     // converted to the preferred prefix
+    private boolean convertQueriesToPreferredPrefix = true;
+    // TODO:
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of
     // the alternative prefixes
-    // TODO: implement me!
-    private boolean convertQueriesToPreferredPrefix = true;
     
-    private String title;
+    private String title = "";
     private Pattern identifierRegexPattern = null;
     private boolean validationPossible = false;
     
