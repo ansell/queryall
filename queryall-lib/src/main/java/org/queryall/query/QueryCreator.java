@@ -1187,6 +1187,7 @@ public class QueryCreator
 
                     boolean foundANamespace = false;
                     // TODO: What happens if there could be more than one match here, as we aren't ordering the NamespaceEntries... could have irregular behaviour
+                    // Currently, the first namespace to match will set the separatorString and authorityString to match its definition and then break the loop
                     for(NamespaceEntry nextNamespaceEntry : namespaceInputVariables.get(nextMatchTag))
                     {
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
@@ -1197,6 +1198,7 @@ public class QueryCreator
                             {
                                 inputReplaceString = nextNamespaceEntry.getPreferredPrefix();
                             }
+                            
                             separatorString = nextNamespaceEntry.getSeparator();
                             authorityString = nextNamespaceEntry.getAuthority().stringValue();
                             
