@@ -65,8 +65,9 @@ import org.queryall.api.utils.QueryAllNamespaces;
 public class RdfUtilsTest
 {
     /**
-     * There will always be cases where unexpected triples appear in annotated configurations, so this is FALSE by default to match reality If
-     * you want to test a new feature is being parsed correctly, you can temporarily turn this on
+     * There will always be cases where unexpected triples appear in annotated configurations, so
+     * this is FALSE by default to match reality If you want to test a new feature is being parsed
+     * correctly, you can temporarily turn this on
      */
     private static final boolean FAIL_ON_UNEXPECTED_TRIPLES = false;
     
@@ -128,7 +129,6 @@ public class RdfUtilsTest
     private URI testNormalisationRule2;
     private URI testNormalisationRule3;
     private URI testNormalisationRule4;
-
     
     /**
      * @throws java.lang.Exception
@@ -714,20 +714,15 @@ public class RdfUtilsTest
                     
                     Assert.assertEquals("Did not find expected number of stages", 3, nextNormalisationRule.getStages()
                             .size());
-                    Assert.assertTrue(
-                            "Could not find expected stage: query variables",
-                            nextNormalisationRule.getStages().contains(
-                                    NormalisationRuleSchema.getRdfruleStageQueryVariables()));
-                    Assert.assertTrue(
-                            "Could not find expected stage: before results import",
-                            nextNormalisationRule.getStages().contains(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
-                    Assert.assertTrue(
-                            "Could not find expected stage: after results import",
-                            nextNormalisationRule.getStages().contains(
-                                    NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
+                    Assert.assertTrue("Could not find expected stage: query variables", nextNormalisationRule
+                            .getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()));
+                    Assert.assertTrue("Could not find expected stage: before results import", nextNormalisationRule
+                            .getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
+                    Assert.assertTrue("Could not find expected stage: after results import", nextNormalisationRule
+                            .getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
                     
-                    Assert.assertEquals("Description was not parsed correctly",
+                    Assert.assertEquals(
+                            "Description was not parsed correctly",
                             "Provides conversion between the deprecated Bio2RDF Plant Ontology namespace and the OAS Plant Ontology namespace using a simple prefix mapping.",
                             nextNormalisationRule.getDescription());
                     Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
@@ -747,20 +742,28 @@ public class RdfUtilsTest
                             "Normalisation rule was not implemented using the PrefixMappingNormalisationRule interface",
                             nextNormalisationRule instanceof PrefixMappingNormalisationRule);
                     
-                    final PrefixMappingNormalisationRule nextPrefixMappingRule = (PrefixMappingNormalisationRule)nextNormalisationRule;
+                    final PrefixMappingNormalisationRule nextPrefixMappingRule =
+                            (PrefixMappingNormalisationRule)nextNormalisationRule;
                     
-                    Assert.assertEquals("Input URI prefix was not parsed correctly", "http://bio2rdf.org/po:", nextPrefixMappingRule.getInputUriPrefix());
-                    Assert.assertEquals("Output URI prefix was not parsed correctly", "http://oas.example.org/po:", nextPrefixMappingRule.getOutputUriPrefix());
+                    Assert.assertEquals("Input URI prefix was not parsed correctly", "http://bio2rdf.org/po:",
+                            nextPrefixMappingRule.getInputUriPrefix());
+                    Assert.assertEquals("Output URI prefix was not parsed correctly", "http://oas.example.org/po:",
+                            nextPrefixMappingRule.getOutputUriPrefix());
                     
-                    Assert.assertEquals("Subject mapping predicates were not parsed correctly", 1, nextPrefixMappingRule.getSubjectMappingPredicates().size());
-                    Assert.assertEquals("Predicate mapping predicates were not parsed correctly", 1, nextPrefixMappingRule.getPredicateMappingPredicates().size());
-                    Assert.assertEquals("Object mapping predicates were not parsed correctly", 1, nextPrefixMappingRule.getObjectMappingPredicates().size());
-
-                    Assert.assertTrue("Subject mapping predicates were not parsed correctly: owl:sameAs", nextPrefixMappingRule.getSubjectMappingPredicates().contains(OWL.SAMEAS));
-                    Assert.assertTrue("Predicate mapping predicates were not parsed correctly: owl:equivalentProperty", nextPrefixMappingRule.getPredicateMappingPredicates().contains(OWL.EQUIVALENTPROPERTY));
-                    Assert.assertTrue("Object mapping predicates were not parsed correctly: owl:equivalentClass", nextPrefixMappingRule.getObjectMappingPredicates().contains(OWL.EQUIVALENTCLASS));
+                    Assert.assertEquals("Subject mapping predicates were not parsed correctly", 1,
+                            nextPrefixMappingRule.getSubjectMappingPredicates().size());
+                    Assert.assertEquals("Predicate mapping predicates were not parsed correctly", 1,
+                            nextPrefixMappingRule.getPredicateMappingPredicates().size());
+                    Assert.assertEquals("Object mapping predicates were not parsed correctly", 1, nextPrefixMappingRule
+                            .getObjectMappingPredicates().size());
+                    
+                    Assert.assertTrue("Subject mapping predicates were not parsed correctly: owl:sameAs",
+                            nextPrefixMappingRule.getSubjectMappingPredicates().contains(OWL.SAMEAS));
+                    Assert.assertTrue("Predicate mapping predicates were not parsed correctly: owl:equivalentProperty",
+                            nextPrefixMappingRule.getPredicateMappingPredicates().contains(OWL.EQUIVALENTPROPERTY));
+                    Assert.assertTrue("Object mapping predicates were not parsed correctly: owl:equivalentClass",
+                            nextPrefixMappingRule.getObjectMappingPredicates().contains(OWL.EQUIVALENTCLASS));
                 }
-                
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
@@ -1091,10 +1094,11 @@ public class RdfUtilsTest
                     
                     Assert.assertTrue("Query type was not parsed into a InputQueryType",
                             nextQueryType instanceof InputQueryType);
-
+                    
                     final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
                     
-                    Assert.assertEquals("Query type expected input parameters were not parsed correctly", 2, nextInputQueryType.getExpectedInputParameters().size());
+                    Assert.assertEquals("Query type expected input parameters were not parsed correctly", 2,
+                            nextInputQueryType.getExpectedInputParameters().size());
                     
                     Assert.assertTrue("Query type was not parsed into a RegexInputQueryType",
                             nextQueryType instanceof RegexInputQueryType);
@@ -1175,17 +1179,20 @@ public class RdfUtilsTest
                     
                     Assert.assertTrue("Query type was not parsed into a InputQueryType",
                             nextQueryType instanceof InputQueryType);
-
+                    
                     final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
                     
-                    Assert.assertEquals("Query type expected input parameters were not parsed correctly", 2, nextInputQueryType.getExpectedInputParameters().size());
+                    Assert.assertEquals("Query type expected input parameters were not parsed correctly", 2,
+                            nextInputQueryType.getExpectedInputParameters().size());
                     
                     Assert.assertTrue("Query type was not parsed into a RdfInputQueryType",
                             nextQueryType instanceof RdfInputQueryType);
                     
                     final RdfInputQueryType nextRdfQueryType = (RdfInputQueryType)nextQueryType;
                     
-                    Assert.assertEquals("Query type input sparql select was not parsed correctly", "SELECT ?input_1 ?input_2 WHERE { ?testObjects rdf:type <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }",
+                    Assert.assertEquals(
+                            "Query type input sparql select was not parsed correctly",
+                            "SELECT ?input_1 ?input_2 WHERE { ?testObjects rdf:type <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }",
                             nextRdfQueryType.getSparqlInputSelect());
                     
                     Assert.assertTrue("Query type was not parsed into a RdfOutputQueryType",
@@ -1193,7 +1200,8 @@ public class RdfUtilsTest
                     
                     final RdfOutputQueryType nextRdfOutputQueryType = (RdfOutputQueryType)nextQueryType;
                     
-                    Assert.assertEquals("Query type output format was not parsed correctly", "text/rdf+n3", nextRdfOutputQueryType.getOutputRdfFormat());
+                    Assert.assertEquals("Query type output format was not parsed correctly", "text/rdf+n3",
+                            nextRdfOutputQueryType.getOutputRdfFormat());
                     
                     Assert.assertEquals(
                             "Query type output rdf n3 string was not parsed correctly",
@@ -1203,7 +1211,9 @@ public class RdfUtilsTest
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "+nextQueryType.getUnrecognisedStatements(), 0, nextQueryType.getUnrecognisedStatements().size());
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "
+                            + nextQueryType.getUnrecognisedStatements(), 0, nextQueryType.getUnrecognisedStatements()
+                            .size());
                 }
             }
         }
@@ -1280,17 +1290,25 @@ public class RdfUtilsTest
                     Assert.assertEquals("RuleTest rules were not parsed correctly", 1, nextRuleTest.getRuleUris()
                             .size());
                     
-                    Assert.assertTrue("Sparql Rule test was not parsed into a SparqlRuleTest object", nextRuleTest instanceof SparqlRuleTest);
+                    Assert.assertTrue("Sparql Rule test was not parsed into a SparqlRuleTest object",
+                            nextRuleTest instanceof SparqlRuleTest);
                     
                     final SparqlRuleTest nextSparqlRuleTest = (SparqlRuleTest)nextRuleTest;
                     
-                    Assert.assertTrue("Expected result was not parsed correctly", nextSparqlRuleTest.getExpectedResult());
+                    Assert.assertTrue("Expected result was not parsed correctly",
+                            nextSparqlRuleTest.getExpectedResult());
                     
-                    Assert.assertEquals("Sparql Ask test query was not parsed correctly", " ?bio2rdfUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . ", nextSparqlRuleTest.getTestSparqlAsk());
+                    Assert.assertEquals("Sparql Ask test query was not parsed correctly",
+                            " ?bio2rdfUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . ",
+                            nextSparqlRuleTest.getTestSparqlAsk());
                     
-                    Assert.assertEquals("Test input mime type was not parsed correctly", "text/rdf+n3", nextSparqlRuleTest.getTestInputMimeType());
+                    Assert.assertEquals("Test input mime type was not parsed correctly", "text/rdf+n3",
+                            nextSparqlRuleTest.getTestInputMimeType());
                     
-                    Assert.assertEquals("Test triple string was not parsed correctly", " <http://bio2rdf.org/geneid:12334> <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> \"Capn2\" . ", nextSparqlRuleTest.getTestInputTriples());
+                    Assert.assertEquals(
+                            "Test triple string was not parsed correctly",
+                            " <http://bio2rdf.org/geneid:12334> <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> \"Capn2\" . ",
+                            nextSparqlRuleTest.getTestInputTriples());
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)

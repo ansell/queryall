@@ -25,7 +25,8 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
     @SuppressWarnings("unused")
     private static final boolean _INFO = PrefixMappingNormalisationRuleImplEnum.log.isInfoEnabled();
     
-    public static final NormalisationRuleEnum SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_ENUM = new PrefixMappingNormalisationRuleImplEnum();
+    public static final NormalisationRuleEnum SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_ENUM =
+            new PrefixMappingNormalisationRuleImplEnum();
     
     // static
     // {
@@ -52,7 +53,8 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
         
         if(PrefixMappingNormalisationRuleImplEnum._DEBUG)
         {
-            PrefixMappingNormalisationRuleImplEnum.log.debug("PrefixMappingNormalisationRuleImplEnum(String, List<URI>) registered");
+            PrefixMappingNormalisationRuleImplEnum.log
+                    .debug("PrefixMappingNormalisationRuleImplEnum(String, List<URI>) registered");
         }
     }
     

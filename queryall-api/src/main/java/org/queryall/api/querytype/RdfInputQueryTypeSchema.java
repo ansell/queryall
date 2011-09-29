@@ -44,16 +44,11 @@ public class RdfInputQueryTypeSchema
         RdfInputQueryTypeSchema.setQuerySparqlInputSelect(f.createURI(baseUri, "sparqlInputSelect"));
     }
     
-    public static void setQuerySparqlInputSelect(URI sparqlInputSelect)
-    {
-        RdfInputQueryTypeSchema.querySparqlInputSelect = sparqlInputSelect;
-    }
-
     public static URI getQuerySparqlInputSelect()
     {
         return RdfInputQueryTypeSchema.querySparqlInputSelect;
     }
-
+    
     /**
      * @return the queryTypeUri
      */
@@ -76,14 +71,17 @@ public class RdfInputQueryTypeSchema
             
             con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
             
-            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
+            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.DOMAIN,
                     QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.LABEL, f.createLiteral("The SPARQL input select statement that will convert the input RDF document into named parameters for use in templates."),
+            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(),
+                    RDFS.LABEL,
+                    f.createLiteral("The SPARQL input select statement that will convert the input RDF document into named parameters for use in templates."),
                     contextKeyUri);
-            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.COMMENT, f.createLiteral("For compatibility with the RegexInput style, the parameters will need to stick to using input_NN where NN is the index of the parameter in the equivalent HTTP REST Regex match pattern. Any parameters of the same name that are defined in the HTTP GET query parameters will override these bindings. Any bindings that represent public identifiers or namespace identifiers must be defined in the relevant publicIdentifierTag etc., lists."),
+            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(),
+                    RDFS.COMMENT,
+                    f.createLiteral("For compatibility with the RegexInput style, the parameters will need to stick to using input_NN where NN is the index of the parameter in the equivalent HTTP REST Regex match pattern. Any parameters of the same name that are defined in the HTTP GET query parameters will override these bindings. Any bindings that represent public identifiers or namespace identifiers must be defined in the relevant publicIdentifierTag etc., lists."),
                     contextKeyUri);
             
             // If everything went as planned, we can commit the result
@@ -111,6 +109,11 @@ public class RdfInputQueryTypeSchema
         }
         
         return false;
+    }
+    
+    public static void setQuerySparqlInputSelect(final URI sparqlInputSelect)
+    {
+        RdfInputQueryTypeSchema.querySparqlInputSelect = sparqlInputSelect;
     }
     
     /**

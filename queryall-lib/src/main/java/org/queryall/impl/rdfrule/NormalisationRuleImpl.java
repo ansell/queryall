@@ -73,10 +73,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     {
         for(final Statement nextStatement : inputStatements)
         {
-//            if(NormalisationRuleImpl._DEBUG)
-//            {
-//                NormalisationRuleImpl.log.debug("NormalisationRule: nextStatement: " + nextStatement.toString());
-//            }
+            // if(NormalisationRuleImpl._DEBUG)
+            // {
+            // NormalisationRuleImpl.log.debug("NormalisationRule: nextStatement: " +
+            // nextStatement.toString());
+            // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(NormalisationRuleSchema.getNormalisationRuleTypeUri()))
@@ -116,9 +117,16 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 {
                     this.addStage((URI)nextStatement.getObject());
                 }
-                catch(InvalidStageException ise)
+                catch(final InvalidStageException ise)
                 {
-                    log.error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="+nextStatement.getObject().stringValue()+ " validStages="+this.validStages.toString()+" this.getElementTypes()="+this.getElementTypes()+" keyToUse="+keyToUse.stringValue());
+                    NormalisationRuleImpl.log
+                            .error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="
+                                    + nextStatement.getObject().stringValue()
+                                    + " validStages="
+                                    + this.validStages.toString()
+                                    + " this.getElementTypes()="
+                                    + this.getElementTypes()
+                                    + " keyToUse=" + keyToUse.stringValue());
                 }
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
@@ -131,11 +139,11 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
         }
         
-//        if(NormalisationRuleImpl._DEBUG)
-//        {
-//            NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
-//                    + this.toString());
-//        }
+        // if(NormalisationRuleImpl._DEBUG)
+        // {
+        // NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
+        // + this.toString());
+        // }
     }
     
     /**
@@ -429,7 +437,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             }
             else
             {
-                for(URI nextElementType : this.getElementTypes())
+                for(final URI nextElementType : this.getElementTypes())
                 {
                     con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
                 }
@@ -445,7 +453,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             {
                 con.add(keyUri, RDFS.COMMENT, descriptionLiteral, keyToUse);
             }
-
+            
             con.add(keyUri, Constants.DC_TITLE, titleLiteral, keyToUse);
             
             con.add(keyUri, NormalisationRuleSchema.getRdfruleOrder(), orderLiteral, keyToUse);

@@ -16,11 +16,13 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class HttpNoCommunicationProviderImplEnum extends ProviderEnum
 {
-    public static final ProviderEnum HTTP_NO_COMMUNICATION_PROVIDER_IMPL_ENUM = new HttpNoCommunicationProviderImplEnum();
+    public static final ProviderEnum HTTP_NO_COMMUNICATION_PROVIDER_IMPL_ENUM =
+            new HttpNoCommunicationProviderImplEnum();
     
     public HttpNoCommunicationProviderImplEnum()
     {
-        this(HttpNoCommunicationProviderImpl.class.getName(), HttpNoCommunicationProviderImpl.httpNoCommunicationTypes());
+        this(HttpNoCommunicationProviderImpl.class.getName(), HttpNoCommunicationProviderImpl
+                .httpNoCommunicationTypes());
     }
     
     /**

@@ -56,21 +56,16 @@ public class RdfOutputQueryTypeSchema
         return RdfOutputQueryTypeSchema.queryOLDOutputRdfXmlString;
     }
     
-    public static void setQueryOutputRdfFormat(URI outputRdfFormat)
+    public static URI getQueryOutputRdfFormat()
     {
-        RdfOutputQueryTypeSchema.queryOutputRdfFormat = outputRdfFormat;
+        return RdfOutputQueryTypeSchema.queryOutputRdfFormat;
     }
-
-    public static void setQueryOutputRdfString(URI outputRdfString)
-    {
-        RdfOutputQueryTypeSchema.queryOutputRdfString = outputRdfString;
-    }
-
+    
     public static URI getQueryOutputRdfString()
     {
         return RdfOutputQueryTypeSchema.queryOutputRdfString;
     }
-
+    
     /**
      * @return the queryTypeUri
      */
@@ -98,23 +93,25 @@ public class RdfOutputQueryTypeSchema
             con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.DOMAIN,
                     QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.LABEL, f.createLiteral("DEPRECATED: Use rdfOutputString instead."),
-                    contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.LABEL,
+                    f.createLiteral("DEPRECATED: Use rdfOutputString instead."), contextKeyUri);
             
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.LABEL, f.createLiteral("Property for denoting an RDF template that can be used to generate static additional statements for this query type."),
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(),
+                    RDFS.LABEL,
+                    f.createLiteral("Property for denoting an RDF template that can be used to generate static additional statements for this query type."),
                     contextKeyUri);
             
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.LABEL, f.createLiteral("The RDF format used to design the rdfOutputString. This property defaults to application/rdf+xml if not defined."),
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(),
+                    RDFS.LABEL,
+                    f.createLiteral("The RDF format used to design the rdfOutputString. This property defaults to application/rdf+xml if not defined."),
                     contextKeyUri);
             
             // If everything went as planned, we can commit the result
@@ -144,11 +141,6 @@ public class RdfOutputQueryTypeSchema
         return false;
     }
     
-    public static URI getQueryOutputRdfFormat()
-    {
-        return queryOutputRdfFormat;
-    }
-
     /**
      * @param queryOLDOutputRdfXmlString
      *            the queryOLDOutputRdfXmlString to set
@@ -156,6 +148,16 @@ public class RdfOutputQueryTypeSchema
     public static void setOLDQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
     {
         RdfOutputQueryTypeSchema.queryOLDOutputRdfXmlString = queryOutputRdfXmlString;
+    }
+    
+    public static void setQueryOutputRdfFormat(final URI outputRdfFormat)
+    {
+        RdfOutputQueryTypeSchema.queryOutputRdfFormat = outputRdfFormat;
+    }
+    
+    public static void setQueryOutputRdfString(final URI outputRdfString)
+    {
+        RdfOutputQueryTypeSchema.queryOutputRdfString = outputRdfString;
     }
     
     /**

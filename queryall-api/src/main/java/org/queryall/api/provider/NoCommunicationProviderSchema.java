@@ -36,7 +36,8 @@ public class NoCommunicationProviderSchema
         
         final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
-        NoCommunicationProviderSchema.setProviderNoCommunicationProviderUri(f.createURI(baseUri, "NoCommunicationProvider"));
+        NoCommunicationProviderSchema.setProviderNoCommunicationProviderUri(f.createURI(baseUri,
+                "NoCommunicationProvider"));
     }
     
     /**
@@ -62,9 +63,10 @@ public class NoCommunicationProviderSchema
             
             con.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri(), RDFS.LABEL,
-                    f.createLiteral("The class of Data Providers who do not require network communication."), contextUri);
-            con.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri(), RDFS.SUBCLASSOF, ProviderSchema.getProviderTypeUri(),
+                    f.createLiteral("The class of Data Providers who do not require network communication."),
                     contextUri);
+            con.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri(), RDFS.SUBCLASSOF,
+                    ProviderSchema.getProviderTypeUri(), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

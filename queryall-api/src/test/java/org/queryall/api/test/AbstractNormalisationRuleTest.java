@@ -26,8 +26,8 @@ import org.queryall.exception.InvalidStageException;
  */
 public abstract class AbstractNormalisationRuleTest
 {
-//    private URI testTrueSparqlNormalisationRuleUri;
-//    private URI testFalseSparqlNormalisationRuleUri;
+    // private URI testTrueSparqlNormalisationRuleUri;
+    // private URI testFalseSparqlNormalisationRuleUri;
     private URI testStageInvalidInclusionSparqlNormalisationRuleUri;
     private URI testStageAllValidAndInvalidSparqlNormalisationRuleUri;
     protected List<URI> validStages;
@@ -55,8 +55,10 @@ public abstract class AbstractNormalisationRuleTest
     {
         final ValueFactory f = new MemValueFactory();
         
-//        this.testTrueSparqlNormalisationRuleUri = f.createURI("http://example.org/test/includedNormalisationRule");
-//        this.testFalseSparqlNormalisationRuleUri = f.createURI("http://example.org/test/excludedNormalisationRule");
+        // this.testTrueSparqlNormalisationRuleUri =
+        // f.createURI("http://example.org/test/includedNormalisationRule");
+        // this.testFalseSparqlNormalisationRuleUri =
+        // f.createURI("http://example.org/test/excludedNormalisationRule");
         this.testStageInvalidInclusionSparqlNormalisationRuleUri =
                 f.createURI("http://example.org/test/stageInclusionSparqlNormalisationRule");
         this.testStageAllValidAndInvalidSparqlNormalisationRuleUri =
@@ -82,8 +84,8 @@ public abstract class AbstractNormalisationRuleTest
     @After
     public void tearDown() throws Exception
     {
-//        this.testTrueSparqlNormalisationRuleUri = null;
-//        this.testFalseSparqlNormalisationRuleUri = null;
+        // this.testTrueSparqlNormalisationRuleUri = null;
+        // this.testFalseSparqlNormalisationRuleUri = null;
         this.testStageInvalidInclusionSparqlNormalisationRuleUri = null;
         this.testStageAllValidAndInvalidSparqlNormalisationRuleUri = null;
         

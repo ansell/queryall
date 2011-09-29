@@ -10,12 +10,12 @@ import org.queryall.api.base.BaseQueryAllInterface;
  */
 public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>
 {
-    Collection<URI> getRuleUris();
-    
-    Collection<URI> getStages();
-    
     void addRuleUri(URI rdfRuleUri);
     
     void addStage(URI stage);
+    
+    Collection<URI> getRuleUris();
+    
+    Collection<URI> getStages();
     
 }

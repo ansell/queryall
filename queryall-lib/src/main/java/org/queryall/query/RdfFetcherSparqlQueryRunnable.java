@@ -1,15 +1,25 @@
 package org.queryall.query;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
+    private static final Logger log = LoggerFactory.getLogger(RdfFetcherSparqlQueryRunnable.class);
+    private static final boolean _TRACE = RdfFetcherSparqlQueryRunnable.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = RdfFetcherSparqlQueryRunnable.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = RdfFetcherSparqlQueryRunnable.log.isInfoEnabled();
+    
     public String graphUri = "";
     public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 500);
     
@@ -34,38 +44,73 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setQueryStartTime(new Date());
             
-            this.setRawResult(fetcher.submitSparqlQuery(this.getEndpointUrl(), // this.originalQueryBundle.originalProvider.getSparqlGraphUri(),
-                    this.graphUri, this.getQuery(), this.getDebug(), this.maxRowsParameter, this.getAcceptHeader()));
+            String tempRawResult =
+                    fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "", this.maxRowsParameter,
+                            this.getAcceptHeader());
             
-            this.setQueryEndTime(new Date());
-            
-            this.setReturnedContentType(fetcher.getLastReturnedContentType());
-            
-            if(this.getReturnedContentType() != null)
+            if(fetcher.getLastWasError())
             {
-                // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it
-                // through the conn neg code
-                this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
+                RdfFetcherSparqlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
+                
+                final Map<String, String> alternateEndpointsAndQueries =
+                        this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
+                
+                RdfFetcherSparqlQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                        + " alternative endpoints to choose from");
+                
+                for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
+                {
+                    RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                            + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
+                    
+                    final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                    
+                    tempRawResult =
+                            fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "", this.maxRowsParameter,
+                                    this.getAcceptHeader());
+                    
+                    if(!fetcher.getLastWasError())
+                    {
+                        // break on the first alternate that wasn't an error
+                        break;
+                    }
+                }
             }
             
-            this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
-            
-            this.setWasSuccessful(true);
-        }
-        catch(final java.net.SocketTimeoutException ste)
-        {
-            this.setQueryEndTime(new Date());
-            this.setWasSuccessful(false);
-            this.setLastException(ste);
+            if(!fetcher.getLastWasError())
+            {
+                this.setRawResult(tempRawResult);
+                
+                this.setQueryEndTime(new Date());
+                
+                this.setReturnedContentType(fetcher.getLastReturnedContentType());
+                
+                if(this.getReturnedContentType() != null)
+                {
+                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe
+                    // it
+                    // through the conn neg code
+                    this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
+                }
+                
+                this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
+                
+            }
+            else
+            {
+                this.setWasSuccessful(false);
+                this.setLastException(fetcher.getLastException());
+            }
         }
         catch(final Exception ex)
         {
-            this.setQueryEndTime(new Date());
+            RdfFetcherSparqlQueryRunnable.log.error("Found unknown exception", ex);
             this.setWasSuccessful(false);
             this.setLastException(ex);
         }
         finally
         {
+            this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
     }

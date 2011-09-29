@@ -46,22 +46,24 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
     
     private static final Set<URI> REGEX_INPUT_QUERY_TYPE_IMPL_TYPES = new HashSet<URI>();
     
-    public static Set<URI> myTypes()
-    {
-        return REGEX_INPUT_QUERY_TYPE_IMPL_TYPES;
-    }
-    
     static
     {
-        REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
-        REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri());
-        REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri());
-        REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri());
+        RegexInputQueryTypeImpl.REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(QueryTypeSchema.getQueryTypeUri());
+        RegexInputQueryTypeImpl.REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(RegexInputQueryTypeSchema
+                .getRegexInputQueryTypeUri());
+        RegexInputQueryTypeImpl.REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(RdfOutputQueryTypeSchema
+                .getRdfOutputQueryTypeUri());
+        RegexInputQueryTypeImpl.REGEX_INPUT_QUERY_TYPE_IMPL_TYPES.add(SparqlProcessorQueryTypeSchema
+                .getSparqlProcessorQueryTypeUri());
     }
-
+    
+    public static Set<URI> myTypes()
+    {
+        return RegexInputQueryTypeImpl.REGEX_INPUT_QUERY_TYPE_IMPL_TYPES;
+    }
+    
     protected String inputRegex = "";
     protected Pattern inputRegexPattern = null;
-    
     
     /**
      * 
@@ -77,11 +79,11 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public RegexInputQueryTypeImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
+    public RegexInputQueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
-
+        
         final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
         
         currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
@@ -97,9 +99,9 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
                                     SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri()) || nextStatement
                             .getObject().equals(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri())))
             {
-                if(_TRACE)
+                if(RegexInputQueryTypeImpl._TRACE)
                 {
-                    log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
+                    RegexInputQueryTypeImpl.log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -124,13 +126,13 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
     {
         return RegexInputQueryTypeImpl.myTypes();
     }
-
+    
     @Override
     public String getInputRegex()
     {
         return this.inputRegex;
     }
-
+    
     @Override
     public Pattern getInputRegexPattern()
     {
@@ -140,13 +142,6 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
         }
         
         return this.inputRegexPattern;
-    }
-
-    @Override
-    public void setInputRegex(final String nextInputRegex)
-    {
-        this.inputRegex = nextInputRegex;
-        this.inputRegexPattern = Pattern.compile(nextInputRegex);
     }
     
     @Override
@@ -159,7 +154,8 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
         }
         else
         {
-            throw new IllegalArgumentException("Query Parameters must include a value for key='"+Constants.QUERY+"'");
+            throw new IllegalArgumentException("Query Parameters must include a value for key='" + Constants.QUERY
+                    + "'");
         }
     }
     
@@ -168,12 +164,14 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
     {
         if(nextQueryParameters.containsKey(Constants.QUERY))
         {
-            boolean result = StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
-                    nextQueryParameters.get(Constants.QUERY));
+            final boolean result =
+                    StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
+                            nextQueryParameters.get(Constants.QUERY));
             
-            if(_TRACE && result)
+            if(RegexInputQueryTypeImpl._TRACE && result)
             {
-                log.trace("Returning true for matchesQueryParameters key="+this.getKey().stringValue());
+                RegexInputQueryTypeImpl.log.trace("Returning true for matchesQueryParameters key="
+                        + this.getKey().stringValue());
             }
             
             return result;
@@ -183,6 +181,13 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
             throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
         }
         
+    }
+    
+    @Override
+    public void setInputRegex(final String nextInputRegex)
+    {
+        this.inputRegex = nextInputRegex;
+        this.inputRegexPattern = Pattern.compile(nextInputRegex);
     }
     
     @Override
@@ -201,7 +206,6 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
             final URI queryInstanceUri = this.getKey();
             
             final Literal inputRegexLiteral = f.createLiteral(this.inputRegex);
-            
             
             con.setAutoCommit(false);
             

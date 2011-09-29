@@ -44,19 +44,9 @@ public class HtmlPageRenderer
     private static final boolean _INFO = HtmlPageRenderer.log.isInfoEnabled();
     
     public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
-            final Repository nextRepository, final java.io.Writer nextWriter, final String queryString,
-            final String resolvedUri, final String realHostName, final String contextPath, final int pageoffset,
-            final Collection<String> debugStrings) throws OpenRDFException
-    {
-        HtmlPageRenderer.renderHtml(nextEngine, localSettings, null, nextRepository, nextWriter, queryString,
-                resolvedUri, realHostName, contextPath, pageoffset, debugStrings);
-    }
-    
-    public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
-            final RdfFetchController fetchController, final Repository nextRepository,
-            final java.io.Writer nextWriter, final String queryString, final String resolvedUri,
-            String realHostName, String contextPath, int pageoffset, final Collection<String> debugStrings)
-        throws OpenRDFException
+            final RdfFetchController fetchController, final Repository nextRepository, final java.io.Writer nextWriter,
+            final String queryString, final String resolvedUri, String realHostName, String contextPath,
+            int pageoffset, final Collection<String> debugStrings) throws OpenRDFException
     {
         boolean nextpagelinkuseful = false;
         boolean previouspagelinkuseful = false;
@@ -103,9 +93,9 @@ public class HtmlPageRenderer
         
         final Context velocityContext = new VelocityContext();
         
-        velocityContext.put("debug_level_info", _INFO);
-        velocityContext.put("debug_level_debug", _DEBUG);
-        velocityContext.put("debug_level_trace", _TRACE);
+        velocityContext.put("debug_level_info", HtmlPageRenderer._INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer._DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer._TRACE);
         
         velocityContext.put("project_name", localSettings.getStringProperty("projectName", "queryall"));
         velocityContext.put("project_base_url",
@@ -173,9 +163,13 @@ public class HtmlPageRenderer
         {
             for(final QueryBundle nextQueryBundle : fetchController.getQueryBundles())
             {
-                if(!endpointsList.contains(nextQueryBundle.getQueryEndpoint()))
+                for(final String nextAlternativeEndpoint : nextQueryBundle.getAlternativeEndpointsAndQueries().keySet())
                 {
-                    endpointsList.add(nextQueryBundle.getQueryEndpoint());
+                    if(!endpointsList.contains(nextQueryBundle.getAlternativeEndpointsAndQueries().get(
+                            nextAlternativeEndpoint)))
+                    {
+                        endpointsList.add(nextAlternativeEndpoint);
+                    }
                 }
             }
         }
@@ -402,6 +396,15 @@ public class HtmlPageRenderer
         }
     }
     
+    public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final Repository nextRepository, final java.io.Writer nextWriter, final String queryString,
+            final String resolvedUri, final String realHostName, final String contextPath, final int pageoffset,
+            final Collection<String> debugStrings) throws OpenRDFException
+    {
+        HtmlPageRenderer.renderHtml(nextEngine, localSettings, null, nextRepository, nextWriter, queryString,
+                resolvedUri, realHostName, contextPath, pageoffset, debugStrings);
+    }
+    
     public static void renderIndexPage(final QueryAllConfiguration localSettings, final VelocityEngine nextEngine,
             final java.io.Writer nextWriter, final Collection<String> debugStrings, String realHostName,
             String contextPath) throws OpenRDFException
@@ -441,9 +444,9 @@ public class HtmlPageRenderer
                 Integer.toString(localSettings.getAllRuleTests().size()));
         velocityContext.put("statistics_querytypes", Integer.toString(localSettings.getAllQueryTypes().size()));
         
-        velocityContext.put("debug_level_info", _INFO);
-        velocityContext.put("debug_level_debug", _DEBUG);
-        velocityContext.put("debug_level_trace", _TRACE);
+        velocityContext.put("debug_level_info", HtmlPageRenderer._INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer._DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer._TRACE);
         
         velocityContext.put("title", localSettings.getStringProperty("projectName", "Bio2RDF"));
         

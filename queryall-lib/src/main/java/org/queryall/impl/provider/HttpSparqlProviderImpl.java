@@ -38,11 +38,11 @@ public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSpar
     {
         super(inputStatements, keyToUse, modelVersion);
     }
-
+    
     @Override
     public Set<URI> getElementTypes()
     {
-        return HTTP_SPARQL_PROVIDER_IMPL_TYPES;
+        return HttpSparqlProviderImpl.HTTP_SPARQL_PROVIDER_IMPL_TYPES;
     }
     
 }

@@ -38,7 +38,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType, HtmlExport
+public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType,
+        HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
@@ -121,7 +122,8 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
     
     private boolean isDummyQueryType = false;
-    // default to universally available RDF/XML, and for backwards compatibility with previous versions (<5) that only supported RDF/XML output
+    // default to universally available RDF/XML, and for backwards compatibility with previous
+    // versions (<5) that only supported RDF/XML output
     private String outputRdfFormat = Constants.APPLICATION_RDF_XML;
     private Collection<String> expectedInputParameters = new ArrayList<String>(5);
     
@@ -260,6 +262,12 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
+    public void addExpectedInputParameter(final String expectedInputParameter)
+    {
+        this.expectedInputParameters.add(expectedInputParameter);
+    }
+    
+    @Override
     public void addLinkedQueryType(final URI semanticallyLinkedCustomQuery)
     {
         this.semanticallyLinkedCustomQueries.add(semanticallyLinkedCustomQuery);
@@ -324,6 +332,12 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.QUERY;
+    }
+    
+    @Override
+    public Collection<String> getExpectedInputParameters()
+    {
+        return Collections.unmodifiableCollection(this.expectedInputParameters);
     }
     
     @Override
@@ -396,6 +410,12 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
+    public String getOutputRdfFormat()
+    {
+        return this.outputRdfFormat;
+    }
+    
+    @Override
     public String getOutputString()
     {
         return this.outputRdfString;
@@ -417,6 +437,13 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public String getQueryUriTemplateString()
     {
         return this.queryUriTemplateString;
+    }
+    
+    @Override
+    public String getSparqlTemplateString()
+    {
+        // Wrappers around the getTemplateString function for now
+        return this.getTemplateString();
     }
     
     @Override
@@ -602,31 +629,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     
     // returns true if the input variable is in the list of public input variables
     @Override
-    public boolean isInputVariablePublic(final String inputVariable)
-    {
-        if(inputVariable == null)
-        {
-            throw new IllegalArgumentException("Cannot have null input variables");
-        }
-        
-        if(this.publicIdentifierTags != null)
-        {
-            for(final String nextPublicIdentifierTag : this.getPublicIdentifierTags())
-            {
-                if(inputVariable.equals(nextPublicIdentifierTag))
-                {
-                    return true;
-                }
-            }
-        }
-        
-        // if there are no defined public indexes we default to false
-        // also default to false if we didn't find the index in the list
-        return false;
-    }
-
-    // returns true if the input variable is in the list of public input variables
-    @Override
     public boolean isInputVariableNamespace(final String inputVariable)
     {
         if(inputVariable == null)
@@ -639,6 +641,31 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             for(final String nextNamespaceInputTag : this.getNamespaceInputTags())
             {
                 if(inputVariable.equals(nextNamespaceInputTag))
+                {
+                    return true;
+                }
+            }
+        }
+        
+        // if there are no defined public indexes we default to false
+        // also default to false if we didn't find the index in the list
+        return false;
+    }
+    
+    // returns true if the input variable is in the list of public input variables
+    @Override
+    public boolean isInputVariablePublic(final String inputVariable)
+    {
+        if(inputVariable == null)
+        {
+            throw new IllegalArgumentException("Cannot have null input variables");
+        }
+        
+        if(this.publicIdentifierTags != null)
+        {
+            for(final String nextPublicIdentifierTag : this.getPublicIdentifierTags())
+            {
+                if(inputVariable.equals(nextPublicIdentifierTag))
                 {
                     return true;
                 }
@@ -723,6 +750,12 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
+    public void setOutputRdfFormat(final String rdfFormat)
+    {
+        this.outputRdfFormat = rdfFormat;
+    }
+    
+    @Override
     public void setOutputString(final String outputRdfXmlString)
     {
         this.outputRdfString = outputRdfXmlString;
@@ -738,6 +771,13 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public void setQueryUriTemplateString(final String queryUriTemplateString)
     {
         this.queryUriTemplateString = queryUriTemplateString;
+    }
+    
+    @Override
+    public void setSparqlTemplateString(final String templateString)
+    {
+        // Wrappers around the setTemplateString function for now
+        this.setTemplateString(templateString);
     }
     
     @Override
@@ -926,7 +966,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             
             con.setAutoCommit(false);
             
-            for(URI nextElementType : this.getElementTypes())
+            for(final URI nextElementType : this.getElementTypes())
             {
                 con.add(queryInstanceUri, RDF.TYPE, nextElementType, keyToUse);
             }
@@ -968,15 +1008,16 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                 }
                 else
                 {
-                    log.info("Unable to supply RDF Output string to this user as they requested an old version of the api, and the template was not in application/rdf+xml format");
+                    QueryTypeImpl.log
+                            .info("Unable to supply RDF Output string to this user as they requested an old version of the api, and the template was not in application/rdf+xml format");
                 }
             }
             else
             {
-                    con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfString(),
-                            outputRdfStringLiteral, keyToUse);
-                    con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(),
-                            outputRdfFormatLiteral, keyToUse);
+                con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfString(), outputRdfStringLiteral,
+                        keyToUse);
+                con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), outputRdfFormatLiteral,
+                        keyToUse);
                 
             }
             
@@ -989,12 +1030,12 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                 {
                     if(nextExpectedInputParameter != null)
                     {
-                        con.add(queryInstanceUri, InputQueryTypeSchema.getQueryExpectedInputParameters(), f.createLiteral(nextExpectedInputParameter),
-                                keyToUse);
+                        con.add(queryInstanceUri, InputQueryTypeSchema.getQueryExpectedInputParameters(),
+                                f.createLiteral(nextExpectedInputParameter), keyToUse);
                     }
                 }
             }
-
+            
             if(this.namespacesToHandle != null)
             {
                 
@@ -1018,12 +1059,17 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                         {
                             try
                             {
-                                con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
-                                        f.createLiteral(Integer.parseInt(nextPublicIdentifierTag.substring("input_".length()))), keyToUse);
+                                con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(), f
+                                        .createLiteral(Integer.parseInt(nextPublicIdentifierTag.substring("input_"
+                                                .length()))), keyToUse);
                             }
-                            catch(NumberFormatException nfe)
+                            catch(final NumberFormatException nfe)
                             {
-                                log.info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextPublicIdentifierTag="+nextPublicIdentifierTag+ " querytype.getKey()="+this.getKey().stringValue());
+                                QueryTypeImpl.log
+                                        .info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextPublicIdentifierTag="
+                                                + nextPublicIdentifierTag
+                                                + " querytype.getKey()="
+                                                + this.getKey().stringValue());
                             }
                         }
                     }
@@ -1048,12 +1094,17 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                         {
                             try
                             {
-                                con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
-                                        f.createLiteral(Integer.parseInt(nextNamespaceInputTag.substring("input_".length()))), keyToUse);
+                                con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(), f
+                                        .createLiteral(Integer.parseInt(nextNamespaceInputTag.substring("input_"
+                                                .length()))), keyToUse);
                             }
-                            catch(NumberFormatException nfe)
+                            catch(final NumberFormatException nfe)
                             {
-                                log.info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextNamespaceInputTag="+nextNamespaceInputTag+ " querytype.getKey()="+this.getKey().stringValue());
+                                QueryTypeImpl.log
+                                        .info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextNamespaceInputTag="
+                                                + nextNamespaceInputTag
+                                                + " querytype.getKey()="
+                                                + this.getKey().stringValue());
                             }
                         }
                     }
@@ -1130,7 +1181,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         // sb.append("standardUriTemplateString=" + standardUriTemplateString + "\n");
         // sb.append("queryUriTemplateString=" + queryUriTemplateString + "\n");
         // sb.append("outputRdfString=" + outputRdfString + "\n");
-//        sb.append("inputRegex=" + this.inputRegex + "\n");
+        // sb.append("inputRegex=" + this.inputRegex + "\n");
         
         // if(semanticallyLinkedCustomQueries == null)
         // {
@@ -1163,43 +1214,5 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         // }
         
         return sb.toString();
-    }
-
-    @Override
-    public String getOutputRdfFormat()
-    {
-        return outputRdfFormat;
-    }
-
-    @Override
-    public void setOutputRdfFormat(String rdfFormat)
-    {
-        this.outputRdfFormat = rdfFormat;
-    }
-
-    @Override
-    public String getSparqlTemplateString()
-    {
-        // Wrappers around the getTemplateString function for now
-        return getTemplateString();
-    }
-
-    @Override
-    public void setSparqlTemplateString(String templateString)
-    {
-        // Wrappers around the setTemplateString function for now
-        setTemplateString(templateString);
-    }
-
-    @Override
-    public Collection<String> getExpectedInputParameters()
-    {
-        return Collections.unmodifiableCollection(this.expectedInputParameters);
-    }
-
-    @Override
-    public void addExpectedInputParameter(String expectedInputParameter)
-    {
-        this.expectedInputParameters.add(expectedInputParameter);
     }
 }

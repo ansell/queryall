@@ -1,11 +1,14 @@
 package org.queryall.query;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
@@ -29,6 +32,9 @@ public class RdfFetcher
     
     private String lastReturnedContentType = null;
     private String lastReturnedContentEncoding = null;
+    private Exception lastException = null;
+    private int lastStatusCode = 200;
+    private boolean lastWasError = false;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
@@ -40,8 +46,7 @@ public class RdfFetcher
     
     // If postInformation is empty String "" or null then we assume they did not want to post
     public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
-        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException,
-        java.io.IOException
+        throws MalformedURLException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -60,8 +65,6 @@ public class RdfFetcher
         final URL url = new URL(endpointUrl);
         
         final StringBuilder results = new StringBuilder();
-        
-        boolean errorOccured = false;
         
         // http://forums.sun.com/thread.jspa?messageID=9552813#9552813
         
@@ -126,13 +129,26 @@ public class RdfFetcher
             
             if(conn.getContentEncoding() != null)
             {
-                
-                inputStream =
-                        new BufferedReader(new InputStreamReader(conn.getInputStream(), conn.getContentEncoding()));
+                try
+                {
+                    inputStream =
+                            new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName(conn
+                                    .getContentEncoding())));
+                }
+                catch(final IllegalArgumentException iae)
+                {
+                    RdfFetcher.log.error(
+                            "Content encoding was not known or valid conn.getContentEncoding()="
+                                    + conn.getContentEncoding(), iae);
+                    
+                    inputStream =
+                            new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
+                }
             }
             else
             {
-                inputStream = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                inputStream =
+                        new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
             }
             
             this.setLastReturnedContentType(conn.getContentType());
@@ -161,9 +177,9 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw uhe;
+            this.setLastException(uhe);
         }
         catch(final java.net.NoRouteToHostException nrthe)
         {
@@ -173,9 +189,9 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw nrthe;
+            this.setLastException(nrthe);
         }
         catch(final java.net.PortUnreachableException pue)
         {
@@ -185,9 +201,9 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw pue;
+            this.setLastException(pue);
         }
         catch(final java.net.ConnectException ce)
         {
@@ -197,9 +213,9 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw ce;
+            this.setLastException(ce);
         }
         catch(final java.net.SocketTimeoutException ste)
         {
@@ -209,9 +225,9 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw ste;
+            this.setLastException(ste);
         }
         catch(final java.net.SocketException se)
         {
@@ -221,9 +237,9 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw se;
+            this.setLastException(se);
         }
         catch(final java.io.IOException ioe)
         {
@@ -233,20 +249,34 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            errorOccured = true;
+            this.setLastWasError(true);
             
-            throw ioe;
+            this.setLastException(ioe);
         }
         finally
         {
             if(out != null)
             {
-                out.close();
+                try
+                {
+                    out.close();
+                }
+                catch(final IOException e)
+                {
+                    RdfFetcher.log.error("Found error trying to close the output stream", e);
+                }
             }
             
             if(inputStream != null)
             {
-                inputStream.close();
+                try
+                {
+                    inputStream.close();
+                }
+                catch(final IOException e)
+                {
+                    RdfFetcher.log.error("Found error trying to close the input stream", e);
+                }
             }
             
             final long end = System.currentTimeMillis();
@@ -257,18 +287,27 @@ public class RdfFetcher
                         (end - start)));
             }
             
-            if(errorOccured)
+            // Note: having conn.getResponseCode() slows everything down it seems, if there was an
+            // error and makes it hard to find out where the error occurred even
+            // If there are issues with this, turn off the conn.getResponseCode() call here
+            try
             {
-                // having conn.getResponseCode() slows everything down apparently if there was an
-                // error and makes it hard to find out where the error occurred even
-                // BlacklistController.accumulateHttpResponseError(url.getProtocol()+"://"+url.getHost(),
-                // conn.getResponseCode());
+                this.setLastStatusCode(conn.getResponseCode());
+            }
+            catch(final IOException e)
+            {
+                this.setLastStatusCode(1);
+                RdfFetcher.log.info("Found error trying to get the response status code", e);
+            }
+            
+            if(this.getLastWasError())
+            {
                 this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(),
-                        conn.getResponseCode());
+                        this.getLastStatusCode());
                 
                 // Try to debug why there are endpoints responding with 406 suddenly
                 // may just be a virtuoso bug, but need some evidence
-                if(conn.getResponseCode() == 406)
+                if(this.getLastStatusCode() == 406)
                 {
                     RdfFetcher.log.error("Found an endpoint that responded with 406 to acceptHeader=" + acceptHeader);
                 }
@@ -291,6 +330,11 @@ public class RdfFetcher
         return results.toString();
     }
     
+    public Exception getLastException()
+    {
+        return this.lastException;
+    }
+    
     /**
      * @return the lastReturnedContentEncoding
      */
@@ -305,6 +349,21 @@ public class RdfFetcher
     public String getLastReturnedContentType()
     {
         return this.lastReturnedContentType;
+    }
+    
+    public int getLastStatusCode()
+    {
+        return this.lastStatusCode;
+    }
+    
+    public boolean getLastWasError()
+    {
+        return this.lastWasError;
+    }
+    
+    protected void setLastException(final Exception lastException)
+    {
+        this.lastException = lastException;
     }
     
     /**
@@ -325,10 +384,18 @@ public class RdfFetcher
         this.lastReturnedContentType = lastReturnedContentType;
     }
     
+    protected void setLastStatusCode(final int lastStatusCode)
+    {
+        this.lastStatusCode = lastStatusCode;
+    }
+    
+    protected void setLastWasError(final boolean lastWasError)
+    {
+        this.lastWasError = lastWasError;
+    }
+    
     public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
-            final String debug, final int maxRowsParameter, final String acceptHeader)
-        throws java.net.SocketTimeoutException, java.net.ConnectException, java.net.UnknownHostException,
-        java.io.IOException
+            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -337,13 +404,10 @@ public class RdfFetcher
         
         final long start = System.currentTimeMillis();
         
-        // NOTE: We use POST instead of GET so there is never a chance
+        // NOTE: We use POST instead of GET to reduce the chance
         // that the URI will exceed the maximum supported length for a
         // particular HTTP server or intermediate proxy
         String postQuery = "";
-        
-        // FIXME: Do we need to send a single format here?
-        // "format=" + StringUtils.percentEncode(acceptHeader) + "&";
         
         if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
         {

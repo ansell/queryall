@@ -44,47 +44,18 @@ public class PrefixMappingNormalisationRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        PrefixMappingNormalisationRuleSchema.setSimplePrefixMappingTypeUri(f.createURI(baseUri, "PrefixMappingNormalisationRule"));
+        PrefixMappingNormalisationRuleSchema.setSimplePrefixMappingTypeUri(f.createURI(baseUri,
+                "PrefixMappingNormalisationRule"));
         PrefixMappingNormalisationRuleSchema.setInputPrefixUri(f.createURI(baseUri, "inputPrefix"));
         PrefixMappingNormalisationRuleSchema.setOutputPrefixUri(f.createURI(baseUri, "outputPrefix"));
-        PrefixMappingNormalisationRuleSchema.setSubjectMappingPredicateUri(f.createURI(baseUri, "subjectMappingPredicate"));
-        PrefixMappingNormalisationRuleSchema.setPredicateMappingPredicateUri(f.createURI(baseUri, "predicateMappingPredicate"));
-        PrefixMappingNormalisationRuleSchema.setObjectMappingPredicateUri(f.createURI(baseUri, "objectMappingPredicate"));
+        PrefixMappingNormalisationRuleSchema.setSubjectMappingPredicateUri(f.createURI(baseUri,
+                "subjectMappingPredicate"));
+        PrefixMappingNormalisationRuleSchema.setPredicateMappingPredicateUri(f.createURI(baseUri,
+                "predicateMappingPredicate"));
+        PrefixMappingNormalisationRuleSchema.setObjectMappingPredicateUri(f
+                .createURI(baseUri, "objectMappingPredicate"));
     }
     
-    /**
-     * @return the simplePrefixMappingTypeUri
-     */
-    public static URI getSimplePrefixMappingTypeUri()
-    {
-        return PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri;
-    }
-    
-    private static void setObjectMappingPredicateUri(URI nextObjectMappingPredicateUri)
-    {
-        objectMappingPredicateUri = nextObjectMappingPredicateUri;
-    }
-
-    private static void setPredicateMappingPredicateUri(URI nextPredicateMappingPredicateUri)
-    {
-        predicateMappingPredicateUri = nextPredicateMappingPredicateUri;
-    }
-
-    public static void setInputPrefixUri(URI nextInputPrefixUri)
-    {
-        PrefixMappingNormalisationRuleSchema.inputPrefixUri = nextInputPrefixUri;
-    }
-
-    public static void setOutputPrefixUri(URI nextOutputPrefixUri)
-    {
-        PrefixMappingNormalisationRuleSchema.outputPrefixUri = nextOutputPrefixUri;
-    }
-
-    public static void setSubjectMappingPredicateUri(URI nextMappingPredicateUri)
-    {
-        PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri = nextMappingPredicateUri;
-    }
-
     /**
      * @return the inputPrefixUri
      */
@@ -93,12 +64,30 @@ public class PrefixMappingNormalisationRuleSchema
         return PrefixMappingNormalisationRuleSchema.inputPrefixUri;
     }
     
+    public static URI getObjectMappingPredicateUri()
+    {
+        return PrefixMappingNormalisationRuleSchema.objectMappingPredicateUri;
+    }
+    
     /**
      * @return the outputPrefixUri
      */
     public static URI getOutputPrefixUri()
     {
         return PrefixMappingNormalisationRuleSchema.outputPrefixUri;
+    }
+    
+    public static URI getPredicateMappingPredicateUri()
+    {
+        return PrefixMappingNormalisationRuleSchema.predicateMappingPredicateUri;
+    }
+    
+    /**
+     * @return the simplePrefixMappingTypeUri
+     */
+    public static URI getSimplePrefixMappingTypeUri()
+    {
+        return PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri;
     }
     
     /**
@@ -122,7 +111,8 @@ public class PrefixMappingNormalisationRuleSchema
         {
             con.setAutoCommit(false);
             
-            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDF.TYPE, OWL.CLASS,
+                    contextUri);
             con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDFS.SUBCLASSOF,
                     NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(),
@@ -156,6 +146,26 @@ public class PrefixMappingNormalisationRuleSchema
         return false;
     }
     
+    public static void setInputPrefixUri(final URI nextInputPrefixUri)
+    {
+        PrefixMappingNormalisationRuleSchema.inputPrefixUri = nextInputPrefixUri;
+    }
+    
+    private static void setObjectMappingPredicateUri(final URI nextObjectMappingPredicateUri)
+    {
+        PrefixMappingNormalisationRuleSchema.objectMappingPredicateUri = nextObjectMappingPredicateUri;
+    }
+    
+    public static void setOutputPrefixUri(final URI nextOutputPrefixUri)
+    {
+        PrefixMappingNormalisationRuleSchema.outputPrefixUri = nextOutputPrefixUri;
+    }
+    
+    private static void setPredicateMappingPredicateUri(final URI nextPredicateMappingPredicateUri)
+    {
+        PrefixMappingNormalisationRuleSchema.predicateMappingPredicateUri = nextPredicateMappingPredicateUri;
+    }
+    
     /**
      * @param simplePrefixMappingTypeUri
      *            the simplePrefixMappingTypeUri to set
@@ -164,15 +174,10 @@ public class PrefixMappingNormalisationRuleSchema
     {
         PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri = simplePrefixMappingTypeUri;
     }
-
-    public static URI getObjectMappingPredicateUri()
+    
+    public static void setSubjectMappingPredicateUri(final URI nextMappingPredicateUri)
     {
-        return objectMappingPredicateUri;
-    }
-
-    public static URI getPredicateMappingPredicateUri()
-    {
-        return predicateMappingPredicateUri;
+        PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri = nextMappingPredicateUri;
     }
     
 }

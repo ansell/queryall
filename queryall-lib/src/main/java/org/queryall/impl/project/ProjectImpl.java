@@ -273,7 +273,7 @@ public class ProjectImpl implements Project, HtmlExport
             
             con.setAutoCommit(false);
             
-            for(URI nextElementType : this.getElementTypes())
+            for(final URI nextElementType : this.getElementTypes())
             {
                 con.add(projectInstanceUri, RDF.TYPE, nextElementType, keyToUse);
             }

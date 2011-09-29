@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 public interface InputQueryType extends QueryType
 {
-    Collection<String> getExpectedInputParameters();
-
     void addExpectedInputParameter(String expectedInputParameter);
+    
+    Collection<String> getExpectedInputParameters();
 }

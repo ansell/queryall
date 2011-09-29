@@ -2,19 +2,19 @@ package org.queryall.api.ruletest;
 
 public interface SparqlRuleTest
 {
-    String getTestInputMimeType();
+    boolean getExpectedResult();
     
-    void setTestInputMimeType(String testInputMimeType);
+    String getTestInputMimeType();
     
     String getTestInputTriples();
     
-    void setTestInputTriples(String testInputTriples);
-    
     String getTestSparqlAsk();
     
-    void setTestSparqlAsk(String testSparqlAsk);
-    
-    boolean getExpectedResult();
-    
     void setExpectedResult(boolean expectedResult);
+    
+    void setTestInputMimeType(String testInputMimeType);
+    
+    void setTestInputTriples(String testInputTriples);
+    
+    void setTestSparqlAsk(String testSparqlAsk);
 }

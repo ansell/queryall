@@ -44,6 +44,11 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     
     private String title = "";
     
+    public RuleTestImpl()
+    {
+        // TODO Auto-generated constructor stub
+    }
+    
     public RuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
@@ -88,11 +93,6 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
         }
     }
     
-    public RuleTestImpl()
-    {
-        // TODO Auto-generated constructor stub
-    }
-
     /**
      * @param rdfRuleUri
      *            the rdfRuleUris to set
@@ -290,11 +290,11 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
             
             con.setAutoCommit(false);
             
-            for(URI nextElementType : this.getElementTypes())
+            for(final URI nextElementType : this.getElementTypes())
             {
                 con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
             }
-
+            
             con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             if(this.rdfRuleUris != null)

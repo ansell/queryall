@@ -39,32 +39,16 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     
     static
     {
-        REGEX_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        REGEX_NORMALISATION_RULE_IMPL_TYPES.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri());
+        RegexNormalisationRuleImpl.REGEX_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+                .getNormalisationRuleTypeUri());
+        RegexNormalisationRuleImpl.REGEX_NORMALISATION_RULE_IMPL_TYPES.add(RegexNormalisationRuleSchema
+                .getRegexRuleTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return REGEX_NORMALISATION_RULE_IMPL_TYPES;
+        return RegexNormalisationRuleImpl.REGEX_NORMALISATION_RULE_IMPL_TYPES;
     }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Collection<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        }
-        
-        return Collections.unmodifiableCollection(this.validStages);
-    }
-    
     
     private String inputMatchRegex = "";
     
@@ -279,6 +263,23 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
     public String getOutputReplaceRegex()
     {
         return this.outputReplaceRegex;
+    }
+    
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
     }
     
     // NOTE: it is quite okay to have an empty replace regex, but an empty match

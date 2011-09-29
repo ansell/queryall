@@ -746,7 +746,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             
             con.setAutoCommit(false);
             
-            for(URI nextElementType : this.getElementTypes())
+            for(final URI nextElementType : this.getElementTypes())
             {
                 con.add(profileInstanceUri, RDF.TYPE, nextElementType, keyToUse);
             }

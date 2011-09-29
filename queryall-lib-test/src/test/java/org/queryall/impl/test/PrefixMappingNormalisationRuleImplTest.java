@@ -14,13 +14,13 @@ import org.queryall.impl.rdfrule.PrefixMappingNormalisationRuleImpl;
  */
 public class PrefixMappingNormalisationRuleImplTest extends AbstractPrefixMappingNormalisationRuleTest
 {
-
+    
     @Override
     public org.queryall.api.rdfrule.PrefixMappingNormalisationRule getNewTestMappingRule()
     {
         return new PrefixMappingNormalisationRuleImpl();
     }
-
+    
     @Override
     public Profile getNewTestProfile()
     {
