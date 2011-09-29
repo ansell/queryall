@@ -392,7 +392,7 @@ public class BlacklistController
                         {
                             for(final URI nextQueryDebugTitle : nextQueryDebug.getMatchingQueryTitles())
                             {
-                                QueryType nextQueryDebugType = 
+                                final QueryType nextQueryDebugType =
                                         localSettings.getAllQueryTypes().get(nextQueryDebugTitle);
                                 if(nextQueryDebugType.getInRobotsTxt())
                                 {

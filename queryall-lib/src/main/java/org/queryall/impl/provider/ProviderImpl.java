@@ -700,7 +700,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
             
             con.setAutoCommit(false);
             
-            for(URI nextElementType : this.getElementTypes())
+            for(final URI nextElementType : this.getElementTypes())
             {
                 con.add(providerInstanceUri, RDF.TYPE, nextElementType, keyToUse);
             }

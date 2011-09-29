@@ -24,7 +24,8 @@ public class NoCommunicationProviderImpl extends ProviderImpl implements NoCommu
     static
     {
         NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
-        NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri());
+        NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(NoCommunicationProviderSchema
+                .getProviderNoCommunicationTypeUri());
     }
     
     public static Set<URI> noCommunicationTypes()
@@ -56,11 +57,11 @@ public class NoCommunicationProviderImpl extends ProviderImpl implements NoCommu
     {
         super(inputStatements, keyToUse, modelVersion);
     }
-
+    
     @Override
     public Set<URI> getElementTypes()
     {
-        return NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
+        return NoCommunicationProviderImpl.NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
     }
     
 }

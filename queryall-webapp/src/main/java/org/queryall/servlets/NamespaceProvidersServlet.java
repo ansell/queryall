@@ -291,7 +291,8 @@ public class NamespaceProvidersServlet extends HttpServlet
             {
                 for(final URI nextUniqueQueryTitle : providersByQueryKey.keySet())
                 {
-//                    final QueryType queryForNextTitle = localSettings.getAllQueryTypes().get(nextUniqueQueryTitle);
+                    // final QueryType queryForNextTitle =
+                    // localSettings.getAllQueryTypes().get(nextUniqueQueryTitle);
                     
                     final Map<URI, Provider> queryTypesForNamespace =
                             ProviderUtils.getProvidersForQueryType(allProviders, nextUniqueQueryTitle);

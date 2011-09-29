@@ -135,8 +135,7 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating InputQueryType schema RDF with type=" + ex.getClass().getName(),
-                    ex);
+            Schema.log.error("Problem generating InputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -148,8 +147,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error("Problem generating RdfInputQueryType schema RDF with type=" + ex.getClass().getName(),
-                    ex);
+            Schema.log
+                    .error("Problem generating RdfInputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
         }
         
         try
@@ -174,8 +173,8 @@ public class Schema
         }
         catch(final Exception ex)
         {
-            Schema.log.error(
-                    "Problem generating RdfOutputQueryType schema RDF with type=" + ex.getClass().getName(), ex);
+            Schema.log.error("Problem generating RdfOutputQueryType schema RDF with type=" + ex.getClass().getName(),
+                    ex);
         }
         
         try

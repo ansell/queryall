@@ -24,9 +24,12 @@ public class HttpNoCommunicationProviderImpl extends HttpProviderImpl implements
     
     static
     {
-        HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(ProviderSchema.getProviderTypeUri());
-        HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(HttpProviderSchema.getProviderHttpTypeUri());
-        HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri());
+        HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(ProviderSchema
+                .getProviderTypeUri());
+        HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(HttpProviderSchema
+                .getProviderHttpTypeUri());
+        HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES.add(NoCommunicationProviderSchema
+                .getProviderNoCommunicationTypeUri());
     }
     
     public static Set<URI> httpNoCommunicationTypes()
@@ -47,16 +50,16 @@ public class HttpNoCommunicationProviderImpl extends HttpProviderImpl implements
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public HttpNoCommunicationProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException
+    public HttpNoCommunicationProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
     }
-
+    
     @Override
     public Set<URI> getElementTypes()
     {
-        return HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
+        return HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
     }
     
 }

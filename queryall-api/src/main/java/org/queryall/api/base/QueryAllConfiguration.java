@@ -41,22 +41,6 @@ public interface QueryAllConfiguration
     
     Map<URI, RuleTest> getAllRuleTests();
     
-    void setProperty(String propertyKey, boolean propertyValue);
-    
-    void setProperty(String propertyKey, int propertyValue);
-    
-    void setProperty(String propertyKey, float propertyValue);
-    
-    void setProperty(String propertyKey, long propertyValue);
-
-    void setProperty(String propertyKey, URI propertyValue);
-
-    void setProperty(String propertyKey, String propertyValue);
-
-    void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues);
-
-    void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
-
     boolean getBooleanProperty(String propertyKey, boolean defaultValue);
     
     String getDefaultHostAddress();
@@ -84,5 +68,21 @@ public interface QueryAllConfiguration
     Collection<URI> getURIProperties(String string);
     
     URI getURIProperty(String key, URI defaultValue);
+    
+    void setProperty(String propertyKey, boolean propertyValue);
+    
+    void setProperty(String propertyKey, float propertyValue);
+    
+    void setProperty(String propertyKey, int propertyValue);
+    
+    void setProperty(String propertyKey, long propertyValue);
+    
+    void setProperty(String propertyKey, String propertyValue);
+    
+    void setProperty(String propertyKey, URI propertyValue);
+    
+    void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues);
+    
+    void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
     
 }

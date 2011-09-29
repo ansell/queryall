@@ -32,10 +32,10 @@ public abstract class AbstractInputQueryTypeTest
     @Before
     public void setUp() throws Exception
     {
-//        final ValueFactory f = new MemValueFactory();
+        // final ValueFactory f = new MemValueFactory();
         
-        this.testQueryType1 = getNewTestInputQueryType();
-
+        this.testQueryType1 = this.getNewTestInputQueryType();
+        
         this.testQueryType1.addExpectedInputParameter("input_1");
         this.testQueryType1.addExpectedInputParameter("input_2");
         this.testQueryType1.addExpectedInputParameter("namespace");
@@ -52,12 +52,14 @@ public abstract class AbstractInputQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.querytype.InputQueryType.getExpectedInputParameters()}.
+     * Test method for {@link
+     * org.queryall.api.querytype.InputQueryType.getExpectedInputParameters()}.
      */
     @Test
     public void testGetExpectedInputParameters()
     {
-        Assert.assertEquals("Did not find all of the expected input parameters", 4, this.testQueryType1.getExpectedInputParameters().size());
+        Assert.assertEquals("Did not find all of the expected input parameters", 4, this.testQueryType1
+                .getExpectedInputParameters().size());
     }
     
 }

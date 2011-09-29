@@ -20,7 +20,6 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherUriQueryRunnable.log.isInfoEnabled();
     
-
     public RdfFetcherUriQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
@@ -39,22 +38,26 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryStartTime(new Date());
             
             String tempRawResult = fetcher.getDocumentFromUrl(this.getEndpointUrl(), "", this.getAcceptHeader());
-
+            
             if(fetcher.getLastWasError())
             {
-                log.error("Failed to fetch from endpoint="+this.getEndpointUrl());
+                RdfFetcherUriQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
                 
-                Map<String, String> alternateEndpointsAndQueries = this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
+                final Map<String, String> alternateEndpointsAndQueries =
+                        this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                log.error("There are " + alternateEndpointsAndQueries.size() +" alternative endpoints to choose from");
+                RdfFetcherUriQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                        + " alternative endpoints to choose from");
                 
-                for(String alternateEndpoint : alternateEndpointsAndQueries.keySet())
+                for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    log.error("Trying to fetch from alternate endpoint="+alternateEndpoint+" originalEndpoint="+this.getEndpointUrl());
+                    RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
+                            + " originalEndpoint=" + this.getEndpointUrl());
                     
-                    String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                    final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                     
-                    tempRawResult = fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, getAcceptHeader());
+                    tempRawResult =
+                            fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
                     
                     if(!fetcher.getLastWasError())
                     {
@@ -63,7 +66,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                     }
                 }
             }
-
+            
             if(!fetcher.getLastWasError())
             {
                 this.setRawResult(tempRawResult);
@@ -74,13 +77,14 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                 
                 if(this.getReturnedContentType() != null)
                 {
-                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it
+                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe
+                    // it
                     // through the conn neg code
                     this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
                 }
                 
                 this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
-            
+                
                 this.setWasSuccessful(true);
             }
             else
@@ -91,7 +95,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
         }
         catch(final Exception ex)
         {
-            log.error("Found unknown exception", ex);
+            RdfFetcherUriQueryRunnable.log.error("Found unknown exception", ex);
             this.setWasSuccessful(false);
             this.setLastException(ex);
         }

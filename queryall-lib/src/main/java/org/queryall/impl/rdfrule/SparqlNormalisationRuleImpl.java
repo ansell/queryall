@@ -49,30 +49,17 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     
     static
     {
-        SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
+        SparqlNormalisationRuleImpl.SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+                .getNormalisationRuleTypeUri());
+        SparqlNormalisationRuleImpl.SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema
+                .getSparqlRuleTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return SPARQL_NORMALISATION_RULE_IMPL_TYPES;
+        return SparqlNormalisationRuleImpl.SPARQL_NORMALISATION_RULE_IMPL_TYPES;
     }
     
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Collection<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        }
-        
-        return Collections.unmodifiableCollection(this.validStages);
-    }
-
     public SparqlNormalisationRuleImpl()
     {
         super();
@@ -93,11 +80,11 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-//            if(SparqlNormalisationRuleImpl._DEBUG)
-//            {
-//                SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
-//                        + nextStatement.toString());
-//            }
+            // if(SparqlNormalisationRuleImpl._DEBUG)
+            // {
+            // SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
+            // + nextStatement.toString());
+            // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
@@ -259,6 +246,21 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
     public List<String> getSparqlWherePatterns()
     {
         return this.sparqlWherePatterns;
+    }
+    
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)

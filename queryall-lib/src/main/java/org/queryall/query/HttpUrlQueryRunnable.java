@@ -44,29 +44,34 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             if(HttpUrlQueryRunnable._DEBUG)
             {
-                HttpUrlQueryRunnable.log.debug("HttpUrlQueryRunnable.run: about to fetch endpoint="+this.getEndpointUrl());
+                HttpUrlQueryRunnable.log.debug("HttpUrlQueryRunnable.run: about to fetch endpoint="
+                        + this.getEndpointUrl());
             }
             
             String tempRawResult = "";
             // TODO: make this section extensible
             if(this.httpOperation.equals(SparqlProviderSchema.getProviderHttpPostSparql().stringValue()))
             {
-                tempRawResult = fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "",
-                        this.maxRowsParameter, this.getAcceptHeader());
-
+                tempRawResult =
+                        fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "",
+                                this.maxRowsParameter, this.getAcceptHeader());
+                
                 if(fetcher.getLastWasError())
                 {
-                    log.error("Failed to fetch from endpoint="+this.getEndpointUrl());
-                    Map<String, String> alternateEndpointsAndQueries = this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
+                    HttpUrlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
+                    final Map<String, String> alternateEndpointsAndQueries =
+                            this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                     
-                    for(String alternateEndpoint : alternateEndpointsAndQueries.keySet())
+                    for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                     {
-                        log.error("Trying to fetch from alternate endpoint="+alternateEndpoint+" originalEndpoint="+this.getEndpointUrl());
+                        HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
+                                + " originalEndpoint=" + this.getEndpointUrl());
                         
-                        String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        tempRawResult = fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
-                                this.maxRowsParameter, this.getAcceptHeader());
+                        tempRawResult =
+                                fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
+                                        this.maxRowsParameter, this.getAcceptHeader());
                         
                         if(!fetcher.getLastWasError())
                         {
@@ -79,24 +84,28 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             else if(this.httpOperation.equals(HttpProviderSchema.getProviderHttpPostUrlUri().stringValue())
                     || this.httpOperation.equals(HttpProviderSchema.getProviderHttpGetUrlUri().stringValue()))
             {
-                tempRawResult = fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(),
-                        this.getAcceptHeader());
+                tempRawResult =
+                        fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(), this.getAcceptHeader());
                 
                 if(fetcher.getLastWasError())
                 {
-                    log.error("Failed to fetch from endpoint="+this.getEndpointUrl());
-
-                    Map<String, String> alternateEndpointsAndQueries = this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
-
-                    log.error("There are " + alternateEndpointsAndQueries.size() +" alternative endpoints to choose from");
+                    HttpUrlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
                     
-                    for(String alternateEndpoint : alternateEndpointsAndQueries.keySet())
+                    final Map<String, String> alternateEndpointsAndQueries =
+                            this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
+                    
+                    HttpUrlQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                            + " alternative endpoints to choose from");
+                    
+                    for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                     {
-                        log.error("Trying to fetch from alternate endpoint="+alternateEndpoint+" originalEndpoint="+this.getEndpointUrl());
+                        HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
+                                + " originalEndpoint=" + this.getEndpointUrl());
                         
-                        String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        tempRawResult = fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, getAcceptHeader());
+                        tempRawResult =
+                                fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
                         
                         if(!fetcher.getLastWasError())
                         {
@@ -111,7 +120,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             {
                 this.setRawResult(tempRawResult);
                 
-                // make the normalised Result the same as the raw result unless people actually want to
+                // make the normalised Result the same as the raw result unless people actually want
+                // to
                 // normalise it
                 this.setNormalisedResult(this.getRawResult());
                 
@@ -119,13 +129,14 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 
                 if(this.getReturnedContentType() != null)
                 {
-                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it
+                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe
+                    // it
                     // through the conn neg code
                     this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
                 }
                 
                 this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
-            
+                
                 this.setWasSuccessful(true);
             }
             else
@@ -136,7 +147,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
         }
         catch(final Exception ex)
         {
-            log.error("Found unknown exception", ex);
+            HttpUrlQueryRunnable.log.error("Found unknown exception", ex);
             this.setWasSuccessful(false);
             this.setLastException(ex);
         }

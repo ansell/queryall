@@ -46,8 +46,8 @@ public class IndexPageServlet extends HttpServlet
         
         try
         {
-            HtmlPageRenderer.renderIndexPage(localSettings, localVelocity, out, new LinkedList<String>(),
-                    realHostName, request.getContextPath());
+            HtmlPageRenderer.renderIndexPage(localSettings, localVelocity, out, new LinkedList<String>(), realHostName,
+                    request.getContextPath());
         }
         catch(final OpenRDFException ordfe)
         {

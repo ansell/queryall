@@ -1542,7 +1542,7 @@ public class Settings implements QueryAllConfiguration
             results.add(nextValue.stringValue());
             // results.add(RdfUtils.getUTF8StringValueFromSesameValue(nextValue));
         }
-
+        
         return results;
     }
     
@@ -1901,7 +1901,8 @@ public class Settings implements QueryAllConfiguration
                             }
                             else
                             {
-                                Settings.log.error("Could not resolve config location to an input stream nextLocation="+nextLocation);
+                                Settings.log.error("Could not resolve config location to an input stream nextLocation="
+                                        + nextLocation);
                             }
                         }
                         
@@ -2053,6 +2054,62 @@ public class Settings implements QueryAllConfiguration
         return manualRefresh && (timestampDiff > manualRefreshMinimum);
     }
     
+    @Override
+    public void setProperty(final String propertyKey, final boolean propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setProperty(final String propertyKey, final float propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setProperty(final String propertyKey, final int propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setProperty(final String propertyKey, final long propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setProperty(final String propertyKey, final String propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setProperty(final String propertyKey, final URI propertyValue)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setStringCollectionProperty(final String propertyKey, final Collection<String> propertyValues)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    @Override
+    public void setURICollectionProperty(final String propertyKey, final Collection<URI> propertyValues)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
     /**
      * @param webappConfigUriList
      *            the webappConfigUriList to set
@@ -2069,61 +2126,5 @@ public class Settings implements QueryAllConfiguration
         {
             Settings.log.error("Interrupted", ex);
         }
-    }
-
-    @Override
-    public void setProperty(String propertyKey, boolean propertyValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setProperty(String propertyKey, int propertyValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setProperty(String propertyKey, float propertyValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setProperty(String propertyKey, long propertyValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setProperty(String propertyKey, URI propertyValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setProperty(String propertyKey, String propertyValue)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues)
-    {
-        // TODO Auto-generated method stub
-        
     }
 }

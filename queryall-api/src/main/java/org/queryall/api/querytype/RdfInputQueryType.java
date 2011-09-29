@@ -8,7 +8,7 @@ package org.queryall.api.querytype;
  */
 public interface RdfInputQueryType extends InputQueryType
 {
-    void setSparqlInputSelect(String sparqlInputSelect);
-    
     String getSparqlInputSelect();
+    
+    void setSparqlInputSelect(String sparqlInputSelect);
 }

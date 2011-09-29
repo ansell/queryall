@@ -53,6 +53,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
     
+    boolean isInputVariableNamespace(String nextMatchTag);
+    
     boolean isInputVariablePublic(String inputVariableTag);
     
     Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
@@ -78,7 +80,5 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     void setStandardUriTemplateString(String standardUriTemplateString);
     
     void setTemplateString(String templateString);
-
-    boolean isInputVariableNamespace(String nextMatchTag);
     
 }

@@ -39,13 +39,13 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     
     static
     {
-        SPARQL_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
-        SPARQL_RULE_TEST_IMPL_TYPES.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri());
+        SparqlRuleTestImpl.SPARQL_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
+        SparqlRuleTestImpl.SPARQL_RULE_TEST_IMPL_TYPES.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return SPARQL_RULE_TEST_IMPL_TYPES;
+        return SparqlRuleTestImpl.SPARQL_RULE_TEST_IMPL_TYPES;
     }
     
     private String askQuery = "";
@@ -53,6 +53,11 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     private boolean expectedResult = false;
     private String testInputTriples;
     private String testInputMimeType;
+    
+    public SparqlRuleTestImpl()
+    {
+        super();
+    }
     
     public SparqlRuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -116,11 +121,61 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
         }
     }
     
-    public SparqlRuleTestImpl()
+    @Override
+    public Set<URI> getElementTypes()
     {
-        super();
+        return SparqlRuleTestImpl.myTypes();
     }
-
+    
+    @Override
+    public boolean getExpectedResult()
+    {
+        return this.expectedResult;
+    }
+    
+    @Override
+    public String getTestInputMimeType()
+    {
+        return this.testInputMimeType;
+    }
+    
+    @Override
+    public String getTestInputTriples()
+    {
+        return this.testInputTriples;
+    }
+    
+    @Override
+    public String getTestSparqlAsk()
+    {
+        return this.askQuery;
+    }
+    
+    @Override
+    public void setExpectedResult(final boolean expectedResult)
+    {
+        this.expectedResult = expectedResult;
+    }
+    
+    @Override
+    public void setTestInputMimeType(final String testInputMimeType)
+    {
+        this.testInputMimeType = testInputMimeType;
+    }
+    
+    @Override
+    public void setTestInputTriples(final String testInputTriples)
+    {
+        this.testInputTriples = testInputTriples;
+        
+    }
+    
+    @Override
+    public void setTestSparqlAsk(final String testSparqlAsk)
+    {
+        this.askQuery = testSparqlAsk;
+    }
+    
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -173,60 +228,5 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
         }
         
         return false;
-    }
-
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return myTypes();
-    }
-
-    @Override
-    public String getTestSparqlAsk()
-    {
-        return this.askQuery;
-    }
-
-    @Override
-    public void setTestSparqlAsk(String testSparqlAsk)
-    {
-        this.askQuery = testSparqlAsk;
-    }
-
-    @Override
-    public boolean getExpectedResult()
-    {
-        return this.expectedResult;
-    }
-
-    @Override
-    public void setExpectedResult(boolean expectedResult)
-    {
-        this.expectedResult = expectedResult;
-    }
-
-    @Override
-    public String getTestInputMimeType()
-    {
-        return this.testInputMimeType;
-    }
-
-    @Override
-    public void setTestInputMimeType(String testInputMimeType)
-    {
-        this.testInputMimeType = testInputMimeType;
-    }
-
-    @Override
-    public String getTestInputTriples()
-    {
-        return this.testInputTriples;
-    }
-
-    @Override
-    public void setTestInputTriples(String testInputTriples)
-    {
-        this.testInputTriples = testInputTriples;
-        
     }
 }

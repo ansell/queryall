@@ -6,24 +6,24 @@ import org.openrdf.model.URI;
 
 public interface PrefixMappingNormalisationRule extends NormalisationRule
 {
-    void setInputUriPrefix(String inputUriPrefix);
+    void addObjectMappingPredicate(URI sameas);
     
-    String getInputUriPrefix();
-    
-    void setOutputUriPrefix(String outputUriPrefix);
-    
-    String getOutputUriPrefix();
+    void addPredicateMappingPredicate(URI equivalentproperty);
     
     void addSubjectMappingPredicate(URI equivalentclass);
     
-    Collection<URI> getSubjectMappingPredicates();
-
-    void addPredicateMappingPredicate(URI equivalentproperty);
-
-    Collection<URI> getPredicateMappingPredicates();
-
-    void addObjectMappingPredicate(URI sameas);
+    String getInputUriPrefix();
     
     Collection<URI> getObjectMappingPredicates();
-
+    
+    String getOutputUriPrefix();
+    
+    Collection<URI> getPredicateMappingPredicates();
+    
+    Collection<URI> getSubjectMappingPredicates();
+    
+    void setInputUriPrefix(String inputUriPrefix);
+    
+    void setOutputUriPrefix(String outputUriPrefix);
+    
 }

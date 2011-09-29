@@ -171,6 +171,57 @@ public final class RuleUtils
     }
     
     /**
+     * @param normalisationRules
+     *            An ordered list of normalisation rules that need to be applied to the input
+     *            document
+     * @param includedProfiles
+     * @param recogniseImplicitRdfRuleInclusions
+     * @param includeNonProfileMatchedRdfRules
+     * @param basicRdfXml
+     * @return
+     */
+    public static Object normaliseByStage(final URI stage, Object input,
+            final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
+    {
+        if(RuleUtils._TRACE)
+        {
+            RuleUtils.log.trace("normaliseByStage: before applying normalisation rules");
+        }
+        
+        final long start = System.currentTimeMillis();
+        
+        // go through the rules
+        for(final NormalisationRule nextRule : normalisationRules)
+        {
+            if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
+                    includeNonProfileMatchedRdfRules))
+            {
+                if(RuleUtils._TRACE)
+                {
+                    RuleUtils.log.trace("normaliseByStage: nextRule.order=" + nextRule.getOrder());
+                }
+                
+                input = nextRule.normaliseByStage(stage, input);
+            }
+        }
+        
+        if(RuleUtils._DEBUG)
+        {
+            final long end = System.currentTimeMillis();
+            
+            RuleUtils.log.debug(String.format("%s: timing=%10d", "normaliseByStage", (end - start)));
+            
+            if(RuleUtils._TRACE)
+            {
+                RuleUtils.log.trace("normaliseByStage: after applying normalisation rules");
+            }
+        }
+        
+        return input;
+    }
+    
+    /**
      * Runs rule tests over the stages "QueryVariables" and "BeforeResultsImport"
      * 
      * @param myRuleTests
@@ -272,58 +323,6 @@ public final class RuleUtils
     public RuleUtils()
     {
         // TODO Auto-generated constructor stub
-    }
-
-    /**
-     * @param normalisationRules
-     *            An ordered list of normalisation rules that need to be applied to the input
-     *            document
-     * @param includedProfiles
-     * @param recogniseImplicitRdfRuleInclusions
-     * @param includeNonProfileMatchedRdfRules
-     * @param basicRdfXml
-     * @return
-     */
-    public static Object normaliseByStage(final URI stage, Object input,
-            final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
-            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
-    {
-        if(_TRACE)
-        {
-            log.trace("normaliseByStage: before applying normalisation rules");
-        }
-        
-        final long start = System.currentTimeMillis();
-        
-        // go through the rules
-        for(final NormalisationRule nextRule : normalisationRules)
-        {
-            if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
-                    includeNonProfileMatchedRdfRules))
-            {
-                if(_TRACE)
-                {
-                    log.trace("normaliseByStage: nextRule.order=" + nextRule.getOrder());
-                }
-                
-                input = nextRule.normaliseByStage(stage, input);
-            }
-        }
-        
-        if(_DEBUG)
-        {
-            final long end = System.currentTimeMillis();
-            
-            log.debug(String.format("%s: timing=%10d", "normaliseByStage", (end - start)));
-
-            if(_TRACE)
-            {
-                log.trace("normaliseByStage: after applying normalisation rules");
-            }
-        }
-        
-        
-        return input;
     }
     
 }

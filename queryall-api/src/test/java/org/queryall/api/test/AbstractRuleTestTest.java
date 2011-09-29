@@ -21,7 +21,7 @@ public abstract class AbstractRuleTestTest
     private RuleTest testRuleTest1;
     private URI testRdfRuleUri1;
     private URI testRdfRuleUri2;
-
+    
     /**
      * Returns a new instance of the RuleTest Implementation for each call
      * 
@@ -39,8 +39,8 @@ public abstract class AbstractRuleTestTest
         
         this.testRdfRuleUri1 = valueFactory.createURI("http://example.org/test/rule/1");
         this.testRdfRuleUri2 = valueFactory.createURI("http://example.org/test/rule/2");
-
-        testRuleTest1 = getNewTestRuleTest();
+        
+        this.testRuleTest1 = this.getNewTestRuleTest();
         
     }
     
@@ -50,35 +50,9 @@ public abstract class AbstractRuleTestTest
     @After
     public void tearDown() throws Exception
     {
-        testRuleTest1 = null;
-        testRdfRuleUri1 = null;
-        testRdfRuleUri2 = null;
-    }
-    
-    /**
-     * Test method for {@link org.queryall.api.ruletest.RuleTest#getRuleUris()}.
-     */
-    @Test
-    public void testGetRuleUris()
-    {
-        testRuleTest1.addRuleUri(this.testRdfRuleUri1);
-        testRuleTest1.addRuleUri(this.testRdfRuleUri2);
-
-        Assert.assertEquals("Rule URIs were not added correctly", 2, testRuleTest1.getRuleUris().size());
-    }
-    
-    /**
-     * Test method for {@link org.queryall.api.ruletest.RuleTest#getStages()}.
-     */
-    @Test
-    public void testGetStages()
-    {
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        
-        Assert.assertEquals("getStages test failed", 4, testRuleTest1.getStages().size());
+        this.testRuleTest1 = null;
+        this.testRdfRuleUri1 = null;
+        this.testRdfRuleUri2 = null;
     }
     
     /**
@@ -87,9 +61,9 @@ public abstract class AbstractRuleTestTest
     @Test
     public void testAddRuleUri()
     {
-        testRuleTest1.addRuleUri(this.testRdfRuleUri1);
-
-        Assert.assertEquals("Rule URIs were not added correctly", 1, testRuleTest1.getRuleUris().size());
+        this.testRuleTest1.addRuleUri(this.testRdfRuleUri1);
+        
+        Assert.assertEquals("Rule URIs were not added correctly", 1, this.testRuleTest1.getRuleUris().size());
     }
     
     /**
@@ -98,15 +72,41 @@ public abstract class AbstractRuleTestTest
     @Test
     public void testAddStage()
     {
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
         
-        Assert.assertEquals("addStage test failed", 7, testRuleTest1.getStages().size());
+        Assert.assertEquals("addStage test failed", 7, this.testRuleTest1.getStages().size());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.ruletest.RuleTest#getRuleUris()}.
+     */
+    @Test
+    public void testGetRuleUris()
+    {
+        this.testRuleTest1.addRuleUri(this.testRdfRuleUri1);
+        this.testRuleTest1.addRuleUri(this.testRdfRuleUri2);
+        
+        Assert.assertEquals("Rule URIs were not added correctly", 2, this.testRuleTest1.getRuleUris().size());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.ruletest.RuleTest#getStages()}.
+     */
+    @Test
+    public void testGetStages()
+    {
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        
+        Assert.assertEquals("getStages test failed", 4, this.testRuleTest1.getStages().size());
     }
     
 }

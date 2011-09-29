@@ -19,7 +19,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
     private static final boolean _DEBUG = RdfFetcherSparqlQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherSparqlQueryRunnable.log.isInfoEnabled();
-
+    
     public String graphUri = "";
     public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 500);
     
@@ -44,25 +44,30 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setQueryStartTime(new Date());
             
-            String tempRawResult = fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "",
-                    this.maxRowsParameter, this.getAcceptHeader());
-
+            String tempRawResult =
+                    fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "", this.maxRowsParameter,
+                            this.getAcceptHeader());
+            
             if(fetcher.getLastWasError())
             {
-                log.error("Failed to fetch from endpoint="+this.getEndpointUrl());
+                RdfFetcherSparqlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
                 
-                Map<String, String> alternateEndpointsAndQueries = this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
+                final Map<String, String> alternateEndpointsAndQueries =
+                        this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                log.error("There are " + alternateEndpointsAndQueries.size() +" alternative endpoints to choose from");
+                RdfFetcherSparqlQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                        + " alternative endpoints to choose from");
                 
-                for(String alternateEndpoint : alternateEndpointsAndQueries.keySet())
+                for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    log.error("Trying to fetch from alternate endpoint="+alternateEndpoint+" originalEndpoint="+this.getEndpointUrl());
+                    RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                            + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
                     
-                    String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                    final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                     
-                    tempRawResult = fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
-                            this.maxRowsParameter, this.getAcceptHeader());
+                    tempRawResult =
+                            fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "", this.maxRowsParameter,
+                                    this.getAcceptHeader());
                     
                     if(!fetcher.getLastWasError())
                     {
@@ -71,7 +76,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                     }
                 }
             }
-
+            
             if(!fetcher.getLastWasError())
             {
                 this.setRawResult(tempRawResult);
@@ -82,7 +87,8 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                 
                 if(this.getReturnedContentType() != null)
                 {
-                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe it
+                    // HACK TODO: should this be any cleaner than this.... Could hypothetically pipe
+                    // it
                     // through the conn neg code
                     this.setReturnedMIMEType(this.getReturnedContentType().split(";")[0]);
                 }
@@ -98,7 +104,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
         }
         catch(final Exception ex)
         {
-            log.error("Found unknown exception", ex);
+            RdfFetcherSparqlQueryRunnable.log.error("Found unknown exception", ex);
             this.setWasSuccessful(false);
             this.setLastException(ex);
         }

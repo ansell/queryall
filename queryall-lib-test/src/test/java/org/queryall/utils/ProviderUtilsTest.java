@@ -155,19 +155,21 @@ public class ProviderUtilsTest
         this.testRegexInputQueryParameters = new HashMap<String, String>();
         this.testRegexInputQueryParameters.put("queryString", "test-1:123test456");
         
-        
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2 = new RdfInputQueryTypeImpl();
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.setKey(this.testQueryUri2);
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.setIsNamespaceSpecific(true);
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.setHandleAllNamespaces(false);
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.addExpectedInputParameter("input_1");
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.addExpectedInputParameter("input_2");
-        this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.addNamespaceToHandle(testNamespaceUri1);
+        this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.addNamespaceToHandle(this.testNamespaceUri1);
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.addNamespaceInputTag("input_1");
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.addPublicIdentifierTag("input_1");
-        this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2.setSparqlInputSelect("SELECT ?input_1 ?input_2 WHERE { ?testObjects a <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }");
+        this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2
+                .setSparqlInputSelect("SELECT ?input_1 ?input_2 WHERE { ?testObjects a <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }");
         this.testRdfInputQueryParameters = new HashMap<String, String>();
-        this.testRdfInputQueryParameters.put("queryString", "_:rdfInputTestObject a <http://example.org/rdfinputtest:type1> ; <http://example.org/rdfinputtest:variable1> \"test-1\" ; <http://example.org/rdfinputtest:variable2> \"123test456\" . ");
+        this.testRdfInputQueryParameters
+                .put("queryString",
+                        "_:rdfInputTestObject a <http://example.org/rdfinputtest:type1> ; <http://example.org/rdfinputtest:variable1> \"test-1\" ; <http://example.org/rdfinputtest:variable2> \"123test456\" . ");
         this.testRdfInputQueryParameters.put("inputMimeType", "text/rdf+n3");
         
     }
@@ -221,7 +223,7 @@ public class ProviderUtilsTest
         this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2 = null;
         
         this.testNamespacePrefixToUriMap = null;
-
+        
         this.testRegexInputQueryParameters = null;
         this.testRdfInputQueryParameters = null;
     }
@@ -482,24 +484,20 @@ public class ProviderUtilsTest
             final Map<URI, Provider> testNamespaceSpecificProviders = RdfUtils.getProviders(this.testRepository);
             
             Assert.assertEquals(8, testNamespaceSpecificProviders.keySet().size());
-
-            Assert.assertEquals("Did not find the expected number of regex input namespace specific query providers", 3, ProviderUtils.getProvidersForQueryNamespaceSpecific(
-                    testNamespaceSpecificProviders, 
-                    this.emptyProfileList, 
-                    this.testRegexInputQueryTypeNamespaceSpecificHandleAll , 
-                    this.testNamespacePrefixToUriMap, 
-                    this.testRegexInputQueryParameters, 
-                    true, 
-                    true).size());
-
-            Assert.assertEquals("Did not find the expected number of rdf input namespace specific query providers", 2, ProviderUtils.getProvidersForQueryNamespaceSpecific(
-                    testNamespaceSpecificProviders, 
-                    this.emptyProfileList, 
-                    this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2, 
-                    this.testNamespacePrefixToUriMap, 
-                    this.testRdfInputQueryParameters, 
-                    true, 
-                    true).size());
+            
+            Assert.assertEquals(
+                    "Did not find the expected number of regex input namespace specific query providers",
+                    3,
+                    ProviderUtils.getProvidersForQueryNamespaceSpecific(testNamespaceSpecificProviders,
+                            this.emptyProfileList, this.testRegexInputQueryTypeNamespaceSpecificHandleAll,
+                            this.testNamespacePrefixToUriMap, this.testRegexInputQueryParameters, true, true).size());
+            
+            Assert.assertEquals(
+                    "Did not find the expected number of rdf input namespace specific query providers",
+                    2,
+                    ProviderUtils.getProvidersForQueryNamespaceSpecific(testNamespaceSpecificProviders,
+                            this.emptyProfileList, this.testRdfInputQueryTypeNamespaceSpecificHandleNsTest2,
+                            this.testNamespacePrefixToUriMap, this.testRdfInputQueryParameters, true, true).size());
         }
         catch(final RDFParseException ex)
         {

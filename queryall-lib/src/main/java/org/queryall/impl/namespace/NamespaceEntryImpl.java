@@ -182,6 +182,12 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     }
     
     @Override
+    public void addAlternativePrefix(final String alternativePrefix)
+    {
+        this.alternativePrefixes.add(alternativePrefix);
+    }
+    
+    @Override
     public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
@@ -302,12 +308,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     public boolean getValidationPossible()
     {
         return this.validationPossible;
-    }
-    
-    @Override
-    public void addAlternativePrefix(final String alternativePrefix)
-    {
-        this.alternativePrefixes.add(alternativePrefix);
     }
     
     @Override
@@ -473,7 +473,7 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             
             con.setAutoCommit(false);
             
-            for(URI nextElementType : this.getElementTypes())
+            for(final URI nextElementType : this.getElementTypes())
             {
                 con.add(namespaceInstanceUri, RDF.TYPE, nextElementType, keyToUse);
             }

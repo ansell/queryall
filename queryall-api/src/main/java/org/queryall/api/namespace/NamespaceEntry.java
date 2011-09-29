@@ -10,6 +10,8 @@ import org.queryall.api.base.BaseQueryAllInterface;
  */
 public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
 {
+    void addAlternativePrefix(String alternativePrefix);
+    
     Collection<String> getAlternativePrefixes();
     
     URI getAuthority();
@@ -23,8 +25,6 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
     String getSeparator();
     
     String getUriTemplate();
-    
-    void addAlternativePrefix(String alternativePrefix);
     
     void setAuthority(URI authority);
     

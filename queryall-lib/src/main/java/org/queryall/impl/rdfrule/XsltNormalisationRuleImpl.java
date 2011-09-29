@@ -50,6 +50,16 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     // NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(),
     // XsltNormalisationRuleImpl.myTypes());
     
+    private static final Set<URI> XSLT_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    
+    static
+    {
+        XsltNormalisationRuleImpl.XSLT_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+                .getNormalisationRuleTypeUri());
+        XsltNormalisationRuleImpl.XSLT_NORMALISATION_RULE_IMPL_TYPES.add(XsltNormalisationRuleSchema
+                .getXsltRuleTypeUri());
+    }
+    
     /**
      * Test method
      * 
@@ -83,42 +93,17 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
     }
     
-    private static final Set<URI> XSLT_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
-    
-    static
-    {
-        XSLT_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        XSLT_NORMALISATION_RULE_IMPL_TYPES.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
-    }
-    
     public static Set<URI> myTypes()
     {
-        return XSLT_NORMALISATION_RULE_IMPL_TYPES;
+        return XsltNormalisationRuleImpl.XSLT_NORMALISATION_RULE_IMPL_TYPES;
     }
     
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Collection<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        }
-        
-        return Collections.unmodifiableCollection(this.validStages);
-    }
-
     private String xsltStylesheet;
     
     public XsltNormalisationRuleImpl()
     {
         super();
-
+        
     }
     
     /**
@@ -187,6 +172,23 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
     public Set<URI> getElementTypes()
     {
         return XsltNormalisationRuleImpl.myTypes();
+    }
+    
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
     }
     
     /*

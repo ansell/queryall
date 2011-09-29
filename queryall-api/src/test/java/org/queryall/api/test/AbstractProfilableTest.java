@@ -102,10 +102,12 @@ public abstract class AbstractProfilableTest
         this.testFalseProviderUri = f.createURI("http://example.org/test/excludedProvider");
         
         this.providerNonDefault = this.getNewTestProfilable();
-        this.providerNonDefault.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerNonDefault
+                .setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
         
         this.providerSpecificDefault = this.getNewTestProfilable();
-        this.providerSpecificDefault.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerSpecificDefault.setProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileIncludeExcludeOrderUndefinedUri());
         
         this.providerTrueUri = this.getNewTestProfilable();
         this.providerTrueUri.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
@@ -122,25 +124,29 @@ public abstract class AbstractProfilableTest
         this.providerExcludeImplicitly.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeThenExcludeUri());
         
         this.providerIncludeExcludeOrderUndefined = this.getNewTestProfilable();
-        this.providerIncludeExcludeOrderUndefined.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerIncludeExcludeOrderUndefined.setProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileIncludeExcludeOrderUndefinedUri());
         
         this.profileIncludeAllImplicitly = this.getNewTestProfile();
         this.profileIncludeAllImplicitly.setAllowImplicitProviderInclusions(true);
         this.profileIncludeAllImplicitly.setAllowImplicitQueryTypeInclusions(true);
         this.profileIncludeAllImplicitly.setAllowImplicitRdfRuleInclusions(true);
-        this.profileIncludeAllImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileExcludeThenIncludeUri());
+        this.profileIncludeAllImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileExcludeThenIncludeUri());
         
         this.profileIncludeAllImplicitlyExcludeByDefault = this.getNewTestProfile();
         this.profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitProviderInclusions(true);
         this.profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitQueryTypeInclusions(true);
         this.profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitRdfRuleInclusions(true);
-        this.profileIncludeAllImplicitlyExcludeByDefault.setDefaultProfileIncludeExcludeOrder(ProfileSchema .getProfileIncludeThenExcludeUri());
+        this.profileIncludeAllImplicitlyExcludeByDefault.setDefaultProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileIncludeThenExcludeUri());
         
         this.profileExcludeImplicitly = this.getNewTestProfile();
         this.profileExcludeImplicitly.setAllowImplicitProviderInclusions(false);
         this.profileExcludeImplicitly.setAllowImplicitQueryTypeInclusions(false);
         this.profileExcludeImplicitly.setAllowImplicitRdfRuleInclusions(false);
-        this.profileExcludeImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileExcludeThenIncludeUri());
+        this.profileExcludeImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileExcludeThenIncludeUri());
         
         this.profileExcludeImplicitlyAndByDefault = this.getNewTestProfile();
         this.profileExcludeImplicitlyAndByDefault.setAllowImplicitProviderInclusions(false);
@@ -154,14 +160,16 @@ public abstract class AbstractProfilableTest
         this.profileIncludeTrueOnly.setAllowImplicitProviderInclusions(false);
         this.profileIncludeTrueOnly.setAllowImplicitQueryTypeInclusions(false);
         this.profileIncludeTrueOnly.setAllowImplicitRdfRuleInclusions(false);
-        this.profileIncludeTrueOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeThenExcludeUri());
+        this.profileIncludeTrueOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileIncludeThenExcludeUri());
         
         this.profileExcludeFalseOnly = this.getNewTestProfile();
         this.includeFalseUri(this.profileExcludeFalseOnly, this.testFalseProviderUri);
         this.profileExcludeFalseOnly.setAllowImplicitProviderInclusions(false);
         this.profileExcludeFalseOnly.setAllowImplicitQueryTypeInclusions(false);
         this.profileExcludeFalseOnly.setAllowImplicitRdfRuleInclusions(false);
-        this.profileExcludeFalseOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeThenExcludeUri());
+        this.profileExcludeFalseOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
+                .getProfileIncludeThenExcludeUri());
         
         this.profileListEmpty = new LinkedList<Profile>();
         

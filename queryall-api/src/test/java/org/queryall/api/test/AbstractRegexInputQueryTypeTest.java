@@ -37,16 +37,16 @@ public abstract class AbstractRegexInputQueryTypeTest
     @Before
     public void setUp() throws Exception
     {
-//        final ValueFactory f = new MemValueFactory();
+        // final ValueFactory f = new MemValueFactory();
         
-        this.testRegexInputQueryType1 = getNewTestRegexInputQueryType();
+        this.testRegexInputQueryType1 = this.getNewTestRegexInputQueryType();
         
         this.testRegex = "^([\\w-]+):(.+)";
-
+        
         this.testRegexInputQueryType1.setInputRegex(this.testRegex);
         
-        testQueryParameters = new HashMap<String, String>();
-        testQueryParameters.put("queryString", "geneid-uniprot:AX99cc");
+        this.testQueryParameters = new HashMap<String, String>();
+        this.testQueryParameters.put("queryString", "geneid-uniprot:AX99cc");
     }
     
     /**
@@ -61,14 +61,16 @@ public abstract class AbstractRegexInputQueryTypeTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.querytype.RegexInputQueryType.getExpectedInputParameters()}.
+     * Test method for {@link
+     * org.queryall.api.querytype.RegexInputQueryType.getExpectedInputParameters()}.
      */
     @Test
     public void testGet()
     {
         Assert.assertEquals("Regex was not set properly", this.testRegex, this.testRegexInputQueryType1.getInputRegex());
         
-        Assert.assertTrue("Regex matches for query string", this.testRegexInputQueryType1.matchesQueryParameters(testQueryParameters));
+        Assert.assertTrue("Regex matches for query string",
+                this.testRegexInputQueryType1.matchesQueryParameters(this.testQueryParameters));
     }
     
 }

@@ -41,7 +41,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     private static final boolean _TRACE = AbstractPrefixMappingNormalisationRuleTest.log.isTraceEnabled();
     private static final boolean _DEBUG = AbstractPrefixMappingNormalisationRuleTest.log.isDebugEnabled();
     private static final boolean _INFO = AbstractPrefixMappingNormalisationRuleTest.log.isInfoEnabled();
-
+    
     @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri1;
     @SuppressWarnings("unused")
@@ -62,6 +62,13 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     private ValueFactory testValueFactory;
     
     /**
+     * Create a new instance of the SparqlNormalisationRule implementation being tested.
+     * 
+     * @return a new instance of the implemented SparqlNormalisationRule
+     */
+    public abstract PrefixMappingNormalisationRule getNewTestMappingRule();
+    
+    /**
      * Final method, so that implementing test cases must supply a SparqlNormalisationRule instead,
      * through getNewTestSparqlRule.
      * 
@@ -72,13 +79,6 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     {
         return this.getNewTestMappingRule();
     }
-    
-    /**
-     * Create a new instance of the SparqlNormalisationRule implementation being tested.
-     * 
-     * @return a new instance of the implemented SparqlNormalisationRule
-     */
-    public abstract PrefixMappingNormalisationRule getNewTestMappingRule();
     
     /**
      * @throws java.lang.Exception
@@ -95,9 +95,9 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         this.testValueFactory = new ValueFactoryImpl();
         
         this.testPrefixMappingNormalisationRuleUri1 =
-                testValueFactory.createURI("http://example.org/test/rule:prefixmapping-1");
+                this.testValueFactory.createURI("http://example.org/test/rule:prefixmapping-1");
         this.testPrefixMappingNormalisationRuleUri2 =
-                testValueFactory.createURI("http://example.org/test/rule:prefixmapping-2");
+                this.testValueFactory.createURI("http://example.org/test/rule:prefixmapping-2");
         
         this.testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
         this.testFinalUriAEOBase = "http://bio2rdf.org/obo_aeo:";
@@ -158,104 +158,121 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
      * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
      * 
      * @throws RepositoryException
-     * @throws QueryEvaluationException 
-     * @throws MalformedQueryException 
+     * @throws QueryEvaluationException
+     * @throws MalformedQueryException
      */
     @Ignore
-    @Test 
+    @Test
     public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
     {
-        URI subjectUri = testValueFactory.createURI("http://example.org/po:0000198");
+        final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
-        URI predicateUri = testValueFactory.createURI("http://bio2rdf.org/ns/obo#is_a");
+        final URI predicateUri = this.testValueFactory.createURI("http://bio2rdf.org/ns/obo#is_a");
         
-        URI normalisedPredicateUri = testValueFactory.createURI("http://bio2rdf.org/obo_resource:is_a");
-
-        URI objectUri = testValueFactory.createURI("http://example.org/po:0009089");
+        final URI normalisedPredicateUri = this.testValueFactory.createURI("http://bio2rdf.org/obo_resource:is_a");
         
-        Statement testInputStatement = testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
+        final URI objectUri = this.testValueFactory.createURI("http://example.org/po:0009089");
         
-        Statement testOutputStatement = testValueFactory.createStatement(subjectUri, normalisedPredicateUri, objectUri);
-
-        testRepositoryConnection.add(testInputStatement);
+        final Statement testInputStatement = this.testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
         
-        testRepositoryConnection.commit();
+        final Statement testOutputStatement =
+                this.testValueFactory.createStatement(subjectUri, normalisedPredicateUri, objectUri);
         
-        Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
+        this.testRepositoryConnection.add(testInputStatement);
+        
+        this.testRepositoryConnection.commit();
+        
+        Assert.assertEquals("The test statement was not added to the repository", 1,
+                this.testRepositoryConnection.size());
         
         final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
         
         mappingRule.addSubjectMappingPredicate(OWL.EQUIVALENTCLASS);
-        Statement testOutputSubjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTCLASS, predicateUri);
-
+        final Statement testOutputSubjectMappingStatement =
+                this.testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTCLASS, predicateUri);
+        
         mappingRule.addPredicateMappingPredicate(OWL.EQUIVALENTPROPERTY);
-        Statement testOutputPredicateMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTPROPERTY, predicateUri);
-
+        final Statement testOutputPredicateMappingStatement =
+                this.testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTPROPERTY, predicateUri);
+        
         mappingRule.addObjectMappingPredicate(OWL.SAMEAS);
-        Statement testOutputObjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.SAMEAS, predicateUri);
+        final Statement testOutputObjectMappingStatement =
+                this.testValueFactory.createStatement(normalisedPredicateUri, OWL.SAMEAS, predicateUri);
         
         mappingRule.setInputUriPrefix("http://bio2rdf.org/ns/obo#");
         mappingRule.setOutputUriPrefix("http://bio2rdf.org/obo_resource:");
         
         mappingRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-
-        mappingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), testRepository);
-
-        Assert.assertTrue("The test output statement was not in the resulting repository", testRepositoryConnection.hasStatement(testOutputStatement, false));
-
-        Assert.assertFalse("The test input statement was still in the resulting repository", testRepositoryConnection.hasStatement(testInputStatement, false));
-
-        Assert.assertTrue("The test output predicate mapping statement was not in the resulting repository", testRepositoryConnection.hasStatement(testOutputPredicateMappingStatement, false));
-
-        Assert.assertFalse("The test output subject mapping statement was in the resulting repository", testRepositoryConnection.hasStatement(testOutputSubjectMappingStatement, false));
-
-        Assert.assertFalse("The test output object mapping statement was in the resulting repository", testRepositoryConnection.hasStatement(testOutputObjectMappingStatement, false));
-
-        Assert.assertEquals("The test statements were not added accurately to the repository", 2, testRepositoryConnection.size());
-    }    
-
+        
+        mappingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
+        
+        Assert.assertTrue("The test output statement was not in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputStatement, false));
+        
+        Assert.assertFalse("The test input statement was still in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testInputStatement, false));
+        
+        Assert.assertTrue("The test output predicate mapping statement was not in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputPredicateMappingStatement, false));
+        
+        Assert.assertFalse("The test output subject mapping statement was in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputSubjectMappingStatement, false));
+        
+        Assert.assertFalse("The test output object mapping statement was in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputObjectMappingStatement, false));
+        
+        Assert.assertEquals("The test statements were not added accurately to the repository", 2,
+                this.testRepositoryConnection.size());
+    }
+    
     /**
      * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
      * 
      * @throws RepositoryException
-     * @throws QueryEvaluationException 
-     * @throws MalformedQueryException 
+     * @throws QueryEvaluationException
+     * @throws MalformedQueryException
      */
-    @Test 
-    public void testMoreAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    @Test
+    public void testMoreAddMatchingTriples() throws RepositoryException, QueryEvaluationException,
+        MalformedQueryException
     {
-        URI subjectUri = testValueFactory.createURI("http://bio2rdf.org/po:0000198");
+        final URI subjectUri = this.testValueFactory.createURI("http://bio2rdf.org/po:0000198");
         
-        URI normalisedSubjectUri = testValueFactory.createURI("http://oas.example.org/plantontology:0000198");
+        final URI normalisedSubjectUri =
+                this.testValueFactory.createURI("http://oas.example.org/plantontology:0000198");
         
-        URI predicateUri = testValueFactory.createURI("http://bio2rdf.org/po:is_a");
+        final URI predicateUri = this.testValueFactory.createURI("http://bio2rdf.org/po:is_a");
         
-        URI normalisedPredicateUri = testValueFactory.createURI("http://oas.example.org/plantontology:is_a");
-
-        URI objectUri = testValueFactory.createURI("http://bio2rdf.org/po:0009089");
+        final URI normalisedPredicateUri = this.testValueFactory.createURI("http://oas.example.org/plantontology:is_a");
         
-        URI normalisedObjectUri = testValueFactory.createURI("http://oas.example.org/plantontology:0009089");
+        final URI objectUri = this.testValueFactory.createURI("http://bio2rdf.org/po:0009089");
         
-        Statement testInputStatement = testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
+        final URI normalisedObjectUri = this.testValueFactory.createURI("http://oas.example.org/plantontology:0009089");
         
-        Statement testOutputStatement = testValueFactory.createStatement(normalisedSubjectUri, normalisedPredicateUri, normalisedObjectUri);
-
-        testRepositoryConnection.add(testInputStatement);
+        final Statement testInputStatement = this.testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
         
-        testRepositoryConnection.commit();
+        final Statement testOutputStatement =
+                this.testValueFactory
+                        .createStatement(normalisedSubjectUri, normalisedPredicateUri, normalisedObjectUri);
         
-        Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
+        this.testRepositoryConnection.add(testInputStatement);
         
-        String testQuery = "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri .  ?normalisedObjectUri <http://www.w3.org/2002/07/owl#sameAs> ?objectUri .  } WHERE {  ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"http://bio2rdf.org/po:\")) . bind(iri(concat(\"http://oas.example.org/plantontology:\", encode_for_uri(substr(str(?objectUri), 23)))) AS ?normalisedObjectUri)  } ";
-
+        this.testRepositoryConnection.commit();
+        
+        Assert.assertEquals("The test statement was not added to the repository", 1,
+                this.testRepositoryConnection.size());
+        
+        final String testQuery =
+                "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri .  ?normalisedObjectUri <http://www.w3.org/2002/07/owl#sameAs> ?objectUri .  } WHERE {  ?subjectUri ?predicateUri ?objectUri . filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"http://bio2rdf.org/po:\")) . bind(iri(concat(\"http://oas.example.org/plantontology:\", encode_for_uri(substr(str(?objectUri), 23)))) AS ?normalisedObjectUri)  } ";
+        
         final GraphQueryResult graphResult =
-                testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, testQuery).evaluate();
+                this.testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, testQuery).evaluate();
         
         int selectedStatements = 0;
         
         while(graphResult.hasNext())
         {
-            Statement nextStatement = graphResult.next();
+            final Statement nextStatement = graphResult.next();
             
             selectedStatements++;
         }
@@ -265,37 +282,47 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
         
         mappingRule.addSubjectMappingPredicate(OWL.EQUIVALENTCLASS);
-        Statement testOutputSubjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTCLASS, predicateUri);
-
+        final Statement testOutputSubjectMappingStatement =
+                this.testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTCLASS, predicateUri);
+        
         mappingRule.addPredicateMappingPredicate(OWL.EQUIVALENTPROPERTY);
-        Statement testOutputPredicateMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTPROPERTY, predicateUri);
-
+        final Statement testOutputPredicateMappingStatement =
+                this.testValueFactory.createStatement(normalisedPredicateUri, OWL.EQUIVALENTPROPERTY, predicateUri);
+        
         mappingRule.addObjectMappingPredicate(OWL.SAMEAS);
-        Statement testOutputObjectMappingStatement = testValueFactory.createStatement(normalisedPredicateUri, OWL.SAMEAS, predicateUri);
+        final Statement testOutputObjectMappingStatement =
+                this.testValueFactory.createStatement(normalisedPredicateUri, OWL.SAMEAS, predicateUri);
         
         mappingRule.setInputUriPrefix("http://bio2rdf.org/po:");
         mappingRule.setOutputUriPrefix("http://oas.example.org/plantontology:");
         
         mappingRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-
-        mappingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), testRepository);
-
-        for(Statement nextOutputStatement : testRepositoryConnection.getStatements(null, null, null, false).asList())
+        
+        mappingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
+        
+        for(final Statement nextOutputStatement : this.testRepositoryConnection.getStatements(null, null, null, false)
+                .asList())
         {
-            log.info(nextOutputStatement.toString());
+            AbstractPrefixMappingNormalisationRuleTest.log.info(nextOutputStatement.toString());
         }
         
-        Assert.assertTrue("The test output statement was not in the resulting repository", testRepositoryConnection.hasStatement(testOutputStatement, false));
-
-        Assert.assertTrue("The test output predicate mapping statement was not in the resulting repository", testRepositoryConnection.hasStatement(testOutputPredicateMappingStatement, false));
-
-        Assert.assertFalse("The test output subject mapping statement was in the resulting repository", testRepositoryConnection.hasStatement(testOutputSubjectMappingStatement, false));
-
-        Assert.assertFalse("The test output object mapping statement was in the resulting repository", testRepositoryConnection.hasStatement(testOutputObjectMappingStatement, false));
-
-        Assert.assertFalse("The test input statement was still in the resulting repository", testRepositoryConnection.hasStatement(testInputStatement, false));
+        Assert.assertTrue("The test output statement was not in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputStatement, false));
         
-        Assert.assertEquals("The test statements were not added accurately to the repository", 4, testRepositoryConnection.size());
-    }    
-
+        Assert.assertTrue("The test output predicate mapping statement was not in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputPredicateMappingStatement, false));
+        
+        Assert.assertFalse("The test output subject mapping statement was in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputSubjectMappingStatement, false));
+        
+        Assert.assertFalse("The test output object mapping statement was in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testOutputObjectMappingStatement, false));
+        
+        Assert.assertFalse("The test input statement was still in the resulting repository",
+                this.testRepositoryConnection.hasStatement(testInputStatement, false));
+        
+        Assert.assertEquals("The test statements were not added accurately to the repository", 4,
+                this.testRepositoryConnection.size());
+    }
+    
 }

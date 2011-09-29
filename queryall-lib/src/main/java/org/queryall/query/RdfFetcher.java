@@ -45,7 +45,8 @@ public class RdfFetcher
     }
     
     // If postInformation is empty String "" or null then we assume they did not want to post
-    public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader) throws MalformedURLException
+    public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
+        throws MalformedURLException
     {
         if(RdfFetcher._DEBUG)
         {
@@ -131,18 +132,23 @@ public class RdfFetcher
                 try
                 {
                     inputStream =
-                            new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName(conn.getContentEncoding())));
+                            new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName(conn
+                                    .getContentEncoding())));
                 }
-                catch(IllegalArgumentException iae)
+                catch(final IllegalArgumentException iae)
                 {
-                    log.error("Content encoding was not known or valid conn.getContentEncoding()="+conn.getContentEncoding(), iae);
+                    RdfFetcher.log.error(
+                            "Content encoding was not known or valid conn.getContentEncoding()="
+                                    + conn.getContentEncoding(), iae);
                     
-                    inputStream = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
+                    inputStream =
+                            new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
                 }
             }
             else
             {
-                inputStream = new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
+                inputStream =
+                        new BufferedReader(new InputStreamReader(conn.getInputStream(), Charset.forName("UTF-8")));
             }
             
             this.setLastReturnedContentType(conn.getContentType());
@@ -171,7 +177,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(uhe);
         }
@@ -183,7 +189,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(nrthe);
         }
@@ -195,7 +201,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(pue);
         }
@@ -207,7 +213,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(ce);
         }
@@ -219,7 +225,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(ste);
         }
@@ -231,7 +237,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(se);
         }
@@ -243,7 +249,7 @@ public class RdfFetcher
                         + endpointUrl);
             }
             
-            setLastWasError(true);
+            this.setLastWasError(true);
             
             this.setLastException(ioe);
         }
@@ -255,9 +261,9 @@ public class RdfFetcher
                 {
                     out.close();
                 }
-                catch(IOException e)
+                catch(final IOException e)
                 {
-                    log.error("Found error trying to close the output stream", e);
+                    RdfFetcher.log.error("Found error trying to close the output stream", e);
                 }
             }
             
@@ -267,9 +273,9 @@ public class RdfFetcher
                 {
                     inputStream.close();
                 }
-                catch(IOException e)
+                catch(final IOException e)
                 {
-                    log.error("Found error trying to close the input stream", e);
+                    RdfFetcher.log.error("Found error trying to close the input stream", e);
                 }
             }
             
@@ -286,22 +292,22 @@ public class RdfFetcher
             // If there are issues with this, turn off the conn.getResponseCode() call here
             try
             {
-                setLastStatusCode(conn.getResponseCode());
+                this.setLastStatusCode(conn.getResponseCode());
             }
-            catch(IOException e)
+            catch(final IOException e)
             {
-                setLastStatusCode(1);
-                log.info("Found error trying to get the response status code", e);
+                this.setLastStatusCode(1);
+                RdfFetcher.log.info("Found error trying to get the response status code", e);
             }
             
-            if(getLastWasError())
+            if(this.getLastWasError())
             {
                 this.localBlacklistController.accumulateHttpResponseError(url.getProtocol() + "://" + url.getHost(),
-                        getLastStatusCode());
+                        this.getLastStatusCode());
                 
                 // Try to debug why there are endpoints responding with 406 suddenly
                 // may just be a virtuoso bug, but need some evidence
-                if(getLastStatusCode() == 406)
+                if(this.getLastStatusCode() == 406)
                 {
                     RdfFetcher.log.error("Found an endpoint that responded with 406 to acceptHeader=" + acceptHeader);
                 }
@@ -324,6 +330,11 @@ public class RdfFetcher
         return results.toString();
     }
     
+    public Exception getLastException()
+    {
+        return this.lastException;
+    }
+    
     /**
      * @return the lastReturnedContentEncoding
      */
@@ -338,6 +349,21 @@ public class RdfFetcher
     public String getLastReturnedContentType()
     {
         return this.lastReturnedContentType;
+    }
+    
+    public int getLastStatusCode()
+    {
+        return this.lastStatusCode;
+    }
+    
+    public boolean getLastWasError()
+    {
+        return this.lastWasError;
+    }
+    
+    protected void setLastException(final Exception lastException)
+    {
+        this.lastException = lastException;
     }
     
     /**
@@ -356,6 +382,16 @@ public class RdfFetcher
     protected void setLastReturnedContentType(final String lastReturnedContentType)
     {
         this.lastReturnedContentType = lastReturnedContentType;
+    }
+    
+    protected void setLastStatusCode(final int lastStatusCode)
+    {
+        this.lastStatusCode = lastStatusCode;
+    }
+    
+    protected void setLastWasError(final boolean lastWasError)
+    {
+        this.lastWasError = lastWasError;
     }
     
     public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
@@ -399,36 +435,6 @@ public class RdfFetcher
         }
         
         return results;
-    }
-
-    public int getLastStatusCode()
-    {
-        return lastStatusCode;
-    }
-
-    protected void setLastStatusCode(int lastStatusCode)
-    {
-        this.lastStatusCode = lastStatusCode;
-    }
-
-    public boolean getLastWasError()
-    {
-        return lastWasError;
-    }
-
-    protected void setLastWasError(boolean lastWasError)
-    {
-        this.lastWasError = lastWasError;
-    }
-
-    public Exception getLastException()
-    {
-        return lastException;
-    }
-
-    protected void setLastException(Exception lastException)
-    {
-        this.lastException = lastException;
     }
     
 }

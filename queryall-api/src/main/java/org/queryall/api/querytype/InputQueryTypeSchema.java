@@ -42,16 +42,11 @@ public class InputQueryTypeSchema
         InputQueryTypeSchema.setQueryExpectedInputParameters(f.createURI(baseUri, "expectedInputParameters"));
     }
     
-    public static void setQueryExpectedInputParameters(URI expectedInputParameters)
-    {
-        InputQueryTypeSchema.queryExpectedInputParameters = expectedInputParameters;
-    }
-
     public static URI getQueryExpectedInputParameters()
     {
         return InputQueryTypeSchema.queryExpectedInputParameters;
     }
-
+    
     public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
@@ -69,9 +64,11 @@ public class InputQueryTypeSchema
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.DOMAIN,
                     QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.LABEL, f.createLiteral("The list of input parameters to expect for this query."),
-                    contextKeyUri);
-            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.COMMENT, f.createLiteral("The list of parameters must contain each and every valid parameter for this query. If a parameter is not in the query, and it is not a globally recognised parameter, it will be ignored completely."),
+            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.LABEL,
+                    f.createLiteral("The list of input parameters to expect for this query."), contextKeyUri);
+            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(),
+                    RDFS.COMMENT,
+                    f.createLiteral("The list of parameters must contain each and every valid parameter for this query. If a parameter is not in the query, and it is not a globally recognised parameter, it will be ignored completely."),
                     contextKeyUri);
             
             // If everything went as planned, we can commit the result
@@ -99,6 +96,11 @@ public class InputQueryTypeSchema
         }
         
         return false;
+    }
+    
+    public static void setQueryExpectedInputParameters(final URI expectedInputParameters)
+    {
+        InputQueryTypeSchema.queryExpectedInputParameters = expectedInputParameters;
     }
     
 }

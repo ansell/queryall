@@ -15,8 +15,8 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
+import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
@@ -37,40 +37,21 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     
     static
     {
-        SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri());
+        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
+                .add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
+                .add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES;
+        return PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES;
     }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Collection<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            // Not sure how this would be implemented after query parsing, or why it would be different to after query creation, so leave it off the list for now
-            //this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        }
-        
-        return Collections.unmodifiableCollection(this.validStages);
-    }
-    
     
     private String inputPrefix = "";
     
     private String outputPrefix = "";
+    
     private Collection<URI> subjectMappingPredicates = new HashSet<URI>();
     private Collection<URI> predicateMappingPredicates = new HashSet<URI>();
     private Collection<URI> objectMappingPredicates = new HashSet<URI>();
@@ -102,12 +83,14 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri()))
+                    && nextStatement.getObject().equals(
+                            PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri()))
             {
                 if(PrefixMappingNormalisationRuleImpl._TRACE)
                 {
                     PrefixMappingNormalisationRuleImpl.log
-                            .trace("PrefixMappingNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
+                            .trace("PrefixMappingNormalisationRuleImpl: found valid type predicate for URI: "
+                                    + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -120,15 +103,18 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
             {
                 this.setOutputUriPrefix(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(PrefixMappingNormalisationRuleSchema.getSubjectMappingPredicateUri()))
+            else if(nextStatement.getPredicate().equals(
+                    PrefixMappingNormalisationRuleSchema.getSubjectMappingPredicateUri()))
             {
                 this.addSubjectMappingPredicate((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(PrefixMappingNormalisationRuleSchema.getObjectMappingPredicateUri()))
+            else if(nextStatement.getPredicate().equals(
+                    PrefixMappingNormalisationRuleSchema.getObjectMappingPredicateUri()))
             {
                 this.addObjectMappingPredicate((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(PrefixMappingNormalisationRuleSchema.getPredicateMappingPredicateUri()))
+            else if(nextStatement.getPredicate().equals(
+                    PrefixMappingNormalisationRuleSchema.getPredicateMappingPredicateUri()))
             {
                 this.addPredicateMappingPredicate((URI)nextStatement.getObject());
             }
@@ -146,9 +132,28 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
         
         if(PrefixMappingNormalisationRuleImpl._TRACE)
         {
-            PrefixMappingNormalisationRuleImpl.log.trace("PrefixMappingNormalisationRuleImpl.fromRdf: would have returned... result="
-                    + this.toString());
+            PrefixMappingNormalisationRuleImpl.log
+                    .trace("PrefixMappingNormalisationRuleImpl.fromRdf: would have returned... result="
+                            + this.toString());
         }
+    }
+    
+    @Override
+    public void addObjectMappingPredicate(final URI sameas)
+    {
+        this.objectMappingPredicates.add(sameas);
+    }
+    
+    @Override
+    public void addPredicateMappingPredicate(final URI equivalentproperty)
+    {
+        this.predicateMappingPredicates.add(equivalentproperty);
+    }
+    
+    @Override
+    public void addSubjectMappingPredicate(final URI mappingPredicateUri)
+    {
+        this.subjectMappingPredicates.add(mappingPredicateUri);
     }
     
     /**
@@ -172,6 +177,12 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
         return this.inputPrefix;
     }
     
+    @Override
+    public Collection<URI> getObjectMappingPredicates()
+    {
+        return Collections.unmodifiableCollection(this.objectMappingPredicates);
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -181,6 +192,40 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     public String getOutputUriPrefix()
     {
         return this.outputPrefix;
+    }
+    
+    @Override
+    public Collection<URI> getPredicateMappingPredicates()
+    {
+        return Collections.unmodifiableCollection(this.predicateMappingPredicates);
+    }
+    
+    @Override
+    public Collection<URI> getSubjectMappingPredicates()
+    {
+        return Collections.unmodifiableCollection(this.subjectMappingPredicates);
+    }
+    
+    /**
+     * @return the validStages
+     */
+    @Override
+    public Collection<URI> getValidStages()
+    {
+        if(this.validStages.size() == 0)
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            // Not sure how this would be implemented after query parsing, or why it would be
+            // different to after query creation, so leave it off the list for now
+            // this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        
+        return Collections.unmodifiableCollection(this.validStages);
     }
     
     /*
@@ -206,14 +251,15 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     }
     
     /**
-     * The use of this method may modify any endpointSpecific URIs given in the templateVariables section
+     * The use of this method may modify any endpointSpecific URIs given in the templateVariables
+     * section
      */
     @Override
     public Object stageAfterQueryCreation(final Object input)
     {
         // denormalise the query variables
         // WARNING: This may destroy/alter mappings that were created in the query variables stage
-        return ((String)input).replace(getInputUriPrefix(), getOutputUriPrefix());
+        return ((String)input).replace(this.getInputUriPrefix(), this.getOutputUriPrefix());
     }
     
     /**
@@ -231,7 +277,9 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     @Override
     public Object stageAfterResultsImport(final Object output)
     {
-        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), this.getOutputUriPrefix(), getSubjectMappingPredicates(), getPredicateMappingPredicates(), getObjectMappingPredicates());
+        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), this.getOutputUriPrefix(),
+                this.getSubjectMappingPredicates(), this.getPredicateMappingPredicates(),
+                this.getObjectMappingPredicates());
     }
     
     /**
@@ -240,28 +288,29 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     @Override
     public Object stageAfterResultsToDocument(final Object output)
     {
-        return ((String)output).replace(getInputUriPrefix(), getOutputUriPrefix());
+        return ((String)output).replace(this.getInputUriPrefix(), this.getOutputUriPrefix());
     }
     
     @Override
     public Object stageAfterResultsToPool(final Object output)
     {
-        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), this.getOutputUriPrefix(), getSubjectMappingPredicates(), getPredicateMappingPredicates(), getObjectMappingPredicates());
+        return RdfUtils.doMappingQueries((Repository)output, this.getInputUriPrefix(), this.getOutputUriPrefix(),
+                this.getSubjectMappingPredicates(), this.getPredicateMappingPredicates(),
+                this.getObjectMappingPredicates());
     }
     
     @Override
     public Object stageBeforeResultsImport(final Object output)
     {
-        return ((String)output).replace(getInputUriPrefix(), getOutputUriPrefix());
+        return ((String)output).replace(this.getInputUriPrefix(), this.getOutputUriPrefix());
     }
     
     @Override
     public Object stageQueryVariables(final Object input)
     {
         // denormalise the query variables
-        return ((String)input).replace(getOutputUriPrefix(), getInputUriPrefix());
+        return ((String)input).replace(this.getOutputUriPrefix(), this.getInputUriPrefix());
     }
-    
     
     @Override
     public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
@@ -277,7 +326,8 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
         {
             if(PrefixMappingNormalisationRuleImpl._DEBUG)
             {
-                PrefixMappingNormalisationRuleImpl.log.debug("PrefixMappingNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                PrefixMappingNormalisationRuleImpl.log.debug("PrefixMappingNormalisationRuleImpl.toRdf: keyToUse="
+                        + keyToUse);
             }
             
             final URI keyUri = this.getKey();
@@ -288,32 +338,33 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
             con.setAutoCommit(false);
             
             con.add(keyUri, RDF.TYPE, PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), keyToUse);
-            con.add(keyUri, PrefixMappingNormalisationRuleSchema.getInputPrefixUri(), inputUriPrefixLiteral,
-                    keyToUse);
-            con.add(keyUri, PrefixMappingNormalisationRuleSchema.getOutputPrefixUri(), outputUriPrefixLiteral,
-                    keyToUse);
+            con.add(keyUri, PrefixMappingNormalisationRuleSchema.getInputPrefixUri(), inputUriPrefixLiteral, keyToUse);
+            con.add(keyUri, PrefixMappingNormalisationRuleSchema.getOutputPrefixUri(), outputUriPrefixLiteral, keyToUse);
             
             if(this.subjectMappingPredicates != null)
             {
-                for(URI nextMappingPredicate : subjectMappingPredicates)
+                for(final URI nextMappingPredicate : this.subjectMappingPredicates)
                 {
-                    con.add(keyUri, PrefixMappingNormalisationRuleSchema.getSubjectMappingPredicateUri(), nextMappingPredicate, keyToUse);
+                    con.add(keyUri, PrefixMappingNormalisationRuleSchema.getSubjectMappingPredicateUri(),
+                            nextMappingPredicate, keyToUse);
                 }
             }
             
             if(this.predicateMappingPredicates != null)
             {
-                for(URI nextMappingPredicate : predicateMappingPredicates)
+                for(final URI nextMappingPredicate : this.predicateMappingPredicates)
                 {
-                    con.add(keyUri, PrefixMappingNormalisationRuleSchema.getPredicateMappingPredicateUri(), nextMappingPredicate, keyToUse);
+                    con.add(keyUri, PrefixMappingNormalisationRuleSchema.getPredicateMappingPredicateUri(),
+                            nextMappingPredicate, keyToUse);
                 }
             }
             
             if(this.objectMappingPredicates != null)
             {
-                for(URI nextMappingPredicate : objectMappingPredicates)
+                for(final URI nextMappingPredicate : this.objectMappingPredicates)
                 {
-                    con.add(keyUri, PrefixMappingNormalisationRuleSchema.getObjectMappingPredicateUri(), nextMappingPredicate, keyToUse);
+                    con.add(keyUri, PrefixMappingNormalisationRuleSchema.getObjectMappingPredicateUri(),
+                            nextMappingPredicate, keyToUse);
                 }
             }
             
@@ -347,41 +398,5 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
         result += "description=" + this.getDescription() + "\n";
         
         return result;
-    }
-
-    @Override
-    public void addSubjectMappingPredicate(URI mappingPredicateUri)
-    {
-        this.subjectMappingPredicates.add(mappingPredicateUri);
-    }
-
-    @Override
-    public Collection<URI> getSubjectMappingPredicates()
-    {
-        return Collections.unmodifiableCollection(this.subjectMappingPredicates);
-    }
-
-    @Override
-    public void addPredicateMappingPredicate(URI equivalentproperty)
-    {
-        this.predicateMappingPredicates.add(equivalentproperty);
-    }
-
-    @Override
-    public Collection<URI> getPredicateMappingPredicates()
-    {
-        return Collections.unmodifiableCollection(this.predicateMappingPredicates);
-    }
-
-    @Override
-    public void addObjectMappingPredicate(URI sameas)
-    {
-        this.objectMappingPredicates.add(sameas);
-    }
-
-    @Override
-    public Collection<URI> getObjectMappingPredicates()
-    {
-        return Collections.unmodifiableCollection(this.objectMappingPredicates);
     }
 }

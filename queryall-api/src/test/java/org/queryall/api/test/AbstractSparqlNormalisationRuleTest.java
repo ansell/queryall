@@ -109,9 +109,10 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         this.testValueFactory = new ValueFactoryImpl();
         
         this.testMultipleWherePatternsSparqlNormalisationRuleUri =
-                testValueFactory.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
+                this.testValueFactory.createURI("http://example.org/test/multipleWherePatternsSparqlNormalisationRule");
         this.testStageEmptyConstructQuerySetSparqlNormalisationRuleUri =
-                testValueFactory.createURI("http://example.org/test/emptyConstructQuerySetSparqlNormalisationRule");
+                this.testValueFactory
+                        .createURI("http://example.org/test/emptyConstructQuerySetSparqlNormalisationRule");
         
         this.testStartingUriAEOBase = "http://purl.obolibrary.org/obo/AEO_";
         this.testFinalUriAEOBase = "http://bio2rdf.org/obo_aeo:";
@@ -172,49 +173,44 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
      * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
      * 
      * @throws RepositoryException
-     * @throws QueryEvaluationException 
-     * @throws MalformedQueryException 
+     * @throws QueryEvaluationException
+     * @throws MalformedQueryException
      */
-    @Test 
+    @Test
     public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
     {
-        URI subjectUri = testValueFactory.createURI("http://example.org/po:0000198");
+        final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
-        URI predicateUri = testValueFactory.createURI("http://bio2rdf.org/ns/obo#is_a");
+        final URI predicateUri = this.testValueFactory.createURI("http://bio2rdf.org/ns/obo#is_a");
         
-        URI objectUri = testValueFactory.createURI("http://example.org/po:0009089");
+        final URI objectUri = this.testValueFactory.createURI("http://example.org/po:0009089");
         
-        Statement testStatement = testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
+        final Statement testStatement = this.testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
         
-        testRepositoryConnection.add(testStatement);
+        this.testRepositoryConnection.add(testStatement);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
+        Assert.assertEquals("The test statement was not added to the repository", 1,
+                this.testRepositoryConnection.size());
         
         final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
         
         sparqlRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
         
-        String sparqlConstructQueryTarget = " ?subjectUri ?normalisedPropertyUri ?objectUri . ?normalisedPropertyUri <http://www.w3.org/2002/07/owl#sameAs> ?propertyUri . ";
-        String sparqlWherePattern = " ?subjectUri ?propertyUri ?objectUri . " +
-        		"filter(strStarts(str(?propertyUri) , \"http://bio2rdf.org/ns/obo#\")) . " +
-        		"bind(" +
-        		"iri(" +
-        		"concat(\"http://oas.example.org/obo_resource:\", " +
-        		"encode_for_uri(" +
-        		"lcase(" +
-        		"substr(str(?propertyUri), 26)" +
-        		")" +
-        		")" +
-        		")" +
-        		") " +
-        		"AS ?normalisedPropertyUri) . ";
-
-        String nextConstructQuery = "CONSTRUCT { "+sparqlConstructQueryTarget+" } WHERE { "+sparqlWherePattern+" }";
+        final String sparqlConstructQueryTarget =
+                " ?subjectUri ?normalisedPropertyUri ?objectUri . ?normalisedPropertyUri <http://www.w3.org/2002/07/owl#sameAs> ?propertyUri . ";
+        final String sparqlWherePattern =
+                " ?subjectUri ?propertyUri ?objectUri . "
+                        + "filter(strStarts(str(?propertyUri) , \"http://bio2rdf.org/ns/obo#\")) . " + "bind(" + "iri("
+                        + "concat(\"http://oas.example.org/obo_resource:\", " + "encode_for_uri(" + "lcase("
+                        + "substr(str(?propertyUri), 26)" + ")" + ")" + ")" + ") " + "AS ?normalisedPropertyUri) . ";
+        
+        final String nextConstructQuery =
+                "CONSTRUCT { " + sparqlConstructQueryTarget + " } WHERE { " + sparqlWherePattern + " }";
         
         final GraphQueryResult graphResult =
-                testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+                this.testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
         
         int selectedStatements = 0;
         
@@ -223,87 +219,90 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
             selectedStatements++;
             graphResult.next();
         }
-
+        
         Assert.assertTrue("Query was not executed properly by Sesame", (selectedStatements > 0));
         
         sparqlRule.setSparqlConstructQueryTarget(sparqlConstructQueryTarget);
         sparqlRule.addSparqlWherePattern(sparqlWherePattern);
         
-        Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries().size());
+        Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries()
+                .size());
         
         sparqlRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
         
-        Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
+        Assert.assertTrue("Stage was not added correctly",
+                sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
         
-        sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), testRepository);
-
-        Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
-    
+        sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
+        
+        Assert.assertEquals("The test statements were not added to the repository", 3,
+                this.testRepositoryConnection.size());
+        
     }
     
     @Test
-    public void testAddMatchingTriplesForGeneSymbol() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    public void testAddMatchingTriplesForGeneSymbol() throws RepositoryException, QueryEvaluationException,
+        MalformedQueryException
     {
-            URI subjectUri = testValueFactory.createURI("http://bio2rdf.org/geneid:12334");
-    
-            URI predicateUri = testValueFactory.createURI("http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol");
-            
-            Literal objectLiteral = testValueFactory.createLiteral("Capn2");
-            
-            Statement testStatement = testValueFactory.createStatement(subjectUri, predicateUri, objectLiteral);
-            
-            testRepositoryConnection.add(testStatement);
-            
-            testRepositoryConnection.commit();
-            
-            Assert.assertEquals("The test statement was not added to the repository", 1, testRepositoryConnection.size());
-            
-            final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
-            
-            sparqlRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
-            
-            String sparqlConstructQueryTarget = " ?subjectUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri .  ?symbolPredicate <http://bio2rdf.org/bio2rdf_resource:propertyMappedTo> <http://bio2rdf.org/bio2rdf_resource:dbxref> . ";
-            String sparqlWherePattern = " ?subjectUri ?symbolPredicate ?primarySymbol . " +
-                    "filter(sameTerm(?symbolPredicate , iri(\""+predicateUri.stringValue()+"\"))) . " +
-                    "bind(" +
-                    "iri(" +
-                    "concat(\"http://bio2rdf.org/symbol:\", " +
-                    "encode_for_uri(" +
-                    "lcase(" +
-                    "str(?primarySymbol)" +
-                    ")" +
-                    ")" +
-                    ")" +
-                    ") " +
-                    "AS ?symbolUri) . ";
-
-            String nextConstructQuery = "CONSTRUCT { "+sparqlConstructQueryTarget+" } WHERE { "+sparqlWherePattern+" }";
-            
-            final GraphQueryResult graphResult =
-                    testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
-            
-            int selectedStatements = 0;
-            
-            while(graphResult.hasNext())
-            {
-                selectedStatements++;
-                graphResult.next();
-            }
-
-            Assert.assertTrue("Query was not executed properly by Sesame", (selectedStatements > 0));
-            
-            sparqlRule.setSparqlConstructQueryTarget(sparqlConstructQueryTarget);
-            sparqlRule.addSparqlWherePattern(sparqlWherePattern);
-            
-            Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries().size());
-            
-            sparqlRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            
-            Assert.assertTrue("Stage was not added correctly", sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
-            
-            sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), testRepository);
-
-            Assert.assertEquals("The test statements were not added to the repository", 3, testRepositoryConnection.size());
+        final URI subjectUri = this.testValueFactory.createURI("http://bio2rdf.org/geneid:12334");
+        
+        final URI predicateUri =
+                this.testValueFactory.createURI("http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol");
+        
+        final Literal objectLiteral = this.testValueFactory.createLiteral("Capn2");
+        
+        final Statement testStatement = this.testValueFactory.createStatement(subjectUri, predicateUri, objectLiteral);
+        
+        this.testRepositoryConnection.add(testStatement);
+        
+        this.testRepositoryConnection.commit();
+        
+        Assert.assertEquals("The test statement was not added to the repository", 1,
+                this.testRepositoryConnection.size());
+        
+        final SparqlNormalisationRule sparqlRule = this.getNewTestSparqlRule();
+        
+        sparqlRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
+        
+        final String sparqlConstructQueryTarget =
+                " ?subjectUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri .  ?symbolPredicate <http://bio2rdf.org/bio2rdf_resource:propertyMappedTo> <http://bio2rdf.org/bio2rdf_resource:dbxref> . ";
+        final String sparqlWherePattern =
+                " ?subjectUri ?symbolPredicate ?primarySymbol . " + "filter(sameTerm(?symbolPredicate , iri(\""
+                        + predicateUri.stringValue() + "\"))) . " + "bind(" + "iri("
+                        + "concat(\"http://bio2rdf.org/symbol:\", " + "encode_for_uri(" + "lcase("
+                        + "str(?primarySymbol)" + ")" + ")" + ")" + ") " + "AS ?symbolUri) . ";
+        
+        final String nextConstructQuery =
+                "CONSTRUCT { " + sparqlConstructQueryTarget + " } WHERE { " + sparqlWherePattern + " }";
+        
+        final GraphQueryResult graphResult =
+                this.testRepositoryConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
+        
+        int selectedStatements = 0;
+        
+        while(graphResult.hasNext())
+        {
+            selectedStatements++;
+            graphResult.next();
+        }
+        
+        Assert.assertTrue("Query was not executed properly by Sesame", (selectedStatements > 0));
+        
+        sparqlRule.setSparqlConstructQueryTarget(sparqlConstructQueryTarget);
+        sparqlRule.addSparqlWherePattern(sparqlWherePattern);
+        
+        Assert.assertEquals("The construct pattern was not parsed correctly", 1, sparqlRule.getSparqlConstructQueries()
+                .size());
+        
+        sparqlRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        
+        Assert.assertTrue("Stage was not added correctly",
+                sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
+        
+        sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
+        
+        Assert.assertEquals("The test statements were not added to the repository", 3,
+                this.testRepositoryConnection.size());
     }
     
     @Test
@@ -361,15 +360,18 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     {
         SparqlNormalisationRule queryallRule = this.getNewTestSparqlRule();
         queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
-        Assert.assertTrue(queryallRule.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()));
+        Assert.assertTrue(queryallRule.getMode().equals(
+                SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()));
         
         queryallRule = this.getNewTestSparqlRule();
         queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
-        Assert.assertTrue(queryallRule.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()));
+        Assert.assertTrue(queryallRule.getMode().equals(
+                SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()));
         
         queryallRule = this.getNewTestSparqlRule();
         queryallRule.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
-        Assert.assertTrue(queryallRule.getMode().equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
+        Assert.assertTrue(queryallRule.getMode().equals(
+                SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
     }
     
 }

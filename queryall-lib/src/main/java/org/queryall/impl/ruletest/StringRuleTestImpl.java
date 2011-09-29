@@ -38,18 +38,23 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
     
     static
     {
-        STRING_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
-        STRING_RULE_TEST_IMPL_TYPES.add(StringRuleTestSchema.getStringRuleTestTypeUri());
+        StringRuleTestImpl.STRING_RULE_TEST_IMPL_TYPES.add(RuleTestSchema.getRuletestTypeUri());
+        StringRuleTestImpl.STRING_RULE_TEST_IMPL_TYPES.add(StringRuleTestSchema.getStringRuleTestTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return STRING_RULE_TEST_IMPL_TYPES;
+        return StringRuleTestImpl.STRING_RULE_TEST_IMPL_TYPES;
     }
     
     private String testInputString = "";
     
     private String testOutputString = "";
+    
+    public StringRuleTestImpl()
+    {
+        super();
+    }
     
     public StringRuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
@@ -105,11 +110,12 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         }
     }
     
-    public StringRuleTestImpl()
+    @Override
+    public Set<URI> getElementTypes()
     {
-        super();
+        return StringRuleTestImpl.myTypes();
     }
-
+    
     /**
      * @return the testInputString
      */
@@ -196,11 +202,5 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         }
         
         return false;
-    }
-
-    @Override
-    public Set<URI> getElementTypes()
-    {
-        return myTypes();
     }
 }

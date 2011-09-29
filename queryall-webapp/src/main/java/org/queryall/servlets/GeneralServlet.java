@@ -489,9 +489,11 @@ public class GeneralServlet extends HttpServlet
                         // && nextScheduledHttpProvider.isHttpGetUrl()
                                 && nextScheduledQueryBundle.getProvider().needsRedirect())
                         {
-                            String randomlyChosenRedirect = ListUtils.chooseRandomItemFromCollection(nextScheduledQueryBundle.getAlternativeEndpointsAndQueries().keySet());
+                            final String randomlyChosenRedirect =
+                                    ListUtils.chooseRandomItemFromCollection(nextScheduledQueryBundle
+                                            .getAlternativeEndpointsAndQueries().keySet());
                             
-                            log.info("Sending redirect to url="+randomlyChosenRedirect);
+                            GeneralServlet.log.info("Sending redirect to url=" + randomlyChosenRedirect);
                             
                             response.sendRedirect(randomlyChosenRedirect);
                             
@@ -791,7 +793,7 @@ public class GeneralServlet extends HttpServlet
                             + localSettings.getSeparator()
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
                                     .toLowerCase()) + localSettings.getSeparator()),
-//                            + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
+                    // + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
                     Settings.CONFIG_API_VERSION);
         }
         
@@ -822,7 +824,8 @@ public class GeneralServlet extends HttpServlet
     {
         RepositoryConnection myRepositoryConnection = null;
         
-        final boolean convertAlternateToPreferredPrefix = localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
+        final boolean convertAlternateToPreferredPrefix =
+                localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
         
         try
         {
@@ -851,7 +854,7 @@ public class GeneralServlet extends HttpServlet
                 }
                 
                 final QueryType nextIncludeType = localSettings.getAllQueryTypes().get(nextStaticQueryTypeForUnknown);
-
+                
                 // If we didn't understand the query
                 final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
@@ -862,13 +865,15 @@ public class GeneralServlet extends HttpServlet
                                     localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
                                     pageOffset, localSettings);
                     
-                    // This is a last ditch solution to giving some meaningful feedback, as we assume that the unknown query type will handle the input, so we pass it in as both parameters
+                    // This is a last ditch solution to giving some meaningful feedback, as we
+                    // assume that the unknown query type will handle the input, so we pass it in as
+                    // both parameters
                     String nextBackupString =
                             QueryCreator.createStaticRdfXmlString(nextIncludeType, (OutputQueryType)nextIncludeType,
-                                    null, attributeList, emptyNamespaceEntryMap,
-                                    includedProfiles,
+                                    null, attributeList, emptyNamespaceEntryMap, includedProfiles,
                                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true), convertAlternateToPreferredPrefix, localSettings)
+                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                    convertAlternateToPreferredPrefix, localSettings)
                                     + "\n";
                     
                     nextBackupString =
@@ -883,8 +888,7 @@ public class GeneralServlet extends HttpServlet
                     }
                     catch(final org.openrdf.rio.RDFParseException rdfpe)
                     {
-                        GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF "
-                                + rdfpe.getMessage());
+                        GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
                         GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
                     }
                 }

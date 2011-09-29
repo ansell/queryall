@@ -40,27 +40,28 @@ public abstract class AbstractRdfInputQueryTypeTest
     @Before
     public void setUp() throws Exception
     {
-//        final ValueFactory f = new MemValueFactory();
+        // final ValueFactory f = new MemValueFactory();
         
-        this.testRdfInputQueryType1 = getNewTestRdfInputQueryType();
+        this.testRdfInputQueryType1 = this.getNewTestRdfInputQueryType();
         
-        this.testRdfDocument = "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">" + 
-        		"            <rdf:Description rdf:ID=\"foo\">" + 
-        		"  <rdf:type rdf:resource=\"http://example.org/rdfinputtest:type1\"/>" + 
-        		"  <variable1 xmlns=\"http://example.org/rdfinputtest:\">abcc123</variable1>" + 
-        		"  <variable2 xmlns=\"http://example.org/rdfinputtest:\">zyxx902</variable2>" + 
-        		"</rdf:Description>" + 
-        		"</rdf:RDF>";
-
-        this.testSparqlInputSelect = "SELECT ?input_1 ?input_2 WHERE { ?testObjects a <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }";
+        this.testRdfDocument =
+                "<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">"
+                        + "            <rdf:Description rdf:ID=\"foo\">"
+                        + "  <rdf:type rdf:resource=\"http://example.org/rdfinputtest:type1\"/>"
+                        + "  <variable1 xmlns=\"http://example.org/rdfinputtest:\">abcc123</variable1>"
+                        + "  <variable2 xmlns=\"http://example.org/rdfinputtest:\">zyxx902</variable2>"
+                        + "</rdf:Description>" + "</rdf:RDF>";
+        
+        this.testSparqlInputSelect =
+                "SELECT ?input_1 ?input_2 WHERE { ?testObjects a <http://example.org/rdfinputtest:type1> . ?testObjects <http://example.org/rdfinputtest:variable1> ?input_1 . ?testObjects <http://example.org/rdfinputtest:variable2> ?input_2 . }";
         this.testRdfInputQueryType1.setSparqlInputSelect(this.testSparqlInputSelect);
         
         this.testRdfInputQueryType1.addExpectedInputParameter("input_1");
         this.testRdfInputQueryType1.addExpectedInputParameter("input_2");
         
-        testQueryParameters = new HashMap<String, String>();
-        testQueryParameters.put(Constants.QUERY, this.testRdfDocument);
-        testQueryParameters.put("inputMimeType", Constants.APPLICATION_RDF_XML);
+        this.testQueryParameters = new HashMap<String, String>();
+        this.testQueryParameters.put(Constants.QUERY, this.testRdfDocument);
+        this.testQueryParameters.put("inputMimeType", Constants.APPLICATION_RDF_XML);
     }
     
     /**
@@ -78,22 +79,29 @@ public abstract class AbstractRdfInputQueryTypeTest
     @Test
     public void testGet()
     {
-        Assert.assertEquals("SPARQL SELECT query input was not set properly", this.testSparqlInputSelect, this.testRdfInputQueryType1.getSparqlInputSelect());
+        Assert.assertEquals("SPARQL SELECT query input was not set properly", this.testSparqlInputSelect,
+                this.testRdfInputQueryType1.getSparqlInputSelect());
         
-        Assert.assertTrue("RDF document does not match for query parameters", this.testRdfInputQueryType1.matchesQueryParameters(testQueryParameters));
+        Assert.assertTrue("RDF document does not match for query parameters",
+                this.testRdfInputQueryType1.matchesQueryParameters(this.testQueryParameters));
         
-        Map<String, List<String>> matchingQueryParams = this.testRdfInputQueryType1.matchesForQueryParameters(testQueryParameters);
+        final Map<String, List<String>> matchingQueryParams =
+                this.testRdfInputQueryType1.matchesForQueryParameters(this.testQueryParameters);
         
         Assert.assertEquals("Query parameters were not parsed correctly", 2, matchingQueryParams.size());
         Assert.assertTrue("Query parameters were not parsed correctly", matchingQueryParams.containsKey("input_1"));
         Assert.assertTrue("Query parameters were not parsed correctly", matchingQueryParams.containsKey("input_2"));
         
-        Assert.assertEquals("Query parameters were not processed correctly", 1, matchingQueryParams.get("input_1").size());
-        Assert.assertEquals("Query parameters were not processed correctly", 1, matchingQueryParams.get("input_2").size());
-
-        Assert.assertEquals("Query parameters were not processed correctly", "abcc123", matchingQueryParams.get("input_1").get(0));
-        Assert.assertEquals("Query parameters were not processed correctly", "zyxx902", matchingQueryParams.get("input_2").get(0));
-            
+        Assert.assertEquals("Query parameters were not processed correctly", 1, matchingQueryParams.get("input_1")
+                .size());
+        Assert.assertEquals("Query parameters were not processed correctly", 1, matchingQueryParams.get("input_2")
+                .size());
+        
+        Assert.assertEquals("Query parameters were not processed correctly", "abcc123",
+                matchingQueryParams.get("input_1").get(0));
+        Assert.assertEquals("Query parameters were not processed correctly", "zyxx902",
+                matchingQueryParams.get("input_2").get(0));
+        
     }
     
 }

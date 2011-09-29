@@ -62,9 +62,9 @@ public class SparqlRuleTestSchema
     /**
      * @return the ruletestInputTestString
      */
-    public static URI getSparqlRuletestSparqlAskPattern()
+    public static URI getSparqlRuletestInputMimeType()
     {
-        return SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern;
+        return SparqlRuleTestSchema.sparqlRuletestInputMimeType;
     }
     
     /**
@@ -78,9 +78,9 @@ public class SparqlRuleTestSchema
     /**
      * @return the ruletestInputTestString
      */
-    public static URI getSparqlRuletestInputMimeType()
+    public static URI getSparqlRuletestSparqlAskPattern()
     {
-        return SparqlRuleTestSchema.sparqlRuletestInputMimeType;
+        return SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern;
     }
     
     /**
@@ -112,34 +112,35 @@ public class SparqlRuleTestSchema
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.LABEL, f.createLiteral("The body of a SPARQL ASK query that will generate either true or false, as defined in rdfrule:expectedResult."),
+            con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(),
+                    RDFS.LABEL,
+                    f.createLiteral("The body of a SPARQL ASK query that will generate either true or false, as defined in rdfrule:expectedResult."),
                     contextKeyUri);
             
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.RANGE, RDFS.LITERAL,
-                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.LABEL, f.createLiteral("The expected result of the SPARQL ASK query, ie, true or false."),
-                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.LABEL,
+                    f.createLiteral("The expected result of the SPARQL ASK query, ie, true or false."), contextKeyUri);
             
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.LABEL, f.createLiteral("The RDF triples to normalise using the linked rules and stages before evaluating the ASK query."),
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(),
+                    RDFS.LABEL,
+                    f.createLiteral("The RDF triples to normalise using the linked rules and stages before evaluating the ASK query."),
                     contextKeyUri);
             
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.RANGE, RDFS.LITERAL,
-                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.LABEL, f.createLiteral("The mime type of the input triples."),
-                    contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.LABEL,
+                    f.createLiteral("The mime type of the input triples."), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -180,9 +181,9 @@ public class SparqlRuleTestSchema
      * @param ruletestInputTestString
      *            the ruletestInputTestString to set
      */
-    public static void setSparqlRuletestSparqlAskPattern(final URI ruletestInputTestString)
+    public static void setSparqlRuletestInputMimeType(final URI ruletestInputTestString)
     {
-        SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern = ruletestInputTestString;
+        SparqlRuleTestSchema.sparqlRuletestInputMimeType = ruletestInputTestString;
     }
     
     /**
@@ -198,9 +199,9 @@ public class SparqlRuleTestSchema
      * @param ruletestInputTestString
      *            the ruletestInputTestString to set
      */
-    public static void setSparqlRuletestInputMimeType(final URI ruletestInputTestString)
+    public static void setSparqlRuletestSparqlAskPattern(final URI ruletestInputTestString)
     {
-        SparqlRuleTestSchema.sparqlRuletestInputMimeType = ruletestInputTestString;
+        SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern = ruletestInputTestString;
     }
     
     /**

@@ -28,44 +28,11 @@ public final class QueryTypeUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
     
-   
-    public static Map<String, Collection<URI>> namespacesMatchesForQueryParameters(final QueryType nextQueryType, final Map<String, String> nextQueryParameters, Map<String, Collection<URI>> namespacePrefixMap)
-    {
-        Map<String, Collection<URI>> results = new HashMap<String, Collection<URI>>();
-        
-        Map<String, List<String>> namespaceParameterMatches = nextQueryType.matchesForQueryParameters(nextQueryParameters);
-        
-        for(String nextNamespaceParameter : namespaceParameterMatches.keySet())
-        {
-            if(nextQueryType.isInputVariableNamespace(nextNamespaceParameter))
-            {
-                List<String> nextNamespaceParameterMatches = namespaceParameterMatches.get(nextNamespaceParameter);
-
-                for(String nextNamespaceParameterMatch : nextNamespaceParameterMatches)
-                {
-                    if(namespacePrefixMap.containsKey(nextNamespaceParameterMatch))
-                    {
-                        if(_TRACE)
-                        {
-                            log.trace("Found a namespace for nextNamespaceParameter="+nextNamespaceParameter+" nextNamespaceParameterMatch="+nextNamespaceParameterMatch);
-                        }
-                        
-                        results.put(nextNamespaceParameter, namespacePrefixMap.get(nextNamespaceParameterMatch));
-                    }
-                    else
-                    {
-                        log.error("Could not find a matching namespace for nextNamespaceParameter="+nextNamespaceParameter+" nextNamespaceParameterMatch="+nextNamespaceParameterMatch);
-                    }
-                }
-            }
-        }
-        
-        return results;
-    }
-
-    public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(final Map<String, String> queryParameters,
-            final List<Profile> profileList, final Map<URI, QueryType> allQueryTypes,
-            Map<String, Collection<URI>> namespacePrefixesToUris, Map<URI, NamespaceEntry> allNamespaceEntries, final boolean recogniseImplicitQueryInclusions, final boolean includeNonProfileMatchedQueries)
+    public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(
+            final Map<String, String> queryParameters, final List<Profile> profileList,
+            final Map<URI, QueryType> allQueryTypes, final Map<String, Collection<URI>> namespacePrefixesToUris,
+            final Map<URI, NamespaceEntry> allNamespaceEntries, final boolean recogniseImplicitQueryInclusions,
+            final boolean includeNonProfileMatchedQueries)
     {
         if(QueryTypeUtils._DEBUG)
         {
@@ -81,7 +48,8 @@ public final class QueryTypeUtils
             }
         }
         
-        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> results = new HashMap<QueryType, Map<String, Collection<NamespaceEntry>>>();
+        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> results =
+                new HashMap<QueryType, Map<String, Collection<NamespaceEntry>>>();
         
         for(final QueryType nextQuery : allQueryTypes.values())
         {
@@ -89,46 +57,50 @@ public final class QueryTypeUtils
             {
                 if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log.trace("tentative, pre-profile-check match for"
-                            + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
-                            + queryParameters);
+                    QueryTypeUtils.log.trace("tentative, pre-profile-check match for" + " nextQuery.getKey()="
+                            + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
                 }
                 if(nextQuery.isUsedWithProfileList(profileList, recogniseImplicitQueryInclusions,
                         includeNonProfileMatchedQueries))
                 {
                     if(QueryTypeUtils._DEBUG)
                     {
-                        QueryTypeUtils.log.debug("profileList suitable for"
-                                + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
-                                + queryParameters);
+                        QueryTypeUtils.log.debug("profileList suitable for" + " nextQuery.getKey()="
+                                + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
                     }
                     
                     Map<String, Collection<NamespaceEntry>> actualNamespaceEntries;
                     
-                    // Only try to populate actualNamespaceEntries if the query is namespace specific
+                    // Only try to populate actualNamespaceEntries if the query is namespace
+                    // specific
                     if(nextQuery.getIsNamespaceSpecific())
                     {
-                        Map<String, Collection<URI>> namespaceMatches = QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters, namespacePrefixesToUris);
+                        final Map<String, Collection<URI>> namespaceMatches =
+                                QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters,
+                                        namespacePrefixesToUris);
                         
-                        actualNamespaceEntries = new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size()*2);
+                        actualNamespaceEntries =
+                                new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size() * 2);
                         
-                        for(String nextParameter : namespaceMatches.keySet())
+                        for(final String nextParameter : namespaceMatches.keySet())
                         {
-                            Collection<NamespaceEntry> namespaceParameterMatches = new ArrayList<NamespaceEntry>(2);
-
-                            for(URI nextNamespaceUri : namespaceMatches.get(nextParameter))
+                            final Collection<NamespaceEntry> namespaceParameterMatches =
+                                    new ArrayList<NamespaceEntry>(2);
+                            
+                            for(final URI nextNamespaceUri : namespaceMatches.get(nextParameter))
                             {
                                 namespaceParameterMatches.add(allNamespaceEntries.get(nextNamespaceUri));
                             }
-
+                            
                             actualNamespaceEntries.put(nextParameter, namespaceParameterMatches);
                         }
                     }
                     else
                     {
-                        if(_DEBUG)
+                        if(QueryTypeUtils._DEBUG)
                         {
-                            log.debug("query type is not namespace specific, creating an empty namespace parameter map");
+                            QueryTypeUtils.log
+                                    .debug("query type is not namespace specific, creating an empty namespace parameter map");
                         }
                         // In other cases use an unmodifiable empty map
                         actualNamespaceEntries = Collections.emptyMap();
@@ -138,12 +110,52 @@ public final class QueryTypeUtils
                 }
                 else if(QueryTypeUtils._TRACE)
                 {
-                    QueryTypeUtils.log.trace("profileList not suitable for"
-                            + " nextQuery.getKey()=" + nextQuery.getKey().stringValue() + " queryParameters="
-                            + queryParameters);
+                    QueryTypeUtils.log.trace("profileList not suitable for" + " nextQuery.getKey()="
+                            + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
                 }
             }
         }
+        return results;
+    }
+    
+    public static Map<String, Collection<URI>> namespacesMatchesForQueryParameters(final QueryType nextQueryType,
+            final Map<String, String> nextQueryParameters, final Map<String, Collection<URI>> namespacePrefixMap)
+    {
+        final Map<String, Collection<URI>> results = new HashMap<String, Collection<URI>>();
+        
+        final Map<String, List<String>> namespaceParameterMatches =
+                nextQueryType.matchesForQueryParameters(nextQueryParameters);
+        
+        for(final String nextNamespaceParameter : namespaceParameterMatches.keySet())
+        {
+            if(nextQueryType.isInputVariableNamespace(nextNamespaceParameter))
+            {
+                final List<String> nextNamespaceParameterMatches =
+                        namespaceParameterMatches.get(nextNamespaceParameter);
+                
+                for(final String nextNamespaceParameterMatch : nextNamespaceParameterMatches)
+                {
+                    if(namespacePrefixMap.containsKey(nextNamespaceParameterMatch))
+                    {
+                        if(QueryTypeUtils._TRACE)
+                        {
+                            QueryTypeUtils.log.trace("Found a namespace for nextNamespaceParameter="
+                                    + nextNamespaceParameter + " nextNamespaceParameterMatch="
+                                    + nextNamespaceParameterMatch);
+                        }
+                        
+                        results.put(nextNamespaceParameter, namespacePrefixMap.get(nextNamespaceParameterMatch));
+                    }
+                    else
+                    {
+                        QueryTypeUtils.log.error("Could not find a matching namespace for nextNamespaceParameter="
+                                + nextNamespaceParameter + " nextNamespaceParameterMatch="
+                                + nextNamespaceParameterMatch);
+                    }
+                }
+            }
+        }
+        
         return results;
     }
     
