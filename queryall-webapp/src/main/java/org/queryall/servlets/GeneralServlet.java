@@ -46,6 +46,7 @@ import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
+import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
@@ -488,7 +489,11 @@ public class GeneralServlet extends HttpServlet
                         // && nextScheduledHttpProvider.isHttpGetUrl()
                                 && nextScheduledQueryBundle.getProvider().needsRedirect())
                         {
-                            response.sendRedirect(nextScheduledQueryBundle.getQueryEndpoint());
+                            String randomlyChosenRedirect = ListUtils.chooseRandomItemFromCollection(nextScheduledQueryBundle.getAlternativeEndpointsAndQueries().keySet());
+                            
+                            log.info("Sending redirect to url="+randomlyChosenRedirect);
+                            
+                            response.sendRedirect(randomlyChosenRedirect);
                             
                             return;
                         }
@@ -785,8 +790,8 @@ public class GeneralServlet extends HttpServlet
                                     .stringValue().toLowerCase())
                             + localSettings.getSeparator()
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
-                                    .toLowerCase()) + localSettings.getSeparator()
-                            + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
+                                    .toLowerCase()) + localSettings.getSeparator()),
+//                            + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
                     Settings.CONFIG_API_VERSION);
         }
         

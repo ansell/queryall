@@ -259,8 +259,8 @@ public class RdfFetchController
                     if(RdfFetchController._DEBUG)
                     {
                         RdfFetchController.log
-                                .debug("RdfFetchController.fetchRdfForQueries: Query successful endpoint="
-                                        + nextThread.getOriginalQueryBundle().getQueryEndpoint());
+                                .debug("RdfFetchController.fetchRdfForQueries: Query successful query="
+                                        + nextThread.getOriginalQueryBundle().getQueryType().getKey());
                         
                         if(RdfFetchController._TRACE)
                         {
@@ -278,9 +278,11 @@ public class RdfFetchController
                         queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                     }
                     
-                    nextThread.setResultDebugString("SUCCESS: endpoint="
-                            + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " queryKey=" + queryKey
-                            + " query=" + nextThread.getOriginalQueryBundle().getQuery());
+                    // TODO: expand to include details of the actual endpoint
+                    nextThread.setResultDebugString("SUCCESS: queryKey=" + queryKey);
+//                    nextThread.setResultDebugString("SUCCESS: endpoint="
+//                            + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " queryKey=" + queryKey);
+//                            + " query=" + nextThread.getOriginalQueryBundle().getQuery());
                     
                     this.getSuccessfulResults().add(nextThread);
                 }
@@ -301,8 +303,11 @@ public class RdfFetchController
         
         for(final QueryBundle nextBundle : nextQueryBundles)
         {
-            final String nextEndpoint = nextBundle.getQueryEndpoint();
-            final String nextQuery = nextBundle.getQuery();
+            // randomly choose one of the alternatives, the others will be resolved if necessary automagically
+            final String nextEndpoint = ListUtils.chooseRandomItemFromCollection(nextBundle.getAlternativeEndpointsAndQueries().keySet());
+            //nextBundle.getQueryEndpoint();
+            final String nextQuery = nextBundle.getAlternativeEndpointsAndQueries().get(nextEndpoint);
+            //nextBundle.getQuery();
             
             if(RdfFetchController._DEBUG)
             {
@@ -541,79 +546,56 @@ public class RdfFetchController
                     }
                 }
                 
-                if(replacedEndpoints.size() > 0)
-                {
-                    Map<String, String> chosenAlternativeEndpoints = new HashMap<String, String>();
-                    QueryBundle lastProviderQueryBundle = null;
-                    
-                    for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
-                    {
-                        final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
-                        boolean foundAnEndpoint = false;
-                        
-                        
-                        for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
-                        {
-                            final QueryBundle nextProviderQueryBundle = new QueryBundle();
-                            
-                            nextProviderQueryBundle.setQuery(originalEndpointEntries.get(nextReplacedEndpoint));
-                            nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
-                            nextProviderQueryBundle.setQueryEndpoint(nextReplacedEndpoint);
-                            nextProviderQueryBundle.setOriginalEndpointString(nextEndpoint);
-                            nextProviderQueryBundle.setOriginalProvider(nextProvider);
-                            nextProviderQueryBundle.setQueryType(nextQueryType);
-                            nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
-                            nextProviderQueryBundle.setQueryallSettings(localSettings);
+                final QueryBundle nextProviderQueryBundle = new QueryBundle();
+                
+                nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
+                nextProviderQueryBundle.setOriginalProvider(nextProvider);
+                nextProviderQueryBundle.setQueryType(nextQueryType);
+                nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
+                nextProviderQueryBundle.setQueryallSettings(localSettings);
+              
+                log.info("nextQueryType="+nextQueryType.getKey().stringValue());
 
-                            // Then test whether the endpoint is blacklisted before accepting it
-                            if(noCommunicationProvider
-                                    || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
+                for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
+                {
+                    final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
+                    
+                    log.info("nextEndpoint="+nextEndpoint);
+                    for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
+                    {
+                        log.info("nextReplacedEndpoint="+nextReplacedEndpoint);
+
+                        // Then test whether the endpoint is blacklisted before accepting it
+                        if(noCommunicationProvider
+                                || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
+                        {
+                            log.info("not blacklisted");
+                            
+                            // no need to worry about redundant endpoint alternates if we are going to try to query all of the endpoints for each provider
+                            if(useAllEndpointsForEachProvider)
                             {
-                                // setup all of the alternatives replaced endpoints and queries for
-                                // those endpoints that we know of as alternatives for this
-                                // queryBundle so we can use them if an error occurs with this query
-                                // bundle
-                                if(foundAnEndpoint && !useAllEndpointsForEachProvider)
-                                {
-                                    chosenAlternativeEndpoints.put(nextEndpoint, originalEndpointEntries.get(nextReplacedEndpoint));
-                                }
-                                else
-                                {
-                                    results.add(nextProviderQueryBundle);
-                                    foundAnEndpoint = true;
-                                }
-                                
-                                lastProviderQueryBundle = nextProviderQueryBundle;
+                                nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint, originalEndpointEntries.get(nextReplacedEndpoint));
+                            }
+                            else if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0)
+                            {
+                                nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint, originalEndpointEntries.get(nextReplacedEndpoint));
                             }
                             else
                             {
-                                RdfFetchController.log
-                                        .warn("Not including provider because it is not no-communication and is a blacklisted url nextProvider.getKey()="
-                                                + nextProvider.getKey());
+                                log.warn("Not adding an endpoint because we are not told to attempt to use all endpoints, and we have already chosen one");
                             }
                         }
+                        else
+                        {
+                            RdfFetchController.log
+                                    .warn("Not including provider because it is not no-communication and is a blacklisted url nextProvider.getKey()="
+                                            + nextProvider.getKey());
+                        }
                     }
-                    
-                    if(!useAllEndpointsForEachProvider && lastProviderQueryBundle != null)
-                    {
-                        lastProviderQueryBundle.setAlternativeEndpointsAndQueries(chosenAlternativeEndpoints);
-                        results.add(lastProviderQueryBundle);
-                    }
-                }
-                else
-                {
-                    final QueryBundle nextProviderQueryBundle = new QueryBundle();
-                    
-                    nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
-                    nextProviderQueryBundle.setProvider(nextProvider);
-                    nextProviderQueryBundle.setQueryType(nextQueryType);
-                    nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
-                    nextProviderQueryBundle.setQueryallSettings(localSettings);
-                    
+
                     results.add(nextProviderQueryBundle);
-                    
                 }
-            }
+            } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
                 log.info("endpoint method = noCommunication key=" + nextProvider.getKey());
@@ -634,15 +616,6 @@ public class RdfFetchController
                         final Map<String, String> attributeList =
                                 QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,
                                         this.queryParameters, "", this.realHostName, this.pageOffset, localSettings);
-                        
-                        // then also create the statically defined rdf/xml string to go with this
-                        // query based on the current attributes, we assume that both queries have
-                        // been intelligently put into the configuration file so that they have an
-                        // equivalent number of arguments as ${input_1} etc, in them.
-                        // There is no general solution for determining how these should work other
-                        // than naming them as ${namespace} and ${identifier} and ${searchTerm}, but
-                        // these can be worked around by only offering compatible services as
-                        // alternatives with the static rdf/xml portions
                         
                         if(nextCustomIncludeType instanceof OutputQueryType)
                         {
@@ -859,7 +832,7 @@ public class RdfFetchController
                 final Collection<QueryBundle> queryBundlesForQueryType =
                         this.generateQueryBundlesForQueryTypeAndProviders(this.localSettings, nextQueryType, allCustomQueries.get(nextQueryType),
                                 chosenProviders,
-                                this.localSettings.getBooleanProperty("useAllEndpointsForEachProvider", true));
+                                this.localSettings.getBooleanProperty("tryAllEndpointsForEachProvider", true));
                 
                 if(RdfFetchController._DEBUG)
                 {

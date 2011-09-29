@@ -132,7 +132,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         
         dummyProvider.setEndpointUrls(endpointUrls);
         
-        nextQueryBundle.setQueryEndpoint(hostToUse + "provenancebykey/" + StringUtils.percentEncode(nextElementKey));
+        nextQueryBundle.addAlternativeEndpointAndQuery(hostToUse + "provenancebykey/" + StringUtils.percentEncode(nextElementKey), "");
         
         final Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
         

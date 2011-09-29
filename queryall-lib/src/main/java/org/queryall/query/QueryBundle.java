@@ -2,6 +2,7 @@ package org.queryall.query;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -42,20 +43,21 @@ public class QueryBundle
     
     // This query is specifically tailored for the provider with respect to the URI
     // (de)normalisation rules
-    private String query = "";
+//    private String query = "";
     private String staticRdfXmlString = "";
     // Note: although the endpoint URL's are available in the Provider,
     // this is the one that has actually been chosen and had variables replaced for this bundle out
     // of the available provider endpoints
-    private String queryEndpoint = "";
+//    private String queryEndpoint = "";
     // The following is the unreplaced endpoint String
-    private String originalEndpointString = "";
+//    private String originalEndpointString = "";
+    
     private Provider originalProvider;
     private QueryType customQueryType;
     private boolean redirectRequired = false;
     
     private Collection<Profile> relevantProfiles = new HashSet<Profile>();
-    private Map<String, String> alternativeEndpointsAndQueries;
+    private Map<String, String> alternativeEndpointsAndQueries = new HashMap<String, String>();
     private QueryAllConfiguration localSettings;
     
     public static URI queryBundleTypeUri;
@@ -139,34 +141,6 @@ public class QueryBundle
         return false;
     }
     
-    // this will remove the current queryEndpoint from the list of endpoint URL's in the
-    // originalProvider and return the new list
-    // NOTE: this will not work if the URL has any templates replaced against it
-    public Collection<String> getAlternativeEndpoints()
-    {
-        final Collection<String> results = new LinkedList<String>();
-        
-        if(this.getProvider() instanceof HttpProvider)
-        {
-            final Collection<String> allEndpoints = ((HttpProvider)this.getProvider()).getEndpointUrls();
-            
-            if(allEndpoints == null || allEndpoints.size() <= 1)
-            {
-                return results;
-            }
-            
-            for(final String nextEndpointUrl : allEndpoints)
-            {
-                if(!nextEndpointUrl.equals(this.getQueryEndpoint()))
-                {
-                    results.add(nextEndpointUrl);
-                }
-            }
-        }
-        
-        return results;
-    }
-    
     /**
      * Get an unmodifiable Map containing alternative endpoints as keys and queries as values
      * 
@@ -176,15 +150,7 @@ public class QueryBundle
      */
     public Map<String, String> getAlternativeEndpointsAndQueries()
     {
-        return Collections.unmodifiableMap(this.alternativeEndpointsAndQueries);
-    }
-    
-    /**
-     * @return the originalEndpointString
-     */
-    public String getOriginalEndpointString()
-    {
-        return this.originalEndpointString;
+        return this.alternativeEndpointsAndQueries;
     }
     
     /**
@@ -200,22 +166,12 @@ public class QueryBundle
         return this.getOriginalProvider();
     }
     
-    public String getQuery()
-    {
-        return this.query;
-    }
-    
     /**
      * @return the localSettings
      */
     public QueryAllConfiguration getQueryallSettings()
     {
         return this.localSettings;
-    }
-    
-    public String getQueryEndpoint()
-    {
-        return this.queryEndpoint;
     }
     
     public QueryType getQueryType()
@@ -255,27 +211,23 @@ public class QueryBundle
      *            A map with alternative endpoints as keys and the queries to use as the entries on
      *            the map
      */
-    public void setAlternativeEndpointsAndQueries(final Map<String, String> endpointEntries)
+    public void addAlternativeEndpointAndQuery(String nextEndpoint, String nextQuery)
     {
-        this.alternativeEndpointsAndQueries = endpointEntries;
+        if(this.alternativeEndpointsAndQueries.containsKey(nextEndpoint))
+        {
+            log.warn("Overwriting query for endpoint="+nextEndpoint+" query="+nextQuery+" originalQuery="+this.alternativeEndpointsAndQueries.get(nextEndpoint));
+        }
+        
+        this.alternativeEndpointsAndQueries.put(nextEndpoint, nextQuery);
         
         // remove self-references here so we don't accidentally recursively call the same provider
         // endpoint
-        if(this.alternativeEndpointsAndQueries.containsKey(this.getQueryEndpoint())
-                && this.alternativeEndpointsAndQueries.get(this.queryEndpoint).equals(this.getQuery()))
-        {
-            this.alternativeEndpointsAndQueries.remove(this.getQueryEndpoint());
-        }
+//        if(this.alternativeEndpointsAndQueries.containsKey(this.getQueryEndpoint())
+//                && this.alternativeEndpointsAndQueries.get(this.queryEndpoint).equals(this.getQuery()))
+//        {
+//            this.alternativeEndpointsAndQueries.remove(this.getQueryEndpoint());
+//        }
         
-    }
-    
-    /**
-     * @param originalEndpointString
-     *            the originalEndpointString to set
-     */
-    public void setOriginalEndpointString(final String originalEndpointString)
-    {
-        this.originalEndpointString = originalEndpointString;
     }
     
     /**
@@ -301,11 +253,6 @@ public class QueryBundle
         this.setOriginalProvider(originalProvider);
     }
     
-    public void setQuery(final String query)
-    {
-        this.query = query;
-    }
-    
     /**
      * @param localSettings
      *            the localSettings to set
@@ -313,11 +260,6 @@ public class QueryBundle
     public void setQueryallSettings(final QueryAllConfiguration localSettings)
     {
         this.localSettings = localSettings;
-    }
-    
-    public void setQueryEndpoint(final String endpointUrl)
-    {
-        this.queryEndpoint = endpointUrl;
     }
     
     public void setQueryType(final QueryType customQueryType)
@@ -360,19 +302,19 @@ public class QueryBundle
             final URI queryBundleInstanceUri = f.createURI(keyPrefix + keyToUse.stringValue());
             
             final Literal keyLiteral = f.createLiteral(keyToUse.stringValue());
-            final Literal queryLiteral = f.createLiteral(this.getQuery());
-            final Literal queryBundleEndpointUri = f.createLiteral(this.getQueryEndpoint());
+            //final Literal queryLiteral = f.createLiteral(this.getQuery());
+            //final Literal queryBundleEndpointUri = f.createLiteral(this.getQueryEndpoint());
             final Literal modelVersionLiteral = f.createLiteral(modelVersion);
             
-            final Collection<String> alternativeEndpoints = this.getAlternativeEndpoints();
+//            final Collection<String> alternativeEndpoints = this.getAlternativeEndpoints();
             
             // make sure we can commit them all as far as this query bundle itself is concerned
             // before we actually put statements in
             con.setAutoCommit(false);
             
             con.add(queryBundleInstanceUri, RDF.TYPE, QueryBundle.queryBundleTypeUri, keyToUse);
-            con.add(queryBundleInstanceUri, QueryBundle.queryLiteralUri, queryLiteral, keyToUse);
-            con.add(queryBundleInstanceUri, QueryBundle.queryBundleEndpointUriTerm, queryBundleEndpointUri, keyToUse);
+//            con.add(queryBundleInstanceUri, QueryBundle.queryLiteralUri, queryLiteral, keyToUse);
+//            con.add(queryBundleInstanceUri, QueryBundle.queryBundleEndpointUriTerm, queryBundleEndpointUri, keyToUse);
             con.add(queryBundleInstanceUri, QueryBundle.queryBundleKeyUri, keyLiteral, keyToUse);
             con.add(queryBundleInstanceUri, QueryBundle.queryBundleConfigurationApiVersion, modelVersionLiteral,
                     keyToUse);
@@ -397,9 +339,9 @@ public class QueryBundle
                 }
             }
             
-            if(alternativeEndpoints != null)
+            if(alternativeEndpointsAndQueries != null)
             {
-                for(final String nextAlternativeEndpoint : alternativeEndpoints)
+                for(final String nextAlternativeEndpoint : alternativeEndpointsAndQueries.keySet())
                 {
                     if(nextAlternativeEndpoint != null && !nextAlternativeEndpoint.trim().equals(""))
                     {
@@ -486,9 +428,9 @@ public class QueryBundle
             sb.append("getQueryType().getKey()=" + this.getQueryType().getKey() + "\n");
         }
         
-        sb.append("queryEndpoint=" + this.getQueryEndpoint() + "\n");
-        sb.append("query=" + this.getQuery() + "\n");
-        sb.append("staticRdfXmlString=" + this.getStaticRdfXmlString() + "\n");
+//        sb.append("queryEndpoint=" + this.getQueryEndpoint() + "\n");
+//        sb.append("query=" + this.getQuery() + "\n");
+//        sb.append("staticRdfXmlString=" + this.getStaticRdfXmlString() + "\n");
         
         if(this.getOriginalProvider() == null)
         {
