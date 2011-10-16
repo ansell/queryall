@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvider, SparqlProvider
 {
-    static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
     private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
     @SuppressWarnings("unused")
     private static final boolean _DEBUG = HttpProviderImpl.log.isDebugEnabled();
