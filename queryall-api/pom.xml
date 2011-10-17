@@ -23,8 +23,8 @@
 	</developers>
 	<licenses>
 		<license>
-			<name>GNU General Public License 3.0</name>
-			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<name>GNU Affero General Public License 3.0</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
