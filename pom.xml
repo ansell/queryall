@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall</artifactId>
-	<version>1</version>
+	<version>1.1</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>queryall-api</module>
@@ -50,6 +50,7 @@
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<queryall.version>1.1</queryall.version>
 		<sesame.version>2.5.1</sesame.version>
 		<sesametools.version>1.5</sesametools.version>
 		<slf4j.version>1.6.2</slf4j.version>
