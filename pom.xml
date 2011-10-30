@@ -11,6 +11,7 @@
 		<module>queryall-ext-rule-xslt</module>
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>
+		<module>queryall-ext-rule-prefixmap</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-webapp</module>
 	</modules>
