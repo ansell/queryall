@@ -62,6 +62,7 @@ import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -73,7 +74,6 @@ import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
@@ -449,7 +449,7 @@ public final class RdfUtils
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(final String hostToUse, final URI nextQueryKey,
-            final int modelVersion, final QueryAllConfiguration localSettings, HttpProvider dummyProvider) throws InterruptedException
+            final int modelVersion, final QueryAllConfiguration localSettings, HttpProvider dummyProvider, RegexInputQueryType dummyQuery) throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
@@ -496,7 +496,7 @@ public final class RdfUtils
         
         nextQueryBundle.setProvider(dummyProvider);
         
-        final QueryType dummyQuery = new RegexInputQueryTypeImpl();
+        //final QueryType dummyQuery = new RegexInputQueryTypeImpl();
         
         dummyQuery.setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
                 + StringUtils.percentEncode(namespaceAndIdentifier));
@@ -514,7 +514,7 @@ public final class RdfUtils
     
     public static Collection<QueryType> fetchQueryTypeByKey(final URI nextQueryKey, final boolean useSparqlGraph,
             final String sparqlGraphUri, final String sparqlEndpointUrl, final int modelVersion,
-            final QueryAllConfiguration localSettings, HttpProvider dummyProvider)
+            final QueryAllConfiguration localSettings, HttpProvider dummyProvider, RegexInputQueryType dummyQuery)
     {
         final String constructQueryString =
                 RdfUtils.getConstructQueryForKey(nextQueryKey, useSparqlGraph, sparqlGraphUri);
@@ -536,7 +536,7 @@ public final class RdfUtils
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
         
-        final QueryType dummyQuery = new RegexInputQueryTypeImpl();
+//        final QueryType dummyQuery = new RegexInputQueryTypeImpl();
         
         dummyQuery.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));
