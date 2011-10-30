@@ -16,6 +16,8 @@
 		<module>queryall-webapp</module>
 		<module>queryall-ext-provider-http</module>
 		<module>queryall-content-negotiation</module>
+		<module>queryall-ext-querytype-rdf</module>
+		<module>queryall-ext-querytype-regex</module>
 	</modules>
 	<name>Queryall RDF services</name>
 	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>
