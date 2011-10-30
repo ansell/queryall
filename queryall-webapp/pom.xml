@@ -133,6 +133,11 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-content-negotiation</artifactId>
+			<version>${queryall.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

@@ -7,9 +7,7 @@
     <groupId>org.queryall</groupId>
     <version>1.2-SNAPSHOT</version>
   </parent>
-  <groupId>org.queryall</groupId>
   <artifactId>queryall-ext-rule-owl</artifactId>
-  <version>1.2-SNAPSHOT</version>
   <name>queryall-ext-rule-owl</name>
   <url>http://maven.apache.org</url>
   <properties>

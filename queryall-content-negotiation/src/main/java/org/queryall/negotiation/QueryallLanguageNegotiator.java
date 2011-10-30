@@ -1,6 +1,5 @@
 package org.queryall.negotiation;
 
-import org.queryall.query.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,33 +17,29 @@ public class QueryallLanguageNegotiator
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryallLanguageNegotiator.log.isInfoEnabled();
     
-    private final static ContentTypeNegotiator contentNegotiator;
+//    private static ContentTypeNegotiator contentNegotiator;
     
-    static
+    public static ContentTypeNegotiator getLanguageNegotiator(final String preferredDisplayLanguage)
     {
-        contentNegotiator = new ContentTypeNegotiator();
+        ContentTypeNegotiator contentNegotiator = new ContentTypeNegotiator();
         
-        if(Settings.getSettings().getStringProperty("preferredDisplayLanguage", "en") != null
-                && !Settings.getSettings().getStringProperty("preferredDisplayLanguage", "en").trim().equals(""))
+        if(preferredDisplayLanguage != null
+                && !preferredDisplayLanguage.trim().equals(""))
         {
-            QueryallLanguageNegotiator.contentNegotiator.addVariant(Settings.getSettings().getStringProperty(
-                    "preferredDisplayLanguage", "en"));
+            contentNegotiator.addVariant(preferredDisplayLanguage);
         }
         
-        QueryallLanguageNegotiator.contentNegotiator.addVariant("en;q=0.9").addAliasMediaType("en_GB;q=0.9")
+        contentNegotiator.addVariant("en;q=0.9").addAliasMediaType("en_GB;q=0.9")
                 .addAliasMediaType("en_AU;q=0.9").addAliasMediaType("en_CA;q=0.9").addAliasMediaType("en_US;q=0.9");
         
-        QueryallLanguageNegotiator.contentNegotiator.addVariant("de;q=0.85");
+        contentNegotiator.addVariant("de;q=0.85");
         
-        QueryallLanguageNegotiator.contentNegotiator.addVariant("nl;q=0.85");
+        contentNegotiator.addVariant("nl;q=0.85");
+        
+        return contentNegotiator;
     }
     
-    public static ContentTypeNegotiator getLanguageNegotiator()
-    {
-        return QueryallLanguageNegotiator.contentNegotiator;
-    }
-    
-    public static String getResponseLanguage(final String acceptHeader, final String userAgent)
+    public static String getResponseLanguage(final String acceptHeader, final String userAgent, String preferredDisplayLanguage)
     {
         if(QueryallLanguageNegotiator._DEBUG)
         {
@@ -52,7 +47,7 @@ public class QueryallLanguageNegotiator
                     + " userAgent=" + userAgent);
         }
         
-        final ContentTypeNegotiator negotiator = QueryallLanguageNegotiator.getLanguageNegotiator();
+        final ContentTypeNegotiator negotiator = QueryallLanguageNegotiator.getLanguageNegotiator(preferredDisplayLanguage);
         final MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
         
         if(bestMatch == null)
@@ -63,8 +58,7 @@ public class QueryallLanguageNegotiator
                         .trace("QueryallLanguageNegotiator: bestMatch not found, returning en instead");
             }
             
-            // TODO: remove reliance on Settings.getSettings() here
-            return Settings.getSettings().getStringProperty("preferredDisplayLanguage", "");
+            return preferredDisplayLanguage;
         }
         
         if(QueryallLanguageNegotiator._TRACE)
