@@ -53,6 +53,7 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.Project;
 import org.queryall.api.project.ProjectEnum;
 import org.queryall.api.project.ProjectSchema;
+import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderEnum;
@@ -72,8 +73,6 @@ import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.provider.HttpOnlyProviderImpl;
-import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryBundle;
@@ -450,11 +449,11 @@ public final class RdfUtils
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(final String hostToUse, final URI nextQueryKey,
-            final int modelVersion, final QueryAllConfiguration localSettings) throws InterruptedException
+            final int modelVersion, final QueryAllConfiguration localSettings, HttpProvider dummyProvider) throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
+//        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         
@@ -510,19 +509,19 @@ public final class RdfUtils
         
         queryBundles.add(nextQueryBundle);
         
-        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
+        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings, BlacklistController.getDefaultController());
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(final URI nextQueryKey, final boolean useSparqlGraph,
             final String sparqlGraphUri, final String sparqlEndpointUrl, final int modelVersion,
-            final QueryAllConfiguration localSettings)
+            final QueryAllConfiguration localSettings, HttpProvider dummyProvider)
     {
         final String constructQueryString =
                 RdfUtils.getConstructQueryForKey(nextQueryKey, useSparqlGraph, sparqlGraphUri);
         
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
+//        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         
@@ -553,7 +552,7 @@ public final class RdfUtils
         
         queryBundles.add(nextQueryBundle);
         
-        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings);
+        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings, BlacklistController.getDefaultController());
     }
     
     public static String findBestContentType(final String requestedContentType,
@@ -1918,11 +1917,11 @@ public final class RdfUtils
     }
     
     public static Collection<QueryType> getQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
-            final int modelVersion, final QueryAllConfiguration localSettings)
+            final int modelVersion, final QueryAllConfiguration localSettings, BlacklistController blacklistController)
     {
         // TODO: remove call to BlacklistController.getDefaultController() here
         final RdfFetchController fetchController =
-                new RdfFetchController(localSettings, BlacklistController.getDefaultController(), queryBundles);
+                new RdfFetchController(localSettings, blacklistController, queryBundles);
         
         try
         {

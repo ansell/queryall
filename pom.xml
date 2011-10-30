@@ -14,6 +14,7 @@
 		<module>queryall-ext-rule-prefixmap</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-webapp</module>
+		<module>queryall-ext-provider-http</module>
 	</modules>
 	<name>Queryall RDF services</name>
 	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>
