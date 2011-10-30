@@ -20,6 +20,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.impl.namespace.NamespaceEntryImpl;
@@ -53,6 +54,18 @@ public class QueryCreatorTest
     private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables2;
     private Collection<NamespaceEntry> testNamespaceEntries2;
     private QueryAllConfiguration testLocalSettings2;
+
+	private RegexInputQueryTypeImpl testRegexInputQueryType3;
+
+	private HttpSparqlProviderImpl testProvider3;
+
+	private HashMap<String, Collection<NamespaceEntry>> testNamespaceInputVariables3;
+
+	private ArrayList<NamespaceEntry> testNamespaceEntries3;
+
+	private HashMap<String, String> testAttributeList3;
+
+	private QueryAllConfiguration testLocalSettings3;
     
     /**
      * @throws java.lang.Exception
@@ -95,6 +108,15 @@ public class QueryCreatorTest
         this.testRegexInputQueryType2
                 .setTemplateString("Select * Where { <${normalisedStandardUri}> dc:identifier \"${endpointSpecificUri}\" . }");
         
+        this.testRegexInputQueryType3 = new RegexInputQueryTypeImpl();
+        this.testRegexInputQueryType3.setKey("http://example.org/test/query/3");
+        this.testRegexInputQueryType3.setOutputString("<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_normalisedStandardUri}\"><ns0pred:urlFasta xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_endpointUrl}</ns0pred:urlFasta></rdf:Description>");
+        this.testRegexInputQueryType3.setStandardUriTemplateString("${authority}${input_1}${separator}${input_2}");
+        this.testRegexInputQueryType3.setInputRegex("^([\\w-]+):(.+)$");
+        this.testRegexInputQueryType3.addNamespaceInputTag("input_1");
+        this.testRegexInputQueryType3.setIsNamespaceSpecific(true);
+        this.testRegexInputQueryType3.addNamespaceToHandle(this.testNamespaceEntry1.getKey());
+        
         this.testProvider1 = new HttpSparqlProviderImpl();
         this.testProvider1.setKey("http://example.org/test/provider/1");
         this.testProvider1.addIncludedInQueryType(this.testRegexInputQueryType1.getKey());
@@ -105,14 +127,24 @@ public class QueryCreatorTest
         this.testProvider2.addIncludedInQueryType(this.testRegexInputQueryType2.getKey());
         this.testProvider2.addNamespace(this.testNamespaceEntry2.getKey());
         
+        this.testProvider3 = new HttpSparqlProviderImpl();
+        this.testProvider3.setKey("http://example.org/test/provider/2");
+        this.testProvider3.addIncludedInQueryType(this.testRegexInputQueryType3.getKey());
+        this.testProvider3.addEndpointUrl("http://testendpointurl.net/${input_1}/goingwell/${input_2}");
+        this.testProvider2.addNamespace(this.testNamespaceEntry1.getKey());
+
         this.testAttributeList1 = new HashMap<String, String>();
         this.testAttributeList1.put(Constants.QUERY, "alternateNs:alternateNsUniqueId");
         
         this.testAttributeList2 = new HashMap<String, String>();
         this.testAttributeList2.put(Constants.QUERY, "otherNs:otherNsUniqueId");
         this.testAttributeList2.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, "http://my.example.org/");
-        this.testIncludedProfiles = new ArrayList<Profile>(1);
         
+        this.testAttributeList3 = new HashMap<String, String>();
+        this.testAttributeList3.put(Constants.QUERY, "alternateNs:alternateNsUniqueId");
+        this.testAttributeList2.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, "http://my.example.org/");
+
+        this.testIncludedProfiles = new ArrayList<Profile>(1);
         this.testRecogniseImplicitRdfRuleInclusions = true;
         this.testIncludeNonProfileMatchedRdfRules = true;
         this.testConvertAlternateToPreferredPrefix = true;
@@ -133,6 +165,14 @@ public class QueryCreatorTest
         this.testLocalSettings2.addProvider(this.testProvider2);
         this.testLocalSettings2.addNamespaceEntry(this.testNamespaceEntry2);
         
+        this.testLocalSettings3 =
+                new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
+                        "http://example.org/test/config/querycreator-1");
+        
+        this.testLocalSettings3.addQueryType(this.testRegexInputQueryType3);
+        this.testLocalSettings3.addProvider(this.testProvider3);
+        this.testLocalSettings3.addNamespaceEntry(this.testNamespaceEntry1);
+        
         this.testNamespaceInputVariables1 = new HashMap<String, Collection<NamespaceEntry>>();
         this.testNamespaceEntries1 = new ArrayList<NamespaceEntry>();
         this.testNamespaceEntries1.add(this.testNamespaceEntry1);
@@ -143,6 +183,10 @@ public class QueryCreatorTest
         this.testNamespaceEntries2.add(this.testNamespaceEntry2);
         this.testNamespaceInputVariables2.put("input_1", this.testNamespaceEntries2);
         
+        this.testNamespaceInputVariables3 = new HashMap<String, Collection<NamespaceEntry>>();
+        this.testNamespaceEntries3 = new ArrayList<NamespaceEntry>();
+        this.testNamespaceEntries3.add(this.testNamespaceEntry1);
+        this.testNamespaceInputVariables3.put("input_1", this.testNamespaceEntries3);
     }
     
     /**
@@ -195,7 +239,16 @@ public class QueryCreatorTest
     @Ignore
     public void testCreateStaticRdfXmlString()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertEquals("testsomething", QueryCreator.createStaticRdfXmlString(this.testRegexInputQueryType3, 
+        		(OutputQueryType)this.testRegexInputQueryType3, 
+        		this.testProvider3, 
+        		this.testAttributeList3, 
+        		this.testNamespaceInputVariables3, 
+        		this.testIncludedProfiles, 
+        		this.testRecogniseImplicitRdfRuleInclusions, 
+        		this.testIncludeNonProfileMatchedRdfRules, 
+        		this.testConvertAlternateToPreferredPrefix, 
+        		this.testLocalSettings3));
     }
     
     /**

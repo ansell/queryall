@@ -25,5 +25,10 @@
     	<artifactId>spin-api</artifactId>
     	<version>1.2.0</version>
     </dependency>
+    <dependency>
+    	<groupId>org.queryall</groupId>
+    	<artifactId>queryall-api</artifactId>
+    	<version>${queryall.version}</version>
+    </dependency>
   </dependencies>
 </project>
