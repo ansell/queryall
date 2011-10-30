@@ -123,6 +123,34 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-prefixmap</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-provider-http</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-querytype-rdf</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-querytype-regex</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<description>Created to separate the tests from the multiple modules that they rely on.</description>
 	<inceptionYear>2011</inceptionYear>

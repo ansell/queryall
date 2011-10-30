@@ -26,11 +26,10 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.project.ProjectSchema;
+import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.impl.provider.HttpOnlyProviderImpl;
-import org.queryall.impl.provider.HttpProviderImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -120,11 +119,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     }
     
     public static Map<URI, ProvenanceRecord> fetchProvenanceForElementKey(final String hostToUse,
-            final String nextElementKey, final int modelVersion) throws InterruptedException
+            final String nextElementKey, final int modelVersion, HttpProvider dummyProvider) throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
+//        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         

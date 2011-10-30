@@ -1,0 +1,7 @@
+/target
+.classpath
+.project
+.settings
+*~
+/queryall-webapp/pom.xml.versionsBackup
+/queryall-reasoner/pom.xml.versionsBackup
