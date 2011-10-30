@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.queryall</groupId>
-	<artifactId>queryall</artifactId>
-	<version>1.1</version>
+	<artifactId>queryall-parent</artifactId>
+	<version>1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>queryall-api</module>
 		<module>queryall-lib</module>
+		<module>queryall-ext-rule-xslt</module>
+		<module>queryall-ext-rule-sparql</module>
+		<module>queryall-ext-rule-regex</module>
+		<module>queryall-ext-rule-prefixmap</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-webapp</module>
-		<!-- <module>queryall-reasoner</module> -->
-		<!-- <module>queryall-biomart</module> -->
+		<module>queryall-ext-provider-http</module>
+		<module>queryall-content-negotiation</module>
+		<module>queryall-ext-querytype-rdf</module>
+		<module>queryall-ext-querytype-regex</module>
 	</modules>
 	<name>Queryall RDF services</name>
 	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>
@@ -50,10 +55,10 @@
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<queryall.version>1.1</queryall.version>
-		<sesame.version>2.5.1</sesame.version>
+		<queryall.version>1.2-SNAPSHOT</queryall.version>
+		<sesame.version>2.6.0</sesame.version>
 		<sesametools.version>1.5</sesametools.version>
-		<slf4j.version>1.6.2</slf4j.version>
+		<slf4j.version>1.6.3</slf4j.version>
 	</properties>
 	<build>
 		<plugins>

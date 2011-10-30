@@ -3,14 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.queryall</groupId>
-		<artifactId>queryall</artifactId>
-		<version>1.1</version>
+		<artifactId>queryall-parent</artifactId>
+		<version>1.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>queryall-lib</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1</version>
 	<name>queryall lib</name>
 	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
 	<inceptionYear>2007</inceptionYear>

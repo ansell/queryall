@@ -4,12 +4,11 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>queryall</artifactId>
+		<artifactId>queryall-parent</artifactId>
 		<groupId>org.queryall</groupId>
-		<version>1.1</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>queryall-lib-test</artifactId>
-	<version>1.1</version>
 	<name>queryall-lib-test</name>
 	<dependencies>
 		<dependency>
@@ -103,7 +102,56 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-xslt</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-sparql</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-regex</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-prefixmap</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-provider-http</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-querytype-rdf</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-querytype-regex</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-	<description>Created to separate the tests that work best on imported jar files (ie, META-INF/services) from the code that they rely on.</description>
+	<description>Created to separate the tests from the multiple modules that they rely on.</description>
 	<inceptionYear>2011</inceptionYear>
 </project>
