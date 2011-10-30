@@ -8,13 +8,11 @@
 	<modules>
 		<module>queryall-api</module>
 		<module>queryall-lib</module>
+		<module>queryall-ext-rule-xslt</module>
+		<module>queryall-ext-rule-sparql</module>
+		<module>queryall-ext-rule-regex</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-webapp</module>
-		<!-- <module>queryall-reasoner</module> -->
-		<!-- <module>queryall-biomart</module> -->
-
-
-		<module>queryall-ext-rule-xslt</module>
 	</modules>
 	<name>Queryall RDF services</name>
 	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>

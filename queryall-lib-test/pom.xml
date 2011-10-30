@@ -106,6 +106,22 @@
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-ext-rule-xslt</artifactId>
 			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-sparql</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-regex</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<description>Created to separate the tests from the multiple modules that they rely on.</description>
