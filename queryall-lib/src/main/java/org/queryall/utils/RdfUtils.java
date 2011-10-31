@@ -449,11 +449,12 @@ public final class RdfUtils
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(final String hostToUse, final URI nextQueryKey,
-            final int modelVersion, final QueryAllConfiguration localSettings, HttpProvider dummyProvider, RegexInputQueryType dummyQuery) throws InterruptedException
+            final int modelVersion, final QueryAllConfiguration localSettings, final HttpProvider dummyProvider,
+            final RegexInputQueryType dummyQuery) throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-//        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
+        // final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         
@@ -496,7 +497,7 @@ public final class RdfUtils
         
         nextQueryBundle.setProvider(dummyProvider);
         
-        //final QueryType dummyQuery = new RegexInputQueryTypeImpl();
+        // final QueryType dummyQuery = new RegexInputQueryTypeImpl();
         
         dummyQuery.setKey(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
                 + StringUtils.percentEncode(namespaceAndIdentifier));
@@ -509,19 +510,21 @@ public final class RdfUtils
         
         queryBundles.add(nextQueryBundle);
         
-        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings, BlacklistController.getDefaultController());
+        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings,
+                BlacklistController.getDefaultController());
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(final URI nextQueryKey, final boolean useSparqlGraph,
             final String sparqlGraphUri, final String sparqlEndpointUrl, final int modelVersion,
-            final QueryAllConfiguration localSettings, HttpProvider dummyProvider, RegexInputQueryType dummyQuery)
+            final QueryAllConfiguration localSettings, final HttpProvider dummyProvider,
+            final RegexInputQueryType dummyQuery)
     {
         final String constructQueryString =
                 RdfUtils.getConstructQueryForKey(nextQueryKey, useSparqlGraph, sparqlGraphUri);
         
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-//        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
+        // final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         
@@ -536,7 +539,7 @@ public final class RdfUtils
         
         nextQueryBundle.setOriginalProvider(dummyProvider);
         
-//        final QueryType dummyQuery = new RegexInputQueryTypeImpl();
+        // final QueryType dummyQuery = new RegexInputQueryTypeImpl();
         
         dummyQuery.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()
                 + localSettings.getSeparator() + StringUtils.percentEncode(nextQueryKey.stringValue()));
@@ -552,7 +555,8 @@ public final class RdfUtils
         
         queryBundles.add(nextQueryBundle);
         
-        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings, BlacklistController.getDefaultController());
+        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings,
+                BlacklistController.getDefaultController());
     }
     
     public static String findBestContentType(final String requestedContentType,
@@ -1917,7 +1921,8 @@ public final class RdfUtils
     }
     
     public static Collection<QueryType> getQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
-            final int modelVersion, final QueryAllConfiguration localSettings, BlacklistController blacklistController)
+            final int modelVersion, final QueryAllConfiguration localSettings,
+            final BlacklistController blacklistController)
     {
         // TODO: remove call to BlacklistController.getDefaultController() here
         final RdfFetchController fetchController =
