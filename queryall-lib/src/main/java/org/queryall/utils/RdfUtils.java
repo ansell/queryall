@@ -2801,9 +2801,9 @@ public final class RdfUtils
      * @param nextRepository
      * @param outputStream
      */
-    public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream)
+    public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream, Resource... contexts)
     {
-        RdfUtils.toOutputStream(nextRepository, outputStream, RDFFormat.RDFXML);
+        RdfUtils.toOutputStream(nextRepository, outputStream, RDFFormat.RDFXML, contexts);
     }
     
     /**
@@ -2812,7 +2812,7 @@ public final class RdfUtils
      * @param format
      */
     public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream,
-            final RDFFormat format)
+            final RDFFormat format, Resource... contexts)
     {
         RepositoryConnection nextConnection = null;
         
@@ -2820,7 +2820,7 @@ public final class RdfUtils
         {
             nextConnection = nextRepository.getConnection();
             
-            nextConnection.export(Rio.createWriter(format, outputStream));
+            nextConnection.export(Rio.createWriter(format, outputStream), contexts);
         }
         catch(final RepositoryException e)
         {
@@ -2850,7 +2850,7 @@ public final class RdfUtils
      * @param nextConnection
      * @return
      */
-    public static String toString(final Repository nextRepository)
+    public static String toString(final Repository nextRepository, Resource... contexts)
     {
         final java.io.StringWriter stBuff = new java.io.StringWriter();
         
@@ -2860,7 +2860,7 @@ public final class RdfUtils
         {
             nextConnection = nextRepository.getConnection();
             
-            nextConnection.export(Rio.createWriter(RDFFormat.RDFXML, stBuff));
+            nextConnection.export(Rio.createWriter(RDFFormat.RDFXML, stBuff), contexts);
         }
         catch(final RepositoryException e)
         {
@@ -2892,9 +2892,9 @@ public final class RdfUtils
      * @param nextRepository
      * @param nextWriter
      */
-    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter)
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter, Resource... contexts)
     {
-        RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML);
+        RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML, contexts);
     }
     
     /**
@@ -2902,7 +2902,7 @@ public final class RdfUtils
      * @param nextWriter
      * @param format
      */
-    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter, final RDFFormat format)
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter, final RDFFormat format, Resource... contexts)
     {
         RepositoryConnection nextConnection = null;
         
@@ -2910,7 +2910,7 @@ public final class RdfUtils
         {
             nextConnection = nextRepository.getConnection();
             
-            nextConnection.export(Rio.createWriter(format, nextWriter));
+            nextConnection.export(Rio.createWriter(format, nextWriter), contexts);
         }
         catch(final RepositoryException e)
         {

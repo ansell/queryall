@@ -1,5 +1,12 @@
 package org.queryall.impl.rdfrule;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -18,6 +24,10 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.RDFParseException;
+import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SpinNormalisationRule;
@@ -44,6 +54,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -70,22 +81,105 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     }
     
     /**
+     * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame repository
+     * 
+     * @param inputModel
+     * @param outputRepository If outputRepository is null, a new in-memory repository is created
+     * @param contexts
+     * @return
+     */
+    public static Repository addJenaModelToSesameRepository(Model inputModel, Repository outputRepository, org.openrdf.model.Resource... contexts)
+    {
+        if(outputRepository == null)
+        {
+            outputRepository = new SailRepository(new MemoryStore());
+            try
+            {
+                outputRepository.initialize();
+            }
+            catch(RepositoryException e)
+            {
+                log.error("Found unexpected exception initialising in memory repository", e);
+            }
+        }
+        
+        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
+        
+        // write out the triples from the model into the output stream
+        inputModel.write(internalOutputStream);
+        
+        // use the resulting byte[] as input to an InputStream
+        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
+        
+        RepositoryConnection connection = null;
+        
+        try
+        {
+            connection = outputRepository.getConnection();
+            
+            connection.add(bufferedInputStream, "http://spin.example.org/", RDFFormat.RDFXML, contexts);
+            
+            connection.commit();
+        }
+        catch(Exception e)
+        {
+            log.error("Found exception while attempting to add data to OpenRDF repository", e);
+
+            try
+            {
+                if(connection != null)
+                {
+                    connection.rollback();
+                }
+            }
+            catch(RepositoryException e1)
+            {
+                log.error("Found exception while attempting to rollback connection due to previous exception", e1);
+            }
+        }
+        finally
+        {
+            try
+            {
+                if(connection != null)
+                {
+                    connection.close();
+                }
+            }
+            catch(RepositoryException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        return outputRepository;
+    }
+    
+    /**
      * See OWLRLExample in spin-examples-1.2.0.jar
      * 
-     * TODO: convert me to real code that takes a Sesame Repository and infers the resulting triples before returning the results
+     * Currently limited to adding the resulting triples from the spin reasoning to the repository
+     * 
+     * TODO: add more modes, such as delete matching, add matching, only return matching triples etc.
+     * 
+     * @param inputRepository The OpenRDF repository to use for the input triples
      */
-    public static void processSpinRules()
+    public static Repository processSpinRules(Repository inputRepository, org.openrdf.model.Resource... contexts)
     {
         // Load domain model with imports
-        System.out.println("Loading domain ontology...");
-        OntModel queryModel = loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
+        // System.out.println("Loading domain ontology...");
+        // OntModel queryModel = loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
+        log.info("Loading jena model from sesame repository");
+        OntModel queryModel = addSesameRepositoryToJenaModel(inputRepository, contexts);
+        
         
         // Create and add Model for inferred triples
         Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         queryModel.addSubModel(newTriples);
         
         // Load OWL RL library from the web
-        System.out.println("Loading OWL RL ontology...");
+        log.info("Loading OWL RL ontology...");
         OntModel owlrlModel = loadModelWithImports("http://topbraid.org/spin/owlrl-all");
 
         // Register any new functions defined in OWL RL
@@ -105,18 +199,37 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
 
         // Run all inferences
-        System.out.println("Running SPIN inferences...");
+        log.info("Running SPIN inferences...");
         SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null);
-        System.out.println("Inferred triples: " + newTriples.size());
-        
+        log.info("Inferred triples: " + newTriples.size());
+
+        return addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
-    private static OntModel loadModelWithImports(String url) {
+    static OntModel loadModelWithImports(String url) 
+    {
         Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         baseModel.read(url);
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
     }
     
+    static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, org.openrdf.model.Resource... contexts) 
+    {
+        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
+        
+        // write out the triples from the model into the output stream
+        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
+        
+        // use the resulting byte[] as input to an InputStream
+        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
+
+        baseModel.read(bufferedInputStream, "http://spin.example.org/");
+        
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+    }
+
     public static Set<URI> myTypes()
     {
         return SpinNormalisationRuleImpl.SPIN_NORMALISATION_RULE_IMPL_TYPES;
