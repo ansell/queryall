@@ -67,7 +67,7 @@ public class SpinNormalisationRuleImplTest
         
         org.openrdf.model.Statement testSesameStatement1 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"), vf.createURI("http://other.example.org/test/property/a1"), vf.createLiteral(42));
         org.openrdf.model.Statement testSesameStatement2 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"), org.openrdf.model.vocabulary.RDF.TYPE, vf.createURI("http://my.example.org/test/uri/testType"));
-        org.openrdf.model.Statement testSesameStatement3 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"), OWL.EQUIVALENTCLASS, vf.createURI("http://vocab.org/test/equivalentToRuleType1"));
+        org.openrdf.model.Statement testSesameStatement3 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/testType"), OWL.EQUIVALENTCLASS, vf.createURI("http://vocab.org/test/equivalentToRuleType1"));
         
         testSesameStatements = new ArrayList<org.openrdf.model.Statement>(3);
         
@@ -121,7 +121,7 @@ public class SpinNormalisationRuleImplTest
         
         RepositoryConnection resultConnection = results.getConnection();
         
-        Assert.assertEquals(7, resultConnection.size());
+        Assert.assertEquals(8, resultConnection.size());
         
         for(Statement nextStatement : testSesameStatements)
         {

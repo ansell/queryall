@@ -53,6 +53,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 
@@ -202,7 +203,13 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         log.info("Running SPIN inferences...");
         SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null);
         log.info("Inferred triples: " + newTriples.size());
-
+        
+        StmtIterator listStatements = newTriples.listStatements();
+        
+        while(listStatements.hasNext())
+        {
+            log.info(listStatements.next().toString());
+        }
         return addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
