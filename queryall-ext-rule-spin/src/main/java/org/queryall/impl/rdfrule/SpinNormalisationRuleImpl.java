@@ -1,13 +1,9 @@
 package org.queryall.impl.rdfrule;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +22,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -55,7 +50,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -172,7 +167,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         // System.out.println("Loading domain ontology...");
         // OntModel queryModel = loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
         log.info("Loading jena model from sesame repository");
-        OntModel queryModel = addSesameRepositoryToJenaModel(inputRepository, contexts);
+        OntModel queryModel = addSesameRepositoryToJenaModel(inputRepository, ModelFactory.createDefaultModel(ReificationStyle.Minimal), contexts);
         
         
         // Create and add Model for inferred triples
@@ -181,10 +176,10 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         // Load OWL RL library from the web
         log.info("Loading OWL RL ontology...");
-        OntModel owlrlModel = loadModelWithImports("http://topbraid.org/spin/owlrl-all");
+        OntModel owlrlModel = loadModelFromUrl("http://topbraid.org/spin/owlrl-all");
 
         // Register any new functions defined in OWL RL
-        SPINModuleRegistry.get().registerAll(owlrlModel, null);
+        SPINModuleRegistry.get().registerAll(owlrlModel, null, SPINModuleRegistry.get(), FunctionRegistry.get());
         
         // Build one big union Model of everything
         MultiUnion multiUnion = new MultiUnion(new Graph[] {
@@ -195,13 +190,13 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         // Collect rules (and template calls) defined in OWL RL
         Map<CommandWrapper, Map<String,RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String,RDFNode>>();
-        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false);
-        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false);
+        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false, SPINModuleRegistry.get());
+        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false, SPINModuleRegistry.get());
         SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
 
         // Run all inferences
         log.info("Running SPIN inferences...");
-        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null);
+        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null, SPINModuleRegistry.get());
         log.info("Inferred triples: " + newTriples.size());
         
         StmtIterator listStatements = newTriples.listStatements();
@@ -210,19 +205,20 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         {
             log.info(listStatements.next().toString());
         }
+        
         return addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
-    static OntModel loadModelWithImports(String url) 
+    public static OntModel loadModelFromUrl(String url) 
     {
         Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         baseModel.read(url);
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
     }
     
-    static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, org.openrdf.model.Resource... contexts) 
+    public static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, Model outputModel, org.openrdf.model.Resource... contexts) 
     {
-        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+//        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
         ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
         
@@ -232,9 +228,9 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         // use the resulting byte[] as input to an InputStream
         InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
 
-        baseModel.read(bufferedInputStream, "http://spin.example.org/");
+        outputModel.read(bufferedInputStream, "http://spin.example.org/");
         
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
     }
 
     public static Set<URI> myTypes()
