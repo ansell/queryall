@@ -245,12 +245,18 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         {
             log.info("adding model to registry and ontology model list nextImport="+nextImport+" nextModel.size()="+nextModel.size());
             this.ontologyModels.add(nextModel);
-            this.getSpinModuleRegistry().registerAll(nextModel, this);
         }
         else
         {
             log.error("Failed to load import from URL nextImport="+nextImport);
         }
+        
+        for(OntModel nextOntModel : this.ontologyModels)
+        {
+            this.getSpinModuleRegistry().registerAll(nextOntModel, this);
+        }
+        
+        this.getSpinModuleRegistry().init();
     }
 
     public static OntModel loadModelFromUrl(String url) 
@@ -525,19 +531,19 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
                 {
                     log.info("registry was not set, setting up a new registry before returning");
                     
-                    SPINThreadFunctionRegistry tempFunctionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+                    //SPINThreadFunctionRegistry tempFunctionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
                     
-                    SPINModuleRegistry tempSpinModuleRegistry1 = new SPINModuleRegistry(tempFunctionRegistry1);
+                    SPINModuleRegistry tempSpinModuleRegistry1 = new SPINModuleRegistry(FunctionRegistry.get());
                     
                     // TODO: is it rational to have a circular dependency like this?
-                    tempFunctionRegistry1.setSpinModuleRegistry(tempSpinModuleRegistry1);
+//                    tempFunctionRegistry1.setSpinModuleRegistry(tempSpinModuleRegistry1);
                     
                     // FIXME TODO: how do we get around this step
                     // Jena/ARQ seems to be permanently setup around the use of this global context, 
                     // even though FunctionEnv and Context seem to be in quite a few method headers 
                     // throughout their code base
                     // Is it necessary for users to setup functions that are not globally named and visible in the same way that they need to be able to setup rules that may not be globally useful
-                    ARQ.getContext().set(ARQConstants.registryFunctions, tempFunctionRegistry1);
+//                    ARQ.getContext().set(ARQConstants.registryFunctions, tempFunctionRegistry1);
                     
                     tempSpinModuleRegistry1.init();
                     
@@ -552,5 +558,6 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     public void setSpinModuleRegistry(SPINModuleRegistry registry)
     {
         this.registry = registry;
+        this.registry.init();
     }
 }

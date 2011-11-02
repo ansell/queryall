@@ -45,7 +45,7 @@ public class SpinNormalisationRuleImplTest
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
     private SPINModuleRegistry testSpinModuleRegistry1;
-    private SPINModuleRegistry testSpinModuleRegistry2;
+//    private SPINModuleRegistry testSpinModuleRegistry2;
 
     /**
      * @throws java.lang.Exception
@@ -90,36 +90,38 @@ public class SpinNormalisationRuleImplTest
         connection.commit();
         connection.close();
         
-        SPINThreadFunctionRegistry functionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-        
-        testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
+        //SPINThreadFunctionRegistry functionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+//        FunctionRegistry functionRegistry1 = FunctionRegistry.standardRegistry();
+
+//        testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
+        testSpinModuleRegistry1 = new SPINModuleRegistry(FunctionRegistry.get());
         
         // TODO: is it rational to have a circular dependency like this?
-        functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
+        //functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
         
         // TODO: how do we get around this step
         // Jena/ARQ seems to be permanently setup around the use of this global context, 
         // even though FunctionEnv and Context seem to be in quite a few method headers 
         // throughout their code base
-        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
+//        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
         
         testSpinModuleRegistry1.init();
         
-        SPINThreadFunctionRegistry functionRegistry2 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-
-        testSpinModuleRegistry2 = new SPINModuleRegistry(functionRegistry2);
+//        SPINThreadFunctionRegistry functionRegistry2 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+//
+//        testSpinModuleRegistry2 = new SPINModuleRegistry(functionRegistry2);
         
         
         // TODO: is it rational to have a circular dependency like this?
-        functionRegistry2.setSpinModuleRegistry(testSpinModuleRegistry2);
+//        functionRegistry2.setSpinModuleRegistry(testSpinModuleRegistry2);
         
         // TODO: how do we get around this step
         // Jena/ARQ seems to be permanently setup around the use of this global context, 
         // even though FunctionEnv and Context seem to be in quite a few method headers 
         // throughout their code base
-        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry2);
+//        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry2);
         
-        testSpinModuleRegistry2.init();
+//        testSpinModuleRegistry2.init();
     }
     
     /**
@@ -132,7 +134,7 @@ public class SpinNormalisationRuleImplTest
         testSesameStatements = null;
         testRepository = null;
         testSpinModuleRegistry1 = null;
-        testSpinModuleRegistry2 = null;
+//        testSpinModuleRegistry2 = null;
     }
     
     /**
