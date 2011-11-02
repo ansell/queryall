@@ -19,18 +19,23 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.topbraid.spin.arq.SPINThreadFunctionRegistry;
+import org.topbraid.spin.system.SPINModuleRegistry;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.vocabulary.OWL2;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
- * @author peter
+ * @author Peter Ansell p_ansell@yahoo.com
  *
  */
 public class SpinNormalisationRuleImplTest
@@ -39,6 +44,8 @@ public class SpinNormalisationRuleImplTest
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
+    private SPINModuleRegistry testSpinModuleRegistry1;
+    private SPINModuleRegistry testSpinModuleRegistry2;
 
     /**
      * @throws java.lang.Exception
@@ -82,6 +89,37 @@ public class SpinNormalisationRuleImplTest
         connection.add(testSesameStatements);
         connection.commit();
         connection.close();
+        
+        SPINThreadFunctionRegistry functionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+        
+        testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
+        
+        // TODO: is it rational to have a circular dependency like this?
+        functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
+        
+        // TODO: how do we get around this step
+        // Jena/ARQ seems to be permanently setup around the use of this global context, 
+        // even though FunctionEnv and Context seem to be in quite a few method headers 
+        // throughout their code base
+        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
+        
+        testSpinModuleRegistry1.init();
+        
+        SPINThreadFunctionRegistry functionRegistry2 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+
+        testSpinModuleRegistry2 = new SPINModuleRegistry(functionRegistry2);
+        
+        
+        // TODO: is it rational to have a circular dependency like this?
+        functionRegistry2.setSpinModuleRegistry(testSpinModuleRegistry2);
+        
+        // TODO: how do we get around this step
+        // Jena/ARQ seems to be permanently setup around the use of this global context, 
+        // even though FunctionEnv and Context seem to be in quite a few method headers 
+        // throughout their code base
+        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry2);
+        
+        testSpinModuleRegistry2.init();
     }
     
     /**
@@ -93,6 +131,8 @@ public class SpinNormalisationRuleImplTest
         testOntologyModel = null;
         testSesameStatements = null;
         testRepository = null;
+        testSpinModuleRegistry1 = null;
+        testSpinModuleRegistry2 = null;
     }
     
     /**
@@ -116,7 +156,12 @@ public class SpinNormalisationRuleImplTest
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        Repository results = SpinNormalisationRuleImpl.processSpinRules(testRepository);
+        SpinNormalisationRuleImpl spinNormalisationRuleImpl = new SpinNormalisationRuleImpl();
+        
+        spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
+        spinNormalisationRuleImpl.addImport("http://topbraid.org/spin/owlrl-all");
+        
+        Repository results = spinNormalisationRuleImpl.processSpinRules(testRepository);
         
         RepositoryConnection resultConnection = results.getConnection();
         

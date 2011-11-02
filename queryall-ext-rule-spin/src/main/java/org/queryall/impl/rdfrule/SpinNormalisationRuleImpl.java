@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.topbraid.spin.arq.SPINThreadFunctionRegistry;
 import org.topbraid.spin.inference.DefaultSPINRuleComparator;
 import org.topbraid.spin.inference.SPINInferences;
 import org.topbraid.spin.inference.SPINRuleComparator;
@@ -44,12 +46,14 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 
 /**
@@ -73,7 +77,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
                 .getSpinRuleTypeUri());
         
         // Need to initialise the SPIN registry at least once
-        SPINModuleRegistry.get().init();
+        //SPINModuleRegistry.get().init();
     }
     
     /**
@@ -151,6 +155,10 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         return outputRepository;
     }
+
+    private Collection<String> imports = new ArrayList<String>(5);
+    private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
+    private volatile SPINModuleRegistry registry;
     
     /**
      * See OWLRLExample in spin-examples-1.2.0.jar
@@ -161,7 +169,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
      * 
      * @param inputRepository The OpenRDF repository to use for the input triples
      */
-    public static Repository processSpinRules(Repository inputRepository, org.openrdf.model.Resource... contexts)
+    public Repository processSpinRules(Repository inputRepository, org.openrdf.model.Resource... contexts)
     {
         // Load domain model with imports
         // System.out.println("Loading domain ontology...");
@@ -174,30 +182,40 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         queryModel.addSubModel(newTriples);
         
-        // Load OWL RL library from the web
-        log.info("Loading OWL RL ontology...");
-        OntModel owlrlModel = loadModelFromUrl("http://topbraid.org/spin/owlrl-all");
+        log.info("Loading ontologies...");
+        
 
         // Register any new functions defined in OWL RL
-        SPINModuleRegistry.get().registerAll(owlrlModel, null, SPINModuleRegistry.get(), FunctionRegistry.get());
+        // NOTE: The source for these rules is given as "this" so that they can be retrieved in future based on this object
         
         // Build one big union Model of everything
-        MultiUnion multiUnion = new MultiUnion(new Graph[] {
-            queryModel.getGraph(),
-            owlrlModel.getGraph()
-        });
+        Graph[] graphs = new Graph[this.ontologyModels.size()+1]; 
+        
+        graphs[0] = queryModel.getGraph();
+        
+        int i = 1;
+        
+        for(OntModel nextModel : this.ontologyModels)
+        {
+            log.info("i="+i+" nextModel.size()="+nextModel.size());
+            graphs[i++] = queryModel.getGraph();
+        }
+        
+        MultiUnion multiUnion = new MultiUnion(graphs);
+        
         Model unionModel = ModelFactory.createModelForGraph(multiUnion);
         
         // Collect rules (and template calls) defined in OWL RL
         Map<CommandWrapper, Map<String,RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String,RDFNode>>();
-        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false, SPINModuleRegistry.get());
-        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false, SPINModuleRegistry.get());
+        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false, this.getSpinModuleRegistry());
+        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false, this.getSpinModuleRegistry());
         SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
 
         // Run all inferences
         log.info("Running SPIN inferences...");
-        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null, SPINModuleRegistry.get());
+        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null, this.getSpinModuleRegistry());
         log.info("Inferred triples: " + newTriples.size());
+        log.info("Query triples: " + queryModel.size());
         
         StmtIterator listStatements = newTriples.listStatements();
         
@@ -209,10 +227,39 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         return addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
+    @Override
+    public Collection<String> getImports()
+    {
+        return Collections.unmodifiableCollection(this.imports);
+    }
+
+    @Override
+    public void addImport(String nextImport)
+    {
+        this.imports.add(nextImport);
+
+        // TODO: support access to classpath resources along with HTTP URLs
+        OntModel nextModel = loadModelFromUrl(nextImport);
+        
+        if(nextModel != null)
+        {
+            log.info("adding model to registry and ontology model list nextImport="+nextImport+" nextModel.size()="+nextModel.size());
+            this.ontologyModels.add(nextModel);
+            this.getSpinModuleRegistry().registerAll(nextModel, this);
+        }
+        else
+        {
+            log.error("Failed to load import from URL nextImport="+nextImport);
+        }
+    }
+
     public static OntModel loadModelFromUrl(String url) 
     {
+        log.info("loading model from url="+url);
+        
         Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         baseModel.read(url);
+        // TODO: make the OntModelSpec here configurable
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
     }
     
@@ -466,5 +513,44 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         result += "description=" + this.getDescription() + "\n";
         
         return result;
+    }
+
+    public SPINModuleRegistry getSpinModuleRegistry()
+    {
+        if(registry == null)
+        {
+            synchronized(this)
+            {
+                if(registry == null)
+                {
+                    log.info("registry was not set, setting up a new registry before returning");
+                    
+                    SPINThreadFunctionRegistry tempFunctionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+                    
+                    SPINModuleRegistry tempSpinModuleRegistry1 = new SPINModuleRegistry(tempFunctionRegistry1);
+                    
+                    // TODO: is it rational to have a circular dependency like this?
+                    tempFunctionRegistry1.setSpinModuleRegistry(tempSpinModuleRegistry1);
+                    
+                    // FIXME TODO: how do we get around this step
+                    // Jena/ARQ seems to be permanently setup around the use of this global context, 
+                    // even though FunctionEnv and Context seem to be in quite a few method headers 
+                    // throughout their code base
+                    // Is it necessary for users to setup functions that are not globally named and visible in the same way that they need to be able to setup rules that may not be globally useful
+                    ARQ.getContext().set(ARQConstants.registryFunctions, tempFunctionRegistry1);
+                    
+                    tempSpinModuleRegistry1.init();
+                    
+                    registry = tempSpinModuleRegistry1;
+                }
+            }
+        }
+        
+        return registry;
+    }
+
+    public void setSpinModuleRegistry(SPINModuleRegistry registry)
+    {
+        this.registry = registry;
     }
 }
