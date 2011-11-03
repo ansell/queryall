@@ -33,7 +33,6 @@ import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.topbraid.spin.arq.SPINThreadFunctionRegistry;
 import org.topbraid.spin.inference.DefaultSPINRuleComparator;
 import org.topbraid.spin.inference.SPINInferences;
 import org.topbraid.spin.inference.SPINRuleComparator;
@@ -46,15 +45,12 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -198,7 +194,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         for(OntModel nextModel : this.ontologyModels)
         {
             log.info("i="+i+" nextModel.size()="+nextModel.size());
-            graphs[i++] = queryModel.getGraph();
+            graphs[i++] = nextModel.getGraph();
         }
         
         MultiUnion multiUnion = new MultiUnion(graphs);
@@ -207,13 +203,13 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         // Collect rules (and template calls) defined in OWL RL
         Map<CommandWrapper, Map<String,RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String,RDFNode>>();
-        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false, this.getSpinModuleRegistry());
-        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false, this.getSpinModuleRegistry());
+        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false);
+        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false);
         SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
 
         // Run all inferences
         log.info("Running SPIN inferences...");
-        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null, this.getSpinModuleRegistry());
+        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null);
         log.info("Inferred triples: " + newTriples.size());
         log.info("Query triples: " + queryModel.size());
         
@@ -253,7 +249,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         for(OntModel nextOntModel : this.ontologyModels)
         {
-            this.getSpinModuleRegistry().registerAll(nextOntModel, this);
+            this.getSpinModuleRegistry().registerAll(nextOntModel, this.getKey());
         }
         
         this.getSpinModuleRegistry().init();
@@ -523,36 +519,37 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
 
     public SPINModuleRegistry getSpinModuleRegistry()
     {
-        if(registry == null)
-        {
-            synchronized(this)
-            {
-                if(registry == null)
-                {
-                    log.info("registry was not set, setting up a new registry before returning");
-                    
-                    //SPINThreadFunctionRegistry tempFunctionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-                    
-                    SPINModuleRegistry tempSpinModuleRegistry1 = new SPINModuleRegistry(FunctionRegistry.get());
-                    
-                    // TODO: is it rational to have a circular dependency like this?
-//                    tempFunctionRegistry1.setSpinModuleRegistry(tempSpinModuleRegistry1);
-                    
-                    // FIXME TODO: how do we get around this step
-                    // Jena/ARQ seems to be permanently setup around the use of this global context, 
-                    // even though FunctionEnv and Context seem to be in quite a few method headers 
-                    // throughout their code base
-                    // Is it necessary for users to setup functions that are not globally named and visible in the same way that they need to be able to setup rules that may not be globally useful
-//                    ARQ.getContext().set(ARQConstants.registryFunctions, tempFunctionRegistry1);
-                    
-                    tempSpinModuleRegistry1.init();
-                    
-                    registry = tempSpinModuleRegistry1;
-                }
-            }
-        }
-        
-        return registry;
+        return SPINModuleRegistry.get();
+//        if(registry == null)
+//        {
+//            synchronized(this)
+//            {
+//                if(registry == null)
+//                {
+//                    log.info("registry was not set, setting up a new registry before returning");
+//                    
+//                    //SPINThreadFunctionRegistry tempFunctionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+//                    
+//                    //SPINModuleRegistry tempSpinModuleRegistry1 = new SPINModuleRegistry()//FunctionRegistry.get());
+//                    
+//                    // TODO: is it rational to have a circular dependency like this?
+////                    tempFunctionRegistry1.setSpinModuleRegistry(tempSpinModuleRegistry1);
+//                    
+//                    // FIXME TODO: how do we get around this step
+//                    // Jena/ARQ seems to be permanently setup around the use of this global context, 
+//                    // even though FunctionEnv and Context seem to be in quite a few method headers 
+//                    // throughout their code base
+//                    // Is it necessary for users to setup functions that are not globally named and visible in the same way that they need to be able to setup rules that may not be globally useful
+////                    ARQ.getContext().set(ARQConstants.registryFunctions, tempFunctionRegistry1);
+//                    
+//                    tempSpinModuleRegistry1.init();
+//                    
+//                    registry = tempSpinModuleRegistry1;
+//                }
+//            }
+//        }
+//        
+//        return registry;
     }
 
     public void setSpinModuleRegistry(SPINModuleRegistry registry)

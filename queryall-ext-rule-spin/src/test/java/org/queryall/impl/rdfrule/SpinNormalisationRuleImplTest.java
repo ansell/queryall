@@ -19,18 +19,14 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.topbraid.spin.arq.SPINThreadFunctionRegistry;
 import org.topbraid.spin.system.SPINModuleRegistry;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.function.FunctionRegistry;
 import com.hp.hpl.jena.vocabulary.OWL2;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -44,7 +40,7 @@ public class SpinNormalisationRuleImplTest
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
-    private SPINModuleRegistry testSpinModuleRegistry1;
+//    private SPINModuleRegistry testSpinModuleRegistry1;
 //    private SPINModuleRegistry testSpinModuleRegistry2;
 
     /**
@@ -94,7 +90,7 @@ public class SpinNormalisationRuleImplTest
 //        FunctionRegistry functionRegistry1 = FunctionRegistry.standardRegistry();
 
 //        testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
-        testSpinModuleRegistry1 = new SPINModuleRegistry(FunctionRegistry.get());
+        //testSpinModuleRegistry1 = new SPINModuleRegistry();//FunctionRegistry.get());
         
         // TODO: is it rational to have a circular dependency like this?
         //functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
@@ -105,7 +101,7 @@ public class SpinNormalisationRuleImplTest
         // throughout their code base
 //        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
         
-        testSpinModuleRegistry1.init();
+        //testSpinModuleRegistry1.init();
         
 //        SPINThreadFunctionRegistry functionRegistry2 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
 //
@@ -133,7 +129,7 @@ public class SpinNormalisationRuleImplTest
         testOntologyModel = null;
         testSesameStatements = null;
         testRepository = null;
-        testSpinModuleRegistry1 = null;
+//        testSpinModuleRegistry1 = null;
 //        testSpinModuleRegistry2 = null;
     }
     
@@ -159,8 +155,9 @@ public class SpinNormalisationRuleImplTest
         Assert.assertEquals(3, testRepositoryConnection.size());
         
         SpinNormalisationRuleImpl spinNormalisationRuleImpl = new SpinNormalisationRuleImpl();
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/1");
         
-        spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
+//        spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
         spinNormalisationRuleImpl.addImport("http://topbraid.org/spin/owlrl-all");
         
         Repository results = spinNormalisationRuleImpl.processSpinRules(testRepository);
