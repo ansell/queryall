@@ -152,7 +152,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         return outputRepository;
     }
 
-    private Collection<String> imports = new ArrayList<String>(5);
+    private Set<String> imports = new HashSet<String>(10);
     private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
     private volatile SPINModuleRegistry registry;
     
@@ -201,15 +201,19 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         Model unionModel = ModelFactory.createModelForGraph(multiUnion);
         
+        Set<Object> allowedRuleSources = new HashSet<Object>();
+        
+        allowedRuleSources.addAll(this.imports);
+        
         // Collect rules (and template calls) defined in OWL RL
         Map<CommandWrapper, Map<String,RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String,RDFNode>>();
-        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false);
-        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false);
+        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false, allowedRuleSources);
+        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false, allowedRuleSources);
         SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
 
         // Run all inferences
         log.info("Running SPIN inferences...");
-        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null);
+        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null, allowedRuleSources);
         log.info("Inferred triples: " + newTriples.size());
         log.info("Query triples: " + queryModel.size());
         
@@ -224,9 +228,9 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     }
 
     @Override
-    public Collection<String> getImports()
+    public Set<String> getImports()
     {
-        return Collections.unmodifiableCollection(this.imports);
+        return Collections.unmodifiableSet(this.imports);
     }
 
     @Override
@@ -241,15 +245,11 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         {
             log.info("adding model to registry and ontology model list nextImport="+nextImport+" nextModel.size()="+nextModel.size());
             this.ontologyModels.add(nextModel);
+            this.getSpinModuleRegistry().registerAll(nextModel, nextImport);
         }
         else
         {
             log.error("Failed to load import from URL nextImport="+nextImport);
-        }
-        
-        for(OntModel nextOntModel : this.ontologyModels)
-        {
-            this.getSpinModuleRegistry().registerAll(nextOntModel, this.getKey());
         }
         
         this.getSpinModuleRegistry().init();

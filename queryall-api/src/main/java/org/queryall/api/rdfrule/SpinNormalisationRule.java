@@ -1,12 +1,12 @@
 package org.queryall.api.rdfrule;
 
-import java.util.Collection;
+import java.util.Set;
 
 public interface SpinNormalisationRule extends NormalisationRule
 {
 
     public abstract void addImport(String nextImport);
 
-    public abstract Collection<String> getImports();
+    public abstract Set<String> getImports();
     
 }
