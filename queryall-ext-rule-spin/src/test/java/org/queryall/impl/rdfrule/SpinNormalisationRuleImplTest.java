@@ -134,12 +134,12 @@ public class SpinNormalisationRuleImplTest
     }
     
     /**
-     * Test method for {@link org.queryall.impl.rdfrule.SpinNormalisationRuleImpl#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}.
+     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}.
      */
     @Test
     public void testAddJenaModelToSesameRepository() throws OpenRDFException
     {
-        Repository results = SpinNormalisationRuleImpl.addJenaModelToSesameRepository(testOntologyModel, null);
+        Repository results = SpinUtils.addJenaModelToSesameRepository(testOntologyModel, null);
         
         RepositoryConnection resultConnection = results.getConnection();
         
@@ -183,7 +183,7 @@ public class SpinNormalisationRuleImplTest
                 "    FILTER (?age > 18) .\n" +
                 "}";
         
-        String turtleString = SpinNormalisationRuleImpl.getTurtleSPINQueryFromSPARQL(query);
+        String turtleString = SpinUtils.getTurtleSPINQueryFromSPARQL(query);
         
         System.out.println(turtleString);
         

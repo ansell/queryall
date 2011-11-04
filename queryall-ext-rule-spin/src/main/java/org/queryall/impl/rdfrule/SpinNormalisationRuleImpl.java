@@ -1,10 +1,5 @@
 package org.queryall.impl.rdfrule;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,20 +17,14 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SpinNormalisationRule;
 import org.queryall.api.rdfrule.SpinNormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.topbraid.spin.arq.ARQ2SPIN;
-import org.topbraid.spin.arq.ARQFactory;
 import org.topbraid.spin.inference.DefaultSPINRuleComparator;
 import org.topbraid.spin.inference.SPINInferences;
 import org.topbraid.spin.inference.SPINRuleComparator;
@@ -48,22 +37,19 @@ import org.topbraid.spin.vocabulary.SPIN;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.FileUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements SpinNormalisationRule, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImpl.class);
+    static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImpl.class);
     private static final boolean _TRACE = SpinNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = SpinNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -82,82 +68,6 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         //SPINModuleRegistry.get().init();
     }
     
-    /**
-     * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame repository
-     * 
-     * @param inputModel
-     * @param outputRepository If outputRepository is null, a new in-memory repository is created
-     * @param contexts
-     * @return
-     */
-    public static Repository addJenaModelToSesameRepository(Model inputModel, Repository outputRepository, org.openrdf.model.Resource... contexts)
-    {
-        if(outputRepository == null)
-        {
-            outputRepository = new SailRepository(new MemoryStore());
-            try
-            {
-                outputRepository.initialize();
-            }
-            catch(RepositoryException e)
-            {
-                log.error("Found unexpected exception initialising in memory repository", e);
-            }
-        }
-        
-        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
-        
-        // write out the triples from the model into the output stream
-        inputModel.write(internalOutputStream);
-        
-        // use the resulting byte[] as input to an InputStream
-        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
-        
-        RepositoryConnection connection = null;
-        
-        try
-        {
-            connection = outputRepository.getConnection();
-            
-            connection.add(bufferedInputStream, "http://spin.example.org/", RDFFormat.RDFXML, contexts);
-            
-            connection.commit();
-        }
-        catch(Exception e)
-        {
-            log.error("Found exception while attempting to add data to OpenRDF repository", e);
-
-            try
-            {
-                if(connection != null)
-                {
-                    connection.rollback();
-                }
-            }
-            catch(RepositoryException e1)
-            {
-                log.error("Found exception while attempting to rollback connection due to previous exception", e1);
-            }
-        }
-        finally
-        {
-            try
-            {
-                if(connection != null)
-                {
-                    connection.close();
-                }
-            }
-            catch(RepositoryException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        
-        return outputRepository;
-    }
-
     private Set<String> imports = new HashSet<String>(10);
     private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
     private volatile SPINModuleRegistry registry;
@@ -178,7 +88,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         // System.out.println("Loading domain ontology...");
         // OntModel queryModel = loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
         log.info("Loading jena model from sesame repository");
-        OntModel queryModel = addSesameRepositoryToJenaModel(inputRepository, ModelFactory.createDefaultModel(ReificationStyle.Minimal), contexts);
+        OntModel queryModel = SpinUtils.addSesameRepositoryToJenaModel(inputRepository, ModelFactory.createDefaultModel(ReificationStyle.Minimal), contexts);
         
         
         // Create and add Model for inferred triples
@@ -231,7 +141,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
             log.info(listStatements.next().toString());
         }
         
-        return addJenaModelToSesameRepository(newTriples, inputRepository);
+        return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
     @Override
@@ -246,7 +156,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         this.imports.add(nextImport);
 
         // TODO: support access to classpath resources along with HTTP URLs
-        OntModel nextModel = loadModelFromUrl(nextImport);
+        OntModel nextModel = SpinUtils.loadModelFromUrl(nextImport);
         
         if(nextModel != null)
         {
@@ -260,53 +170,6 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         }
         
         this.getSpinModuleRegistry().init();
-    }
-
-    public static String getTurtleSPINQueryFromSPARQL(String query)
-    {
-        Model model = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        model.setNsPrefix("rdf", com.hp.hpl.jena.vocabulary.RDF.getURI());
-
-        Query arqQuery = ARQFactory.get().createQuery(model, query);
-        // We don't need the results of this operation, but we do need its side-effects on "model"
-        new ARQ2SPIN(model).createQuery(arqQuery, null);
-        
-        
-        StringWriter output = new StringWriter();
-        
-        System.out.println("SPIN query in Turtle:");
-        model.write(output, FileUtils.langTurtle);
-        
-        String turtleString = output.toString();
-        
-        return turtleString;
-    }
-    
-    public static OntModel loadModelFromUrl(String url) 
-    {
-        log.info("loading model from url="+url);
-        
-        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        baseModel.read(url);
-        // TODO: make the OntModelSpec here configurable
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
-    }
-    
-    public static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, Model outputModel, org.openrdf.model.Resource... contexts) 
-    {
-//        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        
-        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
-        
-        // write out the triples from the model into the output stream
-        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
-        
-        // use the resulting byte[] as input to an InputStream
-        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
-
-        outputModel.read(bufferedInputStream, "http://spin.example.org/");
-        
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
     }
 
     public static Set<URI> myTypes()
