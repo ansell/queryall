@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,9 +34,12 @@ import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.topbraid.spin.arq.ARQ2SPIN;
+import org.topbraid.spin.arq.ARQFactory;
 import org.topbraid.spin.inference.DefaultSPINRuleComparator;
 import org.topbraid.spin.inference.SPINInferences;
 import org.topbraid.spin.inference.SPINRuleComparator;
+import org.topbraid.spin.model.Select;
 import org.topbraid.spin.system.SPINModuleRegistry;
 import org.topbraid.spin.util.CommandWrapper;
 import org.topbraid.spin.util.SPINQueryFinder;
@@ -45,12 +49,14 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.util.FileUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -155,6 +161,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     private Set<String> imports = new HashSet<String>(10);
     private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
     private volatile SPINModuleRegistry registry;
+    private Set<org.openrdf.model.URI> activeEntailments;
     
     /**
      * See OWLRLExample in spin-examples-1.2.0.jar
@@ -255,6 +262,26 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         this.getSpinModuleRegistry().init();
     }
 
+    public static String getTurtleSPINQueryFromSPARQL(String query)
+    {
+        Model model = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        model.setNsPrefix("rdf", com.hp.hpl.jena.vocabulary.RDF.getURI());
+
+        Query arqQuery = ARQFactory.get().createQuery(model, query);
+        // We don't need the results of this operation, but we do need its side-effects on "model"
+        new ARQ2SPIN(model).createQuery(arqQuery, null);
+        
+        
+        StringWriter output = new StringWriter();
+        
+        System.out.println("SPIN query in Turtle:");
+        model.write(output, FileUtils.langTurtle);
+        
+        String turtleString = output.toString();
+        
+        return turtleString;
+    }
+    
     public static OntModel loadModelFromUrl(String url) 
     {
         log.info("loading model from url="+url);
@@ -556,5 +583,23 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     {
         this.registry = registry;
         this.registry.init();
+    }
+
+    @Override
+    public boolean isEntailmentEnabled(URI entailmentURI)
+    {
+        return this.activeEntailments.contains(entailmentURI);
+    }
+
+    @Override
+    public Set<URI> getEntailmentUris()
+    {
+        return Collections.unmodifiableSet(this.activeEntailments);
+    }
+
+    @Override
+    public void addEntailmentUri(URI nextEntailmentURI)
+    {
+        this.activeEntailments.add(nextEntailmentURI);
     }
 }

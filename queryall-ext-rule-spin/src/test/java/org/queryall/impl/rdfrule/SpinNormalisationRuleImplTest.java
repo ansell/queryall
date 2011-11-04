@@ -172,4 +172,26 @@ public class SpinNormalisationRuleImplTest
         }
     }
     
+    @Test
+    public void testGetTurtleSPINQueryFromSPARQL()
+    {
+        String query =
+                "SELECT ?person\n" +
+                "WHERE {\n" +
+                "    ?person a <ex:Person> .\n" +
+                "    ?person <ex:age> ?age .\n" +
+                "    FILTER (?age > 18) .\n" +
+                "}";
+        
+        String turtleString = SpinNormalisationRuleImpl.getTurtleSPINQueryFromSPARQL(query);
+        
+        System.out.println(turtleString);
+        
+        Assert.assertTrue(turtleString.contains("ex:Person"));
+
+        Assert.assertTrue(turtleString.contains("ex:age"));
+
+        Assert.assertTrue(turtleString.contains("18"));
+    }
+    
 }
