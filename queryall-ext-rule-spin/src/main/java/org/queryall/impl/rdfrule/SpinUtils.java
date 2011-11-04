@@ -6,7 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
-import org.openrdf.model.Resource;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -26,7 +25,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -34,7 +32,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class SpinUtils
 {
     private static final Logger log = LoggerFactory.getLogger(SpinUtils.class);
+    @SuppressWarnings("unused")
     private static final boolean _TRACE = SpinUtils.log.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean _DEBUG = SpinUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = SpinUtils.log.isInfoEnabled();
@@ -57,6 +57,26 @@ public class SpinUtils
         
         return turtleString;
     }
+
+    public static OntModel loadModelFromClasspath(String classpathRef) 
+    {
+        SpinNormalisationRuleImpl.log.info("loading model from classpathRef="+classpathRef);
+        
+        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        if(!classpathRef.startsWith("/"))
+        {
+            classpathRef = "/"+classpathRef;
+        }
+        
+        InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
+        
+        baseModel.read(stream, "http://temp.base.uri.fake/");
+        
+        // TODO: make the OntModelSpec here configurable
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+    }
+    
     public static OntModel loadModelFromUrl(String url) 
     {
         SpinNormalisationRuleImpl.log.info("loading model from url="+url);
@@ -66,6 +86,7 @@ public class SpinUtils
         // TODO: make the OntModelSpec here configurable
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
     }
+    
     public static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, Model outputModel, org.openrdf.model.Resource... contexts) 
         {
     //        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
@@ -82,6 +103,7 @@ public class SpinUtils
             
             return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
         }
+
     /**
      * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame repository
      * 

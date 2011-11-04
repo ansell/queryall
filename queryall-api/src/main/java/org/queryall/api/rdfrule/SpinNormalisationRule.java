@@ -8,16 +8,28 @@ public interface SpinNormalisationRule extends NormalisationRule
 {
 
     /**
-     * Add an import to this rule
+     * Add an import to this rule based on a classpath resource
      * 
      * @param nextImport
      */
-    public abstract void addImport(String nextImport);
+    public abstract void addLocalImport(String nextLocalImport);
 
     /**
-     * @return Set of Strings that indicate which imports are active for this rule
+     * Add an import to this rule based on a URL
+     * 
+     * @param nextImport
      */
-    public abstract Set<String> getImports();
+    public abstract void addUrlImport(URI nextURLImport);
+
+    /**
+     * @return Set of Strings that indicate which local imports are active for this rule
+     */
+    public abstract Set<String> getLocalImports();
+
+    /**
+     * @return Set of URLs that indicate which URL imports are active for this rule
+     */
+    public abstract Set<URI> getURLImports();
 
     /**
      * A URI from the list on http://www.w3.org/ns/entailment/ or a profile on http://www.w3.org/TR/owl-profiles/

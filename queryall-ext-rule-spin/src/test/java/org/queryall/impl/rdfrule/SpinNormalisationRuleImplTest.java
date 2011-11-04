@@ -13,13 +13,13 @@ import org.junit.Test;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
-import org.topbraid.spin.system.SPINModuleRegistry;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -148,17 +148,17 @@ public class SpinNormalisationRuleImplTest
     }
     
     @Test
-    public void testProcessSpinRules() throws OpenRDFException
+    public void testProcessSpinRulesByURL() throws OpenRDFException
     {
         RepositoryConnection testRepositoryConnection = testRepository.getConnection();
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
         SpinNormalisationRuleImpl spinNormalisationRuleImpl = new SpinNormalisationRuleImpl();
-        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/1");
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
         
 //        spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addImport("http://topbraid.org/spin/owlrl-all");
+        spinNormalisationRuleImpl.addUrlImport(new URIImpl("http://topbraid.org/spin/owlrl-all"));
         
         Repository results = spinNormalisationRuleImpl.processSpinRules(testRepository);
         
@@ -172,6 +172,31 @@ public class SpinNormalisationRuleImplTest
         }
     }
     
+    @Test
+    public void testProcessSpinRulesByClasspathRef() throws OpenRDFException
+    {
+        RepositoryConnection testRepositoryConnection = testRepository.getConnection();
+        
+        Assert.assertEquals(3, testRepositoryConnection.size());
+        
+        SpinNormalisationRuleImpl spinNormalisationRuleImpl = new SpinNormalisationRuleImpl();
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
+        
+        // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
+        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all.owl");
+        
+        Repository results = spinNormalisationRuleImpl.processSpinRules(testRepository);
+        
+        RepositoryConnection resultConnection = results.getConnection();
+        
+        Assert.assertEquals(8, resultConnection.size());
+        
+        for(Statement nextStatement : testSesameStatements)
+        {
+            Assert.assertTrue(resultConnection.hasStatement(nextStatement, false));
+        }
+    }
+
     @Test
     public void testGetTurtleSPINQueryFromSPARQL()
     {

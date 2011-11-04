@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.topbraid.spin.inference.DefaultSPINRuleComparator;
 import org.topbraid.spin.inference.SPINInferences;
 import org.topbraid.spin.inference.SPINRuleComparator;
-import org.topbraid.spin.model.Select;
 import org.topbraid.spin.system.SPINModuleRegistry;
 import org.topbraid.spin.util.CommandWrapper;
 import org.topbraid.spin.util.SPINQueryFinder;
@@ -68,7 +67,8 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         //SPINModuleRegistry.get().init();
     }
     
-    private Set<String> imports = new HashSet<String>(10);
+    private Set<String> localImports = new HashSet<String>(10);
+    private Set<URI> urlImports = new HashSet<URI>(10);
     private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
     private volatile SPINModuleRegistry registry;
     private Set<org.openrdf.model.URI> activeEntailments;
@@ -120,7 +120,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         
         Set<Object> allowedRuleSources = new HashSet<Object>();
         
-        allowedRuleSources.addAll(this.imports);
+        allowedRuleSources.addAll(this.localImports);
         
         // Collect rules (and template calls) defined in OWL RL
         Map<CommandWrapper, Map<String,RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String,RDFNode>>();
@@ -145,18 +145,17 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     }
 
     @Override
-    public Set<String> getImports()
+    public Set<String> getLocalImports()
     {
-        return Collections.unmodifiableSet(this.imports);
+        return Collections.unmodifiableSet(this.localImports);
     }
 
     @Override
-    public void addImport(String nextImport)
+    public void addLocalImport(String nextImport)
     {
-        this.imports.add(nextImport);
+        this.localImports.add(nextImport);
 
-        // TODO: support access to classpath resources along with HTTP URLs
-        OntModel nextModel = SpinUtils.loadModelFromUrl(nextImport);
+        OntModel nextModel = SpinUtils.loadModelFromClasspath(nextImport);
         
         if(nextModel != null)
         {
@@ -464,5 +463,32 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     public void addEntailmentUri(URI nextEntailmentURI)
     {
         this.activeEntailments.add(nextEntailmentURI);
+    }
+
+    @Override
+    public void addUrlImport(URI nextURLImport)
+    {
+        this.urlImports.add(nextURLImport);
+        
+        OntModel nextModel = SpinUtils.loadModelFromUrl(nextURLImport.stringValue());
+        
+        if(nextModel != null)
+        {
+            log.info("adding model to registry and ontology model list nextImport="+nextURLImport.stringValue()+" nextModel.size()="+nextModel.size());
+            this.ontologyModels.add(nextModel);
+            this.getSpinModuleRegistry().registerAll(nextModel, nextURLImport.stringValue());
+        }
+        else
+        {
+            log.error("Failed to load import from URL nextURLImport="+nextURLImport.stringValue());
+        }
+        
+        this.getSpinModuleRegistry().init();
+    }
+
+    @Override
+    public Set<URI> getURLImports()
+    {
+        return Collections.unmodifiableSet(this.urlImports);
     }
 }
