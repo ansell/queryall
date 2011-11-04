@@ -192,18 +192,16 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             throw new IllegalArgumentException("Valid stage was null");
         }
         
-        if(this.validStages.contains(validStage))
+        if(!this.validStages.contains(validStage))
         {
-            return;
-        }
-        
-        if(NormalisationRuleSchema.getAllStages().contains(validStage))
-        {
-            this.validStages.add(validStage);
-        }
-        else
-        {
-            throw new InvalidStageException("Could not assign a stage as valid as it was not recognised validStage="+validStage);
+            if(NormalisationRuleSchema.getAllStages().contains(validStage))
+            {
+                this.validStages.add(validStage);
+            }
+            else
+            {
+                throw new InvalidStageException("Could not assign a stage as valid as it was not recognised validStage="+validStage);
+            }
         }
     }
     
