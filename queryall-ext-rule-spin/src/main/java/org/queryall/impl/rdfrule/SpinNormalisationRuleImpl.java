@@ -254,7 +254,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
      * @return the validStages
      */
     @Override
-    public Collection<URI> getValidStages()
+    public Set<URI> getValidStages()
     {
         if(this.validStages.size() == 0)
         {
@@ -263,7 +263,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
         }
         
-        return Collections.unmodifiableCollection(this.validStages);
+        return Collections.unmodifiableSet(this.validStages);
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)

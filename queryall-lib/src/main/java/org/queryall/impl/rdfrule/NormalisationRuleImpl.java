@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -24,6 +25,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -53,9 +55,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
     
-    protected final Collection<URI> stages = new ArrayList<URI>(3);
+    protected final Set<URI> stages = new HashSet<URI>(4);
     
-    protected final Collection<URI> validStages = new ArrayList<URI>(7);
+    protected final Set<URI> validStages = new HashSet<URI>(7);
     
     private int order = 100;
     
@@ -168,7 +170,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         }
         else
         {
-            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages");
+            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages stage="+stage);
         }
     }
     
@@ -185,7 +187,24 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
      */
     protected void addValidStage(final URI validStage)
     {
-        this.validStages.add(validStage);
+        if(validStage == null)
+        {
+            throw new IllegalArgumentException("Valid stage was null");
+        }
+        
+        if(this.validStages.contains(validStage))
+        {
+            return;
+        }
+        
+        if(NormalisationRuleSchema.getAllStages().contains(validStage))
+        {
+            this.validStages.add(validStage);
+        }
+        else
+        {
+            throw new InvalidStageException("Could not assign a stage as valid as it was not recognised validStage="+validStage);
+        }
     }
     
     @Override
@@ -268,9 +287,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
      * @return the Stages
      */
     @Override
-    public Collection<URI> getStages()
+    public final Set<URI> getStages()
     {
-        return Collections.unmodifiableCollection(this.stages);
+        return Collections.unmodifiableSet(this.stages);
     }
     
     @Override
@@ -293,8 +312,13 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 includeNonProfileMatched);
     }
     
+    /**
+     * This function delegates normalisation to the correct stage normalisation method based on the given URI.
+     * 
+     * You should not need to modify this method, as it provides generic stage validation that is necessary to ensure that the rule system is consistent.
+     */
     @Override
-    public Object normaliseByStage(final URI stage, final Object input)
+    public final Object normaliseByStage(final URI stage, final Object input) throws QueryAllException
     {
         if(!this.validInStage(stage))
         {

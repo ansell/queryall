@@ -8,7 +8,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedQueryTypeException extends RuntimeException
+public class UnsupportedQueryTypeException extends QueryAllException
 {
     
     /**
@@ -21,7 +21,7 @@ public class UnsupportedQueryTypeException extends RuntimeException
      */
     public UnsupportedQueryTypeException()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**

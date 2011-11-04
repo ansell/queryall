@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
-public interface SpinNormalisationRule extends NormalisationRule
+public interface SpinNormalisationRule extends ValidatingRule
 {
 
     /**

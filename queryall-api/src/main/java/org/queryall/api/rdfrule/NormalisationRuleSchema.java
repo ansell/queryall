@@ -3,6 +3,10 @@
  */
 package org.queryall.api.rdfrule;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -31,6 +35,8 @@ public class NormalisationRuleSchema
     private static final boolean _DEBUG = NormalisationRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = NormalisationRuleSchema.log.isInfoEnabled();
+
+    private static final Set<URI> ALL_STAGES;
     
     private static URI normalisationRuleTypeUri;
     
@@ -90,6 +96,21 @@ public class NormalisationRuleSchema
         NormalisationRuleSchema.setRdfruleStageAfterResultsToDocument(f.createURI(baseUri, "afterResultsToDocument"));
         
         NormalisationRuleSchema.setRdfruleTypeValidForStage(f.createURI(baseUri, "typeValidForStage"));
+        
+        ALL_STAGES = new LinkedHashSet<URI>(7);
+        ALL_STAGES.add(getRdfruleStageAfterQueryCreation());
+        ALL_STAGES.add(getRdfruleStageAfterQueryParsing());
+        ALL_STAGES.add(getRdfruleStageAfterResultsImport());
+        ALL_STAGES.add(getRdfruleStageAfterResultsToDocument());
+        ALL_STAGES.add(getRdfruleStageAfterResultsToPool());
+        ALL_STAGES.add(getRdfruleStageBeforeResultsImport());
+        ALL_STAGES.add(getRdfruleStageQueryVariables());
+        
+    }
+    
+    public static Set<URI> getAllStages()
+    {
+        return ALL_STAGES;
     }
     
     /**
