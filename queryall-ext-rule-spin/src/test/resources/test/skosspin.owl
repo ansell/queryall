@@ -1,0 +1,791 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:afn="http://jena.hpl.hp.com/ARQ/function#"
+    xmlns:spin="http://spinrdf.org/spin#"
+    xmlns:fn="http://www.w3.org/2005/xpath-functions#"
+    xmlns:sp="http://spinrdf.org/sp#"
+    xmlns:skosspin="http://topbraid.org/spin/skosspin#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:arg="http://spinrdf.org/arg#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:spl="http://spinrdf.org/spl#"
+  xml:base="http://topbraid.org/spin/skosspin">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >1.0.0</owl:versionInfo>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A collection of SKOS constraints expressed in SPARQL using the SPIN framework.
+
+SKOS constraint S36 is defined for class skos:OrderedCollection and the others are defined for class skos:Concept.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SKOS Constraints</rdfs:label>
+    <owl:imports rdf:resource="http://spinrdf.org/spin"/>
+    <owl:imports rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+  </owl:Ontology>
+  <rdf:Property rdf:about="http://spinrdf.org/arg#predicate">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >predicate</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://spinrdf.org/arg#predicate1">
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >predicate1</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://spinrdf.org/arg#predicate2">
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >predicate2</rdfs:label>
+  </rdf:Property>
+  <rdf:Description rdf:about="http://spinrdf.org/spin#constraint">
+    <spin:constraint>
+      <sp:Ask>
+        <sp:where rdf:parseType="Collection">
+          <sp:SubQuery>
+            <sp:query>
+              <sp:Select>
+                <sp:groupBy rdf:parseType="Collection">
+                  <rdf:Description rdf:nodeID="A0">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >lang</sp:varName>
+                  </rdf:Description>
+                </sp:groupBy>
+                <sp:resultVariables rdf:parseType="Collection">
+                  <rdf:Description rdf:nodeID="A0"/>
+                  <rdf:Description>
+                    <sp:expression>
+                      <sp:Count>
+                        <sp:expression rdf:parseType="Resource">
+                          <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                          >lang</sp:varName>
+                        </sp:expression>
+                      </sp:Count>
+                    </sp:expression>
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >nr</sp:varName>
+                  </rdf:Description>
+                </sp:resultVariables>
+                <sp:where rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:object>
+                      <rdf:Description rdf:nodeID="A1">
+                        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                        >label</sp:varName>
+                      </rdf:Description>
+                    </sp:object>
+                    <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+                    <sp:subject rdf:parseType="Resource">
+                      <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                      >subject</sp:varName>
+                    </sp:subject>
+                  </rdf:Description>
+                  <sp:Let>
+                    <sp:expression>
+                      <sp:lang>
+                        <sp:arg1 rdf:nodeID="A1"/>
+                      </sp:lang>
+                    </sp:expression>
+                    <sp:variable rdf:nodeID="A0"/>
+                  </sp:Let>
+                </sp:where>
+              </sp:Select>
+            </sp:query>
+          </sp:SubQuery>
+          <sp:Filter>
+            <sp:expression>
+              <sp:gt>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >nr</sp:varName>
+                </sp:arg1>
+                <sp:arg2 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >1</sp:arg2>
+              </sp:gt>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+      </sp:Ask>
+    </spin:constraint>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#Concept">
+    <spin:constraint>
+      <sp:Construct>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#related"/>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A2">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >object1</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#broaderTransitive"/>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A3">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >object2</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+          <sp:Filter>
+            <sp:expression>
+              <sp:eq>
+                <sp:arg1 rdf:nodeID="A2"/>
+                <sp:arg2 rdf:nodeID="A3"/>
+              </sp:eq>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A4"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A4"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment"/>
+            <sp:object>Constraint S27: skos:related is disjoint with the property skos:broaderTransitive.</sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A4"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+            <sp:object>A concept can't have the same value in both a related property and a broader transitive property.</sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A4"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A4"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+            <sp:object rdf:resource="http://www.w3.org/2004/02/skos/core#related"/>
+          </rdf:Description>
+        </sp:templates>
+      </sp:Construct>
+    </spin:constraint>
+    <spin:constraint>
+      <skosspin:ConstraintS13>
+        <arg:predicate2 rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+        <arg:predicate1 rdf:resource="http://www.w3.org/2004/02/skos/core#hiddenLabel"/>
+      </skosspin:ConstraintS13>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Each CONSTRUCT constraint uses language from the SKOS spec in its rdfs:comment and more user-friendly language in the rdfs:label. &#xD;
+&#xD;
+S13 based on  http://www.proxml.be/users/paul/weblog/55d41/Integrity_constraints_in_SKOS_part_2.html.&#xD;
+&#xD;
+S14 originally based on http://www.proxml.be/users/paul/weblog/aaad2/Integrity_constraints_in_SKOS_part_1_.html but revised since then.&#xD;
+&#xD;
+S27 based on http://www.proxml.be/users/paul/weblog/bfa21/Integrity_Constraints_in_SKOS_part_3.html.</rdfs:comment>
+    <spin:constraint>
+      <skosspin:ConstraintS12>
+        <arg:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#altLabel"/>
+      </skosspin:ConstraintS12>
+    </spin:constraint>
+    <spin:constraint>
+      <sp:Construct>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:nodeID="A5"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object></sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment"/>
+            <sp:subject rdf:nodeID="A5"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A6">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >message</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+            <sp:subject rdf:nodeID="A5"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+            <sp:subject rdf:nodeID="A5"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+            <sp:subject rdf:nodeID="A5"/>
+          </rdf:Description>
+        </sp:templates>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A7">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >label1</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A8">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >label2</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:Description>
+          <sp:Filter>
+            <sp:expression>
+              <sp:and>
+                <sp:arg2>
+                  <sp:ne>
+                    <sp:arg2 rdf:nodeID="A8"/>
+                    <sp:arg1 rdf:nodeID="A7"/>
+                  </sp:ne>
+                </sp:arg2>
+                <sp:arg1>
+                  <sp:eq>
+                    <sp:arg2>
+                      <sp:lang>
+                        <sp:arg1 rdf:nodeID="A8"/>
+                      </sp:lang>
+                    </sp:arg2>
+                    <sp:arg1>
+                      <sp:lang>
+                        <sp:arg1 rdf:nodeID="A7"/>
+                      </sp:lang>
+                    </sp:arg1>
+                  </sp:eq>
+                </sp:arg1>
+              </sp:and>
+            </sp:expression>
+          </sp:Filter>
+          <sp:Let>
+            <sp:expression>
+              <fn:concat>
+                <sp:arg3>).</sp:arg3>
+                <sp:arg2>
+                  <sp:lang>
+                    <sp:arg1 rdf:nodeID="A7"/>
+                  </sp:lang>
+                </sp:arg2>
+                <sp:arg1>Constraint S14: a resource has no more than one value of skos:prefLabel per language tag (@</sp:arg1>
+              </fn:concat>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A6"/>
+          </sp:Let>
+        </sp:where>
+      </sp:Construct>
+    </spin:constraint>
+    <spin:constraint>
+      <sp:Construct>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#exactMatch"/>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >exactMatch</sp:varName>
+            </sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#broadMatch"/>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >broadMatch</sp:varName>
+            </sp:object>
+          </rdf:Description>
+        </sp:where>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A9"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A9"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment"/>
+            <sp:object>Constraint S46a: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch.</sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A9"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+            <sp:object>A concept can't have the same value in both a broader match property and an exact match property.</sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A9"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A9"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+            <sp:object rdf:resource="http://www.w3.org/2004/02/skos/core#broadMatch"/>
+          </rdf:Description>
+        </sp:templates>
+      </sp:Construct>
+    </spin:constraint>
+    <spin:constraint>
+      <sp:Construct>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#exactMatch"/>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >exactMatch</sp:varName>
+            </sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#relatedMatch"/>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >relatedMatch</sp:varName>
+            </sp:object>
+          </rdf:Description>
+        </sp:where>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A10"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A10"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment"/>
+            <sp:object>Constraint S46b: skos:exactMatch is disjoint with each of the properties skos:broadMatch and skos:relatedMatch.</sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A10"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+            <sp:object>A concept can't have the same value in both a related match property and an exact match property.</sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A10"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A10"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+            <sp:object rdf:resource="http://www.w3.org/2004/02/skos/core#relatedMatch"/>
+          </rdf:Description>
+        </sp:templates>
+      </sp:Construct>
+    </spin:constraint>
+    <spin:constraint>
+      <skosspin:ConstraintS13>
+        <arg:predicate2 rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+        <arg:predicate1 rdf:resource="http://www.w3.org/2004/02/skos/core#altLabel"/>
+      </skosspin:ConstraintS13>
+    </spin:constraint>
+    <spin:constraint>
+      <skosspin:ConstraintS12>
+        <arg:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+      </skosspin:ConstraintS12>
+    </spin:constraint>
+    <spin:constraint>
+      <skosspin:ConstraintS13>
+        <arg:predicate2 rdf:resource="http://www.w3.org/2004/02/skos/core#hiddenLabel"/>
+        <arg:predicate1 rdf:resource="http://www.w3.org/2004/02/skos/core#altLabel"/>
+      </skosspin:ConstraintS13>
+    </spin:constraint>
+    <spin:constraint>
+      <skosspin:ConstraintS12>
+        <arg:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#hiddenLabel"/>
+      </skosspin:ConstraintS12>
+    </spin:constraint>
+  </rdf:Description>
+  <spin:Function rdf:ID="checkMembers">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A helper function for constraint 36 on skos:OrderedCollection. For a given collection (?arg1) and a specific list node (?arg2), this checks whether the rdf:first of that list node is also a value of the collection's skos:member property. If successful, then it moves to the next list item (rdf:rest) and calls itself recursively until the rdf:nil is reached.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >check members</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#Functions"/>
+    <spin:body>
+      <sp:Ask>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A11">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >member</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_arg2"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object rdf:nodeID="A11"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#member"/>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_arg1"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A12">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >rest</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_arg2"/>
+          </rdf:Description>
+          <sp:Filter>
+            <sp:expression>
+              <sp:or>
+                <sp:arg1>
+                  <sp:eq>
+                    <sp:arg1 rdf:nodeID="A12"/>
+                    <sp:arg2 rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                  </sp:eq>
+                </sp:arg1>
+                <sp:arg2>
+                  <skosspin:checkMembers>
+                    <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                    <sp:arg2 rdf:nodeID="A12"/>
+                  </skosspin:checkMembers>
+                </sp:arg2>
+              </sp:or>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+      </sp:Ask>
+    </spin:body>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The collection to check.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <spl:valueType>
+          <rdf:Description rdf:about="http://www.w3.org/2004/02/skos/core#OrderedCollection">
+            <spin:constraint>
+              <sp:Construct>
+                <sp:where rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/2004/02/skos/core#memberList"/>
+                    <sp:object>
+                      <rdf:Description rdf:nodeID="A13">
+                        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                        >list</sp:varName>
+                      </rdf:Description>
+                    </sp:object>
+                  </rdf:Description>
+                  <sp:Filter>
+                    <sp:expression>
+                      <sp:and>
+                        <sp:arg1>
+                          <sp:ne>
+                            <sp:arg1 rdf:nodeID="A13"/>
+                            <sp:arg2 rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                          </sp:ne>
+                        </sp:arg1>
+                        <sp:arg2>
+                          <sp:not>
+                            <sp:arg1>
+                              <skosspin:checkMembers>
+                                <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+                                <sp:arg2 rdf:nodeID="A13"/>
+                              </skosspin:checkMembers>
+                            </sp:arg1>
+                          </sp:not>
+                        </sp:arg2>
+                      </sp:and>
+                    </sp:expression>
+                  </sp:Filter>
+                </sp:where>
+                <sp:templates rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:subject rdf:nodeID="A14"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+                    <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+                  </rdf:Description>
+                  <rdf:Description>
+                    <sp:subject rdf:nodeID="A14"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+                    <sp:object>S36 For any resource, every item in the list given as the value of the skos:memberList property is also a value of the skos:member property.</sp:object>
+                  </rdf:Description>
+                  <rdf:Description>
+                    <sp:subject rdf:nodeID="A14"/>
+                    <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+                    <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+                  </rdf:Description>
+                  <rdf:Description>
+                    <sp:subject rdf:nodeID="A14"/>
+                    <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+                    <sp:object rdf:resource="http://www.w3.org/2004/02/skos/core#memberList"/>
+                  </rdf:Description>
+                </sp:templates>
+              </sp:Construct>
+            </spin:constraint>
+          </rdf:Description>
+        </spl:valueType>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The current rdf:List node in the traversal.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </spin:Function>
+  <rdf:Description rdf:nodeID="A15">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >message</sp:varName>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A16">
+    <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+    <sp:predicate>
+      <rdf:Description rdf:nodeID="A17">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >predicate1</sp:varName>
+      </rdf:Description>
+    </sp:predicate>
+    <sp:object>
+      <rdf:Description rdf:nodeID="A18">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >label</sp:varName>
+      </rdf:Description>
+    </sp:object>
+  </rdf:Description>
+  <spin:ConstructTemplate rdf:ID="ConstraintS13">
+    <spin:body>
+      <sp:Construct>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description rdf:nodeID="A16"/>
+          <rdf:Description>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+            <sp:predicate>
+              <rdf:Description rdf:nodeID="A19">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >predicate2</sp:varName>
+              </rdf:Description>
+            </sp:predicate>
+            <sp:object rdf:nodeID="A18"/>
+          </rdf:Description>
+          <sp:Let>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A20">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >message</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <fn:concat>
+                <sp:arg1>Constraint S13: A concept can't have the same value in the same language in both </sp:arg1>
+                <sp:arg2>
+                  <afn:localname>
+                    <sp:arg1 rdf:nodeID="A17"/>
+                  </afn:localname>
+                </sp:arg2>
+                <sp:arg3> and </sp:arg3>
+                <sp:arg4>
+                  <afn:localname>
+                    <sp:arg1 rdf:nodeID="A19"/>
+                  </afn:localname>
+                </sp:arg4>
+                <sp:arg5> - duplicate value: </sp:arg5>
+                <sp:arg6 rdf:nodeID="A18"/>
+              </fn:concat>
+            </sp:expression>
+          </sp:Let>
+        </sp:where>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A21"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A21"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+            <sp:object rdf:nodeID="A20"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A21"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A21"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+            <sp:object rdf:nodeID="A17"/>
+          </rdf:Description>
+        </sp:templates>
+      </sp:Construct>
+    </spin:body>
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >S13: Values of {?predicate1} and {?predicate2} must be pairwise disjoint.</spin:labelTemplate>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#ConstructTemplates"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The first property to compare (e.g. skos:prefLabel).</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/arg#predicate1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The second predicate to compare (e.g. skos:altLabel).</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/arg#predicate2"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Constraint S13</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Generalization of Constraint S13: skos:prefLabel, skos:altLabel and skos:hiddenLabel are pairwise disjoint properties. To ensure that </rdfs:comment>
+  </spin:ConstructTemplate>
+  <sp:Let rdf:nodeID="A22">
+    <sp:variable rdf:nodeID="A15"/>
+    <sp:expression>
+      <fn:concat>
+        <sp:arg1>Constraint S12: values of </sp:arg1>
+        <sp:arg2>
+          <afn:localname>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A23">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >predicate</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </afn:localname>
+        </sp:arg2>
+        <sp:arg3> must be RDF plain (untyped) literals, but found </sp:arg3>
+        <sp:arg4>
+          <sp:datatype>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A24">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >label</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </sp:datatype>
+        </sp:arg4>
+      </fn:concat>
+    </sp:expression>
+  </sp:Let>
+  <rdf:Description rdf:nodeID="A25">
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    <rdf:first rdf:nodeID="A22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A26">
+    <sp:subject rdf:nodeID="A27"/>
+    <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+    <sp:object rdf:nodeID="A15"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A28">
+    <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+    <sp:predicate rdf:nodeID="A23"/>
+    <sp:object rdf:nodeID="A24"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A29">
+    <rdf:rest rdf:nodeID="A25"/>
+    <rdf:first>
+      <sp:Filter>
+        <sp:expression>
+          <sp:not>
+            <sp:arg1>
+              <sp:and>
+                <sp:arg1>
+                  <sp:isLiteral>
+                    <sp:arg1 rdf:nodeID="A24"/>
+                  </sp:isLiteral>
+                </sp:arg1>
+                <sp:arg2>
+                  <sp:not>
+                    <sp:arg1>
+                      <sp:sameTerm>
+                        <sp:arg1 rdf:nodeID="A24"/>
+                        <sp:arg2>
+                          <xsd:string>
+                            <sp:arg1 rdf:nodeID="A24"/>
+                          </xsd:string>
+                        </sp:arg2>
+                      </sp:sameTerm>
+                    </sp:arg1>
+                  </sp:not>
+                </sp:arg2>
+              </sp:and>
+            </sp:arg1>
+          </sp:not>
+        </sp:expression>
+      </sp:Filter>
+    </rdf:first>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A30">
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    <rdf:first rdf:nodeID="A26"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A31">
+    <rdf:rest rdf:nodeID="A29"/>
+    <rdf:first rdf:nodeID="A28"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A32">
+    <rdf:rest rdf:parseType="Resource">
+      <rdf:rest rdf:nodeID="A30"/>
+      <rdf:first rdf:parseType="Resource">
+        <sp:subject rdf:nodeID="A27"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+      </rdf:first>
+    </rdf:rest>
+    <rdf:first rdf:parseType="Resource">
+      <sp:subject rdf:nodeID="A27"/>
+      <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+      <sp:object rdf:nodeID="A23"/>
+    </rdf:first>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A33">
+    <sp:subject rdf:nodeID="A27"/>
+    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+    <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A34">
+    <rdf:rest rdf:nodeID="A32"/>
+    <rdf:first rdf:nodeID="A33"/>
+  </rdf:Description>
+  <spl:Argument rdf:nodeID="A35">
+    <spl:predicate rdf:resource="http://spinrdf.org/arg#predicate"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The property to check, e.g. skos:prefLabel.</rdfs:comment>
+    <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </spl:Argument>
+  <spin:ConstructTemplate rdf:ID="ConstraintS12">
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >S12: Values of {?predicate} must be plain (untyped) RDF literals</spin:labelTemplate>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Constraint S12</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A SPIN template that generalizes the various variations of S12 so that only the property needs to be specified.</rdfs:comment>
+    <spin:constraint rdf:nodeID="A35"/>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#ConstructTemplates"/>
+    <spin:body>
+      <sp:Construct>
+        <sp:where rdf:nodeID="A31"/>
+        <sp:templates rdf:nodeID="A34"/>
+      </sp:Construct>
+    </spin:body>
+  </spin:ConstructTemplate>
+</rdf:RDF>
+
+<!-- Created with TopBraid -->
