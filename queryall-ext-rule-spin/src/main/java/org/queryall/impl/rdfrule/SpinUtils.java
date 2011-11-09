@@ -38,6 +38,7 @@ public class SpinUtils
     private static final boolean _DEBUG = SpinUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = SpinUtils.log.isInfoEnabled();
+    
     public static String getTurtleSPINQueryFromSPARQL(String query)
     {
         Model model = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
@@ -60,7 +61,7 @@ public class SpinUtils
 
     public static OntModel loadModelFromClasspath(String classpathRef) 
     {
-        SpinNormalisationRuleImpl.log.info("loading model from classpathRef="+classpathRef);
+        log.info("loading model from classpathRef="+classpathRef);
         
         Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
@@ -79,7 +80,7 @@ public class SpinUtils
     
     public static OntModel loadModelFromUrl(String url) 
     {
-        SpinNormalisationRuleImpl.log.info("loading model from url="+url);
+        log.info("loading model from url="+url);
         
         Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         baseModel.read(url);
@@ -123,7 +124,7 @@ public class SpinUtils
             }
             catch(RepositoryException e)
             {
-                SpinNormalisationRuleImpl.log.error("Found unexpected exception initialising in memory repository", e);
+                log.error("Found unexpected exception initialising in memory repository", e);
             }
         }
         
@@ -147,7 +148,7 @@ public class SpinUtils
         }
         catch(Exception e)
         {
-            SpinNormalisationRuleImpl.log.error("Found exception while attempting to add data to OpenRDF repository", e);
+            log.error("Found exception while attempting to add data to OpenRDF repository", e);
     
             try
             {
@@ -158,7 +159,7 @@ public class SpinUtils
             }
             catch(RepositoryException e1)
             {
-                SpinNormalisationRuleImpl.log.error("Found exception while attempting to rollback connection due to previous exception", e1);
+                log.error("Found exception while attempting to rollback connection due to previous exception", e1);
             }
         }
         finally

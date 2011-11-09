@@ -48,7 +48,7 @@ import com.hp.hpl.jena.shared.ReificationStyle;
  */
 public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements SpinNormalisationRule, HtmlExport
 {
-    static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImpl.class);
     private static final boolean _TRACE = SpinNormalisationRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = SpinNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
