@@ -57,15 +57,15 @@ public class QueryallContentNegotiator
                     .addAliasMediaType("application/x-turtle;q=0.5");
         }
         
-        if(preferredDisplayContentType.equals(Constants.TEXT_HTML))
+        if(preferredDisplayContentType.equals(Constants.TEXT_HTML) || preferredDisplayContentType.equals(Constants.APPLICATION_XHTML_XML))
         {
             newContentNegotiator.addVariant("text/html;q=0.99").addAliasMediaType("application/html;q=0.95")
                     .addAliasMediaType("application/xhtml+xml;q=0.95");
         }
         else
         {
-            newContentNegotiator.addVariant("text/html;q=0.5").addAliasMediaType("application/html;q=0.5")
-                    .addAliasMediaType("application/xhtml+xml;q=0.5");
+            newContentNegotiator.addVariant("text/html;q=0.6").addAliasMediaType("application/html;q=0.6")
+                    .addAliasMediaType("application/xhtml+xml;q=0.6");
         }
         
         // NOTE: Currently we prefer the Talis RDF/JSON specification for application/json requests

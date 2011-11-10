@@ -337,4 +337,90 @@ public class QueryallContentNegotiatorTest
         Assert.assertEquals("application/ld+json", QueryallContentNegotiator.getResponseContentType("application/json", "dummy-agent/1.0", testContentNegotiator, "text/fake"));
     
     }
+    
+    /**
+     * Tests the behaviour of the QueryallContentNegotiator against the current Firefox default accept header:
+     * 
+     * text/html,application/xhtml+xml,application/xml;q=0.9, * / *;q=0.8
+     */
+    @Test
+    public void testGetResponseContentTypeFirefoxDefault()
+    {
+        String defaultFirefoxAccept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+        
+        testHtmlBrowserDefaults("Firefox", "Mozilla/5.0 (X11; Linux i686; rv:7.0.1) Gecko/20100101 Firefox/7.0.1", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        
+        
+    }
+
+    /**
+     * Test to verify that our strategy returns text/html to any common browser if the webapp if the webapp is setup with text/html as the default.
+     * 
+     * Also tests other possibilities, including application/xml which is troublesome for application/rdf+xml versus application/xhtml+xml
+     * 
+     * 
+     */
+    private void testHtmlBrowserDefaults(String browserName, String typicalUserAgent, String defaultAcceptHeader)
+    {
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("text/html");
+        
+        Assert.assertEquals(browserName + " : failed to return text/html when it was the preferred display content type", "text/html", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+
+        // Test that requests for XHTML+XML go back as text/html for best compatibility with different browsers, even though the content type is possibly XHTML+RDFa
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/xhtml+xml");
+        
+        Assert.assertEquals(browserName + " : failed to return text/html when application/xhtml+xml was the preferred display content type", "text/html", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        
+        // If they setup the preferred content type as application/xml, then we follow through on their preferences by assuming they mean RDF/XML in preference to XHTML+RDFa
+        // NOTE: the test for XHTML+RDFa if they explicitly select it is above
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/xml");
+
+        Assert.assertEquals(browserName + " : failed to return application/rdf+xml when application/xml was the preferred display content type", "application/rdf+xml", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/rdf+xml");
+
+        Assert.assertEquals(browserName + " : failed to return application/rdf+xml when application/rdf+xml was the preferred display content type", "application/rdf+xml", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("text/rdf+n3");
+
+        Assert.assertEquals(browserName + " : failed to return text/rdf+n3 when text/rdf+n3 was the preferred display content type", "text/rdf+n3", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("text/turtle");
+
+        Assert.assertEquals(browserName + " : failed to return text/turtle when text/turtle was the preferred display content type", "text/turtle", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        
+        // Test that we return application/json for RDF/JSON but not for JSON-LD
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/json");
+
+        Assert.assertEquals(browserName + " : failed to return application/json when application/json was the preferred display content type", "application/json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/rdf+json");
+
+        Assert.assertEquals(browserName + " : failed to return application/json when application/rdf+json was the preferred display content type", "application/json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/ld+json");
+
+        Assert.assertEquals(browserName + " : failed to return application/ld+json when application/ld+json was the preferred display content type", "application/ld+json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));    
+
+
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("text/x-nquads");
+
+        Assert.assertEquals(browserName + " : failed to return text/x-nquads when text/x-nquads was the preferred display content type", "text/x-nquads", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));    
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/x-trig");
+
+        Assert.assertEquals(browserName + " : failed to return application/x-trig when application/x-trig was the preferred display content type", "application/x-trig", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));    
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/trix");
+
+        Assert.assertEquals(browserName + " : failed to return application/trix when application/trix was the preferred display content type", "application/trix", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));    
+    
+        testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("text/plain");
+
+        Assert.assertEquals(browserName + " : failed to return text/plain when text/plain was the preferred display content type", "text/plain", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));    
+        
+    }
 }

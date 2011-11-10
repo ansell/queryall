@@ -322,9 +322,11 @@ public final class Constants
     
     public static final String QUERY = "queryString";
 
-    public static final Object APPLICATION_LD_JSON = "application/ld+json";
+    public static final String APPLICATION_LD_JSON = "application/ld+json";
 
-    public static final Object APPLICATION_TRIX = "application/trix";
+    public static final String APPLICATION_TRIX = "application/trix";
+
+    public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
     
     public static final SimpleDateFormat ISO8601UTC()
     {
