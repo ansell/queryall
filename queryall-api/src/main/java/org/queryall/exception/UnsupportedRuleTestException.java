@@ -8,7 +8,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedRuleTestException extends RuntimeException
+public class UnsupportedRuleTestException extends QueryAllException
 {
     
     /**
@@ -21,7 +21,7 @@ public class UnsupportedRuleTestException extends RuntimeException
      */
     public UnsupportedRuleTestException()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**

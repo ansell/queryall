@@ -269,7 +269,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
      * @return the validStages
      */
     @Override
-    public Collection<URI> getValidStages()
+    public Set<URI> getValidStages()
     {
         if(this.validStages.size() == 0)
         {
@@ -279,7 +279,7 @@ public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         }
         
-        return Collections.unmodifiableCollection(this.validStages);
+        return Collections.unmodifiableSet(this.validStages);
     }
     
     // NOTE: it is quite okay to have an empty replace regex, but an empty match

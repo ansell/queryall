@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:spin="http://spinrdf.org/spin#"
+    xmlns:owlrl="http://topbraid.org/spin/owlrl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfsplus="http://topbraid.org/spin/rdfsplus#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://topbraid.org/spin/rdfsplus">
+  <owl:Ontology rdf:about="">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >RDFS Plus</rdfs:label>
+    <owl:imports rdf:resource="http://topbraid.org/spin/owlrl"/>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >0.1.0</owl:versionInfo>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A set of OWL RL rules to formalize the semantics of RDFS Plus.</rdfs:comment>
+  </owl:Ontology>
+  <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Resource">
+    <spin:rule>
+      <owlrl:prp-trp/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-dom1/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:cax-eqc1/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-dp/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:eq-rep-p/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-eqc/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-spo1/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-inv1/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-cls/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:eq-trans/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-fp/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:cax-eqc2/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-rng1/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-dom/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:eq-rep-o/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-symp/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-eqp1/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:cax-sco/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:eq-rep-s/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-sco/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-dom2/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-inv2/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-ifp/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-eqp/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-eqp2/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-rng2/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-spo/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:scm-op/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:prp-rng/>
+    </spin:rule>
+    <spin:rule>
+      <owlrl:eq-sym/>
+    </spin:rule>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with TopBraid -->

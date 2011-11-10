@@ -8,7 +8,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedProviderException extends RuntimeException
+public class UnsupportedProviderException extends QueryAllException
 {
     
     /**
@@ -21,7 +21,7 @@ public class UnsupportedProviderException extends RuntimeException
      */
     public UnsupportedProviderException()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**

@@ -61,6 +61,7 @@ public class SettingsContextListener implements ServletContextListener
         // also create a singleton velocity engine, as it is slow to create every time we make a query
         final VelocityEngine currentEngine = VelocityHelper.createVelocityEngine();
         
+        // setup the default content type negotiator using the users given preference
         final ContentTypeNegotiator contentTypeNegotiator =
                 QueryallContentNegotiator.getContentNegotiator(tempSettings.getStringProperty(
                         "preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
