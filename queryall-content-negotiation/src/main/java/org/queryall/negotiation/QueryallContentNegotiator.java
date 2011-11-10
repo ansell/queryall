@@ -1,5 +1,7 @@
 package org.queryall.negotiation;
 
+import java.util.regex.Pattern;
+
 import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,9 +66,13 @@ public class QueryallContentNegotiator
         }
         else
         {
-            // NOTE: Sqished this to below 0.1 to make application/xml select application/rdf+xml and not text/html for Opera as they have */*;q=0.1 on their default header
-            newContentNegotiator.addVariant("text/html;q=0.05").addAliasMediaType("application/html;q=0.05")
-                    .addAliasMediaType("application/xhtml+xml;q=0.05");
+            // Replace the default Opera header with one that is easier to handle re the */* patterns q value, changed q=0.1 to q=0.5
+            newContentNegotiator.addUserAgentOverride(Pattern.compile("Opera/*"), 
+                    "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1", 
+                    "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.5");
+
+            newContentNegotiator.addVariant("text/html;q=0.4").addAliasMediaType("application/html;q=0.4")
+                    .addAliasMediaType("application/xhtml+xml;q=0.4");
         }
         
         // NOTE: Currently we prefer the Talis RDF/JSON specification for application/json requests
