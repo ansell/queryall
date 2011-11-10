@@ -24,71 +24,104 @@ public class QueryallContentNegotiator
         if(preferredDisplayContentType.equals(Constants.APPLICATION_RDF_XML))
         {
             newContentNegotiator.addVariant("application/rdf+xml;q=0.99");
+            // NOTE: We don't add application/xml as it is sent by browsers who also require XSLT to process it
+            //.addAliasMediaType("application/xml;q=0.95");
         }
         else
         {
-            newContentNegotiator.addVariant("application/rdf+xml;q=0.95");
+            newContentNegotiator.addVariant("application/rdf+xml;q=0.9");
+            //.addAliasMediaType("application/xml;q=0.5");
         }
         
         if(preferredDisplayContentType.equals(Constants.TEXT_RDF_N3))
         {
-            newContentNegotiator.addVariant("text/rdf+n3;q=0.99").addAliasMediaType("text/n3;q=0.5")
-                    .addAliasMediaType("application/rdf+n3;q=0.5").addAliasMediaType("application/n3;q=0.5");
+            newContentNegotiator.addVariant("text/rdf+n3;q=0.99").addAliasMediaType("text/n3;q=0.95")
+                    .addAliasMediaType("application/rdf+n3;q=0.8").addAliasMediaType("application/n3;q=0.8");
         }
         else
         {
-            newContentNegotiator.addVariant("text/rdf+n3;q=0.90").addAliasMediaType("text/n3;q=0.5")
+            newContentNegotiator.addVariant("text/rdf+n3;q=0.85").addAliasMediaType("text/n3;q=0.85")
                     .addAliasMediaType("application/rdf+n3;q=0.5").addAliasMediaType("application/n3;q=0.5");
         }
         
         if(preferredDisplayContentType.equals(Constants.TEXT_TURTLE))
         {
             // See http://www.w3.org/TeamSubmission/turtle/ for reasoning here
-            newContentNegotiator.addVariant("text/turtle;q=0.99").addAliasMediaType("application/turtle;q=0.8")
-                    .addAliasMediaType("application/x-turtle;q=0.5");
+            newContentNegotiator.addVariant("text/turtle;q=0.99").addAliasMediaType("application/turtle;q=0.95")
+                    .addAliasMediaType("application/x-turtle;q=0.95");
         }
         else
         {
             // See http://www.w3.org/TeamSubmission/turtle/ for reasoning here
-            newContentNegotiator.addVariant("text/turtle;q=0.90").addAliasMediaType("application/turtle;q=0.8")
+            newContentNegotiator.addVariant("text/turtle;q=0.8").addAliasMediaType("application/turtle;q=0.8")
                     .addAliasMediaType("application/x-turtle;q=0.5");
         }
         
         if(preferredDisplayContentType.equals(Constants.TEXT_HTML))
         {
-            newContentNegotiator.addVariant("text/html;q=0.99").addAliasMediaType("application/html;q=0.8")
-                    .addAliasMediaType("application/xhtml+xml;q=0.8");
+            newContentNegotiator.addVariant("text/html;q=0.99").addAliasMediaType("application/html;q=0.95")
+                    .addAliasMediaType("application/xhtml+xml;q=0.95");
         }
         else
         {
-            newContentNegotiator.addVariant("text/html;q=0.45").addAliasMediaType("application/html;q=0.3")
-                    .addAliasMediaType("application/xhtml+xml;q=0.3");
+            newContentNegotiator.addVariant("text/html;q=0.5").addAliasMediaType("application/html;q=0.5")
+                    .addAliasMediaType("application/xhtml+xml;q=0.5");
         }
         
-        if(preferredDisplayContentType.equals(Constants.APPLICATION_JSON))
+        // NOTE: Currently we prefer the Talis RDF/JSON specification for application/json requests
+        if(preferredDisplayContentType.equals(Constants.APPLICATION_JSON) || preferredDisplayContentType.equals(Constants.APPLICATION_RDF_JSON))
         {
-            newContentNegotiator.addVariant("application/json;q=0.99").addAliasMediaType("application/rdf+json;q=0.8");
+            newContentNegotiator.addVariant("application/json;q=0.99").addAliasMediaType("application/rdf+json;q=0.95");
         }
         else
         {
-            newContentNegotiator.addVariant("application/json;q=0.6").addAliasMediaType("application/rdf+json;q=0.6");
+            newContentNegotiator.addVariant("application/json;q=0.4").addAliasMediaType("application/rdf+json;q=0.4");
+        }
+        
+        // NOTE: Currently we prefer the Talis RDF/JSON specification for application/json requests except when JSON-LD is specifically preferred
+        // If it is preferred, we return application/ld+json still to match the other cases
+        if(preferredDisplayContentType.equals(Constants.APPLICATION_LD_JSON))
+        {
+            newContentNegotiator.addVariant("application/ld+json;q=0.99").addAliasMediaType("application/json;q=0.95");
+        }
+        else
+        {
+            newContentNegotiator.addVariant("application/ld+json;q=0.4");
         }
         
         if(preferredDisplayContentType.equals(Constants.TEXT_X_NQUADS))
         {
-            newContentNegotiator.addVariant("text/x-nquads;q=0.99").addAliasMediaType("text/nquads;q=0.8");
+            newContentNegotiator.addVariant("text/x-nquads;q=0.99").addAliasMediaType("text/nquads;q=0.95");
         }
         else
         {
-            newContentNegotiator.addVariant("text/x-nquads;q=0.6").addAliasMediaType("text/nquads;q=0.6");
+            newContentNegotiator.addVariant("text/x-nquads;q=0.4").addAliasMediaType("text/nquads;q=0.4");
         }
         
+        if(preferredDisplayContentType.equals(Constants.APPLICATION_X_TRIG))
+        {
+            newContentNegotiator.addVariant("application/x-trig;q=0.99").addAliasMediaType("application/trig;q=0.95");
+        }
+        else
+        {
+            newContentNegotiator.addVariant("application/x-trig;q=0.4").addAliasMediaType("application/trig;q=0.4");
+        }
+        
+        if(preferredDisplayContentType.equals(Constants.APPLICATION_TRIX))
+        {
+            newContentNegotiator.addVariant("application/trix;q=0.99");
+        }
+        else
+        {
+            newContentNegotiator.addVariant("application/trix;q=0.4");
+        }
+
         // NTriples content type was not intelligently defined, but we try to work with it anyway,
         // basically, if they ask for anything else at the same time as NTriples, they will get it
-        // instead
+        // instead, unless it is defined as the preferred content type
         if(preferredDisplayContentType.equals(Constants.TEXT_PLAIN))
         {
-            newContentNegotiator.addVariant("text/plain;q=0.99");
+            newContentNegotiator.addVariant("text/plain;q=0.95");
         }
         else
         {
