@@ -11,17 +11,17 @@ import org.queryall.api.profile.Profile;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractProfilableNormalisationRuleTest extends AbstractProfilableTest
+public abstract class AbstractProfilableQueryTypeTest extends AbstractProfilableTest
 {
     @Override
     public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {
-        profilable.addExcludeRdfRule(uriToExclude);
+        profilable.addExcludeQueryType(uriToExclude);
     }
     
     @Override
     public void includeTrueUri(final Profile profilable, final URI uriToInclude)
     {
-        profilable.addIncludeRdfRule(uriToInclude);
+        profilable.addIncludeQueryType(uriToInclude);
     }
 }
