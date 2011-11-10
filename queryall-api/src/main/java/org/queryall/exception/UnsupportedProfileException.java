@@ -8,7 +8,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedProfileException extends RuntimeException
+public class UnsupportedProfileException extends QueryAllException
 {
     
     /**
@@ -21,7 +21,7 @@ public class UnsupportedProfileException extends RuntimeException
      */
     public UnsupportedProfileException()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**

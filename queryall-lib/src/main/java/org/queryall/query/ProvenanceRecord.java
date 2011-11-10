@@ -119,11 +119,12 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     }
     
     public static Map<URI, ProvenanceRecord> fetchProvenanceForElementKey(final String hostToUse,
-            final String nextElementKey, final int modelVersion, HttpProvider dummyProvider) throws InterruptedException
+            final String nextElementKey, final int modelVersion, final HttpProvider dummyProvider)
+        throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
-//        final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
+        // final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
         final Collection<String> endpointUrls = new HashSet<String>();
         

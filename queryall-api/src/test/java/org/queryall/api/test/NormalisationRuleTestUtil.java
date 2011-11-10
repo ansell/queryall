@@ -15,7 +15,7 @@ public final class NormalisationRuleTestUtil
     protected final static void testIsUsedInStage(final NormalisationRule rule, final URI stage,
             final boolean expectedResult)
     {
-        Assert.assertEquals(expectedResult, rule.usedInStage(stage));
+        Assert.assertEquals("Failed testing stage="+stage, expectedResult, rule.usedInStage(stage));
     }
     
     protected final static void testIsUsedInStages(final NormalisationRule rule, final Collection<URI> stages,
@@ -30,7 +30,7 @@ public final class NormalisationRuleTestUtil
     protected final static void testIsValidInStage(final NormalisationRule rule, final URI stage,
             final boolean expectedResult)
     {
-        Assert.assertEquals(expectedResult, rule.validInStage(stage));
+        Assert.assertEquals("Failed testing stage="+stage, expectedResult, rule.validInStage(stage));
     }
     
     protected final static void testIsValidInStages(final NormalisationRule rule, final Collection<URI> stages,

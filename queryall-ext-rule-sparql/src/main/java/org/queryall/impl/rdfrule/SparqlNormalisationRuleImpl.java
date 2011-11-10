@@ -252,7 +252,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
      * @return the validStages
      */
     @Override
-    public Collection<URI> getValidStages()
+    public Set<URI> getValidStages()
     {
         if(this.validStages.size() == 0)
         {
@@ -260,7 +260,7 @@ public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implement
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
         }
         
-        return Collections.unmodifiableCollection(this.validStages);
+        return Collections.unmodifiableSet(this.validStages);
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)

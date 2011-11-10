@@ -1,0 +1,2151 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:fn="http://www.w3.org/2005/xpath-functions#"
+    xmlns:spinmapl="http://topbraid.org/spin/spinmapl#"
+    xmlns:spinmap="http://spinrdf.org/spinmap#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:afn="http://jena.hpl.hp.com/ARQ/function#"
+    xmlns:spin="http://spinrdf.org/spin#"
+    xmlns:sp="http://spinrdf.org/sp#"
+    xmlns:smf="http://topbraid.org/sparqlmotionfunctions#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:spif="http://spinrdf.org/spif#"
+    xmlns:arg="http://spinrdf.org/arg#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:spl="http://spinrdf.org/spl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://topbraid.org/spin/spinmapl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://topbraid.org/sparqlmotionfunctions"/>
+    <owl:imports rdf:resource="http://spinrdf.org/spinmap"/>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <rdf:Property rdf:ID="type">
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >type</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:ID="context">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >context</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <rdf:Property rdf:ID="result">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >result</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <rdf:Property rdf:ID="separator">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >separator</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <rdf:Property rdf:ID="template">
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >template</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:ID="predicate">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >predicate</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <rdf:Property rdf:ID="segmentLength">
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >segment length</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:ID="targetNamespace">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >target namespace</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <rdf:Property rdf:ID="suffix">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >suffix</rdfs:label>
+    <rdfs:subPropertyOf rdf:resource="http://spinrdf.org/sp#arg"/>
+  </rdf:Property>
+  <spin:Function rdf:ID="concatWithSeparator">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Creates a string by concatenating the two arguments, with a given separator in between.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#separator"/>
+        <spl:valueType>
+          <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#string">
+            <spinmap:suggestion-1-1>
+              <sp:Construct>
+                <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >Any value can be converted to xsd:string, so this is always a fall-back</rdfs:comment>
+                <sp:templates rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:object rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+                    <sp:subject rdf:nodeID="A0"/>
+                  </rdf:Description>
+                  <rdf:Description>
+                    <sp:object rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                    >1</sp:object>
+                    <sp:predicate rdf:resource="http://spinrdf.org/spinmap#suggestionScore"/>
+                    <sp:subject rdf:nodeID="A0"/>
+                  </rdf:Description>
+                </sp:templates>
+                <sp:where rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:object rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#range"/>
+                    <sp:subject rdf:parseType="Resource">
+                      <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                      >targetPredicate1</sp:varName>
+                    </sp:subject>
+                  </rdf:Description>
+                </sp:where>
+              </sp:Construct>
+            </spinmap:suggestion-1-1>
+            <spin:constraint>
+              <spl:Argument>
+                <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+                <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >The input node.</rdfs:comment>
+              </spl:Argument>
+            </spin:constraint>
+            <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >As a SPARQL function, this converts a given node (?arg1) to an xsd:string literal. If the input is a resource, then the URI of that resource will be returned.</rdfs:comment>
+          </spin:Function>
+        </spl:valueType>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The separator to put between the two values.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >concat with separator</rdfs:label>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The second value to concatenate.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The first value to concatenate.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#StringFunctions"/>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A1">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >result</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <fn:concat>
+                <sp:arg1>
+                  <xsd:string>
+                    <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                  </xsd:string>
+                </sp:arg1>
+                <sp:arg3>
+                  <xsd:string>
+                    <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg2"/>
+                  </xsd:string>
+                </sp:arg3>
+                <sp:arg2 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >separator</sp:varName>
+                </sp:arg2>
+              </fn:concat>
+            </sp:expression>
+          </sp:Bind>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <xsd:string>
+            <sp:arg1 rdf:nodeID="A1"/>
+          </xsd:string>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+  </spin:Function>
+  <spinmap:TargetFunction rdf:ID="buildURI2">
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The first property to get the value of.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Builds a new URI using the value of two given properties (?arg1, ?arg1) from a given subject (?source) and a given template (?template). The template may reference the values of the properties using {?1} and {?2}.</rdfs:comment>
+    <spinmap:shortLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >build URI</spinmap:shortLabel>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The second property.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >build URI (with 2 arguments)</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:parseType="Collection">
+          <sp:iri>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A2">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >uri</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </sp:iri>
+        </sp:resultVariables>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <spl:object>
+                <sp:arg2 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                <sp:arg1>
+                  <rdf:Description rdf:nodeID="A3">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >source</sp:varName>
+                  </rdf:Description>
+                </sp:arg1>
+              </spl:object>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A4">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value1</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <spl:object>
+                <sp:arg2 rdf:resource="http://spinrdf.org/spin#_arg2"/>
+                <sp:arg1 rdf:nodeID="A3"/>
+              </spl:object>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A5">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value2</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <smf:buildURI>
+                <sp:arg3 rdf:nodeID="A5"/>
+                <sp:arg2 rdf:nodeID="A4"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >template</sp:varName>
+                </sp:arg1>
+              </smf:buildURI>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A2"/>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#template"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The template string, "ex:Instance-{?1}".</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+  </spinmap:TargetFunction>
+  <spinmap:TargetFunction rdf:ID="buildURI3">
+    <spinmap:shortLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >build URI</spinmap:shortLabel>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#template"/>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The template string, "ex:Instance-{?1}".</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The first property to get the value of.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >build URI (with 3 arguments)</rdfs:label>
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:parseType="Collection">
+          <sp:iri>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A6">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >uri</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </sp:iri>
+        </sp:resultVariables>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <spl:object>
+                <sp:arg2 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                <sp:arg1>
+                  <rdf:Description rdf:nodeID="A7">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >source</sp:varName>
+                  </rdf:Description>
+                </sp:arg1>
+              </spl:object>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A8">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value1</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <spl:object>
+                <sp:arg2 rdf:resource="http://spinrdf.org/spin#_arg2"/>
+                <sp:arg1 rdf:nodeID="A7"/>
+              </spl:object>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A9">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value2</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <spl:object>
+                <sp:arg2 rdf:resource="http://spinrdf.org/spin#_arg3"/>
+                <sp:arg1 rdf:nodeID="A7"/>
+              </spl:object>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A10">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value3</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <smf:buildURI>
+                <sp:arg4 rdf:nodeID="A10"/>
+                <sp:arg3 rdf:nodeID="A9"/>
+                <sp:arg2 rdf:nodeID="A8"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >template</sp:varName>
+                </sp:arg1>
+              </smf:buildURI>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A6"/>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Builds a new URI using the value of three given properties (?arg1, ?arg2, ?arg3) from a given subject (?source) and a given template (?template). The template may reference the values of the properties using {?1}, {?2} and {?3}.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The third property.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg3"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The second property.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+  </spinmap:TargetFunction>
+  <spl:TestCase rdf:ID="Test-pathParent-3">
+    <spl:testExpression>
+      <spinmapl:pathParent>
+        <sp:arg1>World</sp:arg1>
+        <spinmapl:separator>&gt;</spinmapl:separator>
+      </spinmapl:pathParent>
+    </spl:testExpression>
+  </spl:TestCase>
+  <spl:TestCase rdf:ID="Test-changeNamespace-1">
+    <spl:testResult rdf:resource="http://example.org/test#Thing"/>
+    <spl:testExpression>
+      <spinmapl:changeNamespace>
+        <spinmap:source rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <spinmapl:targetNamespace>http://example.org/test#</spinmapl:targetNamespace>
+      </spinmapl:changeNamespace>
+    </spl:testExpression>
+  </spl:TestCase>
+  <spl:TestCase rdf:ID="Test-pathParent-1">
+    <spl:testExpression>
+      <spinmapl:pathParent>
+        <sp:arg1>World &gt; Europe &gt; Germany</sp:arg1>
+        <spinmapl:separator>&gt;</spinmapl:separator>
+      </spinmapl:pathParent>
+    </spl:testExpression>
+    <spl:testResult rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Europe</spl:testResult>
+  </spl:TestCase>
+  <spin:Function rdf:ID="fixedLengthPathParentTarget">
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://spinrdf.org/spinmap#Context"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The context to use for deriving the target from the source instance.</rdfs:comment>
+        <spl:predicate rdf:resource="#context"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description rdf:nodeID="A11">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >target</sp:varName>
+          </rdf:Description>
+        </sp:resultVariables>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <spinmapl:fixedLengthPathParent>
+                <spinmapl:segmentLength rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >segmentLength</sp:varName>
+                </spinmapl:segmentLength>
+                <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+              </spinmapl:fixedLengthPathParent>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A12">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >parentName</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A12"/>
+              </sp:bound>
+            </sp:expression>
+          </sp:Filter>
+          <sp:Bind>
+            <sp:expression>
+              <spl:subject>
+                <sp:arg2 rdf:nodeID="A12"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >predicate</sp:varName>
+                </sp:arg1>
+              </spl:subject>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A13">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >source</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A13"/>
+              </sp:bound>
+            </sp:expression>
+          </sp:Filter>
+          <sp:Bind>
+            <sp:expression>
+              <spinmap:targetResource>
+                <spinmap:context rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >context</sp:varName>
+                </spinmap:context>
+                <sp:arg1 rdf:nodeID="A13"/>
+              </spinmap:targetResource>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A11"/>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fixed length path parent target</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Gets the parent of a path expression (using the function fixedLengthPathParent) and finds a source instance with a matching value for a given property. Then it finds the target resource for that source instance.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType>
+          <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#integer">
+            <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            <spin:constraint>
+              <spl:Argument>
+                <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >The input value.</rdfs:comment>
+                <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+              </spl:Argument>
+            </spin:constraint>
+            <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >As a SPARQL function, this converts a given node (?arg1) to an xsd:integer literal.</rdfs:comment>
+            <spinmap:suggestion-1-1>
+              <sp:Construct>
+                <sp:where rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:subject rdf:parseType="Resource">
+                      <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                      >targetPredicate1</sp:varName>
+                    </sp:subject>
+                    <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#range"/>
+                    <sp:object rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                  </rdf:Description>
+                  <sp:Filter>
+                    <sp:expression>
+                      <spinmapl:hasValueInteger>
+                        <sp:arg1 rdf:parseType="Resource">
+                          <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                          >sourceClass</sp:varName>
+                        </sp:arg1>
+                        <sp:arg2 rdf:parseType="Resource">
+                          <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                          >sourcePredicate1</sp:varName>
+                        </sp:arg2>
+                      </spinmapl:hasValueInteger>
+                    </sp:expression>
+                  </sp:Filter>
+                </sp:where>
+                <sp:templates rdf:parseType="Collection">
+                  <rdf:Description>
+                    <sp:subject rdf:nodeID="A14"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+                    <sp:object rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                  </rdf:Description>
+                  <rdf:Description>
+                    <sp:subject rdf:nodeID="A14"/>
+                    <sp:predicate rdf:resource="http://spinrdf.org/spinmap#suggestionScore"/>
+                    <sp:object rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                    >50</sp:object>
+                  </rdf:Description>
+                </sp:templates>
+              </sp:Construct>
+            </spinmap:suggestion-1-1>
+          </spin:Function>
+        </spl:valueType>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The number of characters to remove from the end of the path expression.</rdfs:comment>
+        <spl:predicate rdf:resource="#segmentLength"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#StringFunctions"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The path expression.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <spl:predicate rdf:resource="#predicate"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The predicate that holds the parent path value in the source instance.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+  </spin:Function>
+  <spl:TestCase rdf:ID="Test-pathParent-2">
+    <spl:testResult rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Europe</spl:testResult>
+    <spl:testExpression>
+      <spinmapl:pathParent>
+        <sp:arg1>Europe,Germany</sp:arg1>
+        <spinmapl:separator>,</spinmapl:separator>
+      </spinmapl:pathParent>
+    </spl:testExpression>
+  </spl:TestCase>
+  <spinmap:TargetFunction rdf:ID="buildURI1">
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:parseType="Collection">
+          <sp:iri>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A15">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >uri</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </sp:iri>
+        </sp:resultVariables>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <spl:object>
+                <sp:arg2 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >source</sp:varName>
+                </sp:arg1>
+              </spl:object>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A16">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <smf:buildURI>
+                <sp:arg2 rdf:nodeID="A16"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >template</sp:varName>
+                </sp:arg1>
+              </smf:buildURI>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A15"/>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The property to get the value of.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <spinmap:shortLabel rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >build URI</spinmap:shortLabel>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >build URI (with 1 argument)</rdfs:label>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#template"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The template string, "ex:Instance-{?1}".</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Builds a new URI using the value of a given property (?arg1) from a given subject (?source) and a given template (?template). The template may reference the value of the property using {?1}.</rdfs:comment>
+  </spinmap:TargetFunction>
+  <spin:Function rdf:ID="pathEnd">
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:parseType="Collection">
+          <sp:if>
+            <sp:arg3 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+            <sp:arg2>
+              <smf:trim>
+                <sp:arg1>
+                  <smf:subString>
+                    <arg:fromIndex>
+                      <sp:add>
+                        <sp:arg2 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                        >1</sp:arg2>
+                        <sp:arg1>
+                          <rdf:Description rdf:nodeID="A17">
+                            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >last</sp:varName>
+                          </rdf:Description>
+                        </sp:arg1>
+                      </sp:add>
+                    </arg:fromIndex>
+                    <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                  </smf:subString>
+                </sp:arg1>
+              </smf:trim>
+            </sp:arg2>
+            <sp:arg1>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A17"/>
+              </sp:bound>
+            </sp:arg1>
+          </sp:if>
+        </sp:resultVariables>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <smf:lastIndexOf>
+                <sp:arg2 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >separator</sp:varName>
+                </sp:arg2>
+                <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+              </smf:lastIndexOf>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A17"/>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >path end</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#StringFunctions"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The path expression.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#separator"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The separator of path elements. Elements will be trimmed for white spaces, so the separator does not need to specify them.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Takes a path expression such as "World &gt; Europe &gt; Germany" and gets the last element, e.g. "Germany" with separator "&gt;".</rdfs:comment>
+  </spin:Function>
+  <spl:TestCase rdf:ID="Test-fixedLengthPathParent-1">
+    <spl:testResult rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >W0102</spl:testResult>
+    <spl:testExpression>
+      <spinmapl:fixedLengthPathParent>
+        <spinmapl:segmentLength rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >2</spinmapl:segmentLength>
+        <sp:arg1>W010203</sp:arg1>
+      </spinmapl:fixedLengthPathParent>
+    </spl:testExpression>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Test-fixed length path parent-1</rdfs:label>
+  </spl:TestCase>
+  <spin:Function rdf:ID="resourceWithValue">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Takes a value (?arg1) and a property (?predicate), as well an optional type, and returns a resource that has the given value as object for the predicate. For example, this can be used to find an instance of the class Country that has "Australia" as its label.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#MiscFunctions"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#predicate"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The property that must be used in the result resource.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The value to match against.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A18">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >subject</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_arg1"/>
+            <sp:predicate rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >predicate</sp:varName>
+            </sp:predicate>
+          </rdf:Description>
+          <sp:TriplePath>
+            <sp:path>
+              <sp:ModPath>
+                <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >-2</sp:modMax>
+                <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+                <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >0</sp:modMin>
+              </sp:ModPath>
+            </sp:path>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A19">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >t</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >type</sp:varName>
+            </sp:object>
+          </sp:TriplePath>
+          <rdf:Description>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:nodeID="A18"/>
+            <sp:object rdf:nodeID="A19"/>
+          </rdf:Description>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description rdf:nodeID="A18"/>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >resource with value</rdfs:label>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#type"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The (optional) type of the result object, to narrow down the search space.</rdfs:comment>
+        <spl:optional rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+        >true</spl:optional>
+        <spl:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+      </spl:Argument>
+    </spin:constraint>
+  </spin:Function>
+  <spin:Function rdf:ID="constantResource">
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >result</sp:varName>
+          </rdf:Description>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#result"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The result node.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The input value (will be ignored).</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Simply returns a constant resource, independent of the input argument. This can be used to create a value whenever a given property at the source instance has a value.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#MiscFunctions"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >constant resource</rdfs:label>
+  </spin:Function>
+  <spin:Function rdf:ID="pathParentTarget">
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#StringFunctions"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Gets the parent of a path expression (using the function pathParent) and finds a source instance with a matching value for a given property. Then it finds the target resource for that source instance. This is a highly specialized function for a design pattern often used in spreadsheets, where one column contains the full path expression, and the other contains the name of the item.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >path parent target</rdfs:label>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#context"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The context to use for deriving the target from the source instance.</rdfs:comment>
+        <spl:valueType rdf:resource="http://spinrdf.org/spinmap#Context"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#separator"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The path separator, e.g. "&gt;".</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A20">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >parentName</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <spinmapl:pathParent>
+                <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                <spinmapl:separator rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >separator</sp:varName>
+                </spinmapl:separator>
+              </spinmapl:pathParent>
+            </sp:expression>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A20"/>
+              </sp:bound>
+            </sp:expression>
+          </sp:Filter>
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A21">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >source</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <spl:subject>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >predicate</sp:varName>
+                </sp:arg1>
+                <sp:arg2 rdf:nodeID="A20"/>
+              </spl:subject>
+            </sp:expression>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A22">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >target</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <spinmap:targetResource>
+                <sp:arg1 rdf:nodeID="A21"/>
+                <spinmap:context rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >context</sp:varName>
+                </spinmap:context>
+              </spinmap:targetResource>
+            </sp:expression>
+          </sp:Bind>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description rdf:nodeID="A22"/>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The path expression.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The predicate that holds the parent path value in the source instance.</rdfs:comment>
+        <spl:predicate rdf:resource="#predicate"/>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+      </spl:Argument>
+    </spin:constraint>
+  </spin:Function>
+  <spin:Function rdf:ID="selfJoin">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#MiscFunctions"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >self join</rdfs:label>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Can be used to construct "self-join" matches, where the result is a resource from the target ontology.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#context"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The context to create the result resource with.</rdfs:comment>
+        <spl:valueType rdf:resource="http://spinrdf.org/spinmap#Context"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The value(s) that the source instance must have for the predicate.</rdfs:comment>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#predicate"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The predicate to look for.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A23">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >source</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:predicate rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >predicate</sp:varName>
+            </sp:predicate>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_arg1"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A24">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >context</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:predicate rdf:resource="http://spinrdf.org/spinmap#sourceClass"/>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A25">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >sourceClass</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+          <sp:TriplePath>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A26">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >type</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:path>
+              <sp:ModPath>
+                <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+                <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >-2</sp:modMax>
+                <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >0</sp:modMin>
+              </sp:ModPath>
+            </sp:path>
+            <sp:object rdf:nodeID="A25"/>
+          </sp:TriplePath>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A23"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:nodeID="A26"/>
+          </rdf:Description>
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A27">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >target</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <spinmap:targetResource>
+                <sp:arg1 rdf:nodeID="A23"/>
+                <spinmap:context rdf:nodeID="A24"/>
+              </spinmap:targetResource>
+            </sp:expression>
+          </sp:Bind>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description rdf:nodeID="A27"/>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+  </spin:Function>
+  <spinmap:TargetFunction rdf:ID="self">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >self</rdfs:label>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >source</sp:varName>
+          </rdf:Description>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A simple function that returns the source instance itself, reusing exactly the same URIs and blank node identifiers.</rdfs:comment>
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+  </spinmap:TargetFunction>
+  <spinmap:TargetFunction rdf:ID="relatedObjectContext">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >related object context</rdfs:label>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#context"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The Context to apply to the other source object.</rdfs:comment>
+        <spl:valueType rdf:resource="http://spinrdf.org/spinmap#Context"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >source</sp:varName>
+            </sp:subject>
+            <sp:predicate rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >predicate</sp:varName>
+            </sp:predicate>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A28">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >object</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <spinmap:targetResource>
+            <sp:arg1 rdf:nodeID="A28"/>
+            <spinmap:context rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >context</sp:varName>
+            </spinmap:context>
+          </spinmap:targetResource>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#predicate"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The predicate to walk along to find the other source object.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >From the source object, this function uses a given property (?predicate) to find a related source object, and then applies a given context on that related source object to build the target resource. This can be used if the source object that we really want is one step away from the current source object.</rdfs:comment>
+  </spinmap:TargetFunction>
+  <spinmap:TargetFunction rdf:ID="relatedSubjectContext">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >From the source object, this function uses a given property (?predicate) to find a related source subject, and then applies a given context on that related source subject to build the target resource. This can be used if the source instance that we really want is one step away from the current source instance.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://spinrdf.org/spinmap#Context"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The Context to apply to the other source object.</rdfs:comment>
+        <spl:predicate rdf:resource="#context"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >related subject context</rdfs:label>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The predicate to walk along to find the other source object.</rdfs:comment>
+        <spl:predicate rdf:resource="#predicate"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A29">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >subject</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:predicate rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >predicate</sp:varName>
+            </sp:predicate>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >source</sp:varName>
+            </sp:object>
+          </rdf:Description>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <spinmap:targetResource>
+            <sp:arg1 rdf:nodeID="A29"/>
+            <spinmap:context rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >context</sp:varName>
+            </spinmap:context>
+          </spinmap:targetResource>
+        </sp:resultVariables>
+      </sp:Select>
+    </spin:body>
+  </spinmap:TargetFunction>
+  <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#float">
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >As a SPARQL function, this converts a given node (?arg1) to an xsd:float literal.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The input value.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spinmap:suggestion-1-1>
+      <sp:Construct>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >targetPredicate1</sp:varName>
+            </sp:subject>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#range"/>
+            <sp:object rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+          </rdf:Description>
+          <sp:Filter>
+            <sp:expression>
+              <spinmapl:hasValueFloat>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >sourceClass</sp:varName>
+                </sp:arg1>
+                <sp:arg2 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >sourcePredicate1</sp:varName>
+                </sp:arg2>
+              </spinmapl:hasValueFloat>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A30"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A30"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spinmap#suggestionScore"/>
+            <sp:object rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+            >50</sp:object>
+          </rdf:Description>
+        </sp:templates>
+      </sp:Construct>
+    </spinmap:suggestion-1-1>
+  </spin:Function>
+  <rdf:Description rdf:about="http://spinrdf.org/spif#parseDate">
+    <spinmap:suggestion-1-1>
+      <sp:Construct>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object rdf:resource="http://spinrdf.org/spif#parseDate"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:nodeID="A31"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A32">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >pattern</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://spinrdf.org/arg#pattern"/>
+            <sp:subject rdf:nodeID="A31"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A33">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >count</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://spinrdf.org/spinmap#suggestionScore"/>
+            <sp:subject rdf:nodeID="A31"/>
+          </rdf:Description>
+        </sp:templates>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A34">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >range</sp:varName>
+              </rdf:Description>
+            </sp:object>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#range"/>
+            <sp:subject rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >targetPredicate1</sp:varName>
+            </sp:subject>
+          </rdf:Description>
+          <sp:Filter>
+            <sp:expression>
+              <sp:or>
+                <sp:arg2>
+                  <sp:eq>
+                    <sp:arg2>
+                      <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#time">
+                        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                        >As a SPARQL function, this converts a given node (?arg1) to an xsd:time literal.</rdfs:comment>
+                        <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#time"/>
+                        <spin:constraint>
+                          <spl:Argument>
+                            <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >The input value.</rdfs:comment>
+                            <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+                          </spl:Argument>
+                        </spin:constraint>
+                      </spin:Function>
+                    </sp:arg2>
+                    <sp:arg1 rdf:nodeID="A34"/>
+                  </sp:eq>
+                </sp:arg2>
+                <sp:arg1>
+                  <sp:or>
+                    <sp:arg2>
+                      <sp:eq>
+                        <sp:arg2>
+                          <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#dateTime">
+                            <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+                            <spin:constraint>
+                              <spl:Argument>
+                                <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                                >The input value.</rdfs:comment>
+                                <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+                              </spl:Argument>
+                            </spin:constraint>
+                            <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >As a SPARQL function, this converts a given node (?arg1) to an xsd:dateTime literal.</rdfs:comment>
+                          </spin:Function>
+                        </sp:arg2>
+                        <sp:arg1 rdf:nodeID="A34"/>
+                      </sp:eq>
+                    </sp:arg2>
+                    <sp:arg1>
+                      <sp:eq>
+                        <sp:arg2>
+                          <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#date">
+                            <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+                            <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >As a SPARQL function, this converts a given node (?arg1) to an xsd:date literal.</rdfs:comment>
+                            <spin:constraint>
+                              <spl:Argument>
+                                <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                                >The input value.</rdfs:comment>
+                                <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+                              </spl:Argument>
+                            </spin:constraint>
+                          </spin:Function>
+                        </sp:arg2>
+                        <sp:arg1 rdf:nodeID="A34"/>
+                      </sp:eq>
+                    </sp:arg1>
+                  </sp:or>
+                </sp:arg1>
+              </sp:or>
+            </sp:expression>
+          </sp:Filter>
+          <rdf:Description>
+            <sp:object rdf:resource="http://spinrdf.org/spif#parseDate"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A35">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >fc</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object rdf:nodeID="A32"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/arg#pattern"/>
+            <sp:subject rdf:nodeID="A35"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object rdf:nodeID="A35"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spl#testExpression"/>
+            <sp:subject rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >testCase</sp:varName>
+            </sp:subject>
+          </rdf:Description>
+          <sp:Bind>
+            <sp:expression>
+              <spinmapl:countInstancesWithDatePattern>
+                <spinmapl:type rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >sourceClass</sp:varName>
+                </spinmapl:type>
+                <spinmapl:predicate rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >sourcePredicate1</sp:varName>
+                </spinmapl:predicate>
+                <arg:pattern rdf:nodeID="A32"/>
+              </spinmapl:countInstancesWithDatePattern>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A33"/>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:gt>
+                <sp:arg2 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >0</sp:arg2>
+                <sp:arg1 rdf:nodeID="A33"/>
+              </sp:gt>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+      </sp:Construct>
+    </spinmap:suggestion-1-1>
+  </rdf:Description>
+  <spin:Function rdf:about="http://www.w3.org/2001/XMLSchema#boolean">
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The input value.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >As a SPARQL function, this converts a given node (?arg1) to an xsd:boolean literal.</rdfs:comment>
+  </spin:Function>
+  <rdf:Description rdf:about="http://topbraid.org/sparqlmotionfunctions#dbpedia">
+    <spinmap:suggestion-1-1>
+      <sp:Construct>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object rdf:resource="http://topbraid.org/sparqlmotionfunctions#dbpedia"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:parseType="Resource">
+            </sp:subject>
+          </rdf:Description>
+        </sp:templates>
+        <sp:where rdf:parseType="Collection">
+          <sp:Filter>
+            <sp:expression>
+              <sp:in>
+                <sp:arg3 rdf:resource="http://www.w3.org/2000/01/rdf-schema#seeAlso"/>
+                <sp:arg2 rdf:resource="http://www.w3.org/2002/07/owl#sameAs"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >targetPredicate1</sp:varName>
+                </sp:arg1>
+              </sp:in>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+      </sp:Construct>
+    </spinmap:suggestion-1-1>
+  </rdf:Description>
+  <spin:Function rdf:ID="countInstancesWithDatePattern">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#MiscFunctions"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >count instances with date pattern</rdfs:label>
+    <spin:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+    >true</spin:private>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#type"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The type of instances.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="http://spinrdf.org/arg#pattern"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The pattern to try.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#predicate"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The predicate to test.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:body>
+      <sp:Select>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A36">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >instance</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:predicate rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >predicate</sp:varName>
+            </sp:predicate>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A37">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+          <sp:TriplePath>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A38">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >class</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:path>
+              <sp:ModPath>
+                <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+                <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >-2</sp:modMax>
+                <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                >0</sp:modMin>
+              </sp:ModPath>
+            </sp:path>
+            <sp:object rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >type</sp:varName>
+            </sp:object>
+          </sp:TriplePath>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A36"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:object rdf:nodeID="A38"/>
+          </rdf:Description>
+          <sp:Filter>
+            <sp:expression>
+              <sp:eq>
+                <sp:arg1>
+                  <sp:datatype>
+                    <sp:arg1 rdf:nodeID="A37"/>
+                  </sp:datatype>
+                </sp:arg1>
+                <sp:arg2 rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+              </sp:eq>
+            </sp:expression>
+          </sp:Filter>
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A39">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >result</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <spif:parseDate>
+                <sp:arg1 rdf:nodeID="A37"/>
+                <arg:pattern rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >pattern</sp:varName>
+                </arg:pattern>
+              </spif:parseDate>
+            </sp:expression>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A39"/>
+              </sp:bound>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+        <sp:resultVariables rdf:parseType="Collection">
+          <sp:Count>
+            <sp:expression rdf:parseType="Resource">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >instance</sp:varName>
+            </sp:expression>
+          </sp:Count>
+        </sp:resultVariables>
+        <sp:limit rdf:datatype="http://www.w3.org/2001/XMLSchema#long"
+        >100</sp:limit>
+      </sp:Select>
+    </spin:body>
+  </spin:Function>
+  <rdf:Description rdf:about="http://topbraid.org/sparqlmotionfunctions#setLanguage">
+    <spinmap:suggestion-1-1>
+      <sp:Construct>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object rdf:resource="http://topbraid.org/sparqlmotionfunctions#setLanguage"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:nodeID="A40"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object>en</sp:object>
+            <sp:predicate rdf:resource="http://spinrdf.org/arg#language"/>
+            <sp:subject rdf:nodeID="A40"/>
+          </rdf:Description>
+        </sp:templates>
+        <sp:where rdf:parseType="Collection">
+          <sp:Filter>
+            <sp:expression>
+              <sp:in>
+                <sp:arg3 rdf:resource="http://www.w3.org/2004/02/skos/core#altLabel"/>
+                <sp:arg2 rdf:resource="http://www.w3.org/2004/02/skos/core#prefLabel"/>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >targetPredicate1</sp:varName>
+                </sp:arg1>
+              </sp:in>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+      </sp:Construct>
+    </spinmap:suggestion-1-1>
+  </rdf:Description>
+  <spin:Function rdf:ID="hasValueFloat">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >has value float</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#MiscFunctions"/>
+    <spin:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+    >true</spin:private>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The source class.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The property.</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Helper function to determine whether xsd:float conversion can be called on at least one of the first 10 values of a given class/property pair.</rdfs:comment>
+    <spin:body>
+      <sp:Ask>
+        <sp:where rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:subject>
+              <rdf:Description rdf:nodeID="A41">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >?0</sp:varName>
+              </rdf:Description>
+            </sp:subject>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_arg1"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A41"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A42">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >?1</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A42"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+            <sp:object rdf:resource="http://spinrdf.org/spin#_arg2"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A42"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+            <sp:object rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:subject rdf:nodeID="A41"/>
+            <sp:predicate>
+              <spin:MagicProperty rdf:ID="first10Values">
+                <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >first10Values</rdfs:label>
+                <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#MagicProperties"/>
+                <spin:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+                >true</spin:private>
+                <spin:constraint>
+                  <spl:Argument>
+                    <spl:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+                    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >The class to walk the instances of.</rdfs:comment>
+                    <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+                  </spl:Argument>
+                </spin:constraint>
+                <spin:constraint>
+                  <spl:Argument>
+                    <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+                    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >The predicate to get the objects of.</rdfs:comment>
+                    <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+                  </spl:Argument>
+                </spin:constraint>
+                <spin:body>
+                  <sp:Select>
+                    <sp:where rdf:parseType="Collection">
+                      <sp:TriplePath>
+                        <sp:subject>
+                          <rdf:Description rdf:nodeID="A43">
+                            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >type</sp:varName>
+                          </rdf:Description>
+                        </sp:subject>
+                        <sp:path>
+                          <sp:ModPath>
+                            <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+                            <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                            >-2</sp:modMax>
+                            <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                            >0</sp:modMin>
+                          </sp:ModPath>
+                        </sp:path>
+                        <sp:object rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                      </sp:TriplePath>
+                      <rdf:Description>
+                        <sp:subject>
+                          <rdf:Description rdf:nodeID="A44">
+                            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >instance</sp:varName>
+                          </rdf:Description>
+                        </sp:subject>
+                        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+                        <sp:object rdf:nodeID="A43"/>
+                      </rdf:Description>
+                      <rdf:Description>
+                        <sp:subject rdf:nodeID="A44"/>
+                        <sp:predicate rdf:resource="http://spinrdf.org/spin#_arg2"/>
+                        <sp:object>
+                          <rdf:Description rdf:nodeID="A45">
+                            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >value</sp:varName>
+                          </rdf:Description>
+                        </sp:object>
+                      </rdf:Description>
+                    </sp:where>
+                    <sp:resultVariables rdf:parseType="Collection">
+                      <rdf:Description rdf:nodeID="A45"/>
+                    </sp:resultVariables>
+                    <sp:limit rdf:datatype="http://www.w3.org/2001/XMLSchema#long"
+                    >10</sp:limit>
+                  </sp:Select>
+                </spin:body>
+              </spin:MagicProperty>
+            </sp:predicate>
+            <sp:object>
+              <rdf:Description rdf:nodeID="A46">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >value</sp:varName>
+              </rdf:Description>
+            </sp:object>
+          </rdf:Description>
+          <sp:Bind>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A47">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >result</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+            <sp:expression>
+              <xsd:float>
+                <sp:arg1 rdf:nodeID="A46"/>
+              </xsd:float>
+            </sp:expression>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A47"/>
+              </sp:bound>
+            </sp:expression>
+          </sp:Filter>
+        </sp:where>
+      </sp:Ask>
+    </spin:body>
+  </spin:Function>
+  <rdf:Description rdf:nodeID="A48">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >length</sp:varName>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A49">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >separator</sp:varName>
+  </rdf:Description>
+  <sp:Ask rdf:nodeID="A50">
+    <sp:where rdf:parseType="Collection">
+      <rdf:Description>
+        <sp:subject>
+          <rdf:Description rdf:nodeID="A51">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >?0</sp:varName>
+          </rdf:Description>
+        </sp:subject>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_arg1"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:subject rdf:nodeID="A51"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+        <sp:object>
+          <rdf:Description rdf:nodeID="A52">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >?1</sp:varName>
+          </rdf:Description>
+        </sp:object>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:subject rdf:nodeID="A52"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#first"/>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_arg2"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:subject rdf:nodeID="A52"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#rest"/>
+        <sp:object rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:subject rdf:nodeID="A51"/>
+        <sp:predicate rdf:resource="#first10Values"/>
+        <sp:object>
+          <rdf:Description rdf:nodeID="A53">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >value</sp:varName>
+          </rdf:Description>
+        </sp:object>
+      </rdf:Description>
+      <sp:Bind>
+        <sp:variable>
+          <rdf:Description rdf:nodeID="A54">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >result</sp:varName>
+          </rdf:Description>
+        </sp:variable>
+        <sp:expression>
+          <xsd:integer>
+            <sp:arg1 rdf:nodeID="A53"/>
+          </xsd:integer>
+        </sp:expression>
+      </sp:Bind>
+      <sp:Filter>
+        <sp:expression>
+          <sp:bound>
+            <sp:arg1 rdf:nodeID="A54"/>
+          </sp:bound>
+        </sp:expression>
+      </sp:Filter>
+    </sp:where>
+  </sp:Ask>
+  <sp:Bind rdf:nodeID="A55">
+    <sp:expression>
+      <smf:lastIndexOf>
+        <sp:arg3>
+          <sp:sub>
+            <sp:arg2 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+            >1</sp:arg2>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A56">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >last</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </sp:sub>
+        </sp:arg3>
+        <sp:arg2 rdf:nodeID="A49"/>
+        <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+      </smf:lastIndexOf>
+    </sp:expression>
+    <sp:variable>
+      <rdf:Description rdf:nodeID="A57">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >last1</sp:varName>
+      </rdf:Description>
+    </sp:variable>
+  </sp:Bind>
+  <sp:bound rdf:nodeID="A58">
+    <sp:arg1 rdf:nodeID="A57"/>
+  </sp:bound>
+  <spinmap:TargetFunction rdf:ID="changeNamespace">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spinmap#TargetFunctions"/>
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:parseType="Collection">
+          <rdf:Description rdf:nodeID="A59">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >target</sp:varName>
+          </rdf:Description>
+        </sp:resultVariables>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <afn:localname>
+                <sp:arg1 rdf:parseType="Resource">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >source</sp:varName>
+                </sp:arg1>
+              </afn:localname>
+            </sp:expression>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A60">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >localName</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:variable rdf:nodeID="A59"/>
+            <sp:expression>
+              <sp:iri>
+                <sp:arg1>
+                  <fn:concat>
+                    <sp:arg1 rdf:parseType="Resource">
+                      <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                      >targetNamespace</sp:varName>
+                    </sp:arg1>
+                    <sp:arg2 rdf:nodeID="A60"/>
+                  </fn:concat>
+                </sp:arg1>
+              </sp:iri>
+            </sp:expression>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >A target function that replaces the namespace of the source URI by a given target namespace.</rdfs:comment>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:predicate rdf:resource="#targetNamespace"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The target namespace.</rdfs:comment>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >change namespace</rdfs:label>
+    <spin:returnType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Resource"/>
+  </spinmap:TargetFunction>
+  <sp:sub rdf:nodeID="A61">
+    <sp:arg2>
+      <rdf:Description rdf:nodeID="A62">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >segmentLength</sp:varName>
+      </rdf:Description>
+    </sp:arg2>
+    <sp:arg1 rdf:nodeID="A48"/>
+  </sp:sub>
+  <spl:Argument rdf:nodeID="A63">
+    <spl:predicate rdf:resource="http://spinrdf.org/sp#arg2"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The property.</rdfs:comment>
+    <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </spl:Argument>
+  <spl:Argument rdf:nodeID="A64">
+    <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The number of characters to remove from the end of the input string.</rdfs:comment>
+    <spl:predicate rdf:resource="#segmentLength"/>
+  </spl:Argument>
+  <spl:Argument rdf:nodeID="A65">
+    <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The separator of path elements. Elements will be trimmed for white spaces, so the separator does not need to specify them.</rdfs:comment>
+    <spl:predicate rdf:resource="#separator"/>
+  </spl:Argument>
+  <spl:Argument rdf:nodeID="A66">
+    <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The path expression.</rdfs:comment>
+    <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+  </spl:Argument>
+  <smf:if rdf:nodeID="A67">
+    <sp:arg3 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >0</sp:arg3>
+    <sp:arg2>
+      <sp:add>
+        <sp:arg2 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >1</sp:arg2>
+        <sp:arg1 rdf:nodeID="A57"/>
+      </sp:add>
+    </sp:arg2>
+    <sp:arg1 rdf:nodeID="A58"/>
+  </smf:if>
+  <rdf:Description rdf:nodeID="A68">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >result</sp:varName>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A69">
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    <rdf:first>
+      <rdf:Description rdf:nodeID="A70">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >parent</sp:varName>
+      </rdf:Description>
+    </rdf:first>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A71">
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    <rdf:first>
+      <sp:Bind>
+        <sp:expression>
+          <fn:substring>
+            <sp:arg3 rdf:nodeID="A61"/>
+            <sp:arg2 rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+            >1</sp:arg2>
+            <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+          </fn:substring>
+        </sp:expression>
+        <sp:variable rdf:nodeID="A68"/>
+      </sp:Bind>
+    </rdf:first>
+  </rdf:Description>
+  <spin:Function rdf:ID="pathParent">
+    <spin:constraint rdf:nodeID="A65"/>
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:nodeID="A69"/>
+        <sp:where rdf:parseType="Collection">
+          <sp:Bind>
+            <sp:expression>
+              <smf:lastIndexOf>
+                <sp:arg2 rdf:nodeID="A49"/>
+                <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+              </smf:lastIndexOf>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A56"/>
+          </sp:Bind>
+          <sp:Filter>
+            <sp:expression>
+              <sp:bound>
+                <sp:arg1 rdf:nodeID="A56"/>
+              </sp:bound>
+            </sp:expression>
+          </sp:Filter>
+          <sp:Bind rdf:nodeID="A55"/>
+          <sp:Bind>
+            <sp:expression rdf:nodeID="A67"/>
+            <sp:variable>
+              <rdf:Description rdf:nodeID="A72">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >start</sp:varName>
+              </rdf:Description>
+            </sp:variable>
+          </sp:Bind>
+          <sp:Bind>
+            <sp:expression>
+              <smf:trim>
+                <sp:arg1>
+                  <smf:subString>
+                    <sp:arg3 rdf:nodeID="A56"/>
+                    <sp:arg2 rdf:nodeID="A72"/>
+                    <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                  </smf:subString>
+                </sp:arg1>
+              </smf:trim>
+            </sp:expression>
+            <sp:variable rdf:nodeID="A70"/>
+          </sp:Bind>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#StringFunctions"/>
+    <spin:constraint rdf:nodeID="A66"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Takes a path expression such as "World &gt; Europe &gt; Germany" and gets the last but one element, e.g. "Europe" with separator "&gt;".</rdfs:comment>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >path parent</rdfs:label>
+  </spin:Function>
+  <rdf:Description rdf:nodeID="A73">
+    <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    <rdf:first rdf:nodeID="A68"/>
+  </rdf:Description>
+  <spl:Argument rdf:nodeID="A74">
+    <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >The source class.</rdfs:comment>
+    <spl:valueType rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+  </spl:Argument>
+  <spin:Function rdf:ID="fixedLengthPathParent">
+    <spin:body>
+      <sp:Select>
+        <sp:resultVariables rdf:nodeID="A73"/>
+        <sp:where rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:nodeID="A71"/>
+            <rdf:first>
+              <sp:Filter>
+                <sp:expression>
+                  <sp:gt>
+                    <sp:arg2 rdf:nodeID="A62"/>
+                    <sp:arg1 rdf:nodeID="A48"/>
+                  </sp:gt>
+                </sp:expression>
+              </sp:Filter>
+            </rdf:first>
+          </rdf:rest>
+          <rdf:first>
+            <sp:Bind>
+              <sp:expression>
+                <fn:string-length>
+                  <sp:arg1 rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                </fn:string-length>
+              </sp:expression>
+              <sp:variable rdf:nodeID="A48"/>
+            </sp:Bind>
+          </rdf:first>
+        </sp:where>
+      </sp:Select>
+    </spin:body>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <spin:constraint rdf:nodeID="A64"/>
+    <spin:constraint>
+      <spl:Argument>
+        <spl:valueType rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >The path expression, e.g. "W010203"</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+      </spl:Argument>
+    </spin:constraint>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Takes a given path consisting of fixed length segments, e.g. "W010203" and gets the parent path by removing a segment.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >fixed length path parent</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#StringFunctions"/>
+  </spin:Function>
+  <spin:Function rdf:ID="hasValueInteger">
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spl#MiscFunctions"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >has value integer</rdfs:label>
+    <spin:private rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean"
+    >true</spin:private>
+    <spin:constraint rdf:nodeID="A74"/>
+    <spin:constraint rdf:nodeID="A63"/>
+    <spin:returnType rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <spin:body rdf:nodeID="A50"/>
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Helper function to determine whether xsd:integer conversion can be called on at least one of the first 10 values of a given class/property pair.</rdfs:comment>
+  </spin:Function>
+</rdf:RDF>
+
+<!-- Created with TopBraid -->

@@ -6,7 +6,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class InvalidStageException extends IllegalArgumentException
+public class InvalidStageException extends QueryAllException
 {
     private static final long serialVersionUID = 2391457551752313315L;
     

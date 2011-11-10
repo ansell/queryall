@@ -9,7 +9,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedNormalisationRuleException extends RuntimeException
+public class UnsupportedNormalisationRuleException extends QueryAllException
 {
     
     /**
@@ -22,7 +22,7 @@ public class UnsupportedNormalisationRuleException extends RuntimeException
      */
     public UnsupportedNormalisationRuleException()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**

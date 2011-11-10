@@ -116,7 +116,7 @@ public abstract class AbstractNormalisationRuleTest
             }
             catch(final InvalidStageException ise)
             {
-                Assert.assertTrue("InvalidStageException thrown for valid stage", false);
+                Assert.fail("InvalidStageException thrown for valid stage nextIncludedStage="+nextIncludedStage);
             }
         }
         

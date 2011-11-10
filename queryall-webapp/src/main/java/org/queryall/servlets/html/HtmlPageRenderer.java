@@ -40,7 +40,6 @@ public class HtmlPageRenderer
     private static final Logger log = LoggerFactory.getLogger(HtmlPageRenderer.class);
     private static final boolean _TRACE = HtmlPageRenderer.log.isTraceEnabled();
     private static final boolean _DEBUG = HtmlPageRenderer.log.isDebugEnabled();
-    @SuppressWarnings("unused")
     private static final boolean _INFO = HtmlPageRenderer.log.isInfoEnabled();
     
     public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,

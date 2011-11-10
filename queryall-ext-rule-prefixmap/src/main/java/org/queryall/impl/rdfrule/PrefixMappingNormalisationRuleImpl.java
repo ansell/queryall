@@ -210,7 +210,7 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
      * @return the validStages
      */
     @Override
-    public Collection<URI> getValidStages()
+    public Set<URI> getValidStages()
     {
         if(this.validStages.size() == 0)
         {
@@ -225,7 +225,7 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         }
         
-        return Collections.unmodifiableCollection(this.validStages);
+        return Collections.unmodifiableSet(this.validStages);
     }
     
     /*

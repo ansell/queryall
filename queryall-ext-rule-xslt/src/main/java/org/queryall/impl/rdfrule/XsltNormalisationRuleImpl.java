@@ -178,7 +178,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
      * @return the validStages
      */
     @Override
-    public Collection<URI> getValidStages()
+    public Set<URI> getValidStages()
     {
         if(this.validStages.size() == 0)
         {
@@ -188,7 +188,7 @@ public class XsltNormalisationRuleImpl extends NormalisationRuleImpl implements 
             this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
         }
         
-        return Collections.unmodifiableCollection(this.validStages);
+        return Collections.unmodifiableSet(this.validStages);
     }
     
     /*

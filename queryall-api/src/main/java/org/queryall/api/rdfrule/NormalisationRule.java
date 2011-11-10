@@ -1,11 +1,13 @@
 package org.queryall.api.rdfrule;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.QueryAllException;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -22,27 +24,27 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     
     Collection<URI> getRelatedNamespaces();
     
-    Collection<URI> getStages();
+    Set<URI> getStages();
     
-    Collection<URI> getValidStages();
+    Set<URI> getValidStages();
     
-    Object normaliseByStage(URI stage, Object input);
+    Object normaliseByStage(URI stage, Object input) throws InvalidStageException, QueryAllException;
     
     void setOrder(int order);
     
-    Object stageAfterQueryCreation(Object input);
+    Object stageAfterQueryCreation(Object input) throws QueryAllException;
     
-    Object stageAfterQueryParsing(Object input);
+    Object stageAfterQueryParsing(Object input) throws QueryAllException;
     
-    Object stageAfterResultsImport(Object input);
+    Object stageAfterResultsImport(Object input) throws QueryAllException;
     
-    Object stageAfterResultsToDocument(Object input);
+    Object stageAfterResultsToDocument(Object input) throws QueryAllException;
     
-    Object stageAfterResultsToPool(Object input);
+    Object stageAfterResultsToPool(Object input) throws QueryAllException;
     
-    Object stageBeforeResultsImport(Object input);
+    Object stageBeforeResultsImport(Object input) throws QueryAllException;
     
-    Object stageQueryVariables(Object input);
+    Object stageQueryVariables(Object input) throws QueryAllException;
     
     boolean usedInStage(URI stage);
     

@@ -18,6 +18,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.exception.InvalidStageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,14 +196,20 @@ public final class RuleUtils
         for(final NormalisationRule nextRule : normalisationRules)
         {
             if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
-                    includeNonProfileMatchedRdfRules))
+                    includeNonProfileMatchedRdfRules) && nextRule.usedInStage(stage))
             {
                 if(RuleUtils._TRACE)
                 {
                     RuleUtils.log.trace("normaliseByStage: nextRule.order=" + nextRule.getOrder());
                 }
-                
-                input = nextRule.normaliseByStage(stage, input);
+                try
+                {
+                    input = nextRule.normaliseByStage(stage, input);
+                }
+                catch(InvalidStageException ise)
+                {
+                    log.error("Found invalid stage exception after we checked whether the rule was used in this stage. This should not happen.", ise);
+                }
             }
         }
         
@@ -244,9 +251,12 @@ public final class RuleUtils
                 for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                         nextRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
                 {
-                    nextInputTestResult =
+                    if(nextRule.usedInStage(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+                    {
+                        nextInputTestResult =
                             (String)nextRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
                                     nextTestInputString);
+                    }
                 }
                 
                 if(nextInputTestResult.equals(nextTestOutputString))

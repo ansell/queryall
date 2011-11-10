@@ -1,0 +1,813 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:sp="http://spinrdf.org/sp#"
+    xmlns:smf="http://topbraid.org/sparqlmotionfunctions#"
+    xmlns:spinowl="http://topbraid.org/spin/spinowl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:spin="http://spinrdf.org/spin#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:spl="http://spinrdf.org/spl#"
+  xml:base="http://topbraid.org/spin/spinowl">
+  <owl:Ontology rdf:about="">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Contains constraint checking axioms for a subset of OWL, using closed-world semantics.</rdfs:comment>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >0.1.1</owl:versionInfo>
+    <owl:imports rdf:resource="http://spinrdf.org/spl"/>
+  </owl:Ontology>
+  <sp:Variable rdf:about="http://spinrdf.org/sp#_cardinality">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >cardinality</sp:varName>
+  </sp:Variable>
+  <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing">
+    <spin:constraint>
+      <spinowl:AllValuesFromConstraint/>
+    </spin:constraint>
+    <spin:constraint>
+      <spinowl:MaxCardinalityConstraint>
+        <sp:arg1 rdf:resource="http://www.w3.org/2002/07/owl#maxCardinality"/>
+      </spinowl:MaxCardinalityConstraint>
+    </spin:constraint>
+    <spin:constraint>
+      <spinowl:MaxCardinalityConstraint>
+        <sp:arg1 rdf:resource="http://www.w3.org/2002/07/owl#cardinality"/>
+      </spinowl:MaxCardinalityConstraint>
+    </spin:constraint>
+    <spin:constraint>
+      <spinowl:MinCardinalityConstraint>
+        <sp:arg1 rdf:resource="http://www.w3.org/2002/07/owl#minCardinality"/>
+      </spinowl:MinCardinalityConstraint>
+    </spin:constraint>
+    <spin:constraint>
+      <spinowl:MinCardinalityConstraint>
+        <sp:arg1 rdf:resource="http://www.w3.org/2002/07/owl#cardinality"/>
+      </spinowl:MinCardinalityConstraint>
+    </spin:constraint>
+    <spin:constraint>
+      <spinowl:HasValueConstraint/>
+    </spin:constraint>
+    <spin:constraint>
+      <spinowl:SomeValuesFromConstraint/>
+    </spin:constraint>
+  </rdf:Description>
+  <sp:Variable rdf:about="http://spinrdf.org/sp#_min">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >min</sp:varName>
+  </sp:Variable>
+  <sp:Variable rdf:about="http://spinrdf.org/sp#_class">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >class</sp:varName>
+  </sp:Variable>
+  <sp:Variable rdf:about="http://spinrdf.org/sp#_max">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >max</sp:varName>
+  </sp:Variable>
+  <sp:Variable rdf:about="http://spinrdf.org/sp#_found">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >found</sp:varName>
+  </sp:Variable>
+  <sp:Filter rdf:nodeID="A0">
+    <sp:expression>
+      <sp:lt>
+        <sp:arg2>
+          <rdf:Description rdf:nodeID="A1">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >min</sp:varName>
+          </rdf:Description>
+        </sp:arg2>
+        <sp:arg1>
+          <rdf:Description rdf:nodeID="A2">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >cardinality</sp:varName>
+          </rdf:Description>
+        </sp:arg1>
+      </sp:lt>
+    </sp:expression>
+  </sp:Filter>
+  <rdf:Description rdf:nodeID="A3">
+    <rdf:rest rdf:parseType="Collection">
+      <sp:Filter>
+        <sp:expression>
+          <sp:gt>
+            <sp:arg2>
+              <rdf:Description rdf:nodeID="A4">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >max</sp:varName>
+              </rdf:Description>
+            </sp:arg2>
+            <sp:arg1>
+              <rdf:Description rdf:nodeID="A5">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >cardinality</sp:varName>
+              </rdf:Description>
+            </sp:arg1>
+          </sp:gt>
+        </sp:expression>
+      </sp:Filter>
+      <sp:Let>
+        <sp:expression>
+          <smf:buildString>
+            <sp:arg1>Maximum cardinality of {?max} expected for {?property}</sp:arg1>
+          </smf:buildString>
+        </sp:expression>
+        <sp:variable>
+          <rdf:Description rdf:nodeID="A6">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >label</sp:varName>
+          </rdf:Description>
+        </sp:variable>
+      </sp:Let>
+    </rdf:rest>
+    <rdf:first>
+      <sp:Let>
+        <sp:expression>
+          <spl:objectCount>
+            <sp:arg2>
+              <rdf:Description rdf:nodeID="A7">
+                <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >property</sp:varName>
+              </rdf:Description>
+            </sp:arg2>
+            <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+          </spl:objectCount>
+        </sp:expression>
+        <sp:variable rdf:nodeID="A5"/>
+      </sp:Let>
+    </rdf:first>
+  </rdf:Description>
+  <spl:hasValueOfType rdf:nodeID="A8">
+    <sp:arg3>
+      <sp:Variable rdf:about="http://spinrdf.org/sp#_someValuesFrom">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >someValuesFrom</sp:varName>
+      </sp:Variable>
+    </sp:arg3>
+    <sp:arg2>
+      <sp:Variable rdf:about="http://spinrdf.org/sp#_property">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >property</sp:varName>
+      </sp:Variable>
+    </sp:arg2>
+    <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+  </spl:hasValueOfType>
+  <rdf:Description rdf:nodeID="A9">
+    <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+    <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+    <sp:subject rdf:nodeID="A10"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A11">
+    <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+    <sp:subject rdf:nodeID="A12"/>
+  </rdf:Description>
+  <sp:TriplePath rdf:nodeID="A13">
+    <sp:object>
+      <sp:Variable rdf:about="http://spinrdf.org/sp#_restriction">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >restriction</sp:varName>
+      </sp:Variable>
+    </sp:object>
+    <sp:path>
+      <sp:ModPath>
+        <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >0</sp:modMin>
+        <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+        >-2</sp:modMax>
+        <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+      </sp:ModPath>
+    </sp:path>
+    <sp:subject>
+      <sp:Variable rdf:about="http://spinrdf.org/sp#_type">
+        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >type</sp:varName>
+      </sp:Variable>
+    </sp:subject>
+  </sp:TriplePath>
+  <rdf:Description rdf:nodeID="A14">
+    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >label</sp:varName>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A15">
+    <sp:object rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+    <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+  </rdf:Description>
+  <sp:Filter rdf:nodeID="A16">
+    <sp:expression>
+      <sp:isURI>
+        <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+      </sp:isURI>
+    </sp:expression>
+  </sp:Filter>
+  <rdf:Description rdf:nodeID="A17">
+    <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+    <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+    <sp:subject rdf:nodeID="A18"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A19">
+    <rdf:rest rdf:parseType="Collection">
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+        <sp:subject rdf:nodeID="A12"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:object>
+          <rdf:Description rdf:nodeID="A20">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >property</sp:varName>
+          </rdf:Description>
+        </sp:object>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+        <sp:subject rdf:nodeID="A12"/>
+      </rdf:Description>
+    </rdf:rest>
+    <rdf:first rdf:parseType="Resource">
+      <sp:object rdf:nodeID="A14"/>
+      <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+      <sp:subject rdf:nodeID="A12"/>
+    </rdf:first>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A21">
+    <rdf:rest rdf:parseType="Collection">
+      <sp:Let>
+        <sp:expression>
+          <smf:buildString>
+            <sp:arg1>Minimum cardinality of {?min} expected for {?property}</sp:arg1>
+          </smf:buildString>
+        </sp:expression>
+        <sp:variable rdf:nodeID="A14"/>
+      </sp:Let>
+    </rdf:rest>
+    <rdf:first rdf:nodeID="A0"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A22">
+    <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+    <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+    <sp:subject rdf:nodeID="A23"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A24">
+    <rdf:rest rdf:parseType="Resource">
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:rest rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:nodeID="A21"/>
+              <rdf:first>
+                <sp:Let>
+                  <sp:expression>
+                    <spl:objectCount>
+                      <sp:arg2 rdf:nodeID="A20"/>
+                      <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+                    </spl:objectCount>
+                  </sp:expression>
+                  <sp:variable rdf:nodeID="A2"/>
+                </sp:Let>
+              </rdf:first>
+            </rdf:rest>
+            <rdf:first rdf:parseType="Resource">
+              <sp:object rdf:nodeID="A20"/>
+              <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#onProperty"/>
+              <sp:subject>
+                <rdf:Description rdf:nodeID="A25">
+                  <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                  >class</sp:varName>
+                </rdf:Description>
+              </sp:subject>
+            </rdf:first>
+          </rdf:rest>
+          <rdf:first rdf:parseType="Resource">
+            <sp:object rdf:nodeID="A1"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#_arg1"/>
+            <sp:subject rdf:nodeID="A25"/>
+          </rdf:first>
+        </rdf:rest>
+        <rdf:first rdf:parseType="Resource">
+          <sp:object rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+          <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+          <sp:subject rdf:nodeID="A25"/>
+        </rdf:first>
+      </rdf:rest>
+      <rdf:first>
+        <sp:TriplePath>
+          <sp:object rdf:nodeID="A25"/>
+          <sp:path>
+            <sp:ModPath>
+              <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+              >0</sp:modMin>
+              <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+              >-2</sp:modMax>
+              <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+            </sp:ModPath>
+          </sp:path>
+          <sp:subject>
+            <rdf:Description rdf:nodeID="A26">
+              <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+              >type</sp:varName>
+            </rdf:Description>
+          </sp:subject>
+        </sp:TriplePath>
+      </rdf:first>
+    </rdf:rest>
+    <rdf:first rdf:parseType="Resource">
+      <sp:object rdf:nodeID="A26"/>
+      <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+      <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+    </rdf:first>
+  </rdf:Description>
+  <spin:Template rdf:ID="MaxCardinalityConstraint">
+    <spin:body>
+      <sp:Construct>
+        <sp:templates rdf:parseType="Collection">
+          <rdf:Description>
+            <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:nodeID="A10"/>
+          </rdf:Description>
+          <rdf:Description>
+            <sp:object rdf:nodeID="A6"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+            <sp:subject rdf:nodeID="A10"/>
+          </rdf:Description>
+          <rdf:Description rdf:nodeID="A9"/>
+          <rdf:Description>
+            <sp:object rdf:nodeID="A7"/>
+            <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+            <sp:subject rdf:nodeID="A10"/>
+          </rdf:Description>
+        </sp:templates>
+        <sp:where rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:parseType="Resource">
+                <rdf:rest rdf:parseType="Resource">
+                  <rdf:rest rdf:nodeID="A3"/>
+                  <rdf:first rdf:parseType="Resource">
+                    <sp:object rdf:nodeID="A7"/>
+                    <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#onProperty"/>
+                    <sp:subject>
+                      <rdf:Description rdf:nodeID="A27">
+                        <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                        >class</sp:varName>
+                      </rdf:Description>
+                    </sp:subject>
+                  </rdf:first>
+                </rdf:rest>
+                <rdf:first rdf:parseType="Resource">
+                  <sp:object rdf:nodeID="A4"/>
+                  <sp:predicate rdf:resource="http://spinrdf.org/spin#_arg1"/>
+                  <sp:subject rdf:nodeID="A27"/>
+                </rdf:first>
+              </rdf:rest>
+              <rdf:first rdf:parseType="Resource">
+                <sp:object rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+                <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+                <sp:subject rdf:nodeID="A27"/>
+              </rdf:first>
+            </rdf:rest>
+            <rdf:first>
+              <sp:TriplePath>
+                <sp:object rdf:nodeID="A27"/>
+                <sp:path>
+                  <sp:ModPath>
+                    <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                    >0</sp:modMin>
+                    <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                    >-2</sp:modMax>
+                    <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+                  </sp:ModPath>
+                </sp:path>
+                <sp:subject>
+                  <rdf:Description rdf:nodeID="A28">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >type</sp:varName>
+                  </rdf:Description>
+                </sp:subject>
+              </sp:TriplePath>
+            </rdf:first>
+          </rdf:rest>
+          <rdf:first rdf:parseType="Resource">
+            <sp:object rdf:nodeID="A28"/>
+            <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+            <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+          </rdf:first>
+        </sp:where>
+      </sp:Construct>
+    </spin:body>
+    <spin:constraint>
+      <spl:Argument>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >the system property (owl:maxCardinality or owl:cardinality)</rdfs:comment>
+        <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+        <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+      </spl:Argument>
+    </spin:constraint>
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MaxCardinality constraint (using {?arg1})</spin:labelTemplate>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#Templates"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Max cardinality constraint</rdfs:label>
+    <rdfs:comment>Checks for any owl:maxCardinality/owl:cardinality restrictions defined in one of the superclasses of the types of ?this and applies them using closed-world semantics.</rdfs:comment>
+  </spin:Template>
+  <sp:Filter rdf:nodeID="A29">
+    <sp:expression>
+      <sp:isURI>
+        <sp:arg1>
+          <sp:Variable rdf:about="http://spinrdf.org/sp#_value">
+            <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >value</sp:varName>
+          </sp:Variable>
+        </sp:arg1>
+      </sp:isURI>
+    </sp:expression>
+  </sp:Filter>
+  <rdf:Description rdf:nodeID="A30">
+    <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+    <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#onProperty"/>
+    <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A31">
+    <rdf:first rdf:parseType="Resource">
+      <sp:object>
+        <sp:Variable rdf:about="http://spinrdf.org/sp#_label">
+          <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+          >label</sp:varName>
+        </sp:Variable>
+      </sp:object>
+      <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+      <sp:subject rdf:nodeID="A23"/>
+    </rdf:first>
+    <rdf:rest rdf:parseType="Collection">
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+        <sp:subject rdf:nodeID="A23"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+        <sp:subject rdf:nodeID="A23"/>
+      </rdf:Description>
+    </rdf:rest>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A32">
+    <rdf:rest rdf:parseType="Collection">
+      <sp:Filter>
+        <sp:expression>
+          <sp:not>
+            <sp:arg1>
+              <spl:instanceOf>
+                <sp:arg2>
+                  <sp:Variable rdf:about="http://spinrdf.org/sp#_range">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >range</sp:varName>
+                  </sp:Variable>
+                </sp:arg2>
+                <sp:arg1 rdf:resource="http://spinrdf.org/sp#_value"/>
+              </spl:instanceOf>
+            </sp:arg1>
+          </sp:not>
+        </sp:expression>
+      </sp:Filter>
+      <sp:Let>
+        <sp:expression>
+          <smf:buildString>
+            <sp:arg1>All values from {?property} must be {?range} violated by {?value}</sp:arg1>
+          </smf:buildString>
+        </sp:expression>
+        <sp:variable rdf:resource="http://spinrdf.org/sp#_label"/>
+      </sp:Let>
+    </rdf:rest>
+    <rdf:first rdf:nodeID="A29"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A33">
+    <rdf:rest rdf:parseType="Collection">
+      <sp:Let>
+        <sp:expression>
+          <smf:buildString>
+            <sp:arg1>Instances of {?type} must have at least one value of type {?someValuesFrom} for {?property}</sp:arg1>
+          </smf:buildString>
+        </sp:expression>
+        <sp:variable rdf:resource="http://spinrdf.org/sp#_label"/>
+      </sp:Let>
+    </rdf:rest>
+    <rdf:first>
+      <sp:Filter>
+        <sp:expression>
+          <sp:not>
+            <sp:arg1 rdf:nodeID="A8"/>
+          </sp:not>
+        </sp:expression>
+      </sp:Filter>
+    </rdf:first>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A34">
+    <sp:object rdf:resource="http://spinrdf.org/sp#_label"/>
+    <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+    <sp:subject rdf:nodeID="A18"/>
+  </rdf:Description>
+  <sp:Filter rdf:nodeID="A35">
+    <sp:expression>
+      <sp:isURI>
+        <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+      </sp:isURI>
+    </sp:expression>
+  </sp:Filter>
+  <rdf:Description rdf:nodeID="A36">
+    <rdf:rest rdf:parseType="Resource">
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:rest rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:nodeID="A32"/>
+              <rdf:first rdf:parseType="Resource">
+                <sp:object rdf:resource="http://spinrdf.org/sp#_value"/>
+                <sp:predicate>
+                  <sp:Variable rdf:about="http://spinrdf.org/sp#_p">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >p</sp:varName>
+                  </sp:Variable>
+                </sp:predicate>
+                <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+              </rdf:first>
+            </rdf:rest>
+            <rdf:first>
+              <sp:TriplePath>
+                <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+                <sp:path>
+                  <sp:ModPath>
+                    <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                    >0</sp:modMin>
+                    <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+                    >-2</sp:modMax>
+                    <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subPropertyOf"/>
+                  </sp:ModPath>
+                </sp:path>
+                <sp:subject rdf:resource="http://spinrdf.org/sp#_p"/>
+              </sp:TriplePath>
+            </rdf:first>
+          </rdf:rest>
+          <rdf:first rdf:nodeID="A15"/>
+        </rdf:rest>
+        <rdf:first rdf:parseType="Resource">
+          <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+          <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#onProperty"/>
+          <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+        </rdf:first>
+      </rdf:rest>
+      <rdf:first rdf:parseType="Resource">
+        <sp:object rdf:resource="http://spinrdf.org/sp#_range"/>
+        <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#allValuesFrom"/>
+        <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+      </rdf:first>
+    </rdf:rest>
+    <rdf:first>
+      <sp:TriplePath>
+        <sp:object rdf:resource="http://spinrdf.org/sp#_restriction"/>
+        <sp:path>
+          <sp:ModPath>
+            <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+            >0</sp:modMin>
+            <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+            >-2</sp:modMax>
+            <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+          </sp:ModPath>
+        </sp:path>
+        <sp:subject rdf:resource="http://spinrdf.org/sp#_type"/>
+      </sp:TriplePath>
+    </rdf:first>
+  </rdf:Description>
+  <spl:Argument rdf:nodeID="A37">
+    <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >the system property (owl:minCardinality or owl:cardinality)</rdfs:comment>
+    <spl:predicate rdf:resource="http://spinrdf.org/sp#arg1"/>
+    <spl:valueType rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+  </spl:Argument>
+  <sp:Let rdf:nodeID="A38">
+    <sp:expression>
+      <smf:buildString>
+        <sp:arg1>Instances of {?type} must have {?hasValue} for {?property}</sp:arg1>
+      </smf:buildString>
+    </sp:expression>
+    <sp:variable rdf:resource="http://spinrdf.org/sp#_label"/>
+  </sp:Let>
+  <rdf:Description rdf:nodeID="A39">
+    <rdf:rest rdf:parseType="Collection">
+      <rdf:Description rdf:nodeID="A34"/>
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+        <sp:subject rdf:nodeID="A18"/>
+      </rdf:Description>
+      <rdf:Description rdf:nodeID="A17"/>
+    </rdf:rest>
+    <rdf:first rdf:parseType="Resource">
+      <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+      <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+      <sp:subject rdf:nodeID="A18"/>
+    </rdf:first>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A40">
+    <rdf:rest rdf:parseType="Collection">
+      <rdf:Description>
+        <sp:object rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+        <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+      </rdf:Description>
+      <sp:Filter>
+        <sp:expression>
+          <sp:not>
+            <sp:arg1>
+              <spl:hasValue>
+                <sp:arg3>
+                  <sp:Variable rdf:about="http://spinrdf.org/sp#_hasValue">
+                    <sp:varName rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >hasValue</sp:varName>
+                  </sp:Variable>
+                </sp:arg3>
+                <sp:arg2 rdf:resource="http://spinrdf.org/sp#_property"/>
+                <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+              </spl:hasValue>
+            </sp:arg1>
+          </sp:not>
+        </sp:expression>
+      </sp:Filter>
+      <sp:Let rdf:nodeID="A38"/>
+    </rdf:rest>
+    <rdf:first rdf:nodeID="A30"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A41">
+    <rdf:first rdf:nodeID="A16"/>
+    <rdf:rest rdf:parseType="Resource">
+      <rdf:rest rdf:parseType="Resource">
+        <rdf:rest rdf:parseType="Resource">
+          <rdf:rest rdf:parseType="Resource">
+            <rdf:rest rdf:parseType="Resource">
+              <rdf:rest rdf:nodeID="A33"/>
+              <rdf:first rdf:parseType="Resource">
+                <sp:object rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+                <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+                <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+              </rdf:first>
+            </rdf:rest>
+            <rdf:first rdf:parseType="Resource">
+              <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+              <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#onProperty"/>
+              <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+            </rdf:first>
+          </rdf:rest>
+          <rdf:first rdf:parseType="Resource">
+            <sp:object rdf:resource="http://spinrdf.org/sp#_someValuesFrom"/>
+            <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#someValuesFrom"/>
+            <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+          </rdf:first>
+        </rdf:rest>
+        <rdf:first rdf:nodeID="A13"/>
+      </rdf:rest>
+      <rdf:first rdf:parseType="Resource">
+        <sp:object rdf:resource="http://spinrdf.org/sp#_type"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+        <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+      </rdf:first>
+    </rdf:rest>
+  </rdf:Description>
+  <sp:Filter rdf:nodeID="A42">
+    <sp:expression>
+      <sp:isURI>
+        <sp:arg1 rdf:resource="http://spinrdf.org/spin#_this"/>
+      </sp:isURI>
+    </sp:expression>
+  </sp:Filter>
+  <rdf:Description rdf:nodeID="A43">
+    <rdf:rest rdf:nodeID="A36"/>
+    <rdf:first rdf:parseType="Resource">
+      <sp:object rdf:resource="http://spinrdf.org/sp#_type"/>
+      <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+      <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+    </rdf:first>
+  </rdf:Description>
+  <sp:ModPath rdf:nodeID="A44">
+    <sp:modMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >0</sp:modMin>
+    <sp:modMax rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >-2</sp:modMax>
+    <sp:subPath rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+  </sp:ModPath>
+  <rdf:Description rdf:nodeID="A45">
+    <rdf:rest rdf:parseType="Resource">
+      <rdf:rest rdf:nodeID="A40"/>
+      <rdf:first rdf:parseType="Resource">
+        <sp:object rdf:resource="http://spinrdf.org/sp#_hasValue"/>
+        <sp:predicate rdf:resource="http://www.w3.org/2002/07/owl#hasValue"/>
+        <sp:subject rdf:resource="http://spinrdf.org/sp#_restriction"/>
+      </rdf:first>
+    </rdf:rest>
+    <rdf:first>
+      <sp:TriplePath>
+        <sp:object rdf:resource="http://spinrdf.org/sp#_restriction"/>
+        <sp:path rdf:nodeID="A44"/>
+        <sp:subject rdf:resource="http://spinrdf.org/sp#_type"/>
+      </sp:TriplePath>
+    </rdf:first>
+  </rdf:Description>
+  <sp:Construct rdf:nodeID="A46">
+    <sp:templates rdf:parseType="Collection">
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/spin#ConstraintViolation"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+        <sp:subject rdf:nodeID="A47"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/sp#_label"/>
+        <sp:predicate rdf:resource="http://www.w3.org/2000/01/rdf-schema#label"/>
+        <sp:subject rdf:nodeID="A47"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/spin#_this"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationRoot"/>
+        <sp:subject rdf:nodeID="A47"/>
+      </rdf:Description>
+      <rdf:Description>
+        <sp:object rdf:resource="http://spinrdf.org/sp#_property"/>
+        <sp:predicate rdf:resource="http://spinrdf.org/spin#violationPath"/>
+        <sp:subject rdf:nodeID="A47"/>
+      </rdf:Description>
+    </sp:templates>
+    <sp:where rdf:nodeID="A41"/>
+  </sp:Construct>
+  <spin:Template rdf:ID="SomeValuesFromConstraint">
+    <spin:body rdf:nodeID="A46"/>
+    <rdfs:comment>Checks whether the value types mentioned in owl:someValuesFrom restrictions are present.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Some values from constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#Templates"/>
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >SomeValuesFrom constraint</spin:labelTemplate>
+  </spin:Template>
+  <rdf:Description rdf:nodeID="A48">
+    <rdf:rest rdf:parseType="Resource">
+      <rdf:rest rdf:nodeID="A45"/>
+      <rdf:first rdf:parseType="Resource">
+        <sp:object rdf:resource="http://spinrdf.org/sp#_type"/>
+        <sp:predicate rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+        <sp:subject rdf:resource="http://spinrdf.org/spin#_this"/>
+      </rdf:first>
+    </rdf:rest>
+    <rdf:first rdf:nodeID="A35"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A49">
+    <rdf:rest rdf:nodeID="A19"/>
+    <rdf:first rdf:nodeID="A11"/>
+  </rdf:Description>
+  <spin:Template rdf:ID="MinCardinalityConstraint">
+    <spin:body>
+      <sp:Construct>
+        <sp:templates rdf:nodeID="A49"/>
+        <sp:where rdf:nodeID="A24"/>
+      </sp:Construct>
+    </spin:body>
+    <spin:constraint rdf:nodeID="A37"/>
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >MinCardinality constraint (using {?arg1})</spin:labelTemplate>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#Templates"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Min cardinality constraint</rdfs:label>
+    <rdfs:comment>Checks for any owl:minCardinality restrictions defined in one of the superclasses of the types of ?this and applies them using closed-world semantics.</rdfs:comment>
+  </spin:Template>
+  <sp:Construct rdf:nodeID="A50">
+    <sp:templates rdf:nodeID="A39"/>
+    <sp:where rdf:parseType="Resource">
+      <rdf:first rdf:nodeID="A42"/>
+      <rdf:rest rdf:nodeID="A43"/>
+    </sp:where>
+  </sp:Construct>
+  <spin:Template rdf:ID="AllValuesFromConstraint">
+    <spin:body rdf:nodeID="A50"/>
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >AllValuesFrom constraint</spin:labelTemplate>
+    <rdfs:comment>Checks for any owl:allValuesFrom restrictions and makes sure that all values of that property (or its sub-properties) at ?this have matching range.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >All values from constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#Templates"/>
+  </spin:Template>
+  <sp:Construct rdf:nodeID="A51">
+    <sp:templates rdf:parseType="Resource">
+      <rdf:first rdf:nodeID="A22"/>
+      <rdf:rest rdf:nodeID="A31"/>
+    </sp:templates>
+    <sp:where rdf:nodeID="A48"/>
+  </sp:Construct>
+  <spin:Template rdf:ID="HasValueConstraint">
+    <spin:body rdf:nodeID="A51"/>
+    <spin:labelTemplate rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >HasValue constraint</spin:labelTemplate>
+    <rdfs:comment>Verifies that the values specified by owl:hasValue are present.</rdfs:comment>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Has value constraint</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://spinrdf.org/spin#Templates"/>
+  </spin:Template>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

@@ -8,7 +8,7 @@ package org.queryall.exception;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedNamespaceEntryException extends RuntimeException
+public class UnsupportedNamespaceEntryException extends QueryAllException
 {
     
     /**
@@ -21,7 +21,7 @@ public class UnsupportedNamespaceEntryException extends RuntimeException
      */
     public UnsupportedNamespaceEntryException()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**
