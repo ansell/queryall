@@ -369,6 +369,63 @@ public class QueryallContentNegotiatorTest
         testHtmlBrowserDefaults("Opera", "Opera/9.80 (Macintosh; Intel Mac OS X; U; en) Presto/2.2.15 Version/10.00", defaultOperaDesktopAccept);
     }
 
+    
+    /**
+     * Tests the behaviour of the QueryallContentNegotiator against a Safari default accept header:
+     * 
+     * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
+     * 
+     * http://www.useragentstring.com/pages/Safari/
+     * 
+     */
+    @Test
+    public void testGetResponseContentTypeSafariDefault()
+    {
+        String defaultSafariDesktopAccept = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
+        
+        testHtmlBrowserDefaults("Safari", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-gb) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27", defaultSafariDesktopAccept);
+    }
+
+    
+    /**
+     * Tests the behaviour of the QueryallContentNegotiator against a Chrome default accept header:
+     * 
+     * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
+     * 
+     * https://developer.mozilla.org/en/HTTP/Content_negotiation
+     * 
+     * http://www.useragentstring.com/pages/Chrome/
+     * 
+     */
+    @Test
+    public void testGetResponseContentTypeChromeDefault()
+    {
+        String defaultChromeDesktopAccept = "application/xml,application/xhtml+xml,text/html;q=0.9, text/plain;q=0.8,image/png,*/*;q=0.5";
+        
+        testHtmlBrowserDefaults("Safari", "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.6 (KHTML, like Gecko) Chrome/16.0.897.0 Safari/535.6", defaultChromeDesktopAccept);
+    }
+    
+    
+    
+    /**
+     * Tests the behaviour of the QueryallContentNegotiator against an IE default accept header:
+     * 
+     * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
+     * 
+     * https://developer.mozilla.org/en/HTTP/Content_negotiation
+     * 
+     * http://www.useragentstring.com/pages/Internet%20Explorer/
+     * 
+     */
+    @Test
+    public void testGetResponseContentTypeIEDefault()
+    {
+        String defaultIEDesktopAccept = "image/jpeg, application/x-ms-application, image/gif, application/xaml+xml, image/pjpeg, application/x-ms-xbap, application/x-shockwave-flash, application/msword, */*";
+        
+        testHtmlBrowserDefaults("Safari", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Zune 4.0; InfoPath.3; MS-RTC LM 8; .NET4.0C; .NET4.0E)", defaultIEDesktopAccept);
+    }
+    
+    
     /**
      * Test to verify that our strategy returns text/html to any common browser if the webapp if the webapp is setup with text/html as the default.
      * 
