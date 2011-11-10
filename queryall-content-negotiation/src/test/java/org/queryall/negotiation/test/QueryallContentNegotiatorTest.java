@@ -341,6 +341,8 @@ public class QueryallContentNegotiatorTest
     /**
      * Tests the behaviour of the QueryallContentNegotiator against the current Firefox default accept header:
      * 
+     * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
+     * 
      * text/html,application/xhtml+xml,application/xml;q=0.9, * / *;q=0.8
      */
     @Test
@@ -348,9 +350,23 @@ public class QueryallContentNegotiatorTest
     {
         String defaultFirefoxAccept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
         
-        testHtmlBrowserDefaults("Firefox", "Mozilla/5.0 (X11; Linux i686; rv:7.0.1) Gecko/20100101 Firefox/7.0.1", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        testHtmlBrowserDefaults("Firefox", "Mozilla/5.0 (X11; Linux i686; rv:7.0.1) Gecko/20100101 Firefox/7.0.1", defaultFirefoxAccept);
+    }
+
+    /**
+     * Tests the behaviour of the QueryallContentNegotiator against the current Opera default accept header:
+     * 
+     * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
+     * 
+     * http://dev.opera.com/articles/view/opera-ua-string-changes/
+     * 
+     */
+    @Test
+    public void testGetResponseContentTypeOperaDesktopDefault()
+    {
+        String defaultOperaDesktopAccept = "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1";
         
-        
+        testHtmlBrowserDefaults("Opera", "Opera/9.80 (Macintosh; Intel Mac OS X; U; en) Presto/2.2.15 Version/10.00", defaultOperaDesktopAccept);
     }
 
     /**
@@ -366,7 +382,8 @@ public class QueryallContentNegotiatorTest
         
         Assert.assertEquals(browserName + " : failed to return text/html when it was the preferred display content type", "text/html", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));
 
-        // Test that requests for XHTML+XML go back as text/html for best compatibility with different browsers, even though the content type is possibly XHTML+RDFa
+        // Test that requests for XHTML+XML go back as text/html for best compatibility with different browsers, 
+        // even though the content type is possibly XHTML+RDFa
         testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/xhtml+xml");
         
         Assert.assertEquals(browserName + " : failed to return text/html when application/xhtml+xml was the preferred display content type", "text/html", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader, typicalUserAgent, testContentNegotiator, "text/fake"));

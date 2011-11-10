@@ -64,8 +64,9 @@ public class QueryallContentNegotiator
         }
         else
         {
-            newContentNegotiator.addVariant("text/html;q=0.6").addAliasMediaType("application/html;q=0.6")
-                    .addAliasMediaType("application/xhtml+xml;q=0.6");
+            // NOTE: Sqished this to below 0.1 to make application/xml select application/rdf+xml and not text/html for Opera as they have */*;q=0.1 on their default header
+            newContentNegotiator.addVariant("text/html;q=0.05").addAliasMediaType("application/html;q=0.05")
+                    .addAliasMediaType("application/xhtml+xml;q=0.05");
         }
         
         // NOTE: Currently we prefer the Talis RDF/JSON specification for application/json requests
