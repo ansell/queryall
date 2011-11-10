@@ -37,7 +37,7 @@ public class QueryallContentNegotiator
         
         if(preferredDisplayContentType.equals(Constants.TEXT_RDF_N3))
         {
-            newContentNegotiator.addVariant("text/rdf+n3;q=0.99").addAliasMediaType("text/n3;q=0.95")
+            newContentNegotiator.addVariant("text/rdf+n3;q=0.99").addAliasMediaType("text/n3;q=0.99")
                     .addAliasMediaType("application/rdf+n3;q=0.8").addAliasMediaType("application/n3;q=0.8");
         }
         else
