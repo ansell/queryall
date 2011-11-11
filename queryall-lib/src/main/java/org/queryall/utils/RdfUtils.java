@@ -1255,7 +1255,7 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No namespace entry enums found for {}", nextSubjectUri.stringValue());
+                    RdfUtils.log.warn("No namespace entry enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextNamespaceEntryUris);
                 }
             }
             
@@ -1375,7 +1375,7 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No normalisation rule enums found for {}", nextSubjectUri.stringValue());
+                    RdfUtils.log.warn("No normalisation rule enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextNormalisationRuleUris);
                 }
             }
             
@@ -1590,7 +1590,7 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No profile enums found for {}", nextSubjectUri.stringValue());
+                    RdfUtils.log.warn("No profile enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextProfileUris);
                 }
             }
             
@@ -1706,7 +1706,7 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No project enums found for {}", nextSubjectUri.stringValue());
+                    RdfUtils.log.warn("No project enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextProjectUris);
                 }
             }
             
@@ -1834,7 +1834,14 @@ public final class RdfUtils
                     RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
                 }
                 
-                uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
+                if(matchingProviderEnums.size() > 0)
+                {
+                    uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No provider enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextProviderUris);
+                }
             }
             
             for(final URI nextSubjectUri : uriToProviderEnums.keySet())
@@ -1945,7 +1952,14 @@ public final class RdfUtils
                     RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
                 }
                 
-                uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
+                if(matchingQueryTypeEnums.size() > 0)
+                {
+                    uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
+                }
+                else
+                {
+                    RdfUtils.log.warn("No query type enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextQueryTypeUris);
+                }
             }
             
             for(final URI nextSubjectUri : uriToQueryTypeEnums.keySet())
@@ -2174,7 +2188,7 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No rule test enums found for {}", nextSubjectUri.stringValue());
+                    RdfUtils.log.warn("No rule test enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextRuleTestUris);
                 }
             }
             
