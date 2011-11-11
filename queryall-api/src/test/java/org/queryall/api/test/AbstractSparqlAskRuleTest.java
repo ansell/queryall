@@ -71,8 +71,8 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
     public abstract SparqlAskRule getNewTestSparqlAskRule();
     
     /**
-     * Final method, so that implementing test cases must supply a SparqlNormalisationRule instead,
-     * through getNewTestSparqlRule.
+     * Final method, so that implementing test cases must supply a SparqlAskRule instead,
+     * through getNewTestSparqlAskRule.
      * 
      * @return A NormalisationRule that is also a SparqlNormalisationRule
      */

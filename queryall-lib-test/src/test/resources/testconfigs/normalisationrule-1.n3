@@ -20,7 +20,7 @@
 	<http://purl.org/queryall/rdfrule:order> "110"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:includeThenExclude> .
 
-<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> ;
+<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriconstruct> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlConstructRule> ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:symbol> ;
     <http://purl.org/queryall/rdfrule:sparqlMode> <http://purl.org/queryall/rdfrule:addAllMatchingTriples> ;
     <http://purl.org/queryall/rdfrule:sparqlConstructQueryTarget> "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . " ;
@@ -28,6 +28,14 @@
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsToPool> ;
 	rdfs:comment "Add symbol URI based on Neurocommons gene symbol literals" ;
 	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
+	
+<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriask> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlAskRule> ;
+	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:symbol> ;
+    <http://purl.org/queryall/rdfrule:sparqlWherePattern> " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . " ;
+	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsImport> ;
+	rdfs:comment "Tests for the existence of Neurocommons gene symbol literals" ;
+	<http://purl.org/queryall/rdfrule:order> "110"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
 	
 oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:PrefixMappingNormalisationRule ;

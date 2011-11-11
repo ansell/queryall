@@ -50,6 +50,7 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRule;
+import org.queryall.api.rdfrule.SparqlAskRule;
 import org.queryall.api.rdfrule.SparqlConstructRule;
 import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
@@ -130,6 +131,8 @@ public class RdfUtilsTest
     private URI testNormalisationRule2;
     private URI testNormalisationRule3;
     private URI testNormalisationRule4;
+
+    private URI testNormalisationRule5;
     
     /**
      * @throws java.lang.Exception
@@ -214,9 +217,11 @@ public class RdfUtilsTest
         
         this.testNormalisationRule1 = this.testValueFactory.createURI("http://example.org/rdfrule:abc_issn");
         this.testNormalisationRule2 =
-                this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri");
+                this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriconstruct");
         this.testNormalisationRule3 = this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:xsltNlmPubmed");
         this.testNormalisationRule4 = this.testValueFactory.createURI("http://oas.example.org/rdfrule:bio2rdfpo");
+        this.testNormalisationRule5 =
+                this.testValueFactory.createURI("http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriask");
     }
     
     /**
@@ -276,6 +281,7 @@ public class RdfUtilsTest
         this.testNormalisationRule2 = null;
         this.testNormalisationRule3 = null;
         this.testNormalisationRule4 = null;
+        this.testNormalisationRule5 = null;
     }
     
     /**
@@ -545,7 +551,6 @@ public class RdfUtilsTest
      * Test method for
      * {@link org.queryall.utils.RdfUtils#getNormalisationRules(org.openrdf.repository.Repository)}.
      * 
-     * TODO Test specific subclasses of NormalisationRule
      */
     @Test
     public void testGetNormalisationRules()
@@ -561,7 +566,7 @@ public class RdfUtilsTest
             
             final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(this.testRepository);
             
-            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 4,
+            Assert.assertEquals("RdfUtils did not create the expected number of normalisation rules.", 5,
                     results.size());
             
             for(final URI nextNormalisationRuleUri : results.keySet())
@@ -576,7 +581,7 @@ public class RdfUtilsTest
                 if(nextNormalisationRuleUri.equals(this.testNormalisationRule1))
                 {
                     Assert.assertEquals("Results did not contain correct normalisation rule URI",
-                            this.testNormalisationRule1, nextNormalisationRuleUri);
+                            this.testNormalisationRule1, nextNormalisationRule.getKey());
                     
                     Assert.assertEquals("Did not find expected number of stages", 2, nextNormalisationRule.getStages()
                             .size());
@@ -621,7 +626,7 @@ public class RdfUtilsTest
                 else if(nextNormalisationRuleUri.equals(this.testNormalisationRule2))
                 {
                     Assert.assertEquals("Results did not contain correct normalisation rule URI",
-                            this.testNormalisationRule2, nextNormalisationRuleUri);
+                            this.testNormalisationRule2, nextNormalisationRule.getKey());
                     
                     Assert.assertEquals("Did not find expected number of stages", 1, nextNormalisationRule.getStages()
                             .size());
@@ -677,7 +682,7 @@ public class RdfUtilsTest
                 else if(nextNormalisationRuleUri.equals(this.testNormalisationRule3))
                 {
                     Assert.assertEquals("Results did not contain correct normalisation rule URI",
-                            this.testNormalisationRule3, nextNormalisationRuleUri);
+                            this.testNormalisationRule3, nextNormalisationRule.getKey());
                     
                     Assert.assertEquals("Did not find expected number of stages", 1, nextNormalisationRule.getStages()
                             .size());
@@ -717,7 +722,7 @@ public class RdfUtilsTest
                 else if(nextNormalisationRuleUri.equals(this.testNormalisationRule4))
                 {
                     Assert.assertEquals("Results did not contain correct normalisation rule URI",
-                            this.testNormalisationRule4, nextNormalisationRuleUri);
+                            this.testNormalisationRule4, nextNormalisationRule.getKey());
                     
                     Assert.assertEquals("Did not find expected number of stages", 3, nextNormalisationRule.getStages()
                             .size());
@@ -770,6 +775,59 @@ public class RdfUtilsTest
                             nextPrefixMappingRule.getPredicateMappingPredicates().contains(OWL.EQUIVALENTPROPERTY));
                     Assert.assertTrue("Object mapping predicates were not parsed correctly: owl:equivalentClass",
                             nextPrefixMappingRule.getObjectMappingPredicates().contains(OWL.EQUIVALENTCLASS));
+                }
+                else if(nextNormalisationRuleUri.equals(this.testNormalisationRule5))
+                {
+                    Assert.assertEquals("Results did not contain correct normalisation rule URI",
+                            this.testNormalisationRule5, nextNormalisationRule.getKey());
+                    
+                    Assert.assertEquals("Did not find expected number of stages", 1, nextNormalisationRule.getStages()
+                            .size());
+                    Assert.assertTrue(
+                            "Could not find expected stage",
+                            nextNormalisationRule.getStages().contains(
+                                    NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
+                    
+                    Assert.assertEquals("Description was not parsed correctly",
+                            "Tests for the existence of Neurocommons gene symbol literals",
+                            nextNormalisationRule.getDescription());
+                    Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
+                    Assert.assertEquals("Include exclude order was not parsed correctly",
+                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            nextNormalisationRule.getProfileIncludeExcludeOrder());
+                    
+                    Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
+                            .getRelatedNamespaces().size());
+                    
+                    Assert.assertTrue(
+                            "Related namespace was not parsed correctly",
+                            nextNormalisationRule.getRelatedNamespaces().contains(
+                                    this.testValueFactory.createURI("http://example.org/ns:symbol")));
+                    
+                    Assert.assertTrue(
+                            "Normalisation rule was not implemented using the SparqlNormalisationRule interface",
+                            nextNormalisationRule instanceof SparqlNormalisationRule);
+                    
+                    final SparqlNormalisationRule nextSparqlRule = (SparqlNormalisationRule)nextNormalisationRule;
+                    
+                    Assert.assertEquals("Did not parse the correct number of sparql where patterns", 1, nextSparqlRule
+                            .getSparqlWherePatterns().size());
+                    
+                    Assert.assertEquals(
+                            "Sparql construct query where pattern was not parsed correctly",
+                            " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . ",
+                            nextSparqlRule.getSparqlWherePatterns().get(0));
+                    
+                    Assert.assertTrue("Normalisation rule was not implemented using the SparqlAskRule interface",
+                            nextNormalisationRule instanceof SparqlAskRule);
+                    
+                    final SparqlAskRule nextSparqlAskRule = (SparqlAskRule)nextSparqlRule;
+                    
+                    Assert.assertEquals("Did not generate the correct number of ask queries", 1, nextSparqlAskRule.getSparqlAskQueries().size());
+                }
+                else
+                {
+                    Assert.fail("Found a rule with a URI that we were not testing for nextNormalisationRuleUri="+nextNormalisationRuleUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -901,7 +959,7 @@ public class RdfUtilsTest
                 }
                 else
                 {
-                    Assert.fail("Found unexpected profile URI=" + nextProfileUri);
+                    Assert.fail("Found a profile with a URI that we were not testing for nextProfileUri="+nextProfileUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -988,6 +1046,10 @@ public class RdfUtilsTest
                             .getIncludedInQueryTypes().size());
                     Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider
                             .getNormalisationUris().size());
+                }
+                else
+                {
+                    Assert.fail("Found a provider with a URI that we were not testing for nextProviderUri="+nextProviderUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -1215,6 +1277,10 @@ public class RdfUtilsTest
                             "<${ntriplesEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}> a <http://purl.org/queryall/query:QueryType>",
                             nextRdfOutputQueryType.getOutputString());
                 }
+                else
+                {
+                    Assert.fail("Found a query type with a URI that we were not testing for nextQueryTypeUri="+nextQueryTypeUri);
+                }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
@@ -1318,6 +1384,10 @@ public class RdfUtilsTest
                             "Test triple string was not parsed correctly",
                             " <http://bio2rdf.org/geneid:12334> <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> \"Capn2\" . ",
                             nextSparqlRuleTest.getTestInputTriples());
+                }
+                else
+                {
+                    Assert.fail("Found a rule test with a URI that we were not testing for nextRuleTestUri="+nextRuleTestUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)

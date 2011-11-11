@@ -40,7 +40,7 @@ public class SparqlConstructRuleSchema
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         SparqlConstructRuleSchema.setSparqlConstructRuleTypeUri(f
-                .createURI(baseUri, "SparqlConstructNormalisationRule"));
+                .createURI(baseUri, "SparqlConstructRule"));
         SparqlConstructRuleSchema.setOLDSparqlRuleSparqlConstructQuery(f.createURI(baseUri, "sparqlConstructQuery"));
         SparqlConstructRuleSchema.setSparqlRuleSparqlConstructQueryTarget(f.createURI(baseUri,
                 "sparqlConstructQueryTarget"));
@@ -146,6 +146,8 @@ public class SparqlConstructRuleSchema
                     contextUri);
             con.add(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri(), RDFS.SUBCLASSOF,
                     TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
+            con.add(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri(), RDFS.SUBCLASSOF,
+                    SparqlNormalisationRuleSchema.getSparqlRuleTypeUri(), contextUri);
             
             // TODO: update schema
             con.add(SparqlConstructRuleSchema.getSparqlRuleSparqlConstructQueryTarget(), RDF.TYPE,

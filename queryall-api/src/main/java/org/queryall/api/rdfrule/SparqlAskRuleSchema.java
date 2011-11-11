@@ -40,7 +40,7 @@ public class SparqlAskRuleSchema
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         SparqlAskRuleSchema.setSparqlAskRuleTypeUri(f
-                .createURI(baseUri, "SparqlAskNormalisationRule"));
+                .createURI(baseUri, "SparqlAskRule"));
     }
     
     /**
@@ -70,6 +70,8 @@ public class SparqlAskRuleSchema
                     contextUri);
             con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(), RDFS.SUBCLASSOF,
                     ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
+            con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(), RDFS.SUBCLASSOF,
+                    SparqlNormalisationRuleSchema.getSparqlRuleTypeUri(), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
