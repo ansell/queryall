@@ -14,21 +14,21 @@ import org.queryall.api.services.QueryAllEnum;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices(QueryAllEnum.class)
-public class SpinNormalisationRuleImplEnum extends NormalisationRuleEnum
+public class SparqlConstructRuleImplEnum extends NormalisationRuleEnum
 {
-    public static final NormalisationRuleEnum SPIN_NORMALISATION_RULE_IMPL_ENUM =
-            new SpinNormalisationRuleImplEnum();
+    public static final NormalisationRuleEnum SPARQL_CONSTRUCT_RULE_IMPL_ENUM =
+            new SparqlConstructRuleImplEnum();
     
-    public SpinNormalisationRuleImplEnum()
+    public SparqlConstructRuleImplEnum()
     {
-        this(SpinNormalisationRuleImpl.class.getName(), SpinNormalisationRuleImpl.myTypes());
+        this(SparqlConstructRuleImpl.class.getName(), SparqlConstructRuleImpl.myTypes());
     }
     
     /**
      * @param nextName
      * @param nextTypeURIs
      */
-    public SpinNormalisationRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
+    public SparqlConstructRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

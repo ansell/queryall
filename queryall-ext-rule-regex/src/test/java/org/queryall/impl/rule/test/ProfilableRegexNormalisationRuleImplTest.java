@@ -7,7 +7,7 @@ import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.test.AbstractProfilableNormalisationRuleTest;
 import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.rdfrule.RegexNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.RegexTransformingRuleImpl;
 
 /**
  * 
@@ -25,6 +25,6 @@ public class ProfilableRegexNormalisationRuleImplTest extends AbstractProfilable
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
-        return new RegexNormalisationRuleImpl();
+        return new RegexTransformingRuleImpl();
     }
 }

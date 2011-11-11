@@ -7,7 +7,7 @@ import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.test.AbstractProfilableNormalisationRuleTest;
 import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.SparqlConstructRuleImpl;
 
 /**
  * 
@@ -25,6 +25,6 @@ public class ProfilableSparqlNormalisationRuleImplTest extends AbstractProfilabl
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
-        return new SparqlNormalisationRuleImpl();
+        return new SparqlConstructRuleImpl();
     }
 }

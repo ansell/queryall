@@ -16,20 +16,20 @@ import org.queryall.api.services.QueryAllEnum;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices(QueryAllEnum.class)
-public class XsltNormalisationRuleImplEnum extends NormalisationRuleEnum
+public class XsltTransformingRuleImplEnum extends NormalisationRuleEnum
 {
-    public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM = new XsltNormalisationRuleImplEnum();
+    public static final NormalisationRuleEnum XSLT_TRANSFORMING_RULE_IMPL_ENUM = new XsltTransformingRuleImplEnum();
     
-    public XsltNormalisationRuleImplEnum()
+    public XsltTransformingRuleImplEnum()
     {
-        this(XsltNormalisationRuleImpl.class.getName(), XsltNormalisationRuleImpl.myTypes());
+        this(XsltTransformingRuleImpl.class.getName(), XsltTransformingRuleImpl.myTypes());
     }
     
     /**
      * @param nextName
      * @param nextTypeURIs
      */
-    public XsltNormalisationRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
+    public XsltTransformingRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
     }

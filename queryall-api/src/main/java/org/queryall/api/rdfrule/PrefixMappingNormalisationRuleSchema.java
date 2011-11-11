@@ -114,7 +114,7 @@ public class PrefixMappingNormalisationRuleSchema
             con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDF.TYPE, OWL.CLASS,
                     contextUri);
             con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
             con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(),
                     RDFS.LABEL,
                     f.createLiteral("A simple mapping rule for translating URI prefixes between two schemes. Internally it uses both Regular Expressions and Sparql rules."),

@@ -14,7 +14,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleImplParser implements NormalisationRuleParser
+public class XsltTransformingRuleImplParser implements NormalisationRuleParser
 {
     @Override
     public NormalisationRule createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
@@ -22,7 +22,7 @@ public class SparqlNormalisationRuleImplParser implements NormalisationRuleParse
     {
         try
         {
-            return new SparqlNormalisationRuleImpl(rdfStatements, subjectKey, modelVersion);
+            return new XsltTransformingRuleImpl(rdfStatements, subjectKey, modelVersion);
         }
         catch(final OpenRDFException ex)
         {

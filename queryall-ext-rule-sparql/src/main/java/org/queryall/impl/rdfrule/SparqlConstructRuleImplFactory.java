@@ -12,7 +12,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices
-public class SpinNormalisationRuleImplFactory implements NormalisationRuleFactory
+public class SparqlConstructRuleImplFactory implements NormalisationRuleFactory
 {
     /**
      * Returns the enumeration from the enumeration that matches this factory
@@ -20,7 +20,8 @@ public class SpinNormalisationRuleImplFactory implements NormalisationRuleFactor
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return SpinNormalisationRuleImplEnum.SPIN_NORMALISATION_RULE_IMPL_ENUM;
+        return SparqlConstructRuleImplEnum.SPARQL_CONSTRUCT_RULE_IMPL_ENUM;
+        // return NormalisationRuleEnum.valueOf(SparqlNormalisationRuleImpl.class.getName());
     }
     
     /**
@@ -29,7 +30,7 @@ public class SpinNormalisationRuleImplFactory implements NormalisationRuleFactor
     @Override
     public NormalisationRuleParser getParser()
     {
-        return new SpinNormalisationRuleImplParser();
+        return new SparqlConstructRuleImplParser();
     }
     
 }

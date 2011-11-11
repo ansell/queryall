@@ -39,7 +39,7 @@ public class RdfsNormalisationRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        RdfsNormalisationRuleSchema.setRdfsRuleTypeUri(f.createURI(baseUri, "RdfsNormalisationRule"));
+        RdfsNormalisationRuleSchema.setRdfsRuleTypeUri(f.createURI(baseUri, "RdfsValidatingRule"));
     }
     
     /**
@@ -65,10 +65,10 @@ public class RdfsNormalisationRuleSchema
             
             con.add(RdfsNormalisationRuleSchema.getRdfsRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(RdfsNormalisationRuleSchema.getRdfsRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
             con.add(RdfsNormalisationRuleSchema.getRdfsRuleTypeUri(),
                     RDFS.LABEL,
-                    f.createLiteral("An RDFS normalisation rule intended to entail extra triples into query results based on an RDFS ontology."),
+                    f.createLiteral("An RDFS normalisation rule intended to validate triples based on an RDFS ontology."),
                     contextUri);
             
             // If everything went as planned, we can commit the result

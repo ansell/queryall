@@ -12,7 +12,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices
-public class XsltNormalisationRuleImplFactory implements NormalisationRuleFactory
+public class SpinConstraintRuleImplFactory implements NormalisationRuleFactory
 {
     /**
      * Returns the enumeration from the enumeration that matches this factory
@@ -20,7 +20,7 @@ public class XsltNormalisationRuleImplFactory implements NormalisationRuleFactor
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return XsltNormalisationRuleImplEnum.XSLT_NORMALISATION_RULE_IMPL_ENUM;
+        return SpinConstraintRuleImplEnum.SPIN_CONSTRAINT_RULE_IMPL_ENUM;
     }
     
     /**
@@ -29,7 +29,7 @@ public class XsltNormalisationRuleImplFactory implements NormalisationRuleFactor
     @Override
     public NormalisationRuleParser getParser()
     {
-        return new XsltNormalisationRuleImplParser();
+        return new SpinConstraintRuleImplParser();
     }
     
 }

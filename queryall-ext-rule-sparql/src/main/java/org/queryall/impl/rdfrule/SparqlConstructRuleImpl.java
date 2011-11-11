@@ -18,8 +18,10 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SparqlNormalisationRule;
+import org.queryall.api.rdfrule.SparqlConstructRule;
+import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -29,13 +31,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implements SparqlNormalisationRule, HtmlExport
+public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements SparqlConstructRule, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleImpl.class);
-    private static final boolean _TRACE = SparqlNormalisationRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SparqlNormalisationRuleImpl.log.isDebugEnabled();
+    private static final Logger log = LoggerFactory.getLogger(SparqlConstructRuleImpl.class);
+    private static final boolean _TRACE = SparqlConstructRuleImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = SparqlConstructRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlNormalisationRuleImpl.log.isInfoEnabled();
+    private static final boolean _INFO = SparqlConstructRuleImpl.log.isInfoEnabled();
     
     private String sparqlConstructQueryTarget = "";
     
@@ -43,31 +45,34 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
     
     private String sparqlPrefixes = "";
     
-    private URI mode = SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches();
+    private URI mode = SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches();
     
-    private static final Set<URI> SPARQL_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPARQL_CONSTRUCT_RULE_IMPL_TYPES = new HashSet<URI>();
     
     static
     {
-        SparqlNormalisationRuleImpl.SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        SparqlNormalisationRuleImpl.SPARQL_NORMALISATION_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(TransformingRuleSchema.getTransformingRuleTypeUri());
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema
                 .getSparqlRuleTypeUri());
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(SparqlConstructRuleSchema
+                .getSparqlConstructRuleTypeUri());
     }
     
     public static Set<URI> myTypes()
     {
-        return SparqlNormalisationRuleImpl.SPARQL_NORMALISATION_RULE_IMPL_TYPES;
+        return SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES;
     }
     
-    public SparqlNormalisationRuleImpl()
+    public SparqlConstructRuleImpl()
     {
         super();
     }
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public SparqlNormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+    public SparqlConstructRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -89,9 +94,9 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
             {
-                if(SparqlNormalisationRuleImpl._TRACE)
+                if(SparqlConstructRuleImpl._TRACE)
                 {
-                    SparqlNormalisationRuleImpl.log
+                    SparqlConstructRuleImpl.log
                             .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
@@ -99,7 +104,7 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
                 this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(
-                    SparqlNormalisationRuleSchema.getSparqlRuleSparqlConstructQueryTarget()))
+                    SparqlConstructRuleSchema.getSparqlRuleSparqlConstructQueryTarget()))
             {
                 this.setSparqlConstructQueryTarget(nextStatement.getObject().stringValue());
             }
@@ -112,30 +117,30 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
             {
                 this.setSparqlPrefixes(nextStatement.getObject().stringValue());
             }
-            else if(nextStatement.getPredicate().equals(SparqlNormalisationRuleSchema.getSparqlRuleMode())
+            else if(nextStatement.getPredicate().equals(SparqlConstructRuleSchema.getSparqlRuleMode())
                     && nextStatement.getObject().equals(
-                            SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
+                            SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
             {
-                this.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
+                this.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
             }
-            else if(nextStatement.getPredicate().equals(SparqlNormalisationRuleSchema.getSparqlRuleMode())
+            else if(nextStatement.getPredicate().equals(SparqlConstructRuleSchema.getSparqlRuleMode())
                     && (nextStatement.getObject().equals(
-                            SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()) || nextStatement
-                            .getObject().equals(SparqlNormalisationRuleSchema.getOLDsparqlruleModeOnlyDeleteMatches())))
+                            SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()) || nextStatement
+                            .getObject().equals(SparqlConstructRuleSchema.getOLDsparqlruleModeOnlyDeleteMatches())))
             {
-                this.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
+                this.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
             }
-            else if(nextStatement.getPredicate().equals(SparqlNormalisationRuleSchema.getSparqlRuleMode())
+            else if(nextStatement.getPredicate().equals(SparqlConstructRuleSchema.getSparqlRuleMode())
                     && nextStatement.getObject().equals(
-                            SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
+                            SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
             {
-                this.setMode(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
+                this.setMode(SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
             }
             else
             {
-                if(SparqlNormalisationRuleImpl._DEBUG)
+                if(SparqlConstructRuleImpl._DEBUG)
                 {
-                    SparqlNormalisationRuleImpl.log
+                    SparqlConstructRuleImpl.log
                             .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
@@ -150,9 +155,9 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
         
         // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
         
-        if(SparqlNormalisationRuleImpl._DEBUG)
+        if(SparqlConstructRuleImpl._DEBUG)
         {
-            SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()="
+            SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()="
                     + this.toString());
         }
     }
@@ -181,7 +186,7 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
     @Override
     public Set<URI> getElementTypes()
     {
-        return SparqlNormalisationRuleImpl.myTypes();
+        return SparqlConstructRuleImpl.myTypes();
     }
     
     /*
@@ -224,7 +229,7 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
         }
         else
         {
-            SparqlNormalisationRuleImpl.log.error("Could not find a sparql construct query for key="
+            SparqlConstructRuleImpl.log.error("Could not find a sparql construct query for key="
                     + this.getKey().stringValue());
             return "";
         }
@@ -386,9 +391,9 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
         
         try
         {
-            if(SparqlNormalisationRuleImpl._DEBUG)
+            if(SparqlConstructRuleImpl._DEBUG)
             {
-                SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();
@@ -404,7 +409,7 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
             {
                 con.add(keyUri, SparqlNormalisationRuleSchema.getSparqlRuleSparqlPrefixes(), sparqlPrefixesLiteral,
                         keyToUse);
-                con.add(keyUri, SparqlNormalisationRuleSchema.getSparqlRuleSparqlConstructQueryTarget(),
+                con.add(keyUri, SparqlConstructRuleSchema.getSparqlRuleSparqlConstructQueryTarget(),
                         sparqlConstructQueryTargetLiteral, keyToUse);
                 
                 for(final String nextWherePattern : this.getSparqlWherePatterns())
@@ -416,20 +421,20 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
             }
             else
             {
-                con.add(keyUri, SparqlNormalisationRuleSchema.getOLDSparqlRuleSparqlConstructQuery(),
+                con.add(keyUri, SparqlConstructRuleSchema.getOLDSparqlRuleSparqlConstructQuery(),
                         f.createLiteral(this.getSparqlConstructQuery()), keyToUse);
             }
             
             // the onlyDeleteMatches URI changed between versions 4 and 5, so check here and provide
             // backwards compatibility as necessary
-            if(modelVersion < 5 && modeUri.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
+            if(modelVersion < 5 && modeUri.equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
             {
-                con.add(keyUri, SparqlNormalisationRuleSchema.getSparqlRuleMode(),
-                        SparqlNormalisationRuleSchema.getOLDsparqlruleModeOnlyDeleteMatches(), keyToUse);
+                con.add(keyUri, SparqlConstructRuleSchema.getSparqlRuleMode(),
+                        SparqlConstructRuleSchema.getOLDsparqlruleModeOnlyDeleteMatches(), keyToUse);
             }
             else
             {
-                con.add(keyUri, SparqlNormalisationRuleSchema.getSparqlRuleMode(), modeUri, keyToUse);
+                con.add(keyUri, SparqlConstructRuleSchema.getSparqlRuleMode(), modeUri, keyToUse);
             }
             
             // If everything went as planned, we can commit the result
@@ -442,7 +447,7 @@ public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implem
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            SparqlNormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
+            SparqlConstructRuleImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

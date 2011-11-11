@@ -1,6 +1,5 @@
 package org.queryall.impl.rdfrule;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,8 +18,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SpinNormalisationRule;
-import org.queryall.api.rdfrule.SpinNormalisationRuleSchema;
+import org.queryall.api.rdfrule.SpinConstraintRule;
+import org.queryall.api.rdfrule.SpinConstraintRuleSchema;
+import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.topbraid.spin.inference.DefaultSPINRuleComparator;
 import org.topbraid.spin.inference.SPINInferences;
 import org.topbraid.spin.inference.SPINRuleComparator;
-import org.topbraid.spin.system.SPINModuleRegistry;
 import org.topbraid.spin.util.CommandWrapper;
 import org.topbraid.spin.util.SPINQueryFinder;
 import org.topbraid.spin.vocabulary.SPIN;
@@ -46,31 +45,28 @@ import com.hp.hpl.jena.shared.ReificationStyle;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements SpinNormalisationRule, HtmlExport
+public class SpinConstraintRuleImpl extends BaseSpinRuleImpl implements SpinConstraintRule, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImpl.class);
-    private static final boolean _TRACE = SpinNormalisationRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SpinNormalisationRuleImpl.log.isDebugEnabled();
+    static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImpl.class);
+    private static final boolean _TRACE = SpinConstraintRuleImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = SpinConstraintRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinNormalisationRuleImpl.log.isInfoEnabled();
+    private static final boolean _INFO = SpinConstraintRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> SPIN_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_TYPES = new HashSet<URI>();
     
     static
     {
-        SpinNormalisationRuleImpl.SPIN_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        SpinNormalisationRuleImpl.SPIN_NORMALISATION_RULE_IMPL_TYPES.add(SpinNormalisationRuleSchema
-                .getSpinRuleTypeUri());
+        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES.add(ValidatingRuleSchema.getValidatingRuleTypeUri());
+        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES.add(SpinConstraintRuleSchema
+                .getSpinConstraintRuleTypeUri());
         
         // Need to initialise the SPIN registry at least once
         //SPINModuleRegistry.get().init();
     }
     
-    private Set<String> localImports = new HashSet<String>(10);
-    private Set<URI> urlImports = new HashSet<URI>(10);
-    private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
-    private volatile SPINModuleRegistry registry;
     private Set<org.openrdf.model.URI> activeEntailments;
     
     /**
@@ -145,46 +141,19 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
         return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
-    @Override
-    public Set<String> getLocalImports()
-    {
-        return Collections.unmodifiableSet(this.localImports);
-    }
-
-    @Override
-    public void addLocalImport(String nextImport)
-    {
-        this.localImports.add(nextImport);
-
-        OntModel nextModel = SpinUtils.loadModelFromClasspath(nextImport);
-        
-        if(nextModel != null)
-        {
-            log.info("adding model to registry and ontology model list nextImport="+nextImport+" nextModel.size()="+nextModel.size());
-            this.ontologyModels.add(nextModel);
-            this.getSpinModuleRegistry().registerAll(nextModel, nextImport);
-        }
-        else
-        {
-            log.error("Failed to load import from URL nextImport="+nextImport);
-        }
-        
-        this.getSpinModuleRegistry().init();
-    }
-
     public static Set<URI> myTypes()
     {
-        return SpinNormalisationRuleImpl.SPIN_NORMALISATION_RULE_IMPL_TYPES;
+        return SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES;
     }
     
-    public SpinNormalisationRuleImpl()
+    public SpinConstraintRuleImpl()
     {
         super();
     }
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public SpinNormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+    public SpinConstraintRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -204,11 +173,11 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
             // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(SpinNormalisationRuleSchema.getSpinRuleTypeUri()))
+                    && nextStatement.getObject().equals(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri()))
             {
-                if(SpinNormalisationRuleImpl._TRACE)
+                if(SpinConstraintRuleImpl._TRACE)
                 {
-                    SpinNormalisationRuleImpl.log
+                    SpinConstraintRuleImpl.log
                             .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
@@ -217,9 +186,9 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
             }
             else
             {
-                if(SpinNormalisationRuleImpl._DEBUG)
+                if(SpinConstraintRuleImpl._DEBUG)
                 {
-                    SpinNormalisationRuleImpl.log
+                    SpinConstraintRuleImpl.log
                             .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
@@ -234,9 +203,9 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
         
         // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
         
-        if(SpinNormalisationRuleImpl._DEBUG)
+        if(SpinConstraintRuleImpl._DEBUG)
         {
-            SpinNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()="
+            SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()="
                     + this.toString());
         }
     }
@@ -248,7 +217,7 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
     @Override
     public Set<URI> getElementTypes()
     {
-        return SpinNormalisationRuleImpl.myTypes();
+        return SpinConstraintRuleImpl.myTypes();
     }
     
     /**
@@ -364,16 +333,16 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
         
         try
         {
-            if(SpinNormalisationRuleImpl._DEBUG)
+            if(SpinConstraintRuleImpl._DEBUG)
             {
-                SpinNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, SpinNormalisationRuleSchema.getSpinRuleTypeUri(), keyToUse);
+            con.add(keyUri, RDF.TYPE, SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), keyToUse);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -385,7 +354,7 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            SpinNormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
+            SpinConstraintRuleImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -407,47 +376,6 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
         return result;
     }
 
-    public SPINModuleRegistry getSpinModuleRegistry()
-    {
-        return SPINModuleRegistry.get();
-//        if(registry == null)
-//        {
-//            synchronized(this)
-//            {
-//                if(registry == null)
-//                {
-//                    log.info("registry was not set, setting up a new registry before returning");
-//                    
-//                    //SPINThreadFunctionRegistry tempFunctionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-//                    
-//                    //SPINModuleRegistry tempSpinModuleRegistry1 = new SPINModuleRegistry()//FunctionRegistry.get());
-//                    
-//                    // TODO: is it rational to have a circular dependency like this?
-////                    tempFunctionRegistry1.setSpinModuleRegistry(tempSpinModuleRegistry1);
-//                    
-//                    // FIXME TODO: how do we get around this step
-//                    // Jena/ARQ seems to be permanently setup around the use of this global context, 
-//                    // even though FunctionEnv and Context seem to be in quite a few method headers 
-//                    // throughout their code base
-//                    // Is it necessary for users to setup functions that are not globally named and visible in the same way that they need to be able to setup rules that may not be globally useful
-////                    ARQ.getContext().set(ARQConstants.registryFunctions, tempFunctionRegistry1);
-//                    
-//                    tempSpinModuleRegistry1.init();
-//                    
-//                    registry = tempSpinModuleRegistry1;
-//                }
-//            }
-//        }
-//        
-//        return registry;
-    }
-
-    public void setSpinModuleRegistry(SPINModuleRegistry registry)
-    {
-        this.registry = registry;
-        this.registry.init();
-    }
-
     @Override
     public boolean isEntailmentEnabled(URI entailmentURI)
     {
@@ -464,32 +392,5 @@ public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements
     public void addEntailmentUri(URI nextEntailmentURI)
     {
         this.activeEntailments.add(nextEntailmentURI);
-    }
-
-    @Override
-    public void addUrlImport(URI nextURLImport)
-    {
-        this.urlImports.add(nextURLImport);
-        
-        OntModel nextModel = SpinUtils.loadModelFromUrl(nextURLImport.stringValue());
-        
-        if(nextModel != null)
-        {
-            log.info("adding model to registry and ontology model list nextImport="+nextURLImport.stringValue()+" nextModel.size()="+nextModel.size());
-            this.ontologyModels.add(nextModel);
-            this.getSpinModuleRegistry().registerAll(nextModel, nextURLImport.stringValue());
-        }
-        else
-        {
-            log.error("Failed to load import from URL nextURLImport="+nextURLImport.stringValue());
-        }
-        
-        this.getSpinModuleRegistry().init();
-    }
-
-    @Override
-    public Set<URI> getURLImports()
-    {
-        return Collections.unmodifiableSet(this.urlImports);
     }
 }

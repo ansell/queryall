@@ -80,7 +80,7 @@ public class XsltNormalisationRuleSchema
                     f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."),
                     contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
             
             con.add(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);

@@ -12,7 +12,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices
-public class RegexNormalisationRuleImplFactory implements NormalisationRuleFactory
+public class RegexTransformingRuleImplFactory implements NormalisationRuleFactory
 {
     /**
      * Returns the enumeration from the enumeration that matches this factory
@@ -20,7 +20,7 @@ public class RegexNormalisationRuleImplFactory implements NormalisationRuleFacto
     @Override
     public NormalisationRuleEnum getEnum()
     {
-        return RegexNormalisationRuleImplEnum.REGEX_NORMALISATION_RULE_IMPL_ENUM;
+        return RegexTransformingRuleImplEnum.REGEX_TRANSFORMING_RULE_IMPL_ENUM;
         // return NormalisationRuleEnum.valueOf(RegexNormalisationRuleImpl.class.getName());
     }
     
@@ -30,7 +30,7 @@ public class RegexNormalisationRuleImplFactory implements NormalisationRuleFacto
     @Override
     public NormalisationRuleParser getParser()
     {
-        return new RegexNormalisationRuleImplParser();
+        return new RegexTransformingRuleImplParser();
     }
     
 }

@@ -27,6 +27,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.exception.InvalidStageException;
@@ -38,25 +39,26 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implements XsltNormalisationRule, HtmlExport
+public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implements XsltNormalisationRule, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleImpl.class);
-    private static final boolean _TRACE = XsltNormalisationRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = XsltNormalisationRuleImpl.log.isDebugEnabled();
+    private static final Logger log = LoggerFactory.getLogger(XsltTransformingRuleImpl.class);
+    private static final boolean _TRACE = XsltTransformingRuleImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = XsltTransformingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = XsltNormalisationRuleImpl.log.isInfoEnabled();
+    private static final boolean _INFO = XsltTransformingRuleImpl.log.isInfoEnabled();
     
     // public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM =
     // NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(),
     // XsltNormalisationRuleImpl.myTypes());
     
-    private static final Set<URI> XSLT_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> XSLT_TRANSFORMING_RULE_IMPL_TYPES = new HashSet<URI>();
     
     static
     {
-        XsltNormalisationRuleImpl.XSLT_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        XsltNormalisationRuleImpl.XSLT_NORMALISATION_RULE_IMPL_TYPES.add(XsltNormalisationRuleSchema
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(TransformingRuleSchema.getTransformingRuleTypeUri());
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(XsltNormalisationRuleSchema
                 .getXsltRuleTypeUri());
     }
     
@@ -72,7 +74,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
         final String testXsltStyleSheet =
                 "<xsl:stylesheet version=\"2.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:output method=\"text\" indent=\"no\" encoding=\"UTF-8\" omit-xml-declaration=\"yes\"></xsl:output><xsl:template match=\"/test\"><xsl:value-of select=\"@testAttr\"/></xsl:template></xsl:stylesheet>";
         
-        final XsltNormalisationRuleImpl testRule = new XsltNormalisationRuleImpl();
+        final XsltTransformingRuleImpl testRule = new XsltTransformingRuleImpl();
         testRule.setKey(StringUtils.createURI("http://example.org/test/xsltnormalisationrule/42"));
         testRule.setXsltStylesheet(testXsltStyleSheet);
         testRule.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
@@ -95,12 +97,12 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
     
     public static Set<URI> myTypes()
     {
-        return XsltNormalisationRuleImpl.XSLT_NORMALISATION_RULE_IMPL_TYPES;
+        return XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES;
     }
     
     private String xsltStylesheet;
     
-    public XsltNormalisationRuleImpl()
+    public XsltTransformingRuleImpl()
     {
         super();
         
@@ -112,7 +114,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public XsltNormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+    public XsltTransformingRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -125,18 +127,18 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(XsltNormalisationRuleImpl._DEBUG)
+            if(XsltTransformingRuleImpl._DEBUG)
             {
-                XsltNormalisationRuleImpl.log.debug("XsltNormalisationRuleImpl: nextStatement: "
+                XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl: nextStatement: "
                         + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(XsltNormalisationRuleSchema.getXsltRuleTypeUri()))
             {
-                if(XsltNormalisationRuleImpl._TRACE)
+                if(XsltTransformingRuleImpl._TRACE)
                 {
-                    XsltNormalisationRuleImpl.log
+                    XsltTransformingRuleImpl.log
                             .trace("XsltNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
@@ -148,9 +150,9 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
             }
             else
             {
-                if(XsltNormalisationRuleImpl._TRACE)
+                if(XsltTransformingRuleImpl._TRACE)
                 {
-                    XsltNormalisationRuleImpl.log
+                    XsltTransformingRuleImpl.log
                             .trace("XsltNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
@@ -158,9 +160,9 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
             }
         }
         
-        if(XsltNormalisationRuleImpl._DEBUG)
+        if(XsltTransformingRuleImpl._DEBUG)
         {
-            XsltNormalisationRuleImpl.log.debug("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
+            XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
     }
     
@@ -171,7 +173,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
     @Override
     public Set<URI> getElementTypes()
     {
-        return XsltNormalisationRuleImpl.myTypes();
+        return XsltTransformingRuleImpl.myTypes();
     }
     
     /**
@@ -292,7 +294,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
     @Override
     public Object stageBeforeResultsImport(final Object input)
     {
-        XsltNormalisationRuleImpl.log.info("stageBeforeResultsImport input=" + (String)input);
+        XsltTransformingRuleImpl.log.info("stageBeforeResultsImport input=" + (String)input);
         if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
                 && this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
         {
@@ -300,7 +302,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
         }
         else
         {
-            XsltNormalisationRuleImpl.log
+            XsltTransformingRuleImpl.log
                     .info("stageBeforeResultsImport returning input unchanged this.getValidStages="
                             + this.getValidStages().contains(
                                     NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
@@ -365,9 +367,9 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
         
         try
         {
-            if(XsltNormalisationRuleImpl._DEBUG)
+            if(XsltTransformingRuleImpl._DEBUG)
             {
-                XsltNormalisationRuleImpl.log.debug("XsltNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();
@@ -389,7 +391,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            XsltNormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
+            XsltTransformingRuleImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -401,7 +403,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
     
     private String transformString(final String input)
     {
-        XsltNormalisationRuleImpl.log.info("input=" + input);
+        XsltTransformingRuleImpl.log.info("input=" + input);
         final StringWriter outputWriter = new StringWriter();
         try
         {
@@ -420,7 +422,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
         }
         catch(final Exception ex)
         {
-            XsltNormalisationRuleImpl.log
+            XsltTransformingRuleImpl.log
                     .error("XsltNormalisationRuleImpl.stageBeforeResultsImport: found exception, returning the original input",
                             ex);
             System.out
@@ -428,7 +430,7 @@ public class XsltNormalisationRuleImpl extends BaseTransformingRuleImpl implemen
             return input;
         }
         
-        XsltNormalisationRuleImpl.log.info("output=" + outputWriter.toString());
+        XsltTransformingRuleImpl.log.info("output=" + outputWriter.toString());
         return outputWriter.toString();
     }
     

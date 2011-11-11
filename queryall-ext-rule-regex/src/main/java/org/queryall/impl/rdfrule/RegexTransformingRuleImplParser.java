@@ -14,7 +14,7 @@ import org.queryall.api.rdfrule.NormalisationRuleParser;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinNormalisationRuleImplParser implements NormalisationRuleParser
+public class RegexTransformingRuleImplParser implements NormalisationRuleParser
 {
     @Override
     public NormalisationRule createObject(final Collection<Statement> rdfStatements, final URI subjectKey,
@@ -22,7 +22,7 @@ public class SpinNormalisationRuleImplParser implements NormalisationRuleParser
     {
         try
         {
-            return new SpinNormalisationRuleImpl(rdfStatements, subjectKey, modelVersion);
+            return new RegexTransformingRuleImpl(rdfStatements, subjectKey, modelVersion);
         }
         catch(final OpenRDFException ex)
         {

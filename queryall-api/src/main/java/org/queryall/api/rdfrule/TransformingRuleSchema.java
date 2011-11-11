@@ -21,17 +21,17 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinNormalisationRuleSchema
+public class TransformingRuleSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleSchema.class);
+    private static final Logger log = LoggerFactory.getLogger(TransformingRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SpinNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean _TRACE = TransformingRuleSchema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SpinNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean _DEBUG = TransformingRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinNormalisationRuleSchema.log.isInfoEnabled();
-    
-    private static URI spinruleTypeUri;
+    private static final boolean _INFO = TransformingRuleSchema.log.isInfoEnabled();
+
+    private static URI transformingRuleTypeUri;
     
     static
     {
@@ -39,36 +39,37 @@ public class SpinNormalisationRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        SpinNormalisationRuleSchema.setSpinRuleTypeUri(f.createURI(baseUri, "SpinNormalisationRule"));
+        TransformingRuleSchema.setTransformingRuleTypeUri(f.createURI(baseUri, "TransformingNormalisationRule"));
+        
     }
-    
     /**
-     * @return the spinruleTypeUri
+     * @return the normalisationRuleTypeUri
      */
-    public static URI getSpinRuleTypeUri()
+    public static URI getTransformingRuleTypeUri()
     {
-        return SpinNormalisationRuleSchema.spinruleTypeUri;
+        return TransformingRuleSchema.transformingRuleTypeUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = myRepository.getValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
             con.setAutoCommit(false);
             
-            con.add(SpinNormalisationRuleSchema.getSpinRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinRuleTypeUri(), RDFS.LABEL,
-                    f.createLiteral("A SPARQL based normalisation rule intended to normalise in-memory RDF triples and SPARQL queries using the SPIN notation."),
-                    contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinRuleTypeUri(), RDFS.SUBCLASSOF,
+            con.add(TransformingRuleSchema.getTransformingRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(TransformingRuleSchema.getTransformingRuleTypeUri(), RDFS.SUBCLASSOF,
                     NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            
+            con.add(TransformingRuleSchema.getTransformingRuleTypeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("A normalisation rule setup to transform input, as opposed to a validation rule which decides on the validity of the input in the context of this rule."),
+                    contextUri);
+            
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -83,7 +84,7 @@ public class SpinNormalisationRuleSchema
                 con.rollback();
             }
             
-            SpinNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            TransformingRuleSchema.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -97,12 +98,13 @@ public class SpinNormalisationRuleSchema
     }
     
     /**
-     * @param spinruleTypeUri
-     *            the spinruleTypeUri to set
+     * @param transformingRuleTypeUri
+     *            the normalisationRuleTypeUri to set
      */
-    public static void setSpinRuleTypeUri(final URI spinruleTypeUri)
+    public static void setTransformingRuleTypeUri(final URI transformingRuleTypeUri)
     {
-        SpinNormalisationRuleSchema.spinruleTypeUri = spinruleTypeUri;
+        TransformingRuleSchema.transformingRuleTypeUri = transformingRuleTypeUri;
     }
     
+
 }

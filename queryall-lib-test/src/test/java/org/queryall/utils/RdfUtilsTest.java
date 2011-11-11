@@ -50,8 +50,9 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRule;
+import org.queryall.api.rdfrule.SparqlConstructRule;
+import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
-import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.XsltNormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.SparqlRuleTest;
@@ -651,14 +652,6 @@ public class RdfUtilsTest
                     
                     final SparqlNormalisationRule nextSparqlRule = (SparqlNormalisationRule)nextNormalisationRule;
                     
-                    Assert.assertEquals("Sparql mode not parsed correctly",
-                            SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
-                            nextSparqlRule.getMode());
-                    
-                    Assert.assertEquals("Sparql construct query target was not parsed correctly",
-                            "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . ",
-                            nextSparqlRule.getSparqlConstructQueryTarget());
-                    
                     Assert.assertEquals("Did not parse the correct number of sparql where patterns", 1, nextSparqlRule
                             .getSparqlWherePatterns().size());
                     
@@ -666,6 +659,21 @@ public class RdfUtilsTest
                             "Sparql construct query where pattern was not parsed correctly",
                             " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri)",
                             nextSparqlRule.getSparqlWherePatterns().get(0));
+
+                    Assert.assertTrue(
+                            "Normalisation rule was not implemented using the SparqlConstructRule interface",
+                            nextNormalisationRule instanceof SparqlConstructRule);
+                    
+                    final SparqlConstructRule nextSparqlConstructRule = (SparqlConstructRule)nextSparqlRule;
+                    
+                    Assert.assertEquals("Sparql mode not parsed correctly",
+                            SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                            nextSparqlConstructRule.getMode());
+                    
+                    Assert.assertEquals("Sparql construct query target was not parsed correctly",
+                            "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . ",
+                            nextSparqlConstructRule.getSparqlConstructQueryTarget());
+                    
                 }
                 else if(nextNormalisationRuleUri.equals(this.testNormalisationRule3))
                 {

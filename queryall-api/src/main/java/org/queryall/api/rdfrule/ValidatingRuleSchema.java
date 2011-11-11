@@ -21,17 +21,17 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class OwlNormalisationRuleSchema
+public class ValidatingRuleSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(OwlNormalisationRuleSchema.class);
+    private static final Logger log = LoggerFactory.getLogger(ValidatingRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = OwlNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean _TRACE = ValidatingRuleSchema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = OwlNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean _DEBUG = ValidatingRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = OwlNormalisationRuleSchema.log.isInfoEnabled();
-    
-    private static URI owlruleTypeUri;
+    private static final boolean _INFO = ValidatingRuleSchema.log.isInfoEnabled();
+
+    private static URI validatingRuleTypeUri;
     
     static
     {
@@ -39,22 +39,20 @@ public class OwlNormalisationRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        OwlNormalisationRuleSchema.setOwlRuleTypeUri(f.createURI(baseUri, "OwlValidatingRule"));
+        ValidatingRuleSchema.setValidatingRuleTypeUri(f.createURI(baseUri, "ValidatingNormalisationRule"));
+        
     }
-    
     /**
-     * @return the owlruleTypeUri
+     * @return the normalisationRuleTypeUri
      */
-    public static URI getOwlRuleTypeUri()
+    public static URI getValidatingRuleTypeUri()
     {
-        return OwlNormalisationRuleSchema.owlruleTypeUri;
+        return ValidatingRuleSchema.validatingRuleTypeUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -63,13 +61,15 @@ public class OwlNormalisationRuleSchema
         {
             con.setAutoCommit(false);
             
-            con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(), RDFS.SUBCLASSOF,
-                    ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
-            con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(),
+            con.add(ValidatingRuleSchema.getValidatingRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(ValidatingRuleSchema.getValidatingRuleTypeUri(), RDFS.SUBCLASSOF,
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            
+            con.add(ValidatingRuleSchema.getValidatingRuleTypeUri(),
                     RDFS.LABEL,
-                    f.createLiteral("An OWL normalisation rule intended to validate triples based on an OWL ontology."),
+                    f.createLiteral("A normalisation rule setup to decides on the validity of the input in the context of this rule, as opposed to transforming rules that transform the input into an output."),
                     contextUri);
+            
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -84,7 +84,7 @@ public class OwlNormalisationRuleSchema
                 con.rollback();
             }
             
-            OwlNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            ValidatingRuleSchema.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -98,12 +98,13 @@ public class OwlNormalisationRuleSchema
     }
     
     /**
-     * @param owlruleTypeUri
-     *            the owlruleTypeUri to set
+     * @param validatingRuleTypeUri
+     *            the normalisationRuleTypeUri to set
      */
-    public static void setOwlRuleTypeUri(final URI owlruleTypeUri)
+    public static void setValidatingRuleTypeUri(final URI validatingRuleTypeUri)
     {
-        OwlNormalisationRuleSchema.owlruleTypeUri = owlruleTypeUri;
+        ValidatingRuleSchema.validatingRuleTypeUri = validatingRuleTypeUri;
     }
     
+
 }

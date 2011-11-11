@@ -17,6 +17,7 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
@@ -39,6 +40,8 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     {
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
+        .add(TransformingRuleSchema.getTransformingRuleTypeUri());
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri());
     }

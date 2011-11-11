@@ -154,7 +154,7 @@ public class SpinNormalisationRuleImplTest
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        SpinNormalisationRuleImpl spinNormalisationRuleImpl = new SpinNormalisationRuleImpl();
+        SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
         
 //        spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
@@ -179,7 +179,7 @@ public class SpinNormalisationRuleImplTest
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        SpinNormalisationRuleImpl spinNormalisationRuleImpl = new SpinNormalisationRuleImpl();
+        SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
         
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);

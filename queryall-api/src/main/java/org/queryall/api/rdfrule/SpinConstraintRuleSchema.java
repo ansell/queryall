@@ -21,17 +21,17 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class OwlNormalisationRuleSchema
+public class SpinConstraintRuleSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(OwlNormalisationRuleSchema.class);
+    private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = OwlNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean _TRACE = SpinConstraintRuleSchema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = OwlNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean _DEBUG = SpinConstraintRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = OwlNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean _INFO = SpinConstraintRuleSchema.log.isInfoEnabled();
     
-    private static URI owlruleTypeUri;
+    private static URI spinConstraintRuleTypeUri;
     
     static
     {
@@ -39,15 +39,15 @@ public class OwlNormalisationRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        OwlNormalisationRuleSchema.setOwlRuleTypeUri(f.createURI(baseUri, "OwlValidatingRule"));
+        SpinConstraintRuleSchema.setSpinConstraintRuleTypeUri(f.createURI(baseUri, "SpinConstraintRule"));
     }
     
     /**
-     * @return the owlruleTypeUri
+     * @return the spinruleTypeUri
      */
-    public static URI getOwlRuleTypeUri()
+    public static URI getSpinConstraintRuleTypeUri()
     {
-        return OwlNormalisationRuleSchema.owlruleTypeUri;
+        return SpinConstraintRuleSchema.spinConstraintRuleTypeUri;
     }
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
@@ -57,19 +57,18 @@ public class OwlNormalisationRuleSchema
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = myRepository.getValueFactory();
         
         try
         {
             con.setAutoCommit(false);
             
-            con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(), RDFS.SUBCLASSOF,
-                    ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
-            con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("An OWL normalisation rule intended to validate triples based on an OWL ontology."),
+            con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDFS.LABEL,
+                    f.createLiteral("A SPIN based normalisation rule intended to validate triples based on SPIN constraints."),
                     contextUri);
+            con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDFS.SUBCLASSOF,
+                    ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -84,7 +83,7 @@ public class OwlNormalisationRuleSchema
                 con.rollback();
             }
             
-            OwlNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            SpinConstraintRuleSchema.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -98,12 +97,12 @@ public class OwlNormalisationRuleSchema
     }
     
     /**
-     * @param owlruleTypeUri
-     *            the owlruleTypeUri to set
+     * @param spinConstraintRuleTypeUri
+     *            the spinruleTypeUri to set
      */
-    public static void setOwlRuleTypeUri(final URI owlruleTypeUri)
+    public static void setSpinConstraintRuleTypeUri(final URI spinConstraintRuleTypeUri)
     {
-        OwlNormalisationRuleSchema.owlruleTypeUri = owlruleTypeUri;
+        SpinConstraintRuleSchema.spinConstraintRuleTypeUri = spinConstraintRuleTypeUri;
     }
     
 }

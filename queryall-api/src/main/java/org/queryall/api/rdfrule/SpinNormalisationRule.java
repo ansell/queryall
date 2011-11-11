@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
-public interface SpinNormalisationRule extends ValidatingRule
+public interface SpinNormalisationRule extends NormalisationRule
 {
 
     /**
@@ -12,25 +12,25 @@ public interface SpinNormalisationRule extends ValidatingRule
      * 
      * @param nextImport
      */
-    public abstract void addLocalImport(String nextLocalImport);
+    void addLocalImport(String nextLocalImport);
 
     /**
      * Add an import to this rule based on a URL
      * 
      * @param nextImport
      */
-    public abstract void addUrlImport(URI nextURLImport);
+    void addUrlImport(URI nextURLImport);
 
     /**
      * @return Set of Strings that indicate which local imports are active for this rule
      */
-    public abstract Set<String> getLocalImports();
+    Set<String> getLocalImports();
 
     /**
      * @return Set of URLs that indicate which URL imports are active for this rule
      */
-    public abstract Set<URI> getURLImports();
-
+    Set<URI> getURLImports();
+    
     /**
      * A URI from the list on http://www.w3.org/ns/entailment/ or a profile on http://www.w3.org/TR/owl-profiles/
      * or another supported URI that indicates whether this rule is 
@@ -39,18 +39,18 @@ public interface SpinNormalisationRule extends ValidatingRule
      * @param inferenceURI A URI from http://www.w3.org/ns/entailment/ or one of the profiles on http://www.w3.org/TR/owl-profiles/ that indicates the entailment for this rule
      * @return True if the entailment is enabled or false otherwise
      */
-    public abstract boolean isEntailmentEnabled(URI entailmentURI);
-
+    boolean isEntailmentEnabled(URI entailmentURI);
+    
     /**
      * @return A set of URIs indicating which entailments are active for this rule
      */
-    public abstract Set<URI> getEntailmentUris();
+    Set<URI> getEntailmentUris();
     
     /**
      * Add an entailment from the list on http://www.w3.org/ns/entailment/ or a profile on http://www.w3.org/TR/owl-profiles/ to this rule
      * 
      * @param nextEntailmentURI A URI from http://www.w3.org/ns/entailment/ or a profile on that indicates the rule will be using this entailment
      */
-    public abstract void addEntailmentUri(URI nextEntailmentURI);
+    void addEntailmentUri(URI nextEntailmentURI);
     
 }

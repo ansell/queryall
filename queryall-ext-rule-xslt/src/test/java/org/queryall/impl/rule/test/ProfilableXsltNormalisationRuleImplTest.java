@@ -7,7 +7,7 @@ import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.test.AbstractProfilableNormalisationRuleTest;
 import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.rdfrule.XsltNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.XsltTransformingRuleImpl;
 
 /**
  * 
@@ -25,6 +25,6 @@ public class ProfilableXsltNormalisationRuleImplTest extends AbstractProfilableN
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
-        return new XsltNormalisationRuleImpl();
+        return new XsltTransformingRuleImpl();
     }
 }

@@ -66,7 +66,7 @@ import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
+import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestEnum;
 import org.queryall.api.ruletest.RuleTestSchema;
@@ -287,7 +287,7 @@ public final class RdfUtils
         
         output =
                 RdfUtils.doWorkBasedOnMode(output,
-                        SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
+                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -312,7 +312,7 @@ public final class RdfUtils
         deleteObjectQueries.add(deleteObjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
+                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
                         deleteObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -341,7 +341,7 @@ public final class RdfUtils
         
         output =
                 RdfUtils.doWorkBasedOnMode(output,
-                        SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
+                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -354,7 +354,7 @@ public final class RdfUtils
         deleteSubjectQueries.add(deleteSubjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
+                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
                         deleteSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -384,7 +384,7 @@ public final class RdfUtils
         
         output =
                 RdfUtils.doWorkBasedOnMode(output,
-                        SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
+                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -397,7 +397,7 @@ public final class RdfUtils
         deletePredicateQueries.add(deletePredicateTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
+                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
                         deletePredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -420,7 +420,7 @@ public final class RdfUtils
     public static Repository doWorkBasedOnMode(final Repository input, final URI nextMode,
             final List<String> sparqlConstructQueries)
     {
-        if(nextMode.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
+        if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
         {
             if(RdfUtils._DEBUG)
             {
@@ -428,7 +428,7 @@ public final class RdfUtils
             }
             return RdfUtils.removeStatementsFromRepository(input, sparqlConstructQueries);
         }
-        else if(nextMode.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
+        else if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
         {
             if(RdfUtils._DEBUG)
             {
@@ -436,7 +436,7 @@ public final class RdfUtils
             }
             return RdfUtils.chooseStatementsFromRepository(input, false, sparqlConstructQueries);
         }
-        else if(nextMode.equals(SparqlNormalisationRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
+        else if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
         {
             if(RdfUtils._DEBUG)
             {

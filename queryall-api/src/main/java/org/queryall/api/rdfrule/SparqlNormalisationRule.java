@@ -7,16 +7,10 @@ import org.openrdf.model.URI;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public interface SparqlNormalisationRule extends TransformingRule
+public interface SparqlNormalisationRule extends NormalisationRule
 {
     
     void addSparqlWherePattern(String sparqlWherePattern);
-    
-    URI getMode();
-    
-    List<String> getSparqlConstructQueries();
-    
-    String getSparqlConstructQueryTarget();
     
     String getSparqlPrefixes();
     
@@ -27,8 +21,6 @@ public interface SparqlNormalisationRule extends TransformingRule
      *            the mode to set
      */
     void setMode(URI mode);
-    
-    void setSparqlConstructQueryTarget(String sparqlConstructQueryTarget);
     
     void setSparqlPrefixes(String sparqlPrefixes);
 }

@@ -4,10 +4,10 @@
 package org.queryall.impl.rule.test;
 
 import org.queryall.api.profile.Profile;
-import org.queryall.api.rdfrule.SparqlNormalisationRule;
-import org.queryall.api.test.AbstractSparqlNormalisationRuleTest;
+import org.queryall.api.rdfrule.SparqlConstructRule;
+import org.queryall.api.test.AbstractSparqlConstructRuleTest;
 import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
+import org.queryall.impl.rdfrule.SparqlConstructRuleImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -15,7 +15,7 @@ import org.queryall.impl.rdfrule.SparqlNormalisationRuleImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisationRuleTest
+public class SparqlNormalisationRuleImplTest extends AbstractSparqlConstructRuleTest
 {
     @Override
     public Profile getNewTestProfile()
@@ -24,8 +24,8 @@ public class SparqlNormalisationRuleImplTest extends AbstractSparqlNormalisation
     }
     
     @Override
-    public SparqlNormalisationRule getNewTestSparqlRule()
+    public SparqlConstructRule getNewTestSparqlConstructRule()
     {
-        return new SparqlNormalisationRuleImpl();
+        return new SparqlConstructRuleImpl();
     }
 }

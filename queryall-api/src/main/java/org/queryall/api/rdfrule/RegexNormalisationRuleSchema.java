@@ -109,7 +109,7 @@ public class RegexNormalisationRuleSchema
             
             con.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
             con.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri(),
                     RDFS.LABEL,
                     f.createLiteral("A regular expression based normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
