@@ -13,6 +13,12 @@ public interface SparqlConstructRule extends TransformingRule, SparqlNormalisati
     
     public abstract String getSparqlConstructQueryTarget();
     
+    /**
+     * @param mode
+     *            the mode to set
+     */
+    void setMode(URI mode);
+    
     public abstract void setSparqlConstructQueryTarget(String sparqlConstructQueryTarget);
     
 }
