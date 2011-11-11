@@ -14,7 +14,7 @@ public class ValidationFailedException extends QueryAllException
      * 
      */
     private static final long serialVersionUID = 6803456348739020133L;
-
+    
     /**
      * 
      */
@@ -25,26 +25,26 @@ public class ValidationFailedException extends QueryAllException
     /**
      * @param message
      */
-    public ValidationFailedException(String message)
+    public ValidationFailedException(final String message)
     {
         super(message);
-    }
-    
-    /**
-     * @param cause
-     */
-    public ValidationFailedException(Throwable cause)
-    {
-        super(cause);
     }
     
     /**
      * @param message
      * @param cause
      */
-    public ValidationFailedException(String message, Throwable cause)
+    public ValidationFailedException(final String message, final Throwable cause)
     {
         super(message, cause);
+    }
+    
+    /**
+     * @param cause
+     */
+    public ValidationFailedException(final Throwable cause)
+    {
+        super(cause);
     }
     
 }

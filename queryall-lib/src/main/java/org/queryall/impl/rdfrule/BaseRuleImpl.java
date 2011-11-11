@@ -69,8 +69,8 @@ public abstract class BaseRuleImpl implements NormalisationRule
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    protected BaseRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
-            final int modelVersion) throws OpenRDFException
+    protected BaseRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         for(final Statement nextStatement : inputStatements)
         {
@@ -85,8 +85,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
             {
                 if(BaseRuleImpl._TRACE)
                 {
-                    BaseRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: "
-                            + keyToUse);
+                    BaseRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -169,7 +168,8 @@ public abstract class BaseRuleImpl implements NormalisationRule
         }
         else
         {
-            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages stage="+stage);
+            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages stage="
+                    + stage);
         }
     }
     
@@ -199,7 +199,8 @@ public abstract class BaseRuleImpl implements NormalisationRule
             }
             else
             {
-                throw new InvalidStageException("Could not assign a stage as valid as it was not recognised validStage="+validStage);
+                throw new InvalidStageException(
+                        "Could not assign a stage as valid as it was not recognised validStage=" + validStage);
             }
         }
     }
@@ -308,7 +309,6 @@ public abstract class BaseRuleImpl implements NormalisationRule
         return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
                 includeNonProfileMatched);
     }
-    
     
     @Override
     public void setCurationStatus(final URI curationStatus)

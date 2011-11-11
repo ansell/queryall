@@ -42,7 +42,8 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     {
         RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_TYPES.add(TransformingRuleSchema.getTransformingRuleTypeUri());
+        RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_TYPES.add(TransformingRuleSchema
+                .getTransformingRuleTypeUri());
         RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_TYPES.add(RegexNormalisationRuleSchema
                 .getRegexRuleTypeUri());
     }

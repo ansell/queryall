@@ -64,7 +64,8 @@ public class SpinConstraintRuleSchema
             con.setAutoCommit(false);
             
             con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDFS.LABEL,
+            con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(),
+                    RDFS.LABEL,
                     f.createLiteral("A SPIN based normalisation rule intended to validate triples based on SPIN constraints."),
                     contextUri);
             con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDFS.SUBCLASSOF,

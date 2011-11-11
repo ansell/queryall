@@ -30,7 +30,7 @@ public class TransformingRuleSchema
     private static final boolean _DEBUG = TransformingRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = TransformingRuleSchema.log.isInfoEnabled();
-
+    
     private static URI transformingRuleTypeUri;
     
     static
@@ -42,6 +42,7 @@ public class TransformingRuleSchema
         TransformingRuleSchema.setTransformingRuleTypeUri(f.createURI(baseUri, "TransformingNormalisationRule"));
         
     }
+    
     /**
      * @return the normalisationRuleTypeUri
      */
@@ -69,7 +70,6 @@ public class TransformingRuleSchema
                     RDFS.LABEL,
                     f.createLiteral("A normalisation rule setup to transform input, as opposed to a validation rule which decides on the validity of the input in the context of this rule."),
                     contextUri);
-            
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -106,5 +106,4 @@ public class TransformingRuleSchema
         TransformingRuleSchema.transformingRuleTypeUri = transformingRuleTypeUri;
     }
     
-
 }

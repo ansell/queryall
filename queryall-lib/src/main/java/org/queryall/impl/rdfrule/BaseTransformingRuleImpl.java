@@ -15,7 +15,7 @@ import org.queryall.exception.QueryAllException;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements TransformingRule
 {
@@ -34,16 +34,18 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public BaseTransformingRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
+    public BaseTransformingRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
     }
     
     /**
-     * This function delegates normalisation to the correct stage normalisation method based on the given URI.
+     * This function delegates normalisation to the correct stage normalisation method based on the
+     * given URI.
      * 
-     * You should not need to modify this method, as it provides generic stage validation that is necessary to ensure that the rule system is consistent.
+     * You should not need to modify this method, as it provides generic stage validation that is
+     * necessary to ensure that the rule system is consistent.
      */
     @Override
     public final Object normaliseByStage(final URI stage, final Object input) throws QueryAllException

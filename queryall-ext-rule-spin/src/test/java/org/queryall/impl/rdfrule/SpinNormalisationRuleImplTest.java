@@ -32,7 +32,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class SpinNormalisationRuleImplTest
 {
@@ -40,84 +40,102 @@ public class SpinNormalisationRuleImplTest
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
-//    private SPINModuleRegistry testSpinModuleRegistry1;
-//    private SPINModuleRegistry testSpinModuleRegistry2;
-
+    
+    // private SPINModuleRegistry testSpinModuleRegistry1;
+    // private SPINModuleRegistry testSpinModuleRegistry2;
+    
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception
     {
-        Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        testOntologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, testModel);
+        this.testOntologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, testModel);
         
-        List<com.hp.hpl.jena.rdf.model.Statement> jenaStatements = new ArrayList<com.hp.hpl.jena.rdf.model.Statement>(3);
+        final List<com.hp.hpl.jena.rdf.model.Statement> jenaStatements =
+                new ArrayList<com.hp.hpl.jena.rdf.model.Statement>(3);
         
-        com.hp.hpl.jena.rdf.model.Statement testJenaStatement1 = ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/1"), ResourceFactory.createProperty("http://other.example.org/test/property/a1"), ResourceFactory.createTypedLiteral(42));
-        com.hp.hpl.jena.rdf.model.Statement testJenaStatement2 = ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/1"), RDF.type, ResourceFactory.createResource("http://my.example.org/test/uri/testType"));
-        com.hp.hpl.jena.rdf.model.Statement testJenaStatement3 = ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/testType"), OWL2.equivalentClass, ResourceFactory.createResource("http://vocab.org/test/equivalentToRuleType1"));
-
+        final com.hp.hpl.jena.rdf.model.Statement testJenaStatement1 =
+                ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/1"),
+                        ResourceFactory.createProperty("http://other.example.org/test/property/a1"),
+                        ResourceFactory.createTypedLiteral(42));
+        final com.hp.hpl.jena.rdf.model.Statement testJenaStatement2 =
+                ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/1"),
+                        RDF.type, ResourceFactory.createResource("http://my.example.org/test/uri/testType"));
+        final com.hp.hpl.jena.rdf.model.Statement testJenaStatement3 =
+                ResourceFactory.createStatement(
+                        ResourceFactory.createResource("http://my.example.org/test/uri/testType"),
+                        OWL2.equivalentClass,
+                        ResourceFactory.createResource("http://vocab.org/test/equivalentToRuleType1"));
+        
         jenaStatements.add(testJenaStatement1);
         jenaStatements.add(testJenaStatement2);
         jenaStatements.add(testJenaStatement3);
         
-        testOntologyModel.add(jenaStatements);
-
-        ValueFactory vf = new ValueFactoryImpl();
+        this.testOntologyModel.add(jenaStatements);
         
-        org.openrdf.model.Statement testSesameStatement1 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"), vf.createURI("http://other.example.org/test/property/a1"), vf.createLiteral(42));
-        org.openrdf.model.Statement testSesameStatement2 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"), org.openrdf.model.vocabulary.RDF.TYPE, vf.createURI("http://my.example.org/test/uri/testType"));
-        org.openrdf.model.Statement testSesameStatement3 = vf.createStatement(vf.createURI("http://my.example.org/test/uri/testType"), OWL.EQUIVALENTCLASS, vf.createURI("http://vocab.org/test/equivalentToRuleType1"));
+        final ValueFactory vf = new ValueFactoryImpl();
         
-        testSesameStatements = new ArrayList<org.openrdf.model.Statement>(3);
+        final org.openrdf.model.Statement testSesameStatement1 =
+                vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"),
+                        vf.createURI("http://other.example.org/test/property/a1"), vf.createLiteral(42));
+        final org.openrdf.model.Statement testSesameStatement2 =
+                vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"),
+                        org.openrdf.model.vocabulary.RDF.TYPE, vf.createURI("http://my.example.org/test/uri/testType"));
+        final org.openrdf.model.Statement testSesameStatement3 =
+                vf.createStatement(vf.createURI("http://my.example.org/test/uri/testType"), OWL.EQUIVALENTCLASS,
+                        vf.createURI("http://vocab.org/test/equivalentToRuleType1"));
         
-        testSesameStatements.add(testSesameStatement1);
-        testSesameStatements.add(testSesameStatement2);
-        testSesameStatements.add(testSesameStatement3);
+        this.testSesameStatements = new ArrayList<org.openrdf.model.Statement>(3);
         
-        testRepository = new SailRepository(new MemoryStore());
-        testRepository.initialize();
+        this.testSesameStatements.add(testSesameStatement1);
+        this.testSesameStatements.add(testSesameStatement2);
+        this.testSesameStatements.add(testSesameStatement3);
         
-        RepositoryConnection connection = testRepository.getConnection();
+        this.testRepository = new SailRepository(new MemoryStore());
+        this.testRepository.initialize();
         
-        connection.add(testSesameStatements);
+        final RepositoryConnection connection = this.testRepository.getConnection();
+        
+        connection.add(this.testSesameStatements);
         connection.commit();
         connection.close();
         
-        //SPINThreadFunctionRegistry functionRegistry1 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-//        FunctionRegistry functionRegistry1 = FunctionRegistry.standardRegistry();
-
-//        testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
-        //testSpinModuleRegistry1 = new SPINModuleRegistry();//FunctionRegistry.get());
+        // SPINThreadFunctionRegistry functionRegistry1 = new
+        // SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+        // FunctionRegistry functionRegistry1 = FunctionRegistry.standardRegistry();
+        
+        // testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
+        // testSpinModuleRegistry1 = new SPINModuleRegistry();//FunctionRegistry.get());
         
         // TODO: is it rational to have a circular dependency like this?
-        //functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
+        // functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
         
         // TODO: how do we get around this step
-        // Jena/ARQ seems to be permanently setup around the use of this global context, 
-        // even though FunctionEnv and Context seem to be in quite a few method headers 
+        // Jena/ARQ seems to be permanently setup around the use of this global context,
+        // even though FunctionEnv and Context seem to be in quite a few method headers
         // throughout their code base
-//        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
+        // ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
         
-        //testSpinModuleRegistry1.init();
+        // testSpinModuleRegistry1.init();
         
-//        SPINThreadFunctionRegistry functionRegistry2 = new SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-//
-//        testSpinModuleRegistry2 = new SPINModuleRegistry(functionRegistry2);
-        
+        // SPINThreadFunctionRegistry functionRegistry2 = new
+        // SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
+        //
+        // testSpinModuleRegistry2 = new SPINModuleRegistry(functionRegistry2);
         
         // TODO: is it rational to have a circular dependency like this?
-//        functionRegistry2.setSpinModuleRegistry(testSpinModuleRegistry2);
+        // functionRegistry2.setSpinModuleRegistry(testSpinModuleRegistry2);
         
         // TODO: how do we get around this step
-        // Jena/ARQ seems to be permanently setup around the use of this global context, 
-        // even though FunctionEnv and Context seem to be in quite a few method headers 
+        // Jena/ARQ seems to be permanently setup around the use of this global context,
+        // even though FunctionEnv and Context seem to be in quite a few method headers
         // throughout their code base
-//        ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry2);
+        // ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry2);
         
-//        testSpinModuleRegistry2.init();
+        // testSpinModuleRegistry2.init();
     }
     
     /**
@@ -126,97 +144,95 @@ public class SpinNormalisationRuleImplTest
     @After
     public void tearDown() throws Exception
     {
-        testOntologyModel = null;
-        testSesameStatements = null;
-        testRepository = null;
-//        testSpinModuleRegistry1 = null;
-//        testSpinModuleRegistry2 = null;
+        this.testOntologyModel = null;
+        this.testSesameStatements = null;
+        this.testRepository = null;
+        // testSpinModuleRegistry1 = null;
+        // testSpinModuleRegistry2 = null;
     }
     
     /**
-     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}.
+     * Test method for
+     * {@link org.queryall.impl.rdfrule.SpinUtils#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}
+     * .
      */
     @Test
     public void testAddJenaModelToSesameRepository() throws OpenRDFException
     {
-        Repository results = SpinUtils.addJenaModelToSesameRepository(testOntologyModel, null);
+        final Repository results = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
         
-        RepositoryConnection resultConnection = results.getConnection();
+        final RepositoryConnection resultConnection = results.getConnection();
         
         Assert.assertEquals(3, resultConnection.size());
         
     }
     
     @Test
-    public void testProcessSpinRulesByURL() throws OpenRDFException
+    public void testGetTurtleSPINQueryFromSPARQL()
     {
-        RepositoryConnection testRepositoryConnection = testRepository.getConnection();
+        final String query =
+                "SELECT ?person\n" + "WHERE {\n" + "    ?person a <ex:Person> .\n" + "    ?person <ex:age> ?age .\n"
+                        + "    FILTER (?age > 18) .\n" + "}";
+        
+        final String turtleString = SpinUtils.getTurtleSPINQueryFromSPARQL(query);
+        
+        System.out.println(turtleString);
+        
+        Assert.assertTrue(turtleString.contains("ex:Person"));
+        
+        Assert.assertTrue(turtleString.contains("ex:age"));
+        
+        Assert.assertTrue(turtleString.contains("18"));
+    }
+    
+    @Test
+    public void testProcessSpinRulesByClasspathRef() throws OpenRDFException
+    {
+        final RepositoryConnection testRepositoryConnection = this.testRepository.getConnection();
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
-        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
+        final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
         
-//        spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addUrlImport(new URIImpl("http://topbraid.org/spin/owlrl-all"));
+        // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
+        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all.owl");
         
-        Repository results = spinNormalisationRuleImpl.processSpinRules(testRepository);
+        final Repository results = spinNormalisationRuleImpl.processSpinRules(this.testRepository);
         
-        RepositoryConnection resultConnection = results.getConnection();
+        final RepositoryConnection resultConnection = results.getConnection();
         
         Assert.assertEquals(8, resultConnection.size());
         
-        for(Statement nextStatement : testSesameStatements)
+        for(final Statement nextStatement : this.testSesameStatements)
         {
             Assert.assertTrue(resultConnection.hasStatement(nextStatement, false));
         }
     }
     
     @Test
-    public void testProcessSpinRulesByClasspathRef() throws OpenRDFException
+    public void testProcessSpinRulesByURL() throws OpenRDFException
     {
-        RepositoryConnection testRepositoryConnection = testRepository.getConnection();
+        final RepositoryConnection testRepositoryConnection = this.testRepository.getConnection();
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
-        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
+        final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
         
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all.owl");
+        spinNormalisationRuleImpl.addUrlImport(new URIImpl("http://topbraid.org/spin/owlrl-all"));
         
-        Repository results = spinNormalisationRuleImpl.processSpinRules(testRepository);
+        final Repository results = spinNormalisationRuleImpl.processSpinRules(this.testRepository);
         
-        RepositoryConnection resultConnection = results.getConnection();
+        final RepositoryConnection resultConnection = results.getConnection();
         
         Assert.assertEquals(8, resultConnection.size());
         
-        for(Statement nextStatement : testSesameStatements)
+        for(final Statement nextStatement : this.testSesameStatements)
         {
             Assert.assertTrue(resultConnection.hasStatement(nextStatement, false));
         }
-    }
-
-    @Test
-    public void testGetTurtleSPINQueryFromSPARQL()
-    {
-        String query =
-                "SELECT ?person\n" +
-                "WHERE {\n" +
-                "    ?person a <ex:Person> .\n" +
-                "    ?person <ex:age> ?age .\n" +
-                "    FILTER (?age > 18) .\n" +
-                "}";
-        
-        String turtleString = SpinUtils.getTurtleSPINQueryFromSPARQL(query);
-        
-        System.out.println(turtleString);
-        
-        Assert.assertTrue(turtleString.contains("ex:Person"));
-
-        Assert.assertTrue(turtleString.contains("ex:age"));
-
-        Assert.assertTrue(turtleString.contains("18"));
     }
     
 }

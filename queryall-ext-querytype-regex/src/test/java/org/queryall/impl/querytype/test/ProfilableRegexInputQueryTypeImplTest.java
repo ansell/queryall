@@ -18,14 +18,14 @@ import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 public class ProfilableRegexInputQueryTypeImplTest extends AbstractProfilableQueryTypeTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
-    @Override
     public ProfilableInterface getNewTestProfilable()
     {
         return new RegexInputQueryTypeImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
     }
 }

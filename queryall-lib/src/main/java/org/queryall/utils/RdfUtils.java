@@ -286,8 +286,8 @@ public final class RdfUtils
         addObjectQueries.add(addObjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output,
-                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
+                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                        addObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -340,8 +340,8 @@ public final class RdfUtils
         addSubjectQueries.add(addSubjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output,
-                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
+                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                        addSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -383,8 +383,8 @@ public final class RdfUtils
         addPredicateQueries.add(addPredicateTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output,
-                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
+                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                        addPredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -2800,19 +2800,10 @@ public final class RdfUtils
     /**
      * @param nextRepository
      * @param outputStream
-     */
-    public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream, Resource... contexts)
-    {
-        RdfUtils.toOutputStream(nextRepository, outputStream, RDFFormat.RDFXML, contexts);
-    }
-    
-    /**
-     * @param nextRepository
-     * @param outputStream
      * @param format
      */
     public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream,
-            final RDFFormat format, Resource... contexts)
+            final RDFFormat format, final Resource... contexts)
     {
         RepositoryConnection nextConnection = null;
         
@@ -2847,10 +2838,20 @@ public final class RdfUtils
     }
     
     /**
+     * @param nextRepository
+     * @param outputStream
+     */
+    public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream,
+            final Resource... contexts)
+    {
+        RdfUtils.toOutputStream(nextRepository, outputStream, RDFFormat.RDFXML, contexts);
+    }
+    
+    /**
      * @param nextConnection
      * @return
      */
-    public static String toString(final Repository nextRepository, Resource... contexts)
+    public static String toString(final Repository nextRepository, final Resource... contexts)
     {
         final java.io.StringWriter stBuff = new java.io.StringWriter();
         
@@ -2891,18 +2892,10 @@ public final class RdfUtils
     /**
      * @param nextRepository
      * @param nextWriter
-     */
-    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter, Resource... contexts)
-    {
-        RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML, contexts);
-    }
-    
-    /**
-     * @param nextRepository
-     * @param nextWriter
      * @param format
      */
-    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter, final RDFFormat format, Resource... contexts)
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
+            final RDFFormat format, final Resource... contexts)
     {
         RepositoryConnection nextConnection = null;
         
@@ -2934,6 +2927,16 @@ public final class RdfUtils
                 RdfUtils.log.error("toWriter: connection didn't close correctly", rex);
             }
         }
+    }
+    
+    /**
+     * @param nextRepository
+     * @param nextWriter
+     */
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
+            final Resource... contexts)
+    {
+        RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML, contexts);
     }
     
     // from http://java.sun.com/developer/technicalArticles/ThirdParty/WebCrawler/WebCrawler.java

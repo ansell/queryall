@@ -16,7 +16,7 @@ import org.queryall.exception.ValidationFailedException;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements ValidatingRule
 {
@@ -35,16 +35,18 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public BaseValidatingRuleImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
+    public BaseValidatingRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
     }
     
     /**
-     * This function delegates normalisation to the correct stage normalisation method based on the given URI.
+     * This function delegates normalisation to the correct stage normalisation method based on the
+     * given URI.
      * 
-     * You should not need to modify this method, as it provides generic stage validation that is necessary to ensure that the rule system is consistent.
+     * You should not need to modify this method, as it provides generic stage validation that is
+     * necessary to ensure that the rule system is consistent.
      */
     @Override
     public final boolean normaliseByStage(final URI stage, final Object input) throws QueryAllException
@@ -58,7 +60,8 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
                                 + stage);
             }
             
-            throw new ValidationFailedException("Found an invalid stage for this type of rule this.getKey()="+this.getKey().stringValue()+" stage="+stage.stringValue());
+            throw new ValidationFailedException("Found an invalid stage for this type of rule this.getKey()="
+                    + this.getKey().stringValue() + " stage=" + stage.stringValue());
         }
         
         if(!this.usedInStage(stage))
@@ -70,7 +73,8 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
                                 + this.getKey().stringValue() + " stage=" + stage);
             }
             
-            // Don't failover just because they attempted to normalise this rule when it was a valid stage, but not used by this rule
+            // Don't failover just because they attempted to normalise this rule when it was a valid
+            // stage, but not used by this rule
             return true;
         }
         

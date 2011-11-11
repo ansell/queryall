@@ -40,82 +40,18 @@ public class SpinUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = SpinUtils.log.isInfoEnabled();
     
-    public static String getTurtleSPINQueryFromSPARQL(String query)
-    {
-        Model model = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        model.setNsPrefix("rdf", com.hp.hpl.jena.vocabulary.RDF.getURI());
-    
-        Query arqQuery = ARQFactory.get().createQuery(model, query);
-        // We don't need the results of this operation, but we do need its side-effects on "model"
-        new ARQ2SPIN(model).createQuery(arqQuery, null);
-        
-        
-        StringWriter output = new StringWriter();
-        
-        System.out.println("SPIN query in Turtle:");
-        model.write(output, FileUtils.langTurtle);
-        
-        String turtleString = output.toString();
-        
-        return turtleString;
-    }
-
-    public static OntModel loadModelFromClasspath(String classpathRef) 
-    {
-        log.info("loading model from classpathRef="+classpathRef);
-        
-        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        
-        if(!classpathRef.startsWith("/"))
-        {
-            classpathRef = "/"+classpathRef;
-        }
-        
-        InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
-        
-        baseModel.read(stream, "http://temp.base.uri.fake/");
-        
-        // TODO: make the OntModelSpec here configurable
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
-    }
-    
-    public static OntModel loadModelFromUrl(String url) 
-    {
-        log.info("loading model from url="+url);
-        
-        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        baseModel.read(url);
-        // TODO: make the OntModelSpec here configurable
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
-    }
-    
-    public static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, Model outputModel, String baseURI, org.openrdf.model.Resource... contexts) 
-    {
-        // Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        
-        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
-        
-        // write out the triples from the model into the output stream
-        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
-        
-        // use the resulting byte[] as input to an InputStream
-        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
-
-        outputModel.read(bufferedInputStream, baseURI);
-        
-        // TODO: Should be creating this model earlier and then adding the triples to it instead of to the outputModel?
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
-    }
-
     /**
-     * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame repository
+     * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame
+     * repository
      * 
      * @param inputModel
-     * @param outputRepository If outputRepository is null, a new in-memory repository is created
+     * @param outputRepository
+     *            If outputRepository is null, a new in-memory repository is created
      * @param contexts
      * @return
      */
-    public static Repository addJenaModelToSesameRepository(Model inputModel, Repository outputRepository, org.openrdf.model.Resource... contexts)
+    public static Repository addJenaModelToSesameRepository(final Model inputModel, Repository outputRepository,
+            final org.openrdf.model.Resource... contexts)
     {
         if(outputRepository == null)
         {
@@ -124,20 +60,21 @@ public class SpinUtils
             {
                 outputRepository.initialize();
             }
-            catch(RepositoryException e)
+            catch(final RepositoryException e)
             {
-                log.error("Found unexpected exception initialising in memory repository", e);
+                SpinUtils.log.error("Found unexpected exception initialising in memory repository", e);
                 throw new QueryAllException("Found unexpected exception initialising in memory repository", e);
             }
         }
         
-        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
+        final ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
         
         // write out the triples from the model into the output stream
         inputModel.write(internalOutputStream);
         
         // use the resulting byte[] as input to an InputStream
-        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
+        final InputStream bufferedInputStream =
+                new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
         
         RepositoryConnection connection = null;
         
@@ -149,10 +86,10 @@ public class SpinUtils
             
             connection.commit();
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
-            log.error("Found exception while attempting to add data to OpenRDF repository", e);
-    
+            SpinUtils.log.error("Found exception while attempting to add data to OpenRDF repository", e);
+            
             try
             {
                 if(connection != null)
@@ -160,9 +97,10 @@ public class SpinUtils
                     connection.rollback();
                 }
             }
-            catch(RepositoryException e1)
+            catch(final RepositoryException e1)
             {
-                log.error("Found exception while attempting to rollback connection due to previous exception", e1);
+                SpinUtils.log.error(
+                        "Found exception while attempting to rollback connection due to previous exception", e1);
             }
             
             throw new QueryAllException("Found exception while attempting to add data to OpenRDF repository", e);
@@ -176,14 +114,82 @@ public class SpinUtils
                     connection.close();
                 }
             }
-            catch(RepositoryException e)
+            catch(final RepositoryException e)
             {
-                log.error("Found exception while attempting to close connection in finally block", e);
+                SpinUtils.log.error("Found exception while attempting to close connection in finally block", e);
             }
         }
         
         return outputRepository;
     }
     
-
+    public static OntModel addSesameRepositoryToJenaModel(final Repository inputRepository, final Model outputModel,
+            final String baseURI, final org.openrdf.model.Resource... contexts)
+    {
+        // Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        final ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
+        
+        // write out the triples from the model into the output stream
+        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
+        
+        // use the resulting byte[] as input to an InputStream
+        final InputStream bufferedInputStream =
+                new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
+        
+        outputModel.read(bufferedInputStream, baseURI);
+        
+        // TODO: Should be creating this model earlier and then adding the triples to it instead of
+        // to the outputModel?
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
+    }
+    
+    public static String getTurtleSPINQueryFromSPARQL(final String query)
+    {
+        final Model model = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        model.setNsPrefix("rdf", com.hp.hpl.jena.vocabulary.RDF.getURI());
+        
+        final Query arqQuery = ARQFactory.get().createQuery(model, query);
+        // We don't need the results of this operation, but we do need its side-effects on "model"
+        new ARQ2SPIN(model).createQuery(arqQuery, null);
+        
+        final StringWriter output = new StringWriter();
+        
+        System.out.println("SPIN query in Turtle:");
+        model.write(output, FileUtils.langTurtle);
+        
+        final String turtleString = output.toString();
+        
+        return turtleString;
+    }
+    
+    public static OntModel loadModelFromClasspath(String classpathRef)
+    {
+        SpinUtils.log.info("loading model from classpathRef=" + classpathRef);
+        
+        final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        if(!classpathRef.startsWith("/"))
+        {
+            classpathRef = "/" + classpathRef;
+        }
+        
+        final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
+        
+        baseModel.read(stream, "http://temp.base.uri.fake/");
+        
+        // TODO: make the OntModelSpec here configurable
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+    }
+    
+    public static OntModel loadModelFromUrl(final String url)
+    {
+        SpinUtils.log.info("loading model from url=" + url);
+        
+        final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        baseModel.read(url);
+        // TODO: make the OntModelSpec here configurable
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+    }
+    
 }

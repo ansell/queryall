@@ -16,8 +16,7 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class SparqlConstructRuleImplEnum extends NormalisationRuleEnum
 {
-    public static final NormalisationRuleEnum SPARQL_CONSTRUCT_RULE_IMPL_ENUM =
-            new SparqlConstructRuleImplEnum();
+    public static final NormalisationRuleEnum SPARQL_CONSTRUCT_RULE_IMPL_ENUM = new SparqlConstructRuleImplEnum();
     
     public SparqlConstructRuleImplEnum()
     {

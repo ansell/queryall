@@ -793,52 +793,69 @@ public class QueryCreator
                 {
                     if(nextRule instanceof TransformingRule)
                     {
-                        TransformingRule nextTransformingRule = (TransformingRule)nextRule;
+                        final TransformingRule nextTransformingRule = (TransformingRule)nextRule;
                         
                         endpointSpecificUri = (String)nextTransformingRule.stageQueryVariables(endpointSpecificUri);
-                        endpointSpecificQueryUri = (String)nextTransformingRule.stageQueryVariables(endpointSpecificQueryUri);
+                        endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(endpointSpecificQueryUri);
                         // endpointSpecificOntologyUri = (String)nextTransformingRule
                         // .applyInputRegex(endpointSpecificOntologyUri);
                         
                         inputUrlEncoded_endpointSpecificUri =
                                 (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_endpointSpecificUri);
                         inputPlusUrlEncoded_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputPlusUrlEncoded_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputPlusUrlEncoded_endpointSpecificUri);
                         inputXmlEncoded_endpointSpecificUri =
                                 (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_endpointSpecificUri);
                         inputUrlEncoded_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_endpointSpecificQueryUri);
                         inputPlusUrlEncoded_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputPlusUrlEncoded_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputPlusUrlEncoded_endpointSpecificQueryUri);
                         inputXmlEncoded_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_endpointSpecificQueryUri);
                         
                         inputUrlEncoded_lowercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificUri);
                         inputXmlEncoded_lowercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificUri);
                         inputUrlEncoded_uppercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificUri);
                         inputXmlEncoded_uppercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificUri);
                         
                         inputUrlEncoded_lowercase_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificQueryUri);
                         inputXmlEncoded_lowercase_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificQueryUri);
                         inputUrlEncoded_uppercase_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificQueryUri);
                         inputXmlEncoded_uppercase_endpointSpecificQueryUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificQueryUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificQueryUri);
                         
                         inputUrlEncoded_privatelowercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_privatelowercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_privatelowercase_endpointSpecificUri);
                         inputXmlEncoded_privatelowercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_privatelowercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_privatelowercase_endpointSpecificUri);
                         inputUrlEncoded_privateuppercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_privateuppercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_privateuppercase_endpointSpecificUri);
                         inputXmlEncoded_privateuppercase_endpointSpecificUri =
-                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificUri);
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificUri);
                         
                         inputUrlEncoded_privatelowercase_endpointSpecificQueryUri =
                                 (String)nextTransformingRule

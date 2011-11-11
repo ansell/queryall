@@ -33,8 +33,8 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     private ValueFactory testValueFactory;
     
     /**
-     * Final method, so that implementing test cases must specifically supply a SparqlNormalisationRule,
-     * through getNewTestSparqlNormalisationRule.
+     * Final method, so that implementing test cases must specifically supply a
+     * SparqlNormalisationRule, through getNewTestSparqlNormalisationRule.
      * 
      * @return A NormalisationRule that is also a SparqlNormalisationRule
      */
@@ -50,6 +50,57 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
      * @return a new instance of the implemented SparqlNormalisationRule
      */
     public abstract SparqlNormalisationRule getNewTestSparqlNormalisationRule();
+    
+    /**
+     * @return the testRepository
+     */
+    protected Repository getTestRepository()
+    {
+        return this.testRepository;
+    }
+    
+    /**
+     * @return the testRepositoryConnection
+     */
+    protected RepositoryConnection getTestRepositoryConnection()
+    {
+        return this.testRepositoryConnection;
+    }
+    
+    /**
+     * @return the testValueFactory
+     */
+    protected ValueFactory getTestValueFactory()
+    {
+        return this.testValueFactory;
+    }
+    
+    /**
+     * @param testRepository
+     *            the testRepository to set
+     */
+    private void setTestRepository(final Repository testRepository)
+    {
+        this.testRepository = testRepository;
+    }
+    
+    /**
+     * @param testRepositoryConnection
+     *            the testRepositoryConnection to set
+     */
+    private void setTestRepositoryConnection(final RepositoryConnection testRepositoryConnection)
+    {
+        this.testRepositoryConnection = testRepositoryConnection;
+    }
+    
+    /**
+     * @param testValueFactory
+     *            the testValueFactory to set
+     */
+    private void setTestValueFactory(final ValueFactory testValueFactory)
+    {
+        this.testValueFactory = testValueFactory;
+    }
     
     /**
      * @throws java.lang.Exception
@@ -106,54 +157,6 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         
         this.setTestRepository(null);
         this.setTestValueFactory(null);
-    }
-
-    /**
-     * @return the testRepository
-     */
-    protected Repository getTestRepository()
-    {
-        return testRepository;
-    }
-
-    /**
-     * @param testRepository the testRepository to set
-     */
-    private void setTestRepository(Repository testRepository)
-    {
-        this.testRepository = testRepository;
-    }
-
-    /**
-     * @return the testRepositoryConnection
-     */
-    protected RepositoryConnection getTestRepositoryConnection()
-    {
-        return testRepositoryConnection;
-    }
-
-    /**
-     * @param testRepositoryConnection the testRepositoryConnection to set
-     */
-    private void setTestRepositoryConnection(RepositoryConnection testRepositoryConnection)
-    {
-        this.testRepositoryConnection = testRepositoryConnection;
-    }
-
-    /**
-     * @return the testValueFactory
-     */
-    protected ValueFactory getTestValueFactory()
-    {
-        return testValueFactory;
-    }
-
-    /**
-     * @param testValueFactory the testValueFactory to set
-     */
-    private void setTestValueFactory(ValueFactory testValueFactory)
-    {
-        this.testValueFactory = testValueFactory;
     }
     
 }

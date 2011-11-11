@@ -53,7 +53,8 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     {
         SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(TransformingRuleSchema.getTransformingRuleTypeUri());
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(TransformingRuleSchema
+                .getTransformingRuleTypeUri());
         SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema
                 .getSparqlRuleTypeUri());
         SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(SparqlConstructRuleSchema
@@ -118,14 +119,14 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
                 this.setSparqlPrefixes(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(SparqlConstructRuleSchema.getSparqlRuleMode())
-                    && nextStatement.getObject().equals(
-                            SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
+                    && nextStatement.getObject()
+                            .equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
             {
                 this.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
             }
             else if(nextStatement.getPredicate().equals(SparqlConstructRuleSchema.getSparqlRuleMode())
-                    && (nextStatement.getObject().equals(
-                            SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()) || nextStatement
+                    && (nextStatement.getObject()
+                            .equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()) || nextStatement
                             .getObject().equals(SparqlConstructRuleSchema.getOLDsparqlruleModeOnlyDeleteMatches())))
             {
                 this.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
@@ -157,8 +158,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
         
         if(SparqlConstructRuleImpl._DEBUG)
         {
-            SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()="
-                    + this.toString());
+            SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
     }
     

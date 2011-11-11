@@ -30,7 +30,7 @@ public class ValidatingRuleSchema
     private static final boolean _DEBUG = ValidatingRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ValidatingRuleSchema.log.isInfoEnabled();
-
+    
     private static URI validatingRuleTypeUri;
     
     static
@@ -42,6 +42,7 @@ public class ValidatingRuleSchema
         ValidatingRuleSchema.setValidatingRuleTypeUri(f.createURI(baseUri, "ValidatingNormalisationRule"));
         
     }
+    
     /**
      * @return the normalisationRuleTypeUri
      */
@@ -69,7 +70,6 @@ public class ValidatingRuleSchema
                     RDFS.LABEL,
                     f.createLiteral("A normalisation rule setup to decides on the validity of the input in the context of this rule, as opposed to transforming rules that transform the input into an output."),
                     contextUri);
-            
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -106,5 +106,4 @@ public class ValidatingRuleSchema
         ValidatingRuleSchema.validatingRuleTypeUri = validatingRuleTypeUri;
     }
     
-
 }

@@ -64,87 +64,15 @@ public class SpinConstraintRuleImpl extends BaseSpinRuleImpl implements SpinCons
                 .getSpinConstraintRuleTypeUri());
         
         // Need to initialise the SPIN registry at least once
-        //SPINModuleRegistry.get().init();
+        // SPINModuleRegistry.get().init();
     }
     
-    private Set<org.openrdf.model.URI> activeEntailments;
-    
-    /**
-     * See OWLRLExample in spin-examples-1.2.0.jar
-     * 
-     * Currently limited to adding the resulting triples from the spin reasoning to the repository
-     * 
-     * TODO: add more modes, such as delete matching, add matching, only return matching triples etc.
-     * 
-     * @param inputRepository The OpenRDF repository to use for the input triples
-     */
-    public Repository processSpinRules(Repository inputRepository, org.openrdf.model.Resource... contexts)
-    {
-        // Load domain model with imports
-        // System.out.println("Loading domain ontology...");
-        // OntModel queryModel = loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
-        log.info("Loading jena model from sesame repository");
-        OntModel queryModel = SpinUtils.addSesameRepositoryToJenaModel(inputRepository, ModelFactory.createDefaultModel(ReificationStyle.Minimal), "http://spin.example.org/", contexts);
-        
-        
-        // Create and add Model for inferred triples
-        Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        queryModel.addSubModel(newTriples);
-        
-        log.info("Loading ontologies...");
-        
-
-        // Register any new functions defined in OWL RL
-        // NOTE: The source for these rules is given as "this" so that they can be retrieved in future based on this object
-        
-        // Build one big union Model of everything
-        Graph[] graphs = new Graph[this.ontologyModels.size()+1]; 
-        
-        graphs[0] = queryModel.getGraph();
-        
-        int i = 1;
-        
-        for(OntModel nextModel : this.ontologyModels)
-        {
-            log.info("i="+i+" nextModel.size()="+nextModel.size());
-            graphs[i++] = nextModel.getGraph();
-        }
-        
-        MultiUnion multiUnion = new MultiUnion(graphs);
-        
-        Model unionModel = ModelFactory.createModelForGraph(multiUnion);
-        
-        Set<Object> allowedRuleSources = new HashSet<Object>();
-        
-        allowedRuleSources.addAll(this.localImports);
-        
-        // Collect rules (and template calls) defined in OWL RL
-        Map<CommandWrapper, Map<String,RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String,RDFNode>>();
-        Map<Resource,List<CommandWrapper>> cls2Query = SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings, false, allowedRuleSources);
-        Map<Resource,List<CommandWrapper>> cls2Constructor = SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true, initialTemplateBindings, false, allowedRuleSources);
-        SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
-
-        // Run all inferences
-        log.info("Running SPIN inferences...");
-        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null, false, SPIN.rule, comparator, null, allowedRuleSources);
-        log.info("Inferred triples: " + newTriples.size());
-        log.info("Query triples: " + queryModel.size());
-        
-        StmtIterator listStatements = newTriples.listStatements();
-        
-        while(listStatements.hasNext())
-        {
-            log.info(listStatements.next().toString());
-        }
-        
-        // Note: To optimise the process, we only add the new triples back into the original repository
-        return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
-    }
-
     public static Set<URI> myTypes()
     {
         return SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES;
     }
+    
+    private Set<org.openrdf.model.URI> activeEntailments;
     
     public SpinConstraintRuleImpl()
     {
@@ -205,9 +133,14 @@ public class SpinConstraintRuleImpl extends BaseSpinRuleImpl implements SpinCons
         
         if(SpinConstraintRuleImpl._DEBUG)
         {
-            SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()="
-                    + this.toString());
+            SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
+    }
+    
+    @Override
+    public void addEntailmentUri(final URI nextEntailmentURI)
+    {
+        this.activeEntailments.add(nextEntailmentURI);
     }
     
     /**
@@ -218,6 +151,12 @@ public class SpinConstraintRuleImpl extends BaseSpinRuleImpl implements SpinCons
     public Set<URI> getElementTypes()
     {
         return SpinConstraintRuleImpl.myTypes();
+    }
+    
+    @Override
+    public Set<URI> getEntailmentUris()
+    {
+        return Collections.unmodifiableSet(this.activeEntailments);
     }
     
     /**
@@ -234,6 +173,97 @@ public class SpinConstraintRuleImpl extends BaseSpinRuleImpl implements SpinCons
         }
         
         return Collections.unmodifiableSet(this.validStages);
+    }
+    
+    @Override
+    public boolean isEntailmentEnabled(final URI entailmentURI)
+    {
+        return this.activeEntailments.contains(entailmentURI);
+    }
+    
+    /**
+     * See OWLRLExample in spin-examples-1.2.0.jar
+     * 
+     * Currently limited to adding the resulting triples from the spin reasoning to the repository
+     * 
+     * TODO: add more modes, such as delete matching, add matching, only return matching triples
+     * etc.
+     * 
+     * @param inputRepository
+     *            The OpenRDF repository to use for the input triples
+     */
+    public Repository processSpinRules(final Repository inputRepository, final org.openrdf.model.Resource... contexts)
+    {
+        // Load domain model with imports
+        // System.out.println("Loading domain ontology...");
+        // OntModel queryModel =
+        // loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
+        SpinConstraintRuleImpl.log.info("Loading jena model from sesame repository");
+        final OntModel queryModel =
+                SpinUtils
+                        .addSesameRepositoryToJenaModel(inputRepository,
+                                ModelFactory.createDefaultModel(ReificationStyle.Minimal), "http://spin.example.org/",
+                                contexts);
+        
+        // Create and add Model for inferred triples
+        final Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        queryModel.addSubModel(newTriples);
+        
+        SpinConstraintRuleImpl.log.info("Loading ontologies...");
+        
+        // Register any new functions defined in OWL RL
+        // NOTE: The source for these rules is given as "this" so that they can be retrieved in
+        // future based on this object
+        
+        // Build one big union Model of everything
+        final Graph[] graphs = new Graph[this.ontologyModels.size() + 1];
+        
+        graphs[0] = queryModel.getGraph();
+        
+        int i = 1;
+        
+        for(final OntModel nextModel : this.ontologyModels)
+        {
+            SpinConstraintRuleImpl.log.info("i=" + i + " nextModel.size()=" + nextModel.size());
+            graphs[i++] = nextModel.getGraph();
+        }
+        
+        final MultiUnion multiUnion = new MultiUnion(graphs);
+        
+        final Model unionModel = ModelFactory.createModelForGraph(multiUnion);
+        
+        final Set<Object> allowedRuleSources = new HashSet<Object>();
+        
+        allowedRuleSources.addAll(this.localImports);
+        
+        // Collect rules (and template calls) defined in OWL RL
+        final Map<CommandWrapper, Map<String, RDFNode>> initialTemplateBindings =
+                new HashMap<CommandWrapper, Map<String, RDFNode>>();
+        final Map<Resource, List<CommandWrapper>> cls2Query =
+                SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings,
+                        false, allowedRuleSources);
+        final Map<Resource, List<CommandWrapper>> cls2Constructor =
+                SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true,
+                        initialTemplateBindings, false, allowedRuleSources);
+        final SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
+        
+        // Run all inferences
+        SpinConstraintRuleImpl.log.info("Running SPIN inferences...");
+        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null,
+                false, SPIN.rule, comparator, null, allowedRuleSources);
+        SpinConstraintRuleImpl.log.info("Inferred triples: " + newTriples.size());
+        SpinConstraintRuleImpl.log.info("Query triples: " + queryModel.size());
+        
+        final StmtIterator listStatements = newTriples.listStatements();
+        
+        while(listStatements.hasNext())
+        {
+            SpinConstraintRuleImpl.log.info(listStatements.next().toString());
+        }
+        
+        // Note: To optimise the process, we only add the new triples back into the original
+        // repository
+        return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)
@@ -374,23 +404,5 @@ public class SpinConstraintRuleImpl extends BaseSpinRuleImpl implements SpinCons
         result += "description=" + this.getDescription() + "\n";
         
         return result;
-    }
-
-    @Override
-    public boolean isEntailmentEnabled(URI entailmentURI)
-    {
-        return this.activeEntailments.contains(entailmentURI);
-    }
-
-    @Override
-    public Set<URI> getEntailmentUris()
-    {
-        return Collections.unmodifiableSet(this.activeEntailments);
-    }
-
-    @Override
-    public void addEntailmentUri(URI nextEntailmentURI)
-    {
-        this.activeEntailments.add(nextEntailmentURI);
     }
 }

@@ -48,8 +48,6 @@ public class SparqlNormalisationRuleSchema
         SparqlNormalisationRuleSchema.setSparqlRuleSparqlPrefixes(f.createURI(baseUri, "sparqlPrefixes"));
     }
     
-    
-    
     public static URI getSparqlRuleSparqlPrefixes()
     {
         return SparqlNormalisationRuleSchema.sparqlruleSparqlPrefixes;

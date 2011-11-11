@@ -17,14 +17,14 @@ import org.queryall.impl.rdfrule.RegexTransformingRuleImpl;
 public class ProfilableRegexNormalisationRuleImplTest extends AbstractProfilableNormalisationRuleTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
-    @Override
     public ProfilableInterface getNewTestProfilable()
     {
         return new RegexTransformingRuleImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
     }
 }

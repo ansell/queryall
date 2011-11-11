@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl implements PrefixMappingNormalisationRule
+public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl implements
+        PrefixMappingNormalisationRule
 {
     private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleImpl.class);
     private static final boolean _TRACE = PrefixMappingNormalisationRuleImpl.log.isTraceEnabled();
@@ -41,7 +42,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
-        .add(TransformingRuleSchema.getTransformingRuleTypeUri());
+                .add(TransformingRuleSchema.getTransformingRuleTypeUri());
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri());
     }

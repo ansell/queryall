@@ -20,7 +20,6 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
-import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.impl.namespace.NamespaceEntryImpl;
@@ -54,18 +53,18 @@ public class QueryCreatorTest
     private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables2;
     private Collection<NamespaceEntry> testNamespaceEntries2;
     private QueryAllConfiguration testLocalSettings2;
-
-	private RegexInputQueryTypeImpl testRegexInputQueryType3;
-
-	private HttpSparqlProviderImpl testProvider3;
-
-	private HashMap<String, Collection<NamespaceEntry>> testNamespaceInputVariables3;
-
-	private ArrayList<NamespaceEntry> testNamespaceEntries3;
-
-	private HashMap<String, String> testAttributeList3;
-
-	private QueryAllConfiguration testLocalSettings3;
+    
+    private RegexInputQueryTypeImpl testRegexInputQueryType3;
+    
+    private HttpSparqlProviderImpl testProvider3;
+    
+    private HashMap<String, Collection<NamespaceEntry>> testNamespaceInputVariables3;
+    
+    private ArrayList<NamespaceEntry> testNamespaceEntries3;
+    
+    private HashMap<String, String> testAttributeList3;
+    
+    private QueryAllConfiguration testLocalSettings3;
     
     /**
      * @throws java.lang.Exception
@@ -110,7 +109,8 @@ public class QueryCreatorTest
         
         this.testRegexInputQueryType3 = new RegexInputQueryTypeImpl();
         this.testRegexInputQueryType3.setKey("http://example.org/test/query/3");
-        this.testRegexInputQueryType3.setOutputString("<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_normalisedStandardUri}\"><ns0pred:urlFasta xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_endpointUrl}</ns0pred:urlFasta></rdf:Description>");
+        this.testRegexInputQueryType3
+                .setOutputString("<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_normalisedStandardUri}\"><ns0pred:urlFasta xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_endpointUrl}</ns0pred:urlFasta></rdf:Description>");
         this.testRegexInputQueryType3.setStandardUriTemplateString("${authority}${input_1}${separator}${input_2}");
         this.testRegexInputQueryType3.setInputRegex("^([\\w-]+):(.+)$");
         this.testRegexInputQueryType3.addNamespaceInputTag("input_1");
@@ -132,7 +132,7 @@ public class QueryCreatorTest
         this.testProvider3.addIncludedInQueryType(this.testRegexInputQueryType3.getKey());
         this.testProvider3.addEndpointUrl("http://testendpointurl.net/${input_1}/goingwell/${input_2}");
         this.testProvider2.addNamespace(this.testNamespaceEntry1.getKey());
-
+        
         this.testAttributeList1 = new HashMap<String, String>();
         this.testAttributeList1.put(Constants.QUERY, "alternateNs:alternateNsUniqueId");
         
@@ -143,7 +143,7 @@ public class QueryCreatorTest
         this.testAttributeList3 = new HashMap<String, String>();
         this.testAttributeList3.put(Constants.QUERY, "alternateNs:alternateNsUniqueId");
         this.testAttributeList2.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, "http://my.example.org/");
-
+        
         this.testIncludedProfiles = new ArrayList<Profile>(1);
         this.testRecogniseImplicitRdfRuleInclusions = true;
         this.testIncludeNonProfileMatchedRdfRules = true;
@@ -239,16 +239,11 @@ public class QueryCreatorTest
     @Ignore
     public void testCreateStaticRdfXmlString()
     {
-        Assert.assertEquals("testsomething", QueryCreator.createStaticRdfXmlString(this.testRegexInputQueryType3, 
-        		(OutputQueryType)this.testRegexInputQueryType3, 
-        		this.testProvider3, 
-        		this.testAttributeList3, 
-        		this.testNamespaceInputVariables3, 
-        		this.testIncludedProfiles, 
-        		this.testRecogniseImplicitRdfRuleInclusions, 
-        		this.testIncludeNonProfileMatchedRdfRules, 
-        		this.testConvertAlternateToPreferredPrefix, 
-        		this.testLocalSettings3));
+        Assert.assertEquals("testsomething", QueryCreator.createStaticRdfXmlString(this.testRegexInputQueryType3,
+                this.testRegexInputQueryType3, this.testProvider3, this.testAttributeList3,
+                this.testNamespaceInputVariables3, this.testIncludedProfiles,
+                this.testRecogniseImplicitRdfRuleInclusions, this.testIncludeNonProfileMatchedRdfRules,
+                this.testConvertAlternateToPreferredPrefix, this.testLocalSettings3));
     }
     
     /**

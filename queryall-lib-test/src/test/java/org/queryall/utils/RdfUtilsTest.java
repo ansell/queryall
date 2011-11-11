@@ -659,9 +659,8 @@ public class RdfUtilsTest
                             "Sparql construct query where pattern was not parsed correctly",
                             " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri)",
                             nextSparqlRule.getSparqlWherePatterns().get(0));
-
-                    Assert.assertTrue(
-                            "Normalisation rule was not implemented using the SparqlConstructRule interface",
+                    
+                    Assert.assertTrue("Normalisation rule was not implemented using the SparqlConstructRule interface",
                             nextNormalisationRule instanceof SparqlConstructRule);
                     
                     final SparqlConstructRule nextSparqlConstructRule = (SparqlConstructRule)nextSparqlRule;
@@ -1219,9 +1218,11 @@ public class RdfUtilsTest
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "
-                            + nextQueryType.getUnrecognisedStatements(), 0, nextQueryType.getUnrecognisedStatements()
-                            .size());
+                    Assert.assertEquals(
+                            "There were unexpected triples in the test file. This should not happen. "
+                                    + nextQueryType.getUnrecognisedStatements().toString()
+                                    + nextQueryType.getUnrecognisedStatements(), 0, nextQueryType
+                                    .getUnrecognisedStatements().size());
                 }
             }
         }

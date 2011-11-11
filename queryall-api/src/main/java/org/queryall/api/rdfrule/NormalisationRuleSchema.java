@@ -34,7 +34,7 @@ public class NormalisationRuleSchema
     private static final boolean _DEBUG = NormalisationRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = NormalisationRuleSchema.log.isInfoEnabled();
-
+    
     private static final Set<URI> ALL_STAGES;
     
     private static URI normalisationRuleTypeUri;
@@ -97,19 +97,19 @@ public class NormalisationRuleSchema
         NormalisationRuleSchema.setRdfruleTypeValidForStage(f.createURI(baseUri, "typeValidForStage"));
         
         ALL_STAGES = new LinkedHashSet<URI>(7);
-        ALL_STAGES.add(getRdfruleStageAfterQueryCreation());
-        ALL_STAGES.add(getRdfruleStageAfterQueryParsing());
-        ALL_STAGES.add(getRdfruleStageAfterResultsImport());
-        ALL_STAGES.add(getRdfruleStageAfterResultsToDocument());
-        ALL_STAGES.add(getRdfruleStageAfterResultsToPool());
-        ALL_STAGES.add(getRdfruleStageBeforeResultsImport());
-        ALL_STAGES.add(getRdfruleStageQueryVariables());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
         
     }
     
     public static Set<URI> getAllStages()
     {
-        return ALL_STAGES;
+        return NormalisationRuleSchema.ALL_STAGES;
     }
     
     /**

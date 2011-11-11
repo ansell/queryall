@@ -8,10 +8,11 @@ import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 
 /**
- * This interface provides object transformation methods based on the stages defined for normalisation rules.
+ * This interface provides object transformation methods based on the stages defined for
+ * normalisation rules.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public interface TransformingRule extends NormalisationRule
 {
@@ -30,6 +31,5 @@ public interface TransformingRule extends NormalisationRule
     Object stageBeforeResultsImport(Object input) throws QueryAllException;
     
     Object stageQueryVariables(Object input) throws QueryAllException;
-    
     
 }

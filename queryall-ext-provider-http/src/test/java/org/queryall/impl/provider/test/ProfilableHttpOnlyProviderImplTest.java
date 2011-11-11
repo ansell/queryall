@@ -18,14 +18,14 @@ import org.queryall.impl.provider.HttpOnlyProviderImpl;
 public class ProfilableHttpOnlyProviderImplTest extends AbstractProfilableProviderTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
-    @Override
     public ProfilableInterface getNewTestProfilable()
     {
         return new HttpOnlyProviderImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
     }
 }

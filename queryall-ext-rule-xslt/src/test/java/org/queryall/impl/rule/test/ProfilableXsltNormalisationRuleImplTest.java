@@ -17,14 +17,14 @@ import org.queryall.impl.rdfrule.XsltTransformingRuleImpl;
 public class ProfilableXsltNormalisationRuleImplTest extends AbstractProfilableNormalisationRuleTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
-    @Override
     public ProfilableInterface getNewTestProfilable()
     {
         return new XsltTransformingRuleImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
     }
 }

@@ -17,14 +17,14 @@ import org.queryall.impl.rdfrule.SparqlConstructRuleImpl;
 public class ProfilableSparqlConstructRuleImplTest extends AbstractProfilableNormalisationRuleTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
-    @Override
     public ProfilableInterface getNewTestProfilable()
     {
         return new SparqlConstructRuleImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
     }
 }

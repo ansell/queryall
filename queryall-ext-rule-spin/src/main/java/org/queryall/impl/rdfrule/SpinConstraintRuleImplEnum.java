@@ -16,8 +16,7 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class SpinConstraintRuleImplEnum extends NormalisationRuleEnum
 {
-    public static final NormalisationRuleEnum SPIN_CONSTRAINT_RULE_IMPL_ENUM =
-            new SpinConstraintRuleImplEnum();
+    public static final NormalisationRuleEnum SPIN_CONSTRAINT_RULE_IMPL_ENUM = new SpinConstraintRuleImplEnum();
     
     public SpinConstraintRuleImplEnum()
     {

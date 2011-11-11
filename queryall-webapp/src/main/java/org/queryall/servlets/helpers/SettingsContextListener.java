@@ -34,7 +34,8 @@ public class SettingsContextListener implements ServletContextListener
     }
     
     /**
-     * Removes the references to the singletons that were on the servlet context when the context is to be destroyed
+     * Removes the references to the singletons that were on the servlet context when the context is
+     * to be destroyed
      */
     @Override
     public void contextDestroyed(final ServletContextEvent sce)
@@ -55,10 +56,19 @@ public class SettingsContextListener implements ServletContextListener
         // create a new settings object
         final QueryAllConfiguration tempSettings = new Settings();
         
+        // TODO: Make this preloading configurable
+        tempSettings.getAllNamespaceEntries();
+        tempSettings.getAllQueryTypes();
+        tempSettings.getAllProviders();
+        tempSettings.getAllProfiles();
+        tempSettings.getAllNormalisationRules();
+        tempSettings.getAllRuleTests();
+        
         // Use these settings to create a blacklistcontroller object
         final BlacklistController tempBlacklist = new BlacklistController(tempSettings);
         
-        // also create a singleton velocity engine, as it is slow to create every time we make a query
+        // also create a singleton velocity engine, as it is slow to create every time we make a
+        // query
         final VelocityEngine currentEngine = VelocityHelper.createVelocityEngine();
         
         // setup the default content type negotiator using the users given preference

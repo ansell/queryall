@@ -57,9 +57,10 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     {
         XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(TransformingRuleSchema.getTransformingRuleTypeUri());
-        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(XsltNormalisationRuleSchema
-                .getXsltRuleTypeUri());
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES.add(TransformingRuleSchema
+                .getTransformingRuleTypeUri());
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES
+                .add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
     }
     
     /**
@@ -302,12 +303,10 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         }
         else
         {
-            XsltTransformingRuleImpl.log
-                    .info("stageBeforeResultsImport returning input unchanged this.getValidStages="
-                            + this.getValidStages().contains(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
-                            + " this.getStages()="
-                            + this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
+            XsltTransformingRuleImpl.log.info("stageBeforeResultsImport returning input unchanged this.getValidStages="
+                    + this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
+                    + " this.getStages()="
+                    + this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
             return input;
         }
     }

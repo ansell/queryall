@@ -77,6 +77,13 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
     private ValueFactory testValueFactory;
     
     /**
+     * Create a new instance of the SparqlConstructRule implementation being tested.
+     * 
+     * @return a new instance of the implemented SparqlConstructRule
+     */
+    public abstract SparqlConstructRule getNewTestSparqlConstructRule();
+    
+    /**
      * Final method, so that implementing test cases must supply a SparqlNormalisationRule instead,
      * through getNewTestSparqlRule.
      * 
@@ -87,13 +94,6 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
     {
         return this.getNewTestSparqlConstructRule();
     }
-    
-    /**
-     * Create a new instance of the SparqlConstructRule implementation being tested.
-     * 
-     * @return a new instance of the implemented SparqlConstructRule
-     */
-    public abstract SparqlConstructRule getNewTestSparqlConstructRule();
     
     /**
      * @throws java.lang.Exception
@@ -368,17 +368,16 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
         
         queryallRule = this.getNewTestSparqlConstructRule();
         queryallRule.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
-
+        
         Assert.assertNotNull(queryallRule.getMode());
-        Assert.assertTrue(queryallRule.getMode().equals(
-                SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()));
+        Assert.assertTrue(queryallRule.getMode().equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()));
         
         queryallRule = this.getNewTestSparqlConstructRule();
         queryallRule.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
-
+        
         Assert.assertNotNull(queryallRule.getMode());
-        Assert.assertTrue(queryallRule.getMode().equals(
-                SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
+        Assert.assertTrue(queryallRule.getMode()
+                .equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
     }
     
 }
