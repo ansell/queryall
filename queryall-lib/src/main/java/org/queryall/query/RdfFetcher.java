@@ -418,7 +418,10 @@ public class RdfFetcher
         postQuery += "softlimit=50&";
         postQuery += "debug=" + StringUtils.percentEncode(debug) + "&";
         postQuery += "default-graph-uri=" + StringUtils.percentEncode(defaultGraphUri) + "&";
-        postQuery += "query=" + StringUtils.percentEncode(query);
+        if(query != null)
+        {
+            postQuery += "query=" + StringUtils.percentEncode(query);
+        }
         
         if(RdfFetcher._TRACE)
         {
