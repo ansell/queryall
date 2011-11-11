@@ -322,7 +322,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     @Override
     public Object stageAfterResultsImport(final Object input)
     {
-        return RdfUtils.doWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
+        return RdfUtils.doSparqlConstructWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
     }
     
     @Override
@@ -334,7 +334,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     @Override
     public Object stageAfterResultsToPool(final Object input)
     {
-        return RdfUtils.doWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
+        return RdfUtils.doSparqlConstructWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
     }
     
     @Override

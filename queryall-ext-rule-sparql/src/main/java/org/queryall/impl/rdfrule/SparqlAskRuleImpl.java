@@ -23,6 +23,7 @@ import org.queryall.api.rdfrule.SparqlAskRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,6 +172,20 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
         return this.sparqlWherePatterns;
     }
     
+    @Override
+    public List<String> getSparqlAskQueries()
+    {
+        final List<String> results = new ArrayList<String>(this.getSparqlWherePatterns().size());
+        for(final String wherePattern : this.getSparqlWherePatterns())
+        {
+            final String result = this.getAskQueryUsingWherePattern(wherePattern);
+            
+            results.add(result.toString());
+        }
+        
+        return results;
+    }
+    
     /**
      * @return the validStages
      */
@@ -223,7 +238,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     @Override
     public boolean stageAfterResultsImport(final Object input)
     {
-        return true;
+        return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
     }
     
     @Override
@@ -235,13 +250,13 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     @Override
     public boolean stageAfterResultsToPool(final Object input)
     {
-        return true;
+        return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
     }
     
     @Override
     public boolean stageBeforeResultsImport(final Object input)
     {
-        return true;
+        return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
     }
     
     @Override

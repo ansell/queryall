@@ -29,6 +29,8 @@ import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
@@ -74,6 +76,7 @@ import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
@@ -286,7 +289,7 @@ public final class RdfUtils
         addObjectQueries.add(addObjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
                         addObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -312,7 +315,7 @@ public final class RdfUtils
         deleteObjectQueries.add(deleteObjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
                         deleteObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -340,7 +343,7 @@ public final class RdfUtils
         addSubjectQueries.add(addSubjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
                         addSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -354,7 +357,7 @@ public final class RdfUtils
         deleteSubjectQueries.add(deleteSubjectTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
                         deleteSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -383,7 +386,7 @@ public final class RdfUtils
         addPredicateQueries.add(addPredicateTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
                         addPredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -397,7 +400,7 @@ public final class RdfUtils
         deletePredicateQueries.add(deletePredicateTemplate);
         
         output =
-                RdfUtils.doWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
                         deletePredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
@@ -406,7 +409,81 @@ public final class RdfUtils
     }
     
     /**
-     * Performs changes to the input repository based on the mode of this rule
+     * Performs the ASK queries until one returns false, or they are all executed.
+     * 
+     * If the list is either empty or they all return true, the method will return true, otherwise false.
+     * @param myRepository The input repository to execute the queries against.
+     * @param sparqlAskQueries The list of SPARQL ASK queries to execute against the given Repository
+     * @return True if the list is empty or all of the queries return true, otherwise false.
+     */
+    public static boolean checkSparqlAskQueries(final Repository myRepository, final List<String> sparqlAskQueries) throws QueryAllException
+    {
+        RepositoryConnection askConnection = null;
+        try
+        {
+            askConnection = myRepository.getConnection();
+            
+            for(final String nextAskQuery : sparqlAskQueries)
+            {
+                if(RdfUtils._DEBUG)
+                {
+                    RdfUtils.log.debug("chooseStatementsFromRepository nextAskQuery=" + nextAskQuery);
+                }
+                
+                boolean evaluate = false;
+                
+                try
+                {
+                    evaluate = askConnection.prepareBooleanQuery(QueryLanguage.SPARQL, nextAskQuery).evaluate();
+                }
+                catch(QueryEvaluationException e)
+                {
+                    log.error("Found QueryEvaluationException", e);
+                    throw new QueryAllException("Found QueryEvaluationException", e);
+                }
+                catch(RepositoryException e)
+                {
+                    log.error("Found RepositoryException", e);
+                    throw new QueryAllException("Found RepositoryException", e);
+                }
+                catch(MalformedQueryException e)
+                {
+                    log.error("Found MalformedQueryException", e);
+                    throw new QueryAllException("Found MalformedQueryException", e);
+                }
+                
+                if(!evaluate)
+                {
+                    return false;
+                }
+            }
+        }
+        catch(RepositoryException e1)
+        {
+            log.error("Found RepositoryException", e1);
+            throw new QueryAllException("Found RepositoryException", e1);
+        }
+        finally
+        {
+            if(askConnection != null)
+            {
+                try
+                {
+                    askConnection.close();
+                }
+                catch(RepositoryException e)
+                {
+                    log.error("Found RepositoryException", e);
+                    throw new QueryAllException("Found RepositoryException", e);
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Performs changes to the input repository based on the mode of the sparql construct rule
      * 
      * @param input
      *            A repository containing the current set of RDF statements
@@ -417,7 +494,7 @@ public final class RdfUtils
      * @return A repository containing the output set of RDF statements, after normalisation by this
      *         rule
      */
-    public static Repository doWorkBasedOnMode(final Repository input, final URI nextMode,
+    public static Repository doSparqlConstructWorkBasedOnMode(final Repository input, final URI nextMode,
             final List<String> sparqlConstructQueries)
     {
         if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
