@@ -16,15 +16,15 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SpinConstraintRule;
+import org.queryall.api.rdfrule.SpinInferencingRule;
 import org.queryall.api.rdfrule.SpinNormalisationRule;
 
 /**
- * Abstract unit test for SpinConstraintRule API.
+ * Abstract unit test for SpinInferencingRule API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormalisationRuleTest
+public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormalisationRuleTest
 {
     /**
      * 
@@ -51,22 +51,22 @@ public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormali
     private ValueFactory testValueFactory;
     
     /**
-     * Create a new instance of the SpinConstraintRule implementation being tested.
+     * Create a new instance of the SpinInferencingRule implementation being tested.
      * 
-     * @return a new instance of the implemented SpinConstraintRule
+     * @return a new instance of the implemented SpinInferencingRule
      */
-    public abstract SpinConstraintRule getNewTestSpinConstraintRule();
+    public abstract SpinInferencingRule getNewTestSpinInferencingRule();
     
     /**
-     * Final method, so that implementing test cases must supply a SpinConstraintRule instead, through
-     * getNewTestSpinConstraintRule.
+     * Final method, so that implementing test cases must supply a SpinInferencingRule instead, through
+     * getNewTestSpinInferencingRule.
      * 
      * @return A NormalisationRule that is also a SpinNormalisationRule
      */
     @Override
     public final SpinNormalisationRule getNewTestSpinNormalisationRule()
     {
-        return this.getNewTestSpinConstraintRule();
+        return this.getNewTestSpinInferencingRule();
     }
     
     /**
