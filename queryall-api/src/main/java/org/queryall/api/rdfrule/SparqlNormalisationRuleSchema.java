@@ -33,23 +33,9 @@ public class SparqlNormalisationRuleSchema
     
     private static URI sparqlruleTypeUri;
     
-    static URI sparqlruleSparqlConstructQueryTarget;
-    
-    static URI sparqlruleMode;
-    
-    static URI sparqlruleModeOnlyIncludeMatches;
-    
-    static URI sparqlruleModeOnlyDeleteMatches;
-    
-    static URI sparqlruleModeAddAllMatchingTriples;
-    
     static URI sparqlruleSparqlWherePattern;
     
     static URI sparqlruleSparqlPrefixes;
-    
-    static URI sparqlruleSparqlConstructQuery;
-    
-    static URI OLDsparqlruleModeOnlyDeleteMatches;
     
     static
     {
