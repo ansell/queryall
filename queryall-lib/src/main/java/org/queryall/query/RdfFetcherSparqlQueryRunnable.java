@@ -55,24 +55,27 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                RdfFetcherSparqlQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                RdfFetcherSparqlQueryRunnable.log.error("There are " + (alternateEndpointsAndQueries.size()-1)
                         + " alternative endpoints to choose from");
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
-                            + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
-                    
-                    final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
-                    
-                    tempRawResult =
-                            fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "", this.maxRowsParameter,
-                                    this.getAcceptHeader());
-                    
-                    if(!fetcher.getLastWasError())
+                    if(!alternateEndpoint.equals(this.getEndpointUrl()))
                     {
-                        // break on the first alternate that wasn't an error
-                        break;
+                        RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                                + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
+                        
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
+                        tempRawResult =
+                                fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "", this.maxRowsParameter,
+                                        this.getAcceptHeader());
+                        
+                        if(!fetcher.getLastWasError())
+                        {
+                            // break on the first alternate that wasn't an error
+                            break;
+                        }
                     }
                 }
             }

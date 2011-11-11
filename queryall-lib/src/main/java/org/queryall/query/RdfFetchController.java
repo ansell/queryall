@@ -560,22 +560,35 @@ public class RdfFetchController
                 nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
                 nextProviderQueryBundle.setQueryallSettings(localSettings);
                 
-                RdfFetchController.log.info("nextQueryType=" + nextQueryType.getKey().stringValue());
+                if(_DEBUG)
+                {
+                    RdfFetchController.log.debug("nextQueryType=" + nextQueryType.getKey().stringValue());
+                }
                 
                 for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
                 {
                     final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
                     
-                    RdfFetchController.log.info("nextEndpoint=" + nextEndpoint);
+                    if(_DEBUG)
+                    {
+                        RdfFetchController.log.debug("nextEndpoint=" + nextEndpoint);
+                    }
+                    
                     for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
                     {
-                        RdfFetchController.log.info("nextReplacedEndpoint=" + nextReplacedEndpoint);
+                        if(_DEBUG)
+                        {
+                            RdfFetchController.log.debug("nextReplacedEndpoint=" + nextReplacedEndpoint);
+                        }
                         
                         // Then test whether the endpoint is blacklisted before accepting it
                         if(noCommunicationProvider
                                 || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                         {
-                            RdfFetchController.log.info("not blacklisted");
+                            if(_DEBUG)
+                            {
+                                RdfFetchController.log.debug("not blacklisted");
+                            }
                             
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
@@ -608,7 +621,11 @@ public class RdfFetchController
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                RdfFetchController.log.info("endpoint method = noCommunication key=" + nextProvider.getKey());
+                if(_DEBUG)
+                {
+                    RdfFetchController.log.debug("endpoint method = noCommunication key=" + nextProvider.getKey());
+                }
+                
                 String nextStaticRdfXmlString = "";
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
