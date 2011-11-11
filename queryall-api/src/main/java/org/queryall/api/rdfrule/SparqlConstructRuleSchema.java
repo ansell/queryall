@@ -39,8 +39,7 @@ public class SparqlConstructRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        SparqlConstructRuleSchema.setSparqlConstructRuleTypeUri(f
-                .createURI(baseUri, "SparqlConstructRule"));
+        SparqlConstructRuleSchema.setSparqlConstructRuleTypeUri(f.createURI(baseUri, "SparqlConstructRule"));
         SparqlConstructRuleSchema.setOLDSparqlRuleSparqlConstructQuery(f.createURI(baseUri, "sparqlConstructQuery"));
         SparqlConstructRuleSchema.setSparqlRuleSparqlConstructQueryTarget(f.createURI(baseUri,
                 "sparqlConstructQueryTarget"));

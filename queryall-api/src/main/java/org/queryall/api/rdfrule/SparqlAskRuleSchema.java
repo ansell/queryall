@@ -39,8 +39,7 @@ public class SparqlAskRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        SparqlAskRuleSchema.setSparqlAskRuleTypeUri(f
-                .createURI(baseUri, "SparqlAskRule"));
+        SparqlAskRuleSchema.setSparqlAskRuleTypeUri(f.createURI(baseUri, "SparqlAskRule"));
     }
     
     /**
@@ -65,7 +64,8 @@ public class SparqlAskRuleSchema
             con.setAutoCommit(false);
             
             con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(), RDFS.LABEL,
+            con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(),
+                    RDFS.LABEL,
                     f.createLiteral("A SPARQL based normalisation rule intended to validate In-memory RDF triples using ASK queries."),
                     contextUri);
             con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(), RDFS.SUBCLASSOF,
