@@ -19,8 +19,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SpinConstraintRule;
-import org.queryall.api.rdfrule.SpinConstraintRuleSchema;
+import org.queryall.api.rdfrule.SpinInferencingRule;
+import org.queryall.api.rdfrule.SpinInferencingRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.utils.StringUtils;
@@ -47,23 +47,23 @@ import com.hp.hpl.jena.shared.ReificationStyle;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements SpinConstraintRule, HtmlExport
+public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements SpinInferencingRule, HtmlExport
 {
-    static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImpl.class);
-    private static final boolean _TRACE = SpinConstraintRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SpinConstraintRuleImpl.log.isDebugEnabled();
+    static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleImpl.class);
+    private static final boolean _TRACE = SpinInferencingRuleImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = SpinInferencingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinConstraintRuleImpl.log.isInfoEnabled();
+    private static final boolean _INFO = SpinInferencingRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPIN_INFERENCING_RULE_IMPL_TYPES = new HashSet<URI>();
     
     static
     {
-        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+        SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_TYPES.add(NormalisationRuleSchema
                 .getNormalisationRuleTypeUri());
-        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES.add(ValidatingRuleSchema.getValidatingRuleTypeUri());
-        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES.add(SpinConstraintRuleSchema
-                .getSpinConstraintRuleTypeUri());
+        SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_TYPES.add(ValidatingRuleSchema.getValidatingRuleTypeUri());
+        SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_TYPES.add(SpinInferencingRuleSchema
+                .getSpinInferencingRuleTypeUri());
         
         // Need to initialise the SPIN registry at least once
         // SPINModuleRegistry.get().init();
@@ -71,19 +71,19 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     
     public static Set<URI> myTypes()
     {
-        return SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES;
+        return SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_TYPES;
     }
     
     private Set<org.openrdf.model.URI> activeEntailments;
     
-    public SpinConstraintRuleImpl()
+    public SpinInferencingRuleImpl()
     {
         super();
     }
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public SpinConstraintRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+    public SpinInferencingRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
@@ -103,11 +103,11 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri()))
+                    && nextStatement.getObject().equals(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri()))
             {
-                if(SpinConstraintRuleImpl._TRACE)
+                if(SpinInferencingRuleImpl._TRACE)
                 {
-                    SpinConstraintRuleImpl.log
+                    SpinInferencingRuleImpl.log
                             .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
@@ -116,9 +116,9 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             }
             else
             {
-                if(SpinConstraintRuleImpl._DEBUG)
+                if(SpinInferencingRuleImpl._DEBUG)
                 {
-                    SpinConstraintRuleImpl.log
+                    SpinInferencingRuleImpl.log
                             .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                                     + nextStatement.toString());
                 }
@@ -133,9 +133,9 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
         
-        if(SpinConstraintRuleImpl._DEBUG)
+        if(SpinInferencingRuleImpl._DEBUG)
         {
-            SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
+            SpinInferencingRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
     }
     
@@ -152,7 +152,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     @Override
     public Set<URI> getElementTypes()
     {
-        return SpinConstraintRuleImpl.myTypes();
+        return SpinInferencingRuleImpl.myTypes();
     }
     
     @Override
@@ -200,7 +200,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         // System.out.println("Loading domain ontology...");
         // OntModel queryModel =
         // loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
-        SpinConstraintRuleImpl.log.info("Loading jena model from sesame repository");
+        SpinInferencingRuleImpl.log.info("Loading jena model from sesame repository");
         final OntModel queryModel =
                 SpinUtils
                         .addSesameRepositoryToJenaModel(inputRepository,
@@ -211,7 +211,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         final Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         queryModel.addSubModel(newTriples);
         
-        SpinConstraintRuleImpl.log.info("Loading ontologies...");
+        SpinInferencingRuleImpl.log.info("Loading ontologies...");
         
         // Register any new functions defined in OWL RL
         // NOTE: The source for these rules is given as "this" so that they can be retrieved in
@@ -226,7 +226,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         for(final OntModel nextModel : this.ontologyModels)
         {
-            SpinConstraintRuleImpl.log.info("i=" + i + " nextModel.size()=" + nextModel.size());
+            SpinInferencingRuleImpl.log.info("i=" + i + " nextModel.size()=" + nextModel.size());
             graphs[i++] = nextModel.getGraph();
         }
         
@@ -250,17 +250,17 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         final SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
         
         // Run all inferences
-        SpinConstraintRuleImpl.log.info("Running SPIN inferences...");
+        SpinInferencingRuleImpl.log.info("Running SPIN inferences...");
         SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null,
                 false, SPIN.rule, comparator, null, allowedRuleSources);
-        SpinConstraintRuleImpl.log.info("Inferred triples: " + newTriples.size());
-        SpinConstraintRuleImpl.log.info("Query triples: " + queryModel.size());
+        SpinInferencingRuleImpl.log.info("Inferred triples: " + newTriples.size());
+        SpinInferencingRuleImpl.log.info("Query triples: " + queryModel.size());
         
         final StmtIterator listStatements = newTriples.listStatements();
         
         while(listStatements.hasNext())
         {
-            SpinConstraintRuleImpl.log.info(listStatements.next().toString());
+            SpinInferencingRuleImpl.log.info(listStatements.next().toString());
         }
         
         // Note: To optimise the process, we only add the new triples back into the original
@@ -285,45 +285,45 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     }
     
     @Override
-    public boolean stageAfterQueryCreation(final Object input)
+    public Object stageAfterQueryCreation(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
-    public boolean stageAfterQueryParsing(final Object input)
+    public Object stageAfterQueryParsing(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
-    public boolean stageAfterResultsImport(final Object input)
+    public Object stageAfterResultsImport(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
-    public boolean stageAfterResultsToDocument(final Object input)
+    public Object stageAfterResultsToDocument(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
-    public boolean stageAfterResultsToPool(final Object input)
+    public Object stageAfterResultsToPool(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
-    public boolean stageBeforeResultsImport(final Object input)
+    public Object stageBeforeResultsImport(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
-    public boolean stageQueryVariables(final Object input)
+    public Object stageQueryVariables(final Object input)
     {
-        return true;
+        return input;
     }
     
     @Override
@@ -365,16 +365,16 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         try
         {
-            if(SpinConstraintRuleImpl._DEBUG)
+            if(SpinInferencingRuleImpl._DEBUG)
             {
-                SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                SpinInferencingRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();
             
             con.setAutoCommit(false);
             
-            con.add(keyUri, RDF.TYPE, SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), keyToUse);
+            con.add(keyUri, RDF.TYPE, SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri(), keyToUse);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -386,7 +386,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            SpinConstraintRuleImpl.log.error("RepositoryException: " + re.getMessage());
+            SpinInferencingRuleImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -407,6 +407,19 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         return result;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     protected Set<String> localImports = new HashSet<String>(10);
     private Set<URI> urlImports = new HashSet<URI>(10);
@@ -513,5 +526,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         this.registry = registry;
         this.registry.init();
     }    
-        
+    
+    
+    
 }
