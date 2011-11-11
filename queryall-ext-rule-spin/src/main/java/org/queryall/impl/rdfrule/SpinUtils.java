@@ -12,6 +12,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,22 +89,23 @@ public class SpinUtils
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
     }
     
-    public static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, Model outputModel, org.openrdf.model.Resource... contexts) 
-        {
-    //        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-            
-            ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
-            
-            // write out the triples from the model into the output stream
-            RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
-            
-            // use the resulting byte[] as input to an InputStream
-            InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
-    
-            outputModel.read(bufferedInputStream, "http://spin.example.org/");
-            
-            return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
-        }
+    public static OntModel addSesameRepositoryToJenaModel(Repository inputRepository, Model outputModel, String baseURI, org.openrdf.model.Resource... contexts) 
+    {
+        // Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
+        
+        // write out the triples from the model into the output stream
+        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
+        
+        // use the resulting byte[] as input to an InputStream
+        InputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
+
+        outputModel.read(bufferedInputStream, baseURI);
+        
+        // TODO: Should be creating this model earlier and then adding the triples to it instead of to the outputModel?
+        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
+    }
 
     /**
      * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame repository
@@ -125,6 +127,7 @@ public class SpinUtils
             catch(RepositoryException e)
             {
                 log.error("Found unexpected exception initialising in memory repository", e);
+                throw new QueryAllException("Found unexpected exception initialising in memory repository", e);
             }
         }
         
@@ -161,6 +164,8 @@ public class SpinUtils
             {
                 log.error("Found exception while attempting to rollback connection due to previous exception", e1);
             }
+            
+            throw new QueryAllException("Found exception while attempting to add data to OpenRDF repository", e);
         }
         finally
         {
@@ -173,8 +178,7 @@ public class SpinUtils
             }
             catch(RepositoryException e)
             {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.error("Found exception while attempting to close connection in finally block", e);
             }
         }
         

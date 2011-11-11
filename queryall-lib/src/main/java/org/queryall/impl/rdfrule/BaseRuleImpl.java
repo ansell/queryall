@@ -25,7 +25,6 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.exception.QueryAllException;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -36,12 +35,12 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class NormalisationRuleImpl implements NormalisationRule
+public abstract class BaseRuleImpl implements NormalisationRule
 {
-    protected static final Logger log = LoggerFactory.getLogger(NormalisationRuleImpl.class);
-    protected static final boolean _TRACE = NormalisationRuleImpl.log.isTraceEnabled();
-    protected static final boolean _DEBUG = NormalisationRuleImpl.log.isDebugEnabled();
-    protected static final boolean _INFO = NormalisationRuleImpl.log.isInfoEnabled();
+    protected static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
+    protected static final boolean _TRACE = BaseRuleImpl.log.isTraceEnabled();
+    protected static final boolean _DEBUG = BaseRuleImpl.log.isDebugEnabled();
+    protected static final boolean _INFO = BaseRuleImpl.log.isInfoEnabled();
     
     protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     
@@ -63,14 +62,14 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
     
     private String title = "";
     
-    protected NormalisationRuleImpl()
+    protected BaseRuleImpl()
     {
         
     }
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    protected NormalisationRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+    protected BaseRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
             final int modelVersion) throws OpenRDFException
     {
         for(final Statement nextStatement : inputStatements)
@@ -84,9 +83,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(NormalisationRuleSchema.getNormalisationRuleTypeUri()))
             {
-                if(NormalisationRuleImpl._TRACE)
+                if(BaseRuleImpl._TRACE)
                 {
-                    NormalisationRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: "
+                    BaseRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: "
                             + keyToUse);
                 }
                 
@@ -121,7 +120,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 }
                 catch(final InvalidStageException ise)
                 {
-                    NormalisationRuleImpl.log
+                    BaseRuleImpl.log
                             .error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="
                                     + nextStatement.getObject().stringValue()
                                     + " validStages="
@@ -310,69 +309,6 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
                 includeNonProfileMatched);
     }
     
-    /**
-     * This function delegates normalisation to the correct stage normalisation method based on the given URI.
-     * 
-     * You should not need to modify this method, as it provides generic stage validation that is necessary to ensure that the rule system is consistent.
-     */
-    @Override
-    public final Object normaliseByStage(final URI stage, final Object input) throws QueryAllException
-    {
-        if(!this.validInStage(stage))
-        {
-            if(NormalisationRuleImpl._TRACE)
-            {
-                NormalisationRuleImpl.log
-                        .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
-                                + stage);
-            }
-            
-            return input;
-        }
-        
-        if(!this.usedInStage(stage))
-        {
-            if(NormalisationRuleImpl._DEBUG)
-            {
-                NormalisationRuleImpl.log
-                        .debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="
-                                + this.getKey().stringValue() + " stage=" + stage);
-            }
-            
-            return input;
-        }
-        
-        if(stage.equals(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
-        {
-            return this.stageQueryVariables(input);
-        }
-        else if(stage.equals(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()))
-        {
-            return this.stageAfterQueryCreation(input);
-        }
-        else if(stage.equals(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing()))
-        {
-            return this.stageAfterQueryParsing(input);
-        }
-        else if(stage.equals(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
-        {
-            return this.stageBeforeResultsImport(input);
-        }
-        else if(stage.equals(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()))
-        {
-            return this.stageAfterResultsImport(input);
-        }
-        else if(stage.equals(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool()))
-        {
-            return this.stageAfterResultsToPool(input);
-        }
-        else if(stage.equals(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()))
-        {
-            return this.stageAfterResultsToDocument(input);
-        }
-        
-        throw new InvalidStageException("Normalisation rule stage unknown : stage=" + stage);
-    }
     
     @Override
     public void setCurationStatus(final URI curationStatus)
@@ -429,9 +365,9 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
         
         try
         {
-            if(NormalisationRuleImpl._DEBUG)
+            if(BaseRuleImpl._DEBUG)
             {
-                NormalisationRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                BaseRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();
@@ -517,7 +453,7 @@ public abstract class NormalisationRuleImpl implements NormalisationRule
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            NormalisationRuleImpl.log.error("RepositoryException: " + re.getMessage());
+            BaseRuleImpl.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

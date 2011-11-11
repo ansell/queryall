@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleImpl extends NormalisationRuleImpl implements SparqlNormalisationRule, HtmlExport
+public class SparqlNormalisationRuleImpl extends BaseTransformingRuleImpl implements SparqlNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleImpl.class);
     private static final boolean _TRACE = SparqlNormalisationRuleImpl.log.isTraceEnabled();

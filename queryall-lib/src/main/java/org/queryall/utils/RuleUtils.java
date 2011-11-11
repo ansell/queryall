@@ -15,10 +15,14 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRule;
+import org.queryall.api.rdfrule.ValidatingRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.UnsupportedNormalisationRuleException;
+import org.queryall.exception.ValidationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,7 +208,25 @@ public final class RuleUtils
                 }
                 try
                 {
-                    input = nextRule.normaliseByStage(stage, input);
+                    if(nextRule instanceof TransformingRule)
+                    {
+                        input = ((TransformingRule)nextRule).normaliseByStage(stage, input);
+                    }
+                    else if(nextRule instanceof ValidatingRule)
+                    {
+                        boolean result = ((ValidatingRule)nextRule).normaliseByStage(stage, input);
+                        
+                        if(!result)
+                        {
+                            throw new ValidationFailedException("Validation failed nextRule.getKey()="+nextRule.getKey().stringValue());
+                        }
+                        
+                        // if the validation did not fail, we return the input object unchanged.
+                    }
+                    else
+                    {
+                        throw new UnsupportedNormalisationRuleException("NormalisationRule not supported nextRule.getKey()="+nextRule.getKey().stringValue()+" nextRule.getElementTypes()="+nextRule.getElementTypes());
+                    }
                 }
                 catch(InvalidStageException ise)
                 {
@@ -253,13 +275,32 @@ public final class RuleUtils
                 {
                     if(nextRule.usedInStage(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
                     {
-                        nextInputTestResult =
-                            (String)nextRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                    nextTestInputString);
+                        if(nextRule instanceof TransformingRule)
+                        {
+                            TransformingRule transformingRule = (TransformingRule)nextRule;
+                            nextInputTestResult =
+                                (String)transformingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                        nextTestInputString);
+                        }
+                        else if(nextRule instanceof ValidatingRule)
+                        {
+                            ValidatingRule validatingRule = (ValidatingRule)nextRule;
+                            
+                            boolean result = validatingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(), nextTestInputString);
+                            
+                            if(!result)
+                            {
+                                allPassed = false;
+                            }
+                        }
+                        else
+                        {
+                            throw new UnsupportedNormalisationRuleException("NormalisationRule not supported nextRule.getKey()="+nextRule.getKey().stringValue()+" nextRule.getElementTypes()="+nextRule.getElementTypes());
+                        }
                     }
                 }
                 
-                if(nextInputTestResult.equals(nextTestOutputString))
+                if(allPassed && nextInputTestResult.equals(nextTestOutputString))
                 {
                     if(RuleUtils._DEBUG)
                     {
@@ -290,9 +331,28 @@ public final class RuleUtils
                 for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                         nextRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
                 {
-                    nextOutputTestResult =
-                            (String)nextRule.normaliseByStage(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextTestInputString);
+                    if(nextRule instanceof TransformingRule)
+                    {
+                        TransformingRule transformingRule = (TransformingRule)nextRule;
+                        nextOutputTestResult =
+                                (String)transformingRule.normaliseByStage(
+                                        NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextTestInputString);
+                    }
+                    else if(nextRule instanceof ValidatingRule)
+                    {
+                        ValidatingRule validatingRule = (ValidatingRule)nextRule;
+                        
+                        boolean result = validatingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(), nextTestInputString);
+                        
+                        if(!result)
+                        {
+                            allPassed = false;
+                        }
+                    }
+                    else
+                    {
+                        throw new UnsupportedNormalisationRuleException("NormalisationRule not supported nextRule.getKey()="+nextRule.getKey().stringValue()+" nextRule.getElementTypes()="+nextRule.getElementTypes());
+                    }
                     
                     if(nextOutputTestResult.equals(nextTestInputString))
                     {

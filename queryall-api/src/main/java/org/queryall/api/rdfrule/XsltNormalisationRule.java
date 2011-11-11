@@ -3,7 +3,7 @@ package org.queryall.api.rdfrule;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public interface XsltNormalisationRule extends NormalisationRule
+public interface XsltNormalisationRule extends TransformingRule
 {
     
     /**

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexNormalisationRuleImpl extends NormalisationRuleImpl implements RegexNormalisationRule, HtmlExport
+public class RegexNormalisationRuleImpl extends BaseTransformingRuleImpl implements RegexNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(RegexNormalisationRuleImpl.class);
     private static final boolean _TRACE = RegexNormalisationRuleImpl.log.isTraceEnabled();

@@ -18,6 +18,7 @@ import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.TransformingRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.utils.RuleUtils;
@@ -790,77 +791,82 @@ public class QueryCreator
                 if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
                         includeNonProfileMatchedRdfRules))
                 {
-                    endpointSpecificUri = (String)nextRule.stageQueryVariables(endpointSpecificUri);
-                    endpointSpecificQueryUri = (String)nextRule.stageQueryVariables(endpointSpecificQueryUri);
-                    // endpointSpecificOntologyUri = (String)nextRule
-                    // .applyInputRegex(endpointSpecificOntologyUri);
-                    
-                    inputUrlEncoded_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_endpointSpecificUri);
-                    inputPlusUrlEncoded_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputPlusUrlEncoded_endpointSpecificUri);
-                    inputXmlEncoded_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_endpointSpecificUri);
-                    inputUrlEncoded_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_endpointSpecificQueryUri);
-                    inputPlusUrlEncoded_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputPlusUrlEncoded_endpointSpecificQueryUri);
-                    inputXmlEncoded_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_endpointSpecificQueryUri);
-                    
-                    inputUrlEncoded_lowercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificUri);
-                    inputXmlEncoded_lowercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificUri);
-                    inputUrlEncoded_uppercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificUri);
-                    inputXmlEncoded_uppercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificUri);
-                    
-                    inputUrlEncoded_lowercase_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificQueryUri);
-                    inputXmlEncoded_lowercase_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificQueryUri);
-                    inputUrlEncoded_uppercase_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificQueryUri);
-                    inputXmlEncoded_uppercase_endpointSpecificQueryUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificQueryUri);
-                    
-                    inputUrlEncoded_privatelowercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_privatelowercase_endpointSpecificUri);
-                    inputXmlEncoded_privatelowercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_privatelowercase_endpointSpecificUri);
-                    inputUrlEncoded_privateuppercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputUrlEncoded_privateuppercase_endpointSpecificUri);
-                    inputXmlEncoded_privateuppercase_endpointSpecificUri =
-                            (String)nextRule.stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificUri);
-                    
-                    inputUrlEncoded_privatelowercase_endpointSpecificQueryUri =
-                            (String)nextRule
-                                    .stageQueryVariables(inputUrlEncoded_privatelowercase_endpointSpecificQueryUri);
-                    inputXmlEncoded_privatelowercase_endpointSpecificQueryUri =
-                            (String)nextRule
-                                    .stageQueryVariables(inputXmlEncoded_privatelowercase_endpointSpecificQueryUri);
-                    inputUrlEncoded_privateuppercase_endpointSpecificQueryUri =
-                            (String)nextRule
-                                    .stageQueryVariables(inputUrlEncoded_privateuppercase_endpointSpecificQueryUri);
-                    inputXmlEncoded_privateuppercase_endpointSpecificQueryUri =
-                            (String)nextRule
-                                    .stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificQueryUri);
-                    
-                    if(QueryCreator._TRACE)
+                    if(nextRule instanceof TransformingRule)
                     {
-                        QueryCreator.log.trace("QueryCreator.createQuery: in regex loop endpointSpecificUri="
-                                + endpointSpecificUri);
-                        // QueryCreator.log
-                        // .trace("QueryCreator.createQuery: in regex loop endpointSpecificOntologyUri="
-                        // + endpointSpecificOntologyUri);
-                        QueryCreator.log
-                                .trace("QueryCreator.createQuery: in regex loop inputUrlEncoded_endpointSpecificUri="
-                                        + inputUrlEncoded_endpointSpecificUri);
-                        QueryCreator.log
-                                .trace("QueryCreator.createQuery: in regex loop inputXmlEncoded_endpointSpecificUri="
-                                        + inputXmlEncoded_endpointSpecificUri);
+                        TransformingRule nextTransformingRule = (TransformingRule)nextRule;
+                        
+                        endpointSpecificUri = (String)nextTransformingRule.stageQueryVariables(endpointSpecificUri);
+                        endpointSpecificQueryUri = (String)nextTransformingRule.stageQueryVariables(endpointSpecificQueryUri);
+                        // endpointSpecificOntologyUri = (String)nextTransformingRule
+                        // .applyInputRegex(endpointSpecificOntologyUri);
+                        
+                        inputUrlEncoded_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_endpointSpecificUri);
+                        inputPlusUrlEncoded_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputPlusUrlEncoded_endpointSpecificUri);
+                        inputXmlEncoded_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_endpointSpecificUri);
+                        inputUrlEncoded_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_endpointSpecificQueryUri);
+                        inputPlusUrlEncoded_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputPlusUrlEncoded_endpointSpecificQueryUri);
+                        inputXmlEncoded_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_endpointSpecificQueryUri);
+                        
+                        inputUrlEncoded_lowercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificUri);
+                        inputXmlEncoded_lowercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificUri);
+                        inputUrlEncoded_uppercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificUri);
+                        inputXmlEncoded_uppercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificUri);
+                        
+                        inputUrlEncoded_lowercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_lowercase_endpointSpecificQueryUri);
+                        inputXmlEncoded_lowercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_lowercase_endpointSpecificQueryUri);
+                        inputUrlEncoded_uppercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_uppercase_endpointSpecificQueryUri);
+                        inputXmlEncoded_uppercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_uppercase_endpointSpecificQueryUri);
+                        
+                        inputUrlEncoded_privatelowercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_privatelowercase_endpointSpecificUri);
+                        inputXmlEncoded_privatelowercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_privatelowercase_endpointSpecificUri);
+                        inputUrlEncoded_privateuppercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputUrlEncoded_privateuppercase_endpointSpecificUri);
+                        inputXmlEncoded_privateuppercase_endpointSpecificUri =
+                                (String)nextTransformingRule.stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificUri);
+                        
+                        inputUrlEncoded_privatelowercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_privatelowercase_endpointSpecificQueryUri);
+                        inputXmlEncoded_privatelowercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_privatelowercase_endpointSpecificQueryUri);
+                        inputUrlEncoded_privateuppercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputUrlEncoded_privateuppercase_endpointSpecificQueryUri);
+                        inputXmlEncoded_privateuppercase_endpointSpecificQueryUri =
+                                (String)nextTransformingRule
+                                        .stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificQueryUri);
+                        
+                        if(QueryCreator._TRACE)
+                        {
+                            QueryCreator.log.trace("QueryCreator.createQuery: in regex loop endpointSpecificUri="
+                                    + endpointSpecificUri);
+                            // QueryCreator.log
+                            // .trace("QueryCreator.createQuery: in regex loop endpointSpecificOntologyUri="
+                            // + endpointSpecificOntologyUri);
+                            QueryCreator.log
+                                    .trace("QueryCreator.createQuery: in regex loop inputUrlEncoded_endpointSpecificUri="
+                                            + inputUrlEncoded_endpointSpecificUri);
+                            QueryCreator.log
+                                    .trace("QueryCreator.createQuery: in regex loop inputXmlEncoded_endpointSpecificUri="
+                                            + inputXmlEncoded_endpointSpecificUri);
+                        }
                     }
                 }
             }

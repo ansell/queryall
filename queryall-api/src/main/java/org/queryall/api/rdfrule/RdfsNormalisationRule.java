@@ -1,6 +1,6 @@
 package org.queryall.api.rdfrule;
 
-public interface RdfsNormalisationRule extends NormalisationRule
+public interface RdfsNormalisationRule extends ValidatingRule
 {
     
 }

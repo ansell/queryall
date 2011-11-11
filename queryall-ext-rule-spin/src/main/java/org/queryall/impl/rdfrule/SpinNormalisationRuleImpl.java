@@ -46,7 +46,7 @@ import com.hp.hpl.jena.shared.ReificationStyle;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements SpinNormalisationRule, HtmlExport
+public class SpinNormalisationRuleImpl extends BaseValidatingRuleImpl implements SpinNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImpl.class);
     private static final boolean _TRACE = SpinNormalisationRuleImpl.log.isTraceEnabled();
@@ -88,7 +88,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
         // System.out.println("Loading domain ontology...");
         // OntModel queryModel = loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
         log.info("Loading jena model from sesame repository");
-        OntModel queryModel = SpinUtils.addSesameRepositoryToJenaModel(inputRepository, ModelFactory.createDefaultModel(ReificationStyle.Minimal), contexts);
+        OntModel queryModel = SpinUtils.addSesameRepositoryToJenaModel(inputRepository, ModelFactory.createDefaultModel(ReificationStyle.Minimal), "http://spin.example.org/", contexts);
         
         
         // Create and add Model for inferred triples
@@ -141,6 +141,7 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
             log.info(listStatements.next().toString());
         }
         
+        // Note: To optimise the process, we only add the new triples back into the original repository
         return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
     }
 
@@ -283,45 +284,45 @@ public class SpinNormalisationRuleImpl extends NormalisationRuleImpl implements 
     }
     
     @Override
-    public Object stageAfterQueryCreation(final Object input)
+    public boolean stageAfterQueryCreation(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
-    public Object stageAfterQueryParsing(final Object input)
+    public boolean stageAfterQueryParsing(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
-    public Object stageAfterResultsImport(final Object input)
+    public boolean stageAfterResultsImport(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
-    public Object stageAfterResultsToDocument(final Object input)
+    public boolean stageAfterResultsToDocument(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
-    public Object stageAfterResultsToPool(final Object input)
+    public boolean stageAfterResultsToPool(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
-    public Object stageBeforeResultsImport(final Object input)
+    public boolean stageBeforeResultsImport(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
-    public Object stageQueryVariables(final Object input)
+    public boolean stageQueryVariables(final Object input)
     {
-        return input;
+        return true;
     }
     
     @Override
