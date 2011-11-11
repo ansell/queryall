@@ -361,16 +361,22 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
     {
         SparqlConstructRule queryallRule = this.getNewTestSparqlConstructRule();
         queryallRule.setMode(SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples());
+        
+        Assert.assertNotNull(queryallRule.getMode());
         Assert.assertTrue(queryallRule.getMode().equals(
                 SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples()));
         
         queryallRule = this.getNewTestSparqlConstructRule();
         queryallRule.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches());
+
+        Assert.assertNotNull(queryallRule.getMode());
         Assert.assertTrue(queryallRule.getMode().equals(
                 SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()));
         
         queryallRule = this.getNewTestSparqlConstructRule();
         queryallRule.setMode(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches());
+
+        Assert.assertNotNull(queryallRule.getMode());
         Assert.assertTrue(queryallRule.getMode().equals(
                 SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
     }
