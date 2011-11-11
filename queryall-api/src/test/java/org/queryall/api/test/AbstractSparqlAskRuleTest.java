@@ -158,14 +158,14 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
     }
     
     /**
-     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
+     * Tests the SparqlAskRule interface using a match that should be positive
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
      */
     @Test
-    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    public void testPositiveMatchTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -199,6 +199,50 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
         boolean result = sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
         
         Assert.assertTrue("Ask queries did not execute properly to return true", result);
+    }
+    
+    /**
+     * Tests the SparqlAskRule interface using a match that should be positive
+     * 
+     * @throws RepositoryException
+     * @throws QueryEvaluationException
+     * @throws MalformedQueryException
+     */
+    @Test
+    public void testNegativeMatchTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    {
+        final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
+        
+        final URI predicateUri = this.testValueFactory.createURI("http://bio2rdf.org/ns/obo#is_a");
+        
+        final URI objectUri = this.testValueFactory.createURI("http://example.org/po:0009089");
+        
+        final Statement testStatement = this.testValueFactory.createStatement(subjectUri, predicateUri, objectUri);
+        
+        this.testRepositoryConnection.add(testStatement);
+        
+        this.testRepositoryConnection.commit();
+        
+        Assert.assertEquals("The test statement was not added to the repository", 1,
+                this.testRepositoryConnection.size());
+        
+        final SparqlAskRule sparqlRule = this.getNewTestSparqlAskRule();
+        
+        String sparqlWherePattern = " ?s a ?o . ";
+        
+        sparqlRule.addSparqlWherePattern(sparqlWherePattern );
+        
+        Assert.assertEquals("The ask pattern was not parsed correctly", 1, sparqlRule.getSparqlAskQueries()
+                .size());
+        
+        sparqlRule.addStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        
+        Assert.assertTrue("Stage was not added correctly",
+                sparqlRule.validInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport()));
+        
+        boolean result = sparqlRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
+        
+        Assert.assertFalse("Ask queries did not execute properly to return false", result);
     }
     
     @Test
