@@ -21,6 +21,7 @@ import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -276,10 +277,18 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     {
         if(this.validStages.size() == 0)
         {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+            try
+            {
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+            }
+            catch(InvalidStageException e)
+            {
+                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+            }
         }
         
         return Collections.unmodifiableSet(this.validStages);

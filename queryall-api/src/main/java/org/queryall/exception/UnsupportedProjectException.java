@@ -4,6 +4,7 @@
 package org.queryall.exception;
 
 import org.queryall.api.project.Project;
+import org.queryall.api.project.ProjectEnum;
 
 /**
  * An exception that is thrown when an unknown Project is encountered
@@ -17,7 +18,7 @@ public class UnsupportedProjectException extends QueryAllException
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-    private Project projectCause;
+    private ProjectEnum projectCause;
     
     /**
      * 
@@ -38,7 +39,7 @@ public class UnsupportedProjectException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedProjectException(final String message, Project nextProject)
+    public UnsupportedProjectException(final String message, ProjectEnum nextProject)
     {
         super(message);
         this.setProjectCause(nextProject);
@@ -57,7 +58,7 @@ public class UnsupportedProjectException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedProjectException(final String message, Project nextProject, final Throwable cause)
+    public UnsupportedProjectException(final String message, ProjectEnum nextProject, final Throwable cause)
     {
         super(message, cause);
         this.setProjectCause(nextProject);
@@ -74,7 +75,7 @@ public class UnsupportedProjectException extends QueryAllException
     /**
      * @return the projectCause
      */
-    public Project getProjectCause()
+    public ProjectEnum getProjectCause()
     {
         return projectCause;
     }
@@ -82,7 +83,7 @@ public class UnsupportedProjectException extends QueryAllException
     /**
      * @param projectCause the projectCause to set
      */
-    public void setProjectCause(Project projectCause)
+    public void setProjectCause(ProjectEnum projectCause)
     {
         this.projectCause = projectCause;
     }

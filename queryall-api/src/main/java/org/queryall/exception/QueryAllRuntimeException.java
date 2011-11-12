@@ -1,6 +1,6 @@
 package org.queryall.exception;
 
-public class QueryAllException extends Exception
+public class QueryAllRuntimeException extends RuntimeException
 {
     /**
      * 
@@ -10,7 +10,7 @@ public class QueryAllException extends Exception
     /**
      * 
      */
-    public QueryAllException()
+    public QueryAllRuntimeException()
     {
         super();
     }
@@ -18,7 +18,7 @@ public class QueryAllException extends Exception
     /**
      * @param message
      */
-    public QueryAllException(final String message)
+    public QueryAllRuntimeException(final String message)
     {
         super(message);
     }
@@ -27,7 +27,7 @@ public class QueryAllException extends Exception
      * @param message
      * @param cause
      */
-    public QueryAllException(final String message, final Throwable cause)
+    public QueryAllRuntimeException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
@@ -35,7 +35,7 @@ public class QueryAllException extends Exception
     /**
      * @param cause
      */
-    public QueryAllException(final Throwable cause)
+    public QueryAllRuntimeException(final Throwable cause)
     {
         super(cause);
     }

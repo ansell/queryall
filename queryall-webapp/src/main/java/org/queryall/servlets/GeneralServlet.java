@@ -36,6 +36,8 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnnormalisableRuleException;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.QueryCreator;
@@ -409,20 +411,20 @@ public class GeneralServlet extends HttpServlet
                 ProfileUtils.getAndSortProfileList(localSettings.getURIProperties("activeProfiles"),
                         SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
         
-        final RdfFetchController fetchController =
+        try
+        {
+            final RdfFetchController fetchController =
                 new RdfFetchController(localSettings, localBlacklistController, queryParameters, includedProfiles,
                         useDefaultProviders, realHostName, pageOffset);
         
-        final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
+            final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
+            
+            final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
+            
+            // We do not use the default catalina writer as it may not be UTF-8 compliant depending on
+            // unchangeable environment variables
+            final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
         
-        final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
-        
-        // We do not use the default catalina writer as it may not be UTF-8 compliant depending on
-        // unchangeable environment variables
-        final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
-        
-        try
-        {
             // Create a new in memory repository for each request
             final Repository myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
@@ -551,16 +553,17 @@ public class GeneralServlet extends HttpServlet
                         multiProviderQueryBundles, nextTotalTime);
             }
         }
+        catch(QueryAllException qex)
+        {
+            GeneralServlet.log.error("GeneralServlet.doGet: caught queryall exception", qex);
+        }
         catch(final OpenRDFException ordfe)
         {
             GeneralServlet.log.error("GeneralServlet.doGet: caught RDF exception", ordfe);
-            throw new RuntimeException("GeneralServlet.doGet failed due to an RDF exception. See log for details");
         }
         catch(final InterruptedException iex)
         {
             GeneralServlet.log.error("GeneralServlet.doGet: caught interrupted exception", iex);
-            throw new RuntimeException(
-                    "GeneralServlet.doGet failed due to an Interrupted exception. See log for details");
         }
         catch(final RuntimeException rex)
         {
@@ -577,18 +580,32 @@ public class GeneralServlet extends HttpServlet
      * @param myRepository
      *            The repository containing the unnormalised statements
      * @return The repository containing the normalised statements
+     * @throws QueryAllException 
      */
     private Repository doPoolNormalisation(final QueryAllConfiguration localSettings,
             final List<Profile> includedProfiles, final RdfFetchController fetchController,
-            final Repository myRepository)
+            final Repository myRepository) throws QueryAllException
     {
-        return (Repository)RuleUtils.normaliseByStage(
-                NormalisationRuleSchema.getRdfruleStageAfterResultsToPool(),
-                myRepository,
-                RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
-                        localSettings.getAllNormalisationRules(), SortOrder.HIGHEST_ORDER_FIRST), includedProfiles,
-                localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true));
+        try
+        {
+            return (Repository)RuleUtils.normaliseByStage(
+                    NormalisationRuleSchema.getRdfruleStageAfterResultsToPool(),
+                    myRepository,
+                    RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
+                            localSettings.getAllNormalisationRules(), SortOrder.HIGHEST_ORDER_FIRST), includedProfiles,
+                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
+                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true));
+        }
+        catch(UnnormalisableRuleException e)
+        {
+            log.error("Found unnormalisable rule exception while normalising the pool", e);
+            throw new QueryAllException("Found unnormalisable rule exception while normalising the pool", e);
+        }
+        catch(QueryAllException e)
+        {
+            log.error("Found queryall checked exception while normalising the pool", e);
+            throw e;
+        }
     }
     
     /**
@@ -642,12 +659,14 @@ public class GeneralServlet extends HttpServlet
      * @throws IOException
      * @throws RepositoryException
      * @throws OpenRDFException
+     * @throws QueryAllException 
+     * @throws UnnormalisableRuleException 
      */
     private void doQueryNotPretend(final QueryAllConfiguration localSettings, final String queryString,
             final String requestedContentType, final List<Profile> includedProfiles,
             final RdfFetchController fetchController, final Collection<QueryBundle> multiProviderQueryBundles,
             final Collection<String> debugStrings, final Repository myRepository) throws InterruptedException,
-        IOException, RepositoryException, OpenRDFException
+        IOException, RepositoryException, OpenRDFException, UnnormalisableRuleException, QueryAllException
     {
         
         RepositoryConnection myRepositoryConnection = null;
@@ -815,12 +834,13 @@ public class GeneralServlet extends HttpServlet
      * @param myRepository
      * @throws IOException
      * @throws RepositoryException
+     * @throws QueryAllException 
      */
     private void doQueryUnknown(final QueryAllConfiguration localSettings, final String realHostName,
             final Map<String, String> queryParameters, final int pageOffset, final String requestedContentType,
             final List<Profile> includedProfiles, final RdfFetchController fetchController,
             final Collection<String> debugStrings, final Repository myRepository) throws IOException,
-        RepositoryException
+        RepositoryException, QueryAllException
     {
         RepositoryConnection myRepositoryConnection = null;
         

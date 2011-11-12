@@ -49,7 +49,7 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
      * necessary to ensure that the rule system is consistent.
      */
     @Override
-    public final boolean normaliseByStage(final URI stage, final Object input) throws QueryAllException
+    public final boolean normaliseByStage(final URI stage, final Object input) throws InvalidStageException, ValidationFailedException
     {
         if(!this.validInStage(stage))
         {

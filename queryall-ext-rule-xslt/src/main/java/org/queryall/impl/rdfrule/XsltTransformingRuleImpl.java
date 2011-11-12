@@ -78,7 +78,15 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         final XsltTransformingRuleImpl testRule = new XsltTransformingRuleImpl();
         testRule.setKey(StringUtils.createURI("http://example.org/test/xsltnormalisationrule/42"));
         testRule.setXsltStylesheet(testXsltStyleSheet);
-        testRule.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        try
+        {
+            testRule.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        }
+        catch(InvalidStageException e)
+        {
+            log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+        }
         
         try
         {
@@ -185,10 +193,18 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     {
         if(this.validStages.size() == 0)
         {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+            try
+            {
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+            }
+            catch(InvalidStageException e)
+            {
+                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+            }
         }
         
         return Collections.unmodifiableSet(this.validStages);

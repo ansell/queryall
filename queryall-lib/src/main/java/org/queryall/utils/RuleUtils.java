@@ -21,7 +21,10 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnnormalisableRuleException;
 import org.queryall.exception.UnsupportedNormalisationRuleException;
+import org.queryall.exception.UntestableRuleException;
 import org.queryall.exception.ValidationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,10 +187,11 @@ public final class RuleUtils
      * @param includeNonProfileMatchedRdfRules
      * @param basicRdfXml
      * @return
+     * @throws QueryAllException, UnnormalisableRuleException 
      */
     public static Object normaliseByStage(final URI stage, Object input,
             final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
-            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules) throws QueryAllException, UnnormalisableRuleException
     {
         if(RuleUtils._TRACE)
         {
@@ -218,17 +222,15 @@ public final class RuleUtils
                         
                         if(!result)
                         {
-                            throw new ValidationFailedException("Validation failed nextRule.getKey()="
-                                    + nextRule.getKey().stringValue());
+                            throw new ValidationFailedException("Validation failed", (ValidatingRule)nextRule);
                         }
                         
                         // if the validation did not fail, we return the input object unchanged.
                     }
                     else
                     {
-                        throw new UnsupportedNormalisationRuleException(
-                                "NormalisationRule not supported nextRule.getKey()=" + nextRule.getKey().stringValue()
-                                        + " nextRule.getElementTypes()=" + nextRule.getElementTypes());
+                        throw new UnnormalisableRuleException(
+                                "NormalisationRule type not supported", nextRule);
                     }
                 }
                 catch(final InvalidStageException ise)
@@ -260,9 +262,10 @@ public final class RuleUtils
      * 
      * @param myRuleTests
      * @return true if all of the tests passed, otherwise it returns false
+     * @throws QueryAllException 
      */
     public static boolean runRuleTests(final Collection<RuleTest> myRuleTests,
-            final Map<URI, NormalisationRule> allNormalisationRules)
+            final Map<URI, NormalisationRule> allNormalisationRules) throws QueryAllException
     {
         boolean allPassed = true;
         
@@ -283,19 +286,37 @@ public final class RuleUtils
                         if(nextRule instanceof TransformingRule)
                         {
                             final TransformingRule transformingRule = (TransformingRule)nextRule;
-                            nextInputTestResult =
-                                    (String)transformingRule.normaliseByStage(
-                                            NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                            nextTestInputString);
+                            try
+                            {
+                                nextInputTestResult =
+                                        (String)transformingRule.normaliseByStage(
+                                                NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                                nextTestInputString);
+                            }
+                            catch(InvalidStageException e)
+                            {
+                                log.error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!", e);
+                                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI use", e);
+                            }
                         }
                         else if(nextRule instanceof ValidatingRule)
                         {
                             final ValidatingRule validatingRule = (ValidatingRule)nextRule;
                             
-                            final boolean result =
-                                    validatingRule.normaliseByStage(
-                                            NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                            nextTestInputString);
+                            boolean result = false;
+                            
+                            try
+                            {
+                                result =
+                                        validatingRule.normaliseByStage(
+                                                NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                                nextTestInputString);
+                            }
+                            catch(InvalidStageException e)
+                            {
+                                log.error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!", e);
+                                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI use", e);
+                            }
                             
                             if(!result)
                             {
@@ -304,10 +325,8 @@ public final class RuleUtils
                         }
                         else
                         {
-                            throw new UnsupportedNormalisationRuleException(
-                                    "NormalisationRule not supported nextRule.getKey()="
-                                            + nextRule.getKey().stringValue() + " nextRule.getElementTypes()="
-                                            + nextRule.getElementTypes());
+                            throw new UntestableRuleException(
+                                    "NormalisationRule type not supported for testing in this implementation", nextRule, nextRuleTest);
                         }
                     }
                 }
@@ -366,9 +385,8 @@ public final class RuleUtils
                     }
                     else
                     {
-                        throw new UnsupportedNormalisationRuleException(
-                                "NormalisationRule not supported nextRule.getKey()=" + nextRule.getKey().stringValue()
-                                        + " nextRule.getElementTypes()=" + nextRule.getElementTypes());
+                        throw new UntestableRuleException(
+                                "NormalisationRule type not supported for testing in this implementation", nextRule, nextRuleTest);
                     }
                     
                     if(nextOutputTestResult.equals(nextTestInputString))

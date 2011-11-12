@@ -66,7 +66,7 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedNamespaceEntryException("No factory available for namespace entry " + namespaceEntry);
+        throw new UnsupportedNamespaceEntryException("No factory available for namespace entry", namespaceEntry);
     }
     
     /**
@@ -86,8 +86,8 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedNormalisationRuleException("No factory available for normalisation rule "
-                + normalisationRule);
+        throw new UnsupportedNormalisationRuleException("No factory available for normalisation rule",
+                normalisationRule);
     }
     
     /**
@@ -106,7 +106,7 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedProfileException("No factory available for profile " + profile);
+        throw new UnsupportedProfileException("No factory available for profile", profile);
     }
     
     /**
@@ -125,7 +125,7 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedProjectException("No factory available for project " + project);
+        throw new UnsupportedProjectException("No factory available for project", project);
     }
     
     /**
@@ -144,7 +144,7 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedProviderException("No factory available for provider " + provider);
+        throw new UnsupportedProviderException("No factory available for provider", provider);
     }
     
     /**
@@ -164,7 +164,7 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedQueryTypeException("No factory available for query type " + queryType);
+        throw new UnsupportedQueryTypeException("No factory available for query type", queryType);
     }
     
     /**
@@ -183,7 +183,7 @@ public class ServiceUtils
             return factory.getParser();
         }
         
-        throw new UnsupportedRuleTestException("No factory available for rule test " + ruleTest);
+        throw new UnsupportedRuleTestException("No factory available for rule test", ruleTest);
     }
     
     public static Collection<QueryAllEnum> getAllEnums()

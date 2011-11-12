@@ -22,6 +22,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.utils.Constants;
+import org.queryall.exception.QueryAllException;
 import org.queryall.impl.namespace.NamespaceEntryImpl;
 import org.queryall.impl.provider.HttpSparqlProviderImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
@@ -203,9 +204,10 @@ public class QueryCreatorTest
      * Test method for
      * {@link org.queryall.query.QueryCreator#createQuery(org.queryall.api.querytype.QueryType, org.queryall.api.provider.Provider, java.util.Map, java.util.List, boolean, boolean, boolean, org.queryall.api.base.QueryAllConfiguration, java.util.Map)}
      * .
+     * @throws QueryAllException 
      */
     @Test
-    public void testCreateQuery()
+    public void testCreateQuery() throws QueryAllException
     {
         final String result1 =
                 QueryCreator.createQuery(this.testRegexInputQueryType1, this.testProvider1, this.testAttributeList1,
@@ -234,10 +236,11 @@ public class QueryCreatorTest
      * Test method for
      * {@link org.queryall.query.QueryCreator#createStaticRdfXmlString(org.queryall.api.querytype.QueryType, org.queryall.api.querytype.OutputQueryType, org.queryall.api.provider.Provider, java.util.Map, java.util.Map, java.util.List, boolean, boolean, boolean, org.queryall.api.base.QueryAllConfiguration)}
      * .
+     * @throws QueryAllException 
      */
     @Test
     @Ignore
-    public void testCreateStaticRdfXmlString()
+    public void testCreateStaticRdfXmlString() throws QueryAllException
     {
         Assert.assertEquals("testsomething", QueryCreator.createStaticRdfXmlString(this.testRegexInputQueryType3,
                 this.testRegexInputQueryType3, this.testProvider3, this.testAttributeList3,

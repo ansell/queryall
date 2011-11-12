@@ -21,6 +21,7 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.TransformingRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.RuleUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -137,12 +138,13 @@ public class QueryCreator
      * @param namespaceInputVariables
      *            TODO
      * @return
+     * @throws QueryAllException 
      */
     public static String createQuery(final QueryType queryType, final Provider nextProvider,
             final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final boolean overallConvertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings,
-            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
+            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables) throws QueryAllException
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -174,6 +176,7 @@ public class QueryCreator
      * @param convertAlternateToPreferredPrefix
      *            TODO
      * @return
+     * @throws QueryAllException 
      */
     public static String createStaticRdfXmlString(final QueryType originalQueryType,
             final OutputQueryType includedQueryType, final Provider nextProvider,
@@ -181,7 +184,7 @@ public class QueryCreator
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
             final boolean includeNonProfileMatchedRdfRules, final boolean convertAlternateToPreferredPrefix,
-            final QueryAllConfiguration localSettings)
+            final QueryAllConfiguration localSettings) throws QueryAllException
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
@@ -210,7 +213,7 @@ public class QueryCreator
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
             final boolean includeNonProfileMatchedRdfRules, final boolean overallConvertAlternateToPreferredPrefix,
-            final QueryAllConfiguration localSettings)
+            final QueryAllConfiguration localSettings) throws QueryAllException
     {
         if(QueryCreator._TRACE)
         {
@@ -1488,12 +1491,13 @@ public class QueryCreator
      * @param namespaceInputVariables
      *            TODO
      * @return
+     * @throws QueryAllException 
      */
     public static String replaceAttributesOnEndpointUrl(final String replacementString, final QueryType queryType,
             final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings,
-            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables)
+            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables) throws QueryAllException
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         

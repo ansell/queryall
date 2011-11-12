@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.queryparsers.RuleTesterQueryOptions;
 import org.queryall.utils.RuleUtils;
@@ -66,9 +68,27 @@ public class RuleTesterServlet extends HttpServlet
         @SuppressWarnings("unused")
         final List<String> automatedTestResults = new ArrayList<String>();
         
-        if(!RuleUtils.runRuleTests(allRuleTests.values(), localSettings.getAllNormalisationRules()))
+        try
+        {
+            if(!RuleUtils.runRuleTests(allRuleTests.values(), localSettings.getAllNormalisationRules()))
+            {
+                allTestsPassed = false;
+            }
+        }
+        catch(QueryAllException e)
         {
             allTestsPassed = false;
+            log.error("Found queryall checked exception while running rule tests", e);
+        }
+        catch(QueryAllRuntimeException e)
+        {
+            allTestsPassed = false;
+            log.error("Found queryall runtime exception while running rule tests", e);
+        }
+        catch(RuntimeException e)
+        {
+            allTestsPassed = false;
+            log.error("Found unknown runtime exception while running rule tests", e);
         }
         
         if(!allTestsPassed)

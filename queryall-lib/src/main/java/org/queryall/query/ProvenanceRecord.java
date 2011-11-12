@@ -30,6 +30,7 @@ import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -141,25 +142,18 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         
         // TODO: remove calls to Settings.getSettings() and
         // BlacklistController.getDefaultController() here
-        final RdfFetchController fetchController =
-                new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
-        
-        try
-        {
-            fetchController.fetchRdfForQueries();
-        }
-        catch(final InterruptedException ie)
-        {
-            ProvenanceRecord.log.error("ProvenanceRecord: interrupted exception", ie);
-            throw ie;
-        }
-        
-        final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
-        
+        RdfFetchController fetchController = null;
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;
         try
         {
+            fetchController = new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
+            
+            fetchController.fetchRdfForQueries();
+        
+            final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
+            
+
             myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
             myRepositoryConnection = myRepository.getConnection();
@@ -233,6 +227,16 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
                     ProvenanceRecord.log.error("ProvenanceRecord.fetchProvenanceForElementKey: IOException", ioe);
                 }
             } // end for(RdfFetcherQUeryRunnable nextResult : rdfResults)
+        }
+        catch(QueryAllException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch(final InterruptedException ie)
+        {
+            ProvenanceRecord.log.error("ProvenanceRecord: interrupted exception", ie);
+            throw ie;
         }
         catch(final org.openrdf.repository.RepositoryException re)
         {

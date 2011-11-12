@@ -23,6 +23,7 @@ import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -261,8 +262,16 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     {
         if(this.validStages.size() == 0)
         {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+            try
+            {
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+            }
+            catch(InvalidStageException e)
+            {
+                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+            }
         }
         
         return Collections.unmodifiableSet(this.validStages);

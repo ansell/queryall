@@ -77,6 +77,13 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnsupportedNamespaceEntryException;
+import org.queryall.exception.UnsupportedNormalisationRuleException;
+import org.queryall.exception.UnsupportedProfileException;
+import org.queryall.exception.UnsupportedProjectException;
+import org.queryall.exception.UnsupportedProviderException;
+import org.queryall.exception.UnsupportedQueryTypeException;
+import org.queryall.exception.UnsupportedRuleTestException;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
@@ -527,7 +534,7 @@ public final class RdfUtils
     
     public static Collection<QueryType> fetchQueryTypeByKey(final String hostToUse, final URI nextQueryKey,
             final int modelVersion, final QueryAllConfiguration localSettings, final HttpProvider dummyProvider,
-            final RegexInputQueryType dummyQuery) throws InterruptedException
+            final RegexInputQueryType dummyQuery) throws InterruptedException, QueryAllException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
@@ -594,7 +601,7 @@ public final class RdfUtils
     public static Collection<QueryType> fetchQueryTypeByKey(final URI nextQueryKey, final boolean useSparqlGraph,
             final String sparqlGraphUri, final String sparqlEndpointUrl, final int modelVersion,
             final QueryAllConfiguration localSettings, final HttpProvider dummyProvider,
-            final RegexInputQueryType dummyQuery)
+            final RegexInputQueryType dummyQuery) throws QueryAllException
     {
         final String constructQueryString =
                 RdfUtils.getConstructQueryForKey(nextQueryKey, useSparqlGraph, sparqlGraphUri);
@@ -1266,11 +1273,18 @@ public final class RdfUtils
                 
                 for(final NamespaceEntryEnum nextNamespaceEntryEnum : nextNamespaceEntryEnums)
                 {
-                    results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    try
+                    {
+                        results.put(
+                                nextSubjectUri,
+                                ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedNamespaceEntryException e)
+                    {
+                        log.error("Could not create a namespace entry parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getNamespaceEntryCause().getTypeURIs());
+                    }
                 }
             }
             
@@ -1386,11 +1400,18 @@ public final class RdfUtils
                 
                 for(final NormalisationRuleEnum nextNormalisationRuleEnum : nextNormalisationRuleEnums)
                 {
-                    results.put(
+                    try
+                    {
+                        results.put(
                             nextSubjectUri,
                             ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
                                     con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                     nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedNormalisationRuleException e)
+                    {
+                        log.error("Could not create a namespace rule parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getRuleCause().getTypeURIs());
+                    }
                 }
             }
             
@@ -1600,11 +1621,18 @@ public final class RdfUtils
                 
                 for(final ProfileEnum nextProfileEnum : nextProfileEnums)
                 {
-                    results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createProfileParser(nextProfileEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    try
+                    {
+                        results.put(
+                                nextSubjectUri,
+                                ServiceUtils.createProfileParser(nextProfileEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedProfileException e)
+                    {
+                        log.error("Could not create a profile parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getProfileCause().getTypeURIs());
+                    }
                 }
             }
             
@@ -1716,11 +1744,18 @@ public final class RdfUtils
                 
                 for(final ProjectEnum nextProjectEnum : nextProjectEnums)
                 {
-                    results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createProjectParser(nextProjectEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    try
+                    {
+                        results.put(
+                                nextSubjectUri,
+                                ServiceUtils.createProjectParser(nextProjectEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedProjectException e)
+                    {
+                        log.error("Could not create a project parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getProjectCause().getTypeURIs());
+                    }
                 }
             }
             
@@ -1850,11 +1885,18 @@ public final class RdfUtils
                 
                 for(final ProviderEnum nextProviderEnum : nextProviderEnums)
                 {
-                    results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createProviderParser(nextProviderEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    try
+                    {
+                        results.put(
+                                nextSubjectUri,
+                                ServiceUtils.createProviderParser(nextProviderEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedProviderException e)
+                    {
+                        log.error("Could not create a provider parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getProviderCause().getTypeURIs());
+                    }
                 }
             }
             
@@ -1968,11 +2010,18 @@ public final class RdfUtils
                 
                 for(final QueryTypeEnum nextQueryTypeEnum : nextQueryTypeEnums)
                 {
-                    results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    try
+                    {
+                        results.put(
+                                nextSubjectUri,
+                                ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedQueryTypeException e)
+                    {
+                        log.error("Could not create a query type parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getQueryTypeCause().getTypeURIs());
+                    }
                 }
             }
             
@@ -2013,7 +2062,7 @@ public final class RdfUtils
     
     public static Collection<QueryType> getQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
             final int modelVersion, final QueryAllConfiguration localSettings,
-            final BlacklistController blacklistController)
+            final BlacklistController blacklistController) throws QueryAllException
     {
         // TODO: remove call to BlacklistController.getDefaultController() here
         final RdfFetchController fetchController =
@@ -2103,7 +2152,7 @@ public final class RdfUtils
         }
         catch(final org.openrdf.repository.RepositoryException re)
         {
-            RdfUtils.log.error("getQueryTypesForQueryBundles: RepositoryException outer", re);
+            throw new QueryAllException("RepositoryException found", re);
         }
         finally
         {
@@ -2198,11 +2247,18 @@ public final class RdfUtils
                 
                 for(final RuleTestEnum nextRuleTestEnum : nextRuleTestEnums)
                 {
-                    results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    try
+                    {
+                        results.put(
+                                nextSubjectUri,
+                                ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                    }
+                    catch(UnsupportedRuleTestException e)
+                    {
+                        log.error("Could not create a rule test parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getRuleTestCause().getTypeURIs());
+                    }
                 }
             }
             

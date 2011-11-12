@@ -20,6 +20,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.exception.QueryAllException;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -155,9 +156,10 @@ public class SpinNormalisationRuleImplTest
      * Test method for
      * {@link org.queryall.impl.rdfrule.SpinUtils#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}
      * .
+     * @throws QueryAllException 
      */
     @Test
-    public void testAddJenaModelToSesameRepository() throws OpenRDFException
+    public void testAddJenaModelToSesameRepository() throws OpenRDFException, QueryAllException
     {
         final Repository results = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
         
@@ -186,7 +188,7 @@ public class SpinNormalisationRuleImplTest
     }
     
     @Test
-    public void testProcessSpinRulesByClasspathRef() throws OpenRDFException
+    public void testProcessSpinRulesByClasspathRef() throws OpenRDFException, QueryAllException
     {
         final RepositoryConnection testRepositoryConnection = this.testRepository.getConnection();
         
@@ -211,7 +213,7 @@ public class SpinNormalisationRuleImplTest
     }
     
     @Test
-    public void testProcessSpinRulesByURL() throws OpenRDFException
+    public void testProcessSpinRulesByURL() throws OpenRDFException, QueryAllException
     {
         final RepositoryConnection testRepositoryConnection = this.testRepository.getConnection();
         

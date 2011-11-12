@@ -23,6 +23,9 @@ import org.queryall.api.rdfrule.SparqlAskRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.ValidationFailedException;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -194,8 +197,16 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     {
         if(this.validStages.size() == 0)
         {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+            try
+            {
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+            }
+            catch(InvalidStageException e)
+            {
+                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+            }
         }
         
         return Collections.unmodifiableSet(this.validStages);
@@ -236,9 +247,16 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     }
     
     @Override
-    public boolean stageAfterResultsImport(final Object input)
+    public boolean stageAfterResultsImport(final Object input) throws ValidationFailedException
     {
-        return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+        try
+        {
+            return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+        }
+        catch(QueryAllException e)
+        {
+            throw new ValidationFailedException(e);
+        }
     }
     
     @Override
@@ -248,15 +266,29 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     }
     
     @Override
-    public boolean stageAfterResultsToPool(final Object input)
+    public boolean stageAfterResultsToPool(final Object input) throws ValidationFailedException
     {
-        return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+        try
+        {
+            return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+        }
+        catch(QueryAllException e)
+        {
+            throw new ValidationFailedException(e);
+        }
     }
     
     @Override
-    public boolean stageBeforeResultsImport(final Object input)
+    public boolean stageBeforeResultsImport(final Object input) throws ValidationFailedException
     {
-        return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+        try
+        {
+            return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+        }
+        catch(QueryAllException e)
+        {
+            throw new ValidationFailedException(e);
+        }
     }
     
     @Override

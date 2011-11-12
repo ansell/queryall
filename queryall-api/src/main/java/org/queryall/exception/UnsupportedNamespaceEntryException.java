@@ -4,6 +4,7 @@
 package org.queryall.exception;
 
 import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.namespace.NamespaceEntryEnum;
 
 /**
  * An exception that is thrown when an unknown NamespaceEntry is encountered
@@ -17,7 +18,7 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-    private NamespaceEntry namespaceEntryCause;
+    private NamespaceEntryEnum namespaceEntryCause;
     
     /**
      * 
@@ -38,7 +39,7 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedNamespaceEntryException(final String message, NamespaceEntry nextNamespaceEntry)
+    public UnsupportedNamespaceEntryException(final String message, NamespaceEntryEnum nextNamespaceEntry)
     {
         super(message);
         this.setNamespaceEntryCause(nextNamespaceEntry);
@@ -57,7 +58,7 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedNamespaceEntryException(final String message, NamespaceEntry nextNamespaceEntry, final Throwable cause)
+    public UnsupportedNamespaceEntryException(final String message, NamespaceEntryEnum nextNamespaceEntry, final Throwable cause)
     {
         super(message, cause);
         this.setNamespaceEntryCause(nextNamespaceEntry);
@@ -74,7 +75,7 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
     /**
      * @return the namespaceEntryCause
      */
-    public NamespaceEntry getNamespaceEntryCause()
+    public NamespaceEntryEnum getNamespaceEntryCause()
     {
         return namespaceEntryCause;
     }
@@ -82,7 +83,7 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
     /**
      * @param namespaceEntryCause the namespaceEntryCause to set
      */
-    public void setNamespaceEntryCause(NamespaceEntry namespaceEntryCause)
+    public void setNamespaceEntryCause(NamespaceEntryEnum namespaceEntryCause)
     {
         this.namespaceEntryCause = namespaceEntryCause;
     }

@@ -4,6 +4,7 @@
 package org.queryall.exception;
 
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileEnum;
 
 /**
  * An exception that is thrown when an unknown Profile is encountered
@@ -17,7 +18,7 @@ public class UnsupportedProfileException extends QueryAllException
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-    private Profile profileCause;
+    private ProfileEnum profileCause;
     
     /**
      * 
@@ -38,7 +39,7 @@ public class UnsupportedProfileException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedProfileException(final String message, Profile nextProfile)
+    public UnsupportedProfileException(final String message, ProfileEnum nextProfile)
     {
         super(message);
         this.setProfileCause(nextProfile);
@@ -57,7 +58,7 @@ public class UnsupportedProfileException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedProfileException(final String message, Profile nextProfile, final Throwable cause)
+    public UnsupportedProfileException(final String message, ProfileEnum nextProfile, final Throwable cause)
     {
         super(message, cause);
         this.setProfileCause(nextProfile);
@@ -74,7 +75,7 @@ public class UnsupportedProfileException extends QueryAllException
     /**
      * @return the profileCause
      */
-    public Profile getProfileCause()
+    public ProfileEnum getProfileCause()
     {
         return profileCause;
     }
@@ -82,7 +83,7 @@ public class UnsupportedProfileException extends QueryAllException
     /**
      * @param profileCause the profileCause to set
      */
-    public void setProfileCause(Profile profileCause)
+    public void setProfileCause(ProfileEnum profileCause)
     {
         this.profileCause = profileCause;
     }

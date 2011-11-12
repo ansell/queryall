@@ -4,6 +4,7 @@
 package org.queryall.api.rdfrule;
 
 import org.openrdf.model.URI;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.ValidationFailedException;
 
 /**
@@ -13,7 +14,7 @@ import org.queryall.exception.ValidationFailedException;
  */
 public interface ValidatingRule extends NormalisationRule
 {
-    boolean normaliseByStage(URI stage, Object input) throws ValidationFailedException;
+    boolean normaliseByStage(URI stage, Object input) throws InvalidStageException, ValidationFailedException;
     
     boolean stageAfterQueryCreation(Object input) throws ValidationFailedException;
     

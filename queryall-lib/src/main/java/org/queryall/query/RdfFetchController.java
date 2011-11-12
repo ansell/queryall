@@ -26,6 +26,8 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnnormalisableRuleException;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
@@ -143,9 +145,10 @@ public class RdfFetchController
      * @param settingsClass
      * @param localBlacklistController
      * @param nextQueryBundles
+     * @throws QueryAllException 
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
-            final BlacklistController localBlacklistController, final Collection<QueryBundle> nextQueryBundles)
+            final BlacklistController localBlacklistController, final Collection<QueryBundle> nextQueryBundles) throws QueryAllException
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -168,11 +171,12 @@ public class RdfFetchController
      * @param nextUseDefaultProviders
      * @param nextRealHostName
      * @param nextPageOffset
+     * @throws QueryAllException 
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final Map<String, String> nextQueryParameters,
             final List<Profile> nextIncludedSortedProfiles, final boolean nextUseDefaultProviders,
-            final String nextRealHostName, final int nextPageOffset)
+            final String nextRealHostName, final int nextPageOffset) throws QueryAllException
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -209,7 +213,7 @@ public class RdfFetchController
         return this.namespaceNotRecognised;
     }
     
-    public void fetchRdfForQueries() throws InterruptedException
+    public void fetchRdfForQueries() throws InterruptedException, UnnormalisableRuleException, QueryAllException
     {
         RdfFetchController.fetchRdfForQueries(this.getFetchThreadGroup());
         
@@ -416,11 +420,12 @@ public class RdfFetchController
     /**
      * @param nextQueryType
      * @param chosenProviders
+     * @throws QueryAllException 
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
             final QueryAllConfiguration localSettings, final QueryType nextQueryType,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
-            final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider)
+            final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider) throws QueryAllException
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
@@ -756,7 +761,7 @@ public class RdfFetchController
     
     // Synchronize access to this method to ensure that only one thread tries to setup queryBundles
     // for each controller instance
-    private synchronized void initialise()
+    private synchronized void initialise() throws QueryAllException
     {
         final long start = System.currentTimeMillis();
         

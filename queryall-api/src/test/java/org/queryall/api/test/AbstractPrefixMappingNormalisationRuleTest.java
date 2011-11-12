@@ -27,6 +27,8 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
+import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +165,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
      */
     @Ignore
     @Test
-    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException, QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -231,10 +233,11 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
+     * @throws QueryAllException 
      */
     @Test
     public void testMoreAddMatchingTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException
+        MalformedQueryException, QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://bio2rdf.org/po:0000198");
         

@@ -184,8 +184,9 @@ public abstract class BaseRuleImpl implements NormalisationRule
      * Internal method used by subclasses to add each of their valid stages to the internal list
      * 
      * @return the validStages
+     * @throws InvalidStageException 
      */
-    protected void addValidStage(final URI validStage)
+    protected void addValidStage(final URI validStage) throws InvalidStageException
     {
         if(validStage == null)
         {

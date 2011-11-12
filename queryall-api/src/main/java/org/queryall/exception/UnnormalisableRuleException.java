@@ -7,23 +7,23 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 
 /**
- * An exception that is thrown when an unknown NormalisationRule is encountered
+ * An exception that is thrown when an unknown NormalisationRule is encountered during normalisation
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedNormalisationRuleException extends QueryAllException
+public class UnnormalisableRuleException extends QueryAllRuntimeException
 {
     
     /**
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-    private NormalisationRuleEnum ruleCause;
+    private NormalisationRule ruleCause;
     
     /**
      * 
      */
-    public UnsupportedNormalisationRuleException()
+    public UnnormalisableRuleException()
     {
         super();
     }
@@ -31,7 +31,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedNormalisationRuleException(final String message)
+    public UnnormalisableRuleException(final String message)
     {
         super(message);
     }
@@ -39,7 +39,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedNormalisationRuleException(final String message, NormalisationRuleEnum nextRule)
+    public UnnormalisableRuleException(final String message, NormalisationRule nextRule)
     {
         super(message);
         this.setRuleCause(nextRule);
@@ -49,7 +49,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedNormalisationRuleException(final String message, final Throwable cause)
+    public UnnormalisableRuleException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
@@ -58,7 +58,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedNormalisationRuleException(final String message, NormalisationRuleEnum nextRule, final Throwable cause)
+    public UnnormalisableRuleException(final String message, NormalisationRule nextRule, final Throwable cause)
     {
         super(message, cause);
         this.setRuleCause(nextRule);
@@ -67,7 +67,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     /**
      * @param cause
      */
-    public UnsupportedNormalisationRuleException(final Throwable cause)
+    public UnnormalisableRuleException(final Throwable cause)
     {
         super(cause);
     }
@@ -75,7 +75,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     /**
      * @return the ruleCause
      */
-    public NormalisationRuleEnum getRuleCause()
+    public NormalisationRule getRuleCause()
     {
         return ruleCause;
     }
@@ -83,7 +83,7 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     /**
      * @param ruleCause the ruleCause to set
      */
-    public void setRuleCause(NormalisationRuleEnum ruleCause)
+    public void setRuleCause(NormalisationRule ruleCause)
     {
         this.ruleCause = ruleCause;
     }

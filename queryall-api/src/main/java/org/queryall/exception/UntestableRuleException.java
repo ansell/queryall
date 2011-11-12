@@ -3,6 +3,7 @@
  */
 package org.queryall.exception;
 
+import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestEnum;
 
@@ -11,19 +12,20 @@ import org.queryall.api.ruletest.RuleTestEnum;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class UnsupportedRuleTestException extends QueryAllException
+public class UntestableRuleException extends QueryAllException
 {
     
     /**
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
-    private RuleTestEnum ruleTestCause;
+    private RuleTest ruleTestCause;
+    private NormalisationRule ruleCause;
     
     /**
      * 
      */
-    public UnsupportedRuleTestException()
+    public UntestableRuleException()
     {
         super();
     }
@@ -31,7 +33,7 @@ public class UnsupportedRuleTestException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedRuleTestException(final String message)
+    public UntestableRuleException(final String message)
     {
         super(message);
     }
@@ -39,9 +41,10 @@ public class UnsupportedRuleTestException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedRuleTestException(final String message, RuleTestEnum nextRuleTest)
+    public UntestableRuleException(final String message, NormalisationRule nextRule, RuleTest nextRuleTest)
     {
         super(message);
+        this.setRuleCause(nextRule);
         this.setRuleTestCause(nextRuleTest);
     }
     
@@ -49,7 +52,7 @@ public class UnsupportedRuleTestException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedRuleTestException(final String message, final Throwable cause)
+    public UntestableRuleException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
@@ -58,16 +61,17 @@ public class UnsupportedRuleTestException extends QueryAllException
      * @param message
      * @param cause
      */
-    public UnsupportedRuleTestException(final String message, RuleTestEnum nextRuleTest, final Throwable cause)
+    public UntestableRuleException(final String message, NormalisationRule nextRule, RuleTest nextRuleTest, final Throwable cause)
     {
         super(message, cause);
+        this.setRuleCause(nextRule);
         this.setRuleTestCause(nextRuleTest);
     }
     
     /**
      * @param cause
      */
-    public UnsupportedRuleTestException(final Throwable cause)
+    public UntestableRuleException(final Throwable cause)
     {
         super(cause);
     }
@@ -75,7 +79,7 @@ public class UnsupportedRuleTestException extends QueryAllException
     /**
      * @return the ruleTestCause
      */
-    public RuleTestEnum getRuleTestCause()
+    public RuleTest getRuleTestCause()
     {
         return ruleTestCause;
     }
@@ -83,9 +87,25 @@ public class UnsupportedRuleTestException extends QueryAllException
     /**
      * @param ruleTestCause the ruleTestCause to set
      */
-    public void setRuleTestCause(RuleTestEnum ruleTestCause)
+    public void setRuleTestCause(RuleTest ruleTestCause)
     {
         this.ruleTestCause = ruleTestCause;
+    }
+
+    /**
+     * @return the ruleCause
+     */
+    public NormalisationRule getRuleCause()
+    {
+        return ruleCause;
+    }
+
+    /**
+     * @param ruleCause the ruleCause to set
+     */
+    public void setRuleCause(NormalisationRule ruleCause)
+    {
+        this.ruleCause = ruleCause;
     }
     
 }
