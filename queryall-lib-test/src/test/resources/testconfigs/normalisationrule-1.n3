@@ -30,7 +30,7 @@
 	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
 	
-<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriask> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:TransformationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlAskRule> ;
+<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriask> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:ValidationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlAskRule> ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:symbol> ;
     <http://purl.org/queryall/rdfrule:sparqlWherePattern> " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . " ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsImport> ;
