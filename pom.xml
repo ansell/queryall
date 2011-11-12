@@ -15,7 +15,7 @@
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>
 		<module>queryall-ext-rule-prefixmap</module>
-		<module>queryall-ext-rule-spin</module>
+		
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
