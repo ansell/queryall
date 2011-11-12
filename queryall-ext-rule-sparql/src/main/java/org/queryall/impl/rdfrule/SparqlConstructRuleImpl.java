@@ -93,7 +93,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
+                    && nextStatement.getObject().equals(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri()))
             {
                 if(SparqlConstructRuleImpl._TRACE)
                 {

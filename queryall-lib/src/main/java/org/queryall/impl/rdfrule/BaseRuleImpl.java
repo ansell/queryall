@@ -170,8 +170,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
         }
         else
         {
-            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages stage="
-                    + stage);
+            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages", this, stage);
         }
     }
     
@@ -202,7 +201,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
             else
             {
                 throw new InvalidStageException(
-                        "Could not assign a stage as valid as it was not recognised validStage=" + validStage);
+                        "Could not assign a stage as valid as it was not recognised as a stage by this implementation", this, validStage);
             }
         }
     }
@@ -402,7 +401,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
                     // hide the TransformationRule and ValidationRule types from clients below
                     // version 5 so that it will not prevent them parsing the rules,
                     // as the types here need to be a subset of the types in the clients
-                    // implementation, and these types would break all version 4 systems otherwise
+                    // implementation, and these types would break all version 1-4 systems otherwise
                     if(modelVersion < 5)
                     {
                         if(!nextElementType.equals(TransformingRuleSchema.getTransformingRuleTypeUri()) && !nextElementType
@@ -481,13 +480,13 @@ public abstract class BaseRuleImpl implements NormalisationRule
     }
     
     @Override
-    public boolean usedInStage(final org.openrdf.model.URI stage)
+    public final boolean usedInStage(final org.openrdf.model.URI stage)
     {
         return this.getStages().contains(stage);
     }
     
     @Override
-    public boolean validInStage(final org.openrdf.model.URI stage)
+    public final boolean validInStage(final org.openrdf.model.URI stage)
     {
         return this.getValidStages().contains(stage);
     }

@@ -89,7 +89,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
+                    && nextStatement.getObject().equals(SparqlAskRuleSchema.getSparqlAskRuleTypeUri()))
             {
                 if(SparqlAskRuleImpl._TRACE)
                 {

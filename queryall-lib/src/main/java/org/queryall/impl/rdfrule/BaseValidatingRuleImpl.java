@@ -60,8 +60,7 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
                                 + stage);
             }
             
-            throw new ValidationFailedException("Found an invalid stage for this type of rule this.getKey()="
-                    + this.getKey().stringValue() + " stage=" + stage.stringValue());
+            throw new InvalidStageException("Attempted to use this rule on an invalid stage", this, stage);
         }
         
         if(!this.usedInStage(stage))
@@ -107,7 +106,7 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
             return this.stageAfterResultsToDocument(input);
         }
         
-        throw new InvalidStageException("Normalisation rule stage unknown : stage=" + stage);
+        throw new InvalidStageException("Normalisation rule stage unknown", this, stage);
     }
     
 }

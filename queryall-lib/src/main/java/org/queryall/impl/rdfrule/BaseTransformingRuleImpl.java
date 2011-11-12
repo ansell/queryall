@@ -59,7 +59,7 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
                                 + stage);
             }
             
-            return input;
+            throw new InvalidStageException("Attempted to use this rule on an invalid stage", this, stage);
         }
         
         if(!this.usedInStage(stage))
@@ -71,6 +71,8 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
                                 + this.getKey().stringValue() + " stage=" + stage);
             }
             
+            // Don't failover just because they attempted to normalise this rule when it was a valid
+            // stage, but not used by this rule
             return input;
         }
         
@@ -103,6 +105,6 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
             return this.stageAfterResultsToDocument(input);
         }
         
-        throw new InvalidStageException("Normalisation rule stage unknown : stage=" + stage);
+        throw new InvalidStageException("Normalisation rule stage unknown", this, stage);
     }
 }
