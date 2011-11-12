@@ -1302,7 +1302,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextUris)
         throws OpenRDFException
     {
         // String nTriplesInsertString = "";
@@ -1315,14 +1315,14 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
             
             final ValueFactory f = Constants.valueFactory;
             
-            if((keyToUse == null))
+            if((contextUris == null))
             {
                 StatisticsEntry.log.error("StatisticsEntry.toRdf: keyToUse was empty");
                 
                 return false;
             }
             
-            final URI keyUri = keyToUse;
+            final URI keyUri = this.getKey();
             
             if(this.currentDate == null)
             {
@@ -1355,28 +1355,28 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
             
             connection.setAutoCommit(false);
             
-            connection.add(keyUri, RDF.TYPE, StatisticsEntry.statisticsTypeUri, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticscurrentdatetimeUri, currentDateLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsconfigVersionUri, configVersionLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsreadtimeoutUri, readtimeoutLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsconnecttimeoutUri, connecttimeoutLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsuserHostAddressUri, userHostAddressLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsuserAgentUri, userAgentLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsrealHostNameUri, realHostNameLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsqueryStringUri, queryStringLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsresponseTimeUri, responseTimeLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumLatencyUri, sumLatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumQueriesUri, sumQueriesLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral, keyUri);
+            connection.add(keyUri, RDF.TYPE, StatisticsEntry.statisticsTypeUri, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticscurrentdatetimeUri, currentDateLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsconfigVersionUri, configVersionLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsreadtimeoutUri, readtimeoutLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsconnecttimeoutUri, connecttimeoutLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsuserHostAddressUri, userHostAddressLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsuserAgentUri, userAgentLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsrealHostNameUri, realHostNameLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsqueryStringUri, queryStringLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsresponseTimeUri, responseTimeLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumLatencyUri, sumLatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumQueriesUri, sumQueriesLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral, contextUris);
             connection.add(keyUri, StatisticsEntry.statisticsserverSoftwareVersionUri, serverSoftwareVersionLiteral,
-                    keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, keyUri);
+                    contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, contextUris);
             connection.add(keyUri, StatisticsEntry.statisticsrequestedContentTypeUri, requestedContentTypeLiteral,
-                    keyUri);
+                    contextUris);
             
             if(this.profileUris != null)
             {
@@ -1385,7 +1385,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextProfileUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsprofileUrisUri, f.createURI(nextProfileUri),
-                                keyUri);
+                                contextUris);
                     }
                 }
             }
@@ -1397,7 +1397,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextSuccessfulProvidersUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticssuccessfulproviderUrisUri,
-                                f.createLiteral(nextSuccessfulProvidersUri), keyUri);
+                                f.createLiteral(nextSuccessfulProvidersUri), contextUris);
                     }
                 }
             }
@@ -1409,7 +1409,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextErrorProvidersUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticserrorproviderUrisUri,
-                                f.createLiteral(nextErrorProvidersUri), keyUri);
+                                f.createLiteral(nextErrorProvidersUri), contextUris);
                     }
                 }
             }
@@ -1421,7 +1421,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextConfigLocation.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsconfigLocationsUri,
-                                f.createLiteral(nextConfigLocation), keyUri);
+                                f.createLiteral(nextConfigLocation), contextUris);
                     }
                 }
             }
@@ -1433,7 +1433,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextQuerytypeUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsquerytypeUrisUri,
-                                f.createURI(nextQuerytypeUri), keyUri);
+                                f.createURI(nextQuerytypeUri), contextUris);
                     }
                 }
             }
@@ -1445,7 +1445,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextNamespaceUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsnamespaceUrisUri,
-                                f.createURI(nextNamespaceUri), keyUri);
+                                f.createURI(nextNamespaceUri), contextUris);
                     }
                 }
             }

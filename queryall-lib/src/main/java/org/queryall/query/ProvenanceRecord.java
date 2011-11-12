@@ -549,7 +549,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         {
             ProvenanceRecord.log.debug("ProvenanceRecord.toRdf: 1");
             // create some resources and literals to make statements out of
-            final URI provenanceInstanceUri = keyToUse;
+            final URI provenanceInstanceUri = this.getKey();
             
             // allow automatic creation of recordDate at this point if it has not been previously
             // specified
@@ -572,21 +572,21 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
             
             con.setAutoCommit(false);
             
-            con.add(provenanceInstanceUri, RDF.TYPE, ProvenanceRecord.provenanceTypeUri, provenanceInstanceUri);
+            con.add(provenanceInstanceUri, RDF.TYPE, ProvenanceRecord.provenanceTypeUri, keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceHasAuthorOpenIDUri, hasAuthorOpenIDLiteral,
-                    provenanceInstanceUri);
+                    keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementTypeUri, elementTypeLiteral,
-                    provenanceInstanceUri);
+                    keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementKeyUri, elementKeyLiteral,
-                    provenanceInstanceUri);
+                    keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceRecordDateUri, recordDateLiteral,
-                    provenanceInstanceUri);
+                    keyToUse);
             
             if(this.unrecognisedStatements != null)
             {
                 for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
                 {
-                    con.add(nextUnrecognisedStatement);
+                    con.add(nextUnrecognisedStatement, keyToUse);
                 }
             }
             
