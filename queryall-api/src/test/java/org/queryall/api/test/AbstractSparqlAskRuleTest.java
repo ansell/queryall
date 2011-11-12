@@ -24,6 +24,8 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlAskRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
+import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.ValidationFailedException;
 
 /**
  * Abstract unit test for SparqlNormalisationRule API.
@@ -189,10 +191,12 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
+     * @throws InvalidStageException 
+     * @throws ValidationFailedException 
      */
     @Test
     public void testNegativeMatchTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException
+        MalformedQueryException, InvalidStageException, ValidationFailedException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -235,10 +239,12 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
+     * @throws ValidationFailedException 
+     * @throws InvalidStageException 
      */
     @Test
     public void testPositiveMatchTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException
+        MalformedQueryException, InvalidStageException, ValidationFailedException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
