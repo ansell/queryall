@@ -3,8 +3,10 @@
  */
 package org.queryall.exception;
 
+import org.queryall.api.provider.Provider;
+
 /**
- * An exception that is thrown when an unknown Provider is given to the ProviderRegistry
+ * An exception that is thrown when an unknown Provider is encountered
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -15,6 +17,7 @@ public class UnsupportedProviderException extends QueryAllException
      * 
      */
     private static final long serialVersionUID = 6962509127774602019L;
+    private Provider providerCause;
     
     /**
      * 
@@ -34,6 +37,15 @@ public class UnsupportedProviderException extends QueryAllException
     
     /**
      * @param message
+     */
+    public UnsupportedProviderException(final String message, Provider nextProvider)
+    {
+        super(message);
+        this.setProviderCause(nextProvider);
+    }
+    
+    /**
+     * @param message
      * @param cause
      */
     public UnsupportedProviderException(final String message, final Throwable cause)
@@ -42,11 +54,37 @@ public class UnsupportedProviderException extends QueryAllException
     }
     
     /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedProviderException(final String message, Provider nextProvider, final Throwable cause)
+    {
+        super(message, cause);
+        this.setProviderCause(nextProvider);
+    }
+    
+    /**
      * @param cause
      */
     public UnsupportedProviderException(final Throwable cause)
     {
         super(cause);
+    }
+
+    /**
+     * @return the providerCause
+     */
+    public Provider getProviderCause()
+    {
+        return providerCause;
+    }
+
+    /**
+     * @param providerCause the providerCause to set
+     */
+    public void setProviderCause(Provider providerCause)
+    {
+        this.providerCause = providerCause;
     }
     
 }
