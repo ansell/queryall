@@ -2254,7 +2254,7 @@ public final class RdfUtils
         
         // All queryall objects can be serialised to RDF using this method, along with a given
         // subject URI, which in this case is derived from the object
-        final boolean rdfOkay = rdfObject.toRdf(myRepository, rdfObject.getKey(), Settings.CONFIG_API_VERSION);
+        final boolean rdfOkay = rdfObject.toRdf(myRepository, Settings.CONFIG_API_VERSION, rdfObject.getKey());
         
         if(!rdfOkay && isInsert)
         {

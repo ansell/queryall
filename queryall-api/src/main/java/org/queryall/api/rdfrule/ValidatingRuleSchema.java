@@ -39,7 +39,7 @@ public class ValidatingRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        ValidatingRuleSchema.setValidatingRuleTypeUri(f.createURI(baseUri, "ValidatingNormalisationRule"));
+        ValidatingRuleSchema.setValidatingRuleTypeUri(f.createURI(baseUri, "ValidationRule"));
         
     }
     

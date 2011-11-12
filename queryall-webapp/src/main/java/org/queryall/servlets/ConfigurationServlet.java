@@ -223,7 +223,7 @@ public class ConfigurationServlet extends HttpServlet
                     {
                         try
                         {
-                            if(!allProviders.get(nextProviderKey).toRdf(myRepository, nextProviderKey, apiVersion))
+                            if(!allProviders.get(nextProviderKey).toRdf(myRepository, apiVersion, nextProviderKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Provider was not placed correctly in the rdf store key="
@@ -251,7 +251,7 @@ public class ConfigurationServlet extends HttpServlet
                     {
                         try
                         {
-                            if(!allQueries.get(nextQueryKey).toRdf(myRepository, nextQueryKey, apiVersion))
+                            if(!allQueries.get(nextQueryKey).toRdf(myRepository, apiVersion, nextQueryKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Custom Query was not placed correctly in the rdf store key="
@@ -280,7 +280,7 @@ public class ConfigurationServlet extends HttpServlet
                         try
                         {
                             if(!allNormalisationRules.get(nextNormalisationRuleKey).toRdf(myRepository,
-                                    nextNormalisationRuleKey, apiVersion))
+                                    apiVersion, nextNormalisationRuleKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Rdf Normalisation Rule was not placed correctly in the rdf store key="
@@ -307,7 +307,7 @@ public class ConfigurationServlet extends HttpServlet
                     {
                         try
                         {
-                            if(!allRuleTests.get(nextRuleTestKey).toRdf(myRepository, nextRuleTestKey, apiVersion))
+                            if(!allRuleTests.get(nextRuleTestKey).toRdf(myRepository, apiVersion, nextRuleTestKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Rule Test was not placed correctly in the rdf store key="
@@ -333,7 +333,7 @@ public class ConfigurationServlet extends HttpServlet
                         try
                         {
                             if(!allNamespaceEntries.get(nextNamespaceEntryKey).toRdf(myRepository,
-                                    nextNamespaceEntryKey, apiVersion))
+                                    apiVersion, nextNamespaceEntryKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Namespace Entry was not placed correctly in the rdf store key="
@@ -361,7 +361,7 @@ public class ConfigurationServlet extends HttpServlet
                             // log.info("Debug-configuration: nextProfileKey="+nextProfileKey);
                             
                             if(!allProfiles.get(nextProfileKey).toRdf(myRepository,
-                                    allProfiles.get(nextProfileKey).getKey(), apiVersion))
+                                    apiVersion, allProfiles.get(nextProfileKey).getKey()))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Profile was not placed correctly in the rdf store key="

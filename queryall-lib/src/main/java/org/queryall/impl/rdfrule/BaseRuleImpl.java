@@ -22,6 +22,8 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRuleSchema;
+import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
@@ -356,7 +358,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -367,7 +369,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
         {
             if(BaseRuleImpl._DEBUG)
             {
-                BaseRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                BaseRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + contextKey);
             }
             
             final URI keyUri = this.getKey();
@@ -391,39 +393,54 @@ public abstract class BaseRuleImpl implements NormalisationRule
             
             if(modelVersion <= 2)
             {
-                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.version2NormalisationRuleTypeUri, keyToUse);
+                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.version2NormalisationRuleTypeUri, contextKey);
             }
             else
             {
                 for(final URI nextElementType : this.getElementTypes())
                 {
-                    con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
+                    // hide the TransformationRule and ValidationRule types from clients below
+                    // version 5 so that it will not prevent them parsing the rules,
+                    // as the types here need to be a subset of the types in the clients
+                    // implementation, and these types would break all version 4 systems otherwise
+                    if(modelVersion < 5)
+                    {
+                        if(!nextElementType.equals(TransformingRuleSchema.getTransformingRuleTypeUri()) && !nextElementType
+                                    .equals(ValidatingRuleSchema.getValidatingRuleTypeUri()))
+                        {
+                            con.add(keyUri, RDF.TYPE, nextElementType, contextKey);
+                        }
+                    }
+                    else
+                    {
+                        con.add(keyUri, RDF.TYPE, nextElementType, contextKey);
+                    }
                 }
             }
             
-            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, contextKey);
             
             if(modelVersion == 1)
             {
-                con.add(keyUri, NormalisationRuleSchema.getRdfruleDescription(), descriptionLiteral, keyToUse);
+                con.add(keyUri, NormalisationRuleSchema.getRdfruleDescription(), descriptionLiteral, contextKey);
             }
             else
             {
-                con.add(keyUri, RDFS.COMMENT, descriptionLiteral, keyToUse);
+                con.add(keyUri, RDFS.COMMENT, descriptionLiteral, contextKey);
             }
             
-            con.add(keyUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+            con.add(keyUri, Constants.DC_TITLE, titleLiteral, contextKey);
             
-            con.add(keyUri, NormalisationRuleSchema.getRdfruleOrder(), orderLiteral, keyToUse);
+            con.add(keyUri, NormalisationRuleSchema.getRdfruleOrder(), orderLiteral, contextKey);
             con.add(keyUri, ProfileSchema.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral,
-                    keyToUse);
+                    contextKey);
             
             if(this.getRelatedNamespaces() != null)
             {
                 for(final URI nextRelatedNamespace : this.getRelatedNamespaces())
                 {
                     con.add(keyUri, NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), nextRelatedNamespace,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -431,7 +448,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
             {
                 for(final URI nextStage : this.stages)
                 {
-                    con.add(keyUri, NormalisationRuleSchema.getRdfruleStage(), nextStage, keyToUse);
+                    con.add(keyUri, NormalisationRuleSchema.getRdfruleStage(), nextStage, contextKey);
                 }
             }
             
@@ -439,7 +456,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
             {
                 for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
                 {
-                    con.add(nextUnrecognisedStatement, keyToUse);
+                    con.add(nextUnrecognisedStatement, contextKey);
                 }
             }
             

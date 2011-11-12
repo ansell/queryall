@@ -57,5 +57,5 @@ public interface BaseQueryAllInterface
      * 
      * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
      **/
-    boolean toRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException;
+    boolean toRdf(Repository myRepository, int modelVersion, URI... contextUri) throws OpenRDFException;
 }

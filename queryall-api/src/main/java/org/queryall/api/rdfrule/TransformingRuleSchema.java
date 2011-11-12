@@ -39,7 +39,7 @@ public class TransformingRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        TransformingRuleSchema.setTransformingRuleTypeUri(f.createURI(baseUri, "TransformingNormalisationRule"));
+        TransformingRuleSchema.setTransformingRuleTypeUri(f.createURI(baseUri, "TransformationRule"));
         
     }
     

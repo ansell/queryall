@@ -714,7 +714,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
             myRepository.initialize();
             
             @SuppressWarnings("unused")
-            final boolean rdfOkay = this.toRdf(myRepository, this.getKey(), modelVersion);
+            final boolean rdfOkay = this.toRdf(myRepository, modelVersion, this.getKey());
             
             final RDFFormat writerFormat = Rio.getWriterFormatForMIMEType("text/plain");
             
@@ -1302,7 +1302,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
         // String nTriplesInsertString = "";

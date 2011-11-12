@@ -702,7 +702,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();

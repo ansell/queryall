@@ -380,10 +380,10 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
-        super.toRdf(myRepository, keyToUse, modelVersion);
+        super.toRdf(myRepository, modelVersion, keyToUse);
         
         final RepositoryConnection con = myRepository.getConnection();
         
