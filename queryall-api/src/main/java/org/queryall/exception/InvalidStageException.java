@@ -4,7 +4,8 @@ import org.openrdf.model.URI;
 import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
- * This exception is thrown if a stage is attempted to be used or added to a rule in an invalid manner.
+ * This exception is thrown if a stage is attempted to be used or added to a rule in an invalid
+ * manner.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -24,9 +25,17 @@ public class InvalidStageException extends QueryAllException
         super(message);
     }
     
-    public InvalidStageException(final String message, NormalisationRule nextRule, URI invalidStage)
+    public InvalidStageException(final String message, final NormalisationRule nextRule, final URI invalidStage)
     {
         super(message);
+        this.setRuleCause(nextRule);
+        this.setInvalidStageCause(invalidStage);
+    }
+    
+    public InvalidStageException(final String message, final NormalisationRule nextRule, final URI invalidStage,
+            final Throwable cause)
+    {
+        super(message, cause);
         this.setRuleCause(nextRule);
         this.setInvalidStageCause(invalidStage);
     }
@@ -36,47 +45,42 @@ public class InvalidStageException extends QueryAllException
         super(message, cause);
     }
     
-    public InvalidStageException(final String message, NormalisationRule nextRule, URI invalidStage, final Throwable cause)
-    {
-        super(message, cause);
-        this.setRuleCause(nextRule);
-        this.setInvalidStageCause(invalidStage);
-    }
-    
     public InvalidStageException(final Throwable cause)
     {
         super(cause);
     }
-
-    /**
-     * @return the ruleCause
-     */
-    public NormalisationRule getRuleCause()
-    {
-        return ruleCause;
-    }
-
-    /**
-     * @param ruleCause the ruleCause to set
-     */
-    public void setRuleCause(NormalisationRule ruleCause)
-    {
-        this.ruleCause = ruleCause;
-    }
-
+    
     /**
      * @return the invalidStageCause
      */
     public URI getInvalidStageCause()
     {
-        return invalidStageCause;
+        return this.invalidStageCause;
     }
-
+    
     /**
-     * @param invalidStageCause the invalidStageCause to set
+     * @return the ruleCause
      */
-    public void setInvalidStageCause(URI invalidStageCause)
+    public NormalisationRule getRuleCause()
+    {
+        return this.ruleCause;
+    }
+    
+    /**
+     * @param invalidStageCause
+     *            the invalidStageCause to set
+     */
+    public void setInvalidStageCause(final URI invalidStageCause)
     {
         this.invalidStageCause = invalidStageCause;
+    }
+    
+    /**
+     * @param ruleCause
+     *            the ruleCause to set
+     */
+    public void setRuleCause(final NormalisationRule ruleCause)
+    {
+        this.ruleCause = ruleCause;
     }
 }

@@ -58,8 +58,8 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
     public abstract SpinInferencingRule getNewTestSpinInferencingRule();
     
     /**
-     * Final method, so that implementing test cases must supply a SpinInferencingRule instead, through
-     * getNewTestSpinInferencingRule.
+     * Final method, so that implementing test cases must supply a SpinInferencingRule instead,
+     * through getNewTestSpinInferencingRule.
      * 
      * @return A NormalisationRule that is also a SpinNormalisationRule
      */

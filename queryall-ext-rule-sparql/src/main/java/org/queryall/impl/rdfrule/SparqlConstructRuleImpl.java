@@ -267,9 +267,11 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
                 this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
                 this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
             }
-            catch(InvalidStageException e)
+            catch(final InvalidStageException e)
             {
-                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                SparqlConstructRuleImpl.log
+                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
+                                e);
                 throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
             }
         }
@@ -331,7 +333,8 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     @Override
     public Object stageAfterResultsImport(final Object input)
     {
-        return RdfUtils.doSparqlConstructWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
+        return RdfUtils.doSparqlConstructWorkBasedOnMode((Repository)input, this.getMode(),
+                this.getSparqlConstructQueries());
     }
     
     @Override
@@ -343,7 +346,8 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     @Override
     public Object stageAfterResultsToPool(final Object input)
     {
-        return RdfUtils.doSparqlConstructWorkBasedOnMode((Repository)input, this.getMode(), this.getSparqlConstructQueries());
+        return RdfUtils.doSparqlConstructWorkBasedOnMode((Repository)input, this.getMode(),
+                this.getSparqlConstructQueries());
     }
     
     @Override

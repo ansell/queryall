@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderEnum;
 
 /**
@@ -39,9 +38,19 @@ public class UnsupportedProviderException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedProviderException(final String message, ProviderEnum nextProvider)
+    public UnsupportedProviderException(final String message, final ProviderEnum nextProvider)
     {
         super(message);
+        this.setProviderCause(nextProvider);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedProviderException(final String message, final ProviderEnum nextProvider, final Throwable cause)
+    {
+        super(message, cause);
         this.setProviderCause(nextProvider);
     }
     
@@ -55,35 +64,26 @@ public class UnsupportedProviderException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedProviderException(final String message, ProviderEnum nextProvider, final Throwable cause)
-    {
-        super(message, cause);
-        this.setProviderCause(nextProvider);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedProviderException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the providerCause
      */
     public ProviderEnum getProviderCause()
     {
-        return providerCause;
+        return this.providerCause;
     }
-
+    
     /**
-     * @param providerCause the providerCause to set
+     * @param providerCause
+     *            the providerCause to set
      */
-    public void setProviderCause(ProviderEnum providerCause)
+    public void setProviderCause(final ProviderEnum providerCause)
     {
         this.providerCause = providerCause;
     }

@@ -35,15 +35,6 @@ public class ValidationFailedException extends QueryAllException
     
     /**
      * @param message
-     */
-    public ValidationFailedException(final String message, ValidatingRule nextValidationRule)
-    {
-        super(message);
-        this.setValidationRuleCause(nextValidationRule);
-    }
-    
-    /**
-     * @param message
      * @param cause
      */
     public ValidationFailedException(final String message, final Throwable cause)
@@ -53,9 +44,19 @@ public class ValidationFailedException extends QueryAllException
     
     /**
      * @param message
+     */
+    public ValidationFailedException(final String message, final ValidatingRule nextValidationRule)
+    {
+        super(message);
+        this.setValidationRuleCause(nextValidationRule);
+    }
+    
+    /**
+     * @param message
      * @param cause
      */
-    public ValidationFailedException(final String message, ValidatingRule nextValidationRule, final Throwable cause)
+    public ValidationFailedException(final String message, final ValidatingRule nextValidationRule,
+            final Throwable cause)
     {
         super(message, cause);
         this.setValidationRuleCause(nextValidationRule);
@@ -68,19 +69,20 @@ public class ValidationFailedException extends QueryAllException
     {
         super(cause);
     }
-
+    
     /**
      * @return the validationRuleCause
      */
     public ValidatingRule getValidationRuleCause()
     {
-        return validationRuleCause;
+        return this.validationRuleCause;
     }
-
+    
     /**
-     * @param validationRuleCause the validationRuleCause to set
+     * @param validationRuleCause
+     *            the validationRuleCause to set
      */
-    public void setValidationRuleCause(ValidatingRule validationRuleCause)
+    public void setValidationRuleCause(final ValidatingRule validationRuleCause)
     {
         this.validationRuleCause = validationRuleCause;
     }

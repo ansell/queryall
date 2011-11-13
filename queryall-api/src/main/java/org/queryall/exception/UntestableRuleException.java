@@ -5,7 +5,6 @@ package org.queryall.exception;
 
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.api.ruletest.RuleTestEnum;
 
 /**
  * An exception that is thrown when an unknown RuleTest is encountered
@@ -41,9 +40,21 @@ public class UntestableRuleException extends QueryAllException
     /**
      * @param message
      */
-    public UntestableRuleException(final String message, NormalisationRule nextRule, RuleTest nextRuleTest)
+    public UntestableRuleException(final String message, final NormalisationRule nextRule, final RuleTest nextRuleTest)
     {
         super(message);
+        this.setRuleCause(nextRule);
+        this.setRuleTestCause(nextRuleTest);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UntestableRuleException(final String message, final NormalisationRule nextRule, final RuleTest nextRuleTest,
+            final Throwable cause)
+    {
+        super(message, cause);
         this.setRuleCause(nextRule);
         this.setRuleTestCause(nextRuleTest);
     }
@@ -58,54 +69,45 @@ public class UntestableRuleException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UntestableRuleException(final String message, NormalisationRule nextRule, RuleTest nextRuleTest, final Throwable cause)
-    {
-        super(message, cause);
-        this.setRuleCause(nextRule);
-        this.setRuleTestCause(nextRuleTest);
-    }
-    
-    /**
      * @param cause
      */
     public UntestableRuleException(final Throwable cause)
     {
         super(cause);
     }
-
-    /**
-     * @return the ruleTestCause
-     */
-    public RuleTest getRuleTestCause()
-    {
-        return ruleTestCause;
-    }
-
-    /**
-     * @param ruleTestCause the ruleTestCause to set
-     */
-    public void setRuleTestCause(RuleTest ruleTestCause)
-    {
-        this.ruleTestCause = ruleTestCause;
-    }
-
+    
     /**
      * @return the ruleCause
      */
     public NormalisationRule getRuleCause()
     {
-        return ruleCause;
+        return this.ruleCause;
     }
-
+    
     /**
-     * @param ruleCause the ruleCause to set
+     * @return the ruleTestCause
      */
-    public void setRuleCause(NormalisationRule ruleCause)
+    public RuleTest getRuleTestCause()
+    {
+        return this.ruleTestCause;
+    }
+    
+    /**
+     * @param ruleCause
+     *            the ruleCause to set
+     */
+    public void setRuleCause(final NormalisationRule ruleCause)
     {
         this.ruleCause = ruleCause;
+    }
+    
+    /**
+     * @param ruleTestCause
+     *            the ruleTestCause to set
+     */
+    public void setRuleTestCause(final RuleTest ruleTestCause)
+    {
+        this.ruleTestCause = ruleTestCause;
     }
     
 }

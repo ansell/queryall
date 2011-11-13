@@ -145,10 +145,11 @@ public class RdfFetchController
      * @param settingsClass
      * @param localBlacklistController
      * @param nextQueryBundles
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
-            final BlacklistController localBlacklistController, final Collection<QueryBundle> nextQueryBundles) throws QueryAllException
+            final BlacklistController localBlacklistController, final Collection<QueryBundle> nextQueryBundles)
+        throws QueryAllException
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -171,7 +172,7 @@ public class RdfFetchController
      * @param nextUseDefaultProviders
      * @param nextRealHostName
      * @param nextPageOffset
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final Map<String, String> nextQueryParameters,
@@ -420,12 +421,13 @@ public class RdfFetchController
     /**
      * @param nextQueryType
      * @param chosenProviders
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
             final QueryAllConfiguration localSettings, final QueryType nextQueryType,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
-            final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider) throws QueryAllException
+            final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider)
+        throws QueryAllException
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
@@ -565,7 +567,7 @@ public class RdfFetchController
                 nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
                 nextProviderQueryBundle.setQueryallSettings(localSettings);
                 
-                if(_DEBUG)
+                if(RdfFetchController._DEBUG)
                 {
                     RdfFetchController.log.debug("nextQueryType=" + nextQueryType.getKey().stringValue());
                 }
@@ -574,14 +576,14 @@ public class RdfFetchController
                 {
                     final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
                     
-                    if(_DEBUG)
+                    if(RdfFetchController._DEBUG)
                     {
                         RdfFetchController.log.debug("nextEndpoint=" + nextEndpoint);
                     }
                     
                     for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
                     {
-                        if(_DEBUG)
+                        if(RdfFetchController._DEBUG)
                         {
                             RdfFetchController.log.debug("nextReplacedEndpoint=" + nextReplacedEndpoint);
                         }
@@ -590,7 +592,7 @@ public class RdfFetchController
                         if(noCommunicationProvider
                                 || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                         {
-                            if(_DEBUG)
+                            if(RdfFetchController._DEBUG)
                             {
                                 RdfFetchController.log.debug("not blacklisted");
                             }
@@ -626,7 +628,7 @@ public class RdfFetchController
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                if(_DEBUG)
+                if(RdfFetchController._DEBUG)
                 {
                     RdfFetchController.log.debug("endpoint method = noCommunication key=" + nextProvider.getKey());
                 }

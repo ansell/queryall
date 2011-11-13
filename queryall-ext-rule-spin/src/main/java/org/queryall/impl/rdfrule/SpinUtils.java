@@ -49,7 +49,7 @@ public class SpinUtils
      *            If outputRepository is null, a new in-memory repository is created
      * @param contexts
      * @return
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public static Repository addJenaModelToSesameRepository(final Model inputModel, Repository outputRepository,
             final org.openrdf.model.Resource... contexts) throws QueryAllException

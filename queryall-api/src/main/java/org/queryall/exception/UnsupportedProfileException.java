@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileEnum;
 
 /**
@@ -39,9 +38,19 @@ public class UnsupportedProfileException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedProfileException(final String message, ProfileEnum nextProfile)
+    public UnsupportedProfileException(final String message, final ProfileEnum nextProfile)
     {
         super(message);
+        this.setProfileCause(nextProfile);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedProfileException(final String message, final ProfileEnum nextProfile, final Throwable cause)
+    {
+        super(message, cause);
         this.setProfileCause(nextProfile);
     }
     
@@ -55,35 +64,26 @@ public class UnsupportedProfileException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedProfileException(final String message, ProfileEnum nextProfile, final Throwable cause)
-    {
-        super(message, cause);
-        this.setProfileCause(nextProfile);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedProfileException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the profileCause
      */
     public ProfileEnum getProfileCause()
     {
-        return profileCause;
+        return this.profileCause;
     }
-
+    
     /**
-     * @param profileCause the profileCause to set
+     * @param profileCause
+     *            the profileCause to set
      */
-    public void setProfileCause(ProfileEnum profileCause)
+    public void setProfileCause(final ProfileEnum profileCause)
     {
         this.profileCause = profileCause;
     }

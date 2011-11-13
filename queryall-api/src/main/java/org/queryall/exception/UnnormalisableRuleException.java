@@ -4,7 +4,6 @@
 package org.queryall.exception;
 
 import org.queryall.api.rdfrule.NormalisationRule;
-import org.queryall.api.rdfrule.NormalisationRuleEnum;
 
 /**
  * An exception that is thrown when an unknown NormalisationRule is encountered during normalisation
@@ -39,12 +38,22 @@ public class UnnormalisableRuleException extends QueryAllRuntimeException
     /**
      * @param message
      */
-    public UnnormalisableRuleException(final String message, NormalisationRule nextRule)
+    public UnnormalisableRuleException(final String message, final NormalisationRule nextRule)
     {
         super(message);
         this.setRuleCause(nextRule);
     }
-
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnnormalisableRuleException(final String message, final NormalisationRule nextRule, final Throwable cause)
+    {
+        super(message, cause);
+        this.setRuleCause(nextRule);
+    }
+    
     /**
      * @param message
      * @param cause
@@ -55,35 +64,26 @@ public class UnnormalisableRuleException extends QueryAllRuntimeException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnnormalisableRuleException(final String message, NormalisationRule nextRule, final Throwable cause)
-    {
-        super(message, cause);
-        this.setRuleCause(nextRule);
-    }
-    
-    /**
      * @param cause
      */
     public UnnormalisableRuleException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the ruleCause
      */
     public NormalisationRule getRuleCause()
     {
-        return ruleCause;
+        return this.ruleCause;
     }
-
+    
     /**
-     * @param ruleCause the ruleCause to set
+     * @param ruleCause
+     *            the ruleCause to set
      */
-    public void setRuleCause(NormalisationRule ruleCause)
+    public void setRuleCause(final NormalisationRule ruleCause)
     {
         this.ruleCause = ruleCause;
     }

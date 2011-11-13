@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeEnum;
 
 /**
@@ -39,9 +38,19 @@ public class UnsupportedQueryTypeException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedQueryTypeException(final String message, QueryTypeEnum nextQueryType)
+    public UnsupportedQueryTypeException(final String message, final QueryTypeEnum nextQueryType)
     {
         super(message);
+        this.setQueryTypeCause(nextQueryType);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedQueryTypeException(final String message, final QueryTypeEnum nextQueryType, final Throwable cause)
+    {
+        super(message, cause);
         this.setQueryTypeCause(nextQueryType);
     }
     
@@ -55,35 +64,26 @@ public class UnsupportedQueryTypeException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedQueryTypeException(final String message, QueryTypeEnum nextQueryType, final Throwable cause)
-    {
-        super(message, cause);
-        this.setQueryTypeCause(nextQueryType);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedQueryTypeException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the queryTypeCause
      */
     public QueryTypeEnum getQueryTypeCause()
     {
-        return queryTypeCause;
+        return this.queryTypeCause;
     }
-
+    
     /**
-     * @param queryTypeCause the queryTypeCause to set
+     * @param queryTypeCause
+     *            the queryTypeCause to set
      */
-    public void setQueryTypeCause(QueryTypeEnum queryTypeCause)
+    public void setQueryTypeCause(final QueryTypeEnum queryTypeCause)
     {
         this.queryTypeCause = queryTypeCause;
     }

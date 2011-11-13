@@ -204,7 +204,8 @@ public class QueryCreatorTest
      * Test method for
      * {@link org.queryall.query.QueryCreator#createQuery(org.queryall.api.querytype.QueryType, org.queryall.api.provider.Provider, java.util.Map, java.util.List, boolean, boolean, boolean, org.queryall.api.base.QueryAllConfiguration, java.util.Map)}
      * .
-     * @throws QueryAllException 
+     * 
+     * @throws QueryAllException
      */
     @Test
     public void testCreateQuery() throws QueryAllException
@@ -236,7 +237,8 @@ public class QueryCreatorTest
      * Test method for
      * {@link org.queryall.query.QueryCreator#createStaticRdfXmlString(org.queryall.api.querytype.QueryType, org.queryall.api.querytype.OutputQueryType, org.queryall.api.provider.Provider, java.util.Map, java.util.Map, java.util.List, boolean, boolean, boolean, org.queryall.api.base.QueryAllConfiguration)}
      * .
-     * @throws QueryAllException 
+     * 
+     * @throws QueryAllException
      */
     @Test
     @Ignore

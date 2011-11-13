@@ -170,7 +170,8 @@ public abstract class BaseRuleImpl implements NormalisationRule
         }
         else
         {
-            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages", this, stage);
+            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages", this,
+                    stage);
         }
     }
     
@@ -184,7 +185,7 @@ public abstract class BaseRuleImpl implements NormalisationRule
      * Internal method used by subclasses to add each of their valid stages to the internal list
      * 
      * @return the validStages
-     * @throws InvalidStageException 
+     * @throws InvalidStageException
      */
     protected void addValidStage(final URI validStage) throws InvalidStageException
     {
@@ -202,7 +203,8 @@ public abstract class BaseRuleImpl implements NormalisationRule
             else
             {
                 throw new InvalidStageException(
-                        "Could not assign a stage as valid as it was not recognised as a stage by this implementation", this, validStage);
+                        "Could not assign a stage as valid as it was not recognised as a stage by this implementation",
+                        this, validStage);
             }
         }
     }
@@ -405,8 +407,8 @@ public abstract class BaseRuleImpl implements NormalisationRule
                     // implementation, and these types would break all version 1-4 systems otherwise
                     if(modelVersion < 5)
                     {
-                        if(!nextElementType.equals(TransformingRuleSchema.getTransformingRuleTypeUri()) && !nextElementType
-                                    .equals(ValidatingRuleSchema.getValidatingRuleTypeUri()))
+                        if(!nextElementType.equals(TransformingRuleSchema.getTransformingRuleTypeUri())
+                                && !nextElementType.equals(ValidatingRuleSchema.getValidatingRuleTypeUri()))
                         {
                             con.add(keyUri, RDF.TYPE, nextElementType, contextKey);
                         }

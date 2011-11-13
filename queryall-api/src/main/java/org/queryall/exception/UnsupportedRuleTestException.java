@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestEnum;
 
 /**
@@ -39,9 +38,19 @@ public class UnsupportedRuleTestException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedRuleTestException(final String message, RuleTestEnum nextRuleTest)
+    public UnsupportedRuleTestException(final String message, final RuleTestEnum nextRuleTest)
     {
         super(message);
+        this.setRuleTestCause(nextRuleTest);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedRuleTestException(final String message, final RuleTestEnum nextRuleTest, final Throwable cause)
+    {
+        super(message, cause);
         this.setRuleTestCause(nextRuleTest);
     }
     
@@ -55,35 +64,26 @@ public class UnsupportedRuleTestException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedRuleTestException(final String message, RuleTestEnum nextRuleTest, final Throwable cause)
-    {
-        super(message, cause);
-        this.setRuleTestCause(nextRuleTest);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedRuleTestException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the ruleTestCause
      */
     public RuleTestEnum getRuleTestCause()
     {
-        return ruleTestCause;
+        return this.ruleTestCause;
     }
-
+    
     /**
-     * @param ruleTestCause the ruleTestCause to set
+     * @param ruleTestCause
+     *            the ruleTestCause to set
      */
-    public void setRuleTestCause(RuleTestEnum ruleTestCause)
+    public void setRuleTestCause(final RuleTestEnum ruleTestCause)
     {
         this.ruleTestCause = ruleTestCause;
     }

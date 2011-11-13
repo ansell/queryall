@@ -138,7 +138,7 @@ public class QueryCreator
      * @param namespaceInputVariables
      *            TODO
      * @return
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public static String createQuery(final QueryType queryType, final Provider nextProvider,
             final Map<String, String> attributeList, final List<Profile> includedProfiles,
@@ -176,7 +176,7 @@ public class QueryCreator
      * @param convertAlternateToPreferredPrefix
      *            TODO
      * @return
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public static String createStaticRdfXmlString(final QueryType originalQueryType,
             final OutputQueryType includedQueryType, final Provider nextProvider,
@@ -1491,7 +1491,7 @@ public class QueryCreator
      * @param namespaceInputVariables
      *            TODO
      * @return
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public static String replaceAttributesOnEndpointUrl(final String replacementString, final QueryType queryType,
             final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,

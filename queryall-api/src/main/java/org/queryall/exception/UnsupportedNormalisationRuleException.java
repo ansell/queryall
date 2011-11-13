@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleEnum;
 
 /**
@@ -39,12 +38,23 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedNormalisationRuleException(final String message, NormalisationRuleEnum nextRule)
+    public UnsupportedNormalisationRuleException(final String message, final NormalisationRuleEnum nextRule)
     {
         super(message);
         this.setRuleCause(nextRule);
     }
-
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedNormalisationRuleException(final String message, final NormalisationRuleEnum nextRule,
+            final Throwable cause)
+    {
+        super(message, cause);
+        this.setRuleCause(nextRule);
+    }
+    
     /**
      * @param message
      * @param cause
@@ -55,35 +65,26 @@ public class UnsupportedNormalisationRuleException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedNormalisationRuleException(final String message, NormalisationRuleEnum nextRule, final Throwable cause)
-    {
-        super(message, cause);
-        this.setRuleCause(nextRule);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedNormalisationRuleException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the ruleCause
      */
     public NormalisationRuleEnum getRuleCause()
     {
-        return ruleCause;
+        return this.ruleCause;
     }
-
+    
     /**
-     * @param ruleCause the ruleCause to set
+     * @param ruleCause
+     *            the ruleCause to set
      */
-    public void setRuleCause(NormalisationRuleEnum ruleCause)
+    public void setRuleCause(final NormalisationRuleEnum ruleCause)
     {
         this.ruleCause = ruleCause;
     }

@@ -50,14 +50,10 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     
     static
     {
-        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(NormalisationRuleSchema
-                .getNormalisationRuleTypeUri());
-        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(ValidatingRuleSchema
-                .getValidatingRuleTypeUri());
-        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema
-                .getSparqlRuleTypeUri());
-        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(SparqlAskRuleSchema
-                .getSparqlAskRuleTypeUri());
+        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(ValidatingRuleSchema.getValidatingRuleTypeUri());
+        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
+        SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri());
     }
     
     public static Set<URI> myTypes()
@@ -72,8 +68,8 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     
     // keyToUse is the URI of the next instance that can be found in
     // myRepository
-    public SparqlAskRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse,
-            final int modelVersion) throws OpenRDFException
+    public SparqlAskRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
         
@@ -96,8 +92,8 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             {
                 if(SparqlAskRuleImpl._TRACE)
                 {
-                    SparqlAskRuleImpl.log
-                            .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
+                    SparqlAskRuleImpl.log.trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: "
+                            + keyToUse);
                 }
                 
                 // isValid = true;
@@ -116,9 +112,8 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             {
                 if(SparqlAskRuleImpl._DEBUG)
                 {
-                    SparqlAskRuleImpl.log
-                            .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
-                                    + nextStatement.toString());
+                    SparqlAskRuleImpl.log.debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
+                            + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
@@ -164,18 +159,6 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     }
     
     @Override
-    public String getSparqlPrefixes()
-    {
-        return this.sparqlPrefixes;
-    }
-    
-    @Override
-    public List<String> getSparqlWherePatterns()
-    {
-        return this.sparqlWherePatterns;
-    }
-    
-    @Override
     public List<String> getSparqlAskQueries()
     {
         final List<String> results = new ArrayList<String>(this.getSparqlWherePatterns().size());
@@ -187,6 +170,18 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
         }
         
         return results;
+    }
+    
+    @Override
+    public String getSparqlPrefixes()
+    {
+        return this.sparqlPrefixes;
+    }
+    
+    @Override
+    public List<String> getSparqlWherePatterns()
+    {
+        return this.sparqlWherePatterns;
     }
     
     /**
@@ -202,9 +197,11 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
                 this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
                 this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
             }
-            catch(InvalidStageException e)
+            catch(final InvalidStageException e)
             {
-                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                SparqlAskRuleImpl.log
+                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
+                                e);
                 throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
             }
         }
@@ -251,9 +248,9 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     {
         try
         {
-            return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+            return RdfUtils.checkSparqlAskQueries((Repository)input, this.getSparqlAskQueries());
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
             throw new ValidationFailedException(e);
         }
@@ -270,9 +267,9 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     {
         try
         {
-            return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+            return RdfUtils.checkSparqlAskQueries((Repository)input, this.getSparqlAskQueries());
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
             throw new ValidationFailedException(e);
         }
@@ -283,9 +280,9 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     {
         try
         {
-            return RdfUtils.checkSparqlAskQueries((Repository)input, getSparqlAskQueries());
+            return RdfUtils.checkSparqlAskQueries((Repository)input, this.getSparqlAskQueries());
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
             throw new ValidationFailedException(e);
         }

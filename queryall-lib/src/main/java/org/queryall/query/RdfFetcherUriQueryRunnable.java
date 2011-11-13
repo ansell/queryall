@@ -46,15 +46,15 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                RdfFetcherUriQueryRunnable.log.error("There are " + (alternateEndpointsAndQueries.size()-1)
+                RdfFetcherUriQueryRunnable.log.error("There are " + (alternateEndpointsAndQueries.size() - 1)
                         + " alternative endpoints to choose from");
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
                     if(!alternateEndpoint.equals(this.getEndpointUrl()))
                     {
-                        RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
-                                + " originalEndpoint=" + this.getEndpointUrl());
+                        RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                                + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         

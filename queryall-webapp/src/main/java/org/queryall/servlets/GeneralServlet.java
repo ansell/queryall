@@ -414,17 +414,18 @@ public class GeneralServlet extends HttpServlet
         try
         {
             final RdfFetchController fetchController =
-                new RdfFetchController(localSettings, localBlacklistController, queryParameters, includedProfiles,
-                        useDefaultProviders, realHostName, pageOffset);
-        
+                    new RdfFetchController(localSettings, localBlacklistController, queryParameters, includedProfiles,
+                            useDefaultProviders, realHostName, pageOffset);
+            
             final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
             
             final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
             
-            // We do not use the default catalina writer as it may not be UTF-8 compliant depending on
+            // We do not use the default catalina writer as it may not be UTF-8 compliant depending
+            // on
             // unchangeable environment variables
             final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
-        
+            
             // Create a new in memory repository for each request
             final Repository myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
@@ -553,7 +554,7 @@ public class GeneralServlet extends HttpServlet
                         multiProviderQueryBundles, nextTotalTime);
             }
         }
-        catch(QueryAllException qex)
+        catch(final QueryAllException qex)
         {
             GeneralServlet.log.error("GeneralServlet.doGet: caught queryall exception", qex);
         }
@@ -580,7 +581,7 @@ public class GeneralServlet extends HttpServlet
      * @param myRepository
      *            The repository containing the unnormalised statements
      * @return The repository containing the normalised statements
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     private Repository doPoolNormalisation(final QueryAllConfiguration localSettings,
             final List<Profile> includedProfiles, final RdfFetchController fetchController,
@@ -596,14 +597,14 @@ public class GeneralServlet extends HttpServlet
                     localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
                     localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true));
         }
-        catch(UnnormalisableRuleException e)
+        catch(final UnnormalisableRuleException e)
         {
-            log.error("Found unnormalisable rule exception while normalising the pool", e);
+            GeneralServlet.log.error("Found unnormalisable rule exception while normalising the pool", e);
             throw new QueryAllException("Found unnormalisable rule exception while normalising the pool", e);
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
-            log.error("Found queryall checked exception while normalising the pool", e);
+            GeneralServlet.log.error("Found queryall checked exception while normalising the pool", e);
             throw e;
         }
     }
@@ -659,8 +660,8 @@ public class GeneralServlet extends HttpServlet
      * @throws IOException
      * @throws RepositoryException
      * @throws OpenRDFException
-     * @throws QueryAllException 
-     * @throws UnnormalisableRuleException 
+     * @throws QueryAllException
+     * @throws UnnormalisableRuleException
      */
     private void doQueryNotPretend(final QueryAllConfiguration localSettings, final String queryString,
             final String requestedContentType, final List<Profile> includedProfiles,
@@ -834,7 +835,7 @@ public class GeneralServlet extends HttpServlet
      * @param myRepository
      * @throws IOException
      * @throws RepositoryException
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     private void doQueryUnknown(final QueryAllConfiguration localSettings, final String realHostName,
             final Map<String, String> queryParameters, final int pageOffset, final String requestedContentType,

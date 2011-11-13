@@ -279,8 +279,8 @@ public class ConfigurationServlet extends HttpServlet
                     {
                         try
                         {
-                            if(!allNormalisationRules.get(nextNormalisationRuleKey).toRdf(myRepository,
-                                    apiVersion, nextNormalisationRuleKey))
+                            if(!allNormalisationRules.get(nextNormalisationRuleKey).toRdf(myRepository, apiVersion,
+                                    nextNormalisationRuleKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Rdf Normalisation Rule was not placed correctly in the rdf store key="
@@ -332,8 +332,8 @@ public class ConfigurationServlet extends HttpServlet
                     {
                         try
                         {
-                            if(!allNamespaceEntries.get(nextNamespaceEntryKey).toRdf(myRepository,
-                                    apiVersion, nextNamespaceEntryKey))
+                            if(!allNamespaceEntries.get(nextNamespaceEntryKey).toRdf(myRepository, apiVersion,
+                                    nextNamespaceEntryKey))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Namespace Entry was not placed correctly in the rdf store key="
@@ -360,8 +360,8 @@ public class ConfigurationServlet extends HttpServlet
                         {
                             // log.info("Debug-configuration: nextProfileKey="+nextProfileKey);
                             
-                            if(!allProfiles.get(nextProfileKey).toRdf(myRepository,
-                                    apiVersion, allProfiles.get(nextProfileKey).getKey()))
+                            if(!allProfiles.get(nextProfileKey).toRdf(myRepository, apiVersion,
+                                    allProfiles.get(nextProfileKey).getKey()))
                             {
                                 ConfigurationServlet.log
                                         .error("ConfigurationServlet: Profile was not placed correctly in the rdf store key="

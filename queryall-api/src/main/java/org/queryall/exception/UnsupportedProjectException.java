@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.project.Project;
 import org.queryall.api.project.ProjectEnum;
 
 /**
@@ -39,9 +38,19 @@ public class UnsupportedProjectException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedProjectException(final String message, ProjectEnum nextProject)
+    public UnsupportedProjectException(final String message, final ProjectEnum nextProject)
     {
         super(message);
+        this.setProjectCause(nextProject);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedProjectException(final String message, final ProjectEnum nextProject, final Throwable cause)
+    {
+        super(message, cause);
         this.setProjectCause(nextProject);
     }
     
@@ -55,35 +64,26 @@ public class UnsupportedProjectException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedProjectException(final String message, ProjectEnum nextProject, final Throwable cause)
-    {
-        super(message, cause);
-        this.setProjectCause(nextProject);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedProjectException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the projectCause
      */
     public ProjectEnum getProjectCause()
     {
-        return projectCause;
+        return this.projectCause;
     }
-
+    
     /**
-     * @param projectCause the projectCause to set
+     * @param projectCause
+     *            the projectCause to set
      */
-    public void setProjectCause(ProjectEnum projectCause)
+    public void setProjectCause(final ProjectEnum projectCause)
     {
         this.projectCause = projectCause;
     }

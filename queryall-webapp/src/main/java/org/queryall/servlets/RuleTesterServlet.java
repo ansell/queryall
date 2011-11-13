@@ -75,20 +75,20 @@ public class RuleTesterServlet extends HttpServlet
                 allTestsPassed = false;
             }
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
             allTestsPassed = false;
-            log.error("Found queryall checked exception while running rule tests", e);
+            RuleTesterServlet.log.error("Found queryall checked exception while running rule tests", e);
         }
-        catch(QueryAllRuntimeException e)
+        catch(final QueryAllRuntimeException e)
         {
             allTestsPassed = false;
-            log.error("Found queryall runtime exception while running rule tests", e);
+            RuleTesterServlet.log.error("Found queryall runtime exception while running rule tests", e);
         }
-        catch(RuntimeException e)
+        catch(final RuntimeException e)
         {
             allTestsPassed = false;
-            log.error("Found unknown runtime exception while running rule tests", e);
+            RuleTesterServlet.log.error("Found unknown runtime exception while running rule tests", e);
         }
         
         if(!allTestsPassed)

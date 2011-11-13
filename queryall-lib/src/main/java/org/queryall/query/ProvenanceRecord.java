@@ -147,13 +147,14 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         RepositoryConnection myRepositoryConnection = null;
         try
         {
-            fetchController = new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
+            fetchController =
+                    new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(),
+                            queryBundles);
             
             fetchController.fetchRdfForQueries();
-        
+            
             final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
             
-
             myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
             myRepositoryConnection = myRepository.getConnection();
@@ -228,7 +229,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
                 }
             } // end for(RdfFetcherQUeryRunnable nextResult : rdfResults)
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -579,12 +580,9 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
             con.add(provenanceInstanceUri, RDF.TYPE, ProvenanceRecord.provenanceTypeUri, keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceHasAuthorOpenIDUri, hasAuthorOpenIDLiteral,
                     keyToUse);
-            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementTypeUri, elementTypeLiteral,
-                    keyToUse);
-            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementKeyUri, elementKeyLiteral,
-                    keyToUse);
-            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceRecordDateUri, recordDateLiteral,
-                    keyToUse);
+            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementTypeUri, elementTypeLiteral, keyToUse);
+            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementKeyUri, elementKeyLiteral, keyToUse);
+            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceRecordDateUri, recordDateLiteral, keyToUse);
             
             if(this.unrecognisedStatements != null)
             {

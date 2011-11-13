@@ -29,7 +29,6 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlConstructRule;
 import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 
 /**
@@ -178,10 +177,11 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     @Test
-    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException, QueryAllException
+    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException,
+        QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         

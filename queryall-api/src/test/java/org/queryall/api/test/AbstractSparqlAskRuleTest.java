@@ -191,8 +191,8 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
-     * @throws InvalidStageException 
-     * @throws ValidationFailedException 
+     * @throws InvalidStageException
+     * @throws ValidationFailedException
      */
     @Test
     public void testNegativeMatchTriples() throws RepositoryException, QueryEvaluationException,
@@ -239,8 +239,8 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
-     * @throws ValidationFailedException 
-     * @throws InvalidStageException 
+     * @throws ValidationFailedException
+     * @throws InvalidStageException
      */
     @Test
     public void testPositiveMatchTriples() throws RepositoryException, QueryEvaluationException,

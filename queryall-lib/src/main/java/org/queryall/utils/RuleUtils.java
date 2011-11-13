@@ -23,7 +23,6 @@ import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.UnnormalisableRuleException;
-import org.queryall.exception.UnsupportedNormalisationRuleException;
 import org.queryall.exception.UntestableRuleException;
 import org.queryall.exception.ValidationFailedException;
 import org.slf4j.Logger;
@@ -187,11 +186,13 @@ public final class RuleUtils
      * @param includeNonProfileMatchedRdfRules
      * @param basicRdfXml
      * @return
-     * @throws QueryAllException, UnnormalisableRuleException 
+     * @throws QueryAllException
+     *             , UnnormalisableRuleException
      */
     public static Object normaliseByStage(final URI stage, Object input,
             final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
-            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules) throws QueryAllException, UnnormalisableRuleException
+            final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
+        throws QueryAllException, UnnormalisableRuleException
     {
         if(RuleUtils._TRACE)
         {
@@ -229,8 +230,7 @@ public final class RuleUtils
                     }
                     else
                     {
-                        throw new UnnormalisableRuleException(
-                                "NormalisationRule type not supported", nextRule);
+                        throw new UnnormalisableRuleException("NormalisationRule type not supported", nextRule);
                     }
                 }
                 catch(final InvalidStageException ise)
@@ -262,7 +262,7 @@ public final class RuleUtils
      * 
      * @param myRuleTests
      * @return true if all of the tests passed, otherwise it returns false
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
     public static boolean runRuleTests(final Collection<RuleTest> myRuleTests,
             final Map<URI, NormalisationRule> allNormalisationRules) throws QueryAllException
@@ -293,10 +293,13 @@ public final class RuleUtils
                                                 NormalisationRuleSchema.getRdfruleStageQueryVariables(),
                                                 nextTestInputString);
                             }
-                            catch(InvalidStageException e)
+                            catch(final InvalidStageException e)
                             {
-                                log.error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!", e);
-                                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI use", e);
+                                RuleUtils.log
+                                        .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
+                                                e);
+                                throw new RuntimeException(
+                                        "Found fatal InvalidStageException in hardcoded stage URI use", e);
                             }
                         }
                         else if(nextRule instanceof ValidatingRule)
@@ -312,10 +315,13 @@ public final class RuleUtils
                                                 NormalisationRuleSchema.getRdfruleStageQueryVariables(),
                                                 nextTestInputString);
                             }
-                            catch(InvalidStageException e)
+                            catch(final InvalidStageException e)
                             {
-                                log.error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!", e);
-                                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI use", e);
+                                RuleUtils.log
+                                        .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
+                                                e);
+                                throw new RuntimeException(
+                                        "Found fatal InvalidStageException in hardcoded stage URI use", e);
                             }
                             
                             if(!result)
@@ -326,7 +332,8 @@ public final class RuleUtils
                         else
                         {
                             throw new UntestableRuleException(
-                                    "NormalisationRule type not supported for testing in this implementation", nextRule, nextRuleTest);
+                                    "NormalisationRule type not supported for testing in this implementation",
+                                    nextRule, nextRuleTest);
                         }
                     }
                 }
@@ -386,7 +393,8 @@ public final class RuleUtils
                     else
                     {
                         throw new UntestableRuleException(
-                                "NormalisationRule type not supported for testing in this implementation", nextRule, nextRuleTest);
+                                "NormalisationRule type not supported for testing in this implementation", nextRule,
+                                nextRuleTest);
                     }
                     
                     if(nextOutputTestResult.equals(nextTestInputString))

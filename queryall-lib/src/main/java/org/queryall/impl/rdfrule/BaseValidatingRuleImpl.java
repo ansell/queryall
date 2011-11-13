@@ -11,7 +11,6 @@ import org.openrdf.model.URI;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRule;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.exception.QueryAllException;
 import org.queryall.exception.ValidationFailedException;
 
 /**
@@ -49,7 +48,8 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
      * necessary to ensure that the rule system is consistent.
      */
     @Override
-    public final boolean normaliseByStage(final URI stage, final Object input) throws InvalidStageException, ValidationFailedException
+    public final boolean normaliseByStage(final URI stage, final Object input) throws InvalidStageException,
+        ValidationFailedException
     {
         if(!this.validInStage(stage))
         {

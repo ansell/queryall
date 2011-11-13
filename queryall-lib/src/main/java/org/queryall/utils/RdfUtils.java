@@ -105,6 +105,85 @@ public final class RdfUtils
     private static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
     private static final boolean _INFO = RdfUtils.log.isInfoEnabled();
     
+    /**
+     * Performs the ASK queries until one returns false, or they are all executed.
+     * 
+     * If the list is either empty or they all return true, the method will return true, otherwise
+     * false.
+     * 
+     * @param myRepository
+     *            The input repository to execute the queries against.
+     * @param sparqlAskQueries
+     *            The list of SPARQL ASK queries to execute against the given Repository
+     * @return True if the list is empty or all of the queries return true, otherwise false.
+     */
+    public static boolean checkSparqlAskQueries(final Repository myRepository, final List<String> sparqlAskQueries)
+        throws QueryAllException
+    {
+        RepositoryConnection askConnection = null;
+        try
+        {
+            askConnection = myRepository.getConnection();
+            
+            for(final String nextAskQuery : sparqlAskQueries)
+            {
+                if(RdfUtils._DEBUG)
+                {
+                    RdfUtils.log.debug("chooseStatementsFromRepository nextAskQuery=" + nextAskQuery);
+                }
+                
+                boolean evaluate = false;
+                
+                try
+                {
+                    evaluate = askConnection.prepareBooleanQuery(QueryLanguage.SPARQL, nextAskQuery).evaluate();
+                }
+                catch(final QueryEvaluationException e)
+                {
+                    RdfUtils.log.error("Found QueryEvaluationException", e);
+                    throw new QueryAllException("Found QueryEvaluationException", e);
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("Found RepositoryException", e);
+                    throw new QueryAllException("Found RepositoryException", e);
+                }
+                catch(final MalformedQueryException e)
+                {
+                    RdfUtils.log.error("Found MalformedQueryException", e);
+                    throw new QueryAllException("Found MalformedQueryException", e);
+                }
+                
+                if(!evaluate)
+                {
+                    return false;
+                }
+            }
+        }
+        catch(final RepositoryException e1)
+        {
+            RdfUtils.log.error("Found RepositoryException", e1);
+            throw new QueryAllException("Found RepositoryException", e1);
+        }
+        finally
+        {
+            if(askConnection != null)
+            {
+                try
+                {
+                    askConnection.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("Found RepositoryException", e);
+                    throw new QueryAllException("Found RepositoryException", e);
+                }
+            }
+        }
+        
+        return true;
+    }
+    
     public static Repository chooseStatementsFromRepository(final Repository myRepository,
             final boolean addToMyRepository, final List<String> sparqlConstructQueries)
     {
@@ -296,8 +375,8 @@ public final class RdfUtils
         addObjectQueries.add(addObjectTemplate);
         
         output =
-                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
-                        addObjectQueries);
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output,
+                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -322,8 +401,8 @@ public final class RdfUtils
         deleteObjectQueries.add(deleteObjectTemplate);
         
         output =
-                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
-                        deleteObjectQueries);
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output,
+                        SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteObjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -350,8 +429,8 @@ public final class RdfUtils
         addSubjectQueries.add(addSubjectTemplate);
         
         output =
-                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
-                        addSubjectQueries);
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output,
+                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -364,8 +443,8 @@ public final class RdfUtils
         deleteSubjectQueries.add(deleteSubjectTemplate);
         
         output =
-                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
-                        deleteSubjectQueries);
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output,
+                        SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteSubjectQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -393,8 +472,8 @@ public final class RdfUtils
         addPredicateQueries.add(addPredicateTemplate);
         
         output =
-                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(),
-                        addPredicateQueries);
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output,
+                        SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
@@ -407,86 +486,12 @@ public final class RdfUtils
         deletePredicateQueries.add(deletePredicateTemplate);
         
         output =
-                RdfUtils.doSparqlConstructWorkBasedOnMode(output, SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(),
-                        deletePredicateQueries);
+                RdfUtils.doSparqlConstructWorkBasedOnMode(output,
+                        SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deletePredicateQueries);
         
         RdfUtils.toOutputStream(output, System.err);
         
         return output;
-    }
-    
-    /**
-     * Performs the ASK queries until one returns false, or they are all executed.
-     * 
-     * If the list is either empty or they all return true, the method will return true, otherwise false.
-     * @param myRepository The input repository to execute the queries against.
-     * @param sparqlAskQueries The list of SPARQL ASK queries to execute against the given Repository
-     * @return True if the list is empty or all of the queries return true, otherwise false.
-     */
-    public static boolean checkSparqlAskQueries(final Repository myRepository, final List<String> sparqlAskQueries) throws QueryAllException
-    {
-        RepositoryConnection askConnection = null;
-        try
-        {
-            askConnection = myRepository.getConnection();
-            
-            for(final String nextAskQuery : sparqlAskQueries)
-            {
-                if(RdfUtils._DEBUG)
-                {
-                    RdfUtils.log.debug("chooseStatementsFromRepository nextAskQuery=" + nextAskQuery);
-                }
-                
-                boolean evaluate = false;
-                
-                try
-                {
-                    evaluate = askConnection.prepareBooleanQuery(QueryLanguage.SPARQL, nextAskQuery).evaluate();
-                }
-                catch(QueryEvaluationException e)
-                {
-                    log.error("Found QueryEvaluationException", e);
-                    throw new QueryAllException("Found QueryEvaluationException", e);
-                }
-                catch(RepositoryException e)
-                {
-                    log.error("Found RepositoryException", e);
-                    throw new QueryAllException("Found RepositoryException", e);
-                }
-                catch(MalformedQueryException e)
-                {
-                    log.error("Found MalformedQueryException", e);
-                    throw new QueryAllException("Found MalformedQueryException", e);
-                }
-                
-                if(!evaluate)
-                {
-                    return false;
-                }
-            }
-        }
-        catch(RepositoryException e1)
-        {
-            log.error("Found RepositoryException", e1);
-            throw new QueryAllException("Found RepositoryException", e1);
-        }
-        finally
-        {
-            if(askConnection != null)
-            {
-                try
-                {
-                    askConnection.close();
-                }
-                catch(RepositoryException e)
-                {
-                    log.error("Found RepositoryException", e);
-                    throw new QueryAllException("Found RepositoryException", e);
-                }
-            }
-        }
-        
-        return true;
     }
     
     /**
@@ -1262,7 +1267,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No namespace entry enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextNamespaceEntryUris);
+                    RdfUtils.log.warn("No namespace entry enums found for {} URIs were: {}",
+                            nextSubjectUri.stringValue(), nextNamespaceEntryUris);
                 }
             }
             
@@ -1281,9 +1287,11 @@ public final class RdfUtils
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                         nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedNamespaceEntryException e)
+                    catch(final UnsupportedNamespaceEntryException e)
                     {
-                        log.error("Could not create a namespace entry parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getNamespaceEntryCause().getTypeURIs());
+                        RdfUtils.log
+                                .error("Could not create a namespace entry parser for the following URI nextSubjectUri="
+                                        + nextSubjectUri + " type URI set =" + e.getNamespaceEntryCause().getTypeURIs());
                     }
                 }
             }
@@ -1389,7 +1397,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No normalisation rule enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextNormalisationRuleUris);
+                    RdfUtils.log.warn("No normalisation rule enums found for {} URIs were: {}",
+                            nextSubjectUri.stringValue(), nextNormalisationRuleUris);
                 }
             }
             
@@ -1403,14 +1412,16 @@ public final class RdfUtils
                     try
                     {
                         results.put(
-                            nextSubjectUri,
-                            ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
-                                    con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                    nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                nextSubjectUri,
+                                ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
+                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
+                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedNormalisationRuleException e)
+                    catch(final UnsupportedNormalisationRuleException e)
                     {
-                        log.error("Could not create a namespace rule parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getRuleCause().getTypeURIs());
+                        RdfUtils.log
+                                .error("Could not create a namespace rule parser for the following URI nextSubjectUri="
+                                        + nextSubjectUri + " type URI set =" + e.getRuleCause().getTypeURIs());
                     }
                 }
             }
@@ -1611,7 +1622,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No profile enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextProfileUris);
+                    RdfUtils.log.warn("No profile enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                            nextProfileUris);
                 }
             }
             
@@ -1629,9 +1641,10 @@ public final class RdfUtils
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                         nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedProfileException e)
+                    catch(final UnsupportedProfileException e)
                     {
-                        log.error("Could not create a profile parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getProfileCause().getTypeURIs());
+                        RdfUtils.log.error("Could not create a profile parser for the following URI nextSubjectUri="
+                                + nextSubjectUri + " type URI set =" + e.getProfileCause().getTypeURIs());
                     }
                 }
             }
@@ -1734,7 +1747,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No project enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextProjectUris);
+                    RdfUtils.log.warn("No project enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                            nextProjectUris);
                 }
             }
             
@@ -1752,9 +1766,10 @@ public final class RdfUtils
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                         nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedProjectException e)
+                    catch(final UnsupportedProjectException e)
                     {
-                        log.error("Could not create a project parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getProjectCause().getTypeURIs());
+                        RdfUtils.log.error("Could not create a project parser for the following URI nextSubjectUri="
+                                + nextSubjectUri + " type URI set =" + e.getProjectCause().getTypeURIs());
                     }
                 }
             }
@@ -1875,7 +1890,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No provider enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextProviderUris);
+                    RdfUtils.log.warn("No provider enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                            nextProviderUris);
                 }
             }
             
@@ -1893,9 +1909,10 @@ public final class RdfUtils
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                         nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedProviderException e)
+                    catch(final UnsupportedProviderException e)
                     {
-                        log.error("Could not create a provider parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getProviderCause().getTypeURIs());
+                        RdfUtils.log.error("Could not create a provider parser for the following URI nextSubjectUri="
+                                + nextSubjectUri + " type URI set =" + e.getProviderCause().getTypeURIs());
                     }
                 }
             }
@@ -2000,7 +2017,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No query type enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextQueryTypeUris);
+                    RdfUtils.log.warn("No query type enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                            nextQueryTypeUris);
                 }
             }
             
@@ -2018,9 +2036,10 @@ public final class RdfUtils
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                         nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedQueryTypeException e)
+                    catch(final UnsupportedQueryTypeException e)
                     {
-                        log.error("Could not create a query type parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getQueryTypeCause().getTypeURIs());
+                        RdfUtils.log.error("Could not create a query type parser for the following URI nextSubjectUri="
+                                + nextSubjectUri + " type URI set =" + e.getQueryTypeCause().getTypeURIs());
                     }
                 }
             }
@@ -2237,7 +2256,8 @@ public final class RdfUtils
                 }
                 else
                 {
-                    RdfUtils.log.warn("No rule test enums found for {} URIs were: {}", nextSubjectUri.stringValue(), nextRuleTestUris);
+                    RdfUtils.log.warn("No rule test enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                            nextRuleTestUris);
                 }
             }
             
@@ -2255,9 +2275,10 @@ public final class RdfUtils
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
                                         nextSubjectUri, Settings.CONFIG_API_VERSION));
                     }
-                    catch(UnsupportedRuleTestException e)
+                    catch(final UnsupportedRuleTestException e)
                     {
-                        log.error("Could not create a rule test parser for the following URI nextSubjectUri="+nextSubjectUri+ " type URI set ="+e.getRuleTestCause().getTypeURIs());
+                        RdfUtils.log.error("Could not create a rule test parser for the following URI nextSubjectUri="
+                                + nextSubjectUri + " type URI set =" + e.getRuleTestCause().getTypeURIs());
                     }
                 }
             }

@@ -58,8 +58,8 @@ public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormali
     public abstract SpinConstraintRule getNewTestSpinConstraintRule();
     
     /**
-     * Final method, so that implementing test cases must supply a SpinConstraintRule instead, through
-     * getNewTestSpinConstraintRule.
+     * Final method, so that implementing test cases must supply a SpinConstraintRule instead,
+     * through getNewTestSpinConstraintRule.
      * 
      * @return A NormalisationRule that is also a SpinNormalisationRule
      */

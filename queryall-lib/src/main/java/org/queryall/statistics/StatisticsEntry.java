@@ -1370,8 +1370,10 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
             connection.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, contextUris);
             connection.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, contextUris);
             connection.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral,
+                    contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral,
+                    contextUris);
             connection.add(keyUri, StatisticsEntry.statisticsserverSoftwareVersionUri, serverSoftwareVersionLiteral,
                     contextUris);
             connection.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, contextUris);

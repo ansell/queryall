@@ -3,7 +3,6 @@
  */
 package org.queryall.exception;
 
-import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntryEnum;
 
 /**
@@ -39,9 +38,20 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
     /**
      * @param message
      */
-    public UnsupportedNamespaceEntryException(final String message, NamespaceEntryEnum nextNamespaceEntry)
+    public UnsupportedNamespaceEntryException(final String message, final NamespaceEntryEnum nextNamespaceEntry)
     {
         super(message);
+        this.setNamespaceEntryCause(nextNamespaceEntry);
+    }
+    
+    /**
+     * @param message
+     * @param cause
+     */
+    public UnsupportedNamespaceEntryException(final String message, final NamespaceEntryEnum nextNamespaceEntry,
+            final Throwable cause)
+    {
+        super(message, cause);
         this.setNamespaceEntryCause(nextNamespaceEntry);
     }
     
@@ -55,35 +65,26 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
     }
     
     /**
-     * @param message
-     * @param cause
-     */
-    public UnsupportedNamespaceEntryException(final String message, NamespaceEntryEnum nextNamespaceEntry, final Throwable cause)
-    {
-        super(message, cause);
-        this.setNamespaceEntryCause(nextNamespaceEntry);
-    }
-    
-    /**
      * @param cause
      */
     public UnsupportedNamespaceEntryException(final Throwable cause)
     {
         super(cause);
     }
-
+    
     /**
      * @return the namespaceEntryCause
      */
     public NamespaceEntryEnum getNamespaceEntryCause()
     {
-        return namespaceEntryCause;
+        return this.namespaceEntryCause;
     }
-
+    
     /**
-     * @param namespaceEntryCause the namespaceEntryCause to set
+     * @param namespaceEntryCause
+     *            the namespaceEntryCause to set
      */
-    public void setNamespaceEntryCause(NamespaceEntryEnum namespaceEntryCause)
+    public void setNamespaceEntryCause(final NamespaceEntryEnum namespaceEntryCause)
     {
         this.namespaceEntryCause = namespaceEntryCause;
     }

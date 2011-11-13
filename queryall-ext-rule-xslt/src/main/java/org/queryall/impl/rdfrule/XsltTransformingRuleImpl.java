@@ -82,9 +82,10 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         {
             testRule.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
         }
-        catch(InvalidStageException e)
+        catch(final InvalidStageException e)
         {
-            log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            XsltTransformingRuleImpl.log.error(
+                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
             throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
         }
         
@@ -200,9 +201,11 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
                 this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
                 this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
             }
-            catch(InvalidStageException e)
+            catch(final InvalidStageException e)
             {
-                log.error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+                XsltTransformingRuleImpl.log
+                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
+                                e);
                 throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
             }
         }

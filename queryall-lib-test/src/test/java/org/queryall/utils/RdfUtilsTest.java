@@ -131,7 +131,7 @@ public class RdfUtilsTest
     private URI testNormalisationRule2;
     private URI testNormalisationRule3;
     private URI testNormalisationRule4;
-
+    
     private URI testNormalisationRule5;
     
     /**
@@ -415,7 +415,7 @@ public class RdfUtilsTest
         catch(final ParseException e)
         {
             // TODO: Make this work
-            //Assert.fail("Found unexpected ParseException e=" + e.getMessage());
+            // Assert.fail("Found unexpected ParseException e=" + e.getMessage());
         }
         
     }
@@ -840,11 +840,13 @@ public class RdfUtilsTest
                     
                     final SparqlAskRule nextSparqlAskRule = (SparqlAskRule)nextSparqlRule;
                     
-                    Assert.assertEquals("Did not generate the correct number of ask queries", 1, nextSparqlAskRule.getSparqlAskQueries().size());
+                    Assert.assertEquals("Did not generate the correct number of ask queries", 1, nextSparqlAskRule
+                            .getSparqlAskQueries().size());
                 }
                 else
                 {
-                    Assert.fail("Found a rule with a URI that we were not testing for nextNormalisationRuleUri="+nextNormalisationRuleUri);
+                    Assert.fail("Found a rule with a URI that we were not testing for nextNormalisationRuleUri="
+                            + nextNormalisationRuleUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -976,7 +978,8 @@ public class RdfUtilsTest
                 }
                 else
                 {
-                    Assert.fail("Found a profile with a URI that we were not testing for nextProfileUri="+nextProfileUri);
+                    Assert.fail("Found a profile with a URI that we were not testing for nextProfileUri="
+                            + nextProfileUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -1066,7 +1069,8 @@ public class RdfUtilsTest
                 }
                 else
                 {
-                    Assert.fail("Found a provider with a URI that we were not testing for nextProviderUri="+nextProviderUri);
+                    Assert.fail("Found a provider with a URI that we were not testing for nextProviderUri="
+                            + nextProviderUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -1296,7 +1300,8 @@ public class RdfUtilsTest
                 }
                 else
                 {
-                    Assert.fail("Found a query type with a URI that we were not testing for nextQueryTypeUri="+nextQueryTypeUri);
+                    Assert.fail("Found a query type with a URI that we were not testing for nextQueryTypeUri="
+                            + nextQueryTypeUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
@@ -1404,7 +1409,8 @@ public class RdfUtilsTest
                 }
                 else
                 {
-                    Assert.fail("Found a rule test with a URI that we were not testing for nextRuleTestUri="+nextRuleTestUri);
+                    Assert.fail("Found a rule test with a URI that we were not testing for nextRuleTestUri="
+                            + nextRuleTestUri);
                 }
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)

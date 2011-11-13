@@ -156,7 +156,8 @@ public class SpinNormalisationRuleImplTest
      * Test method for
      * {@link org.queryall.impl.rdfrule.SpinUtils#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}
      * .
-     * @throws QueryAllException 
+     * 
+     * @throws QueryAllException
      */
     @Test
     public void testAddJenaModelToSesameRepository() throws OpenRDFException, QueryAllException
