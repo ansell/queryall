@@ -21,6 +21,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.exception.QueryAllException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -28,6 +30,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.LocationMapper;
 import com.hp.hpl.jena.vocabulary.OWL2;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -37,10 +41,13 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 public class SpinNormalisationRuleImplTest
 {
+    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImplTest.class);
     
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
+    private LocationMapper originalLocationMapper;
+    private FileManager originalFileManager;
     
     // private SPINModuleRegistry testSpinModuleRegistry1;
     // private SPINModuleRegistry testSpinModuleRegistry2;
@@ -51,6 +58,27 @@ public class SpinNormalisationRuleImplTest
     @Before
     public void setUp() throws Exception
     {
+        // store a reference to the original locationMapper here so we can push it back after each test
+        this.originalLocationMapper = LocationMapper.get();
+        this.originalFileManager = FileManager.get();
+        
+        OntModel testLocationMapping = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
+        
+        testLocationMapping.read(SpinNormalisationRuleImplTest.class.getResourceAsStream("/test/test-location-mapping.n3"), "", "N3");
+        
+        // create a new LocationMapper and set it to initialise from the local mapping file
+        LocationMapper lMap = new LocationMapper() ;
+
+        lMap.processConfig(testLocationMapping);
+        
+        log.info("locationMapper="+lMap.toString());
+        
+        LocationMapper.setGlobalLocationMapper(lMap);
+        
+        FileManager testFileManager = new FileManager(lMap);
+        
+        FileManager.setGlobalFileManager(testFileManager);
+        
         final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
         this.testOntologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, testModel);
@@ -145,6 +173,9 @@ public class SpinNormalisationRuleImplTest
     @After
     public void tearDown() throws Exception
     {
+        LocationMapper.setGlobalLocationMapper(this.originalLocationMapper);
+        FileManager.setGlobalFileManager(this.originalFileManager);
+        
         this.testOntologyModel = null;
         this.testSesameStatements = null;
         this.testRepository = null;
@@ -198,8 +229,9 @@ public class SpinNormalisationRuleImplTest
         final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
         
+        
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all.owl");
+        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all");
         
         final Repository results = spinNormalisationRuleImpl.processSpinRules(this.testRepository);
         
