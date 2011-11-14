@@ -12,6 +12,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class ProfileSchema
+public class ProfileSchema implements QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileSchema.class);
     @SuppressWarnings("unused")
