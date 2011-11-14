@@ -1,0 +1,49 @@
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+
+@prefix fn:      <http://www.w3.org/2005/xpath-functions#> .
+@prefix afn:     <http://jena.hpl.hp.com/ARQ/function#> .
+
+@prefix spin:    <http://spinrdf.org/spin#> .
+@prefix sp:      <http://spinrdf.org/sp#> .
+@prefix spl:     <http://spinrdf.org/spl#> .
+@prefix smf:     <http://topbraid.org/sparqlmotionfunctions#> .
+
+@prefix kennedys:  <http://topbraid.org/examples/kennedys#> .
+@prefix kspin:   <http://topbraid.org/examples/kennedysSPIN#> .
+
+<http://queryall.test.example.org/examples/example-spinfunction-1>
+      a       owl:Ontology ;
+      owl:imports <http://spinrdf.org/spin> ;
+      owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
+
+kspin:getOppositeSex
+      a       spin:Function ;
+      rdfs:label "get opposite sex"^^xsd:string ;
+      rdfs:subClassOf spin:Functions ;
+      spin:body
+              [ a       sp:Select ;
+                sp:resultVariables (_:b12) ;
+                sp:where ([ sp:object kennedys:Gender ;
+                            sp:predicate rdf:type ;
+                            sp:subject _:b12
+                          ] [ a       sp:Filter ;
+                            sp:expression
+                                    [ a       sp:ne ;
+                                      sp:arg1 _:b12 ;
+                                      sp:arg2 [ sp:varName "gender"^^xsd:string
+                                              ]
+                                    ]
+                          ])
+              ] ;
+      spin:constraint
+              [ a       sp:Ask ;
+                rdfs:comment "age must be within a realistic range"^^xsd:string ;
+                sp:where (
+                                    ]
+                          ])
+              ] .
+              
+_:b12 sp:varName "opposite"^^xsd:string .
