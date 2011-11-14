@@ -123,7 +123,7 @@ public class SpinUtilsTest
      * @throws QueryAllException
      */
     @Test
-    public void testAddJenaModelToSesameRepository() throws OpenRDFException, QueryAllException
+    public void testAddJenaModelToSesameRepositoryNull() throws OpenRDFException, QueryAllException
     {
         final Repository results = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
         
@@ -131,16 +131,25 @@ public class SpinUtilsTest
         
         Assert.assertEquals(3, resultConnection.size());
         
+        RepositoryConnection connection = this.testRepository.getConnection();
+        
+        // Verify that each of the statements in the result are located in our copy of the test repository
+        for(Statement nextStatement : resultConnection.getStatements(null, null, null, false).asList())
+        {
+            Assert.assertTrue(connection.hasStatement(nextStatement, false));
+        }
     }
     
     /**
      * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#addSesameRepositoryToJenaModel(org.openrdf.repository.Repository, com.hp.hpl.jena.rdf.model.Model, java.lang.String, org.openrdf.model.Resource[])}.
      */
     @Test
-    @Ignore
     public void testAddSesameRepositoryToJenaModel()
     {
-        fail("Not yet implemented"); // TODO
+        OntModel addSesameRepositoryToJenaModel = SpinUtils.addSesameRepositoryToJenaModel(testRepository, null, "");
+        
+        // verify that the given model matches our local test model
+        Assert.assertTrue(addSesameRepositoryToJenaModel.isIsomorphicWith(testOntologyModel));
     }
     
     @Test

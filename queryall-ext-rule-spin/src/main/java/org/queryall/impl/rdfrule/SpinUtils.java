@@ -124,9 +124,15 @@ public class SpinUtils
         return outputRepository;
     }
     
-    public static OntModel addSesameRepositoryToJenaModel(final Repository inputRepository, final Model outputModel,
+    public static OntModel addSesameRepositoryToJenaModel(final Repository inputRepository, Model outputModel,
             final String baseURI, final org.openrdf.model.Resource... contexts)
     {
+        // if the outputModel was not defined, then create a new in memory model to contain the results
+        if(outputModel == null)
+        {
+            outputModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        }
+        
         // Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
         final ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
