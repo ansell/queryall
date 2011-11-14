@@ -1,0 +1,14 @@
+@prefix lm: <http://jena.hpl.hp.com/2004/08/location-mapping#> .
+
+[] lm:mapping
+   [ lm:prefix
+       "http://http://topbraid.org/spin/" ;
+     lm:altPrefix
+       "file:test/"
+   ] ,
+   [ lm:prefix
+       "http://http://spinrdf.org/" ;
+     lm:altPrefix
+       "file:test/"
+   ]
+   .

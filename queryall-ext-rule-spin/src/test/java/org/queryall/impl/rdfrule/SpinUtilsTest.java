@@ -148,6 +148,8 @@ public class SpinUtilsTest
     {
         OntModel addSesameRepositoryToJenaModel = SpinUtils.addSesameRepositoryToJenaModel(testRepository, null, "");
         
+        Assert.assertEquals(testOntologyModel.size(), addSesameRepositoryToJenaModel.size());
+        
         // verify that the given model matches our local test model
         Assert.assertTrue(addSesameRepositoryToJenaModel.isIsomorphicWith(testOntologyModel));
     }
@@ -174,20 +176,22 @@ public class SpinUtilsTest
      * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromClasspath(java.lang.String)}.
      */
     @Test
-    @Ignore
     public void testLoadModelFromClasspath()
     {
-        fail("Not yet implemented"); // TODO
+        final OntModel nextModel = SpinUtils.loadModelFromClasspath("/test/owlrl-all");
+        
+        Assert.assertEquals(3301, nextModel.size());
     }
     
     /**
      * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromUrl(java.lang.String)}.
      */
     @Test
-    @Ignore
     public void testLoadModelFromUrl()
     {
-        fail("Not yet implemented"); // TODO
+        final OntModel nextModel = SpinUtils.loadModelFromUrl("http://topbraid.org/spin/owlrl-all");
+        
+        Assert.assertEquals(3301, nextModel.size());
     }
     
 }

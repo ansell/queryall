@@ -6,6 +6,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import org.openrdf.model.Literal;
+import org.openrdf.model.Value;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -19,16 +21,22 @@ import org.slf4j.LoggerFactory;
 import org.topbraid.spin.arq.ARQ2SPIN;
 import org.topbraid.spin.arq.ARQFactory;
 
+import com.hp.hpl.jena.graph.GraphMaker;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.LocationMapper;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
+ * 
+ * TODO: Change this from a static/Singleton into a more customisable structure using a configurable location mapping file
  */
 public class SpinUtils
 {
@@ -39,6 +47,22 @@ public class SpinUtils
     private static final boolean _DEBUG = SpinUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = SpinUtils.log.isInfoEnabled();
+    private static LocationMapper lMap;
+    private static FileManager fileManager;
+    
+    static
+    {
+        Model mappingConfig = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        final InputStream stream = SpinUtils.class.getResourceAsStream("/queryall-jena-location-mapping.n3");
+        
+        mappingConfig.read(stream, "http://temp.base.uri.fake/", "N3");
+        
+        log.info("mappingConfig.size()="+mappingConfig.size());
+        
+        lMap = new LocationMapper(mappingConfig);
+        fileManager = new FileManager(lMap);
+    }
     
     /**
      * Takes the RDF statements from a Jena Model and adds them to the given contexts in a Sesame
@@ -170,20 +194,34 @@ public class SpinUtils
         return turtleString;
     }
     
+    /**
+     * 
+     * 
+     * @param classpathRef A reference on the classpath
+     * @return
+     */
     public static OntModel loadModelFromClasspath(String classpathRef)
     {
         SpinUtils.log.info("loading model from classpathRef=" + classpathRef);
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        if(!classpathRef.startsWith("/"))
+        if(classpathRef.startsWith("file:"))
         {
-            classpathRef = "/" + classpathRef;
+            log.debug("classpathRef did not start with file:, prepending file: to it");
+            classpathRef = classpathRef.substring("file:".length());
         }
         
         final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
         
         baseModel.read(stream, "http://temp.base.uri.fake/");
+        
+        // FIXME: Cannot determine way to use the fileManager to load from a classpath reference or attach the fileManager or locationMapper to use for other resolutions
+//        Model fileManagerModel = fileManager.loadModel(classpathRef);
+        
+//        ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, new ModelMakerImpl(new GraphMaker()), base)
+        
+//        log.info("fileManagerModel.isIsomorphicWith(baseModel)="+fileManagerModel.isIsomorphicWith(baseModel));
         
         // TODO: make the OntModelSpec here configurable
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
@@ -194,7 +232,8 @@ public class SpinUtils
         SpinUtils.log.info("loading model from url=" + url);
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        baseModel.read(url);
+        fileManager.loadModel(url);
+        
         // TODO: make the OntModelSpec here configurable
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
     }
