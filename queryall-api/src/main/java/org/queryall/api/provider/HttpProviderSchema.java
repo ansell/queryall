@@ -10,6 +10,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.sail.memory.model.MemValueFactory;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpProviderSchema
+public class HttpProviderSchema implements QueryAllSchema
 {
     static final Logger log = LoggerFactory.getLogger(HttpProviderSchema.class);
     @SuppressWarnings("unused")

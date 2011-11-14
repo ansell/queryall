@@ -12,6 +12,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class InputQueryTypeSchema
+public class InputQueryTypeSchema implements QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(InputQueryTypeSchema.class);
     @SuppressWarnings("unused")
