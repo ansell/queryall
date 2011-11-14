@@ -3,17 +3,19 @@
  */
 package org.queryall.impl.rdfrule;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.Repository;
@@ -33,18 +35,15 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- * 
+ *
  */
-public class SpinNormalisationRuleImplTest
+public class SpinUtilsTest
 {
     
     private OntModel testOntologyModel;
+    private ArrayList<Statement> testSesameStatements;
     private Repository testRepository;
-    private List<org.openrdf.model.Statement> testSesameStatements;
-    
-    // private SPINModuleRegistry testSpinModuleRegistry1;
-    // private SPINModuleRegistry testSpinModuleRegistry2;
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -103,40 +102,6 @@ public class SpinNormalisationRuleImplTest
         connection.add(this.testSesameStatements);
         connection.commit();
         connection.close();
-        
-        // SPINThreadFunctionRegistry functionRegistry1 = new
-        // SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-        // FunctionRegistry functionRegistry1 = FunctionRegistry.standardRegistry();
-        
-        // testSpinModuleRegistry1 = new SPINModuleRegistry(functionRegistry1);
-        // testSpinModuleRegistry1 = new SPINModuleRegistry();//FunctionRegistry.get());
-        
-        // TODO: is it rational to have a circular dependency like this?
-        // functionRegistry1.setSpinModuleRegistry(testSpinModuleRegistry1);
-        
-        // TODO: how do we get around this step
-        // Jena/ARQ seems to be permanently setup around the use of this global context,
-        // even though FunctionEnv and Context seem to be in quite a few method headers
-        // throughout their code base
-        // ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry1);
-        
-        // testSpinModuleRegistry1.init();
-        
-        // SPINThreadFunctionRegistry functionRegistry2 = new
-        // SPINThreadFunctionRegistry(FunctionRegistry.standardRegistry());
-        //
-        // testSpinModuleRegistry2 = new SPINModuleRegistry(functionRegistry2);
-        
-        // TODO: is it rational to have a circular dependency like this?
-        // functionRegistry2.setSpinModuleRegistry(testSpinModuleRegistry2);
-        
-        // TODO: how do we get around this step
-        // Jena/ARQ seems to be permanently setup around the use of this global context,
-        // even though FunctionEnv and Context seem to be in quite a few method headers
-        // throughout their code base
-        // ARQ.getContext().set(ARQConstants.registryFunctions, functionRegistry2);
-        
-        // testSpinModuleRegistry2.init();
     }
     
     /**
@@ -148,59 +113,72 @@ public class SpinNormalisationRuleImplTest
         this.testOntologyModel = null;
         this.testSesameStatements = null;
         this.testRepository = null;
-        // testSpinModuleRegistry1 = null;
-        // testSpinModuleRegistry2 = null;
     }
     
-    
+    /**
+     * Test method for
+     * {@link org.queryall.impl.rdfrule.SpinUtils#addJenaModelToSesameRepository(com.hp.hpl.jena.rdf.model.Model, org.openrdf.repository.Repository, org.openrdf.model.Resource[])}
+     * .
+     * 
+     * @throws QueryAllException
+     */
     @Test
-    public void testProcessSpinRulesByClasspathRef() throws OpenRDFException, QueryAllException
+    public void testAddJenaModelToSesameRepository() throws OpenRDFException, QueryAllException
     {
-        final RepositoryConnection testRepositoryConnection = this.testRepository.getConnection();
-        
-        Assert.assertEquals(3, testRepositoryConnection.size());
-        
-        final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
-        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
-        
-        // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all.owl");
-        
-        final Repository results = spinNormalisationRuleImpl.processSpinRules(this.testRepository);
+        final Repository results = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
         
         final RepositoryConnection resultConnection = results.getConnection();
         
-        Assert.assertEquals(8, resultConnection.size());
+        Assert.assertEquals(3, resultConnection.size());
         
-        for(final Statement nextStatement : this.testSesameStatements)
-        {
-            Assert.assertTrue(resultConnection.hasStatement(nextStatement, false));
-        }
+    }
+    
+    /**
+     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#addSesameRepositoryToJenaModel(org.openrdf.repository.Repository, com.hp.hpl.jena.rdf.model.Model, java.lang.String, org.openrdf.model.Resource[])}.
+     */
+    @Test
+    @Ignore
+    public void testAddSesameRepositoryToJenaModel()
+    {
+        fail("Not yet implemented"); // TODO
     }
     
     @Test
-    public void testProcessSpinRulesByURL() throws OpenRDFException, QueryAllException
+    public void testGetTurtleSPINQueryFromSPARQL()
     {
-        final RepositoryConnection testRepositoryConnection = this.testRepository.getConnection();
+        final String query =
+                "SELECT ?person\n" + "WHERE {\n" + "    ?person a <ex:Person> .\n" + "    ?person <ex:age> ?age .\n"
+                        + "    FILTER (?age > 18) .\n" + "}";
         
-        Assert.assertEquals(3, testRepositoryConnection.size());
+        final String turtleString = SpinUtils.getTurtleSPINQueryFromSPARQL(query);
         
-        final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
-        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
+        System.out.println(turtleString);
         
-        // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addUrlImport(new URIImpl("http://topbraid.org/spin/owlrl-all"));
+        Assert.assertTrue(turtleString.contains("ex:Person"));
         
-        final Repository results = spinNormalisationRuleImpl.processSpinRules(this.testRepository);
+        Assert.assertTrue(turtleString.contains("ex:age"));
         
-        final RepositoryConnection resultConnection = results.getConnection();
-        
-        Assert.assertEquals(8, resultConnection.size());
-        
-        for(final Statement nextStatement : this.testSesameStatements)
-        {
-            Assert.assertTrue(resultConnection.hasStatement(nextStatement, false));
-        }
+        Assert.assertTrue(turtleString.contains("18"));
+    }
+
+    /**
+     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromClasspath(java.lang.String)}.
+     */
+    @Test
+    @Ignore
+    public void testLoadModelFromClasspath()
+    {
+        fail("Not yet implemented"); // TODO
+    }
+    
+    /**
+     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromUrl(java.lang.String)}.
+     */
+    @Test
+    @Ignore
+    public void testLoadModelFromUrl()
+    {
+        fail("Not yet implemented"); // TODO
     }
     
 }
