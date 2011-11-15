@@ -87,7 +87,7 @@ public class SpinUtils
 
         log.info("testStream="+testStream);
 
-        // FIXME: Make SPIN/ARQ not require this line
+        // FIXME: Make SPIN/ARQ not require this line by including a ModelFactory.createXYZModel parameter to include a reference to a file manager to use for the load
         FileManager.setGlobalFileManager(fileManager);
     }
     
