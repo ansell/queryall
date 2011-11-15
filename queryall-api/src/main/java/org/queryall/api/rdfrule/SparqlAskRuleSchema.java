@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlAskRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SparqlAskRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlAskRuleSchema.class);
     @SuppressWarnings("unused")
@@ -51,11 +53,25 @@ public class SparqlAskRuleSchema implements QueryAllSchema
         return SparqlAskRuleSchema.sparqlAskRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param sparqlConstructRuleTypeUri
+     *            the sparqlruleTypeUri to set
+     */
+    public static void setSparqlAskRuleTypeUri(final URI sparqlConstructRuleTypeUri)
+    {
+        SparqlAskRuleSchema.sparqlAskRuleTypeUri = sparqlConstructRuleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SparqlAskRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -98,15 +114,6 @@ public class SparqlAskRuleSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param sparqlConstructRuleTypeUri
-     *            the sparqlruleTypeUri to set
-     */
-    public static void setSparqlAskRuleTypeUri(final URI sparqlConstructRuleTypeUri)
-    {
-        SparqlAskRuleSchema.sparqlAskRuleTypeUri = sparqlConstructRuleTypeUri;
     }
     
 }

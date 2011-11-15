@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class PrefixMappingNormalisationRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -99,11 +101,50 @@ public class PrefixMappingNormalisationRuleSchema implements QueryAllSchema
         return PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    public static void setInputPrefixUri(final URI nextInputPrefixUri)
+    {
+        PrefixMappingNormalisationRuleSchema.inputPrefixUri = nextInputPrefixUri;
+    }
+    
+    private static void setObjectMappingPredicateUri(final URI nextObjectMappingPredicateUri)
+    {
+        PrefixMappingNormalisationRuleSchema.objectMappingPredicateUri = nextObjectMappingPredicateUri;
+    }
+    
+    public static void setOutputPrefixUri(final URI nextOutputPrefixUri)
+    {
+        PrefixMappingNormalisationRuleSchema.outputPrefixUri = nextOutputPrefixUri;
+    }
+    
+    private static void setPredicateMappingPredicateUri(final URI nextPredicateMappingPredicateUri)
+    {
+        PrefixMappingNormalisationRuleSchema.predicateMappingPredicateUri = nextPredicateMappingPredicateUri;
+    }
+    
+    /**
+     * @param simplePrefixMappingTypeUri
+     *            the simplePrefixMappingTypeUri to set
+     */
+    public static void setSimplePrefixMappingTypeUri(final URI simplePrefixMappingTypeUri)
+    {
+        PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri = simplePrefixMappingTypeUri;
+    }
+    
+    public static void setSubjectMappingPredicateUri(final URI nextMappingPredicateUri)
+    {
+        PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri = nextMappingPredicateUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return PrefixMappingNormalisationRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -146,39 +187,4 @@ public class PrefixMappingNormalisationRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    public static void setInputPrefixUri(final URI nextInputPrefixUri)
-    {
-        PrefixMappingNormalisationRuleSchema.inputPrefixUri = nextInputPrefixUri;
-    }
-    
-    private static void setObjectMappingPredicateUri(final URI nextObjectMappingPredicateUri)
-    {
-        PrefixMappingNormalisationRuleSchema.objectMappingPredicateUri = nextObjectMappingPredicateUri;
-    }
-    
-    public static void setOutputPrefixUri(final URI nextOutputPrefixUri)
-    {
-        PrefixMappingNormalisationRuleSchema.outputPrefixUri = nextOutputPrefixUri;
-    }
-    
-    private static void setPredicateMappingPredicateUri(final URI nextPredicateMappingPredicateUri)
-    {
-        PrefixMappingNormalisationRuleSchema.predicateMappingPredicateUri = nextPredicateMappingPredicateUri;
-    }
-    
-    /**
-     * @param simplePrefixMappingTypeUri
-     *            the simplePrefixMappingTypeUri to set
-     */
-    public static void setSimplePrefixMappingTypeUri(final URI simplePrefixMappingTypeUri)
-    {
-        PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri = simplePrefixMappingTypeUri;
-    }
-    
-    public static void setSubjectMappingPredicateUri(final URI nextMappingPredicateUri)
-    {
-        PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri = nextMappingPredicateUri;
-    }
-    
 }

@@ -1,5 +1,6 @@
 package org.queryall.api.provider;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -19,7 +20,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfProviderSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfProviderSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfProviderSchema.class);
     @SuppressWarnings("unused")
@@ -48,11 +50,25 @@ public class RdfProviderSchema implements QueryAllSchema
         return RdfProviderSchema.providerRdfProviderUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param providerRdfProviderUri
+     *            the providerRdfProviderUri to set
+     */
+    public static void setProviderRdfProviderUri(final URI providerRdfProviderUri)
+    {
+        RdfProviderSchema.providerRdfProviderUri = providerRdfProviderUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RdfProviderSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        ProviderSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = new MemValueFactory();
@@ -92,14 +108,5 @@ public class RdfProviderSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param providerRdfProviderUri
-     *            the providerRdfProviderUri to set
-     */
-    public static void setProviderRdfProviderUri(final URI providerRdfProviderUri)
-    {
-        RdfProviderSchema.providerRdfProviderUri = providerRdfProviderUri;
     }
 }

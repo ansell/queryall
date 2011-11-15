@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinInferencingRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SpinInferencingRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleSchema.class);
     @SuppressWarnings("unused")
@@ -51,11 +53,25 @@ public class SpinInferencingRuleSchema implements QueryAllSchema
         return SpinInferencingRuleSchema.spinInferencingRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param spinInferencingRuleTypeUri
+     *            the spinruleTypeUri to set
+     */
+    public static void setSpinInferencingRuleTypeUri(final URI spinInferencingRuleTypeUri)
+    {
+        SpinInferencingRuleSchema.spinInferencingRuleTypeUri = spinInferencingRuleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SpinInferencingRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -97,14 +113,4 @@ public class SpinInferencingRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param spinInferencingRuleTypeUri
-     *            the spinruleTypeUri to set
-     */
-    public static void setSpinInferencingRuleTypeUri(final URI spinInferencingRuleTypeUri)
-    {
-        SpinInferencingRuleSchema.spinInferencingRuleTypeUri = spinInferencingRuleTypeUri;
-    }
-    
 }

@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlConstructRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SparqlConstructRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlConstructRuleSchema.class);
     @SuppressWarnings("unused")
@@ -127,11 +129,85 @@ public class SparqlConstructRuleSchema implements QueryAllSchema
         return SparqlConstructRuleSchema.sparqlruleSparqlConstructQueryTarget;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param oLDsparqlruleModeOnlyDeleteMatches
+     *            the oLDsparqlruleModeOnlyDeleteMatches to set
+     */
+    public static void setOLDsparqlruleModeOnlyDeleteMatches(final URI oLDsparqlruleModeOnlyDeleteMatches)
+    {
+        SparqlConstructRuleSchema.OLDsparqlruleModeOnlyDeleteMatches = oLDsparqlruleModeOnlyDeleteMatches;
+    }
+    
+    private static void setOLDSparqlRuleSparqlConstructQuery(final URI sparqlruleSparqlConstructQuery)
+    {
+        SparqlConstructRuleSchema.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
+        
+    }
+    
+    /**
+     * @param sparqlConstructRuleTypeUri
+     *            the sparqlruleTypeUri to set
+     */
+    public static void setSparqlConstructRuleTypeUri(final URI sparqlConstructRuleTypeUri)
+    {
+        SparqlConstructRuleSchema.sparqlruleTypeUri = sparqlConstructRuleTypeUri;
+    }
+    
+    /**
+     * @param sparqlruleMode
+     *            the sparqlruleMode to set
+     */
+    public static void setSparqlRuleMode(final URI sparqlruleMode)
+    {
+        SparqlConstructRuleSchema.sparqlruleMode = sparqlruleMode;
+    }
+    
+    /**
+     * @param sparqlruleModeAddAllMatchingTriples
+     *            the sparqlruleModeAddAllMatchingTriples to set
+     */
+    public static void setSparqlRuleModeAddAllMatchingTriples(final URI sparqlruleModeAddAllMatchingTriples)
+    {
+        SparqlConstructRuleSchema.sparqlruleModeAddAllMatchingTriples = sparqlruleModeAddAllMatchingTriples;
+    }
+    
+    /**
+     * @param sparqlruleModeOnlyDeleteMatches
+     *            the sparqlruleModeOnlyDeleteMatches to set
+     */
+    public static void setSparqlRuleModeOnlyDeleteMatches(final URI sparqlruleModeOnlyDeleteMatches)
+    {
+        SparqlConstructRuleSchema.sparqlruleModeOnlyDeleteMatches = sparqlruleModeOnlyDeleteMatches;
+    }
+    
+    /**
+     * @param sparqlruleModeOnlyIncludeMatches
+     *            the sparqlruleModeOnlyIncludeMatches to set
+     */
+    public static void setSparqlRuleModeOnlyIncludeMatches(final URI sparqlruleModeOnlyIncludeMatches)
+    {
+        SparqlConstructRuleSchema.sparqlruleModeOnlyIncludeMatches = sparqlruleModeOnlyIncludeMatches;
+    }
+    
+    /**
+     * @param sparqlruleSparqlConstructQueryTarget
+     *            the sparqlruleSparqlConstructQueryTarget to set
+     */
+    public static void setSparqlRuleSparqlConstructQueryTarget(final URI sparqlruleSparqlConstructQuery)
+    {
+        SparqlConstructRuleSchema.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SparqlConstructRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -204,75 +280,6 @@ public class SparqlConstructRuleSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param oLDsparqlruleModeOnlyDeleteMatches
-     *            the oLDsparqlruleModeOnlyDeleteMatches to set
-     */
-    public static void setOLDsparqlruleModeOnlyDeleteMatches(final URI oLDsparqlruleModeOnlyDeleteMatches)
-    {
-        SparqlConstructRuleSchema.OLDsparqlruleModeOnlyDeleteMatches = oLDsparqlruleModeOnlyDeleteMatches;
-    }
-    
-    private static void setOLDSparqlRuleSparqlConstructQuery(final URI sparqlruleSparqlConstructQuery)
-    {
-        SparqlConstructRuleSchema.sparqlruleSparqlConstructQuery = sparqlruleSparqlConstructQuery;
-        
-    }
-    
-    /**
-     * @param sparqlConstructRuleTypeUri
-     *            the sparqlruleTypeUri to set
-     */
-    public static void setSparqlConstructRuleTypeUri(final URI sparqlConstructRuleTypeUri)
-    {
-        SparqlConstructRuleSchema.sparqlruleTypeUri = sparqlConstructRuleTypeUri;
-    }
-    
-    /**
-     * @param sparqlruleMode
-     *            the sparqlruleMode to set
-     */
-    public static void setSparqlRuleMode(final URI sparqlruleMode)
-    {
-        SparqlConstructRuleSchema.sparqlruleMode = sparqlruleMode;
-    }
-    
-    /**
-     * @param sparqlruleModeAddAllMatchingTriples
-     *            the sparqlruleModeAddAllMatchingTriples to set
-     */
-    public static void setSparqlRuleModeAddAllMatchingTriples(final URI sparqlruleModeAddAllMatchingTriples)
-    {
-        SparqlConstructRuleSchema.sparqlruleModeAddAllMatchingTriples = sparqlruleModeAddAllMatchingTriples;
-    }
-    
-    /**
-     * @param sparqlruleModeOnlyDeleteMatches
-     *            the sparqlruleModeOnlyDeleteMatches to set
-     */
-    public static void setSparqlRuleModeOnlyDeleteMatches(final URI sparqlruleModeOnlyDeleteMatches)
-    {
-        SparqlConstructRuleSchema.sparqlruleModeOnlyDeleteMatches = sparqlruleModeOnlyDeleteMatches;
-    }
-    
-    /**
-     * @param sparqlruleModeOnlyIncludeMatches
-     *            the sparqlruleModeOnlyIncludeMatches to set
-     */
-    public static void setSparqlRuleModeOnlyIncludeMatches(final URI sparqlruleModeOnlyIncludeMatches)
-    {
-        SparqlConstructRuleSchema.sparqlruleModeOnlyIncludeMatches = sparqlruleModeOnlyIncludeMatches;
-    }
-    
-    /**
-     * @param sparqlruleSparqlConstructQueryTarget
-     *            the sparqlruleSparqlConstructQueryTarget to set
-     */
-    public static void setSparqlRuleSparqlConstructQueryTarget(final URI sparqlruleSparqlConstructQuery)
-    {
-        SparqlConstructRuleSchema.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
     }
     
 }

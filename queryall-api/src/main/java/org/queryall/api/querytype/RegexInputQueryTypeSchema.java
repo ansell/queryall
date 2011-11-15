@@ -1,5 +1,6 @@
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -15,7 +16,12 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RegexInputQueryTypeSchema implements QueryAllSchema
+/**
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
+@MetaInfServices(QueryAllSchema.class)
+public class RegexInputQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RegexInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -53,11 +59,30 @@ public class RegexInputQueryTypeSchema implements QueryAllSchema
         return RegexInputQueryTypeSchema.regexQueryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param queryInputRegex
+     *            the queryInputRegex to set
+     */
+    public static void setQueryInputRegex(final URI queryInputRegex)
+    {
+        RegexInputQueryTypeSchema.queryInputRegex = queryInputRegex;
+    }
+    
+    private static void setRegexQueryTypeUri(final URI regexQueryTypeUri)
+    {
+        RegexInputQueryTypeSchema.regexQueryTypeUri = regexQueryTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RegexInputQueryTypeSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        QueryTypeSchema.schemaToRdf(myRepository, keyToUse, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -105,19 +130,4 @@ public class RegexInputQueryTypeSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param queryInputRegex
-     *            the queryInputRegex to set
-     */
-    public static void setQueryInputRegex(final URI queryInputRegex)
-    {
-        RegexInputQueryTypeSchema.queryInputRegex = queryInputRegex;
-    }
-    
-    private static void setRegexQueryTypeUri(final URI regexQueryTypeUri)
-    {
-        RegexInputQueryTypeSchema.regexQueryTypeUri = regexQueryTypeUri;
-    }
-    
 }

@@ -7,7 +7,7 @@ import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryAllEnum
+public abstract class QueryAllEnum
 {
     private static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
     @SuppressWarnings("unused")

@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlNormalisationRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SparqlNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -67,11 +69,35 @@ public class SparqlNormalisationRuleSchema implements QueryAllSchema
         return SparqlNormalisationRuleSchema.sparqlruleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    public static void setSparqlRuleSparqlPrefixes(final URI sparqlruleSparqlPrefixes)
+    {
+        SparqlNormalisationRuleSchema.sparqlruleSparqlPrefixes = sparqlruleSparqlPrefixes;
+    }
+    
+    public static void setSparqlRuleSparqlWherePattern(final URI sparqlruleSparqlWherePattern)
+    {
+        SparqlNormalisationRuleSchema.sparqlruleSparqlWherePattern = sparqlruleSparqlWherePattern;
+    }
+    
+    /**
+     * @param sparqlruleTypeUri
+     *            the sparqlruleTypeUri to set
+     */
+    public static void setSparqlRuleTypeUri(final URI sparqlruleTypeUri)
+    {
+        SparqlNormalisationRuleSchema.sparqlruleTypeUri = sparqlruleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SparqlNormalisationRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -112,24 +138,4 @@ public class SparqlNormalisationRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    public static void setSparqlRuleSparqlPrefixes(final URI sparqlruleSparqlPrefixes)
-    {
-        SparqlNormalisationRuleSchema.sparqlruleSparqlPrefixes = sparqlruleSparqlPrefixes;
-    }
-    
-    public static void setSparqlRuleSparqlWherePattern(final URI sparqlruleSparqlWherePattern)
-    {
-        SparqlNormalisationRuleSchema.sparqlruleSparqlWherePattern = sparqlruleSparqlWherePattern;
-    }
-    
-    /**
-     * @param sparqlruleTypeUri
-     *            the sparqlruleTypeUri to set
-     */
-    public static void setSparqlRuleTypeUri(final URI sparqlruleTypeUri)
-    {
-        SparqlNormalisationRuleSchema.sparqlruleTypeUri = sparqlruleTypeUri;
-    }
-    
 }

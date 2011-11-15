@@ -3,6 +3,7 @@
  */
 package org.queryall.api.ruletest;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -21,7 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StringRuleTestSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class StringRuleTestSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(StringRuleTestSchema.class);
     @SuppressWarnings("unused")
@@ -72,7 +74,41 @@ public class StringRuleTestSchema implements QueryAllSchema
         return StringRuleTestSchema.stringRuletestTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param ruletestInputTestString
+     *            the ruletestInputTestString to set
+     */
+    public static void setRuletestInputTestString(final URI ruletestInputTestString)
+    {
+        StringRuleTestSchema.ruletestInputTestString = ruletestInputTestString;
+    }
+    
+    /**
+     * @param ruletestOutputTestString
+     *            the ruletestOutputTestString to set
+     */
+    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
+    {
+        StringRuleTestSchema.ruletestOutputTestString = ruletestOutputTestString;
+    }
+    
+    /**
+     * @param ruletestTypeUri
+     *            the ruletestTypeUri to set
+     */
+    public static void setStringRuleTestTypeUri(final URI ruletestTypeUri)
+    {
+        StringRuleTestSchema.stringRuletestTypeUri = ruletestTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return StringRuleTestSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -124,33 +160,6 @@ public class StringRuleTestSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param ruletestInputTestString
-     *            the ruletestInputTestString to set
-     */
-    public static void setRuletestInputTestString(final URI ruletestInputTestString)
-    {
-        StringRuleTestSchema.ruletestInputTestString = ruletestInputTestString;
-    }
-    
-    /**
-     * @param ruletestOutputTestString
-     *            the ruletestOutputTestString to set
-     */
-    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
-    {
-        StringRuleTestSchema.ruletestOutputTestString = ruletestOutputTestString;
-    }
-    
-    /**
-     * @param ruletestTypeUri
-     *            the ruletestTypeUri to set
-     */
-    public static void setStringRuleTestTypeUri(final URI ruletestTypeUri)
-    {
-        StringRuleTestSchema.stringRuletestTypeUri = ruletestTypeUri;
     }
     
 }

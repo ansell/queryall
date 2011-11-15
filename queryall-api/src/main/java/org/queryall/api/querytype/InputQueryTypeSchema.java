@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class InputQueryTypeSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class InputQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(InputQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -48,7 +50,19 @@ public class InputQueryTypeSchema implements QueryAllSchema
         return InputQueryTypeSchema.queryExpectedInputParameters;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public static void setQueryExpectedInputParameters(final URI expectedInputParameters)
+    {
+        InputQueryTypeSchema.queryExpectedInputParameters = expectedInputParameters;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return InputQueryTypeSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -97,11 +111,6 @@ public class InputQueryTypeSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    public static void setQueryExpectedInputParameters(final URI expectedInputParameters)
-    {
-        InputQueryTypeSchema.queryExpectedInputParameters = expectedInputParameters;
     }
     
 }

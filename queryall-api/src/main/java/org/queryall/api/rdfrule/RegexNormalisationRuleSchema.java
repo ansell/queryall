@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexNormalisationRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RegexNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RegexNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -95,11 +97,61 @@ public class RegexNormalisationRuleSchema implements QueryAllSchema
         return RegexNormalisationRuleSchema.regexruleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param rdfruleInputMatchRegex
+     *            the rdfruleInputMatchRegex to set
+     */
+    public static void setRegexRuleInputMatchRegex(final URI rdfruleInputMatchRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleInputMatchRegex = rdfruleInputMatchRegex;
+    }
+    
+    /**
+     * @param rdfruleInputReplaceRegex
+     *            the rdfruleInputReplaceRegex to set
+     */
+    public static void setRegexRuleInputReplaceRegex(final URI rdfruleInputReplaceRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
+    }
+    
+    /**
+     * @param rdfruleOutputMatchRegex
+     *            the rdfruleOutputMatchRegex to set
+     */
+    public static void setRegexRuleOutputMatchRegex(final URI rdfruleOutputMatchRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
+    }
+    
+    /**
+     * @param rdfruleOutputReplaceRegex
+     *            the rdfruleOutputReplaceRegex to set
+     */
+    public static void setRegexRuleOutputReplaceRegex(final URI rdfruleOutputReplaceRegex)
+    {
+        RegexNormalisationRuleSchema.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
+    }
+    
+    /**
+     * @param regexruleTypeUri
+     *            the regexruleTypeUri to set
+     */
+    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
+    {
+        RegexNormalisationRuleSchema.regexruleTypeUri = regexruleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RegexNormalisationRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -188,50 +240,4 @@ public class RegexNormalisationRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param rdfruleInputMatchRegex
-     *            the rdfruleInputMatchRegex to set
-     */
-    public static void setRegexRuleInputMatchRegex(final URI rdfruleInputMatchRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleInputMatchRegex = rdfruleInputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleInputReplaceRegex
-     *            the rdfruleInputReplaceRegex to set
-     */
-    public static void setRegexRuleInputReplaceRegex(final URI rdfruleInputReplaceRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleInputReplaceRegex = rdfruleInputReplaceRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputMatchRegex
-     *            the rdfruleOutputMatchRegex to set
-     */
-    public static void setRegexRuleOutputMatchRegex(final URI rdfruleOutputMatchRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleOutputMatchRegex = rdfruleOutputMatchRegex;
-    }
-    
-    /**
-     * @param rdfruleOutputReplaceRegex
-     *            the rdfruleOutputReplaceRegex to set
-     */
-    public static void setRegexRuleOutputReplaceRegex(final URI rdfruleOutputReplaceRegex)
-    {
-        RegexNormalisationRuleSchema.regexruleOutputReplaceRegex = rdfruleOutputReplaceRegex;
-    }
-    
-    /**
-     * @param regexruleTypeUri
-     *            the regexruleTypeUri to set
-     */
-    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
-    {
-        RegexNormalisationRuleSchema.regexruleTypeUri = regexruleTypeUri;
-    }
-    
 }

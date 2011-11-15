@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -21,7 +22,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlProcessorQueryTypeSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlProcessorQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -50,7 +52,23 @@ public class SparqlProcessorQueryTypeSchema implements QueryAllSchema
         return SparqlProcessorQueryTypeSchema.sparqlProcessorQueryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param queryTypeUri
+     *            the queryTypeUri to set
+     */
+    public static void setSparqlProcessorQueryTypeUri(final URI queryTypeUri)
+    {
+        SparqlProcessorQueryTypeSchema.sparqlProcessorQueryTypeUri = queryTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SparqlProcessorQueryTypeSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -90,14 +108,4 @@ public class SparqlProcessorQueryTypeSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setSparqlProcessorQueryTypeUri(final URI queryTypeUri)
-    {
-        SparqlProcessorQueryTypeSchema.sparqlProcessorQueryTypeUri = queryTypeUri;
-    }
-    
 }

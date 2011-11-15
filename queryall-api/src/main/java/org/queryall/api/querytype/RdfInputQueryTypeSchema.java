@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfInputQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -58,7 +60,28 @@ public class RdfInputQueryTypeSchema implements QueryAllSchema
         return RdfInputQueryTypeSchema.rdfInputQueryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public static void setQuerySparqlInputSelect(final URI sparqlInputSelect)
+    {
+        RdfInputQueryTypeSchema.querySparqlInputSelect = sparqlInputSelect;
+    }
+    
+    /**
+     * @param queryTypeUri
+     *            the queryTypeUri to set
+     */
+    public static void setRdfInputQueryTypeUri(final URI queryTypeUri)
+    {
+        RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RdfInputQueryTypeSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -111,19 +134,4 @@ public class RdfInputQueryTypeSchema implements QueryAllSchema
         
         return false;
     }
-    
-    public static void setQuerySparqlInputSelect(final URI sparqlInputSelect)
-    {
-        RdfInputQueryTypeSchema.querySparqlInputSelect = sparqlInputSelect;
-    }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setRdfInputQueryTypeUri(final URI queryTypeUri)
-    {
-        RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
-    }
-    
 }

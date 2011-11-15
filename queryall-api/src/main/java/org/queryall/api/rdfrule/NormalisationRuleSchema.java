@@ -6,6 +6,7 @@ package org.queryall.api.rdfrule;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -26,7 +27,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NormalisationRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class NormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(NormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -217,81 +219,6 @@ public class NormalisationRuleSchema implements QueryAllSchema
         return NormalisationRuleSchema.rdfruleTypeValidForStage;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            
-            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
-                    contextUri);
-            
-            if(modelVersion == 1)
-            {
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.DOMAIN,
-                        NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.LABEL,
-                        f.createLiteral("The description of a normalisation rule."), contextUri);
-                
-            }
-            
-            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.DOMAIN,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleOrder(),
-                    RDFS.LABEL,
-                    f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
-                    contextUri);
-            
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
-                    NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(),
-                    RDFS.LABEL,
-                    f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
-                    contextUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            NormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
-    
     /**
      * @param normalisationRuleTypeUri
      *            the normalisationRuleTypeUri to set
@@ -409,4 +336,85 @@ public class NormalisationRuleSchema implements QueryAllSchema
         NormalisationRuleSchema.rdfruleTypeValidForStage = rdfruleTypeValidForStage;
     }
     
+    @Override
+    public String getName()
+    {
+        return NormalisationRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            
+            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            
+            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
+                    contextUri);
+            
+            if(modelVersion == 1)
+            {
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.DOMAIN,
+                        NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.LABEL,
+                        f.createLiteral("The description of a normalisation rule."), contextUri);
+                
+            }
+            
+            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.DOMAIN,
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleOrder(),
+                    RDFS.LABEL,
+                    f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
+                    contextUri);
+            
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(),
+                    RDFS.LABEL,
+                    f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
+                    contextUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            NormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
+    }
 }

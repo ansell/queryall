@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SpinConstraintRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SpinConstraintRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleSchema.class);
     @SuppressWarnings("unused")
@@ -51,11 +53,25 @@ public class SpinConstraintRuleSchema implements QueryAllSchema
         return SpinConstraintRuleSchema.spinConstraintRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param spinConstraintRuleTypeUri
+     *            the spinruleTypeUri to set
+     */
+    public static void setSpinConstraintRuleTypeUri(final URI spinConstraintRuleTypeUri)
+    {
+        SpinConstraintRuleSchema.spinConstraintRuleTypeUri = spinConstraintRuleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SpinConstraintRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -96,15 +112,6 @@ public class SpinConstraintRuleSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param spinConstraintRuleTypeUri
-     *            the spinruleTypeUri to set
-     */
-    public static void setSpinConstraintRuleTypeUri(final URI spinConstraintRuleTypeUri)
-    {
-        SpinConstraintRuleSchema.spinConstraintRuleTypeUri = spinConstraintRuleTypeUri;
     }
     
 }

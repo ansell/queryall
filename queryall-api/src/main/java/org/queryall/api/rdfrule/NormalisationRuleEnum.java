@@ -31,8 +31,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = NormalisationRuleEnum.log.isInfoEnabled();
     
-    protected static final Set<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
-            new HashSet<NormalisationRuleEnum>();
+    protected static final Set<NormalisationRuleEnum> ALL_NORMALISATION_RULES = new HashSet<NormalisationRuleEnum>();
     
     public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

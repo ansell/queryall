@@ -5,6 +5,7 @@ package org.queryall.api.services;
 
 import java.util.Collection;
 
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntryEnum;
 import org.queryall.api.namespace.NamespaceEntryFactory;
 import org.queryall.api.namespace.NamespaceEntryParser;
@@ -189,6 +190,11 @@ public class ServiceUtils
     public static Collection<QueryAllEnum> getAllEnums()
     {
         return EnumServiceLoader.getInstance().getAll();
+    }
+    
+    public static Collection<QueryAllSchema> getAllSchemas()
+    {
+        return SchemaServiceLoader.getInstance().getAll();
     }
     
     /**

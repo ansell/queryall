@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class TransformingRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class TransformingRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(TransformingRuleSchema.class);
     @SuppressWarnings("unused")
@@ -52,7 +54,23 @@ public class TransformingRuleSchema implements QueryAllSchema
         return TransformingRuleSchema.transformingRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param transformingRuleTypeUri
+     *            the normalisationRuleTypeUri to set
+     */
+    public static void setTransformingRuleTypeUri(final URI transformingRuleTypeUri)
+    {
+        TransformingRuleSchema.transformingRuleTypeUri = transformingRuleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return TransformingRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -97,14 +115,4 @@ public class TransformingRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param transformingRuleTypeUri
-     *            the normalisationRuleTypeUri to set
-     */
-    public static void setTransformingRuleTypeUri(final URI transformingRuleTypeUri)
-    {
-        TransformingRuleSchema.transformingRuleTypeUri = transformingRuleTypeUri;
-    }
-    
 }

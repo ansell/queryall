@@ -3,6 +3,7 @@
  */
 package org.queryall.api.ruletest;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RuleTestSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RuleTestSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RuleTestSchema.class);
     @SuppressWarnings("unused")
@@ -73,7 +75,41 @@ public class RuleTestSchema implements QueryAllSchema
         return RuleTestSchema.ruletestTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param ruletestHasRuleUri
+     *            the ruletestHasRuleUri to set
+     */
+    public static void setRuletestHasRuleUri(final URI ruletestHasRuleUri)
+    {
+        RuleTestSchema.ruletestHasRuleUri = ruletestHasRuleUri;
+    }
+    
+    /**
+     * @param ruletestTestsStage
+     *            the ruletestTestsStage to set
+     */
+    public static void setRuletestTestsStage(final URI ruletestTestsStage)
+    {
+        RuleTestSchema.ruletestTestsStage = ruletestTestsStage;
+    }
+    
+    /**
+     * @param ruletestTypeUri
+     *            the ruletestTypeUri to set
+     */
+    public static void setRuletestTypeUri(final URI ruletestTypeUri)
+    {
+        RuleTestSchema.ruletestTypeUri = ruletestTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RuleTestSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -128,30 +164,4 @@ public class RuleTestSchema implements QueryAllSchema
         return false;
     }
     
-    /**
-     * @param ruletestHasRuleUri
-     *            the ruletestHasRuleUri to set
-     */
-    public static void setRuletestHasRuleUri(final URI ruletestHasRuleUri)
-    {
-        RuleTestSchema.ruletestHasRuleUri = ruletestHasRuleUri;
-    }
-    
-    /**
-     * @param ruletestTestsStage
-     *            the ruletestTestsStage to set
-     */
-    public static void setRuletestTestsStage(final URI ruletestTestsStage)
-    {
-        RuleTestSchema.ruletestTestsStage = ruletestTestsStage;
-    }
-    
-    /**
-     * @param ruletestTypeUri
-     *            the ruletestTypeUri to set
-     */
-    public static void setRuletestTypeUri(final URI ruletestTypeUri)
-    {
-        RuleTestSchema.ruletestTypeUri = ruletestTypeUri;
-    }
 }

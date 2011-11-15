@@ -1,5 +1,6 @@
 package org.queryall.api.provider;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -19,7 +20,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpProviderSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class HttpProviderSchema extends QueryAllSchema
 {
     static final Logger log = LoggerFactory.getLogger(HttpProviderSchema.class);
     @SuppressWarnings("unused")
@@ -98,11 +100,61 @@ public class HttpProviderSchema implements QueryAllSchema
         return HttpProviderSchema.providerHttpProviderUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param providerAcceptHeader
+     *            the providerAcceptHeader to set
+     */
+    public static void setProviderAcceptHeader(final URI providerAcceptHeader)
+    {
+        HttpProviderSchema.providerAcceptHeader = providerAcceptHeader;
+    }
+    
+    /**
+     * @param providerEndpointUrl
+     *            the providerEndpointUrl to set
+     */
+    public static void setProviderEndpointUrl(final URI providerEndpointUrl)
+    {
+        HttpProviderSchema.providerEndpointUrl = providerEndpointUrl;
+    }
+    
+    /**
+     * @param providerHttpGetUrl
+     *            the providerHttpGetUrl to set
+     */
+    public static void setProviderHttpGetUrl(final URI providerHttpGetUrl)
+    {
+        HttpProviderSchema.providerHttpGetUrl = providerHttpGetUrl;
+    }
+    
+    /**
+     * @param providerHttpPostUrl
+     *            the providerHttpPostUrl to set
+     */
+    public static void setProviderHttpPostUrl(final URI providerHttpPostUrl)
+    {
+        HttpProviderSchema.providerHttpPostUrl = providerHttpPostUrl;
+    }
+    
+    /**
+     * @param providerHttpProviderUri
+     *            the providerHttpProviderUri to set
+     */
+    public static void setProviderHttpProviderUri(final URI providerHttpProviderUri)
+    {
+        HttpProviderSchema.providerHttpProviderUri = providerHttpProviderUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return HttpProviderSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        ProviderSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = new MemValueFactory();
@@ -158,50 +210,5 @@ public class HttpProviderSchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param providerAcceptHeader
-     *            the providerAcceptHeader to set
-     */
-    public static void setProviderAcceptHeader(final URI providerAcceptHeader)
-    {
-        HttpProviderSchema.providerAcceptHeader = providerAcceptHeader;
-    }
-    
-    /**
-     * @param providerEndpointUrl
-     *            the providerEndpointUrl to set
-     */
-    public static void setProviderEndpointUrl(final URI providerEndpointUrl)
-    {
-        HttpProviderSchema.providerEndpointUrl = providerEndpointUrl;
-    }
-    
-    /**
-     * @param providerHttpGetUrl
-     *            the providerHttpGetUrl to set
-     */
-    public static void setProviderHttpGetUrl(final URI providerHttpGetUrl)
-    {
-        HttpProviderSchema.providerHttpGetUrl = providerHttpGetUrl;
-    }
-    
-    /**
-     * @param providerHttpPostUrl
-     *            the providerHttpPostUrl to set
-     */
-    public static void setProviderHttpPostUrl(final URI providerHttpPostUrl)
-    {
-        HttpProviderSchema.providerHttpPostUrl = providerHttpPostUrl;
-    }
-    
-    /**
-     * @param providerHttpProviderUri
-     *            the providerHttpProviderUri to set
-     */
-    public static void setProviderHttpProviderUri(final URI providerHttpProviderUri)
-    {
-        HttpProviderSchema.providerHttpProviderUri = providerHttpProviderUri;
     }
 }

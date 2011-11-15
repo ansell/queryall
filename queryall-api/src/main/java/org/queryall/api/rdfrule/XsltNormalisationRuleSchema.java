@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class XsltNormalisationRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class XsltNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -63,11 +65,34 @@ public class XsltNormalisationRuleSchema implements QueryAllSchema
         return XsltNormalisationRuleSchema.xsltRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param xsltRuleStylesheetUri
+     *            the xsltRuleStylesheetUri to set
+     */
+    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @param xsltRuleTypeUri
+     *            the xsltRuleTypeUri to set
+     */
+    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return XsltNormalisationRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -117,23 +142,4 @@ public class XsltNormalisationRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param xsltRuleStylesheetUri
-     *            the xsltRuleStylesheetUri to set
-     */
-    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @param xsltRuleTypeUri
-     *            the xsltRuleTypeUri to set
-     */
-    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
-    }
-    
 }

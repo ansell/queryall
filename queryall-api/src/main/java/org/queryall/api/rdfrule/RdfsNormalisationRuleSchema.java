@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfsNormalisationRuleSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfsNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfsNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -51,11 +53,25 @@ public class RdfsNormalisationRuleSchema implements QueryAllSchema
         return RdfsNormalisationRuleSchema.rdfsruleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param rdfsruleTypeUri
+     *            the rdfsruleTypeUri to set
+     */
+    public static void setRdfsRuleTypeUri(final URI rdfsruleTypeUri)
+    {
+        RdfsNormalisationRuleSchema.rdfsruleTypeUri = rdfsruleTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RdfsNormalisationRuleSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -97,14 +113,4 @@ public class RdfsNormalisationRuleSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param rdfsruleTypeUri
-     *            the rdfsruleTypeUri to set
-     */
-    public static void setRdfsRuleTypeUri(final URI rdfsruleTypeUri)
-    {
-        RdfsNormalisationRuleSchema.rdfsruleTypeUri = rdfsruleTypeUri;
-    }
-    
 }

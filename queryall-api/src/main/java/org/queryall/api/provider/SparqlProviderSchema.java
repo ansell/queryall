@@ -3,6 +3,7 @@
  */
 package org.queryall.api.provider;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlProviderSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SparqlProviderSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlProviderSchema.class);
     @SuppressWarnings("unused")
@@ -83,7 +85,50 @@ public class SparqlProviderSchema implements QueryAllSchema
         return SparqlProviderSchema.providerSparqlTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param providerHttpPostSparql
+     *            the providerHttpPostSparql to set
+     */
+    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
+    {
+        SparqlProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
+    }
+    
+    /**
+     * @param providerSparqlGraphUri
+     *            the providerSparqlGraphUri to set
+     */
+    public static void setProviderSparqlGraphUri(final URI providerSparqlGraphUri)
+    {
+        SparqlProviderSchema.providerSparqlGraphUri = providerSparqlGraphUri;
+    }
+    
+    /**
+     * @param providerSparqlRequiresGraphURI
+     *            the providerSparqlRequiresGraphURI to set
+     */
+    public static void setProviderSparqlRequiresGraphURI(final URI providerSparqlRequiresGraphURI)
+    {
+        SparqlProviderSchema.providerSparqlRequiresGraphURI = providerSparqlRequiresGraphURI;
+    }
+    
+    /**
+     * @param providerSparqlTypeUri
+     *            the providerSparqlTypeUri to set
+     */
+    public static void setProviderSparqlTypeUri(final URI providerSparqlTypeUri)
+    {
+        SparqlProviderSchema.providerSparqlTypeUri = providerSparqlTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return SparqlProviderSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -142,39 +187,4 @@ public class SparqlProviderSchema implements QueryAllSchema
         return false;
     }
     
-    /**
-     * @param providerHttpPostSparql
-     *            the providerHttpPostSparql to set
-     */
-    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
-    {
-        SparqlProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
-    }
-    
-    /**
-     * @param providerSparqlGraphUri
-     *            the providerSparqlGraphUri to set
-     */
-    public static void setProviderSparqlGraphUri(final URI providerSparqlGraphUri)
-    {
-        SparqlProviderSchema.providerSparqlGraphUri = providerSparqlGraphUri;
-    }
-    
-    /**
-     * @param providerSparqlRequiresGraphURI
-     *            the providerSparqlRequiresGraphURI to set
-     */
-    public static void setProviderSparqlRequiresGraphURI(final URI providerSparqlRequiresGraphURI)
-    {
-        SparqlProviderSchema.providerSparqlRequiresGraphURI = providerSparqlRequiresGraphURI;
-    }
-    
-    /**
-     * @param providerSparqlTypeUri
-     *            the providerSparqlTypeUri to set
-     */
-    public static void setProviderSparqlTypeUri(final URI providerSparqlTypeUri)
-    {
-        SparqlProviderSchema.providerSparqlTypeUri = providerSparqlTypeUri;
-    }
 }

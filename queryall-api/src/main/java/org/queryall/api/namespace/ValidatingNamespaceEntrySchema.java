@@ -3,6 +3,7 @@
  */
 package org.queryall.api.namespace;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -19,10 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ValidatingNamespaceEntrySchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class ValidatingNamespaceEntrySchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(ValidatingNamespaceEntrySchema.class);
     @SuppressWarnings("unused")
@@ -61,7 +62,32 @@ public class ValidatingNamespaceEntrySchema implements QueryAllSchema
         return ValidatingNamespaceEntrySchema.namespaceValidationPossible;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param validatingNamespaceTypeUri
+     *            the validatingNamespaceTypeUri to set
+     */
+    public static void setValidatingNamespaceTypeUri(final URI namespaceTypeUri)
+    {
+        ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri = namespaceTypeUri;
+    }
+    
+    /**
+     * @param namespaceValidationPossible
+     *            the namespaceValidationPossible to set
+     */
+    public static void setValidationPossibleUri(final URI namespaceIdentifierRegex)
+    {
+        ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return ValidatingNamespaceEntrySchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -110,24 +136,6 @@ public class ValidatingNamespaceEntrySchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param validatingNamespaceTypeUri
-     *            the validatingNamespaceTypeUri to set
-     */
-    public static void setValidatingNamespaceTypeUri(final URI namespaceTypeUri)
-    {
-        ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri = namespaceTypeUri;
-    }
-    
-    /**
-     * @param namespaceValidationPossible
-     *            the namespaceValidationPossible to set
-     */
-    public static void setValidationPossibleUri(final URI namespaceIdentifierRegex)
-    {
-        ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
     }
     
 }

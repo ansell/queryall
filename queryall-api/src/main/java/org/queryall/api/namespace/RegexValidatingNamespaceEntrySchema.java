@@ -3,6 +3,7 @@
  */
 package org.queryall.api.namespace;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexValidatingNamespaceEntrySchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RegexValidatingNamespaceEntrySchema.class);
     @SuppressWarnings("unused")
@@ -61,7 +63,32 @@ public class RegexValidatingNamespaceEntrySchema implements QueryAllSchema
         return RegexValidatingNamespaceEntrySchema.regexValidatingNamespaceTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param namespaceIdentifierRegex
+     *            the namespaceIdentifierRegex to set
+     */
+    public static void setNamespaceIdentifierRegex(final URI namespaceIdentifierRegex)
+    {
+        RegexValidatingNamespaceEntrySchema.namespaceIdentifierRegex = namespaceIdentifierRegex;
+    }
+    
+    /**
+     * @param regexValidatingNamespaceTypeUri
+     *            the regexValidatingNamespaceTypeUri to set
+     */
+    public static void setRegexValidatingNamespaceTypeUri(final URI namespaceTypeUri)
+    {
+        RegexValidatingNamespaceEntrySchema.regexValidatingNamespaceTypeUri = namespaceTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RegexValidatingNamespaceEntrySchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -112,24 +139,6 @@ public class RegexValidatingNamespaceEntrySchema implements QueryAllSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param namespaceIdentifierRegex
-     *            the namespaceIdentifierRegex to set
-     */
-    public static void setNamespaceIdentifierRegex(final URI namespaceIdentifierRegex)
-    {
-        RegexValidatingNamespaceEntrySchema.namespaceIdentifierRegex = namespaceIdentifierRegex;
-    }
-    
-    /**
-     * @param regexValidatingNamespaceTypeUri
-     *            the regexValidatingNamespaceTypeUri to set
-     */
-    public static void setRegexValidatingNamespaceTypeUri(final URI namespaceTypeUri)
-    {
-        RegexValidatingNamespaceEntrySchema.regexValidatingNamespaceTypeUri = namespaceTypeUri;
     }
     
 }

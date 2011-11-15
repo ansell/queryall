@@ -112,6 +112,17 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<!-- see http://weblogs.java.net/blog/kohsuke/archive/2009/03/my_project_of_t.html -->
+			<groupId>org.kohsuke.metainf-services</groupId>
+			<artifactId>metainf-services</artifactId>
+			<version>1.1</version>
+			<type>jar</type>
+			<scope>compile</scope>
+			<!-- Optional because it is only needed for compilation, and is not needed 
+				at runtime -->
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -22,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfOutputQueryTypeSchema implements QueryAllSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfOutputQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfOutputQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -75,7 +77,42 @@ public class RdfOutputQueryTypeSchema implements QueryAllSchema
         return RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param queryOLDOutputRdfXmlString
+     *            the queryOLDOutputRdfXmlString to set
+     */
+    public static void setOLDQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
+    {
+        RdfOutputQueryTypeSchema.queryOLDOutputRdfXmlString = queryOutputRdfXmlString;
+    }
+    
+    public static void setQueryOutputRdfFormat(final URI outputRdfFormat)
+    {
+        RdfOutputQueryTypeSchema.queryOutputRdfFormat = outputRdfFormat;
+    }
+    
+    public static void setQueryOutputRdfString(final URI outputRdfString)
+    {
+        RdfOutputQueryTypeSchema.queryOutputRdfString = outputRdfString;
+    }
+    
+    /**
+     * @param queryTypeUri
+     *            the queryTypeUri to set
+     */
+    public static void setRdfOutputQueryTypeUri(final URI queryTypeUri)
+    {
+        RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
+    }
+    
+    @Override
+    public String getName()
+    {
+        return RdfOutputQueryTypeSchema.class.getName();
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -141,33 +178,4 @@ public class RdfOutputQueryTypeSchema implements QueryAllSchema
         
         return false;
     }
-    
-    /**
-     * @param queryOLDOutputRdfXmlString
-     *            the queryOLDOutputRdfXmlString to set
-     */
-    public static void setOLDQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
-    {
-        RdfOutputQueryTypeSchema.queryOLDOutputRdfXmlString = queryOutputRdfXmlString;
-    }
-    
-    public static void setQueryOutputRdfFormat(final URI outputRdfFormat)
-    {
-        RdfOutputQueryTypeSchema.queryOutputRdfFormat = outputRdfFormat;
-    }
-    
-    public static void setQueryOutputRdfString(final URI outputRdfString)
-    {
-        RdfOutputQueryTypeSchema.queryOutputRdfString = outputRdfString;
-    }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setRdfOutputQueryTypeUri(final URI queryTypeUri)
-    {
-        RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
-    }
-    
 }
