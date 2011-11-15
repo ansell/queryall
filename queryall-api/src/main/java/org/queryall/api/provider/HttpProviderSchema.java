@@ -1,5 +1,7 @@
 package org.queryall.api.provider;
 
+import java.util.Set;
+
 import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
@@ -49,6 +51,26 @@ public class HttpProviderSchema extends QueryAllSchema
         HttpProviderSchema.setProviderHttpGetUrl(f.createURI(baseUri, "httpgeturl"));
         HttpProviderSchema.setProviderHttpPostUrl(f.createURI(baseUri, "httpposturl"));
     }
+    
+    public static final QueryAllSchema HTTP_PROVIDER_SCHEMA = new HttpProviderSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public HttpProviderSchema()
+    {
+        this(HttpProviderSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public HttpProviderSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    
     
     /**
      * @return the providerAcceptHeader
@@ -143,12 +165,6 @@ public class HttpProviderSchema extends QueryAllSchema
     public static void setProviderHttpProviderUri(final URI providerHttpProviderUri)
     {
         HttpProviderSchema.providerHttpProviderUri = providerHttpProviderUri;
-    }
-    
-    @Override
-    public String getName()
-    {
-        return HttpProviderSchema.class.getName();
     }
     
     @Override

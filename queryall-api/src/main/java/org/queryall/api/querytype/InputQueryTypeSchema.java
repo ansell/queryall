@@ -14,6 +14,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
+import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -45,6 +46,24 @@ public class InputQueryTypeSchema extends QueryAllSchema
         InputQueryTypeSchema.setQueryExpectedInputParameters(f.createURI(baseUri, "expectedInputParameters"));
     }
     
+    public static final QueryAllSchema INPUT_QUERY_TYPE_SCHEMA = new InputQueryTypeSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public InputQueryTypeSchema()
+    {
+        this(InputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public InputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
     public static URI getQueryExpectedInputParameters()
     {
         return InputQueryTypeSchema.queryExpectedInputParameters;
@@ -53,12 +72,6 @@ public class InputQueryTypeSchema extends QueryAllSchema
     public static void setQueryExpectedInputParameters(final URI expectedInputParameters)
     {
         InputQueryTypeSchema.queryExpectedInputParameters = expectedInputParameters;
-    }
-    
-    @Override
-    public String getName()
-    {
-        return InputQueryTypeSchema.class.getName();
     }
     
     @Override
