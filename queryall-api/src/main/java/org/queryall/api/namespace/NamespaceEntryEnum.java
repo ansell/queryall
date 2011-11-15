@@ -6,6 +6,7 @@ package org.queryall.api.namespace;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = NamespaceEntryEnum.log.isInfoEnabled();
     
-    protected static final Collection<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new ArrayList<NamespaceEntryEnum>(5);
+    protected static final Set<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new HashSet<NamespaceEntryEnum>();
     
     public static Collection<NamespaceEntryEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

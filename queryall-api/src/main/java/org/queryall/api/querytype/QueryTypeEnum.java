@@ -6,6 +6,7 @@ package org.queryall.api.querytype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class QueryTypeEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeEnum.log.isInfoEnabled();
     
-    protected static final Collection<QueryTypeEnum> ALL_QUERY_TYPES = new ArrayList<QueryTypeEnum>(5);
+    protected static final Set<QueryTypeEnum> ALL_QUERY_TYPES = new HashSet<QueryTypeEnum>();
     
     public static Collection<QueryTypeEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

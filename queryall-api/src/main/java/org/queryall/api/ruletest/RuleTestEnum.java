@@ -6,6 +6,7 @@ package org.queryall.api.ruletest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class RuleTestEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = RuleTestEnum.log.isInfoEnabled();
     
-    protected static final Collection<RuleTestEnum> ALL_RULE_TESTS = new ArrayList<RuleTestEnum>(5);
+    protected static final Set<RuleTestEnum> ALL_RULE_TESTS = new HashSet<RuleTestEnum>();
     
     public static Collection<RuleTestEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

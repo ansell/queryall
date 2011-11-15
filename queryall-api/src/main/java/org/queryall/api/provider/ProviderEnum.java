@@ -6,6 +6,7 @@ package org.queryall.api.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class ProviderEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderEnum.log.isInfoEnabled();
     
-    protected static final Collection<ProviderEnum> ALL_PROVIDERS = new ArrayList<ProviderEnum>(5);
+    protected static final Set<ProviderEnum> ALL_PROVIDERS = new HashSet<ProviderEnum>();
     
     public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

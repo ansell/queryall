@@ -6,6 +6,7 @@ package org.queryall.api.profile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class ProfileEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProfileEnum.log.isInfoEnabled();
     
-    protected static final Collection<ProfileEnum> ALL_PROFILES = new ArrayList<ProfileEnum>(5);
+    protected static final Set<ProfileEnum> ALL_PROFILES = new HashSet<ProfileEnum>();
     
     public static Collection<ProfileEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

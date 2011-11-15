@@ -30,7 +30,7 @@ public class ProjectEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProjectEnum.log.isInfoEnabled();
     
-    protected static final Collection<ProjectEnum> ALL_PROJECTS = new ArrayList<ProjectEnum>(5);
+    protected static final Set<ProjectEnum> ALL_PROJECTS = new HashSet<ProjectEnum>();
     
     public static Collection<ProjectEnum> byTypeUris(final Set<URI> nextTypeUris)
     {

@@ -6,6 +6,7 @@ package org.queryall.api.rdfrule;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,8 +31,8 @@ public class NormalisationRuleEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = NormalisationRuleEnum.log.isInfoEnabled();
     
-    protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
-            new ArrayList<NormalisationRuleEnum>(5);
+    protected static final Set<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
+            new HashSet<NormalisationRuleEnum>();
     
     public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
