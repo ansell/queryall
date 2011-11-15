@@ -32,6 +32,7 @@ import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.LocationMapper;
+import com.hp.hpl.jena.util.LocatorFile;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -60,8 +61,33 @@ public class SpinUtils
         
         log.info("mappingConfig.size()="+mappingConfig.size());
         
-        lMap = new LocationMapper(mappingConfig);
+        lMap = new LocationMapper();
+        
+        lMap.processConfig(mappingConfig);
+        
+        // FIXME: Make SPIN/ARQ not require this line
+        LocationMapper.setGlobalLocationMapper(lMap);
+        
         fileManager = new FileManager(lMap);
+        
+//        fileManager.addLocatorFile();
+//        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
+        fileManager.addLocator(new JenaLocatorClass(SpinUtils.class));
+        
+        InputStream testStream = SpinUtils.class.getClassLoader().getResourceAsStream("/test/owlrl-all");
+        
+        log.info("testStream="+testStream);
+
+        testStream = fileManager.getClass().getClassLoader().getResourceAsStream("/test/owlrl-all");        
+        
+        log.info("testStream="+testStream);
+
+        testStream = SpinUtils.class.getResourceAsStream("/test/owlrl-all");        
+
+        log.info("testStream="+testStream);
+
+        // FIXME: Make SPIN/ARQ not require this line
+        FileManager.setGlobalFileManager(fileManager);
     }
     
     /**
@@ -231,8 +257,8 @@ public class SpinUtils
     {
         SpinUtils.log.info("loading model from url=" + url);
         
-        final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        fileManager.loadModel(url);
+        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        baseModel.add(fileManager.loadModel(url));
         
         // TODO: make the OntModelSpec here configurable
         return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
