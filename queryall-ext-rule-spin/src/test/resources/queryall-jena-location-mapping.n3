@@ -5,8 +5,8 @@
 
 [] lm:mapping
    [ lm:prefix "http://topbraid.org/spin/" ;
-     lm:altPrefix "/test/" ] ,
+     lm:altPrefix "test/" ] ,
    [ lm:prefix "http://spinrdf.org/" ;
-     lm:altPrefix "/test/" ]
+     lm:altPrefix "test/" ]
    .
    

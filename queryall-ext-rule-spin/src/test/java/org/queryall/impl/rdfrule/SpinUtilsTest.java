@@ -3,8 +3,6 @@
  */
 package org.queryall.impl.rdfrule;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,9 +176,9 @@ public class SpinUtilsTest
     @Test
     public void testLoadModelFromClasspath()
     {
-        final OntModel nextModel = SpinUtils.loadModelFromClasspath("/test/owlrl-all");
+        final OntModel nextModel = SpinUtils.loadModelFromClasspath("test/owlrl-all");
         
-        Assert.assertEquals(3301, nextModel.size());
+        Assert.assertEquals(3324, nextModel.size());
     }
     
     /**
@@ -191,7 +189,7 @@ public class SpinUtilsTest
     {
         final OntModel nextModel = SpinUtils.loadModelFromUrl("http://topbraid.org/spin/owlrl-all");
         
-        Assert.assertEquals(3301, nextModel.size());
+        Assert.assertEquals(3324, nextModel.size());
     }
     
 }

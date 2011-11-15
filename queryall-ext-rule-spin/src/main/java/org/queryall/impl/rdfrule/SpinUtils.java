@@ -6,8 +6,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
-import org.openrdf.model.Literal;
-import org.openrdf.model.Value;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -21,18 +19,17 @@ import org.slf4j.LoggerFactory;
 import org.topbraid.spin.arq.ARQ2SPIN;
 import org.topbraid.spin.arq.ARQFactory;
 
-import com.hp.hpl.jena.graph.GraphMaker;
+import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.ProfileRegistry;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.LocationMapper;
-import com.hp.hpl.jena.util.LocatorFile;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -50,6 +47,7 @@ public class SpinUtils
     private static final boolean _INFO = SpinUtils.log.isInfoEnabled();
     private static LocationMapper lMap;
     private static FileManager fileManager;
+    private static OntModelSpec myOntModelSpec;
     
     static
     {
@@ -75,20 +73,29 @@ public class SpinUtils
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
         fileManager.addLocator(new JenaLocatorClass(SpinUtils.class));
         
-        InputStream testStream = SpinUtils.class.getClassLoader().getResourceAsStream("/test/owlrl-all");
-        
-        log.info("testStream="+testStream);
-
-        testStream = fileManager.getClass().getClassLoader().getResourceAsStream("/test/owlrl-all");        
-        
-        log.info("testStream="+testStream);
-
-        testStream = SpinUtils.class.getResourceAsStream("/test/owlrl-all");        
-
-        log.info("testStream="+testStream);
+//        InputStream testStream = SpinUtils.class.getClassLoader().getResourceAsStream("test/owlrl-all");
+//        
+//        log.info("testStream="+testStream);
+//
+//        testStream = fileManager.getClass().getClassLoader().getResourceAsStream("test/owlrl-all");        
+//        
+//        log.info("testStream="+testStream);
+//
+//        testStream = SpinUtils.class.getResourceAsStream("test/owlrl-all");        
+//
+//        log.info("testStream="+testStream);
 
         // FIXME: Make SPIN/ARQ not require this line by including a ModelFactory.createXYZModel parameter to include a reference to a file manager to use for the load
+        // Not sure how to insert this into the inner part of SPIN without this statement, although any models loaded using myOntModelSpec will use this fileManager
         FileManager.setGlobalFileManager(fileManager);
+        
+        OntDocumentManager docManager = new OntDocumentManager();
+        
+        docManager.setFileManager(fileManager);
+        
+        // This is the Model Spec to use to load ontologies using the /queryall-jena-location-mapping.n3 file, through OntDocumentManager, through FileManager, through LocationMapper
+        setOntModelSpec(new OntModelSpec( ModelFactory.createMemModelMaker(), docManager, null, ProfileRegistry.OWL_LANG ));    
+        
     }
     
     /**
@@ -199,7 +206,7 @@ public class SpinUtils
         
         // TODO: Should be creating this model earlier and then adding the triples to it instead of
         // to the outputModel?
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, outputModel);
+        return ModelFactory.createOntologyModel(SpinUtils.myOntModelSpec, outputModel);
     }
     
     public static String getTurtleSPINQueryFromSPARQL(final String query)
@@ -233,15 +240,9 @@ public class SpinUtils
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        if(classpathRef.startsWith("file:"))
-        {
-            log.debug("classpathRef did not start with file:, prepending file: to it");
-            classpathRef = classpathRef.substring("file:".length());
-        }
-        
         final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
         
-        baseModel.read(stream, "http://temp.base.uri.fake/");
+        baseModel.add(fileManager.loadModel(classpathRef));
         
         // FIXME: Cannot determine way to use the fileManager to load from a classpath reference or attach the fileManager or locationMapper to use for other resolutions
 //        Model fileManagerModel = fileManager.loadModel(classpathRef);
@@ -251,7 +252,7 @@ public class SpinUtils
 //        log.info("fileManagerModel.isIsomorphicWith(baseModel)="+fileManagerModel.isIsomorphicWith(baseModel));
         
         // TODO: make the OntModelSpec here configurable
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+        return ModelFactory.createOntologyModel(getOntModelSpec(), baseModel);
     }
     
     public static OntModel loadModelFromUrl(final String url)
@@ -261,8 +262,23 @@ public class SpinUtils
         Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         baseModel.add(fileManager.loadModel(url));
         
-        // TODO: make the OntModelSpec here configurable
-        return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, baseModel);
+        return ModelFactory.createOntologyModel(getOntModelSpec(), baseModel);
+    }
+
+    /**
+     * @return the myOntModelSpec
+     */
+    public static OntModelSpec getOntModelSpec()
+    {
+        return myOntModelSpec;
+    }
+
+    /**
+     * @param myOntModelSpec the myOntModelSpec to set
+     */
+    public static void setOntModelSpec(OntModelSpec myOntModelSpec)
+    {
+        SpinUtils.myOntModelSpec = myOntModelSpec;
     }
     
 }
