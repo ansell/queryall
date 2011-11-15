@@ -60,11 +60,24 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
         NoCommunicationProviderSchema.providerNoCommunicationProviderUri = providerHttpProviderUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema NO_COMMUNICATION_PROVIDER_SCHEMA = new NoCommunicationProviderSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public NoCommunicationProviderSchema()
     {
-        return NoCommunicationProviderSchema.class.getName();
+        this(NoCommunicationProviderSchema.class.getName());
     }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public NoCommunicationProviderSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
     
     @Override
     public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)

@@ -74,10 +74,22 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
         RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new RdfInputQueryTypeSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RdfInputQueryTypeSchema()
     {
-        return RdfInputQueryTypeSchema.class.getName();
+        this(RdfInputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public RdfInputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

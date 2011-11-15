@@ -83,10 +83,22 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
         XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema XSLT_NORMALISATION_RULE_SCHEMA = new XsltNormalisationRuleSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public XsltNormalisationRuleSchema()
     {
-        return XsltNormalisationRuleSchema.class.getName();
+        this(XsltNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public XsltNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

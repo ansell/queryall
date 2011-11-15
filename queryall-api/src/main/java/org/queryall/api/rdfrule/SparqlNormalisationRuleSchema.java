@@ -88,10 +88,22 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
         SparqlNormalisationRuleSchema.sparqlruleTypeUri = sparqlruleTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema SPARQL_NORMALISATION_RULE_SCHEMA = new SparqlNormalisationRuleSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public SparqlNormalisationRuleSchema()
     {
-        return SparqlNormalisationRuleSchema.class.getName();
+        this(SparqlNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public SparqlNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

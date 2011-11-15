@@ -198,10 +198,22 @@ public class SparqlConstructRuleSchema extends QueryAllSchema
         SparqlConstructRuleSchema.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema SPARQL_CONSTRUCT_RULE_SCHEMA = new SparqlConstructRuleSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public SparqlConstructRuleSchema()
     {
-        return SparqlConstructRuleSchema.class.getName();
+        this(SparqlConstructRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public SparqlConstructRuleSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

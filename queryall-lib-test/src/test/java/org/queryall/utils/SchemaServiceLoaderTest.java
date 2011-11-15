@@ -8,7 +8,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.services.SchemaServiceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -16,6 +19,7 @@ import org.queryall.api.services.SchemaServiceLoader;
  */
 public class SchemaServiceLoaderTest
 {
+    private static final Logger log = LoggerFactory.getLogger(SchemaServiceLoaderTest.class);
     
     /**
      * @throws java.lang.Exception
@@ -40,6 +44,11 @@ public class SchemaServiceLoaderTest
     public void testGetAll()
     {
         Assert.assertEquals(32, SchemaServiceLoader.getInstance().getAll().size());
+        
+        for(QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
+        {
+            log.info("nextSchema="+nextSchema.getName());
+        }
     }
     
     /**

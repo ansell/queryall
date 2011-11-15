@@ -14,6 +14,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
+import org.queryall.api.provider.RdfProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -62,10 +63,22 @@ public class RdfsNormalisationRuleSchema extends QueryAllSchema
         RdfsNormalisationRuleSchema.rdfsruleTypeUri = rdfsruleTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema RDFS_NORMALISATION_RULE_SCHEMA = new RdfsNormalisationRuleSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RdfsNormalisationRuleSchema()
     {
-        return RdfsNormalisationRuleSchema.class.getName();
+        this(RdfsNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public RdfsNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

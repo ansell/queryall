@@ -80,11 +80,24 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
         ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema VALIDATING_NAMESPACE_ENTRY_SCHEMA = new ValidatingNamespaceEntrySchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ValidatingNamespaceEntrySchema()
     {
-        return ValidatingNamespaceEntrySchema.class.getName();
+        this(ValidatingNamespaceEntrySchema.class.getName());
     }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public ValidatingNamespaceEntrySchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
     
     @Override
     public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)

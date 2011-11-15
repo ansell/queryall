@@ -68,7 +68,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
         NamespaceEntrySchema.setOldNamespaceTitle(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "title"));
     }
     
-    public static final QueryAllSchema INPUT_QUERY_TYPE_SCHEMA = new InputQueryTypeSchema();
+    public static final QueryAllSchema NAMESPACE_ENTRY_SCHEMA = new NamespaceEntrySchema();
     
     /**
      * Default constructor, uses the name of this class as the name

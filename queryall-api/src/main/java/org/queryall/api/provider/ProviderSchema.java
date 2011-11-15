@@ -15,6 +15,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
@@ -296,10 +297,22 @@ public class ProviderSchema extends QueryAllSchema
         ProviderSchema.providerTypeUri = providerTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema PROVIDER_SCHEMA = new ProviderSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ProviderSchema()
     {
-        return ProviderSchema.class.getName();
+        this(ProviderSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public ProviderSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

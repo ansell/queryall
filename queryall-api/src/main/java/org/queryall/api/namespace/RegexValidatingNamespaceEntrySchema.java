@@ -14,6 +14,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
+import org.queryall.api.provider.NoCommunicationProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -81,11 +82,24 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
         RegexValidatingNamespaceEntrySchema.regexValidatingNamespaceTypeUri = namespaceTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema REGEX_VALIDATING_NAMESPACE_ENTRY_SCHEMA = new RegexValidatingNamespaceEntrySchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RegexValidatingNamespaceEntrySchema()
     {
-        return RegexValidatingNamespaceEntrySchema.class.getName();
+        this(RegexValidatingNamespaceEntrySchema.class.getName());
     }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public RegexValidatingNamespaceEntrySchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
     
     @Override
     public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)

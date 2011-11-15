@@ -11,6 +11,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
+import org.queryall.api.rdfrule.XsltNormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -73,10 +74,22 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
         RegexInputQueryTypeSchema.regexQueryTypeUri = regexQueryTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema REGEX_INPUT_QUERY_TYPE_SCHEMA = new RegexInputQueryTypeSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RegexInputQueryTypeSchema()
     {
-        return RegexInputQueryTypeSchema.class.getName();
+        this(RegexInputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public RegexInputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

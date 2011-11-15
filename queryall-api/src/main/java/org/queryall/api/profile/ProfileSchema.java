@@ -17,6 +17,7 @@ import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -403,10 +404,22 @@ public class ProfileSchema extends QueryAllSchema
         ProfileSchema.profileTypeUri = profileTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema PROFILE_SCHEMA = new ProfileSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ProfileSchema()
     {
-        return ProfileSchema.class.getName();
+        this(ProfileSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public ProfileSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

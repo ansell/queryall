@@ -63,10 +63,22 @@ public class ValidatingRuleSchema extends QueryAllSchema
         ValidatingRuleSchema.validatingRuleTypeUri = validatingRuleTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema VALIDATING_RULE_SCHEMA = new ValidatingRuleSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ValidatingRuleSchema()
     {
-        return ValidatingRuleSchema.class.getName();
+        this(ValidatingRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public ValidatingRuleSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

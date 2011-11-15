@@ -62,10 +62,22 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
         SpinInferencingRuleSchema.spinInferencingRuleTypeUri = spinInferencingRuleTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema SPIN_INFERENCING_RULE_SCHEMA = new SpinInferencingRuleSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public SpinInferencingRuleSchema()
     {
-        return SpinInferencingRuleSchema.class.getName();
+        this(SpinInferencingRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public SpinInferencingRuleSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

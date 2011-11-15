@@ -105,10 +105,22 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
         RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
     }
     
-    @Override
-    public String getName()
+    public static final QueryAllSchema RDF_OUTPUT_QUERY_TYPE_SCHEMA = new RdfOutputQueryTypeSchema();
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RdfOutputQueryTypeSchema()
     {
-        return RdfOutputQueryTypeSchema.class.getName();
+        this(RdfOutputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName The name for this schema object
+     */
+    public RdfOutputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override
