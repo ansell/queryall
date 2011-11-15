@@ -8,7 +8,6 @@ import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.Locator;
 import com.hp.hpl.jena.util.TypedStream;

@@ -70,8 +70,9 @@ public class SpinUtils
         
         fileManager = new FileManager(lMap);
         
-//        fileManager.addLocatorFile();
-//        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
+        fileManager.addLocatorFile();
+        fileManager.addLocatorURL();
+        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
         fileManager.addLocator(new JenaLocatorClass(SpinUtils.class));
         
         InputStream testStream = SpinUtils.class.getClassLoader().getResourceAsStream("/test/owlrl-all");
