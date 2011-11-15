@@ -45,6 +45,12 @@ public abstract class QueryAllSchema
         return this.name;
     }
     
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
+    
     public abstract boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException;
 }

@@ -3,13 +3,23 @@
  */
 package org.queryall.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.OpenRDFException;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.services.SchemaServiceLoader;
+import org.queryall.query.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +30,11 @@ import org.slf4j.LoggerFactory;
 public class SchemaServiceLoaderTest
 {
     private static final Logger log = LoggerFactory.getLogger(SchemaServiceLoaderTest.class);
+    
+    /**
+     * This field contains the expected number of schemas, if and when new schemas are updated it needs to be updated to match the expected number
+     */
+    private static final int CURRENT_EXPECTED_SCHEMA_COUNT = 32;
     
     /**
      * @throws java.lang.Exception
@@ -39,26 +54,85 @@ public class SchemaServiceLoaderTest
     
     /**
      * Test method for {@link org.queryall.api.services.SchemaServiceLoader#getAll()}.
+     * 
+     * CURRENT_EXPECTED_SCHEMA_COUNT needs to be updated when new schemas are added
      */
     @Test
     public void testGetAll()
     {
-        Assert.assertEquals(32, SchemaServiceLoader.getInstance().getAll().size());
+        Assert.assertEquals("Did not find the expected number of schemas. Were there new schemas added recently?", CURRENT_EXPECTED_SCHEMA_COUNT, SchemaServiceLoader.getInstance().getAll().size());
+        
+//        for(QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
+//        {
+//            log.info("nextSchema="+nextSchema);
+//        }
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.services.SchemaServiceLoader#getAll()}.
+     * 
+     * Tests that each QueryAllSchema.schemaToRdf is actually adding statements to the repository
+     * 
+     * @throws OpenRDFException 
+     */
+    @Test
+    public void testGetAllRepositories() throws OpenRDFException
+    {
+        Repository testRepository = new SailRepository(new MemoryStore());
+        testRepository.initialize();
+        ValueFactory vf = testRepository.getValueFactory();
+        
+        Assert.assertEquals(CURRENT_EXPECTED_SCHEMA_COUNT, SchemaServiceLoader.getInstance().getAll().size());
         
         for(QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
         {
-            log.info("nextSchema="+nextSchema.getName());
+//            log.info("nextSchema="+nextSchema);
+            RepositoryConnection testRepositoryConnection = testRepository.getConnection();
+            
+            long previousCount = testRepositoryConnection.size();
+            
+            boolean result = nextSchema.schemaToRdf(testRepository, vf.createURI("http://test.queryall.example.com/schema/"+nextSchema.toString()), Settings.CONFIG_API_VERSION);
+            
+            if(!result)
+            {
+                Assert.fail("Failed to put the RDF statements for the schema into the repository for nextSchema="+nextSchema);
+            }
+            
+            long afterCount = testRepositoryConnection.size();
+            
+            log.info(" statementsAdded="+(afterCount-previousCount)+"\tafterCount="+afterCount+"\tpreviousCount="+previousCount+"\tnextSchema="+nextSchema);
+            
+            // test that statements were actually added, no schema should be empty in practice
+            Assert.assertTrue("A schema failed to add any statements to the repository nextSchema="+nextSchema, afterCount > previousCount);
         }
     }
-    
+
     /**
      * Test method for {@link org.queryall.api.services.SchemaServiceLoader#getKey(org.queryall.api.base.QueryAllSchema)}.
      */
     @Test
-    @Ignore
     public void testGetKeyQueryAllSchema()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertEquals(CURRENT_EXPECTED_SCHEMA_COUNT, SchemaServiceLoader.getInstance().getAll().size());
+        
+        Set<String> allSchemaNames = new HashSet<String>();
+        
+        for(QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
+        {
+            // test for null schema names
+            Assert.assertNotNull("Schema name should not be null", nextSchema.getName());
+            
+            // test that the schema name doesn't just contain whitespace
+            Assert.assertTrue(nextSchema.getName().trim().length() > 0);
+            
+            Assert.assertFalse(allSchemaNames.contains(nextSchema.getName()));
+            
+            allSchemaNames.add(nextSchema.getName());
+        }
+        
+        // Verify that unique, non-null strings were found for each schema
+        // According to the Set contract, this should never fail, as the assertion in the loop, assertFalse(allSchemaNames.contains()), should fail first, but checking just to make it obvious
+        Assert.assertEquals(CURRENT_EXPECTED_SCHEMA_COUNT, allSchemaNames.size());
     }
     
 }
