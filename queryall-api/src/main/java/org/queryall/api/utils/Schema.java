@@ -3,8 +3,13 @@
  */
 package org.queryall.api.utils;
 
+import java.util.Collection;
+
+import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
+import org.queryall.api.base.QueryAllSchema;
+import org.queryall.api.services.SchemaServiceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +33,18 @@ public class Schema
     
     public static Repository getSchemas(final Repository myRepository, final URI contextUri, final int configVersion)
     {
-        // FIXME: Use SchemaServiceLoader to fetch all of the known schemas
+        for(QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
+        {
+            try
+            {
+                nextSchema.schemaToRdf(myRepository, contextUri, configVersion);
+            }
+            catch(OpenRDFException e)
+            {
+                log.error("Failed to generate schema for nextSchema="+nextSchema.getName());
+            }
+        }
+        
         return myRepository;
     }
     
