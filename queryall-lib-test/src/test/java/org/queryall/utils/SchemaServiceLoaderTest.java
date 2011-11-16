@@ -9,7 +9,6 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.ValueFactory;
@@ -32,7 +31,7 @@ public class SchemaServiceLoaderTest
     private static final Logger log = LoggerFactory.getLogger(SchemaServiceLoaderTest.class);
     
     /**
-     * This field contains the expected number of schemas, if and when new schemas are updated it needs to be updated to match the expected number
+     * This field contains the expected number of schemas, if and when new schemas are added it needs to be updated to match the expected number
      */
     private static final int CURRENT_EXPECTED_SCHEMA_COUNT = 32;
     
@@ -128,6 +127,9 @@ public class SchemaServiceLoaderTest
             Assert.assertFalse(allSchemaNames.contains(nextSchema.getName()));
             
             allSchemaNames.add(nextSchema.getName());
+
+            // verify that the schema fetched using .get(String) is the same as the one we are looking at
+            Assert.assertEquals(nextSchema, SchemaServiceLoader.getInstance().get(nextSchema.getName()));
         }
         
         // Verify that unique, non-null strings were found for each schema
