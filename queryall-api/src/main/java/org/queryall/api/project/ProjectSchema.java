@@ -14,7 +14,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -67,6 +66,8 @@ public class ProjectSchema extends QueryAllSchema
         ProjectSchema.setProjectNotCuratedUri(f.createURI(baseUri, "notCurated"));
         
     }
+    
+    public static final QueryAllSchema PROJECT_SCHEMA = new ProjectSchema();
     
     /**
      * @return the projectAdminCuratedUri
@@ -204,8 +205,6 @@ public class ProjectSchema extends QueryAllSchema
         ProjectSchema.projectUserCuratedUri = projectUserCuratedUri;
     }
     
-    public static final QueryAllSchema PROJECT_SCHEMA = new ProjectSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -215,7 +214,8 @@ public class ProjectSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public ProjectSchema(final String nextName)
     {

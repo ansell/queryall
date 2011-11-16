@@ -43,6 +43,8 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
                 "NoCommunicationProvider"));
     }
     
+    public static final QueryAllSchema NO_COMMUNICATION_PROVIDER_SCHEMA = new NoCommunicationProviderSchema();
+    
     /**
      * @return the providerNoCommunicationProviderUri
      */
@@ -60,8 +62,6 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
         NoCommunicationProviderSchema.providerNoCommunicationProviderUri = providerHttpProviderUri;
     }
     
-    public static final QueryAllSchema NO_COMMUNICATION_PROVIDER_SCHEMA = new NoCommunicationProviderSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -71,13 +71,13 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public NoCommunicationProviderSchema(final String nextName)
     {
         super(nextName);
     }
-    
     
     @Override
     public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)

@@ -12,7 +12,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +42,8 @@ public class RdfProviderSchema extends QueryAllSchema
         RdfProviderSchema.setProviderRdfProviderUri(f.createURI(baseUri, "RdfProvider"));
     }
     
+    public static final QueryAllSchema RDF_PROVIDER_SCHEMA = new RdfProviderSchema();
+    
     /**
      * @return the providerRdfProviderUri
      */
@@ -60,8 +61,6 @@ public class RdfProviderSchema extends QueryAllSchema
         RdfProviderSchema.providerRdfProviderUri = providerRdfProviderUri;
     }
     
-    public static final QueryAllSchema RDF_PROVIDER_SCHEMA = new RdfProviderSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -71,7 +70,8 @@ public class RdfProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public RdfProviderSchema(final String nextName)
     {

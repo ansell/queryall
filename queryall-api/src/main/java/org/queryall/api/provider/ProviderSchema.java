@@ -15,7 +15,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
@@ -85,6 +84,8 @@ public class ProviderSchema extends QueryAllSchema
         // elements title
         ProviderSchema.setProviderTitle(f.createURI(baseUri, "Title"));
     }
+    
+    public static final QueryAllSchema PROVIDER_SCHEMA = new ProviderSchema();
     
     /**
      * @return the providerAssumedContentType
@@ -182,6 +183,13 @@ public class ProviderSchema extends QueryAllSchema
         return ProviderSchema.providerTypeUri;
     }
     
+    // Use these to include information based on whether or not the provider was
+    // actually used to
+    // provide information for particular user queries
+    // public Collection<String> providerQueryInclusions = new
+    // HashSet<String>();
+    // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
+    
     /**
      * @param providerAssumedContentType
      *            the providerAssumedContentType to set
@@ -190,13 +198,6 @@ public class ProviderSchema extends QueryAllSchema
     {
         ProviderSchema.providerAssumedContentType = providerAssumedContentType;
     }
-    
-    // Use these to include information based on whether or not the provider was
-    // actually used to
-    // provide information for particular user queries
-    // public Collection<String> providerQueryInclusions = new
-    // HashSet<String>();
-    // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
     /**
      * @param providerHandledNamespace
@@ -297,8 +298,6 @@ public class ProviderSchema extends QueryAllSchema
         ProviderSchema.providerTypeUri = providerTypeUri;
     }
     
-    public static final QueryAllSchema PROVIDER_SCHEMA = new ProviderSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -308,7 +307,8 @@ public class ProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public ProviderSchema(final String nextName)
     {

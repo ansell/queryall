@@ -59,6 +59,9 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
                 .createURI(baseUri, "objectMappingPredicate"));
     }
     
+    public static final QueryAllSchema PREFIX_MAPPING_NORMALISATION_RULE_SCHEMA =
+            new PrefixMappingNormalisationRuleSchema();
+    
     /**
      * @return the inputPrefixUri
      */
@@ -135,8 +138,6 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
         PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri = nextMappingPredicateUri;
     }
     
-    public static final QueryAllSchema PREFIX_MAPPING_NORMALISATION_RULE_SCHEMA = new PrefixMappingNormalisationRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -146,7 +147,8 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public PrefixMappingNormalisationRuleSchema(final String nextName)
     {

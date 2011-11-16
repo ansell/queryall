@@ -9,7 +9,6 @@ import java.util.Set;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
-import org.queryall.api.provider.ProviderEnum;
 
 /**
  * 
@@ -23,7 +22,7 @@ public abstract class QueryAllSchema
     private static final Set<QueryAllSchema> ALL_SCHEMAS = new HashSet<QueryAllSchema>();
     
     private String name;
-
+    
     public QueryAllSchema()
     {
         
@@ -34,23 +33,23 @@ public abstract class QueryAllSchema
         this.setName(nextName);
         QueryAllSchema.ALL_SCHEMAS.add(this);
     }
-
-    protected final void setName(String name)
-    {
-        this.name = name;
-    }
     
     public String getName()
     {
         return this.name;
     }
     
+    public abstract boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException;
+    
+    protected final void setName(final String name)
+    {
+        this.name = name;
+    }
+    
     @Override
     public String toString()
     {
-        return getName();
+        return this.getName();
     }
-    
-    public abstract boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException;
 }

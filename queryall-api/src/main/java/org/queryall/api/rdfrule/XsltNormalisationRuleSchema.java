@@ -49,6 +49,8 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
         
     }
     
+    public static final QueryAllSchema XSLT_NORMALISATION_RULE_SCHEMA = new XsltNormalisationRuleSchema();
+    
     /**
      * @return the xsltRuleStylesheetUri
      */
@@ -83,8 +85,6 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
         XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
     }
     
-    public static final QueryAllSchema XSLT_NORMALISATION_RULE_SCHEMA = new XsltNormalisationRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -94,7 +94,8 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public XsltNormalisationRuleSchema(final String nextName)
     {

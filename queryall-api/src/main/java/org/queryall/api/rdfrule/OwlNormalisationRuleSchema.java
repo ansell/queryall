@@ -45,6 +45,8 @@ public class OwlNormalisationRuleSchema extends QueryAllSchema
         OwlNormalisationRuleSchema.setOwlRuleTypeUri(f.createURI(baseUri, "OwlValidatingRule"));
     }
     
+    public static final QueryAllSchema OWL_NORMALISATION_RULE_SCHEMA = new OwlNormalisationRuleSchema();
+    
     /**
      * @return the owlruleTypeUri
      */
@@ -62,8 +64,6 @@ public class OwlNormalisationRuleSchema extends QueryAllSchema
         OwlNormalisationRuleSchema.owlruleTypeUri = owlruleTypeUri;
     }
     
-    public static final QueryAllSchema OWL_NORMALISATION_RULE_SCHEMA = new OwlNormalisationRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -73,7 +73,8 @@ public class OwlNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public OwlNormalisationRuleSchema(final String nextName)
     {

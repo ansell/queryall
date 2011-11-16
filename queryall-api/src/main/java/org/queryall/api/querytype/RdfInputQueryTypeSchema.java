@@ -47,6 +47,8 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
         RdfInputQueryTypeSchema.setQuerySparqlInputSelect(f.createURI(baseUri, "sparqlInputSelect"));
     }
     
+    public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new RdfInputQueryTypeSchema();
+    
     public static URI getQuerySparqlInputSelect()
     {
         return RdfInputQueryTypeSchema.querySparqlInputSelect;
@@ -74,8 +76,6 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
         RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
     }
     
-    public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new RdfInputQueryTypeSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -85,7 +85,8 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public RdfInputQueryTypeSchema(final String nextName)
     {

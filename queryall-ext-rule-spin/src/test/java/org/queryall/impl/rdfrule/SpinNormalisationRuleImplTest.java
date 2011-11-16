@@ -58,28 +58,30 @@ public class SpinNormalisationRuleImplTest
     @Before
     public void setUp() throws Exception
     {
-        // store a reference to the original locationMapper here so we can push it back after each test
-//        this.originalLocationMapper = LocationMapper.get();
-//        this.originalFileManager = FileManager.get();
-//        
-//        OntModel testLocationMapping = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
-//        
-//        testLocationMapping.read(SpinNormalisationRuleImplTest.class.getResourceAsStream("/test/test-location-mapping.n3"), "", "N3");
-//        
-//        // create a new LocationMapper and set it to initialise from the local mapping file
-//        LocationMapper lMap = new LocationMapper() ;
-//
-//        lMap.processConfig(testLocationMapping);
-//        
-//        log.info("locationMapper="+lMap.toString());
-//        
-//        LocationMapper.setGlobalLocationMapper(lMap);
-//        
-//        FileManager testFileManager = new FileManager(lMap);
-//        
-//        testFileManager.addLocatorClassLoader(SpinNormalisationRuleImplTest.class.getClassLoader());
-//        
-//        FileManager.setGlobalFileManager(testFileManager);
+        // store a reference to the original locationMapper here so we can push it back after each
+        // test
+        // this.originalLocationMapper = LocationMapper.get();
+        // this.originalFileManager = FileManager.get();
+        //
+        // OntModel testLocationMapping = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
+        //
+        // testLocationMapping.read(SpinNormalisationRuleImplTest.class.getResourceAsStream("/test/test-location-mapping.n3"),
+        // "", "N3");
+        //
+        // // create a new LocationMapper and set it to initialise from the local mapping file
+        // LocationMapper lMap = new LocationMapper() ;
+        //
+        // lMap.processConfig(testLocationMapping);
+        //
+        // log.info("locationMapper="+lMap.toString());
+        //
+        // LocationMapper.setGlobalLocationMapper(lMap);
+        //
+        // FileManager testFileManager = new FileManager(lMap);
+        //
+        // testFileManager.addLocatorClassLoader(SpinNormalisationRuleImplTest.class.getClassLoader());
+        //
+        // FileManager.setGlobalFileManager(testFileManager);
         
         final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
@@ -175,8 +177,8 @@ public class SpinNormalisationRuleImplTest
     @After
     public void tearDown() throws Exception
     {
-//        LocationMapper.setGlobalLocationMapper(this.originalLocationMapper);
-//        FileManager.setGlobalFileManager(this.originalFileManager);
+        // LocationMapper.setGlobalLocationMapper(this.originalLocationMapper);
+        // FileManager.setGlobalFileManager(this.originalFileManager);
         
         this.testOntologyModel = null;
         this.testSesameStatements = null;
@@ -184,7 +186,6 @@ public class SpinNormalisationRuleImplTest
         // testSpinModuleRegistry1 = null;
         // testSpinModuleRegistry2 = null;
     }
-    
     
     @Test
     public void testProcessSpinRulesByClasspathRef() throws OpenRDFException, QueryAllException
@@ -195,7 +196,6 @@ public class SpinNormalisationRuleImplTest
         
         final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
-        
         
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
         spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all");

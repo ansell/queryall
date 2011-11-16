@@ -14,7 +14,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -46,6 +45,8 @@ public class SparqlAskRuleSchema extends QueryAllSchema
         SparqlAskRuleSchema.setSparqlAskRuleTypeUri(f.createURI(baseUri, "SparqlAskRule"));
     }
     
+    public static final QueryAllSchema SPARQL_ASK_RULE_SCHEMA = new SparqlAskRuleSchema();
+    
     /**
      * @return the sparqlruleTypeUri
      */
@@ -63,8 +64,6 @@ public class SparqlAskRuleSchema extends QueryAllSchema
         SparqlAskRuleSchema.sparqlAskRuleTypeUri = sparqlConstructRuleTypeUri;
     }
     
-    public static final QueryAllSchema SPARQL_ASK_RULE_SCHEMA = new SparqlAskRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -74,7 +73,8 @@ public class SparqlAskRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public SparqlAskRuleSchema(final String nextName)
     {

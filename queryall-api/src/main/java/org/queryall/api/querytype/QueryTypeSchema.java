@@ -15,7 +15,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
-import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -112,6 +111,8 @@ public class QueryTypeSchema extends QueryAllSchema
         QueryTypeSchema.setQueryIsDummyQueryType(f.createURI(baseUri, "isDummyQueryType"));
         
     }
+    
+    public static final QueryAllSchema QUERY_TYPE_SCHEMA = new QueryTypeSchema();
     
     public static URI getNamespaceMatchAllUri()
     {
@@ -507,9 +508,6 @@ public class QueryTypeSchema extends QueryAllSchema
         QueryTypeSchema.queryTypeUri = queryTypeUri;
     }
     
-    
-    public static final QueryAllSchema QUERY_TYPE_SCHEMA = new QueryTypeSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -519,13 +517,14 @@ public class QueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public QueryTypeSchema(final String nextName)
     {
         super(nextName);
     }
-
+    
     @Override
     public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException

@@ -68,6 +68,8 @@ public class SparqlConstructRuleSchema extends QueryAllSchema
     
     static URI OLDsparqlruleModeOnlyDeleteMatches;
     
+    public static final QueryAllSchema SPARQL_CONSTRUCT_RULE_SCHEMA = new SparqlConstructRuleSchema();
+    
     /**
      * @return the oLDsparqlruleModeOnlyDeleteMatches
      */
@@ -198,8 +200,6 @@ public class SparqlConstructRuleSchema extends QueryAllSchema
         SparqlConstructRuleSchema.sparqlruleSparqlConstructQueryTarget = sparqlruleSparqlConstructQuery;
     }
     
-    public static final QueryAllSchema SPARQL_CONSTRUCT_RULE_SCHEMA = new SparqlConstructRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -209,7 +209,8 @@ public class SparqlConstructRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public SparqlConstructRuleSchema(final String nextName)
     {

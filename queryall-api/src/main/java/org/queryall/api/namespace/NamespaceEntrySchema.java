@@ -14,7 +14,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -69,22 +68,6 @@ public class NamespaceEntrySchema extends QueryAllSchema
     }
     
     public static final QueryAllSchema NAMESPACE_ENTRY_SCHEMA = new NamespaceEntrySchema();
-    
-    /**
-     * Default constructor, uses the name of this class as the name
-     */
-    public NamespaceEntrySchema()
-    {
-        this(NamespaceEntrySchema.class.getName());
-    }
-    
-    /**
-     * @param nextName The name for this schema object
-     */
-    public NamespaceEntrySchema(final String nextName)
-    {
-        super(nextName);
-    }
     
     /**
      * @return the namespaceAlternativePrefix
@@ -237,6 +220,23 @@ public class NamespaceEntrySchema extends QueryAllSchema
     public static void setOldNamespaceTitle(final URI oldNamespaceTitle)
     {
         NamespaceEntrySchema.oldNamespaceTitle = oldNamespaceTitle;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public NamespaceEntrySchema()
+    {
+        this(NamespaceEntrySchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public NamespaceEntrySchema(final String nextName)
+    {
+        super(nextName);
     }
     
     @Override

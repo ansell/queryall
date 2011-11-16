@@ -34,7 +34,8 @@ import com.hp.hpl.jena.util.LocationMapper;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  * 
- * TODO: Change this from a static/Singleton into a more customisable structure using a configurable location mapping file
+ *         TODO: Change this from a static/Singleton into a more customisable structure using a
+ *         configurable location mapping file
  */
 public class SpinUtils
 {
@@ -51,50 +52,57 @@ public class SpinUtils
     
     static
     {
-        Model mappingConfig = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        final Model mappingConfig = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
         final InputStream stream = SpinUtils.class.getResourceAsStream("/queryall-jena-location-mapping.n3");
         
         mappingConfig.read(stream, "http://temp.base.uri.fake/", "N3");
         
-        log.info("mappingConfig.size()="+mappingConfig.size());
+        SpinUtils.log.info("mappingConfig.size()=" + mappingConfig.size());
         
-        lMap = new LocationMapper();
+        SpinUtils.lMap = new LocationMapper();
         
-        lMap.processConfig(mappingConfig);
+        SpinUtils.lMap.processConfig(mappingConfig);
         
         // FIXME: Make SPIN/ARQ not require this line
-        LocationMapper.setGlobalLocationMapper(lMap);
+        LocationMapper.setGlobalLocationMapper(SpinUtils.lMap);
         
-        fileManager = new FileManager(lMap);
+        SpinUtils.fileManager = new FileManager(SpinUtils.lMap);
         
-        fileManager.addLocatorFile();
-        fileManager.addLocatorURL();
-        fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader());
-        fileManager.addLocator(new JenaLocatorClass(SpinUtils.class));
+        SpinUtils.fileManager.addLocatorFile();
+        SpinUtils.fileManager.addLocatorURL();
+        SpinUtils.fileManager.addLocatorClassLoader(SpinUtils.fileManager.getClass().getClassLoader());
+        SpinUtils.fileManager.addLocator(new JenaLocatorClass(SpinUtils.class));
         
-//        InputStream testStream = SpinUtils.class.getClassLoader().getResourceAsStream("test/owlrl-all");
-//        
-//        log.info("testStream="+testStream);
-//
-//        testStream = fileManager.getClass().getClassLoader().getResourceAsStream("test/owlrl-all");        
-//        
-//        log.info("testStream="+testStream);
-//
-//        testStream = SpinUtils.class.getResourceAsStream("test/owlrl-all");        
-//
-//        log.info("testStream="+testStream);
-
-        // FIXME: Make SPIN/ARQ not require this line by including a ModelFactory.createXYZModel parameter to include a reference to a file manager to use for the load
-        // Not sure how to insert this into the inner part of SPIN without this statement, although any models loaded using myOntModelSpec will use this fileManager
-        FileManager.setGlobalFileManager(fileManager);
+        // InputStream testStream =
+        // SpinUtils.class.getClassLoader().getResourceAsStream("test/owlrl-all");
+        //
+        // log.info("testStream="+testStream);
+        //
+        // testStream =
+        // fileManager.getClass().getClassLoader().getResourceAsStream("test/owlrl-all");
+        //
+        // log.info("testStream="+testStream);
+        //
+        // testStream = SpinUtils.class.getResourceAsStream("test/owlrl-all");
+        //
+        // log.info("testStream="+testStream);
         
-        OntDocumentManager docManager = new OntDocumentManager();
+        // FIXME: Make SPIN/ARQ not require this line by including a ModelFactory.createXYZModel
+        // parameter to include a reference to a file manager to use for the load
+        // Not sure how to insert this into the inner part of SPIN without this statement, although
+        // any models loaded using myOntModelSpec will use this fileManager
+        FileManager.setGlobalFileManager(SpinUtils.fileManager);
         
-        docManager.setFileManager(fileManager);
+        final OntDocumentManager docManager = new OntDocumentManager();
         
-        // This is the Model Spec to use to load ontologies using the /queryall-jena-location-mapping.n3 file, through OntDocumentManager, through FileManager, through LocationMapper
-        setOntModelSpec(new OntModelSpec( ModelFactory.createMemModelMaker(), docManager, null, ProfileRegistry.OWL_LANG ));    
+        docManager.setFileManager(SpinUtils.fileManager);
+        
+        // This is the Model Spec to use to load ontologies using the
+        // /queryall-jena-location-mapping.n3 file, through OntDocumentManager, through FileManager,
+        // through LocationMapper
+        SpinUtils.setOntModelSpec(new OntModelSpec(ModelFactory.createMemModelMaker(), docManager, null,
+                ProfileRegistry.OWL_LANG));
         
     }
     
@@ -185,7 +193,8 @@ public class SpinUtils
     public static OntModel addSesameRepositoryToJenaModel(final Repository inputRepository, Model outputModel,
             final String baseURI, final org.openrdf.model.Resource... contexts)
     {
-        // if the outputModel was not defined, then create a new in memory model to contain the results
+        // if the outputModel was not defined, then create a new in memory model to contain the
+        // results
         if(outputModel == null)
         {
             outputModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
@@ -207,6 +216,14 @@ public class SpinUtils
         // TODO: Should be creating this model earlier and then adding the triples to it instead of
         // to the outputModel?
         return ModelFactory.createOntologyModel(SpinUtils.myOntModelSpec, outputModel);
+    }
+    
+    /**
+     * @return the myOntModelSpec
+     */
+    public static OntModelSpec getOntModelSpec()
+    {
+        return SpinUtils.myOntModelSpec;
     }
     
     public static String getTurtleSPINQueryFromSPARQL(final String query)
@@ -231,10 +248,11 @@ public class SpinUtils
     /**
      * 
      * 
-     * @param classpathRef A reference on the classpath
+     * @param classpathRef
+     *            A reference on the classpath
      * @return
      */
-    public static OntModel loadModelFromClasspath(String classpathRef)
+    public static OntModel loadModelFromClasspath(final String classpathRef)
     {
         SpinUtils.log.info("loading model from classpathRef=" + classpathRef);
         
@@ -242,41 +260,36 @@ public class SpinUtils
         
         final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
         
-        baseModel.add(fileManager.loadModel(classpathRef));
+        baseModel.add(SpinUtils.fileManager.loadModel(classpathRef));
         
-        // FIXME: Cannot determine way to use the fileManager to load from a classpath reference or attach the fileManager or locationMapper to use for other resolutions
-//        Model fileManagerModel = fileManager.loadModel(classpathRef);
+        // FIXME: Cannot determine way to use the fileManager to load from a classpath reference or
+        // attach the fileManager or locationMapper to use for other resolutions
+        // Model fileManagerModel = fileManager.loadModel(classpathRef);
         
-//        ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, new ModelMakerImpl(new GraphMaker()), base)
+        // ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, new ModelMakerImpl(new
+        // GraphMaker()), base)
         
-//        log.info("fileManagerModel.isIsomorphicWith(baseModel)="+fileManagerModel.isIsomorphicWith(baseModel));
+        // log.info("fileManagerModel.isIsomorphicWith(baseModel)="+fileManagerModel.isIsomorphicWith(baseModel));
         
         // TODO: make the OntModelSpec here configurable
-        return ModelFactory.createOntologyModel(getOntModelSpec(), baseModel);
+        return ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), baseModel);
     }
     
     public static OntModel loadModelFromUrl(final String url)
     {
         SpinUtils.log.info("loading model from url=" + url);
         
-        Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        baseModel.add(fileManager.loadModel(url));
+        final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        baseModel.add(SpinUtils.fileManager.loadModel(url));
         
-        return ModelFactory.createOntologyModel(getOntModelSpec(), baseModel);
+        return ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), baseModel);
     }
-
+    
     /**
-     * @return the myOntModelSpec
+     * @param myOntModelSpec
+     *            the myOntModelSpec to set
      */
-    public static OntModelSpec getOntModelSpec()
-    {
-        return myOntModelSpec;
-    }
-
-    /**
-     * @param myOntModelSpec the myOntModelSpec to set
-     */
-    public static void setOntModelSpec(OntModelSpec myOntModelSpec)
+    public static void setOntModelSpec(final OntModelSpec myOntModelSpec)
     {
         SpinUtils.myOntModelSpec = myOntModelSpec;
     }

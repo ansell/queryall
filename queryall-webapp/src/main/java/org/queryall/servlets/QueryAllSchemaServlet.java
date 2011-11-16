@@ -252,7 +252,7 @@ public class QueryAllSchemaServlet extends HttpServlet
                                 + Long.toString(nextTotalTime));
             }
         }
-        catch(RepositoryException rex)
+        catch(final RepositoryException rex)
         {
             QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught repository exception", rex);
         }

@@ -45,6 +45,8 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
         SpinInferencingRuleSchema.setSpinInferencingRuleTypeUri(f.createURI(baseUri, "SpinInferencingRule"));
     }
     
+    public static final QueryAllSchema SPIN_INFERENCING_RULE_SCHEMA = new SpinInferencingRuleSchema();
+    
     /**
      * @return the spinruleTypeUri
      */
@@ -62,8 +64,6 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
         SpinInferencingRuleSchema.spinInferencingRuleTypeUri = spinInferencingRuleTypeUri;
     }
     
-    public static final QueryAllSchema SPIN_INFERENCING_RULE_SCHEMA = new SpinInferencingRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -73,7 +73,8 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public SpinInferencingRuleSchema(final String nextName)
     {

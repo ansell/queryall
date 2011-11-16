@@ -13,7 +13,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -45,6 +44,8 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
         SparqlProcessorQueryTypeSchema.setSparqlProcessorQueryTypeUri(f.createURI(baseUri, "SparqlProcessorQuery"));
     }
     
+    public static final QueryAllSchema SPARQL_PROCESSOR_QUERY_TYPE_SCHEMA = new SparqlProcessorQueryTypeSchema();
+    
     /**
      * @return the queryTypeUri
      */
@@ -62,8 +63,6 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
         SparqlProcessorQueryTypeSchema.sparqlProcessorQueryTypeUri = queryTypeUri;
     }
     
-    public static final QueryAllSchema SPARQL_PROCESSOR_QUERY_TYPE_SCHEMA = new SparqlProcessorQueryTypeSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -73,7 +72,8 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public SparqlProcessorQueryTypeSchema(final String nextName)
     {

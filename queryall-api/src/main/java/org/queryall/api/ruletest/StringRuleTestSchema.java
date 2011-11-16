@@ -14,7 +14,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.rdfrule.SpinInferencingRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -50,6 +49,8 @@ public class StringRuleTestSchema extends QueryAllSchema
         StringRuleTestSchema.setRuletestInputTestString(f.createURI(baseUri, "inputTestString"));
         StringRuleTestSchema.setRuletestOutputTestString(f.createURI(baseUri, "outputTestString"));
     }
+    
+    public static final QueryAllSchema STRING_RULE_TEST_SCHEMA = new StringRuleTestSchema();
     
     /**
      * @return the ruletestInputTestString
@@ -102,8 +103,6 @@ public class StringRuleTestSchema extends QueryAllSchema
         StringRuleTestSchema.stringRuletestTypeUri = ruletestTypeUri;
     }
     
-    public static final QueryAllSchema STRING_RULE_TEST_SCHEMA = new StringRuleTestSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -113,7 +112,8 @@ public class StringRuleTestSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public StringRuleTestSchema(final String nextName)
     {

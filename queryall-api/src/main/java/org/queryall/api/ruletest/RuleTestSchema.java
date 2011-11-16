@@ -15,7 +15,6 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -51,6 +50,8 @@ public class RuleTestSchema extends QueryAllSchema
         RuleTestSchema.setRuletestHasRuleUri(f.createURI(baseUri, "testsRules"));
         RuleTestSchema.setRuletestTestsStage(f.createURI(baseUri, "testsStages"));
     }
+    
+    public static final QueryAllSchema RULE_TEST_SCHEMA = new RuleTestSchema();
     
     /**
      * @return the ruletestHasRuleUri
@@ -103,8 +104,6 @@ public class RuleTestSchema extends QueryAllSchema
         RuleTestSchema.ruletestTypeUri = ruletestTypeUri;
     }
     
-    public static final QueryAllSchema RULE_TEST_SCHEMA = new RuleTestSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -114,7 +113,8 @@ public class RuleTestSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public RuleTestSchema(final String nextName)
     {

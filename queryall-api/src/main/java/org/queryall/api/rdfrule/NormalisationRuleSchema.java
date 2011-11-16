@@ -110,6 +110,8 @@ public class NormalisationRuleSchema extends QueryAllSchema
         
     }
     
+    public static final QueryAllSchema NORMALISATION_RULE_SCHEMA = new NormalisationRuleSchema();
+    
     public static Set<URI> getAllStages()
     {
         return NormalisationRuleSchema.ALL_STAGES;
@@ -336,8 +338,6 @@ public class NormalisationRuleSchema extends QueryAllSchema
         NormalisationRuleSchema.rdfruleTypeValidForStage = rdfruleTypeValidForStage;
     }
     
-    public static final QueryAllSchema NORMALISATION_RULE_SCHEMA = new NormalisationRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -347,7 +347,8 @@ public class NormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public NormalisationRuleSchema(final String nextName)
     {

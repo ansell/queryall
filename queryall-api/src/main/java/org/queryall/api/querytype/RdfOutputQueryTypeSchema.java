@@ -51,6 +51,8 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
         RdfOutputQueryTypeSchema.setQueryOutputRdfFormat(f.createURI(baseUri, "outputRdfFormat"));
     }
     
+    public static final QueryAllSchema RDF_OUTPUT_QUERY_TYPE_SCHEMA = new RdfOutputQueryTypeSchema();
+    
     /**
      * @return the queryOLDOutputRdfXmlString
      */
@@ -105,8 +107,6 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
         RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
     }
     
-    public static final QueryAllSchema RDF_OUTPUT_QUERY_TYPE_SCHEMA = new RdfOutputQueryTypeSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -116,7 +116,8 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public RdfOutputQueryTypeSchema(final String nextName)
     {

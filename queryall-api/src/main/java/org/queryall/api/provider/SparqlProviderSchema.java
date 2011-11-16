@@ -14,8 +14,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
-import org.queryall.api.rdfrule.SparqlConstructRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -54,6 +52,8 @@ public class SparqlProviderSchema extends QueryAllSchema
         SparqlProviderSchema.setProviderHttpPostSparql(f.createURI(baseUri, "httppostsparql"));
         
     }
+    
+    public static final QueryAllSchema SPARQL_PROVIDER_SCHEMA = new SparqlProviderSchema();
     
     /**
      * @return the providerHttpPostSparql
@@ -123,8 +123,6 @@ public class SparqlProviderSchema extends QueryAllSchema
         SparqlProviderSchema.providerSparqlTypeUri = providerSparqlTypeUri;
     }
     
-    public static final QueryAllSchema SPARQL_PROVIDER_SCHEMA = new SparqlProviderSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -134,7 +132,8 @@ public class SparqlProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public SparqlProviderSchema(final String nextName)
     {

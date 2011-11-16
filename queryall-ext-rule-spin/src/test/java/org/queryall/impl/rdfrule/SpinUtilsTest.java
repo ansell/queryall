@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -33,7 +32,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class SpinUtilsTest
 {
@@ -41,7 +40,7 @@ public class SpinUtilsTest
     private OntModel testOntologyModel;
     private ArrayList<Statement> testSesameStatements;
     private Repository testRepository;
-
+    
     /**
      * @throws java.lang.Exception
      */
@@ -129,27 +128,31 @@ public class SpinUtilsTest
         
         Assert.assertEquals(3, resultConnection.size());
         
-        RepositoryConnection connection = this.testRepository.getConnection();
+        final RepositoryConnection connection = this.testRepository.getConnection();
         
-        // Verify that each of the statements in the result are located in our copy of the test repository
-        for(Statement nextStatement : resultConnection.getStatements(null, null, null, false).asList())
+        // Verify that each of the statements in the result are located in our copy of the test
+        // repository
+        for(final Statement nextStatement : resultConnection.getStatements(null, null, null, false).asList())
         {
             Assert.assertTrue(connection.hasStatement(nextStatement, false));
         }
     }
     
     /**
-     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#addSesameRepositoryToJenaModel(org.openrdf.repository.Repository, com.hp.hpl.jena.rdf.model.Model, java.lang.String, org.openrdf.model.Resource[])}.
+     * Test method for
+     * {@link org.queryall.impl.rdfrule.SpinUtils#addSesameRepositoryToJenaModel(org.openrdf.repository.Repository, com.hp.hpl.jena.rdf.model.Model, java.lang.String, org.openrdf.model.Resource[])}
+     * .
      */
     @Test
     public void testAddSesameRepositoryToJenaModel()
     {
-        OntModel addSesameRepositoryToJenaModel = SpinUtils.addSesameRepositoryToJenaModel(testRepository, null, "");
+        final OntModel addSesameRepositoryToJenaModel =
+                SpinUtils.addSesameRepositoryToJenaModel(this.testRepository, null, "");
         
-        Assert.assertEquals(testOntologyModel.size(), addSesameRepositoryToJenaModel.size());
+        Assert.assertEquals(this.testOntologyModel.size(), addSesameRepositoryToJenaModel.size());
         
         // verify that the given model matches our local test model
-        Assert.assertTrue(addSesameRepositoryToJenaModel.isIsomorphicWith(testOntologyModel));
+        Assert.assertTrue(addSesameRepositoryToJenaModel.isIsomorphicWith(this.testOntologyModel));
     }
     
     @Test
@@ -169,9 +172,10 @@ public class SpinUtilsTest
         
         Assert.assertTrue(turtleString.contains("18"));
     }
-
+    
     /**
-     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromClasspath(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromClasspath(java.lang.String)}.
      */
     @Test
     public void testLoadModelFromClasspath()
@@ -182,7 +186,8 @@ public class SpinUtilsTest
     }
     
     /**
-     * Test method for {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromUrl(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.impl.rdfrule.SpinUtils#loadModelFromUrl(java.lang.String)}.
      */
     @Test
     public void testLoadModelFromUrl()

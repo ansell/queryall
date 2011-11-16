@@ -46,6 +46,8 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
                 QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "validationPossible"));
     }
     
+    public static final QueryAllSchema VALIDATING_NAMESPACE_ENTRY_SCHEMA = new ValidatingNamespaceEntrySchema();
+    
     /**
      * @return the validatingNamespaceTypeUri
      */
@@ -80,8 +82,6 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
         ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
     }
     
-    public static final QueryAllSchema VALIDATING_NAMESPACE_ENTRY_SCHEMA = new ValidatingNamespaceEntrySchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -91,13 +91,13 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public ValidatingNamespaceEntrySchema(final String nextName)
     {
         super(nextName);
     }
-    
     
     @Override
     public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)

@@ -1223,7 +1223,8 @@ public class Settings implements QueryAllConfiguration
                 tempConfigurationRepository = new SailRepository(new MemoryStore());
                 tempConfigurationRepository.initialize();
                 
-                tempConfigurationRepository = Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
+                tempConfigurationRepository =
+                        Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
                 
                 final Collection<String> queryConfigLocationsList = this.getStringProperties("queryConfigLocations");
                 
@@ -1332,7 +1333,8 @@ public class Settings implements QueryAllConfiguration
                     tempConfigurationRepository = new SailRepository(new MemoryStore());
                     tempConfigurationRepository.initialize();
                     
-                    tempConfigurationRepository = Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
+                    tempConfigurationRepository =
+                            Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
                     
                     for(final String nextLocation : this.getStringProperties("backupQueryConfigLocations"))
                     {

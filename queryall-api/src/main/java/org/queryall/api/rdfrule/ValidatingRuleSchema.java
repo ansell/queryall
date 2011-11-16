@@ -46,6 +46,8 @@ public class ValidatingRuleSchema extends QueryAllSchema
         
     }
     
+    public static final QueryAllSchema VALIDATING_RULE_SCHEMA = new ValidatingRuleSchema();
+    
     /**
      * @return the normalisationRuleTypeUri
      */
@@ -63,8 +65,6 @@ public class ValidatingRuleSchema extends QueryAllSchema
         ValidatingRuleSchema.validatingRuleTypeUri = validatingRuleTypeUri;
     }
     
-    public static final QueryAllSchema VALIDATING_RULE_SCHEMA = new ValidatingRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -74,7 +74,8 @@ public class ValidatingRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public ValidatingRuleSchema(final String nextName)
     {

@@ -14,7 +14,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.QueryAllSchema;
-import org.queryall.api.querytype.RegexInputQueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -57,6 +56,8 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
         RegexNormalisationRuleSchema.setRegexRuleOutputMatchRegex(f.createURI(baseUri, "outputMatchRegex"));
         RegexNormalisationRuleSchema.setRegexRuleOutputReplaceRegex(f.createURI(baseUri, "outputReplaceRegex"));
     }
+    
+    public static final QueryAllSchema REGEX_NORMALISATION_RULE_SCHEMA = new RegexNormalisationRuleSchema();
     
     /**
      * @return the rdfruleInputMatchRegex
@@ -143,8 +144,6 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
         RegexNormalisationRuleSchema.regexruleTypeUri = regexruleTypeUri;
     }
     
-    public static final QueryAllSchema REGEX_NORMALISATION_RULE_SCHEMA = new RegexNormalisationRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -154,7 +153,8 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public RegexNormalisationRuleSchema(final String nextName)
     {

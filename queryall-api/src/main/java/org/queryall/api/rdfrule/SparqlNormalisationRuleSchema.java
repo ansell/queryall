@@ -51,6 +51,8 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
         SparqlNormalisationRuleSchema.setSparqlRuleSparqlPrefixes(f.createURI(baseUri, "sparqlPrefixes"));
     }
     
+    public static final QueryAllSchema SPARQL_NORMALISATION_RULE_SCHEMA = new SparqlNormalisationRuleSchema();
+    
     public static URI getSparqlRuleSparqlPrefixes()
     {
         return SparqlNormalisationRuleSchema.sparqlruleSparqlPrefixes;
@@ -88,8 +90,6 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
         SparqlNormalisationRuleSchema.sparqlruleTypeUri = sparqlruleTypeUri;
     }
     
-    public static final QueryAllSchema SPARQL_NORMALISATION_RULE_SCHEMA = new SparqlNormalisationRuleSchema();
-    
     /**
      * Default constructor, uses the name of this class as the name
      */
@@ -99,7 +99,8 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param nextName The name for this schema object
+     * @param nextName
+     *            The name for this schema object
      */
     public SparqlNormalisationRuleSchema(final String nextName)
     {
