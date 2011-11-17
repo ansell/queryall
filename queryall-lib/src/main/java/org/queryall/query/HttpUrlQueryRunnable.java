@@ -7,6 +7,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,10 +65,16 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                     
                     for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                     {
+                        
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
                         HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
                                 + " originalEndpoint=" + this.getEndpointUrl());
                         
-                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        if(_DEBUG)
+                        {
+                            log.debug("alternateQuery="+alternateQuery);
+                        }
                         
                         tempRawResult =
                                 fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
@@ -103,6 +110,11 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                                 + " originalEndpoint=" + this.getEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
+                        if(_DEBUG)
+                        {
+                            log.debug("alternateQuery="+alternateQuery);
+                        }
                         
                         tempRawResult =
                                 fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
@@ -144,6 +156,12 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 this.setWasSuccessful(false);
                 this.setLastException(fetcher.getLastException());
             }
+        }
+        catch(QueryAllException qae)
+        {
+            HttpUrlQueryRunnable.log.error("Found QueryAllException", qae);
+            this.setWasSuccessful(false);
+            this.setLastException(qae);
         }
         catch(final Exception ex)
         {

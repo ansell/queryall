@@ -310,10 +310,11 @@ public class RdfFetchController
         {
             // randomly choose one of the alternatives, the others will be resolved if necessary
             // automagically
+            Map<String, String> nextAlternativeEndpointsAndQueries = nextBundle.getAlternativeEndpointsAndQueries();
             final String nextEndpoint =
-                    ListUtils.chooseRandomItemFromCollection(nextBundle.getAlternativeEndpointsAndQueries().keySet());
+                    ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
             // nextBundle.getQueryEndpoint();
-            final String nextQuery = nextBundle.getAlternativeEndpointsAndQueries().get(nextEndpoint);
+            final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
             // nextBundle.getQuery();
             
             if(RdfFetchController._DEBUG)
@@ -599,13 +600,9 @@ public class RdfFetchController
                             
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
-                            if(useAllEndpointsForEachProvider)
+                            if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0 || useAllEndpointsForEachProvider)
                             {
-                                nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
-                                        originalEndpointEntries.get(nextReplacedEndpoint));
-                            }
-                            else if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0)
-                            {
+                                // FIXME: Check to make sure that this does not generate nulls
                                 nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
                                         originalEndpointEntries.get(nextReplacedEndpoint));
                             }

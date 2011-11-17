@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,13 +47,18 @@ public class RdfFetcher
     
     // If postInformation is empty String "" or null then we assume they did not want to post
     public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
-        throws MalformedURLException
+        throws MalformedURLException, QueryAllException
     {
         if(RdfFetcher._DEBUG)
         {
             RdfFetcher.log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
                     + " Settings.getStringPropertyFromConfig(\"connectTimeout\")="
                     + this.localSettings.getIntProperty("connectTimeout", 3000));
+        }
+        
+        if(endpointUrl == null)
+        {
+            throw new QueryAllException("Cannot send a null endpoint URL!");
         }
         
         final long start = System.currentTimeMillis();
@@ -395,11 +401,16 @@ public class RdfFetcher
     }
     
     public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
-            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException
+            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException, QueryAllException
     {
         if(RdfFetcher._DEBUG)
         {
             RdfFetcher.log.debug("RdfFetcher.submitSparqlQuery: endpointUrl=" + endpointUrl + " query=" + query);
+        }
+        
+        if(endpointUrl == null)
+        {
+            throw new QueryAllException("Cannot send a null endpoint URL!");
         }
         
         final long start = System.currentTimeMillis();

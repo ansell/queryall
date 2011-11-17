@@ -58,6 +58,11 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
+                        if(_DEBUG)
+                        {
+                            log.debug("alternateQuery="+alternateQuery);
+                        }
+                        
                         tempRawResult =
                                 fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
                         

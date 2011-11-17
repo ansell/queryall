@@ -67,6 +67,11 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
+                        if(_DEBUG)
+                        {
+                            log.debug("alternateQuery="+alternateQuery);
+                        }
+                        
                         tempRawResult =
                                 fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
                                         this.maxRowsParameter, this.getAcceptHeader());

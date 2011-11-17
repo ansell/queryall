@@ -1,6 +1,7 @@
 package org.queryall.query;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -175,7 +176,7 @@ public class QueryBundle
      */
     public Map<String, String> getAlternativeEndpointsAndQueries()
     {
-        return this.alternativeEndpointsAndQueries;
+        return Collections.unmodifiableMap(this.alternativeEndpointsAndQueries);
     }
     
     /**
