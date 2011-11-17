@@ -6,13 +6,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.utils.Schema;
 import org.queryall.exception.QueryAllException;
+import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,9 +73,20 @@ public class SpinUtils
         SpinUtils.fileManager = new FileManager(SpinUtils.lMap);
         
         SpinUtils.fileManager.addLocatorFile();
-        SpinUtils.fileManager.addLocatorURL();
         SpinUtils.fileManager.addLocatorClassLoader(SpinUtils.fileManager.getClass().getClassLoader());
         SpinUtils.fileManager.addLocator(new JenaLocatorClass(SpinUtils.class));
+        SpinUtils.fileManager.addLocatorURL();
+        
+        try
+        {
+            Repository schemas = Schema.getSchemas(Settings.CONFIG_API_VERSION);
+            
+            SpinUtils.fileManager.addLocator(new QueryAllSchemaLocatorClass(schemas));
+        }
+        catch(OpenRDFException ordfe)
+        {
+            log.error("Could not create QueryAllSchemaLocatorClass due to an OpenRDFException");
+        }
         
         // InputStream testStream =
         // SpinUtils.class.getClassLoader().getResourceAsStream("test/owlrl-all");
@@ -280,6 +294,7 @@ public class SpinUtils
         SpinUtils.log.info("loading model from url=" + url);
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        // TODO: Add syntax guessing here, as Jena's default syntax guessing is very very basic and defaults to RDF/XML almost always
         baseModel.add(SpinUtils.fileManager.loadModel(url));
         
         return ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), baseModel);

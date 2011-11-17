@@ -197,4 +197,17 @@ public class SpinUtilsTest
         Assert.assertEquals(3324, nextModel.size());
     }
     
+    /**
+     * NOTE: Need to update this test to match changes to Query All Schemas
+     * 
+     * It is effectively an integration test for org.queryall.api.utils.QueryAllNamespaces, org.queryall.rdfrule.impl.QueryAllSchemaLocatorClass and org.queryall.api.utils.Schema
+     */
+    @Test
+    public void testLoadQueryAllSchema()
+    {
+        final OntModel nextModel = SpinUtils.loadModelFromUrl("http://purl.org/queryall/rdfrule:NormalisationRule");
+        
+        Assert.assertEquals("QueryAll Schema was not loaded correctly in SpinUtils", 388, nextModel.size());
+    }
+    
 }

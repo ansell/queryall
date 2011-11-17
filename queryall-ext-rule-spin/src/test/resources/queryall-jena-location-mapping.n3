@@ -11,6 +11,8 @@
    [ lm:name "http://www.podd.org/poddModel" ;
      lm:altName "test/podd_base.owl" ] ,
    [ lm:name "http://www.podd.org/poddMinimal" ;
-     lm:altName "test/podd_minimal.owl" ]
+     lm:altName "test/podd_minimal.owl" ] ,
+   [ lm:prefix "http://purl.org/queryall/" ;
+     lm:altPrefix "queryall:" ]
    .
    

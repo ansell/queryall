@@ -176,11 +176,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         try
         {
-            final Repository myRepository = new SailRepository(new MemoryStore());
-            
-            myRepository.initialize();
-            
-            Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
+            final Repository myRepository = Schema.getSchemas(Settings.CONFIG_API_VERSION);
             
             final java.io.StringWriter stBuff = new java.io.StringWriter();
             
@@ -255,6 +251,10 @@ public class QueryAllSchemaServlet extends HttpServlet
         catch(final RepositoryException rex)
         {
             QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught repository exception", rex);
+        }
+        catch(OpenRDFException ordfe)
+        {
+            QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught open rdf exception", ordfe);
         }
         catch(final RuntimeException rex)
         {

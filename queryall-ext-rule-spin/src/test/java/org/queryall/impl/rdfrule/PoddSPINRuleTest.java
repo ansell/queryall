@@ -108,7 +108,7 @@ public class PoddSPINRuleTest
                 log.debug(nextStatement.toString());
             }
 
-            Assert.assertEquals(104, resultConnection.size());
+            Assert.assertEquals(111, resultConnection.size());
         }
         finally
         {
