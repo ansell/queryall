@@ -5,7 +5,6 @@ package org.queryall.impl.provider.test;
 
 import org.queryall.api.provider.Provider;
 import org.queryall.api.test.AbstractProviderTest;
-import org.queryall.impl.provider.HttpOnlyProviderImpl;
 import org.queryall.impl.provider.HttpRdfProviderImpl;
 
 /**

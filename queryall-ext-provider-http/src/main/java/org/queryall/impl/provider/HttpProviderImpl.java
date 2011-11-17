@@ -19,17 +19,14 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.ProviderSchema;
-import org.queryall.api.provider.SparqlProvider;
-import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.utils.Constants;
-import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvider, SparqlProvider
+public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvider
 {
     private static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
     private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
@@ -46,10 +43,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
     private String acceptHeaderString = "";
-    
-    private boolean useSparqlGraph = false;
-    
-    private String sparqlGraphUri = "";
     
     protected HttpProviderImpl()
     {
@@ -92,14 +85,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
             else if(nextStatement.getPredicate().equals(HttpProviderSchema.getProviderHttpEndpointUrl()))
             {
                 this.addEndpointUrl(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(SparqlProviderSchema.getProviderSparqlRequiresGraphURI()))
-            {
-                this.setUseSparqlGraph(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(SparqlProviderSchema.getProviderSparqlGraphUri()))
-            {
-                this.setSparqlGraphUri(nextStatement.getObject().stringValue());
             }
             else
             {
@@ -145,25 +130,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     }
     
     @Override
-    public String getSparqlGraphUri()
-    {
-        if(this.getUseSparqlGraph())
-        {
-            return this.sparqlGraphUri;
-        }
-        else
-        {
-            return "";
-        }
-    }
-    
-    @Override
-    public boolean getUseSparqlGraph()
-    {
-        return this.useSparqlGraph;
-    }
-    
-    @Override
     public boolean hasEndpointUrl()
     {
         return (this.getEndpointUrls() != null && this.getEndpointUrls().size() > 0);
@@ -176,12 +142,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     }
     
     @Override
-    public boolean isHttpPostSparql()
-    {
-        return this.getEndpointMethod().equals(SparqlProviderSchema.getProviderHttpPostSparql());
-    }
-    
-    @Override
     public void setAcceptHeaderString(final String acceptHeaderString)
     {
         this.acceptHeaderString = acceptHeaderString;
@@ -191,18 +151,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     public void setEndpointUrls(final Collection<String> endpointUrls)
     {
         this.endpointUrls = endpointUrls;
-    }
-    
-    @Override
-    public void setSparqlGraphUri(final String sparqlGraphUri)
-    {
-        this.sparqlGraphUri = sparqlGraphUri;
-    }
-    
-    @Override
-    public void setUseSparqlGraph(final boolean useSparqlGraph)
-    {
-        this.useSparqlGraph = useSparqlGraph;
     }
     
     @Override
@@ -234,9 +182,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
                 acceptHeaderLiteral = f.createLiteral(this.acceptHeaderString);
             }
             
-            final Literal useSparqlGraphLiteral = f.createLiteral(this.getUseSparqlGraph());
-            final Literal sparqlGraphUriLiteral = f.createLiteral(this.getSparqlGraphUri());
-            
             con.setAutoCommit(false);
             
             con.add(providerInstanceUri, RDF.TYPE, ProviderSchema.getProviderTypeUri(), keyToUse);
@@ -246,12 +191,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
                 con.add(providerInstanceUri, HttpProviderSchema.getProviderHttpAcceptHeader(), acceptHeaderLiteral,
                         keyToUse);
             }
-            
-            con.add(providerInstanceUri, SparqlProviderSchema.getProviderSparqlRequiresGraphURI(),
-                    useSparqlGraphLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, SparqlProviderSchema.getProviderSparqlGraphUri(), sparqlGraphUriLiteral,
-                    keyToUse);
             
             if(this.getEndpointUrls() != null)
             {

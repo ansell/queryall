@@ -7,7 +7,6 @@ import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.test.AbstractProfilableProviderTest;
 import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.provider.HttpOnlyProviderImpl;
 import org.queryall.impl.provider.HttpRdfProviderImpl;
 
 /**

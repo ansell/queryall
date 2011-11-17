@@ -20,8 +20,6 @@ public interface HttpProvider extends Provider
     
     boolean isHttpGetUrl();
     
-    boolean isHttpPostSparql();
-    
     void setAcceptHeaderString(String acceptHeaderString);
     
     void setEndpointUrls(Collection<String> endpointUrls);

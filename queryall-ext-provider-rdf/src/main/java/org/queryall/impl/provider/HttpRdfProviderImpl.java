@@ -33,8 +33,8 @@ public class HttpRdfProviderImpl extends HttpProviderImpl implements RdfProvider
         super();
     }
     
-    public HttpRdfProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse,
-            final int modelVersion) throws OpenRDFException
+    public HttpRdfProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
     }

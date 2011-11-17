@@ -38,6 +38,7 @@ public class SparqlProviderSchema extends QueryAllSchema
     private static URI providerSparqlRequiresGraphURI;
     private static URI providerHttpPostSparql;
     private static URI providerSparqlGraphUri;
+    private static URI providerHttpGetSparql;
     
     static
     {
@@ -50,10 +51,19 @@ public class SparqlProviderSchema extends QueryAllSchema
         SparqlProviderSchema.setProviderSparqlRequiresGraphURI(f.createURI(baseUri, "requiresGraphUri"));
         SparqlProviderSchema.setProviderSparqlGraphUri(f.createURI(baseUri, "graphUri"));
         SparqlProviderSchema.setProviderHttpPostSparql(f.createURI(baseUri, "httppostsparql"));
+        SparqlProviderSchema.setProviderHttpGetSparql(f.createURI(baseUri, "httpgetsparql"));
         
     }
     
     public static final QueryAllSchema SPARQL_PROVIDER_SCHEMA = new SparqlProviderSchema();
+    
+    /**
+     * @return the providerHttpGetSparql
+     */
+    public static URI getProviderHttpGetSparql()
+    {
+        return SparqlProviderSchema.providerHttpGetSparql;
+    }
     
     /**
      * @return the providerHttpPostSparql
@@ -85,6 +95,15 @@ public class SparqlProviderSchema extends QueryAllSchema
     public static URI getProviderSparqlTypeUri()
     {
         return SparqlProviderSchema.providerSparqlTypeUri;
+    }
+    
+    /**
+     * @param providerHttpGetSparql
+     *            the providerHttpGetSparql to set
+     */
+    public static void setProviderHttpGetSparql(final URI providerHttpGetSparql)
+    {
+        SparqlProviderSchema.providerHttpGetSparql = providerHttpGetSparql;
     }
     
     /**

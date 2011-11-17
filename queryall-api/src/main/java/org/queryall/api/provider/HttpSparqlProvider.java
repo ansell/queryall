@@ -5,4 +5,8 @@ package org.queryall.api.provider;
  */
 public interface HttpSparqlProvider extends HttpProvider, SparqlProvider
 {
+    boolean isHttpGetSparql();
+    
+    boolean isHttpPostSparql();
+    
 }
