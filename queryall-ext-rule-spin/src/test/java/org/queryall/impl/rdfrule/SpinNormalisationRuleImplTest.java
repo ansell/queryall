@@ -46,8 +46,8 @@ public class SpinNormalisationRuleImplTest
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
-    private LocationMapper originalLocationMapper;
-    private FileManager originalFileManager;
+//    private LocationMapper originalLocationMapper;
+//    private FileManager originalFileManager;
     
     // private SPINModuleRegistry testSpinModuleRegistry1;
     // private SPINModuleRegistry testSpinModuleRegistry2;
@@ -85,7 +85,7 @@ public class SpinNormalisationRuleImplTest
         
         final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        this.testOntologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, testModel);
+        this.testOntologyModel = ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), testModel);
         
         final List<com.hp.hpl.jena.rdf.model.Statement> jenaStatements =
                 new ArrayList<com.hp.hpl.jena.rdf.model.Statement>(3);

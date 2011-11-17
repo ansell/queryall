@@ -376,7 +376,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         while(listStatements.hasNext())
         {
-            SpinConstraintRuleImpl.log.info(listStatements.next().toString());
+            SpinConstraintRuleImpl.log.trace(listStatements.next().toString());
         }
         
         // Note: To optimise the process, we only add the new triples back into the original

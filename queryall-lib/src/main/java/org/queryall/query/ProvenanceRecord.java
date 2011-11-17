@@ -282,9 +282,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         
         final URI provenanceTypeUri = ProvenanceRecord.provenanceTypeUri;
         
+        RepositoryConnection con = null;
+
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
+            con = myRepository.getConnection();
             
             for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, provenanceTypeUri, true).asList())
             {
@@ -298,6 +300,13 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         {
             // handle exception
             ProvenanceRecord.log.error("getProvenanceRecordsFromRepository.:", e);
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
         }
         
         return results;

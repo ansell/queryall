@@ -137,7 +137,7 @@ public class SpinUtils
         final ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
         
         // write out the triples from the model into the output stream
-        inputModel.write(internalOutputStream);
+        inputModel.write(internalOutputStream, "N-TRIPLE");
         
         // use the resulting byte[] as input to an InputStream
         final InputStream bufferedInputStream =
@@ -149,7 +149,7 @@ public class SpinUtils
         {
             connection = outputRepository.getConnection();
             
-            connection.add(bufferedInputStream, "http://spin.example.org/", RDFFormat.RDFXML, contexts);
+            connection.add(bufferedInputStream, "http://spin.example.org/", RDFFormat.NTRIPLES, contexts);
             
             connection.commit();
         }
@@ -205,13 +205,13 @@ public class SpinUtils
         final ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
         
         // write out the triples from the model into the output stream
-        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.RDFXML, contexts);
+        RdfUtils.toOutputStream(inputRepository, internalOutputStream, RDFFormat.NTRIPLES, contexts);
         
         // use the resulting byte[] as input to an InputStream
         final InputStream bufferedInputStream =
                 new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
         
-        outputModel.read(bufferedInputStream, baseURI);
+        outputModel.read(bufferedInputStream, baseURI, "N-TRIPLES");
         
         // TODO: Should be creating this model earlier and then adding the triples to it instead of
         // to the outputModel?
@@ -258,7 +258,7 @@ public class SpinUtils
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
+        //final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
         
         baseModel.add(SpinUtils.fileManager.loadModel(classpathRef));
         

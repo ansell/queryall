@@ -1011,6 +1011,10 @@ public final class RdfUtils
         {
             RdfUtils.log.error("getDistinctObjectsFromRepository: general exception", ex);
         }
+        finally
+        {
+            con.close();
+        }
         // }
         // }
         
@@ -1108,6 +1112,11 @@ public final class RdfUtils
         {
             RdfUtils.log.error("getDistinctSubjectsFromRepository: general exception", ex);
         }
+        finally
+        {
+            con.close();
+        }
+        
         // }
         // }
         
@@ -1542,7 +1551,6 @@ public final class RdfUtils
                 }
             }
         }
-        
         // catch(OpenRDFException ordfe)
         // {
         // log.error("getObjectUrisFromRepositoryByPredicateUris: error found");
