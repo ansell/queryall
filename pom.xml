@@ -11,6 +11,7 @@
 		<module>queryall-ext-querytype-rdf</module>
 		<module>queryall-ext-querytype-regex</module>
 		<module>queryall-ext-provider-http</module>
+		<module>queryall-ext-provider-rdf</module>
 		<module>queryall-ext-rule-xslt</module>
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>

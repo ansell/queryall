@@ -208,6 +208,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-provider-rdf</artifactId>
+			<version>${queryall.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
 			<artifactId>queryall-ext-querytype-rdf</artifactId>
 			<version>${queryall.version}</version>
 			<type>jar</type>

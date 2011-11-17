@@ -35,7 +35,7 @@ public class EnumServiceLoaderTest
      * This field contains the expected number of enums, if and when new enums are added it needs to
      * be updated to match the expected number
      */
-    private static final int CURRENT_EXPECTED_ENUM_COUNT = 18;
+    private static final int CURRENT_EXPECTED_ENUM_COUNT = 19;
     
     private Set<URI> getBaseTypes(final Set<URI> nextTypeURIs)
     {
