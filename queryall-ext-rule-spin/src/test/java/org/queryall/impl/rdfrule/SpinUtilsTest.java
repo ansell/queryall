@@ -200,7 +200,8 @@ public class SpinUtilsTest
     /**
      * NOTE: Need to update this test to match changes to Query All Schemas
      * 
-     * It is effectively an integration test for org.queryall.api.utils.QueryAllNamespaces, org.queryall.rdfrule.impl.QueryAllSchemaLocatorClass and org.queryall.api.utils.Schema
+     * It is effectively an integration test for org.queryall.api.utils.QueryAllNamespaces,
+     * org.queryall.rdfrule.impl.QueryAllSchemaLocatorClass and org.queryall.api.utils.Schema
      */
     @Test
     public void testLoadQueryAllSchema()

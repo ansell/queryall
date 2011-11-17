@@ -3,8 +3,6 @@
  */
 package org.queryall.impl.rdfrule;
 
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
 
 import org.junit.After;
@@ -26,11 +24,12 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.ReificationStyle;
 
 /**
- * Tests using SPIN for validation and inferencing on PODD documents to see if SPIN/QueryAll can be a viable quick replacement for the current monolithic PODD software
+ * Tests using SPIN for validation and inferencing on PODD documents to see if SPIN/QueryAll can be
+ * a viable quick replacement for the current monolithic PODD software
  * 
  * 
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class PoddSPINRuleTest
 {
@@ -38,7 +37,7 @@ public class PoddSPINRuleTest
     
     private OntModel testOntologyModel;
     private Repository testRepository;
-
+    
     /**
      * @throws java.lang.Exception
      */
@@ -48,15 +47,15 @@ public class PoddSPINRuleTest
         final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
         this.testOntologyModel = ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), testModel);
-
-        InputStream testInputStream = PoddSPINRuleTest.class.getResourceAsStream("/test/minimal-podd.rdf");
+        
+        final InputStream testInputStream = PoddSPINRuleTest.class.getResourceAsStream("/test/minimal-podd.rdf");
         
         // Use Jena OntModel to pull in all of the Ontology dependencies
         testModel.read(testInputStream, "", "RDF/XML");
         
-        Assert.assertEquals(9, testOntologyModel.size());
+        Assert.assertEquals(9, this.testOntologyModel.size());
         
-        testRepository = SpinUtils.addJenaModelToSesameRepository(testOntologyModel, null);
+        this.testRepository = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
         
     }
     
@@ -73,9 +72,9 @@ public class PoddSPINRuleTest
         {
             this.testRepository.shutDown();
         }
-        catch(RepositoryException e)
+        catch(final RepositoryException e)
         {
-            log.error("Found unexpected RepositoryException", e);
+            PoddSPINRuleTest.log.error("Found unexpected RepositoryException", e);
         }
         
         this.testRepository = null;
@@ -103,11 +102,11 @@ public class PoddSPINRuleTest
             
             resultConnection = results.getConnection();
             
-            for(Statement nextStatement : resultConnection.getStatements(null, null, null, true).asList())
+            for(final Statement nextStatement : resultConnection.getStatements(null, null, null, true).asList())
             {
-                log.debug(nextStatement.toString());
+                PoddSPINRuleTest.log.debug(nextStatement.toString());
             }
-
+            
             Assert.assertEquals(111, resultConnection.size());
         }
         finally

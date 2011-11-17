@@ -79,13 +79,13 @@ public class SpinUtils
         
         try
         {
-            Repository schemas = Schema.getSchemas(Settings.CONFIG_API_VERSION);
+            final Repository schemas = Schema.getSchemas(Settings.CONFIG_API_VERSION);
             
             SpinUtils.fileManager.addLocator(new QueryAllSchemaLocatorClass(schemas));
         }
-        catch(OpenRDFException ordfe)
+        catch(final OpenRDFException ordfe)
         {
-            log.error("Could not create QueryAllSchemaLocatorClass due to an OpenRDFException");
+            SpinUtils.log.error("Could not create QueryAllSchemaLocatorClass due to an OpenRDFException");
         }
         
         // InputStream testStream =
@@ -272,7 +272,7 @@ public class SpinUtils
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        //final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
+        // final InputStream stream = SpinUtils.class.getResourceAsStream(classpathRef);
         
         baseModel.add(SpinUtils.fileManager.loadModel(classpathRef));
         
@@ -294,7 +294,8 @@ public class SpinUtils
         SpinUtils.log.info("loading model from url=" + url);
         
         final Model baseModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        // TODO: Add syntax guessing here, as Jena's default syntax guessing is very very basic and defaults to RDF/XML almost always
+        // TODO: Add syntax guessing here, as Jena's default syntax guessing is very very basic and
+        // defaults to RDF/XML almost always
         baseModel.add(SpinUtils.fileManager.loadModel(url));
         
         return ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), baseModel);

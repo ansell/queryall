@@ -25,13 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.LocationMapper;
 import com.hp.hpl.jena.vocabulary.OWL2;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -46,8 +43,9 @@ public class SpinNormalisationRuleImplTest
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<org.openrdf.model.Statement> testSesameStatements;
-//    private LocationMapper originalLocationMapper;
-//    private FileManager originalFileManager;
+    
+    // private LocationMapper originalLocationMapper;
+    // private FileManager originalFileManager;
     
     // private SPINModuleRegistry testSpinModuleRegistry1;
     // private SPINModuleRegistry testSpinModuleRegistry2;

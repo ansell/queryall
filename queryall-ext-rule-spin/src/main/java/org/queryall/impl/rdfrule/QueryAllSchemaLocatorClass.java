@@ -31,33 +31,35 @@ public class QueryAllSchemaLocatorClass implements Locator
     private String internalString = "";
     
     /**
-     * Uses the given repository to generate an in memory Serialised RDF document representing the schema
+     * Uses the given repository to generate an in memory Serialised RDF document representing the
+     * schema
      */
     public QueryAllSchemaLocatorClass(final Repository allSchemas)
     {
         RepositoryConnection schemaConnection = null;
-
+        
         try
         {
             schemaConnection = allSchemas.getConnection();
-        
-            //List<Statement> completeList = schemaConnection.getStatements(null, null, null, true).asList();
             
-            RdfStringOutputStream outputStream = new RdfStringOutputStream();
+            // List<Statement> completeList = schemaConnection.getStatements(null, null, null,
+            // true).asList();
+            
+            final RdfStringOutputStream outputStream = new RdfStringOutputStream();
             
             schemaConnection.exportStatements(null, null, null, true, new RDFXMLWriter(outputStream));
             
-            internalString = outputStream.toString();
+            this.internalString = outputStream.toString();
             
             outputStream.close();
         }
-        catch(RepositoryException e)
+        catch(final RepositoryException e)
         {
-            log.error("Could not get the list of schemas as a list of statements", e);
+            QueryAllSchemaLocatorClass.log.error("Could not get the list of schemas as a list of statements", e);
         }
-        catch(RDFHandlerException e)
+        catch(final RDFHandlerException e)
         {
-            log.error("Error outputting the statements to RDF", e);
+            QueryAllSchemaLocatorClass.log.error("Error outputting the statements to RDF", e);
         }
         finally
         {
@@ -67,9 +69,9 @@ public class QueryAllSchemaLocatorClass implements Locator
                 {
                     schemaConnection.close();
                 }
-                catch(RepositoryException e)
+                catch(final RepositoryException e)
                 {
-                    log.error("Found exception closing connection", e);
+                    QueryAllSchemaLocatorClass.log.error("Found exception closing connection", e);
                 }
             }
         }
@@ -94,7 +96,7 @@ public class QueryAllSchemaLocatorClass implements Locator
     @Override
     public TypedStream open(String filenameOrURI)
     {
-        log.info("filenameOrURI="+filenameOrURI);
+        QueryAllSchemaLocatorClass.log.info("filenameOrURI=" + filenameOrURI);
         
         if(filenameOrURI == null)
         {
@@ -107,16 +109,17 @@ public class QueryAllSchemaLocatorClass implements Locator
         }
         
         // NOTE: We do this for efficiency
-        // If people want to define other URIs for schema URIs, then we should check the allSchemas repository instead of doing this check
-        QueryAllNamespaces match = QueryAllNamespaces.uriMatch(filenameOrURI);
+        // If people want to define other URIs for schema URIs, then we should check the allSchemas
+        // repository instead of doing this check
+        final QueryAllNamespaces match = QueryAllNamespaces.uriMatch(filenameOrURI);
         
         if(match == null)
         {
-            log.info("Did not find a queryall match for filenameOrURI="+filenameOrURI);
+            QueryAllSchemaLocatorClass.log.info("Did not find a queryall match for filenameOrURI=" + filenameOrURI);
             return null;
         }
         
-        InputStream in = new ByteArrayInputStream(internalString.getBytes(Charset.forName("UTF-8")));
+        final InputStream in = new ByteArrayInputStream(this.internalString.getBytes(Charset.forName("UTF-8")));
         
         return new TypedStream(in);
     }
