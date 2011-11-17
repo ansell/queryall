@@ -6,9 +6,6 @@ package org.queryall.api.utils;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.services.SchemaServiceLoader;
 import org.slf4j.Logger;
@@ -27,11 +24,6 @@ public class Schema
     @SuppressWarnings("unused")
     private static final boolean _INFO = Schema.log.isInfoEnabled();
     
-    public static Repository getSchemas(final int configVersion) throws OpenRDFException
-    {
-        return Schema.getSchemas(null, null, configVersion);
-    }
-    
     public static Repository getSchemas(final Repository myRepository, final int configVersion) throws OpenRDFException
     {
         return Schema.getSchemas(myRepository, null, configVersion);
@@ -48,12 +40,6 @@ public class Schema
      */
     public static Repository getSchemas(Repository myRepository, final URI contextUri, final int configVersion) throws OpenRDFException
     {
-        if(myRepository == null)
-        {
-            myRepository = new SailRepository(new MemoryStore());
-            myRepository.initialize();
-        }
-        
         for(final QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
         {
             try

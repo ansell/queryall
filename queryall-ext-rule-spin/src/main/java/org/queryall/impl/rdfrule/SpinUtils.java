@@ -79,9 +79,15 @@ public class SpinUtils
         
         try
         {
-            final Repository schemas = Schema.getSchemas(Settings.CONFIG_API_VERSION);
+            Repository myRepository = null;
             
-            SpinUtils.fileManager.addLocator(new QueryAllSchemaLocatorClass(schemas));
+            myRepository = new SailRepository(new MemoryStore());
+            myRepository.initialize();
+            
+            myRepository = Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
+            
+            
+            SpinUtils.fileManager.addLocator(new QueryAllSchemaLocatorClass(myRepository));
         }
         catch(final OpenRDFException ordfe)
         {

@@ -78,7 +78,7 @@
 			<artifactId>sesame-rio-rdfxml</artifactId>
 			<version>${sesame.version}</version>
 			<type>jar</type>
-			<scope>runtime</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -49,7 +49,7 @@ public class SpinUtilsTest
     {
         final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
         
-        this.testOntologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, testModel);
+        this.testOntologyModel = ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), testModel);
         
         final List<com.hp.hpl.jena.rdf.model.Statement> jenaStatements =
                 new ArrayList<com.hp.hpl.jena.rdf.model.Statement>(3);

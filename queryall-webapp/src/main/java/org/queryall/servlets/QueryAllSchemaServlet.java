@@ -176,7 +176,12 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         try
         {
-            final Repository myRepository = Schema.getSchemas(Settings.CONFIG_API_VERSION);
+            Repository myRepository = null;
+            
+            myRepository = new SailRepository(new MemoryStore());
+            myRepository.initialize();
+            
+            myRepository = Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
             
             final java.io.StringWriter stBuff = new java.io.StringWriter();
             
