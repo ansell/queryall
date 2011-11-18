@@ -2,10 +2,10 @@ package org.queryall.query;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -131,7 +131,7 @@ public class Settings implements QueryAllConfiguration
     private volatile Map<String, Collection<URI>> cachedNamespacePrefixToUriEntries = null;
     private volatile Pattern cachedTagPattern = null;
     
-    private volatile Map<URI, Map<URI, Collection<Value>>> configProperties = null;
+    private volatile Map<URI, Map<URI, Collection<Value>>> configPropertiesCacheByValue = null;
     
     private volatile long initialisedTimestamp = System.currentTimeMillis();
     
@@ -196,57 +196,54 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.cachedNamespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>(200);
-                this.cachedNamespacePrefixToUriEntries = new ConcurrentHashMap<String, Collection<URI>>(200);
-            }
-        }
-        
-        synchronized(this.cachedNamespaceEntries)
-        {
-            this.cachedNamespaceEntries.put(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
-        }
-        
-        synchronized(this.cachedNamespacePrefixToUriEntries)
-        {
-            // cache the preferred prefix
-            if(this.cachedNamespacePrefixToUriEntries.containsKey(nextNamespaceEntryConfiguration.getPreferredPrefix()))
-            {
-                final Collection<URI> currentnamespacePreferredPrefixToUriList =
-                        this.cachedNamespacePrefixToUriEntries
-                                .get(nextNamespaceEntryConfiguration.getPreferredPrefix());
-                if(!currentnamespacePreferredPrefixToUriList.contains(nextNamespaceEntryUri))
+                if(this.cachedNamespaceEntries == null)
                 {
-                    currentnamespacePreferredPrefixToUriList.add(nextNamespaceEntryUri);
+                    this.cachedNamespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>(200);
+                    this.cachedNamespacePrefixToUriEntries = new ConcurrentHashMap<String, Collection<URI>>(200);
                 }
             }
-            else
+        }
+        
+        this.cachedNamespaceEntries.put(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
+        
+        // cache the preferred prefix
+        if(this.cachedNamespacePrefixToUriEntries.containsKey(nextNamespaceEntryConfiguration.getPreferredPrefix()))
+        {
+            final Collection<URI> currentnamespacePreferredPrefixToUriList =
+                    this.cachedNamespacePrefixToUriEntries
+                            .get(nextNamespaceEntryConfiguration.getPreferredPrefix());
+            if(!currentnamespacePreferredPrefixToUriList.contains(nextNamespaceEntryUri))
             {
-                final Collection<URI> newnamespacePreferredPrefixToUriList = new HashSet<URI>();
-                newnamespacePreferredPrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
-                this.cachedNamespacePrefixToUriEntries.put(nextNamespaceEntryConfiguration.getPreferredPrefix(),
-                        newnamespacePreferredPrefixToUriList);
+                currentnamespacePreferredPrefixToUriList.add(nextNamespaceEntryUri);
             }
-            
-            // then cache any alternative prefixes as well
-            if(nextNamespaceEntryConfiguration.getAlternativePrefixes() != null)
+        }
+        else
+        {
+            final Collection<URI> newnamespacePreferredPrefixToUriList = new HashSet<URI>();
+            newnamespacePreferredPrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
+            this.cachedNamespacePrefixToUriEntries.put(nextNamespaceEntryConfiguration.getPreferredPrefix(),
+                    newnamespacePreferredPrefixToUriList);
+        }
+        
+        // then cache any alternative prefixes as well
+        if(nextNamespaceEntryConfiguration.getAlternativePrefixes() != null)
+        {
+            for(final String nextAlternativePrefix : nextNamespaceEntryConfiguration.getAlternativePrefixes())
             {
-                for(final String nextAlternativePrefix : nextNamespaceEntryConfiguration.getAlternativePrefixes())
+                if(this.cachedNamespacePrefixToUriEntries.containsKey(nextAlternativePrefix))
                 {
-                    if(this.cachedNamespacePrefixToUriEntries.containsKey(nextAlternativePrefix))
+                    final Collection<URI> currentNamespacePrefixToUriList =
+                            this.cachedNamespacePrefixToUriEntries.get(nextAlternativePrefix);
+                    if(!currentNamespacePrefixToUriList.contains(nextNamespaceEntryUri))
                     {
-                        final Collection<URI> currentNamespacePrefixToUriList =
-                                this.cachedNamespacePrefixToUriEntries.get(nextAlternativePrefix);
-                        if(!currentNamespacePrefixToUriList.contains(nextNamespaceEntryUri))
-                        {
-                            currentNamespacePrefixToUriList.add(nextNamespaceEntryUri);
-                        }
+                        currentNamespacePrefixToUriList.add(nextNamespaceEntryUri);
                     }
-                    else
-                    {
-                        final Collection<URI> newNamespacePrefixToUriList = new HashSet<URI>();
-                        newNamespacePrefixToUriList.add(nextNamespaceEntryUri);
-                        this.cachedNamespacePrefixToUriEntries.put(nextAlternativePrefix, newNamespacePrefixToUriList);
-                    }
+                }
+                else
+                {
+                    final Collection<URI> newNamespacePrefixToUriList = new HashSet<URI>();
+                    newNamespacePrefixToUriList.add(nextNamespaceEntryUri);
+                    this.cachedNamespacePrefixToUriEntries.put(nextAlternativePrefix, newNamespacePrefixToUriList);
                 }
             }
         }
@@ -259,14 +256,14 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.cachedNormalisationRules = new ConcurrentHashMap<URI, NormalisationRule>(200);
+                if(this.cachedNormalisationRules == null)
+                {
+                    this.cachedNormalisationRules = new ConcurrentHashMap<URI, NormalisationRule>(200);
+                }
             }
         }
         
-        synchronized(this.cachedNormalisationRules)
-        {
-            this.cachedNormalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
-        }
+        this.cachedNormalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
     }
     
     @Override
@@ -276,14 +273,14 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.cachedProfiles = new ConcurrentHashMap<URI, Profile>(200);
+                if(this.cachedProfiles == null)
+                {
+                    this.cachedProfiles = new ConcurrentHashMap<URI, Profile>(200);
+                }
             }
         }
         
-        synchronized(this.cachedProfiles)
-        {
-            this.cachedProfiles.put(nextProfile.getKey(), nextProfile);
-        }
+        this.cachedProfiles.put(nextProfile.getKey(), nextProfile);
     }
     
     @Override
@@ -293,14 +290,14 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.cachedProviders = new ConcurrentHashMap<URI, Provider>(200);
+                if(this.cachedProviders == null)
+                {
+                    this.cachedProviders = new ConcurrentHashMap<URI, Provider>(200);
+                }
             }
         }
         
-        synchronized(this.cachedProviders)
-        {
-            this.cachedProviders.put(nextProvider.getKey(), nextProvider);
-        }
+        this.cachedProviders.put(nextProvider.getKey(), nextProvider);
     }
     
     @Override
@@ -310,14 +307,14 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.cachedCustomQueries = new ConcurrentHashMap<URI, QueryType>(200);
+                if(this.cachedCustomQueries == null)
+                {
+                    this.cachedCustomQueries = new ConcurrentHashMap<URI, QueryType>(200);
+                }
             }
         }
         
-        synchronized(this.cachedCustomQueries)
-        {
-            this.cachedCustomQueries.put(nextQueryType.getKey(), nextQueryType);
-        }
+        this.cachedCustomQueries.put(nextQueryType.getKey(), nextQueryType);
     }
     
     @Override
@@ -327,14 +324,14 @@ public class Settings implements QueryAllConfiguration
         {
             synchronized(this)
             {
-                this.cachedRuleTests = new ConcurrentHashMap<URI, RuleTest>(200);
+                if(this.cachedRuleTests == null)
+                {
+                    this.cachedRuleTests = new ConcurrentHashMap<URI, RuleTest>(200);
+                }
             }
         }
         
-        synchronized(this.cachedRuleTests)
-        {
-            this.cachedRuleTests.put(nextRuleTest.getKey(), nextRuleTest);
-        }
+        this.cachedRuleTests.put(nextRuleTest.getKey(), nextRuleTest);
     }
     
     public boolean configRefreshCheck(final boolean tryToForceRefresh)
@@ -547,7 +544,7 @@ public class Settings implements QueryAllConfiguration
         return false;
     }
     
-    private synchronized void doConfigKeyCache(final URI subjectKey, final URI propertyKey,
+    private void doConfigKeyByValueCache(final URI subjectKey, final URI propertyKey,
             final Collection<Value> newObject)
     {
         if(newObject == null)
@@ -556,14 +553,20 @@ public class Settings implements QueryAllConfiguration
                     + propertyKey);
         }
         
-        if(this.configProperties == null)
+        if(this.configPropertiesCacheByValue == null)
         {
-            this.configProperties = new ConcurrentHashMap<URI, Map<URI, Collection<Value>>>(200);
+            synchronized(this)
+            {
+                if(this.configPropertiesCacheByValue == null)
+                {
+                    this.configPropertiesCacheByValue = new ConcurrentHashMap<URI, Map<URI, Collection<Value>>>(200);
+                }
+            }
         }
         
-        if(this.configProperties.containsKey(subjectKey))
+        if(this.configPropertiesCacheByValue.containsKey(subjectKey))
         {
-            final Map<URI, Collection<Value>> currentCache = this.configProperties.get(subjectKey);
+            final Map<URI, Collection<Value>> currentCache = this.configPropertiesCacheByValue.get(subjectKey);
             
             if(currentCache == null)
             {
@@ -584,7 +587,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Map<URI, Collection<Value>> newCache = new ConcurrentHashMap<URI, Collection<Value>>();
             newCache.put(propertyKey, newObject);
-            this.configProperties.put(subjectKey, newCache);
+            this.configPropertiesCacheByValue.put(subjectKey, newCache);
             // log.trace("Settings.doConfigKeyCache: New cached item for subjectKey="+subjectKey+" propertyKey="+propertyKey);
         }
     }
@@ -597,38 +600,43 @@ public class Settings implements QueryAllConfiguration
     
     public Map<URI, NamespaceEntry> getAllNamespaceEntries(final boolean useCache)
     {
-        if(useCache && this.cachedNamespaceEntries != null)
+        if(this.cachedNamespaceEntries == null)
         {
-            return Collections.unmodifiableMap(this.cachedNamespaceEntries);
-        }
-        
-        try
-        {
-            final Map<URI, NamespaceEntry> results = RdfUtils.getNamespaceEntries(this.getServerConfigurationRdf());
-            
-            if(Settings._INFO)
+            synchronized(this)
             {
-                Settings.log.info("Settings.getAllNamespaceEntries: found " + results.size() + " namespaces");
+                if(this.cachedNamespaceEntries == null)
+                {
+                    try
+                    {
+                        final Map<URI, NamespaceEntry> results = RdfUtils.getNamespaceEntries(this.getServerConfigurationRdf());
+                        
+                        if(Settings._INFO)
+                        {
+                            Settings.log.info("Settings.getAllNamespaceEntries: found " + results.size() + " namespaces");
+                        }
+                        
+                        for(final URI nextNamespaceEntryUri : results.keySet())
+                        {
+                            final NamespaceEntry nextNamespaceEntryConfiguration = results.get(nextNamespaceEntryUri);
+                            
+                            this.addNamespaceEntryAndPrefix(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
+                        }
+                        
+                        this.cachedNamespaceEntries = results;
+                        
+                        return Collections.unmodifiableMap(this.cachedNamespaceEntries);
+                    }
+                    catch(final java.lang.InterruptedException ie)
+                    {
+                        Settings.log.error(
+                                "Settings.getAllNamespaceEntries: caught java.lang.InterruptedException: not throwing it.", ie);
+                        
+                        return null;
+                    }
+                }
             }
-            
-            for(final URI nextNamespaceEntryUri : results.keySet())
-            {
-                final NamespaceEntry nextNamespaceEntryConfiguration = results.get(nextNamespaceEntryUri);
-                
-                this.addNamespaceEntryAndPrefix(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
-            }
-            
-            this.cachedNamespaceEntries = results;
-            
-            return Collections.unmodifiableMap(this.cachedNamespaceEntries);
         }
-        catch(final java.lang.InterruptedException ie)
-        {
-            Settings.log.error(
-                    "Settings.getAllNamespaceEntries: caught java.lang.InterruptedException: not throwing it.", ie);
-            
-            return null;
-        }
+        return Collections.unmodifiableMap(this.cachedNamespaceEntries);
     }
     
     @Override
@@ -639,34 +647,39 @@ public class Settings implements QueryAllConfiguration
     
     public synchronized Map<URI, NormalisationRule> getAllNormalisationRules(final boolean useCache)
     {
-        if(useCache && this.cachedNormalisationRules != null)
+        if(this.cachedNormalisationRules == null)
         {
-            return Collections.unmodifiableMap(this.cachedNormalisationRules);
+            synchronized(this)
+            {
+                if(this.cachedNormalisationRules == null)
+                {
+                    try
+                    {
+                        final Repository myRepository = this.getServerConfigurationRdf();
+                        
+                        final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(myRepository);
+                        
+                        if(Settings._INFO)
+                        {
+                            Settings.log
+                                    .info("Settings.getAllNormalisationRules: found " + results.size() + " normalisation rules");
+                        }
+                        
+                        this.cachedNormalisationRules = results;
+                        
+                    }
+                    catch(final java.lang.InterruptedException ie)
+                    {
+                        Settings.log.error(
+                                "Settings.getAllNormalisationRules: caught java.lang.InterruptedException: not throwing it.", ie);
+                        
+                        return null;
+                    }
+                }
+            }
         }
         
-        try
-        {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            
-            final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(myRepository);
-            
-            if(Settings._INFO)
-            {
-                Settings.log
-                        .info("Settings.getAllNormalisationRules: found " + results.size() + " normalisation rules");
-            }
-            
-            this.cachedNormalisationRules = results;
-            
-            return Collections.unmodifiableMap(this.cachedNormalisationRules);
-        }
-        catch(final java.lang.InterruptedException ie)
-        {
-            Settings.log.error(
-                    "Settings.getAllNormalisationRules: caught java.lang.InterruptedException: not throwing it.", ie);
-            
-            return null;
-        }
+        return Collections.unmodifiableMap(this.cachedNormalisationRules);
     }
     
     @Override
@@ -675,34 +688,39 @@ public class Settings implements QueryAllConfiguration
         return this.getAllProfiles(true);
     }
     
-    public synchronized Map<URI, Profile> getAllProfiles(final boolean useCache)
+    public Map<URI, Profile> getAllProfiles(final boolean useCache)
     {
-        if(this.cachedProfiles != null)
+        if(this.cachedProfiles == null)
         {
-            return Collections.unmodifiableMap(this.cachedProfiles);
+            synchronized(this)
+            {
+                if(this.cachedProfiles == null)
+                {
+                    try
+                    {
+                        final Repository myRepository = this.getServerConfigurationRdf();
+                        
+                        final Map<URI, Profile> results = RdfUtils.getProfiles(myRepository);
+                        
+                        if(Settings._INFO)
+                        {
+                            Settings.log.info("Settings.getAllProfiles: found " + results.size() + " profiles");
+                        }
+                        
+                        this.cachedProfiles = results;
+                        
+                    }
+                    catch(final java.lang.InterruptedException ie)
+                    {
+                        Settings.log.error("Settings.getAllProfiles: caught java.lang.InterruptedException: not throwing it.", ie);
+                        
+                        return null;
+                    }
+                }
+            }
         }
         
-        try
-        {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            
-            final Map<URI, Profile> results = RdfUtils.getProfiles(myRepository);
-            
-            if(Settings._INFO)
-            {
-                Settings.log.info("Settings.getAllProfiles: found " + results.size() + " profiles");
-            }
-            
-            this.cachedProfiles = results;
-            
-            return Collections.unmodifiableMap(this.cachedProfiles);
-        }
-        catch(final java.lang.InterruptedException ie)
-        {
-            Settings.log.error("Settings.getAllProfiles: caught java.lang.InterruptedException: not throwing it.", ie);
-            
-            return null;
-        }
+        return Collections.unmodifiableMap(this.cachedProfiles);
     }
     
     @Override
@@ -711,36 +729,42 @@ public class Settings implements QueryAllConfiguration
         return this.getAllProviders(true);
     }
     
-    public synchronized Map<URI, Provider> getAllProviders(final boolean useCache)
+    public Map<URI, Provider> getAllProviders(final boolean useCache)
     {
-        if(useCache && this.cachedProviders != null)
+        if(this.cachedProviders == null)
         {
-            return Collections.unmodifiableMap(this.cachedProviders);
-        }
-        
-        Map<URI, Provider> results = null;
-        
-        try
-        {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            
-            results = RdfUtils.getProviders(myRepository);
-            
-            this.cachedProviders = results;
-            
-            if(Settings._INFO)
+            synchronized(this)
             {
-                Settings.log.info("Settings.getAllProviders: found " + results.size() + " providers");
+                if(this.cachedProviders == null)
+                {
+                    Map<URI, Provider> results = null;
+                    
+                    try
+                    {
+                        final Repository myRepository = this.getServerConfigurationRdf();
+                        
+                        results = RdfUtils.getProviders(myRepository);
+                        
+                        this.cachedProviders = results;
+                        
+                        if(Settings._INFO)
+                        {
+                            Settings.log.info("Settings.getAllProviders: found " + results.size() + " providers");
+                        }
+                        
+                        return Collections.unmodifiableMap(this.cachedProviders);
+                    }
+                    catch(final java.lang.InterruptedException ie)
+                    {
+                        Settings.log.error("Settings.getAllProviders: caught java.lang.InterruptedException: not throwing it.", ie);
+                        
+                        return null;
+                    }
+                }
             }
-            
-            return Collections.unmodifiableMap(this.cachedProviders);
         }
-        catch(final java.lang.InterruptedException ie)
-        {
-            Settings.log.error("Settings.getAllProviders: caught java.lang.InterruptedException: not throwing it.", ie);
-            
-            return null;
-        }
+        
+        return Collections.unmodifiableMap(this.cachedProviders);
     }
     
     @Override
@@ -749,35 +773,39 @@ public class Settings implements QueryAllConfiguration
         return this.getAllQueryTypes(true);
     }
     
-    public synchronized Map<URI, QueryType> getAllQueryTypes(final boolean useCache)
+    public Map<URI, QueryType> getAllQueryTypes(final boolean useCache)
     {
-        if(useCache && this.cachedCustomQueries != null)
+        if(this.cachedCustomQueries == null)
         {
-            return Collections.unmodifiableMap(this.cachedCustomQueries);
-        }
-        
-        try
-        {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            
-            final Map<URI, QueryType> results = RdfUtils.getQueryTypes(myRepository);
-            
-            if(Settings._INFO)
+            synchronized(this)
             {
-                Settings.log.info("Settings.getAllQueryTypes: found " + results.size() + " queries");
+                if(this.cachedCustomQueries == null)
+                {
+                    try
+                    {
+                        final Repository myRepository = this.getServerConfigurationRdf();
+                        
+                        final Map<URI, QueryType> results = RdfUtils.getQueryTypes(myRepository);
+                        
+                        if(Settings._INFO)
+                        {
+                            Settings.log.info("Settings.getAllQueryTypes: found " + results.size() + " queries");
+                        }
+                        
+                        this.cachedCustomQueries = results;
+                    }
+                    catch(final java.lang.InterruptedException ie)
+                    {
+                        Settings.log
+                                .error("Settings.getAllQueryTypes: caught java.lang.InterruptedException: not throwing it.", ie);
+                        
+                        return null;
+                    }
+                }
             }
-            
-            this.cachedCustomQueries = results;
-            
-            return Collections.unmodifiableMap(this.cachedCustomQueries);
         }
-        catch(final java.lang.InterruptedException ie)
-        {
-            Settings.log
-                    .error("Settings.getAllQueryTypes: caught java.lang.InterruptedException: not throwing it.", ie);
-            
-            return null;
-        }
+
+        return Collections.unmodifiableMap(this.cachedCustomQueries);
     }
     
     @Override
@@ -786,34 +814,39 @@ public class Settings implements QueryAllConfiguration
         return this.getAllRuleTests(true);
     }
     
-    public synchronized Map<URI, RuleTest> getAllRuleTests(final boolean useCache)
+    public Map<URI, RuleTest> getAllRuleTests(final boolean useCache)
     {
-        if(useCache && this.cachedRuleTests != null)
+        if(this.cachedRuleTests == null)
         {
-            return Collections.unmodifiableMap(this.cachedRuleTests);
+            synchronized(this)
+            {
+                if(this.cachedRuleTests == null)
+                {
+                    try
+                    {
+                        final Repository myRepository = this.getServerConfigurationRdf();
+                        
+                        final Map<URI, RuleTest> results = RdfUtils.getRuleTests(myRepository);
+                        
+                        if(Settings._INFO)
+                        {
+                            Settings.log.info("Settings.getAllRuleTests: found " + results.size() + " rule tests");
+                        }
+                        
+                        this.cachedRuleTests = results;
+                        
+                    }
+                    catch(final java.lang.InterruptedException ie)
+                    {
+                        Settings.log.error("Settings.getAllRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
+                        
+                        return null;
+                    }
+                }
+            }
         }
         
-        try
-        {
-            final Repository myRepository = this.getServerConfigurationRdf();
-            
-            final Map<URI, RuleTest> results = RdfUtils.getRuleTests(myRepository);
-            
-            if(Settings._INFO)
-            {
-                Settings.log.info("Settings.getAllRuleTests: found " + results.size() + " rule tests");
-            }
-            
-            this.cachedRuleTests = results;
-            
-            return Collections.unmodifiableMap(this.cachedRuleTests);
-        }
-        catch(final java.lang.InterruptedException ie)
-        {
-            Settings.log.error("Settings.getAllRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
-            
-            return null;
-        }
+        return Collections.unmodifiableMap(this.cachedRuleTests);
     }
     
     public String getBaseConfigLocation()
@@ -832,148 +865,153 @@ public class Settings implements QueryAllConfiguration
         return this.baseConfigMimeFormat;
     }
     
-    private synchronized Repository getBaseConfigurationRdf() throws java.lang.InterruptedException
+    private Repository getBaseConfigurationRdf() throws java.lang.InterruptedException
     {
         if(Settings._TRACE)
         {
             Settings.log.trace("Settings.getBaseConfigurationRdf: entering method");
         }
         
-        if(this.currentBaseConfigurationRepository != null)
+        if(this.currentBaseConfigurationRepository == null)
         {
-            return this.currentBaseConfigurationRepository;
-        }
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log.debug("Settings.getBaseConfigurationRdf: constructing a new repository");
-        }
-        
-        final long start = System.currentTimeMillis();
-        final String configMIMEFormat = this.getBaseConfigMimeFormat();
-        final String baseURI = this.getBaseConfigUri();
-        Repository tempConfigurationRepository = null;
-        
-        try
-        {
-            tempConfigurationRepository = new SailRepository(new MemoryStore());
-            tempConfigurationRepository.initialize();
-            
-            if(Settings._DEBUG)
+            synchronized(this)
             {
-                Settings.log.debug("Settings.getBaseConfigurationRdf: temp repository initialised");
-            }
-            
-            // Settings.log.error("Settings.getBaseConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
-            
-            final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
-            
-            final String nextLocation = this.getBaseConfigLocation();
-            final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
-            
-            try
-            {
-                if(Settings._INFO)
+                if(this.currentBaseConfigurationRepository == null)
                 {
-                    Settings.log
-                            .info("Settings.getBaseConfigurationRdf: getting configuration from file: nextLocation="
-                                    + nextLocation + " nextInputStream=" + nextInputStream);
-                }
-                
-                myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                if(Settings._INFO)
-                {
-                    Settings.log
-                            .info("Settings.getBaseConfigurationRdf: finished getting configuration from file: nextLocation="
-                                    + nextLocation);
-                }
-            }
-            catch(final RDFParseException rdfpe)
-            {
-                Settings.log.error(
-                        "Settings.getBaseConfigurationRdf: failed to get the configuration repository. Caught RDFParseException. nextLocation="
-                                + nextLocation, rdfpe);
-                throw new RuntimeException(
-                        "Settings.getBaseConfigurationRdf: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="
-                                + nextLocation);
-            }
-            catch(final OpenRDFException ordfe)
-            {
-                Settings.log
-                        .error("Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="
-                                + nextLocation, ordfe);
-                throw new RuntimeException(
-                        "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="
-                                + nextLocation);
-            }
-            catch(final java.io.IOException ioe)
-            {
-                Settings.log
-                        .error("Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught java.io.IOException. nextLocation="
-                                + nextLocation, ioe);
-                throw new RuntimeException(
-                        "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught java.io.IOException. nextLocation="
-                                + nextLocation);
-            }
-            finally
-            {
-                if(myRepositoryConnection != null)
-                {
-                    myRepositoryConnection.close();
-                }
-            }
-        }
-        catch(final OpenRDFException ordfe)
-        {
-            Settings.log
-                    .error("Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException",
-                            ordfe);
-            throw new RuntimeException(
-                    "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
-        }
-        
-        this.currentBaseConfigurationRepository = tempConfigurationRepository;
-        
-        if(Settings._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            Settings.log.info(String.format("%s: timing=%10d", "Settings.getBaseConfigurationRdf", (end - start)));
             
-        }
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log.debug("Settings.getBaseConfigurationRdf: finished parsing configuration files");
-        }
-        
-        if(Settings._INFO)
-        {
-            try
-            {
-                Settings.log.info("Settings.getBaseConfigurationRdf: found "
-                        + this.currentBaseConfigurationRepository.getConnection().size()
-                        + " statements in base configuration");
-            }
-            catch(final RepositoryException rex)
-            {
-                Settings.log
-                        .error("Settings.getBaseConfigurationRdf: could not determine the number of statements in webapp configuration");
-            }
-        }
-        
-        if(Settings._TRACE)
-        {
-            try
-            {
-                for(final Statement nextStatement : RdfUtils
-                        .getAllStatementsFromRepository(this.currentBaseConfigurationRepository))
-                {
-                    Settings.log.trace(nextStatement.toString());
+                    if(Settings._DEBUG)
+                    {
+                        Settings.log.debug("Settings.getBaseConfigurationRdf: constructing a new repository");
+                    }
+                    
+                    final long start = System.currentTimeMillis();
+                    final String configMIMEFormat = this.getBaseConfigMimeFormat();
+                    final String baseURI = this.getBaseConfigUri();
+                    Repository tempConfigurationRepository = null;
+                    
+                    try
+                    {
+                        tempConfigurationRepository = new SailRepository(new MemoryStore());
+                        tempConfigurationRepository.initialize();
+                        
+                        if(Settings._DEBUG)
+                        {
+                            Settings.log.debug("Settings.getBaseConfigurationRdf: temp repository initialised");
+                        }
+                        
+                        // Settings.log.error("Settings.getBaseConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
+                        
+                        final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                        
+                        final String nextLocation = this.getBaseConfigLocation();
+                        final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                        
+                        try
+                        {
+                            if(Settings._INFO)
+                            {
+                                Settings.log
+                                        .info("Settings.getBaseConfigurationRdf: getting configuration from file: nextLocation="
+                                                + nextLocation + " nextInputStream=" + nextInputStream);
+                            }
+                            
+                            myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                            if(Settings._INFO)
+                            {
+                                Settings.log
+                                        .info("Settings.getBaseConfigurationRdf: finished getting configuration from file: nextLocation="
+                                                + nextLocation);
+                            }
+                        }
+                        catch(final RDFParseException rdfpe)
+                        {
+                            Settings.log.error(
+                                    "Settings.getBaseConfigurationRdf: failed to get the configuration repository. Caught RDFParseException. nextLocation="
+                                            + nextLocation, rdfpe);
+                            throw new RuntimeException(
+                                    "Settings.getBaseConfigurationRdf: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="
+                                            + nextLocation);
+                        }
+                        catch(final OpenRDFException ordfe)
+                        {
+                            Settings.log
+                                    .error("Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="
+                                            + nextLocation, ordfe);
+                            throw new RuntimeException(
+                                    "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught OpenRDFException. nextLocation="
+                                            + nextLocation);
+                        }
+                        catch(final java.io.IOException ioe)
+                        {
+                            Settings.log
+                                    .error("Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught java.io.IOException. nextLocation="
+                                            + nextLocation, ioe);
+                            throw new RuntimeException(
+                                    "Settings.getBaseConfigurationRdf: failed to initialise the base configuration repository. Caught java.io.IOException. nextLocation="
+                                            + nextLocation);
+                        }
+                        finally
+                        {
+                            if(myRepositoryConnection != null)
+                            {
+                                myRepositoryConnection.close();
+                            }
+                        }
+                    }
+                    catch(final OpenRDFException ordfe)
+                    {
+                        Settings.log
+                                .error("Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException",
+                                        ordfe);
+                        throw new RuntimeException(
+                                "Settings.getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
+                    }
+                    
+                    this.currentBaseConfigurationRepository = tempConfigurationRepository;
+                    
+                    if(Settings._INFO)
+                    {
+                        final long end = System.currentTimeMillis();
+                        Settings.log.info(String.format("%s: timing=%10d", "Settings.getBaseConfigurationRdf", (end - start)));
+                        
+                    }
+                    
+                    if(Settings._DEBUG)
+                    {
+                        Settings.log.debug("Settings.getBaseConfigurationRdf: finished parsing configuration files");
+                    }
+                    
+                    if(Settings._INFO)
+                    {
+                        try
+                        {
+                            Settings.log.info("Settings.getBaseConfigurationRdf: found "
+                                    + this.currentBaseConfigurationRepository.getConnection().size()
+                                    + " statements in base configuration");
+                        }
+                        catch(final RepositoryException rex)
+                        {
+                            Settings.log
+                                    .error("Settings.getBaseConfigurationRdf: could not determine the number of statements in webapp configuration");
+                        }
+                    }
+                    
+                    if(Settings._TRACE)
+                    {
+                        try
+                        {
+                            for(final Statement nextStatement : RdfUtils
+                                    .getAllStatementsFromRepository(this.currentBaseConfigurationRepository))
+                            {
+                                Settings.log.trace(nextStatement.toString());
+                            }
+                        }
+                        catch(final Exception ex)
+                        {
+                            Settings.log.error("Could not dump statements", ex);
+                        }
+                    }
                 }
-            }
-            catch(final Exception ex)
-            {
-                Settings.log.error("Could not dump statements", ex);
             }
         }
         
@@ -1017,11 +1055,11 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
     
-    private synchronized Collection<Value> getConfigKeyCached(final URI subjectKey, final URI propertyKey)
+    private Collection<Value> getConfigKeyByValueCached(final URI subjectKey, final URI propertyKey)
     {
-        if(this.configProperties != null && this.configProperties.containsKey(subjectKey))
+        if(this.configPropertiesCacheByValue != null && this.configPropertiesCacheByValue.containsKey(subjectKey))
         {
-            final Map<URI, Collection<Value>> currentCache = this.configProperties.get(subjectKey);
+            final Map<URI, Collection<Value>> currentCache = this.configPropertiesCacheByValue.get(subjectKey);
             
             if(currentCache == null)
             {
@@ -1204,192 +1242,217 @@ public class Settings implements QueryAllConfiguration
     
     private Repository getServerConfigurationRdf() throws java.lang.InterruptedException
     {
-        if(this.currentConfigurationRepository != null)
+        if(this.currentConfigurationRepository == null)
         {
-            return this.currentConfigurationRepository;
-        }
-        synchronized(this)
-        {
-            final long start = System.currentTimeMillis();
-            final String configMIMEFormat = this.getBaseConfigMimeFormat();
-            final String baseURI = this.getDefaultHostAddress();
-            Repository tempConfigurationRepository = null;
-            boolean backupNeeded = false;
-            final boolean backupFailed = false;
-            
-            try
+            synchronized(this)
             {
-                // start off with the schemas in the repository
-                tempConfigurationRepository = new SailRepository(new MemoryStore());
-                tempConfigurationRepository.initialize();
-                
-                tempConfigurationRepository =
-                        Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
-                
-                final Collection<String> queryConfigLocationsList = this.getStringProperties("queryConfigLocations");
-                
-                if(queryConfigLocationsList == null)
+                if(this.currentConfigurationRepository == null)
                 {
-                    Settings.log.error("queryConfigLocationsList was null");
-                    throw new RuntimeException("Configuration locations were not discovered, failing fast.");
-                }
-                
-                for(final String nextLocation : queryConfigLocationsList)
-                {
-                    // TODO: negotiate between local and non-local addresses better
-                    // than this
-                    final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                    final long start = System.currentTimeMillis();
+                    final String configMIMEFormat = this.getBaseConfigMimeFormat();
+                    final String baseURI = this.getDefaultHostAddress();
+                    Repository tempConfigurationRepository = null;
+                    boolean backupNeeded = false;
+                    final boolean backupFailed = false;
+                    
                     try
                     {
-                        if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
+                        // start off with the schemas in the repository
+                        tempConfigurationRepository = new SailRepository(new MemoryStore());
+                        tempConfigurationRepository.initialize();
+                        
+                        tempConfigurationRepository =
+                                Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
+                        
+                        final Collection<String> queryConfigLocationsList = this.getStringProperties("queryConfigLocations");
+                        
+                        if(queryConfigLocationsList == null)
                         {
-                            // final URL url = new
-                            // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
-                            final URL url = new URL(nextLocation);
-                            
-                            if(Settings._INFO)
+                            Settings.log.error("queryConfigLocationsList was null");
+                            throw new RuntimeException("Configuration locations were not discovered, failing fast.");
+                        }
+                        
+                        for(final String nextLocation : queryConfigLocationsList)
+                        {
+                            // TODO: negotiate between local and non-local addresses better
+                            // than this
+                            final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                            try
                             {
-                                Settings.log
-                                        .info("Settings.getServerConfigurationRdf: getting configuration from URL: nextLocation="
-                                                + nextLocation + " url=" + url.toString());
+                                if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
+                                {
+                                    // final URL url = new
+                                    // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
+                                    final URL url = new URL(nextLocation);
+                                    
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log
+                                                .info("Settings.getServerConfigurationRdf: getting configuration from URL: nextLocation="
+                                                        + nextLocation + " url=" + url.toString());
+                                    }
+                                    
+                                    myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                                    
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log
+                                                .info("Settings.getServerConfigurationRdf: finished getting configuration from URL: url="
+                                                        + url.toString());
+                                    }
+                                }
+                                else
+                                {
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log.info("Settings: getting configuration from file: nextLocation="
+                                                + nextLocation);
+                                    }
+                                    final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                                    
+                                    myRepositoryConnection.add(nextInputStream, baseURI,
+                                            RDFFormat.forMIMEType(configMIMEFormat));
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log.info("Settings: finished getting configuration from file: nextLocation="
+                                                + nextLocation);
+                                    }
+                                }
                             }
-                            
-                            myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                            
-                            if(Settings._INFO)
+                            catch(final RDFParseException rdfpe)
                             {
-                                Settings.log
-                                        .info("Settings.getServerConfigurationRdf: finished getting configuration from URL: url="
-                                                + url.toString());
+                                Settings.log.error(
+                                        "Settings: failed to get the configuration repository. Caught RDFParseException. nextLocation="
+                                                + nextLocation, rdfpe);
+                                throw new RuntimeException(
+                                        "Settings: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="
+                                                + nextLocation);
+                            }
+                            catch(final OpenRDFException ordfe)
+                            {
+                                Settings.log.error(
+                                        "Settings: failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
+                                                + nextLocation, ordfe);
+                                throw new RuntimeException(
+                                        "Settings: failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
+                                                + nextLocation);
+                            }
+                            catch(final java.io.IOException ioe)
+                            {
+                                Settings.log.error(
+                                        "Settings: failed to initialise the configuration repository. Caught java.io.IOException. nextLocation="
+                                                + nextLocation, ioe);
+                                // throw new
+                                // RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
+                                backupNeeded = true;
+                            }
+                            finally
+                            {
+                                if(myRepositoryConnection != null)
+                                {
+                                    myRepositoryConnection.close();
+                                }
                             }
                         }
-                        else
-                        {
-                            if(Settings._INFO)
-                            {
-                                Settings.log.info("Settings: getting configuration from file: nextLocation="
-                                        + nextLocation);
-                            }
-                            final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
-                            
-                            myRepositoryConnection.add(nextInputStream, baseURI,
-                                    RDFFormat.forMIMEType(configMIMEFormat));
-                            if(Settings._INFO)
-                            {
-                                Settings.log.info("Settings: finished getting configuration from file: nextLocation="
-                                        + nextLocation);
-                            }
-                        }
-                    }
-                    catch(final RDFParseException rdfpe)
-                    {
-                        Settings.log.error(
-                                "Settings: failed to get the configuration repository. Caught RDFParseException. nextLocation="
-                                        + nextLocation, rdfpe);
-                        throw new RuntimeException(
-                                "Settings: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="
-                                        + nextLocation);
                     }
                     catch(final OpenRDFException ordfe)
                     {
                         Settings.log.error(
-                                "Settings: failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
-                                        + nextLocation, ordfe);
+                                "Settings: failed to initialise the configuration repository. Caught OpenRDFException", ordfe);
                         throw new RuntimeException(
-                                "Settings: failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
-                                        + nextLocation);
+                                "Settings: failed to initialise the configuration repository. Caught OpenRDFException");
                     }
-                    catch(final java.io.IOException ioe)
-                    {
-                        Settings.log.error(
-                                "Settings: failed to initialise the configuration repository. Caught java.io.IOException. nextLocation="
-                                        + nextLocation, ioe);
-                        // throw new
-                        // RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
-                        backupNeeded = true;
-                    }
-                    finally
-                    {
-                        if(myRepositoryConnection != null)
-                        {
-                            myRepositoryConnection.close();
-                        }
-                    }
-                }
-            }
-            catch(final OpenRDFException ordfe)
-            {
-                Settings.log.error(
-                        "Settings: failed to initialise the configuration repository. Caught OpenRDFException", ordfe);
-                throw new RuntimeException(
-                        "Settings: failed to initialise the configuration repository. Caught OpenRDFException");
-            }
-            
-            if(backupNeeded)
-            {
-                // Try again with the backup configuration list...
-                try
-                {
-                    tempConfigurationRepository = new SailRepository(new MemoryStore());
-                    tempConfigurationRepository.initialize();
                     
-                    tempConfigurationRepository =
-                            Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
-                    
-                    for(final String nextLocation : this.getStringProperties("backupQueryConfigLocations"))
+                    if(backupNeeded)
                     {
-                        // TODO: negotiate between local and non-local addresses better than this
-                        final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                        // Try again with the backup configuration list...
                         try
                         {
-                            if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
+                            tempConfigurationRepository = new SailRepository(new MemoryStore());
+                            tempConfigurationRepository.initialize();
+                            
+                            tempConfigurationRepository =
+                                    Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
+                            
+                            for(final String nextLocation : this.getStringProperties("backupQueryConfigLocations"))
                             {
-                                // final URL url = new
-                                // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
-                                final URL url = new URL(nextLocation);
-                                
-                                if(Settings._INFO)
+                                // TODO: negotiate between local and non-local addresses better than this
+                                final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                                try
                                 {
-                                    Settings.log
-                                            .info("Settings.getServerConfigurationRdf: getting backup configuration from URL: nextLocation="
-                                                    + nextLocation + " url=" + url.toString());
-                                }
-                                
-                                myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                                
-                                if(Settings._INFO)
-                                {
-                                    Settings.log
-                                            .info("Settings.getServerConfigurationRdf: finished getting backup configuration from URL: url="
-                                                    + url.toString());
-                                }
-                            }
-                            else
-                            {
-                                if(Settings._INFO)
-                                {
-                                    Settings.log.info("Settings: getting backup configuration from file: nextLocation="
-                                            + nextLocation);
-                                }
-                                final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
-                                
-                                myRepositoryConnection.add(nextInputStream, baseURI,
-                                        RDFFormat.forMIMEType(configMIMEFormat));
-                                if(Settings._INFO)
-                                {
-                                    Settings.log
-                                            .info("Settings: finished getting backup configuration from file: nextLocation="
+                                    if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
+                                    {
+                                        // final URL url = new
+                                        // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
+                                        final URL url = new URL(nextLocation);
+                                        
+                                        if(Settings._INFO)
+                                        {
+                                            Settings.log
+                                                    .info("Settings.getServerConfigurationRdf: getting backup configuration from URL: nextLocation="
+                                                            + nextLocation + " url=" + url.toString());
+                                        }
+                                        
+                                        myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                                        
+                                        if(Settings._INFO)
+                                        {
+                                            Settings.log
+                                                    .info("Settings.getServerConfigurationRdf: finished getting backup configuration from URL: url="
+                                                            + url.toString());
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if(Settings._INFO)
+                                        {
+                                            Settings.log.info("Settings: getting backup configuration from file: nextLocation="
                                                     + nextLocation);
+                                        }
+                                        final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                                        
+                                        myRepositoryConnection.add(nextInputStream, baseURI,
+                                                RDFFormat.forMIMEType(configMIMEFormat));
+                                        if(Settings._INFO)
+                                        {
+                                            Settings.log
+                                                    .info("Settings: finished getting backup configuration from file: nextLocation="
+                                                            + nextLocation);
+                                        }
+                                    }
+                                }
+                                catch(final RDFParseException rdfpe)
+                                {
+                                    Settings.log
+                                            .error("Settings: failed to get the backup configuration repository. Caught RDFParseException",
+                                                    rdfpe);
+                                    throw new RuntimeException(
+                                            "Settings: failed to initialise the backup configuration repository. Caught RDFParseException");
+                                }
+                                catch(final OpenRDFException ordfe)
+                                {
+                                    Settings.log
+                                            .error("Settings: failed to initialise the backup configuration repository. Caught OpenRDFException",
+                                                    ordfe);
+                                    throw new RuntimeException(
+                                            "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException");
+                                }
+                                catch(final java.io.IOException ioe)
+                                {
+                                    Settings.log
+                                            .error("Settings: failed to initialise the backup configuration repository. Caught java.io.IOException",
+                                                    ioe);
+                                    throw new RuntimeException(
+                                            "Settings: failed to initialise the backup configuration repository. Caught java.io.IOException");
+                                }
+                                finally
+                                {
+                                    if(myRepositoryConnection != null)
+                                    {
+                                        myRepositoryConnection.close();
+                                    }
                                 }
                             }
-                        }
-                        catch(final RDFParseException rdfpe)
-                        {
-                            Settings.log
-                                    .error("Settings: failed to get the backup configuration repository. Caught RDFParseException",
-                                            rdfpe);
-                            throw new RuntimeException(
-                                    "Settings: failed to initialise the backup configuration repository. Caught RDFParseException");
                         }
                         catch(final OpenRDFException ordfe)
                         {
@@ -1399,62 +1462,39 @@ public class Settings implements QueryAllConfiguration
                             throw new RuntimeException(
                                     "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException");
                         }
-                        catch(final java.io.IOException ioe)
+                    } // end if(backupNeeded)
+                    
+                    this.currentConfigurationRepository = tempConfigurationRepository;
+                    
+                    if(Settings._INFO)
+                    {
+                        final long end = System.currentTimeMillis();
+                        Settings.log
+                                .info(String.format("%s: timing=%10d", "Settings.getServerConfigurationRdf", (end - start)));
+                        
+                    }
+                    if(Settings._DEBUG)
+                    {
+                        Settings.log.debug("Settings.getServerConfigurationRdf: finished parsing configuration files");
+                    }
+                    
+                    if(Settings._INFO)
+                    {
+                        try
                         {
-                            Settings.log
-                                    .error("Settings: failed to initialise the backup configuration repository. Caught java.io.IOException",
-                                            ioe);
-                            throw new RuntimeException(
-                                    "Settings: failed to initialise the backup configuration repository. Caught java.io.IOException");
+                            Settings.log.info("Settings: found " + this.currentConfigurationRepository.getConnection().size()
+                                    + " statements in model configuration");
                         }
-                        finally
+                        catch(final RepositoryException rex)
                         {
-                            if(myRepositoryConnection != null)
-                            {
-                                myRepositoryConnection.close();
-                            }
+                            Settings.log.error("Settings: could not determine the number of statements in configuration");
                         }
                     }
                 }
-                catch(final OpenRDFException ordfe)
-                {
-                    Settings.log
-                            .error("Settings: failed to initialise the backup configuration repository. Caught OpenRDFException",
-                                    ordfe);
-                    throw new RuntimeException(
-                            "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException");
-                }
-            } // end if(backupNeeded)
-            
-            this.currentConfigurationRepository = tempConfigurationRepository;
-            
-            if(Settings._INFO)
-            {
-                final long end = System.currentTimeMillis();
-                Settings.log
-                        .info(String.format("%s: timing=%10d", "Settings.getServerConfigurationRdf", (end - start)));
-                
             }
-            if(Settings._DEBUG)
-            {
-                Settings.log.debug("Settings.getServerConfigurationRdf: finished parsing configuration files");
-            }
-            
-            if(Settings._INFO)
-            {
-                try
-                {
-                    Settings.log.info("Settings: found " + this.currentConfigurationRepository.getConnection().size()
-                            + " statements in model configuration");
-                }
-                catch(final RepositoryException rex)
-                {
-                    Settings.log.error("Settings: could not determine the number of statements in configuration");
-                }
-            }
-            
-            return this.currentConfigurationRepository;
         }
+        
+        return this.currentConfigurationRepository;
     }
     
     public Collection<Statement> getStatementProperties(final String key)
@@ -1535,7 +1575,7 @@ public class Settings implements QueryAllConfiguration
             Settings.log.trace("Settings.getStringCollectionPropertiesFromConfig: key=" + key);
         }
         
-        final Collection<String> results = new LinkedList<String>();
+        final Collection<String> results = new ArrayList<String>();
         
         final Collection<Value> values = this.getValueProperties(key);
         
@@ -1716,7 +1756,7 @@ public class Settings implements QueryAllConfiguration
                     + subjectUri.stringValue() + " propertyUri=" + propertyUri.stringValue());
         }
         
-        final Collection<Value> cachedResults = this.getConfigKeyCached(subjectUri, propertyUri);
+        final Collection<Value> cachedResults = this.getConfigKeyByValueCached(subjectUri, propertyUri);
         Collection<Value> results = new HashSet<Value>();
         
         if(cachedResults != null)
@@ -1740,7 +1780,7 @@ public class Settings implements QueryAllConfiguration
                 
                 if(results != null)
                 {
-                    this.doConfigKeyCache(subjectUri, propertyUri, results);
+                    this.doConfigKeyByValueCache(subjectUri, propertyUri, results);
                 }
             }
             catch(final InterruptedException ex)
@@ -1763,267 +1803,268 @@ public class Settings implements QueryAllConfiguration
             Settings.log.trace("Settings.getWebAppConfigurationRdf: entering");
         }
         
-        if(this.currentWebAppConfigurationRepository != null)
+        if(this.currentWebAppConfigurationRepository == null)
         {
-            return this.currentWebAppConfigurationRepository;
-        }
-        
-        synchronized(this)
-        {
-            // null out this optimisation cached property
-            this.cachedTagPattern = null;
-            this.configProperties = null;
-            this.separator = null;
-            
-            if(Settings._DEBUG)
+            synchronized(this)
             {
-                Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
-            }
-            
-            final long start = System.currentTimeMillis();
-            final Repository nextBaseConfigurationRepository = this.getBaseConfigurationRdf();
-            final String configMIMEFormat = this.getBaseConfigMimeFormat();
-            final String baseURI = this.getBaseConfigUri();
-            Repository tempConfigurationRepository = null;
-            Repository finalConfigurationRepository = null;
-            boolean backupNeeded = false;
-            final boolean backupFailed = false;
-            
-            RepositoryConnection finalRepositoryConnection = null;
-            
-            try
-            {
-                finalConfigurationRepository = new SailRepository(new MemoryStore());
-                finalConfigurationRepository.initialize();
-                
-                finalRepositoryConnection = finalConfigurationRepository.getConnection();
-                
-                if(Settings._DEBUG)
+                if(this.currentWebAppConfigurationRepository == null)
                 {
-                    Settings.log.debug("Settings.getWebAppConfigurationRdf: temp repository initialised");
-                }
-                
-                // Settings.log.error("Settings.getWebAppConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
-                
-                final ValueFactory f = finalConfigurationRepository.getValueFactory();
-                
-                final URI subjectConfigUri = f.createURI(baseURI);
-                
-                final URI webappConfigLocationsUri =
-                        f.createURI("http://purl.org/queryall/webapp_configuration:webappConfigLocations");
-                
-                final URI activeWebappConfigsUri =
-                        f.createURI("http://purl.org/queryall/webapp_configuration:activeWebappConfigs");
-                
-                final Collection<Value> webappConfigFiles =
-                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository,
-                                webappConfigLocationsUri, subjectConfigUri);
-                
-                final Collection<Value> activeWebappConfigs =
-                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository,
-                                activeWebappConfigsUri, subjectConfigUri);
-                
-                final Collection<String> tempCollection = new HashSet<String>();
-                
-                for(final Value nextValue1 : activeWebappConfigs)
-                {
-                    tempCollection.add(nextValue1.stringValue());
-                }
-                
-                this.webappConfigUriList = tempCollection;
-                
-                if(Settings._DEBUG)
-                {
-                    Settings.log.debug("webappConfigFiles.size()=" + webappConfigFiles.size());
-                    Settings.log.debug("activeWebappConfigs.size()=" + activeWebappConfigs.size());
-                }
-                
-                // for(final String nextLocation : BASE_CONFIG_FILES.split(","))
-                for(final Value nextConfigFile : webappConfigFiles)
-                {
-                    tempConfigurationRepository = new SailRepository(new MemoryStore());
-                    tempConfigurationRepository.initialize();
+                    // null out this optimisation cached property
+                    this.cachedTagPattern = null;
+                    this.configPropertiesCacheByValue = null;
+                    this.separator = null;
                     
-                    final String nextLocation = nextConfigFile.stringValue();
+                    if(Settings._DEBUG)
+                    {
+                        Settings.log.debug("Settings.getWebAppConfigurationRdf: constructing a new repository");
+                    }
                     
-                    // TODO: negotiate between local and non-local addresses better
-                    // than this
+                    final long start = System.currentTimeMillis();
+                    final Repository nextBaseConfigurationRepository = this.getBaseConfigurationRdf();
+                    final String configMIMEFormat = this.getBaseConfigMimeFormat();
+                    final String baseURI = this.getBaseConfigUri();
+                    Repository tempConfigurationRepository = null;
+                    Repository finalConfigurationRepository = null;
+                    boolean backupNeeded = false;
+                    final boolean backupFailed = false;
                     
-                    final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                    RepositoryConnection finalRepositoryConnection = null;
                     
                     try
                     {
-                        if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
+                        finalConfigurationRepository = new SailRepository(new MemoryStore());
+                        finalConfigurationRepository.initialize();
+                        
+                        finalRepositoryConnection = finalConfigurationRepository.getConnection();
+                        
+                        if(Settings._DEBUG)
                         {
-                            // final URL url = new
-                            // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
-                            final URL url = new URL(nextLocation);
-                            
-                            if(Settings._INFO)
-                            {
-                                Settings.log
-                                        .info("Settings.getWebAppConfigurationRdf: getting configuration from URL: nextLocation="
-                                                + nextLocation
-                                                + " url="
-                                                + url.toString()
-                                                + " myRepositoryConnection.size()=" + myRepositoryConnection.size());
-                            }
-                            
-                            myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                            
-                            if(Settings._INFO)
-                            {
-                                Settings.log
-                                        .info("Settings.getWebAppConfigurationRdf: finished getting configuration from URL: url="
-                                                + url.toString()
-                                                + " myRepositoryConnection.size()="
-                                                + myRepositoryConnection.size());
-                            }
-                        }
-                        else
-                        {
-                            if(Settings._INFO)
-                            {
-                                Settings.log
-                                        .info("Settings.getWebAppConfigurationRdf: getting configuration from file: nextLocation="
-                                                + nextLocation);
-                            }
-                            final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
-                            
-                            if(nextInputStream != null)
-                            {
-                                myRepositoryConnection.add(nextInputStream, baseURI,
-                                        RDFFormat.forMIMEType(configMIMEFormat));
-                                if(Settings._INFO)
-                                {
-                                    Settings.log
-                                            .info("Settings.getWebAppConfigurationRdf: finished getting configuration from file: nextLocation="
-                                                    + nextLocation);
-                                }
-                            }
-                            else
-                            {
-                                Settings.log.error("Could not resolve config location to an input stream nextLocation="
-                                        + nextLocation);
-                            }
+                            Settings.log.debug("Settings.getWebAppConfigurationRdf: temp repository initialised");
                         }
                         
-                        for(final Value nextValue : activeWebappConfigs)
+                        // Settings.log.error("Settings.getWebAppConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
+                        
+                        final ValueFactory f = finalConfigurationRepository.getValueFactory();
+                        
+                        final URI subjectConfigUri = f.createURI(baseURI);
+                        
+                        final URI webappConfigLocationsUri =
+                                f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "webappConfigLocations");
+                        
+                        final URI activeWebappConfigsUri =
+                                f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "activeWebappConfigs");
+                        
+                        final Collection<Value> webappConfigFiles =
+                                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository,
+                                        webappConfigLocationsUri, subjectConfigUri);
+                        
+                        final Collection<Value> activeWebappConfigs =
+                                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository,
+                                        activeWebappConfigsUri, subjectConfigUri);
+                        
+                        final Collection<String> tempCollection = new HashSet<String>();
+                        
+                        for(final Value nextValue1 : activeWebappConfigs)
                         {
-                            Settings.log
-                                    .debug("Settings.getWebAppConfigurationRdf: started adding statements to finalrepository for nextValue="
-                                            + nextValue.stringValue()
-                                            + " finalRepositoryConnection.size()="
-                                            + finalRepositoryConnection.size());
-                            this.webappConfigUriList.add(nextValue.stringValue());
-                            finalRepositoryConnection.add(myRepositoryConnection.getStatements((URI)nextValue,
-                                    (URI)null, (Resource)null, true));
-                            Settings.log
-                                    .debug("Settings.getWebAppConfigurationRdf: finished adding statements to finalrepository for nextValue="
-                                            + nextValue.stringValue()
-                                            + " finalRepositoryConnection.size()="
-                                            + finalRepositoryConnection.size());
+                            tempCollection.add(nextValue1.stringValue());
                         }
-                    }
-                    catch(final RDFParseException rdfpe)
-                    {
-                        Settings.log
-                                .error("Settings.getWebAppConfigurationRdf: failed to get the webapp configuration repository. Caught RDFParseException. nextLocation="
-                                        + nextLocation, rdfpe);
-                        throw new RuntimeException(
-                                "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught RDFParseException. nextLocation="
-                                        + nextLocation);
+                        
+                        this.webappConfigUriList = tempCollection;
+                        
+                        if(Settings._DEBUG)
+                        {
+                            Settings.log.debug("webappConfigFiles.size()=" + webappConfigFiles.size());
+                            Settings.log.debug("activeWebappConfigs.size()=" + activeWebappConfigs.size());
+                        }
+                        
+                        // for(final String nextLocation : BASE_CONFIG_FILES.split(","))
+                        for(final Value nextConfigFile : webappConfigFiles)
+                        {
+                            tempConfigurationRepository = new SailRepository(new MemoryStore());
+                            tempConfigurationRepository.initialize();
+                            
+                            final String nextLocation = nextConfigFile.stringValue();
+                            
+                            // TODO: negotiate between local and non-local addresses better
+                            // than this
+                            
+                            final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                            
+                            try
+                            {
+                                if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
+                                {
+                                    // final URL url = new
+                                    // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
+                                    final URL url = new URL(nextLocation);
+                                    
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log
+                                                .info("Settings.getWebAppConfigurationRdf: getting configuration from URL: nextLocation="
+                                                        + nextLocation
+                                                        + " url="
+                                                        + url.toString()
+                                                        + " myRepositoryConnection.size()=" + myRepositoryConnection.size());
+                                    }
+                                    
+                                    myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                                    
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log
+                                                .info("Settings.getWebAppConfigurationRdf: finished getting configuration from URL: url="
+                                                        + url.toString()
+                                                        + " myRepositoryConnection.size()="
+                                                        + myRepositoryConnection.size());
+                                    }
+                                }
+                                else
+                                {
+                                    if(Settings._INFO)
+                                    {
+                                        Settings.log
+                                                .info("Settings.getWebAppConfigurationRdf: getting configuration from file: nextLocation="
+                                                        + nextLocation);
+                                    }
+                                    final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                                    
+                                    if(nextInputStream != null)
+                                    {
+                                        myRepositoryConnection.add(nextInputStream, baseURI,
+                                                RDFFormat.forMIMEType(configMIMEFormat));
+                                        if(Settings._INFO)
+                                        {
+                                            Settings.log
+                                                    .info("Settings.getWebAppConfigurationRdf: finished getting configuration from file: nextLocation="
+                                                            + nextLocation);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Settings.log.error("Could not resolve config location to an input stream nextLocation="
+                                                + nextLocation);
+                                    }
+                                }
+                                
+                                for(final Value nextValue : activeWebappConfigs)
+                                {
+                                    Settings.log
+                                            .debug("Settings.getWebAppConfigurationRdf: started adding statements to finalrepository for nextValue="
+                                                    + nextValue.stringValue()
+                                                    + " finalRepositoryConnection.size()="
+                                                    + finalRepositoryConnection.size());
+                                    this.webappConfigUriList.add(nextValue.stringValue());
+                                    finalRepositoryConnection.add(myRepositoryConnection.getStatements((URI)nextValue,
+                                            (URI)null, (Resource)null, true));
+                                    Settings.log
+                                            .debug("Settings.getWebAppConfigurationRdf: finished adding statements to finalrepository for nextValue="
+                                                    + nextValue.stringValue()
+                                                    + " finalRepositoryConnection.size()="
+                                                    + finalRepositoryConnection.size());
+                                }
+                            }
+                            catch(final RDFParseException rdfpe)
+                            {
+                                Settings.log
+                                        .error("Settings.getWebAppConfigurationRdf: failed to get the webapp configuration repository. Caught RDFParseException. nextLocation="
+                                                + nextLocation, rdfpe);
+                                throw new RuntimeException(
+                                        "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught RDFParseException. nextLocation="
+                                                + nextLocation);
+                            }
+                            catch(final OpenRDFException ordfe)
+                            {
+                                Settings.log
+                                        .error("Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException. nextLocation="
+                                                + nextLocation, ordfe);
+                                throw new RuntimeException(
+                                        "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException. nextLocation="
+                                                + nextLocation);
+                            }
+                            catch(final java.io.IOException ioe)
+                            {
+                                Settings.log
+                                        .error("Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught java.io.IOException. nextLocation="
+                                                + nextLocation, ioe);
+                                // throw new
+                                // RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
+                                backupNeeded = true;
+                            }
+                            finally
+                            {
+                                if(myRepositoryConnection != null)
+                                {
+                                    myRepositoryConnection.close();
+                                }
+                            }
+                        } // end for(Value nextConfigFile : webappConfigFiles)
                     }
                     catch(final OpenRDFException ordfe)
                     {
                         Settings.log
-                                .error("Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException. nextLocation="
-                                        + nextLocation, ordfe);
+                                .error("Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException",
+                                        ordfe);
                         throw new RuntimeException(
-                                "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException. nextLocation="
-                                        + nextLocation);
-                    }
-                    catch(final java.io.IOException ioe)
-                    {
-                        Settings.log
-                                .error("Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught java.io.IOException. nextLocation="
-                                        + nextLocation, ioe);
-                        // throw new
-                        // RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
-                        backupNeeded = true;
+                                "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
                     }
                     finally
                     {
-                        if(myRepositoryConnection != null)
+                        if(finalConfigurationRepository != null)
                         {
-                            myRepositoryConnection.close();
+                            try
+                            {
+                                finalRepositoryConnection.close();
+                            }
+                            catch(final Exception ex)
+                            {
+                                Settings.log.error(ex.getMessage());
+                            }
                         }
                     }
-                } // end for(Value nextConfigFile : webappConfigFiles)
-            }
-            catch(final OpenRDFException ordfe)
-            {
-                Settings.log
-                        .error("Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException",
-                                ordfe);
-                throw new RuntimeException(
-                        "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
-            }
-            finally
-            {
-                if(finalConfigurationRepository != null)
-                {
-                    try
+                    
+                    if(finalConfigurationRepository != null)
                     {
-                        finalRepositoryConnection.close();
+                        this.currentWebAppConfigurationRepository = finalConfigurationRepository;
                     }
-                    catch(final Exception ex)
+                    else
                     {
-                        Settings.log.error(ex.getMessage());
+                        throw new RuntimeException(
+                                "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository");
+                    }
+                    
+                    if(Settings._INFO)
+                    {
+                        final long end = System.currentTimeMillis();
+                        Settings.log
+                                .info(String.format("%s: timing=%10d", "Settings.getWebAppConfigurationRdf", (end - start)));
+                        
+                    }
+                    
+                    if(Settings._DEBUG)
+                    {
+                        Settings.log.debug("Settings.getWebAppConfigurationRdf: finished parsing configuration files");
+                    }
+                    
+                    if(Settings._INFO)
+                    {
+                        try
+                        {
+                            Settings.log.info("Settings.getWebAppConfigurationRdf: found "
+                                    + this.currentWebAppConfigurationRepository.getConnection().size()
+                                    + " statements in webapp configuration");
+                        }
+                        catch(final RepositoryException rex)
+                        {
+                            Settings.log
+                                    .error("Settings.getWebAppConfigurationRdf: could not determine the number of statements in webapp configuration");
+                        }
                     }
                 }
             }
-            
-            if(finalConfigurationRepository != null)
-            {
-                this.currentWebAppConfigurationRepository = finalConfigurationRepository;
-            }
-            else
-            {
-                throw new RuntimeException(
-                        "Settings.getWebAppConfigurationRdf: failed to initialise the webapp configuration repository");
-            }
-            
-            if(Settings._INFO)
-            {
-                final long end = System.currentTimeMillis();
-                Settings.log
-                        .info(String.format("%s: timing=%10d", "Settings.getWebAppConfigurationRdf", (end - start)));
-                
-            }
-            
-            if(Settings._DEBUG)
-            {
-                Settings.log.debug("Settings.getWebAppConfigurationRdf: finished parsing configuration files");
-            }
-            
-            if(Settings._INFO)
-            {
-                try
-                {
-                    Settings.log.info("Settings.getWebAppConfigurationRdf: found "
-                            + this.currentWebAppConfigurationRepository.getConnection().size()
-                            + " statements in webapp configuration");
-                }
-                catch(final RepositoryException rex)
-                {
-                    Settings.log
-                            .error("Settings.getWebAppConfigurationRdf: could not determine the number of statements in webapp configuration");
-                }
-            }
-            
-            return this.currentWebAppConfigurationRepository;
         }
+        
+        return this.currentWebAppConfigurationRepository;
     }
     
     /**
