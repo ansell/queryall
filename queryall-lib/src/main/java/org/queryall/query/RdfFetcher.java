@@ -303,7 +303,7 @@ public class RdfFetcher
             catch(final IOException e)
             {
                 this.setLastStatusCode(1);
-                RdfFetcher.log.info("Found error trying to get the response status code", e);
+                RdfFetcher.log.info("Found error trying to get the response status code error="+e.getMessage());
             }
             
             if(this.getLastWasError())

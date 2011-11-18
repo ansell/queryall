@@ -2660,6 +2660,7 @@ public final class RdfUtils
     
     public static RDFFormat getWriterFormat(final String requestedContentType)
     {
+        // TODO: Make this extensible
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
             return null;

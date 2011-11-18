@@ -308,22 +308,14 @@ public class RdfFetchController
         
         for(final QueryBundle nextBundle : nextQueryBundles)
         {
-            // randomly choose one of the alternatives, the others will be resolved if necessary
-            // automagically
-            Map<String, String> nextAlternativeEndpointsAndQueries = nextBundle.getAlternativeEndpointsAndQueries();
-            final String nextEndpoint =
-                    ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
-            // nextBundle.getQueryEndpoint();
-            final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
-            // nextBundle.getQuery();
-            
             if(RdfFetchController._DEBUG)
             {
                 RdfFetchController.log
-                        .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on endpoint="
-                                + nextEndpoint
-                                + " query="
-                                + nextQuery
+                        .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on "
+//                        		+ "endpoint="
+//                                + nextEndpoint
+//                                + " query="
+//                                + nextQuery
                                 + " provider="
                                 + nextBundle.getOriginalProvider().getKey());
             }
@@ -332,10 +324,33 @@ public class RdfFetchController
             
             boolean addToFetchQueue = false;
             
+            // TODO: Make this section extensible, preferably defined by the provider itself
             if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
                     && nextBundle.getOriginalProvider().getEndpointMethod()
                             .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
+                // randomly choose one of the alternatives, the others will be resolved if necessary
+                // automagically
+                Map<String, String> nextAlternativeEndpointsAndQueries = nextBundle.getAlternativeEndpointsAndQueries();
+                final String nextEndpoint =
+                        ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
+                
+                if(nextEndpoint == null)
+                {
+                    log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="+nextBundle.getOriginalProvider().getKey());
+                    continue;
+                }
+                
+                // nextBundle.getQueryEndpoint();
+                final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
+                // nextBundle.getQuery();
+                
+                if(nextQuery == null)
+                {
+                    log.error("nextQuery was retrieved as null nextBundle.getOriginalProvider()="+nextBundle.getOriginalProvider().getKey());
+                    continue;
+                }
+                
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
                                 ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(), nextQuery,
@@ -359,6 +374,27 @@ public class RdfFetchController
                     && nextBundle.getOriginalProvider().getEndpointMethod()
                             .equals(HttpProviderSchema.getProviderHttpGetUrl()))
             {
+                // randomly choose one of the alternatives, the others will be resolved if necessary
+                // automagically
+                Map<String, String> nextAlternativeEndpointsAndQueries = nextBundle.getAlternativeEndpointsAndQueries();
+                final String nextEndpoint =
+                        ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
+                
+                if(nextEndpoint == null)
+                {
+                    log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="+nextBundle.getOriginalProvider().getKey());
+                    continue;
+                }
+                
+                // nextBundle.getQueryEndpoint();
+                final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
+                // nextBundle.getQuery();
+                
+                if(nextQuery == null)
+                {
+                    log.warn("nextQuery was retrieved as null");
+                }
+                
                 nextThread =
                         new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",
                                 ((HttpProvider)nextBundle.getOriginalProvider())
@@ -587,6 +623,12 @@ public class RdfFetchController
                         if(RdfFetchController._DEBUG)
                         {
                             RdfFetchController.log.debug("nextReplacedEndpoint=" + nextReplacedEndpoint);
+                        }
+                        
+                        if(nextReplacedEndpoint == null)
+                        {
+                            log.error("nextReplacedEndpoint was null nextEndpoint="+nextEndpoint+" nextQueryType="+nextQueryType+" nextProvider="+nextProvider);
+                            continue;
                         }
                         
                         // Then test whether the endpoint is blacklisted before accepting it
