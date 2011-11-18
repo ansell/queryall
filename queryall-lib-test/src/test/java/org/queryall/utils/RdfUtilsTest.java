@@ -38,8 +38,13 @@ import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
 import org.queryall.api.namespace.ValidatingNamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.provider.HttpProviderSchema;
+import org.queryall.api.provider.HttpSparqlProvider;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.provider.RdfProvider;
+import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
@@ -1053,7 +1058,7 @@ public class RdfUtilsTest
                     Assert.assertEquals("Resolution strategy was not parsed correctly",
                             ProviderSchema.getProviderProxy(), nextProvider.getRedirectOrProxy());
                     Assert.assertEquals("Resolution method was not parsed correctly",
-                            ProviderSchema.getProviderNoCommunication(), nextProvider.getEndpointMethod());
+                            HttpProviderSchema.getProviderHttpGetUrl(), nextProvider.getEndpointMethod());
                     Assert.assertFalse("Default provider status was not parsed correctly",
                             nextProvider.getIsDefaultSource());
                     
@@ -1066,6 +1071,19 @@ public class RdfUtilsTest
                             .getIncludedInQueryTypes().size());
                     Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider
                             .getNormalisationUris().size());
+                    
+                    Assert.assertTrue("Provider was not parsed as an Http Provider", nextProvider instanceof HttpProvider);
+                    
+                    HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
+                    
+                    Assert.assertEquals("Provider Http Endpoint Urls were not parsed correctly", 2, nextHttpProvider.getEndpointUrls().size());
+
+                    // Test to make sure that we didn't parse it as any of the specialised providers
+                    Assert.assertFalse("Provider was parsed incorrectly as a Sparql Provider", nextProvider instanceof SparqlProvider);
+
+                    Assert.assertFalse("Provider was parsed incorrectly as an Http Sparql Provider", nextProvider instanceof HttpSparqlProvider);
+                
+                    Assert.assertFalse("Provider was parsed incorrectly as an Rdf Provider", nextProvider instanceof RdfProvider);
                 }
                 else
                 {

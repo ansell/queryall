@@ -52,10 +52,16 @@ public interface BaseQueryAllInterface
     void setTitle(String title);
     
     /**
-     * Changes the object into RDF, and inserts the relevant triples into myRepository using the URI
-     * contextUri as the context URI.
+     * Changes the object into RDF, and inserts the relevant triples into myRepository using the URIs
+     * in contextUris as the context URIs.
      * 
      * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
-     **/
-    boolean toRdf(Repository myRepository, int modelVersion, URI... contextUri) throws OpenRDFException;
+     * 
+     * @param myRepository
+     * @param modelVersion
+     * @param contextUris
+     * @return
+     * @throws OpenRDFException
+     */
+    boolean toRdf(Repository myRepository, int modelVersion, URI... contextUris) throws OpenRDFException;
 }

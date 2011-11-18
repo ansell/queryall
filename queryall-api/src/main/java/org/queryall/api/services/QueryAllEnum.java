@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.openrdf.model.URI;
+import org.queryall.api.provider.ProviderEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,4 +153,20 @@ public abstract class QueryAllEnum
         return this.name + " {" + this.typeURIs.toString() + "}";
     }
     
+    protected boolean matchForTypeUris(Set<URI> nextTypeURIs)
+    {
+        boolean matching = true;
+        
+        for(final URI nextURI : nextTypeURIs)
+        {
+            // Default implementation of this method is to check whether the given URIs are all in the type URIs for this Enum
+            // This behaviour can be overriden to provide different behaviour in implementations
+            if(!this.getTypeURIs().contains(nextURI))
+            {
+                matching = false;
+            }
+        }
+        
+        return matching;
+    }
 }

@@ -745,8 +745,8 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "*/*",
                     localSettings, localBlacklistController);
         }
-        else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostUrlUri())
-                .equals(HttpProviderSchema.getProviderHttpPostUrlUri()))
+        else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostUrl())
+                .equals(HttpProviderSchema.getProviderHttpPostUrl()))
         {
             final String postInformation = this.toPostArray();
             

@@ -33,7 +33,7 @@ public class ProviderEnum extends QueryAllEnum
     
     protected static final Set<ProviderEnum> ALL_PROVIDERS = new HashSet<ProviderEnum>();
     
-    public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
+    public final static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
         if(nextTypeUris.size() == 0)
         {
@@ -56,29 +56,7 @@ public class ProviderEnum extends QueryAllEnum
         
         for(final ProviderEnum nextEnum : ProviderEnum.ALL_PROVIDERS)
         {
-            // NOTE: This restriction would force developers to include implementations for every
-            // possible combination of functionalities
-            // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default
-            // URI for this type of object
-            // boolean matching = (nextProviderEnum.getTypeURIs().size() ==
-            // nextProviderUris.size());
-            boolean matching = true;
-            
-            for(final URI nextURI : nextTypeUris)
-            {
-                if(!nextEnum.getTypeURIs().contains(nextURI))
-                {
-                    if(ProviderEnum._DEBUG)
-                    {
-                        ProviderEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
-                    }
-                    
-                    matching = false;
-                }
-            }
-            
-            if(matching)
+            if(nextEnum.matchForTypeUris(nextTypeUris))
             {
                 if(ProviderEnum._DEBUG)
                 {
@@ -154,4 +132,29 @@ public class ProviderEnum extends QueryAllEnum
         super(nextName, nextTypeURIs);
         ProviderEnum.ALL_PROVIDERS.add(this);
     }
-}
+    
+    /**
+     * For Providers, we require that all of the given URIs exactly match the declared type URIs, to prevent basic HTTP Providers from being parsed as any of the specialised HTTP Providers
+     */
+    @Override
+    protected boolean matchForTypeUris(Set<URI> nextTypeURIs)
+    {
+        boolean matching = true;
+        
+        if(this.getTypeURIs().size() != nextTypeURIs.size())
+        {
+            return false;
+        }
+        
+        for(final URI nextURI : nextTypeURIs)
+        {
+            // Default implementation of this method is to check whether the given URIs are all in the type URIs for this Enum
+            // This behaviour can be overriden to provide different behaviour in implementations
+            if(!this.getTypeURIs().contains(nextURI))
+            {
+                matching = false;
+            }
+        }
+        
+        return matching;
+    }}

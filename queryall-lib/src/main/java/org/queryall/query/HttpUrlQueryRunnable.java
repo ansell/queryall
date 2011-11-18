@@ -88,8 +88,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                     }
                 }
             }
-            else if(this.httpOperation.equals(HttpProviderSchema.getProviderHttpPostUrlUri().stringValue())
-                    || this.httpOperation.equals(HttpProviderSchema.getProviderHttpGetUrlUri().stringValue()))
+            else if(this.httpOperation.equals(HttpProviderSchema.getProviderHttpPostUrl().stringValue())
+                    || this.httpOperation.equals(HttpProviderSchema.getProviderHttpGetUrl().stringValue()))
             {
                 tempRawResult =
                         fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(), this.getAcceptHeader());

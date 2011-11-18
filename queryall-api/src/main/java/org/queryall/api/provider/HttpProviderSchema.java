@@ -76,22 +76,12 @@ public class HttpProviderSchema extends QueryAllSchema
         return HttpProviderSchema.providerHttpGetUrl;
     }
     
-    public static URI getProviderHttpGetUrlUri()
-    {
-        return HttpProviderSchema.getProviderHttpGetUrl();
-    }
-    
     /**
      * @return the providerHttpPostUrl
      */
     public static URI getProviderHttpPostUrl()
     {
         return HttpProviderSchema.providerHttpPostUrl;
-    }
-    
-    public static URI getProviderHttpPostUrlUri()
-    {
-        return HttpProviderSchema.getProviderHttpPostUrl();
     }
     
     /**
