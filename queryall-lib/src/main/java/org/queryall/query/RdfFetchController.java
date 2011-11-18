@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -46,7 +52,9 @@ public class RdfFetchController
     private static final boolean _DEBUG = RdfFetchController.log.isDebugEnabled();
     private static final boolean _INFO = RdfFetchController.log.isInfoEnabled();
     
-    public static void fetchRdfForQueries(final Collection<RdfFetcherQueryRunnable> fetchThreads)
+    private final ExecutorService executor = Executors.newCachedThreadPool();
+
+    public void fetchRdfForQueries(final Collection<RdfFetcherQueryRunnable> fetchThreads)
         throws InterruptedException
     {
         final long start = System.currentTimeMillis();
@@ -54,6 +62,8 @@ public class RdfFetchController
         // TODO: FIXME: Should be using this to recover from errors if possible when there is an
         // alternative endpoint available
         final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist = new HashSet<RdfFetcherQueryRunnable>();
+        
+        final Collection<Future<?>> futures = new ArrayList<Future<?>>(fetchThreads.size());
         
         for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
         {
@@ -63,7 +73,8 @@ public class RdfFetchController
                         + nextThread.getName());
             }
             
-            nextThread.start();
+            futures.add(executor.submit(nextThread));
+            //nextThread.start();
         }
         
         if(RdfFetchController._DEBUG)
@@ -75,7 +86,7 @@ public class RdfFetchController
         // do some very minor waiting to let the other threads start to do some work
         try
         {
-            Thread.sleep(2);
+            Thread.sleep(5);
         }
         catch(final InterruptedException ie)
         {
@@ -83,24 +94,41 @@ public class RdfFetchController
             throw ie;
         }
         
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+        for(Future nextFuture : futures)
         {
             try
             {
-                // effectively attempt to join each of the threads, this loop will complete when
-                // they are all completed
-                nextThread.join();
+                nextFuture.get(30000, TimeUnit.MILLISECONDS);
             }
-            catch(final InterruptedException ie)
+            catch(ExecutionException e)
             {
-                RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: caught interrupted exception message="
-                                + ie.getMessage());
-                throw ie;
+                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution failed due to an exception");
+            }
+            catch(TimeoutException e)
+            {
+                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution timed out");
             }
         }
         
+//        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+//        {
+//            try
+//            {
+//                // effectively attempt to join each of the threads, this loop will complete when
+//                // they are all completed
+//                nextThread.join();
+//            }
+//            catch(final InterruptedException ie)
+//            {
+//                RdfFetchController.log
+//                        .error("RdfFetchController.fetchRdfForQueries: caught interrupted exception message="
+//                                + ie.getMessage());
+//                throw ie;
+//            }
+//        }
+        
         // This loop is a safety check, although it doesn't actually fallover if something is wrong
+        // it will happen if the executor returns before the thread is completed
         for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
         {
             if(!nextThread.getCompleted())
@@ -204,6 +232,11 @@ public class RdfFetchController
         this.initialise();
     }
     
+    public RdfFetchController()
+    {
+        
+    }
+
     private void addQueryBundles(final Collection<QueryBundle> queryBundles)
     {
         this.queryBundles.addAll(queryBundles);
@@ -216,7 +249,7 @@ public class RdfFetchController
     
     public void fetchRdfForQueries() throws InterruptedException, UnnormalisableRuleException, QueryAllException
     {
-        RdfFetchController.fetchRdfForQueries(this.getFetchThreadGroup());
+        this.fetchRdfForQueries(this.getFetchThreadGroup());
         
         for(final RdfFetcherQueryRunnable nextThread : this.getFetchThreadGroup())
         {
