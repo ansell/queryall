@@ -63,52 +63,52 @@ public class RdfFetchController
         // alternative endpoint available
         final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist = new HashSet<RdfFetcherQueryRunnable>();
         
-        final Collection<Future<?>> futures = new ArrayList<Future<?>>(fetchThreads.size());
+        final List<Future<String>> futures = executor.invokeAll(fetchThreads, 30, TimeUnit.SECONDS);
         
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            if(RdfFetchController._DEBUG)
-            {
-                RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: about to start thread name="
-                        + nextThread.getName());
-            }
-            
-            futures.add(executor.submit(nextThread));
-            //nextThread.start();
-        }
+//        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+//        {
+//            if(RdfFetchController._DEBUG)
+//            {
+//                RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: about to start thread name="
+//                        + nextThread.getName());
+//            }
+//            executor.in
+//            futures.add(executor.submit(nextThread));
+//            //nextThread.start();
+//        }
         
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log
-                    .debug("RdfFetchController.fetchRdfForQueries: about to sleep to let other threads do some work");
-        }
+//        if(RdfFetchController._DEBUG)
+//        {
+//            RdfFetchController.log
+//                    .debug("RdfFetchController.fetchRdfForQueries: about to sleep to let other threads do some work");
+//        }
         
         // do some very minor waiting to let the other threads start to do some work
-        try
-        {
-            Thread.sleep(5);
-        }
-        catch(final InterruptedException ie)
-        {
-            RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread interruption occurred");
-            throw ie;
-        }
+//        try
+//        {
+//            Thread.sleep(5);
+//        }
+//        catch(final InterruptedException ie)
+//        { 
+//            RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread interruption occurred");
+//            throw ie;
+//        }
         
-        for(Future nextFuture : futures)
-        {
-            try
-            {
-                nextFuture.get(30000, TimeUnit.MILLISECONDS);
-            }
-            catch(ExecutionException e)
-            {
-                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution failed due to an exception");
-            }
-            catch(TimeoutException e)
-            {
-                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution timed out");
-            }
-        }
+//        for(Future<?> nextFuture : futures)
+//        {
+//            try
+//            {
+//                nextFuture.get(30000, TimeUnit.MILLISECONDS);
+//            }
+//            catch(ExecutionException e)
+//            {
+//                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution failed due to an exception");
+//            }
+//            catch(TimeoutException e)
+//            {
+//                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution timed out");
+//            }
+//        }
         
 //        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
 //        {

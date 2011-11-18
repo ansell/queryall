@@ -31,6 +31,11 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
     @Override
     public void run()
     {
+        doWork();
+    }
+    
+    private void doWork()
+    {
         try
         {
             final RdfFetcher fetcher = new RdfFetcher(this.getLocalSettings(), this.getBlacklistController());
@@ -112,5 +117,13 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
+    }
+    
+    @Override
+    public String call() throws Exception
+    {
+        doWork();
+        
+        return this.getNormalisedResult();
     }
 }

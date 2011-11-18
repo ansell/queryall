@@ -37,6 +37,11 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     @Override
     public void run()
     {
+        doWork();
+    }
+    
+    private void doWork()
+    {
         try
         {
             this.setQueryStartTime(new Date());
@@ -174,5 +179,13 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
+    }
+
+    @Override
+    public String call() throws Exception
+    {
+        doWork();
+        
+        return this.getNormalisedResult();
     }
 }
