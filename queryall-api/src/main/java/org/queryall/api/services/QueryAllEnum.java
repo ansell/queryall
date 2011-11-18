@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.openrdf.model.URI;
-import org.queryall.api.provider.ProviderEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

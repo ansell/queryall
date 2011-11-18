@@ -22,12 +22,12 @@ import com.hp.hpl.jena.util.TypedStream;
 public class JenaLocatorClass implements Locator
 {
     private static final Logger log = LoggerFactory.getLogger(JenaLocatorClass.class);
-    private Class myClass;
+    private Class<?> myClass;
     
     /**
      * 
      */
-    public JenaLocatorClass(final Class nextClass)
+    public JenaLocatorClass(final Class<?> nextClass)
     {
         this.myClass = nextClass;
     }
