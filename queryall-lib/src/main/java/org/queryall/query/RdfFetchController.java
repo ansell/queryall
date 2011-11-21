@@ -139,6 +139,15 @@ public class RdfFetchController
             }
         }
         
+        for(final Future<String> nextFuture : futures)
+        {
+            if(nextFuture.isCancelled())
+            {
+                RdfFetchController.log
+                .error("RdfFetchController.fetchRdfForQueries: Future was cancelled, thread not completed properly");
+            }
+        }
+        
         if(RdfFetchController._INFO)
         {
             final long end = System.currentTimeMillis();
