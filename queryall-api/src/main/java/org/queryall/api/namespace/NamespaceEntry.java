@@ -10,31 +10,76 @@ import org.queryall.api.base.BaseQueryAllInterface;
  */
 public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
 {
+    /**
+     * Adds an alternate prefix to this namespace entry that can be used in query types to map a query as relevant to this namespace.
+     * 
+     * @param alternativePrefix A prefix that is used in query types to identify this namespace.
+     */
     void addAlternativePrefix(String alternativePrefix);
     
+    /**
+     * 
+     * @return A list of strings denoting the alternate inputs that map queries to this namespace.
+     */
     Collection<String> getAlternativePrefixes();
     
+    /**
+     * 
+     * @return A URI denoting the authority that controls this namespace entry. This may not be the authority that originally published the data in this namespace.
+     */
     URI getAuthority();
     
+    /**
+     * 
+     * @return True if the alternate prefixes should be rewritten using the preferred prefix for this namespace.
+     */
     boolean getConvertQueriesToPreferredPrefix();
     
-    String getDescription();
-    
+    /**
+     * 
+     * @return The string that is the preferred method of indicating that a query maps as relevant to this namespace.
+     */
     String getPreferredPrefix();
     
+    /**
+     * 
+     * @return A string that is used to separate the namespace from identifiers when entries in this namespace are serialised to URIs.
+     */
     String getSeparator();
     
+    /**
+     * 
+     * @return A string containing template items that are replaced in the process of serialising items in this namespace to URIs.
+     */
     String getUriTemplate();
     
+    /**
+     * 
+     * @param authority A URI denoting the authority that controls this namespace entry. This may not be the authority that originally published the data in this namespace.
+     */
     void setAuthority(URI authority);
     
+    /**
+     * 
+     * @param convertQueriesToPreferredPrefix True if matches for the alternate prefixes should be converted to the preferred prefix.
+     */
     void setConvertQueriesToPreferredPrefix(boolean convertQueriesToPreferredPrefix);
     
-    void setDescription(String description);
-    
+    /**
+     * 
+     * @param preferredPrefix The preferred prefix to use to identify this namespace entry in queries.
+     */
     void setPreferredPrefix(String preferredPrefix);
     
+    /**
+     * 
+     * @param separator A string that is used to separate the namespace from identifiers when entries in this namespace are serialised to URIs.
+     */
     void setSeparator(String separator);
     
+    /**
+     * 
+     * @param uriTemplate A string containing template items that are replaced in the process of serialising items in this namespace to URIs.
+     */
     void setUriTemplate(String uriTemplate);
 }
