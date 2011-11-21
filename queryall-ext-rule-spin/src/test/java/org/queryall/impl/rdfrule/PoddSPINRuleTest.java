@@ -92,7 +92,7 @@ public class PoddSPINRuleTest
             
             Assert.assertEquals(9, testRepositoryConnection.size());
             
-            final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
+            final SpinInferencingRuleImpl spinNormalisationRuleImpl = new SpinInferencingRuleImpl();
             spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
             
             // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);

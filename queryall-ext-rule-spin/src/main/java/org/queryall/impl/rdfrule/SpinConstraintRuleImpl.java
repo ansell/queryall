@@ -3,10 +3,9 @@ package org.queryall.impl.rdfrule;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
@@ -28,22 +27,18 @@ import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.topbraid.spin.inference.DefaultSPINRuleComparator;
-import org.topbraid.spin.inference.SPINInferences;
-import org.topbraid.spin.inference.SPINRuleComparator;
+import org.topbraid.spin.constraints.ConstraintViolation;
+import org.topbraid.spin.constraints.SPINConstraints;
+import org.topbraid.spin.statistics.SPINStatistics;
+import org.topbraid.spin.system.SPINLabels;
 import org.topbraid.spin.system.SPINModuleRegistry;
-import org.topbraid.spin.util.CommandWrapper;
-import org.topbraid.spin.util.SPINQueryFinder;
-import org.topbraid.spin.vocabulary.SPIN;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.shared.ReificationStyle;
 
 /**
@@ -309,13 +304,9 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
      *            The OpenRDF repository to use for the input triples
      * @throws QueryAllException
      */
-    public Repository processSpinRules(final Repository inputRepository, final org.openrdf.model.Resource... contexts)
+    public List<ConstraintViolation> verifySpinConstraints(final Repository inputRepository, final org.openrdf.model.Resource... contexts)
         throws QueryAllException
     {
-        // Load domain model with imports
-        // System.out.println("Loading domain ontology...");
-        // OntModel queryModel =
-        // loadModelWithImports("http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl");
         SpinConstraintRuleImpl.log.info("Loading jena model from sesame repository");
         final OntModel queryModel =
                 SpinUtils
@@ -354,34 +345,18 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         allowedRuleSources.addAll(this.localImports);
         
-        // Collect rules (and template calls) defined in OWL RL
-        final Map<CommandWrapper, Map<String, RDFNode>> initialTemplateBindings =
-                new HashMap<CommandWrapper, Map<String, RDFNode>>();
-        final Map<Resource, List<CommandWrapper>> cls2Query =
-                SPINQueryFinder.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true, initialTemplateBindings,
-                        false, allowedRuleSources);
-        final Map<Resource, List<CommandWrapper>> cls2Constructor =
-                SPINQueryFinder.getClass2QueryMap(queryModel, queryModel, SPIN.constructor, true,
-                        initialTemplateBindings, false, allowedRuleSources);
-        final SPINRuleComparator comparator = new DefaultSPINRuleComparator(queryModel);
+        List<ConstraintViolation> cvs = SPINConstraints.check(unionModel, new LinkedList<SPINStatistics>(), null, OntModelSpec.OWL_MEM, "http://topbraid.org/examples/kennedysSPIN", allowedRuleSources);
         
-        // Run all inferences
-        SpinConstraintRuleImpl.log.info("Running SPIN inferences...");
-        SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor, initialTemplateBindings, null, null,
-                false, SPIN.rule, comparator, null, allowedRuleSources);
-        SpinConstraintRuleImpl.log.info("Inferred triples: " + newTriples.size());
-        SpinConstraintRuleImpl.log.info("Query triples: " + queryModel.size());
-        
-        final StmtIterator listStatements = newTriples.listStatements();
-        
-        while(listStatements.hasNext())
+        log.info("Constraint violations:");
+
+        for(ConstraintViolation cv : cvs) 
         {
-            SpinConstraintRuleImpl.log.trace(listStatements.next().toString());
+            log.info(" - at " + SPINLabels.get().getLabel(cv.getRoot()) + ": " + cv.getMessage());
         }
         
         // Note: To optimise the process, we only add the new triples back into the original
         // repository
-        return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
+        return cvs;
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)

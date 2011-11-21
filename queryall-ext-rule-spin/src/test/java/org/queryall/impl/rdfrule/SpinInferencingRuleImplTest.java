@@ -36,9 +36,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author Peter Ansell p_ansell@yahoo.com
  * 
  */
-public class SpinNormalisationRuleImplTest
+public class SpinInferencingRuleImplTest
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleImplTest.class);
+    private static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleImplTest.class);
     
     private OntModel testOntologyModel;
     private Repository testRepository;
@@ -192,7 +192,7 @@ public class SpinNormalisationRuleImplTest
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
+        final SpinInferencingRuleImpl spinNormalisationRuleImpl = new SpinInferencingRuleImpl();
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
         
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
@@ -217,7 +217,7 @@ public class SpinNormalisationRuleImplTest
         
         Assert.assertEquals(3, testRepositoryConnection.size());
         
-        final SpinConstraintRuleImpl spinNormalisationRuleImpl = new SpinConstraintRuleImpl();
+        final SpinInferencingRuleImpl spinNormalisationRuleImpl = new SpinInferencingRuleImpl();
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
         
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
