@@ -563,7 +563,7 @@ public final class RdfUtils
         
         if(nsAndIdList.size() == 2)
         {
-            endpointUrls.add(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
+            dummyProvider.addEndpointUrl(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
                     + StringUtils.percentEncode(nsAndIdList.get("input_1").get(0)));
             nextQueryBundle.addAlternativeEndpointAndQuery(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
                     + localSettings.getSeparator() + StringUtils.percentEncode(nsAndIdList.get("input1").get(0)), "");
@@ -578,7 +578,6 @@ public final class RdfUtils
         // QueryTypeImpl().getDefaultNamespace())));
         // }
         
-        dummyProvider.setEndpointUrls(endpointUrls);
         dummyProvider.setEndpointMethod(HttpProviderSchema.getProviderHttpGetUrl());
         dummyProvider.setKey(hostToUse + QueryAllNamespaces.PROVIDER.getNamespace() + localSettings.getSeparator()
                 + StringUtils.percentEncode(namespaceAndIdentifier));
@@ -615,11 +614,7 @@ public final class RdfUtils
         
         // final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
-        final Collection<String> endpointUrls = new HashSet<String>();
-        
-        endpointUrls.add(sparqlEndpointUrl);
-        
-        dummyProvider.setEndpointUrls(endpointUrls);
+        dummyProvider.addEndpointUrl(sparqlEndpointUrl);
         
         dummyProvider.setEndpointMethod(SparqlProviderSchema.getProviderHttpPostSparql());
         dummyProvider.setKey(localSettings.getDefaultHostAddress() + QueryAllNamespaces.PROVIDER.getNamespace()

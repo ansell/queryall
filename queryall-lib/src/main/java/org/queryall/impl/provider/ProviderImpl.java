@@ -514,12 +514,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
-    public void setIncludedInQueryTypes(final Collection<URI> includedInCustomQueries)
-    {
-        this.includedInQueryTypes = includedInCustomQueries;
-    }
-    
-    @Override
     public void setIsDefaultSource(final boolean isDefaultSourceVar)
     {
         this.setIsDefaultSourceVar(isDefaultSourceVar);
@@ -548,12 +542,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     public void setKey(final URI nextKey)
     {
         this.key = nextKey;
-    }
-    
-    @Override
-    public void setNamespaces(final Collection<URI> namespaces)
-    {
-        this.namespaces = namespaces;
     }
     
     @Override

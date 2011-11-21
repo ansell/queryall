@@ -148,12 +148,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     }
     
     @Override
-    public void setEndpointUrls(final Collection<String> endpointUrls)
-    {
-        this.endpointUrls = endpointUrls;
-    }
-    
-    @Override
     public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
