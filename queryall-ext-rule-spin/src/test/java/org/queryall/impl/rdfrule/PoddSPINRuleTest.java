@@ -102,9 +102,12 @@ public class PoddSPINRuleTest
             
             resultConnection = results.getConnection();
             
-            for(final Statement nextStatement : resultConnection.getStatements(null, null, null, true).asList())
+            if(log.isDebugEnabled())
             {
-                PoddSPINRuleTest.log.debug(nextStatement.toString());
+                for(final Statement nextStatement : resultConnection.getStatements(null, null, null, true).asList())
+                {
+                    PoddSPINRuleTest.log.debug(nextStatement.toString());
+                }
             }
             
             Assert.assertEquals(111, resultConnection.size());
