@@ -563,8 +563,8 @@ public final class RdfUtils
         
         if(nsAndIdList.size() == 2)
         {
-            dummyProvider.addEndpointUrl(hostToUse + QueryAllNamespaces.QUERY.getNamespace() + localSettings.getSeparator()
-                    + StringUtils.percentEncode(nsAndIdList.get("input_1").get(0)));
+            dummyProvider.addEndpointUrl(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
+                    + localSettings.getSeparator() + StringUtils.percentEncode(nsAndIdList.get("input_1").get(0)));
             nextQueryBundle.addAlternativeEndpointAndQuery(hostToUse + QueryAllNamespaces.QUERY.getNamespace()
                     + localSettings.getSeparator() + StringUtils.percentEncode(nsAndIdList.get("input1").get(0)), "");
         }

@@ -29,9 +29,11 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
     }
     
     @Override
-    public void run()
+    public String call() throws Exception
     {
-        doWork();
+        this.doWork();
+        
+        return this.getNormalisedResult();
     }
     
     private void doWork()
@@ -63,9 +65,9 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        if(_DEBUG)
+                        if(RdfFetcherUriQueryRunnable._DEBUG)
                         {
-                            log.debug("alternateQuery="+alternateQuery);
+                            RdfFetcherUriQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
                         }
                         
                         tempRawResult =
@@ -120,10 +122,8 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
     }
     
     @Override
-    public String call() throws Exception
+    public void run()
     {
-        doWork();
-        
-        return this.getNormalisedResult();
+        this.doWork();
     }
 }

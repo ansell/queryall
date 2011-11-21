@@ -56,8 +56,8 @@ public interface BaseQueryAllInterface
     void setTitle(String title);
     
     /**
-     * Changes the object into RDF, and inserts the relevant triples into myRepository using the URIs
-     * in contextUris as the context URIs.
+     * Changes the object into RDF, and inserts the relevant triples into myRepository using the
+     * URIs in contextUris as the context URIs.
      * 
      * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
      * 

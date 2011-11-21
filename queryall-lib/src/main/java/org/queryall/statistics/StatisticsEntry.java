@@ -21,15 +21,14 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
-import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -39,7 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
+public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class);
     @SuppressWarnings("unused")
@@ -391,14 +390,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     
     private int connecttimeout = -1;
     
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
-    
     private Collection<String> errorproviderUris = new HashSet<String>();
-    
-    /**
-     * 
-     */
-    private URI key;
     
     private String lastServerRestart = "";
     
@@ -428,7 +420,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     private int sumerrors = 0;
     private long sumLatency = -1;
     private int sumQueries = -1;
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     private String userAgent = "";
     private String userHostAddress = "";
     
@@ -566,14 +557,14 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         {
             return false;
         }
-        if(this.key == null)
+        if(this.getKey() == null)
         {
             if(other.getKey() != null)
             {
                 return false;
             }
         }
-        else if(!this.key.equals(other.getKey()))
+        else if(!this.getKey().equals(other.getKey()))
         {
             return false;
         }
@@ -791,12 +782,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         return this.connecttimeout;
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -826,16 +811,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     public Collection<String> getErrorproviderUris()
     {
         return this.errorproviderUris;
-    }
-    
-    /**
-     * @return the key
-     */
-    
-    @Override
-    public URI getKey()
-    {
-        return this.key;
     }
     
     /**
@@ -950,18 +925,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         return this.sumQueries;
     }
     
-    @Override
-    public String getTitle()
-    {
-        return null;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     /**
      * @return the userAgent
      */
@@ -987,7 +950,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         result = prime * result + ((this.configVersion == null) ? 0 : this.configVersion.hashCode());
         result = prime * result + this.connecttimeout;
         result = prime * result + ((this.errorproviderUris == null) ? 0 : this.errorproviderUris.hashCode());
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
         result = prime * result + ((this.namespaceUris == null) ? 0 : this.namespaceUris.hashCode());
         result = prime * result + ((this.profileUris == null) ? 0 : this.profileUris.hashCode());
         result = prime * result + ((this.queryString == null) ? 0 : this.queryString.hashCode());
@@ -1037,12 +1000,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         this.connecttimeout = connecttimeout;
     }
     
-    @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
     /**
      * @param errorproviderUris
      *            the errorproviderUris to set
@@ -1050,23 +1007,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     public void setErrorproviderUris(final Collection<String> errorproviderUris)
     {
         this.errorproviderUris = errorproviderUris;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     /**
@@ -1205,11 +1145,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     public void setSumQueries(final int sumQueries)
     {
         this.sumQueries = sumQueries;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
     }
     
     /**

@@ -303,7 +303,7 @@ public class RdfFetcher
             catch(final IOException e)
             {
                 this.setLastStatusCode(1);
-                RdfFetcher.log.info("Found error trying to get the response status code error="+e.getMessage());
+                RdfFetcher.log.info("Found error trying to get the response status code error=" + e.getMessage());
             }
             
             if(this.getLastWasError())
@@ -401,7 +401,8 @@ public class RdfFetcher
     }
     
     public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
-            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException, QueryAllException
+            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException,
+        QueryAllException
     {
         if(RdfFetcher._DEBUG)
         {

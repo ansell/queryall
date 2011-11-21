@@ -15,6 +15,7 @@ import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -23,14 +24,13 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
-import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.HtmlExport;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
+public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProvenanceRecord.class);
     private static final boolean _TRACE = ProvenanceRecord.log.isTraceEnabled();
@@ -91,14 +91,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         return false;
     }
     
-    public Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    private URI key;
     public String recordElementType = "";
     public String recordElementKey = "";
     public String hasAuthorOpenID = "";
     public Date recordDate = null;
     
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     public static URI provenanceTypeUri;
     public static URI provenanceElementTypeUri;
     public static URI provenanceElementKeyUri;
@@ -279,7 +276,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         final URI provenanceTypeUri = ProvenanceRecord.provenanceTypeUri;
         
         RepositoryConnection con = null;
-
+        
         try
         {
             con = myRepository.getConnection();
@@ -314,7 +311,15 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     public ProvenanceRecord(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(ProvenanceRecord._DEBUG)
             {
@@ -330,6 +335,14 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
                 }
                 
                 this.setKey(keyToUse);
+            }
+            else if(nextStatement.getPredicate().equals(Constants.DC_TITLE))
+            {
+                this.setTitle(nextStatement.getObject().stringValue());
+            }
+            else if(nextStatement.getPredicate().equals(nextStatement.getPredicate().equals(RDFS.COMMENT)))
+            {
+                this.setDescription(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(ProvenanceRecord.provenanceHasAuthorOpenIDUri))
             {
@@ -374,12 +387,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -411,27 +418,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         return results;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return null;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     public boolean relatedToElementTypes(final Collection<URI> typesToCheck)
     {
         if(typesToCheck == null || this.recordElementType == null || this.recordElementType.trim().equals(""))
@@ -453,12 +439,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         }
         
         return false;
-    }
-    
-    @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
     }
     
     /**
@@ -485,33 +465,12 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     }
     
     /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    /**
      * @param nextDate
      *            the date the record was created at
      */
     public void setRecordDate(final Date nextDate)
     {
         this.recordDate = nextDate;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
     }
     
     @Override
@@ -629,7 +588,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + this.key + "\n");
+        sb.append("key=" + this.getKey() + "\n");
         sb.append("elementType=" + this.recordElementType + "\n");
         sb.append("elementKey=" + this.recordElementKey + "\n");
         sb.append("hasAuthorOpenID=" + this.hasAuthorOpenID + "\n");

@@ -22,6 +22,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -31,21 +32,13 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class ProviderImpl implements Provider, HtmlExport
+public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class);
     private static final boolean _TRACE = ProviderImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
-    
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key = null;
-    
-    private String title = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private Collection<URI> namespaces = new HashSet<URI>();
     
@@ -73,9 +66,15 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     protected ProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final ValueFactory f = Constants.valueFactory;
+        super(inputStatements, keyToUse, modelVersion);
         
-        for(final Statement nextStatement : inputStatements)
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(ProviderImpl._TRACE)
             {
@@ -92,15 +91,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
                 
                 // resultIsValid = true;
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderTitle())
-                    || nextStatement.getPredicate().equals(f.createURI(Constants.DC_NAMESPACE + "title")))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderResolutionStrategy()))
             {
@@ -265,26 +255,26 @@ public abstract class ProviderImpl implements Provider, HtmlExport
             return false;
         }
         final ProviderImpl other = (ProviderImpl)obj;
-        if(this.key == null)
+        if(this.getKey() == null)
         {
-            if(other.key != null)
+            if(other.getKey() != null)
             {
                 return false;
             }
         }
-        else if(!this.key.equals(other.key))
+        else if(!this.getKey().equals(other.getKey()))
         {
             return false;
         }
         
-        if(this.curationStatus == null)
+        if(this.getCurationStatus() == null)
         {
-            if(other.curationStatus != null)
+            if(other.getCurationStatus() != null)
             {
                 return false;
             }
         }
-        else if(!this.curationStatus.equals(other.curationStatus))
+        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
         {
             return false;
         }
@@ -347,14 +337,14 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         {
             return false;
         }
-        if(this.title == null)
+        if(this.getTitle() == null)
         {
-            if(other.title != null)
+            if(other.getTitle() != null)
             {
                 return false;
             }
         }
-        else if(!this.title.equals(other.title))
+        else if(!this.getTitle().equals(other.getTitle()))
         {
             return false;
         }
@@ -366,12 +356,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     public String getAssumedContentType()
     {
         return this.assumedContentType;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
     }
     
     /**
@@ -409,15 +393,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         return this.isDefaultSourceVar;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
     @Override
     public Collection<URI> getNamespaces()
     {
@@ -443,26 +418,14 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
-    @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.getCurationStatus() == null) ? 0 : this.getCurationStatus().hashCode());
         result = prime * result + ((this.includedInQueryTypes == null) ? 0 : this.includedInQueryTypes.hashCode());
         result = prime * result + (this.isDefaultSourceVar ? 1231 : 1237);
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
         result = prime * result + ((this.namespaces == null) ? 0 : this.namespaces.hashCode());
         result =
                 prime * result
@@ -470,7 +433,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         result =
                 prime * result + ((this.rdfNormalisationsNeeded == null) ? 0 : this.rdfNormalisationsNeeded.hashCode());
         result = prime * result + ((this.redirectOrProxy == null) ? 0 : this.redirectOrProxy.hashCode());
-        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.getTitle() == null) ? 0 : this.getTitle().hashCode());
         return result;
     }
     
@@ -502,12 +465,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
     public void setEndpointMethod(final URI endpointMethod)
     {
         this.endpointMethod = endpointMethod;
@@ -528,22 +485,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         this.isDefaultSourceVar = isDefaultSourceVar;
     }
     
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
     @Override
     public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
     {
@@ -554,12 +495,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     public void setRedirectOrProxy(final URI redirectOrProxy)
     {
         this.redirectOrProxy = redirectOrProxy;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override

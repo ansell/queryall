@@ -24,6 +24,7 @@ import org.queryall.api.namespace.ValidatingNamespaceEntrySchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -32,7 +33,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamespaceEntry, HtmlExport
+public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEntry, RegexValidatingNamespaceEntry,
+        HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(NamespaceEntryImpl.class);
     private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();
@@ -47,13 +49,7 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
         return NamespaceEntryImpl.NAMESPACE_ENTRY_IMPL_TYPES;
     }
     
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    
     private URI authority;
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private String preferredPrefix = "";
     
@@ -74,7 +70,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     // It also determines whether owl:sameAs will be used to relate the preferred prefix to each of
     // the alternative prefixes
     
-    private String title = "";
     private Pattern identifierRegexPattern = null;
     private boolean validationPossible = false;
     
@@ -95,7 +90,15 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     public NamespaceEntryImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(NamespaceEntryImpl._DEBUG)
             {
@@ -115,10 +118,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
                 }
                 
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(NamespaceEntrySchema.getNamespaceAuthority()))
             {
@@ -141,11 +140,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             else if(nextStatement.getPredicate().equals(NamespaceEntrySchema.getNamespaceAlternativePrefix()))
             {
                 this.addAlternativePrefix(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(NamespaceEntrySchema.getNamespaceDescription())
-                    || nextStatement.getPredicate().equals(RDFS.COMMENT))
-            {
-                this.setDescription(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(
                     RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex()))
@@ -228,12 +222,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
         return this.convertQueriesToPreferredPrefix;
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -265,15 +253,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
         return this.identifierRegex;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
     @Override
     public String getPreferredPrefix()
     {
@@ -284,18 +263,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     public String getSeparator()
     {
         return this.separator;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
     }
     
     @Override
@@ -323,12 +290,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
     public void setDescription(final String description)
     {
         this.description = description;
@@ -341,22 +302,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
         this.identifierRegexPattern = Pattern.compile(identifierRegex);
     }
     
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
     @Override
     public void setPreferredPrefix(final String preferredPrefix)
     {
@@ -367,12 +312,6 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     public void setSeparator(final String separator)
     {
         this.separator = separator;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override
@@ -445,13 +384,13 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
             
             URI curationStatusLiteral = null;
             
-            if(this.curationStatus == null)
+            if(this.getCurationStatus() == null)
             {
                 curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
-                curationStatusLiteral = this.curationStatus;
+                curationStatusLiteral = this.getCurationStatus();
             }
             
             final Literal descriptionLiteral = f.createLiteral(this.getDescription());
@@ -556,7 +495,7 @@ public class NamespaceEntryImpl implements NamespaceEntry, RegexValidatingNamesp
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + this.key + "\n");
+        sb.append("key=" + this.getKey() + "\n");
         sb.append("preferredPrefix=" + this.getPreferredPrefix() + "\n");
         sb.append("description=" + this.getDescription() + "\n");
         

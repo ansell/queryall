@@ -53,8 +53,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
             {
                 if(NamespaceEntryEnum._DEBUG)
                 {
-                    NamespaceEntryEnum.log
-                            .debug("found a matching URI set for nextNamespaceEntryUris=" + nextTypeUris);
+                    NamespaceEntryEnum.log.debug("found a matching URI set for nextNamespaceEntryUris=" + nextTypeUris);
                 }
                 results.add(nextEnum);
             }

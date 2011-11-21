@@ -210,8 +210,7 @@ public class Settings implements QueryAllConfiguration
         if(this.cachedNamespacePrefixToUriEntries.containsKey(nextNamespaceEntryConfiguration.getPreferredPrefix()))
         {
             final Collection<URI> currentnamespacePreferredPrefixToUriList =
-                    this.cachedNamespacePrefixToUriEntries
-                            .get(nextNamespaceEntryConfiguration.getPreferredPrefix());
+                    this.cachedNamespacePrefixToUriEntries.get(nextNamespaceEntryConfiguration.getPreferredPrefix());
             if(!currentnamespacePreferredPrefixToUriList.contains(nextNamespaceEntryUri))
             {
                 currentnamespacePreferredPrefixToUriList.add(nextNamespaceEntryUri);
@@ -544,8 +543,7 @@ public class Settings implements QueryAllConfiguration
         return false;
     }
     
-    private void doConfigKeyByValueCache(final URI subjectKey, final URI propertyKey,
-            final Collection<Value> newObject)
+    private void doConfigKeyByValueCache(final URI subjectKey, final URI propertyKey, final Collection<Value> newObject)
     {
         if(newObject == null)
         {
@@ -608,11 +606,13 @@ public class Settings implements QueryAllConfiguration
                 {
                     try
                     {
-                        final Map<URI, NamespaceEntry> results = RdfUtils.getNamespaceEntries(this.getServerConfigurationRdf());
+                        final Map<URI, NamespaceEntry> results =
+                                RdfUtils.getNamespaceEntries(this.getServerConfigurationRdf());
                         
                         if(Settings._INFO)
                         {
-                            Settings.log.info("Settings.getAllNamespaceEntries: found " + results.size() + " namespaces");
+                            Settings.log.info("Settings.getAllNamespaceEntries: found " + results.size()
+                                    + " namespaces");
                         }
                         
                         for(final URI nextNamespaceEntryUri : results.keySet())
@@ -628,8 +628,9 @@ public class Settings implements QueryAllConfiguration
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
-                        Settings.log.error(
-                                "Settings.getAllNamespaceEntries: caught java.lang.InterruptedException: not throwing it.", ie);
+                        Settings.log
+                                .error("Settings.getAllNamespaceEntries: caught java.lang.InterruptedException: not throwing it.",
+                                        ie);
                         
                         return null;
                     }
@@ -661,8 +662,8 @@ public class Settings implements QueryAllConfiguration
                         
                         if(Settings._INFO)
                         {
-                            Settings.log
-                                    .info("Settings.getAllNormalisationRules: found " + results.size() + " normalisation rules");
+                            Settings.log.info("Settings.getAllNormalisationRules: found " + results.size()
+                                    + " normalisation rules");
                         }
                         
                         this.cachedNormalisationRules = results;
@@ -670,8 +671,9 @@ public class Settings implements QueryAllConfiguration
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
-                        Settings.log.error(
-                                "Settings.getAllNormalisationRules: caught java.lang.InterruptedException: not throwing it.", ie);
+                        Settings.log
+                                .error("Settings.getAllNormalisationRules: caught java.lang.InterruptedException: not throwing it.",
+                                        ie);
                         
                         return null;
                     }
@@ -712,7 +714,8 @@ public class Settings implements QueryAllConfiguration
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
-                        Settings.log.error("Settings.getAllProfiles: caught java.lang.InterruptedException: not throwing it.", ie);
+                        Settings.log.error(
+                                "Settings.getAllProfiles: caught java.lang.InterruptedException: not throwing it.", ie);
                         
                         return null;
                     }
@@ -756,7 +759,9 @@ public class Settings implements QueryAllConfiguration
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
-                        Settings.log.error("Settings.getAllProviders: caught java.lang.InterruptedException: not throwing it.", ie);
+                        Settings.log
+                                .error("Settings.getAllProviders: caught java.lang.InterruptedException: not throwing it.",
+                                        ie);
                         
                         return null;
                     }
@@ -796,15 +801,16 @@ public class Settings implements QueryAllConfiguration
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
-                        Settings.log
-                                .error("Settings.getAllQueryTypes: caught java.lang.InterruptedException: not throwing it.", ie);
+                        Settings.log.error(
+                                "Settings.getAllQueryTypes: caught java.lang.InterruptedException: not throwing it.",
+                                ie);
                         
                         return null;
                     }
                 }
             }
         }
-
+        
         return Collections.unmodifiableMap(this.cachedCustomQueries);
     }
     
@@ -838,7 +844,9 @@ public class Settings implements QueryAllConfiguration
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
-                        Settings.log.error("Settings.getAllRuleTests: caught java.lang.InterruptedException: not throwing it.", ie);
+                        Settings.log
+                                .error("Settings.getAllRuleTests: caught java.lang.InterruptedException: not throwing it.",
+                                        ie);
                         
                         return null;
                     }
@@ -878,7 +886,7 @@ public class Settings implements QueryAllConfiguration
             {
                 if(this.currentBaseConfigurationRepository == null)
                 {
-            
+                    
                     if(Settings._DEBUG)
                     {
                         Settings.log.debug("Settings.getBaseConfigurationRdf: constructing a new repository");
@@ -915,7 +923,8 @@ public class Settings implements QueryAllConfiguration
                                                 + nextLocation + " nextInputStream=" + nextInputStream);
                             }
                             
-                            myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                            myRepositoryConnection.add(nextInputStream, baseURI,
+                                    RDFFormat.forMIMEType(configMIMEFormat));
                             if(Settings._INFO)
                             {
                                 Settings.log
@@ -972,7 +981,8 @@ public class Settings implements QueryAllConfiguration
                     if(Settings._INFO)
                     {
                         final long end = System.currentTimeMillis();
-                        Settings.log.info(String.format("%s: timing=%10d", "Settings.getBaseConfigurationRdf", (end - start)));
+                        Settings.log.info(String.format("%s: timing=%10d", "Settings.getBaseConfigurationRdf",
+                                (end - start)));
                         
                     }
                     
@@ -1264,7 +1274,8 @@ public class Settings implements QueryAllConfiguration
                         tempConfigurationRepository =
                                 Schema.getSchemas(tempConfigurationRepository, Settings.CONFIG_API_VERSION);
                         
-                        final Collection<String> queryConfigLocationsList = this.getStringProperties("queryConfigLocations");
+                        final Collection<String> queryConfigLocationsList =
+                                this.getStringProperties("queryConfigLocations");
                         
                         if(queryConfigLocationsList == null)
                         {
@@ -1276,7 +1287,8 @@ public class Settings implements QueryAllConfiguration
                         {
                             // TODO: negotiate between local and non-local addresses better
                             // than this
-                            final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                            final RepositoryConnection myRepositoryConnection =
+                                    tempConfigurationRepository.getConnection();
                             try
                             {
                                 if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
@@ -1308,14 +1320,16 @@ public class Settings implements QueryAllConfiguration
                                         Settings.log.info("Settings: getting configuration from file: nextLocation="
                                                 + nextLocation);
                                     }
-                                    final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                                    final InputStream nextInputStream =
+                                            this.getClass().getResourceAsStream(nextLocation);
                                     
                                     myRepositoryConnection.add(nextInputStream, baseURI,
                                             RDFFormat.forMIMEType(configMIMEFormat));
                                     if(Settings._INFO)
                                     {
-                                        Settings.log.info("Settings: finished getting configuration from file: nextLocation="
-                                                + nextLocation);
+                                        Settings.log
+                                                .info("Settings: finished getting configuration from file: nextLocation="
+                                                        + nextLocation);
                                     }
                                 }
                             }
@@ -1358,7 +1372,8 @@ public class Settings implements QueryAllConfiguration
                     catch(final OpenRDFException ordfe)
                     {
                         Settings.log.error(
-                                "Settings: failed to initialise the configuration repository. Caught OpenRDFException", ordfe);
+                                "Settings: failed to initialise the configuration repository. Caught OpenRDFException",
+                                ordfe);
                         throw new RuntimeException(
                                 "Settings: failed to initialise the configuration repository. Caught OpenRDFException");
                     }
@@ -1376,8 +1391,10 @@ public class Settings implements QueryAllConfiguration
                             
                             for(final String nextLocation : this.getStringProperties("backupQueryConfigLocations"))
                             {
-                                // TODO: negotiate between local and non-local addresses better than this
-                                final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                                // TODO: negotiate between local and non-local addresses better than
+                                // this
+                                final RepositoryConnection myRepositoryConnection =
+                                        tempConfigurationRepository.getConnection();
                                 try
                                 {
                                     if(nextLocation.startsWith("http://") || nextLocation.startsWith("https://"))
@@ -1393,7 +1410,8 @@ public class Settings implements QueryAllConfiguration
                                                             + nextLocation + " url=" + url.toString());
                                         }
                                         
-                                        myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
+                                        myRepositoryConnection.add(url, baseURI,
+                                                RDFFormat.forMIMEType(configMIMEFormat));
                                         
                                         if(Settings._INFO)
                                         {
@@ -1406,10 +1424,12 @@ public class Settings implements QueryAllConfiguration
                                     {
                                         if(Settings._INFO)
                                         {
-                                            Settings.log.info("Settings: getting backup configuration from file: nextLocation="
-                                                    + nextLocation);
+                                            Settings.log
+                                                    .info("Settings: getting backup configuration from file: nextLocation="
+                                                            + nextLocation);
                                         }
-                                        final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                                        final InputStream nextInputStream =
+                                                this.getClass().getResourceAsStream(nextLocation);
                                         
                                         myRepositoryConnection.add(nextInputStream, baseURI,
                                                 RDFFormat.forMIMEType(configMIMEFormat));
@@ -1469,8 +1489,8 @@ public class Settings implements QueryAllConfiguration
                     if(Settings._INFO)
                     {
                         final long end = System.currentTimeMillis();
-                        Settings.log
-                                .info(String.format("%s: timing=%10d", "Settings.getServerConfigurationRdf", (end - start)));
+                        Settings.log.info(String.format("%s: timing=%10d", "Settings.getServerConfigurationRdf",
+                                (end - start)));
                         
                     }
                     if(Settings._DEBUG)
@@ -1482,12 +1502,14 @@ public class Settings implements QueryAllConfiguration
                     {
                         try
                         {
-                            Settings.log.info("Settings: found " + this.currentConfigurationRepository.getConnection().size()
+                            Settings.log.info("Settings: found "
+                                    + this.currentConfigurationRepository.getConnection().size()
                                     + " statements in model configuration");
                         }
                         catch(final RepositoryException rex)
                         {
-                            Settings.log.error("Settings: could not determine the number of statements in configuration");
+                            Settings.log
+                                    .error("Settings: could not determine the number of statements in configuration");
                         }
                     }
                 }
@@ -1855,12 +1877,12 @@ public class Settings implements QueryAllConfiguration
                                 f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "activeWebappConfigs");
                         
                         final Collection<Value> webappConfigFiles =
-                                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository,
-                                        webappConfigLocationsUri, subjectConfigUri);
+                                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(
+                                        nextBaseConfigurationRepository, webappConfigLocationsUri, subjectConfigUri);
                         
                         final Collection<Value> activeWebappConfigs =
-                                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextBaseConfigurationRepository,
-                                        activeWebappConfigsUri, subjectConfigUri);
+                                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(
+                                        nextBaseConfigurationRepository, activeWebappConfigsUri, subjectConfigUri);
                         
                         final Collection<String> tempCollection = new HashSet<String>();
                         
@@ -1888,7 +1910,8 @@ public class Settings implements QueryAllConfiguration
                             // TODO: negotiate between local and non-local addresses better
                             // than this
                             
-                            final RepositoryConnection myRepositoryConnection = tempConfigurationRepository.getConnection();
+                            final RepositoryConnection myRepositoryConnection =
+                                    tempConfigurationRepository.getConnection();
                             
                             try
                             {
@@ -1905,7 +1928,8 @@ public class Settings implements QueryAllConfiguration
                                                         + nextLocation
                                                         + " url="
                                                         + url.toString()
-                                                        + " myRepositoryConnection.size()=" + myRepositoryConnection.size());
+                                                        + " myRepositoryConnection.size()="
+                                                        + myRepositoryConnection.size());
                                     }
                                     
                                     myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
@@ -1927,7 +1951,8 @@ public class Settings implements QueryAllConfiguration
                                                 .info("Settings.getWebAppConfigurationRdf: getting configuration from file: nextLocation="
                                                         + nextLocation);
                                     }
-                                    final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                                    final InputStream nextInputStream =
+                                            this.getClass().getResourceAsStream(nextLocation);
                                     
                                     if(nextInputStream != null)
                                     {
@@ -1942,8 +1967,9 @@ public class Settings implements QueryAllConfiguration
                                     }
                                     else
                                     {
-                                        Settings.log.error("Could not resolve config location to an input stream nextLocation="
-                                                + nextLocation);
+                                        Settings.log
+                                                .error("Could not resolve config location to an input stream nextLocation="
+                                                        + nextLocation);
                                     }
                                 }
                                 
@@ -2036,8 +2062,8 @@ public class Settings implements QueryAllConfiguration
                     if(Settings._INFO)
                     {
                         final long end = System.currentTimeMillis();
-                        Settings.log
-                                .info(String.format("%s: timing=%10d", "Settings.getWebAppConfigurationRdf", (end - start)));
+                        Settings.log.info(String.format("%s: timing=%10d", "Settings.getWebAppConfigurationRdf",
+                                (end - start)));
                         
                     }
                     

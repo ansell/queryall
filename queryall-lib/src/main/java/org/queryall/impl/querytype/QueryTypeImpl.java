@@ -28,6 +28,7 @@ import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
@@ -38,22 +39,14 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType,
-        HtmlExport
+public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryType, InputQueryType,
+        SparqlProcessorQueryType, RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
-    
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    
-    private String title = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private boolean handleAllNamespaces = true;
     
@@ -135,7 +128,15 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     protected QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(QueryTypeImpl._DEBUG)
             {
@@ -151,11 +152,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                 }
                 
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTitle())
-                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryHandleAllNamespaces()))
             {
@@ -242,10 +238,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
             else
             {
                 this.addUnrecognisedStatement(nextStatement);
@@ -319,12 +311,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         return this.getKey().stringValue().compareTo(otherQueryType.getKey().stringValue());
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -374,15 +360,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public boolean getIsPageable()
     {
         return this.isPageable;
-    }
-    
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
     }
     
     @Override
@@ -456,18 +433,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public String getTemplateString()
     {
         return this.templateString;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
     }
     
     @Override
@@ -686,12 +651,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
     public void setHandleAllNamespaces(final boolean handleAllNamespaces)
     {
         this.handleAllNamespaces = handleAllNamespaces;
@@ -725,22 +684,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public void setIsPageable(final boolean isPageable)
     {
         this.isPageable = isPageable;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     @Override
@@ -793,12 +736,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
-    }
-    
-    @Override
     public String toHtml()
     {
         final StringBuilder sb = new StringBuilder();
@@ -828,7 +765,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         
         sb.append("<div class=\"" + prefix + "title_div\"><span class=\"" + prefix
                 + "title_span\">Title:</span><input type=\"text\" name=\"" + prefix + "title\" value=\""
-                + StringUtils.xmlEncodeString(this.title) + "\" /></div>\n");
+                + StringUtils.xmlEncodeString(this.getTitle()) + "\" /></div>\n");
         
         sb.append("<div class=\"" + prefix + "templateString_div\"><span class=\"" + prefix
                 + "templateString_span\">Query Template:</span><input type=\"text\" name=\"" + prefix
@@ -934,7 +871,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             // create some resources and literals to make statements out of
             final URI queryInstanceUri = this.getKey();
             
-            final Literal titleLiteral = f.createLiteral(this.title);
+            final Literal titleLiteral = f.createLiteral(this.getTitle());
             final Literal handleAllNamespacesLiteral = f.createLiteral(this.handleAllNamespaces);
             final Literal isNamespaceSpecificLiteral = f.createLiteral(this.isNamespaceSpecific);
             final URI namespaceMatchMethodLiteral = this.namespaceMatchMethod;
@@ -953,13 +890,13 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             
             URI curationStatusLiteral = null;
             
-            if(this.curationStatus == null)
+            if(this.getCurationStatus() == null)
             {
                 curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
-                curationStatusLiteral = this.curationStatus;
+                curationStatusLiteral = this.getCurationStatus();
             }
             
             // log.info("after literals created");
@@ -1174,8 +1111,8 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + this.key + "\n");
-        sb.append("title=" + this.title + "\n");
+        sb.append("key=" + this.getKey() + "\n");
+        sb.append("title=" + this.getTitle() + "\n");
         
         // sb.append("templateString=" + templateString + "\n");
         // sb.append("standardUriTemplateString=" + standardUriTemplateString + "\n");

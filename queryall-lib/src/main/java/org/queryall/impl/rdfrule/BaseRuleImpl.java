@@ -27,9 +27,9 @@ import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
-import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,20 +37,14 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class BaseRuleImpl implements NormalisationRule
+public abstract class BaseRuleImpl extends BaseQueryAllImpl implements NormalisationRule
 {
     protected static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
     protected static final boolean _TRACE = BaseRuleImpl.log.isTraceEnabled();
     protected static final boolean _DEBUG = BaseRuleImpl.log.isDebugEnabled();
     protected static final boolean _INFO = BaseRuleImpl.log.isInfoEnabled();
     
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    
     private String description = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
@@ -62,8 +56,6 @@ public abstract class BaseRuleImpl implements NormalisationRule
     
     private int order = 100;
     
-    private String title = "";
-    
     protected BaseRuleImpl()
     {
         
@@ -74,7 +66,15 @@ public abstract class BaseRuleImpl implements NormalisationRule
     protected BaseRuleImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             // if(NormalisationRuleImpl._DEBUG)
             // {
@@ -92,22 +92,9 @@ public abstract class BaseRuleImpl implements NormalisationRule
                 
                 this.setKey(keyToUse);
             }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleOrder()))
             {
                 this.setOrder(RdfUtils.getIntegerFromValue(nextStatement.getObject()));
-            }
-            else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleDescription())
-                    || nextStatement.getPredicate().equals(RDFS.COMMENT))
-            {
-                this.setDescription(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleHasRelatedNamespace()))
             {
@@ -234,12 +221,6 @@ public abstract class BaseRuleImpl implements NormalisationRule
         return this.getKey().stringValue().compareTo(otherRule.getKey().stringValue());
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -253,15 +234,6 @@ public abstract class BaseRuleImpl implements NormalisationRule
     public String getDescription()
     {
         return this.description;
-    }
-    
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
     }
     
     @Override
@@ -295,18 +267,6 @@ public abstract class BaseRuleImpl implements NormalisationRule
     }
     
     @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
-    @Override
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
@@ -315,30 +275,9 @@ public abstract class BaseRuleImpl implements NormalisationRule
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
     public void setDescription(final String description)
     {
         this.description = description;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     @Override
@@ -351,12 +290,6 @@ public abstract class BaseRuleImpl implements NormalisationRule
     public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override
@@ -382,13 +315,13 @@ public abstract class BaseRuleImpl implements NormalisationRule
             
             URI curationStatusLiteral = null;
             
-            if((this.curationStatus == null))
+            if((this.getCurationStatus() == null))
             {
                 curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
             }
             else
             {
-                curationStatusLiteral = this.curationStatus;
+                curationStatusLiteral = this.getCurationStatus();
             }
             
             con.setAutoCommit(false);

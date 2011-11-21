@@ -35,9 +35,11 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     }
     
     @Override
-    public void run()
+    public String call() throws Exception
     {
-        doWork();
+        this.doWork();
+        
+        return this.getNormalisedResult();
     }
     
     private void doWork()
@@ -76,9 +78,9 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                         HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
                                 + " originalEndpoint=" + this.getEndpointUrl());
                         
-                        if(_DEBUG)
+                        if(HttpUrlQueryRunnable._DEBUG)
                         {
-                            log.debug("alternateQuery="+alternateQuery);
+                            HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
                         }
                         
                         tempRawResult =
@@ -116,9 +118,9 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        if(_DEBUG)
+                        if(HttpUrlQueryRunnable._DEBUG)
                         {
-                            log.debug("alternateQuery="+alternateQuery);
+                            HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
                         }
                         
                         tempRawResult =
@@ -162,7 +164,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 this.setLastException(fetcher.getLastException());
             }
         }
-        catch(QueryAllException qae)
+        catch(final QueryAllException qae)
         {
             HttpUrlQueryRunnable.log.error("Found QueryAllException", qae);
             this.setWasSuccessful(false);
@@ -180,12 +182,10 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             this.setCompleted(true);
         }
     }
-
+    
     @Override
-    public String call() throws Exception
+    public void run()
     {
-        doWork();
-        
-        return this.getNormalisedResult();
+        this.doWork();
     }
 }

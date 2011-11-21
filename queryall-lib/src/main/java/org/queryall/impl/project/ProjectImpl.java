@@ -18,6 +18,7 @@ import org.queryall.api.project.Project;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProjectImpl implements Project, HtmlExport
+public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProjectImpl.class);
     private static final boolean _TRACE = ProjectImpl.log.isTraceEnabled();
@@ -54,10 +55,18 @@ public class ProjectImpl implements Project, HtmlExport
     
     private URI curationStatus = null;
     
-    public ProjectImpl(final Collection<Statement> rdfStatements, final URI subjectKey, final int modelVersion)
+    public ProjectImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : rdfStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
+        
+        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
+        
+        this.unrecognisedStatements = new HashSet<Statement>();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(ProjectImpl._DEBUG)
             {
@@ -69,26 +78,14 @@ public class ProjectImpl implements Project, HtmlExport
             {
                 if(ProjectImpl._TRACE)
                 {
-                    ProjectImpl.log.trace("Project: found valid type predicate for URI: " + subjectKey);
+                    ProjectImpl.log.trace("Project: found valid type predicate for URI: " + keyToUse);
                 }
                 
-                this.setKey(subjectKey);
+                this.setKey(keyToUse);
             }
             else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectAuthority()))
             {
                 this.setAuthority((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectTitle())
-                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                if(this.getTitle().equals(""))
-                {
-                    this.setTitle(nextStatement.getObject().stringValue());
-                }
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectDescription()))
-            {
-                this.setDescription(nextStatement.getObject().stringValue());
             }
             else
             {

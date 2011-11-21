@@ -134,10 +134,11 @@ public class ProviderEnum extends QueryAllEnum
     }
     
     /**
-     * For Providers, we require that all of the given URIs exactly match the declared type URIs, to prevent basic HTTP Providers from being parsed as any of the specialised HTTP Providers
+     * For Providers, we require that all of the given URIs exactly match the declared type URIs, to
+     * prevent basic HTTP Providers from being parsed as any of the specialised HTTP Providers
      */
     @Override
-    protected boolean matchForTypeUris(Set<URI> nextTypeURIs)
+    protected boolean matchForTypeUris(final Set<URI> nextTypeURIs)
     {
         boolean matching = true;
         
@@ -148,7 +149,8 @@ public class ProviderEnum extends QueryAllEnum
         
         for(final URI nextURI : nextTypeURIs)
         {
-            // Default implementation of this method is to check whether the given URIs are all in the type URIs for this Enum
+            // Default implementation of this method is to check whether the given URIs are all in
+            // the type URIs for this Enum
             // This behaviour can be overriden to provide different behaviour in implementations
             if(!this.getTypeURIs().contains(nextURI))
             {
@@ -157,4 +159,5 @@ public class ProviderEnum extends QueryAllEnum
         }
         
         return matching;
-    }}
+    }
+}

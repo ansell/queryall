@@ -17,6 +17,7 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     
     void addStage(URI nextStage) throws InvalidStageException;
     
+    @Override
     String getDescription();
     
     int getOrder();
