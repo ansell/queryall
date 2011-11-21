@@ -24,6 +24,8 @@ public interface BaseQueryAllInterface
      **/
     QueryAllNamespaces getDefaultNamespace();
     
+    String getDescription();
+    
     Set<URI> getElementTypes();
     
     /**
@@ -37,6 +39,8 @@ public interface BaseQueryAllInterface
     Collection<Statement> getUnrecognisedStatements();
     
     void setCurationStatus(URI curationStatus);
+    
+    void setDescription(String description);
     
     /**
      * Sets the URI for the object. If it is not a valid org.openrdf.model.URI an
