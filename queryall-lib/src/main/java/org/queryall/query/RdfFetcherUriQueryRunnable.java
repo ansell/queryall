@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherUriQueryRunnable.class);
-    private static final boolean _TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
+    private static final boolean _TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
     private static final boolean _DEBUG = RdfFetcherUriQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherUriQueryRunnable.log.isInfoEnabled();

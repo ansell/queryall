@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherSparqlQueryRunnable.class);
-    private static final boolean _TRACE = RdfFetcherSparqlQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
+    private static final boolean _TRACE = RdfFetcherSparqlQueryRunnable.log.isTraceEnabled();
     private static final boolean _DEBUG = RdfFetcherSparqlQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherSparqlQueryRunnable.log.isInfoEnabled();

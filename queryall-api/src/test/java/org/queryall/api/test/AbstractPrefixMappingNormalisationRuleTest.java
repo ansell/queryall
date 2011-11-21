@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
+@SuppressWarnings("unused")
 public abstract class AbstractPrefixMappingNormalisationRuleTest extends AbstractNormalisationRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
@@ -43,19 +44,13 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     private static final boolean _DEBUG = AbstractPrefixMappingNormalisationRuleTest.log.isDebugEnabled();
     private static final boolean _INFO = AbstractPrefixMappingNormalisationRuleTest.log.isInfoEnabled();
     
-    @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri1;
-    @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri2;
     
-    @SuppressWarnings("unused")
     private String testStartingUriAEOBase;
-    @SuppressWarnings("unused")
     private String testFinalUriAEOBase;
     
-    @SuppressWarnings("unused")
     private String testStartingUriPOBase;
-    @SuppressWarnings("unused")
     private String testFinalUriPOBase;
     
     private Repository testRepository;
