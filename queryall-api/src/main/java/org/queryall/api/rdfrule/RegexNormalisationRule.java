@@ -4,54 +4,72 @@ public interface RegexNormalisationRule extends TransformingRule
 {
     
     /**
-     * @return the inputMatchRegex
+     * 
+     * @return The Regular Expression used to match against inputs, in the denormalisation stages.
      */
     String getInputMatchRegex();
     
     /**
-     * @return the inputReplaceRegex
+     * 
+     * @return The Regular Expression used to replace any matches using the input match regex, in
+     *         the denormalisation stages.
      */
     String getInputReplaceRegex();
     
     /**
-     * @return the outputMatchRegex
+     * 
+     * @return The Regular Expression used to match against outputs, in the normalisation stages.
      */
     String getOutputMatchRegex();
     
     /**
-     * @return the outputReplaceRegex
+     * 
+     * @return The Regular Expression used to replace any matches using the output match regex, in
+     *         the normalisation stages.
      */
     String getOutputReplaceRegex();
     
-    // NOTE: it is quite okay to have an empty replace regex, but an empty match
-    // is not considered useful here
+    /**
+     * 
+     * @return True if the input match regex and input replace regex are both well defined, and
+     *         false otherwise.
+     */
     boolean hasInputRule();
     
-    // NOTE: it is quite okay to have an empty replace regex, but an empty match
-    // is not considered useful here
+    /**
+     * 
+     * @return True if the output match regex and output replace regex are both well defined, and
+     *         false otherwise.
+     */
     boolean hasOutputRule();
     
     /**
+     * 
      * @param inputMatchRegex
-     *            the inputMatchRegex to set
+     *            The input match regex to use to match in the denormalisation stages.
      */
     void setInputMatchRegex(String inputMatchRegex);
     
     /**
+     * 
      * @param inputReplaceRegex
-     *            the inputReplaceRegex to set
+     *            The input replace regex to use to replace any matches from the input match regex
+     *            in the denormalisation stages.
      */
     void setInputReplaceRegex(String inputReplaceRegex);
     
     /**
+     * 
      * @param outputMatchRegex
-     *            the outputMatchRegex to set
+     *            The output match regex to use to match in the denormalisation stages.
      */
     void setOutputMatchRegex(String outputMatchRegex);
     
     /**
+     * 
      * @param outputReplaceRegex
-     *            the outputReplaceRegex to set
+     *            The output replace regex to use to replace any matches from the output match regex
+     *            in the denormalisation stages.
      */
     void setOutputReplaceRegex(String outputReplaceRegex);
     
