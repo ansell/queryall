@@ -39,12 +39,12 @@ public abstract class AbstractQueryAllWebTest
     @Before
     public void setUp() throws Exception
     {
-        this.setWebTester(new WebTester());
-        this.getWebTester().setBaseUrl(getBaseUrl());
+        this.tester = new WebTester();
+        this.tester.setBaseUrl(getBaseUrl());
         // NOTE: Do not remove the following. Apparently it is necessary to initialise some
         // variables that are not initialised earlier, and will cause unsightly
         // NullPointerExceptions if not done before the realistically named gotoPage
-        this.getWebTester().beginAt(getBeginAtPath());
+        this.tester.beginAt(getBeginAtPath());
     }
     
     /**
@@ -80,7 +80,9 @@ public abstract class AbstractQueryAllWebTest
         {
             AbstractQueryAllWebTest.LOGGER.error("Found exception closing browser after test", ex);
         }
-        
-        this.setWebTester(null);
+        finally
+        {
+            this.tester = null;
+        }
     }
 }
