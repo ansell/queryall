@@ -5,7 +5,8 @@ package org.queryall.api.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -26,12 +27,16 @@ import org.queryall.exception.InvalidStageException;
  */
 public abstract class AbstractNormalisationRuleTest
 {
-    // private URI testTrueSparqlNormalisationRuleUri;
-    // private URI testFalseSparqlNormalisationRuleUri;
-    private URI testStageInvalidInclusionSparqlNormalisationRuleUri;
-    private URI testStageAllValidAndInvalidSparqlNormalisationRuleUri;
-    protected List<URI> validStages;
-    protected List<URI> invalidStages;
+    private URI testStageInvalidInclusionRuleUri;
+    private URI testStageAllValidAndInvalidRuleUri;
+    protected Set<URI> validStages;
+    protected Set<URI> invalidStages;
+    
+    /**
+     * 
+     * @return The set of URIs that are expected to be valid stages for this type of rule.
+     */
+    public abstract Set<URI> getExpectedValidStages();
     
     /**
      * Create a new profile instance with default properties
@@ -41,9 +46,9 @@ public abstract class AbstractNormalisationRuleTest
     public abstract Profile getNewTestProfile();
     
     /**
-     * Create a new instance of the SparqlNormalisationRule implementation being tested
+     * Create a new instance of the NormalisationRule implementation being tested
      * 
-     * @return a new instance of the implemented SparqlNormalisationRule
+     * @return a new instance of the implemented NormalisationRule
      */
     public abstract NormalisationRule getNewTestRule();
     
@@ -59,23 +64,25 @@ public abstract class AbstractNormalisationRuleTest
         // f.createURI("http://example.org/test/includedNormalisationRule");
         // this.testFalseSparqlNormalisationRuleUri =
         // f.createURI("http://example.org/test/excludedNormalisationRule");
-        this.testStageInvalidInclusionSparqlNormalisationRuleUri =
-                f.createURI("http://example.org/test/stageInclusionSparqlNormalisationRule");
-        this.testStageAllValidAndInvalidSparqlNormalisationRuleUri =
-                f.createURI("http://example.org/test/stageExclusionSparqlNormalisationRule");
+        this.testStageInvalidInclusionRuleUri = f.createURI("http://example.org/test/stageInclusionRule");
+        this.testStageAllValidAndInvalidRuleUri = f.createURI("http://example.org/test/stageExclusionRule");
         
-        this.invalidStages = new ArrayList<URI>(5);
+        this.validStages = this.getExpectedValidStages();
         
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        // make sure that we have reasonable sizes for the relevant sets
+        Assert.assertTrue(this.validStages.size() > 0);
+        Assert.assertTrue(this.validStages.size() <= 7);
+        Assert.assertEquals(7, NormalisationRuleSchema.getAllStages().size());
         
-        this.validStages = new ArrayList<URI>(2);
+        this.invalidStages = new HashSet<URI>(7);
         
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        for(final URI nextStage : NormalisationRuleSchema.getAllStages())
+        {
+            if(!this.validStages.contains(nextStage))
+            {
+                this.invalidStages.add(nextStage);
+            }
+        }
     }
     
     /**
@@ -86,23 +93,19 @@ public abstract class AbstractNormalisationRuleTest
     {
         // this.testTrueSparqlNormalisationRuleUri = null;
         // this.testFalseSparqlNormalisationRuleUri = null;
-        this.testStageInvalidInclusionSparqlNormalisationRuleUri = null;
-        this.testStageAllValidAndInvalidSparqlNormalisationRuleUri = null;
+        this.testStageInvalidInclusionRuleUri = null;
+        this.testStageAllValidAndInvalidRuleUri = null;
         
         this.invalidStages = null;
         this.validStages = null;
     }
     
     @Test
-    public void testAllValidAndInvalidStages()
+    public void testAllValidAndInvalidStages() throws InvalidStageException
     {
-        final NormalisationRule queryallRule = this.getNewTestRule();
+        final NormalisationRule normalisationRule = this.getNewTestRule();
         
-        Assert.assertTrue(queryallRule instanceof NormalisationRule);
-        
-        final NormalisationRule normalisationRule = queryallRule;
-        
-        normalisationRule.setKey(this.testStageAllValidAndInvalidSparqlNormalisationRuleUri);
+        normalisationRule.setKey(this.testStageAllValidAndInvalidRuleUri);
         
         final Collection<URI> includedStages = this.validStages;
         
@@ -128,15 +131,11 @@ public abstract class AbstractNormalisationRuleTest
     }
     
     @Test
-    public void testInvalidStageInclusion()
+    public void testInvalidStageInclusion() throws InvalidStageException
     {
-        final NormalisationRule queryallRule = this.getNewTestRule();
+        final NormalisationRule normalisationRule = this.getNewTestRule();
         
-        Assert.assertTrue(queryallRule instanceof NormalisationRule);
-        
-        final NormalisationRule normalisationRule = queryallRule;
-        
-        normalisationRule.setKey(this.testStageInvalidInclusionSparqlNormalisationRuleUri);
+        normalisationRule.setKey(this.testStageInvalidInclusionRuleUri);
         
         final Collection<URI> includedStages = new ArrayList<URI>(0);
         

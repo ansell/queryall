@@ -23,7 +23,6 @@ import org.queryall.api.rdfrule.SpinInferencingRule;
 import org.queryall.api.rdfrule.SpinInferencingRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -57,7 +56,8 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
     @SuppressWarnings("unused")
     private static final boolean _INFO = SpinInferencingRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> SPIN_INFERENCING_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPIN_INFERENCING_RULE_IMPL_TYPES = new HashSet<URI>(8);
+    private static final Set<URI> SPIN_INFERENCING_RULE_IMPL_VALID_STAGES = new HashSet<URI>(8);
     
     static
     {
@@ -69,6 +69,14 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         
         // Need to initialise the SPIN registry at least once
         // SPINModuleRegistry.get().init();
+        
+        SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterQueryParsing());
+        SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsImport());
+        SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsToPool());
+        
     }
     
     public static Set<URI> myTypes()
@@ -102,12 +110,6 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            // if(SparqlNormalisationRuleImpl._DEBUG)
-            // {
-            // SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
-            // + nextStatement.toString());
-            // }
-            
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri()))
             {
@@ -131,13 +133,6 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
-        
-        // this.relatedNamespaces = tempRelatedNamespaces;
-        // this.unrecognisedStatements = tempUnrecognisedStatements;
-        
-        // stages.add(NormalisationRule.rdfruleStageAfterResultsImport.stringValue());
-        
-        // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
         
         if(SpinInferencingRuleImpl._DEBUG)
         {
@@ -262,32 +257,6 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         return Collections.unmodifiableSet(this.urlImports);
     }
     
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            try
-            {
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-            }
-            catch(final InvalidStageException e)
-            {
-                SpinInferencingRuleImpl.log
-                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
-                                e);
-                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-            }
-        }
-        
-        return Collections.unmodifiableSet(this.validStages);
-    }
-    
     @Override
     public boolean isEntailmentEnabled(final URI entailmentURI)
     {
@@ -401,6 +370,12 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
     {
         this.registry = registry;
         this.registry.init();
+    }
+    
+    @Override
+    protected Set<URI> setupValidStages()
+    {
+        return SpinInferencingRuleImpl.SPIN_INFERENCING_RULE_IMPL_VALID_STAGES;
     }
     
     @Override

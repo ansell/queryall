@@ -3,8 +3,9 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -24,8 +25,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlAskRule;
 import org.queryall.api.rdfrule.SparqlNormalisationRule;
-import org.queryall.exception.InvalidStageException;
-import org.queryall.exception.ValidationFailedException;
+import org.queryall.exception.QueryAllException;
 
 /**
  * Abstract unit test for SparqlNormalisationRule API.
@@ -57,6 +57,17 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        
+        return results;
+    }
     
     /**
      * Create a new instance of the SparqlAskRule implementation being tested.
@@ -102,18 +113,6 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
         this.testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
         this.testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
         
-        this.invalidStages = new ArrayList<URI>(5);
-        
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        
-        this.validStages = new ArrayList<URI>(2);
-        
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     /**
@@ -191,12 +190,11 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
-     * @throws InvalidStageException
-     * @throws ValidationFailedException
+     * @throws QueryAllException
      */
     @Test
     public void testNegativeMatchTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException, InvalidStageException, ValidationFailedException
+        MalformedQueryException, QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -239,12 +237,11 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
-     * @throws ValidationFailedException
-     * @throws InvalidStageException
+     * @throws QueryAllException
      */
     @Test
     public void testPositiveMatchTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException, InvalidStageException, ValidationFailedException
+        MalformedQueryException, QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -280,4 +277,5 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
         
         Assert.assertTrue("Ask queries did not execute properly to return true", result);
     }
+    
 }

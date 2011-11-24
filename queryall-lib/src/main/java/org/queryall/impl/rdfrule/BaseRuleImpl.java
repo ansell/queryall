@@ -46,15 +46,17 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     
     private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
     
-    protected final Set<URI> stages = new HashSet<URI>(4);
+    private final Set<URI> stages = new HashSet<URI>(10);
     
-    protected final Set<URI> validStages = new HashSet<URI>(7);
+    private final Set<URI> validStages = new HashSet<URI>(10);
     
     private int order = 100;
     
     protected BaseRuleImpl()
     {
+        super();
         
+        this.validStages.addAll(this.setupValidStages());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -63,6 +65,8 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
+        
+        this.validStages.addAll(this.setupValidStages());
         
         final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
@@ -90,7 +94,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleHasRelatedNamespace()))
             {
-                this.addRelatedNamespaces((URI)nextStatement.getObject());
+                this.addRelatedNamespace((URI)nextStatement.getObject());
             }
             else if(nextStatement.getPredicate().equals(NormalisationRuleSchema.getRdfruleStage()))
             {
@@ -104,10 +108,9 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                             .error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="
                                     + nextStatement.getObject().stringValue()
                                     + " validStages="
-                                    + this.validStages.toString()
+                                    + this.getValidStages().toString()
                                     + " this.getElementTypes()="
-                                    + this.getElementTypes()
-                                    + " keyToUse=" + keyToUse.stringValue());
+                                    + this.getElementTypes() + " keyToUse=" + keyToUse.stringValue());
                 }
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
@@ -132,7 +135,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
      * @param nextRelatedNamespace
      */
     @Override
-    public void addRelatedNamespaces(final URI nextRelatedNamespace)
+    public final void addRelatedNamespace(final URI nextRelatedNamespace)
     {
         this.relatedNamespaces.add(nextRelatedNamespace);
     }
@@ -141,7 +144,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
      * @return the Stages
      */
     @Override
-    public void addStage(final URI stage) throws InvalidStageException
+    public final void addStage(final URI stage) throws InvalidStageException
     {
         if(this.validInStage(stage))
         {
@@ -160,18 +163,18 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
      * @return the validStages
      * @throws InvalidStageException
      */
-    protected void addValidStage(final URI validStage) throws InvalidStageException
+    protected final void addValidStage(final URI validStage) throws InvalidStageException
     {
         if(validStage == null)
         {
             throw new IllegalArgumentException("Valid stage was null");
         }
         
-        if(!this.validStages.contains(validStage))
+        if(!this.getValidStages().contains(validStage))
         {
             if(NormalisationRuleSchema.getAllStages().contains(validStage))
             {
-                this.validStages.add(validStage);
+                this.getValidStages().add(validStage);
             }
             else
             {
@@ -211,19 +214,19 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
      * @return the namespace used to represent objects of this type by default
      */
     @Override
-    public QueryAllNamespaces getDefaultNamespace()
+    public final QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.RDFRULE;
     }
     
     @Override
-    public int getOrder()
+    public final int getOrder()
     {
         return this.order;
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public final URI getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -232,7 +235,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
      * @return the relatedNamespaces
      */
     @Override
-    public Collection<URI> getRelatedNamespaces()
+    public final Collection<URI> getRelatedNamespaces()
     {
         return this.relatedNamespaces;
     }
@@ -246,25 +249,42 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         return Collections.unmodifiableSet(this.stages);
     }
     
+    /**
+     * @return the validStages
+     */
     @Override
-    public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
-            final boolean includeNonProfileMatched)
+    public final Set<URI> getValidStages()
+    {
+        return Collections.unmodifiableSet(this.validStages);
+    }
+    
+    @Override
+    public final boolean isUsedWithProfileList(final List<Profile> orderedProfileList,
+            final boolean allowImplicitInclusions, final boolean includeNonProfileMatched)
     {
         return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
                 includeNonProfileMatched);
     }
     
     @Override
-    public void setOrder(final int order)
+    public final void setOrder(final int order)
     {
         this.order = order;
     }
     
     @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public final void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
+    
+    /**
+     * This method is called internally during object creation before any used stages can be
+     * attempted to be added, as this information needs to be setup for each object
+     * 
+     * @return A set of URIs to initially setup the valid stages for this rule
+     */
+    protected abstract Set<URI> setupValidStages();
     
     @Override
     public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
@@ -329,9 +349,9 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                 }
             }
             
-            if(this.stages != null)
+            if(this.getStages() != null)
             {
-                for(final URI nextStage : this.stages)
+                for(final URI nextStage : this.getStages())
                 {
                     con.add(keyUri, NormalisationRuleSchema.getRdfruleStage(), nextStage, contextKey);
                 }
@@ -358,14 +378,26 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public final boolean usedInStage(final org.openrdf.model.URI stage)
+    public final boolean usedInStage(final org.openrdf.model.URI stage) throws InvalidStageException
     {
-        return this.getStages().contains(stage);
+        if(!NormalisationRuleSchema.getAllStages().contains(stage))
+        {
+            throw new InvalidStageException(
+                    "Cannot check if this rule to be used in this stage as it was not recognised.", this, stage);
+        }
+        
+        return this.stages.contains(stage);
     }
     
     @Override
-    public final boolean validInStage(final org.openrdf.model.URI stage)
+    public final boolean validInStage(final org.openrdf.model.URI stage) throws InvalidStageException
     {
-        return this.getValidStages().contains(stage);
+        if(!NormalisationRuleSchema.getAllStages().contains(stage))
+        {
+            throw new InvalidStageException(
+                    "Cannot check if this rule is valid in this stage as it was not recognised.", this, stage);
+        }
+        
+        return this.validStages.contains(stage);
     }
 }
