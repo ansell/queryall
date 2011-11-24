@@ -22,7 +22,6 @@ import org.queryall.api.rdfrule.SparqlAskRuleSchema;
 import org.queryall.api.rdfrule.SparqlNormalisationRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.ValidationFailedException;
 import org.queryall.utils.RdfUtils;
@@ -45,7 +44,8 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     
     private String sparqlPrefixes = "";
     
-    private static final Set<URI> SPARQL_ASK_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPARQL_ASK_RULE_IMPL_TYPES = new HashSet<URI>(6);
+    private static final Set<URI> SPARQL_ASK_RULE_VALID_STAGES = new HashSet<URI>(5);
     
     static
     {
@@ -53,6 +53,9 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
         SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(ValidatingRuleSchema.getValidatingRuleTypeUri());
         SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri());
         SparqlAskRuleImpl.SPARQL_ASK_RULE_IMPL_TYPES.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri());
+        
+        SparqlAskRuleImpl.SPARQL_ASK_RULE_VALID_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        SparqlAskRuleImpl.SPARQL_ASK_RULE_VALID_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     public static Set<URI> myTypes()
@@ -113,18 +116,6 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
-        }
-        
-        try
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        }
-        catch(final InvalidStageException e)
-        {
-            SparqlAskRuleImpl.log.error(
-                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
-            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
         }
         
         if(SparqlAskRuleImpl._DEBUG)
@@ -205,6 +196,12 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     public void setSparqlPrefixes(final String sparqlPrefixes)
     {
         this.sparqlPrefixes = sparqlPrefixes;
+    }
+    
+    @Override
+    protected Set<URI> setupValidStages()
+    {
+        return SparqlAskRuleImpl.SPARQL_ASK_RULE_VALID_STAGES;
     }
     
     @Override

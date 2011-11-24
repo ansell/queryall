@@ -47,7 +47,8 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     
     private URI mode = SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches();
     
-    private static final Set<URI> SPARQL_CONSTRUCT_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPARQL_CONSTRUCT_RULE_IMPL_TYPES = new HashSet<URI>(6);
+    private static final Set<URI> SPARQL_CONSTRUCT_RULE_VALID_STAGES = new HashSet<URI>(5);
     
     static
     {
@@ -59,6 +60,11 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
                 .getSparqlRuleTypeUri());
         SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_IMPL_TYPES.add(SparqlConstructRuleSchema
                 .getSparqlConstructRuleTypeUri());
+        
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsImport());
+        SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsToPool());
     }
     
     public static Set<URI> myTypes()
@@ -77,6 +83,18 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
+        
+        try
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        }
+        catch(final InvalidStageException e)
+        {
+            SparqlConstructRuleImpl.log.error(
+                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+        }
         
         final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
@@ -144,18 +162,6 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
-        }
-        
-        try
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        }
-        catch(final InvalidStageException e)
-        {
-            SparqlConstructRuleImpl.log.error(
-                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
-            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
         }
         
         if(SparqlConstructRuleImpl._DEBUG)
@@ -292,6 +298,12 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     public void setSparqlPrefixes(final String sparqlPrefixes)
     {
         this.sparqlPrefixes = sparqlPrefixes;
+    }
+    
+    @Override
+    protected Set<URI> setupValidStages()
+    {
+        return SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_VALID_STAGES;
     }
     
     @Override

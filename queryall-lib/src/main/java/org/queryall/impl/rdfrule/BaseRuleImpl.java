@@ -46,15 +46,17 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     
     private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
     
-    private final Set<URI> stages = new HashSet<URI>(4);
+    private final Set<URI> stages = new HashSet<URI>(10);
     
-    private final Set<URI> validStages = new HashSet<URI>(7);
+    private final Set<URI> validStages = new HashSet<URI>(10);
     
     private int order = 100;
     
     protected BaseRuleImpl()
     {
+        super();
         
+        this.validStages.addAll(this.setupValidStages());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -63,6 +65,8 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
+        
+        this.validStages.addAll(this.setupValidStages());
         
         final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
@@ -274,6 +278,14 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
     
+    /**
+     * This method is called internally during object creation before any used stages can be
+     * attempted to be added, as this information needs to be setup for each object
+     * 
+     * @return A set of URIs to initially setup the valid stages for this rule
+     */
+    protected abstract Set<URI> setupValidStages();
+    
     @Override
     public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
@@ -374,7 +386,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                     "Cannot check if this rule to be used in this stage as it was not recognised.", this, stage);
         }
         
-        return this.getStages().contains(stage);
+        return this.stages.contains(stage);
     }
     
     @Override
@@ -386,7 +398,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                     "Cannot check if this rule is valid in this stage as it was not recognised.", this, stage);
         }
         
-        return this.getValidStages().contains(stage);
+        return this.validStages.contains(stage);
     }
-    
 }

@@ -50,7 +50,8 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     // NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(),
     // XsltNormalisationRuleImpl.myTypes());
     
-    private static final Set<URI> XSLT_TRANSFORMING_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> XSLT_TRANSFORMING_RULE_IMPL_TYPES = new HashSet<URI>(8);
+    private static final Set<URI> XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES = new HashSet<URI>(8);
     
     static
     {
@@ -60,6 +61,15 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
                 .getTransformingRuleTypeUri());
         XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_TYPES
                 .add(XsltNormalisationRuleSchema.getXsltRuleTypeUri());
+        
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageQueryVariables());
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterQueryCreation());
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageBeforeResultsImport());
+        XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsToDocument());
     }
     
     /**
@@ -165,20 +175,6 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             }
         }
         
-        try
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        }
-        catch(final InvalidStageException e)
-        {
-            XsltTransformingRuleImpl.log.error(
-                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
-            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-        }
-        
         if(XsltTransformingRuleImpl._DEBUG)
         {
             XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
@@ -204,6 +200,12 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     public String getXsltStylesheet()
     {
         return this.xsltStylesheet;
+    }
+    
+    @Override
+    protected Set<URI> setupValidStages()
+    {
+        return XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES;
     }
     
     /*

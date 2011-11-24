@@ -19,7 +19,6 @@ import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,21 +35,38 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     @SuppressWarnings("unused")
     private static final boolean _INFO = PrefixMappingNormalisationRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>(6);
+    private static final Set<URI> PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES = new HashSet<URI>(10);
     
     static
     {
-        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
-                .add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
-        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
-                .add(TransformingRuleSchema.getTransformingRuleTypeUri());
-        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES.add(NormalisationRuleSchema
+                .getNormalisationRuleTypeUri());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES.add(TransformingRuleSchema
+                .getTransformingRuleTypeUri());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri());
+        
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES
+                .add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES
+                .add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        // Not sure how this would be implemented after query parsing, or why it would be
+        // different to after query creation, so leave it off the list for now
+        // PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES
+                .add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES
+                .add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES
+                .add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES
+                .add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
     }
     
     public static Set<URI> myTypes()
     {
-        return PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES;
+        return PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES;
     }
     
     private String inputPrefix = "";
@@ -58,6 +74,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     private String outputPrefix = "";
     
     private Collection<URI> subjectMappingPredicates = new HashSet<URI>();
+    
     private Collection<URI> predicateMappingPredicates = new HashSet<URI>();
     private Collection<URI> objectMappingPredicates = new HashSet<URI>();
     
@@ -129,25 +146,6 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
-        }
-        
-        try
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            // Not sure how this would be implemented after query parsing, or why it would be
-            // different to after query creation, so leave it off the list for now
-            // this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        }
-        catch(final InvalidStageException e)
-        {
-            PrefixMappingNormalisationRuleImpl.log.error(
-                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
-            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
         }
         
         if(PrefixMappingNormalisationRuleImpl._TRACE)
@@ -246,6 +244,12 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     public void setOutputUriPrefix(final String outputUriPrefix)
     {
         this.outputPrefix = outputUriPrefix;
+    }
+    
+    @Override
+    protected Set<URI> setupValidStages()
+    {
+        return PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES;
     }
     
     /**
@@ -397,4 +401,5 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         
         return result;
     }
+    
 }

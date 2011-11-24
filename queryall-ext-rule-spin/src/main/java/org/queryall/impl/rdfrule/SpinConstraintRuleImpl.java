@@ -22,7 +22,6 @@ import org.queryall.api.rdfrule.SpinConstraintRule;
 import org.queryall.api.rdfrule.SpinConstraintRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -52,7 +51,8 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     @SuppressWarnings("unused")
     private static final boolean _INFO = SpinConstraintRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_TYPES = new HashSet<URI>(8);
+    private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES = new HashSet<URI>(8);
     
     static
     {
@@ -64,6 +64,14 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         // Need to initialise the SPIN registry at least once
         // SPINModuleRegistry.get().init();
+        
+        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterQueryParsing());
+        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsImport());
+        SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsToPool());
+        
     }
     
     public static Set<URI> myTypes()
@@ -124,19 +132,6 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
-        }
-        
-        try
-        {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        }
-        catch(final InvalidStageException e)
-        {
-            SpinConstraintRuleImpl.log.error(
-                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
-            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
         }
         
         if(SpinConstraintRuleImpl._DEBUG)
@@ -288,6 +283,12 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     {
         this.registry = registry;
         this.registry.init();
+    }
+    
+    @Override
+    protected Set<URI> setupValidStages()
+    {
+        return SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES;
     }
     
     @Override
