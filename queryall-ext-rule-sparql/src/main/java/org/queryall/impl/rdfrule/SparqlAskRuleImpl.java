@@ -2,7 +2,6 @@ package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -116,12 +115,17 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             }
         }
         
-        // this.relatedNamespaces = tempRelatedNamespaces;
-        // this.unrecognisedStatements = tempUnrecognisedStatements;
-        
-        // stages.add(NormalisationRule.rdfruleStageAfterResultsImport.stringValue());
-        
-        // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
+        try
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        }
+        catch(final InvalidStageException e)
+        {
+            SparqlAskRuleImpl.log.error(
+                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+        }
         
         if(SparqlAskRuleImpl._DEBUG)
         {
@@ -179,31 +183,6 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     public List<String> getSparqlWherePatterns()
     {
         return this.sparqlWherePatterns;
-    }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            try
-            {
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-            }
-            catch(final InvalidStageException e)
-            {
-                SparqlAskRuleImpl.log
-                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
-                                e);
-                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-            }
-        }
-        
-        return Collections.unmodifiableSet(this.validStages);
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)

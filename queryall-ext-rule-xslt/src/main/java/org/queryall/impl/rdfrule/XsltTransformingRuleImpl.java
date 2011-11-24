@@ -6,7 +6,6 @@ package org.queryall.impl.rdfrule;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -166,6 +165,20 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             }
         }
         
+        try
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        catch(final InvalidStageException e)
+        {
+            XsltTransformingRuleImpl.log.error(
+                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+        }
+        
         if(XsltTransformingRuleImpl._DEBUG)
         {
             XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
@@ -180,33 +193,6 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     public Set<URI> getElementTypes()
     {
         return XsltTransformingRuleImpl.myTypes();
-    }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            try
-            {
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-            }
-            catch(final InvalidStageException e)
-            {
-                XsltTransformingRuleImpl.log
-                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
-                                e);
-                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-            }
-        }
-        
-        return Collections.unmodifiableSet(this.validStages);
     }
     
     /*
@@ -240,7 +226,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     public Object stageAfterQueryCreation(final Object input)
     {
         if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation())
-                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()))
+                && this.getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()))
         {
             return this.transformString((String)input);
         }
@@ -281,7 +267,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     public Object stageAfterResultsToDocument(final Object input)
     {
         if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument())
-                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()))
+                && this.getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()))
         {
             return this.transformString((String)input);
         }
@@ -312,7 +298,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     {
         XsltTransformingRuleImpl.log.info("stageBeforeResultsImport input=" + (String)input);
         if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
-                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
+                && this.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
         {
             return this.transformString((String)input);
         }
@@ -321,7 +307,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             XsltTransformingRuleImpl.log.info("stageBeforeResultsImport returning input unchanged this.getValidStages="
                     + this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport())
                     + " this.getStages()="
-                    + this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
+                    + this.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()));
             return input;
         }
     }
@@ -335,7 +321,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     public Object stageQueryVariables(final Object input)
     {
         if(this.getValidStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables())
-                && this.stages.contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+                && this.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
         {
             return this.transformString((String)input);
         }

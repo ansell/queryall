@@ -126,12 +126,18 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             }
         }
         
-        // this.relatedNamespaces = tempRelatedNamespaces;
-        // this.unrecognisedStatements = tempUnrecognisedStatements;
-        
-        // stages.add(NormalisationRule.rdfruleStageAfterResultsImport.stringValue());
-        
-        // mode = sparqlruleModeOnlyIncludeMatches.stringValue();
+        try
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        }
+        catch(final InvalidStageException e)
+        {
+            SpinConstraintRuleImpl.log.error(
+                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+        }
         
         if(SpinConstraintRuleImpl._DEBUG)
         {
@@ -254,32 +260,6 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     public Set<URI> getURLImports()
     {
         return Collections.unmodifiableSet(this.urlImports);
-    }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            try
-            {
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-            }
-            catch(final InvalidStageException e)
-            {
-                SpinConstraintRuleImpl.log
-                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
-                                e);
-                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-            }
-        }
-        
-        return Collections.unmodifiableSet(this.validStages);
     }
     
     @Override

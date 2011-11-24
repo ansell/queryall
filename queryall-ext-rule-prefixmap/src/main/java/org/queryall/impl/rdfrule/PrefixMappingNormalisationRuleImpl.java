@@ -131,6 +131,25 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             }
         }
         
+        try
+        {
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+            // Not sure how this would be implemented after query parsing, or why it would be
+            // different to after query creation, so leave it off the list for now
+            // this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        }
+        catch(final InvalidStageException e)
+        {
+            PrefixMappingNormalisationRuleImpl.log.error(
+                    "InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!", e);
+            throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+        }
+        
         if(PrefixMappingNormalisationRuleImpl._TRACE)
         {
             PrefixMappingNormalisationRuleImpl.log
@@ -205,38 +224,6 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     public Collection<URI> getSubjectMappingPredicates()
     {
         return Collections.unmodifiableCollection(this.subjectMappingPredicates);
-    }
-    
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            try
-            {
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-                // Not sure how this would be implemented after query parsing, or why it would be
-                // different to after query creation, so leave it off the list for now
-                // this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-            }
-            catch(final InvalidStageException e)
-            {
-                PrefixMappingNormalisationRuleImpl.log
-                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
-                                e);
-                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-            }
-        }
-        
-        return Collections.unmodifiableSet(this.validStages);
     }
     
     /*
