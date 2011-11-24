@@ -111,7 +111,7 @@ public class QueryAllSchemaLocatorClass implements Locator
         // NOTE: We do this for efficiency
         // If people want to define other URIs for schema URIs, then we should check the allSchemas
         // repository instead of doing this check
-        final QueryAllNamespaces match = QueryAllNamespaces.uriMatch(filenameOrURI);
+        final QueryAllNamespaces match = QueryAllNamespaces.matchBaseUri(filenameOrURI);
         
         if(match == null)
         {

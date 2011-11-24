@@ -1,7 +1,6 @@
 package org.queryall.impl.rdfrule;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.PatternSyntaxException;
@@ -21,7 +20,6 @@ import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +35,8 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     @SuppressWarnings("unused")
     private static final boolean _INFO = RegexTransformingRuleImpl.log.isInfoEnabled();
     
-    private static final Set<URI> REGEX_TRANSFORMING_RULE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> REGEX_TRANSFORMING_RULE_IMPL_TYPES = new HashSet<URI>(6);
+    private static final Set<URI> REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES = new HashSet<URI>(10);
     
     static
     {
@@ -47,6 +46,16 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
                 .getTransformingRuleTypeUri());
         RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_TYPES.add(RegexNormalisationRuleSchema
                 .getRegexRuleTypeUri());
+        
+        RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageQueryVariables());
+        RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterQueryCreation());
+        RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageBeforeResultsImport());
+        RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES.add(NormalisationRuleSchema
+                .getRdfruleStageAfterResultsToDocument());
+        
     }
     
     public static Set<URI> myTypes()
@@ -265,33 +274,6 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
         return this.outputReplaceRegex;
     }
     
-    /**
-     * @return the validStages
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        if(this.validStages.size() == 0)
-        {
-            try
-            {
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-            }
-            catch(final InvalidStageException e)
-            {
-                RegexTransformingRuleImpl.log
-                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
-                                e);
-                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
-            }
-        }
-        
-        return Collections.unmodifiableSet(this.validStages);
-    }
-    
     // NOTE: it is quite okay to have an empty replace regex, but an empty match
     // is not considered useful here
     /*
@@ -365,9 +347,15 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     }
     
     @Override
+    protected Set<URI> setupValidStages()
+    {
+        return RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES;
+    }
+    
+    @Override
     public Object stageAfterQueryCreation(final Object input)
     {
-        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()) ? this
+        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()) ? this
                 .applyInputRuleToString((String)input) : input;
     }
     
@@ -386,7 +374,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     @Override
     public Object stageAfterResultsToDocument(final Object input)
     {
-        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()) ? this
+        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()) ? this
                 .applyOutputRuleToString((String)input) : input;
     }
     
@@ -399,14 +387,14 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     @Override
     public Object stageBeforeResultsImport(final Object input)
     {
-        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()) ? this
+        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()) ? this
                 .applyOutputRuleToString((String)input) : input;
     }
     
     @Override
     public Object stageQueryVariables(final Object input)
     {
-        return this.stages.contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()) ? this
+        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()) ? this
                 .applyInputRuleToString((String)input) : input;
     }
     

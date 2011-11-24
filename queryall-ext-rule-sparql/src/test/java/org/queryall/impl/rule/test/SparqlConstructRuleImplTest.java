@@ -10,8 +10,8 @@ import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.rdfrule.SparqlConstructRuleImpl;
 
 /**
- * Provides the implementation of the Provider class for the Abstract test class provided with
- * queryall-api-tests.jar
+ * Provides the implementation of the SparqlConstructRule class for the Abstract test class provided
+ * with queryall-api-tests.jar
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

@@ -3,11 +3,8 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
-
 import org.junit.After;
 import org.junit.Before;
-import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
@@ -16,7 +13,6 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
-import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SpinNormalisationRule;
 
 /**
@@ -116,18 +112,6 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
         this.setTestRepositoryConnection(this.getTestRepository().getConnection());
         this.setTestValueFactory(new ValueFactoryImpl());
         
-        this.invalidStages = new ArrayList<URI>(5);
-        
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        
-        this.validStages = new ArrayList<URI>(2);
-        
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     /**

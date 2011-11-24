@@ -3,7 +3,8 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -57,6 +58,24 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
     
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        // Not sure how this would be implemented after query parsing, or why it would be
+        // different to after query creation, so leave it off the list for now
+        // results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        results.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        
+        return results;
+    }
+    
     /**
      * Create a new instance of the SparqlNormalisationRule implementation being tested.
      * 
@@ -100,18 +119,6 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         this.testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
         this.testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
         
-        this.invalidStages = new ArrayList<URI>(1);
-        
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        
-        this.validStages = new ArrayList<URI>(6);
-        
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
     }
     
     /**

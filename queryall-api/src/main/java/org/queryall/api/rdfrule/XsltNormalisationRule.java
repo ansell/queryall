@@ -7,13 +7,14 @@ public interface XsltNormalisationRule extends TransformingRule
 {
     
     /**
-     * @return the xsltStylesheet
+     * @return The stylesheet to be used to transform documents using this rule.
      */
     String getXsltStylesheet();
     
     /**
+     * 
      * @param xsltStylesheet
-     *            the xsltStylesheet to set
+     *            The stylesheet to be used to transform documents using this rule.
      */
     void setXsltStylesheet(String xsltStylesheet);
     

@@ -21,7 +21,8 @@ public abstract class QueryAllEnum
     private String name;
     
     /**
-     * Create a new QueryType enum using the given name, which must be unique
+     * Create a new QueryType enum using the given name, which must be unique, and the given URIs to
+     * define the types for objects based on this enum.
      * 
      * @param nextName
      * @param nextTypeURIs
@@ -90,18 +91,19 @@ public abstract class QueryAllEnum
     }
     
     /**
-     * @return the name
+     * @return The name for this enum. This should be the name of the implementing class to ensure
+     *         that the name will be unique.
      */
-    public String getName()
+    public final String getName()
     {
         return this.name;
     }
     
     /**
      * 
-     * @return the typeURIs
+     * @return The set of URIs that define the types for this enum.
      */
-    public Set<URI> getTypeURIs()
+    public final Set<URI> getTypeURIs()
     {
         return Collections.unmodifiableSet(this.typeURIs);
     }
@@ -121,6 +123,17 @@ public abstract class QueryAllEnum
         return result;
     }
     
+    /**
+     * Determines if the given set of URIs match the types that are defined for this enum.
+     * 
+     * By default, each of the given type URIs must be present in the types defined for this enum.
+     * 
+     * This method can be overridden to provider custom behaviour for subclasses.
+     * 
+     * @param nextTypeURIs
+     *            A set of URIs to match against the URIs setup for this enum.
+     * @return True if the given set of URIs suitably matches the type URIs defined for this enum.
+     */
     protected boolean matchForTypeUris(final Set<URI> nextTypeURIs)
     {
         boolean matching = true;
@@ -145,7 +158,7 @@ public abstract class QueryAllEnum
      * @param name
      *            the name to set
      */
-    protected void setName(final String name)
+    protected final void setName(final String name)
     {
         this.name = name;
     }
@@ -156,13 +169,13 @@ public abstract class QueryAllEnum
      * @param typeURIs
      *            the typeURIs to set
      */
-    protected void setTypeURIs(final Set<URI> typeURIs)
+    protected final void setTypeURIs(final Set<URI> typeURIs)
     {
         this.typeURIs = typeURIs;
     }
     
     /**
-     * Returns the list of type URIs
+     * Returns a string including the name and the list of type URIs
      */
     @Override
     public String toString()
