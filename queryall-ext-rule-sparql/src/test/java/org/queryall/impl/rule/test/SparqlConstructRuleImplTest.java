@@ -3,7 +3,12 @@
  */
 package org.queryall.impl.rule.test;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SparqlConstructRule;
 import org.queryall.api.test.AbstractSparqlConstructRuleTest;
 import org.queryall.impl.profile.ProfileImpl;

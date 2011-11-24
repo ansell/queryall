@@ -4,6 +4,8 @@
 package org.queryall.api.test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -94,18 +96,6 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
         this.testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
         this.testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
         
-        this.invalidStages = new ArrayList<URI>(5);
-        
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        
-        this.validStages = new ArrayList<URI>(2);
-        
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     /**
@@ -144,4 +134,15 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
         this.testFinalUriPOBase = null;
     }
     
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        
+        return results;
+    }
+
 }

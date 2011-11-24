@@ -116,18 +116,6 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         this.setTestRepositoryConnection(this.getTestRepository().getConnection());
         this.setTestValueFactory(new ValueFactoryImpl());
         
-        this.invalidStages = new ArrayList<URI>(5);
-        
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        
-        this.validStages = new ArrayList<URI>(2);
-        
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
     }
     
     /**

@@ -144,7 +144,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     {
         if(this.validInStage(stage))
         {
-            this.getStages().add(stage);
+            this.stages.add(stage);
         }
         else
         {
