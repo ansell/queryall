@@ -11,7 +11,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -21,7 +20,6 @@ import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
 import org.queryall.api.namespace.RegexValidatingNamespaceEntrySchema;
 import org.queryall.api.namespace.ValidatingNamespaceEntrySchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
@@ -54,8 +52,6 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     private String preferredPrefix = "";
     
     private Collection<String> alternativePrefixes = new HashSet<String>();
-    
-    private String description = "";
     
     private String identifierRegex = "";
     
@@ -92,11 +88,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -182,12 +174,6 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     }
     
     @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
     public int compareTo(final NamespaceEntry otherNamespace)
     {
         @SuppressWarnings("unused")
@@ -229,12 +215,6 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     public QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.NAMESPACEENTRY;
-    }
-    
-    @Override
-    public String getDescription()
-    {
-        return this.description;
     }
     
     /**
@@ -287,12 +267,6 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     public void setConvertQueriesToPreferredPrefix(final boolean convertQueriesToPreferredPrefix)
     {
         this.convertQueriesToPreferredPrefix = convertQueriesToPreferredPrefix;
-    }
-    
-    @Override
-    public void setDescription(final String description)
-    {
-        this.description = description;
     }
     
     @Override
@@ -355,9 +329,11 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -382,26 +358,11 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
                 authorityLiteral = this.getAuthority();
             }
             
-            URI curationStatusLiteral = null;
-            
-            if(this.getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
-            
             final Literal descriptionLiteral = f.createLiteral(this.getDescription());
-            
             final Literal identifierRegexLiteral = f.createLiteral(this.getIdentifierRegex());
-            
             final Literal convertQueriesToPreferredPrefixLiteral =
                     f.createLiteral(this.getConvertQueriesToPreferredPrefix());
-            
             final Literal validationPossibleLiteral = f.createLiteral(this.getValidationPossible());
-            
             final Literal uriTemplateLiteral = f.createLiteral(this.getUriTemplate());
             final Literal separatorLiteral = f.createLiteral(this.getSeparator());
             
@@ -414,35 +375,32 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(namespaceInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(namespaceInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
             
             if(authorityLiteral != null)
             {
-                con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceAuthority(), authorityLiteral, keyToUse);
+                con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceAuthority(), authorityLiteral,
+                        contextKey);
             }
             
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespacePreferredPrefix(), preferredPrefixLiteral,
-                    keyToUse);
+                    contextKey);
             con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceConvertQueriesToPreferredPrefix(),
-                    convertQueriesToPreferredPrefixLiteral, keyToUse);
-            con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceSeparator(), separatorLiteral, keyToUse);
-            con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceUriTemplate(), uriTemplateLiteral, keyToUse);
-            con.add(namespaceInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
+                    convertQueriesToPreferredPrefixLiteral, contextKey);
+            con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceSeparator(), separatorLiteral, contextKey);
+            con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceUriTemplate(), uriTemplateLiteral,
+                    contextKey);
             
             con.add(namespaceInstanceUri, ValidatingNamespaceEntrySchema.getValidationPossibleUri(),
-                    validationPossibleLiteral, keyToUse);
+                    validationPossibleLiteral, contextKey);
             con.add(namespaceInstanceUri, RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(),
-                    identifierRegexLiteral, keyToUse);
+                    identifierRegexLiteral, contextKey);
             
             if(modelVersion == 1)
             {
                 con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceDescription(), descriptionLiteral,
-                        keyToUse);
-            }
-            else
-            {
-                con.add(namespaceInstanceUri, RDFS.COMMENT, descriptionLiteral, keyToUse);
+                        contextKey);
             }
             
             if(this.getAlternativePrefixes() != null)
@@ -450,16 +408,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
                 for(final String nextAlternativePrefix : this.getAlternativePrefixes())
                 {
                     con.add(namespaceInstanceUri, NamespaceEntrySchema.getNamespaceAlternativePrefix(),
-                            f.createLiteral(nextAlternativePrefix), keyToUse);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement);
+                            f.createLiteral(nextAlternativePrefix), contextKey);
                 }
             }
             

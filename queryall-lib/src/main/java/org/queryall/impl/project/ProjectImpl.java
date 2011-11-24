@@ -19,7 +19,6 @@ import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,28 +42,16 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         return results;
     }
     
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
     private URI key = null;
     
     private URI authority = null;
-    
-    private String title = "";
-    
-    private String description = "";
-    
-    private URI curationStatus = null;
     
     public ProjectImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -95,12 +82,6 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
     }
     
     @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
     public int compareTo(final Project otherProject)
     {
         @SuppressWarnings("unused")
@@ -123,12 +104,6 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         return this.authority;
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -136,12 +111,6 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
     public QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.PROJECT;
-    }
-    
-    @Override
-    public String getDescription()
-    {
-        return this.description;
     }
     
     /**
@@ -154,65 +123,10 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         return ProjectImpl.myTypes();
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     @Override
     public void setAuthority(final URI authority)
     {
         this.authority = authority;
-    }
-    
-    @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public void setDescription(final String description)
-    {
-        this.description = description;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override
@@ -237,9 +151,11 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -250,10 +166,20 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
             
             if(ProjectImpl._DEBUG)
             {
-                ProjectImpl.log.debug("Project.toRdf: keyToUse=" + keyToUse);
+                ProjectImpl.log.debug("Project.toRdf: keyToUse=" + contextKey);
             }
             
-            final Literal titleLiteral = f.createLiteral(this.getTitle());
+            Literal titleLiteral;
+            
+            if(this.getTitle() == null)
+            {
+                titleLiteral = f.createLiteral("");
+            }
+            else
+            {
+                titleLiteral = f.createLiteral(this.getTitle());
+            }
+            
             URI authorityLiteral = null;
             
             if(this.getAuthority() != null)
@@ -272,31 +198,18 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(projectInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(projectInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
             
             if(authorityLiteral != null)
             {
-                con.add(projectInstanceUri, ProjectSchema.getProjectAuthority(), authorityLiteral, keyToUse);
+                con.add(projectInstanceUri, ProjectSchema.getProjectAuthority(), authorityLiteral, contextKey);
             }
             
             if(modelVersion == 1)
             {
-                con.add(projectInstanceUri, ProjectSchema.getProjectTitle(), titleLiteral, keyToUse);
-            }
-            else
-            {
-                con.add(projectInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
-            }
-            con.add(projectInstanceUri, ProjectSchema.getProjectDescription(), descriptionLiteral, keyToUse);
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
-                }
+                con.add(projectInstanceUri, ProjectSchema.getProjectTitle(), titleLiteral, contextKey);
+                con.add(projectInstanceUri, ProjectSchema.getProjectDescription(), descriptionLiteral, contextKey);
             }
             
             // If everything went as planned, we can commit the result

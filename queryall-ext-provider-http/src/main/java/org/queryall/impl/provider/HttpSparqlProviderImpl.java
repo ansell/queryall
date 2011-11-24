@@ -52,11 +52,7 @@ public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSpar
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {

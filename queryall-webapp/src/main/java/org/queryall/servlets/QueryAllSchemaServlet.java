@@ -257,7 +257,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         {
             QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught repository exception", rex);
         }
-        catch(OpenRDFException ordfe)
+        catch(final OpenRDFException ordfe)
         {
             QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught open rdf exception", ordfe);
         }

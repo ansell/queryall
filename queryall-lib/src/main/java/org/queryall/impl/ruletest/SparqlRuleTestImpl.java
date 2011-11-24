@@ -64,11 +64,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -201,14 +197,6 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), testExpectedResultLiteral, keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestInputTriples(), testInputTriplesLiteral, keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), testInputMimeTypeLiteral, keyToUse);
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
-                }
-            }
             
             // If everything went as planned, we can commit the result
             con.commit();

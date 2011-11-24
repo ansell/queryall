@@ -73,11 +73,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -88,7 +84,8 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(SparqlAskRuleSchema.getSparqlAskRuleTypeUri()))
+                    && (nextStatement.getObject().equals(SparqlAskRuleSchema.getSparqlAskRuleTypeUri()) || nextStatement
+                            .getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri())))
             {
                 if(SparqlAskRuleImpl._TRACE)
                 {

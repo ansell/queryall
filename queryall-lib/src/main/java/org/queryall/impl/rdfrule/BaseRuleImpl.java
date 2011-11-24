@@ -13,13 +13,11 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
@@ -39,12 +37,10 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseRuleImpl extends BaseQueryAllImpl implements NormalisationRule
 {
-    protected static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
-    protected static final boolean _TRACE = BaseRuleImpl.log.isTraceEnabled();
-    protected static final boolean _DEBUG = BaseRuleImpl.log.isDebugEnabled();
-    protected static final boolean _INFO = BaseRuleImpl.log.isInfoEnabled();
-    
-    private String description = "";
+    private static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
+    private static final boolean _TRACE = BaseRuleImpl.log.isTraceEnabled();
+    private static final boolean _DEBUG = BaseRuleImpl.log.isDebugEnabled();
+    private static final boolean _INFO = BaseRuleImpl.log.isInfoEnabled();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
@@ -68,11 +64,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -162,12 +154,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         }
     }
     
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
     /**
      * Internal method used by subclasses to add each of their valid stages to the internal list
      * 
@@ -231,12 +217,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public String getDescription()
-    {
-        return this.description;
-    }
-    
-    @Override
     public int getOrder()
     {
         return this.order;
@@ -275,12 +255,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public void setDescription(final String description)
-    {
-        this.description = description;
-    }
-    
-    @Override
     public void setOrder(final int order)
     {
         this.order = order;
@@ -296,6 +270,8 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -308,21 +284,8 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             }
             
             final URI keyUri = this.getKey();
-            final Literal titleLiteral = f.createLiteral(this.getTitle());
-            final Literal descriptionLiteral = f.createLiteral(this.getDescription());
             final Literal orderLiteral = f.createLiteral(this.getOrder());
             final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
-            
-            URI curationStatusLiteral = null;
-            
-            if((this.getCurationStatus() == null))
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
             
             con.setAutoCommit(false);
             
@@ -353,19 +316,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                 }
             }
             
-            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, contextKey);
-            
-            if(modelVersion == 1)
-            {
-                con.add(keyUri, NormalisationRuleSchema.getRdfruleDescription(), descriptionLiteral, contextKey);
-            }
-            else
-            {
-                con.add(keyUri, RDFS.COMMENT, descriptionLiteral, contextKey);
-            }
-            
-            con.add(keyUri, Constants.DC_TITLE, titleLiteral, contextKey);
-            
             con.add(keyUri, NormalisationRuleSchema.getRdfruleOrder(), orderLiteral, contextKey);
             con.add(keyUri, ProfileSchema.getProfileIncludeExcludeOrderUri(), profileIncludeExcludeOrderLiteral,
                     contextKey);
@@ -384,14 +334,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                 for(final URI nextStage : this.stages)
                 {
                     con.add(keyUri, NormalisationRuleSchema.getRdfruleStage(), nextStage, contextKey);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, contextKey);
                 }
             }
             

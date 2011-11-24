@@ -102,7 +102,7 @@ public class PoddSPINRuleTest
             
             resultConnection = results.getConnection();
             
-            if(log.isDebugEnabled())
+            if(PoddSPINRuleTest.log.isDebugEnabled())
             {
                 for(final Statement nextStatement : resultConnection.getStatements(null, null, null, true).asList())
                 {

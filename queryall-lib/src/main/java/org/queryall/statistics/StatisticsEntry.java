@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
-import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
@@ -496,12 +495,6 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
         this.serverSoftwareVersion = nextserverSoftwareVersion;
         this.requestedContentType = nextrequestedContentType;
         this.acceptHeader = nextacceptHeader;
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override

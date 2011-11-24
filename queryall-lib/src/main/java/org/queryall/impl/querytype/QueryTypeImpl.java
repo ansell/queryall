@@ -18,7 +18,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.querytype.QueryType;
@@ -130,11 +129,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -286,12 +281,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     public void addPublicIdentifierTag(final String publicIdentifierTag)
     {
         this.publicIdentifierTags.add(publicIdentifierTag);
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override
@@ -859,9 +848,11 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -871,7 +862,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             // create some resources and literals to make statements out of
             final URI queryInstanceUri = this.getKey();
             
-            final Literal titleLiteral = f.createLiteral(this.getTitle());
             final Literal handleAllNamespacesLiteral = f.createLiteral(this.handleAllNamespaces);
             final Literal isNamespaceSpecificLiteral = f.createLiteral(this.isNamespaceSpecific);
             final URI namespaceMatchMethodLiteral = this.namespaceMatchMethod;
@@ -888,60 +878,40 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             final Literal outputRdfStringLiteral = f.createLiteral(this.outputRdfString);
             final Literal outputRdfFormatLiteral = f.createLiteral(this.outputRdfFormat);
             
-            URI curationStatusLiteral = null;
-            
-            if(this.getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
-            
             // log.info("after literals created");
             
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(queryInstanceUri, RDF.TYPE, nextElementType, keyToUse);
-            }
-            
-            con.add(queryInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            if(modelVersion == 1)
-            {
-                con.add(queryInstanceUri, QueryTypeSchema.getQueryTitle(), titleLiteral, keyToUse);
-            }
-            else
-            {
-                con.add(queryInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+                con.add(queryInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
             
             con.add(queryInstanceUri, QueryTypeSchema.getQueryHandleAllNamespaces(), handleAllNamespacesLiteral,
-                    keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral, keyToUse);
+                    contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral,
+                    contextKey);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
-                    keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, keyToUse);
+                    contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, contextKey);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral,
-                    keyToUse);
+                    contextKey);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryStandardUriTemplateString(),
-                    standardUriTemplateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
+                    standardUriTemplateStringLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryInRobotsTxt(), inRobotsTxtLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, contextKey);
             
             con.add(queryInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
-                    profileIncludeExcludeOrderLiteral, keyToUse);
+                    profileIncludeExcludeOrderLiteral, contextKey);
             
             if(modelVersion < 5)
             {
                 if(this.getOutputRdfFormat().equals(Constants.APPLICATION_RDF_XML))
                 {
                     con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(),
-                            outputRdfStringLiteral, keyToUse);
+                            outputRdfStringLiteral, contextKey);
                 }
                 else
                 {
@@ -952,9 +922,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             else
             {
                 con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfString(), outputRdfStringLiteral,
-                        keyToUse);
+                        contextKey);
                 con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), outputRdfFormatLiteral,
-                        keyToUse);
+                        contextKey);
                 
             }
             
@@ -968,7 +938,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                     if(nextExpectedInputParameter != null)
                     {
                         con.add(queryInstanceUri, InputQueryTypeSchema.getQueryExpectedInputParameters(),
-                                f.createLiteral(nextExpectedInputParameter), keyToUse);
+                                f.createLiteral(nextExpectedInputParameter), contextKey);
                     }
                 }
             }
@@ -981,7 +951,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                     if(nextNamespaceToHandle != null)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceToHandle(), nextNamespaceToHandle,
-                                keyToUse);
+                                contextKey);
                     }
                 }
             }
@@ -998,7 +968,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                             {
                                 con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(), f
                                         .createLiteral(Integer.parseInt(nextPublicIdentifierTag.substring("input_"
-                                                .length()))), keyToUse);
+                                                .length()))), contextKey);
                             }
                             catch(final NumberFormatException nfe)
                             {
@@ -1016,7 +986,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                     for(final String nextPublicIdentifierTag : this.publicIdentifierTags)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
-                                f.createLiteral(nextPublicIdentifierTag), keyToUse);
+                                f.createLiteral(nextPublicIdentifierTag), contextKey);
                     }
                 }
             }
@@ -1033,7 +1003,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                             {
                                 con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(), f
                                         .createLiteral(Integer.parseInt(nextNamespaceInputTag.substring("input_"
-                                                .length()))), keyToUse);
+                                                .length()))), contextKey);
                             }
                             catch(final NumberFormatException nfe)
                             {
@@ -1051,7 +1021,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                     for(final String nextNamespaceInputTag : this.namespaceInputTags)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
-                                f.createLiteral(nextNamespaceInputTag), keyToUse);
+                                f.createLiteral(nextNamespaceInputTag), contextKey);
                     }
                 }
             }
@@ -1063,21 +1033,10 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                     if(nextSemanticallyLinkedQueryType != null)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeQueryType(),
-                                nextSemanticallyLinkedQueryType, keyToUse);
+                                nextSemanticallyLinkedQueryType, contextKey);
                     }
                 }
             }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
-                }
-            }
-            
-            // log.info("after unrecognised statements added");
             
             // If everything went as planned, we can commit the result
             con.commit();

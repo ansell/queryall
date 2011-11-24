@@ -17,7 +17,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
@@ -68,11 +67,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -168,12 +163,6 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         }
         
         this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override
@@ -575,9 +564,11 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -586,38 +577,16 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         {
             if(ProviderImpl._TRACE)
             {
-                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + keyToUse);
+                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + contextKey);
             }
             
             // create some resources and literals to make statements out of
             final URI providerInstanceUri = this.getKey();
             
-            Literal titleLiteral;
-            
-            if(this.getTitle() == null)
-            {
-                titleLiteral = f.createLiteral("");
-            }
-            else
-            {
-                titleLiteral = f.createLiteral(this.getTitle());
-            }
-            
             final URI redirectOrProxyLiteral = this.getRedirectOrProxy();
             final URI endpointMethodLiteral = this.getEndpointMethod();
             final Literal isDefaultSourceLiteral = f.createLiteral(this.getIsDefaultSourceVar());
             final Literal assumedContentTypeLiteral = f.createLiteral(this.getAssumedContentType());
-            
-            URI curationStatusLiteral = null;
-            
-            if(this.getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
             
             final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
             
@@ -625,25 +594,23 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(providerInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(providerInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
             
-            con.add(providerInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
-            
             con.add(providerInstanceUri, ProviderSchema.getProviderResolutionStrategy(), redirectOrProxyLiteral,
-                    keyToUse);
+                    contextKey);
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderResolutionMethod(), endpointMethodLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderResolutionMethod(), endpointMethodLiteral,
+                    contextKey);
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderIsDefaultSource(), isDefaultSourceLiteral,
+                    contextKey);
             
             con.add(providerInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
-                    profileIncludeExcludeOrderLiteral, keyToUse);
+                    profileIncludeExcludeOrderLiteral, contextKey);
             
             con.add(providerInstanceUri, ProviderSchema.getProviderAssumedContentType(), assumedContentTypeLiteral,
-                    keyToUse);
+                    contextKey);
             
             if(this.getNamespaces() != null)
             {
@@ -652,7 +619,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
                     if(nextNamespace != null)
                     {
                         con.add(providerInstanceUri, ProviderSchema.getProviderHandlesNamespace(), nextNamespace,
-                                keyToUse);
+                                contextKey);
                     }
                 }
             }
@@ -664,7 +631,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
                     if(nextIncludedInCustomQuery != null)
                     {
                         con.add(providerInstanceUri, ProviderSchema.getProviderIncludedInQuery(),
-                                nextIncludedInCustomQuery, keyToUse);
+                                nextIncludedInCustomQuery, contextKey);
                     }
                 }
             }
@@ -676,18 +643,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
                     if(nextRdfNormalisationNeeded != null)
                     {
                         con.add(providerInstanceUri, ProviderSchema.getProviderNeedsRdfNormalisation(),
-                                nextRdfNormalisationNeeded, keyToUse);
-                    }
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    if(nextUnrecognisedStatement != null)
-                    {
-                        con.add(nextUnrecognisedStatement, keyToUse);
+                                nextRdfNormalisationNeeded, contextKey);
                     }
                 }
             }
@@ -706,7 +662,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         }
         catch(final Exception ex)
         {
-            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + keyToUse, ex);
+            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + contextKey, ex);
         }
         finally
         {

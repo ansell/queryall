@@ -153,7 +153,7 @@ oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:Tr
 """ ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:pubmed> ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:beforeResultsImport> ;
-	<http://purl.org/queryall/rdfrule:description> "XSLT transformation of a Pubmed XML document into RDF NTriples" ;
+	rdfs:comment "XSLT transformation of a Pubmed XML document into RDF NTriples" ;
 	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
 

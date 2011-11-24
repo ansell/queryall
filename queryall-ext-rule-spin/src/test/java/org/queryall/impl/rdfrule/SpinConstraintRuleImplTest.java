@@ -42,7 +42,7 @@ public class SpinConstraintRuleImplTest
     private OntModel testOntologyModel;
     private Repository testRepository;
     private List<Statement> testSesameStatements;
-
+    
     private ValueFactory vf;
     
     // private LocationMapper originalLocationMapper;
@@ -113,17 +113,18 @@ public class SpinConstraintRuleImplTest
         
         final RepositoryConnection connection = this.testRepository.getConnection();
         
-        vf = this.testRepository.getValueFactory();
+        this.vf = this.testRepository.getValueFactory();
         
         final org.openrdf.model.Statement testSesameStatement1 =
-                vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"),
-                        vf.createURI("http://other.example.org/test/property/a1"), vf.createLiteral(42));
+                this.vf.createStatement(this.vf.createURI("http://my.example.org/test/uri/1"),
+                        this.vf.createURI("http://other.example.org/test/property/a1"), this.vf.createLiteral(42));
         final org.openrdf.model.Statement testSesameStatement2 =
-                vf.createStatement(vf.createURI("http://my.example.org/test/uri/1"),
-                        org.openrdf.model.vocabulary.RDF.TYPE, vf.createURI("http://my.example.org/test/uri/testType"));
+                this.vf.createStatement(this.vf.createURI("http://my.example.org/test/uri/1"),
+                        org.openrdf.model.vocabulary.RDF.TYPE,
+                        this.vf.createURI("http://my.example.org/test/uri/testType"));
         final org.openrdf.model.Statement testSesameStatement3 =
-                vf.createStatement(vf.createURI("http://my.example.org/test/uri/testType"), OWL.EQUIVALENTCLASS,
-                        vf.createURI("http://vocab.org/test/equivalentToRuleType1"));
+                this.vf.createStatement(this.vf.createURI("http://my.example.org/test/uri/testType"),
+                        OWL.EQUIVALENTCLASS, this.vf.createURI("http://vocab.org/test/equivalentToRuleType1"));
         
         this.testSesameStatements = new ArrayList<org.openrdf.model.Statement>(3);
         
@@ -216,7 +217,7 @@ public class SpinConstraintRuleImplTest
         spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
         
         // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
-        spinNormalisationRuleImpl.addUrlImport(vf.createURI("http://topbraid.org/spin/owlrl-all"));
+        spinNormalisationRuleImpl.addUrlImport(this.vf.createURI("http://topbraid.org/spin/owlrl-all"));
         
         final List<ConstraintViolation> results = spinNormalisationRuleImpl.verifySpinConstraints(this.testRepository);
         

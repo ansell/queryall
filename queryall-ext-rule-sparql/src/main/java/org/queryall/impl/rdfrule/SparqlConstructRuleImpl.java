@@ -79,11 +79,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -94,7 +90,8 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             // }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
-                    && nextStatement.getObject().equals(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri()))
+                    && (nextStatement.getObject().equals(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri()))
+                    || nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
             {
                 if(SparqlConstructRuleImpl._TRACE)
                 {

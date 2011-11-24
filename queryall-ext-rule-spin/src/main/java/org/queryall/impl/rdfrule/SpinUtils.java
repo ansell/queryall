@@ -86,7 +86,6 @@ public class SpinUtils
             
             myRepository = Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
             
-            
             SpinUtils.fileManager.addLocator(new QueryAllSchemaLocatorClass(myRepository));
         }
         catch(final OpenRDFException ordfe)

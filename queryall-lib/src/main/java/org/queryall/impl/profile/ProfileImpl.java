@@ -17,7 +17,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
@@ -81,11 +80,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
         
@@ -256,12 +251,6 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         
         this.profileAdministrators.add(profileAdministrator);
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override
@@ -638,9 +627,11 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -667,56 +658,39 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             final Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(this.allowImplicitRdfRuleInclusions);
             final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder;
             
-            URI curationStatusLiteral = null;
-            
-            if(this.getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
-            
             // log.info("About to add to the repository");
             
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(profileInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(profileInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
-            
-            con.add(profileInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             // log.info("About to add to the repository 2");
             if(modelVersion == 1)
             {
-                con.add(profileInstanceUri, ProfileSchema.getProfileTitle(), titleLiteral, keyToUse);
-            }
-            else
-            {
-                con.add(profileInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+                con.add(profileInstanceUri, ProfileSchema.getProfileTitle(), titleLiteral, contextKey);
             }
             
             // log.info("About to add to the repository 3");
-            con.add(profileInstanceUri, ProfileSchema.getProfileOrderUri(), orderLiteral, keyToUse);
+            con.add(profileInstanceUri, ProfileSchema.getProfileOrderUri(), orderLiteral, contextKey);
             
             // log.info("About to add to the repository 4");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(),
-                    allowImplicitQueryInclusionsLiteral, keyToUse);
+                    allowImplicitQueryInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 5");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(),
-                    allowImplicitProviderInclusionsLiteral, keyToUse);
+                    allowImplicitProviderInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 6");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(),
-                    allowImplicitRdfRuleInclusionsLiteral, keyToUse);
+                    allowImplicitRdfRuleInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 7");
             con.add(profileInstanceUri, ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(),
-                    defaultProfileIncludeExcludeOrderLiteral, keyToUse);
+                    defaultProfileIncludeExcludeOrderLiteral, contextKey);
             
             // log.info("About to add array based information");
             
@@ -726,7 +700,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 for(final URI nextIncludeProviders : this.includeProviders)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeProviderInProfile(),
-                            nextIncludeProviders, keyToUse);
+                            nextIncludeProviders, contextKey);
                 }
             }
             
@@ -736,7 +710,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 for(final URI nextExcludeProviders : this.excludeProviders)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeProviderFromProfile(),
-                            nextExcludeProviders, keyToUse);
+                            nextExcludeProviders, contextKey);
                 }
             }
             
@@ -746,7 +720,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 for(final URI nextProfileAdministrator : this.profileAdministrators)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileAdministratorUri(), nextProfileAdministrator,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -761,7 +735,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeQueryInProfile(), nextIncludeQuery,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -776,7 +750,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeQueryFromProfile(), nextExcludeQuery,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -786,7 +760,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 for(final URI nextIncludeRdfRules : this.includeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeRdfRuleInProfile(), nextIncludeRdfRules,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -796,16 +770,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 for(final URI nextExcludeRdfRules : this.excludeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeRdfRuleFromProfile(),
-                            nextExcludeRdfRules, keyToUse);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
+                            nextExcludeRdfRules, contextKey);
                 }
             }
             

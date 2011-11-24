@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.ReificationStyle;
  */
 public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements SpinInferencingRule, HtmlExport
 {
-    static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleImpl.class);
     private static final boolean _TRACE = SpinInferencingRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = SpinInferencingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -98,11 +98,7 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -164,14 +160,14 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         
         if(nextModel != null)
         {
-            BaseRuleImpl.log.info("adding model to registry and ontology model list nextImport=" + nextImport
-                    + " nextModel.size()=" + nextModel.size());
+            SpinInferencingRuleImpl.log.info("adding model to registry and ontology model list nextImport="
+                    + nextImport + " nextModel.size()=" + nextModel.size());
             this.ontologyModels.add(nextModel);
             this.getSpinModuleRegistry().registerAll(nextModel, nextImport);
         }
         else
         {
-            BaseRuleImpl.log.error("Failed to load import from URL nextImport=" + nextImport);
+            SpinInferencingRuleImpl.log.error("Failed to load import from URL nextImport=" + nextImport);
         }
         
         this.getSpinModuleRegistry().init();
@@ -186,14 +182,15 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         
         if(nextModel != null)
         {
-            BaseRuleImpl.log.info("adding model to registry and ontology model list nextImport="
+            SpinInferencingRuleImpl.log.info("adding model to registry and ontology model list nextImport="
                     + nextURLImport.stringValue() + " nextModel.size()=" + nextModel.size());
             this.ontologyModels.add(nextModel);
             this.getSpinModuleRegistry().registerAll(nextModel, nextURLImport.stringValue());
         }
         else
         {
-            BaseRuleImpl.log.error("Failed to load import from URL nextURLImport=" + nextURLImport.stringValue());
+            SpinInferencingRuleImpl.log.error("Failed to load import from URL nextURLImport="
+                    + nextURLImport.stringValue());
         }
         
         this.getSpinModuleRegistry().init();

@@ -76,7 +76,7 @@ public class RdfUtilsTest
      * this is FALSE by default to match reality If you want to test a new feature is being parsed
      * correctly, you can temporarily turn this on
      */
-    private static final boolean FAIL_ON_UNEXPECTED_TRIPLES = false;
+    private static final boolean FAIL_ON_UNEXPECTED_TRIPLES = true;
     
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
@@ -1072,18 +1072,23 @@ public class RdfUtilsTest
                     Assert.assertEquals("Normalisation rules were not parsed correctly", 1, nextProvider
                             .getNormalisationUris().size());
                     
-                    Assert.assertTrue("Provider was not parsed as an Http Provider", nextProvider instanceof HttpProvider);
+                    Assert.assertTrue("Provider was not parsed as an Http Provider",
+                            nextProvider instanceof HttpProvider);
                     
-                    HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
+                    final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                     
-                    Assert.assertEquals("Provider Http Endpoint Urls were not parsed correctly", 2, nextHttpProvider.getEndpointUrls().size());
-
+                    Assert.assertEquals("Provider Http Endpoint Urls were not parsed correctly", 2, nextHttpProvider
+                            .getEndpointUrls().size());
+                    
                     // Test to make sure that we didn't parse it as any of the specialised providers
-                    Assert.assertFalse("Provider was parsed incorrectly as a Sparql Provider", nextProvider instanceof SparqlProvider);
-
-                    Assert.assertFalse("Provider was parsed incorrectly as an Http Sparql Provider", nextProvider instanceof HttpSparqlProvider);
-                
-                    Assert.assertFalse("Provider was parsed incorrectly as an Rdf Provider", nextProvider instanceof RdfProvider);
+                    Assert.assertFalse("Provider was parsed incorrectly as a Sparql Provider",
+                            nextProvider instanceof SparqlProvider);
+                    
+                    Assert.assertFalse("Provider was parsed incorrectly as an Http Sparql Provider",
+                            nextProvider instanceof HttpSparqlProvider);
+                    
+                    Assert.assertFalse("Provider was parsed incorrectly as an Rdf Provider",
+                            nextProvider instanceof RdfProvider);
                 }
                 else
                 {
@@ -1324,11 +1329,9 @@ public class RdfUtilsTest
                 
                 if(RdfUtilsTest.FAIL_ON_UNEXPECTED_TRIPLES)
                 {
-                    Assert.assertEquals(
-                            "There were unexpected triples in the test file. This should not happen. "
-                                    + nextQueryType.getUnrecognisedStatements().toString()
-                                    + nextQueryType.getUnrecognisedStatements(), 0, nextQueryType
-                                    .getUnrecognisedStatements().size());
+                    Assert.assertEquals("There were unexpected triples in the test file. This should not happen. "
+                            + nextQueryType.getUnrecognisedStatements().toString(), 0, nextQueryType
+                            .getUnrecognisedStatements().size());
                 }
             }
         }

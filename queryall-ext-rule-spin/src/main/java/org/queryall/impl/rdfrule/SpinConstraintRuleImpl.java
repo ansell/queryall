@@ -46,7 +46,7 @@ import com.hp.hpl.jena.shared.ReificationStyle;
  */
 public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements SpinConstraintRule, HtmlExport
 {
-    static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImpl.class);
     private static final boolean _TRACE = SpinConstraintRuleImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = SpinConstraintRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
@@ -93,11 +93,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -112,8 +108,8 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             {
                 if(SpinConstraintRuleImpl._TRACE)
                 {
-                    SpinConstraintRuleImpl.log
-                            .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
+                    SpinConstraintRuleImpl.log.trace("SpinConstraintRuleImpl: found valid type predicate for URI: "
+                            + keyToUse);
                 }
                 
                 // isValid = true;
@@ -123,9 +119,8 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             {
                 if(SpinConstraintRuleImpl._DEBUG)
                 {
-                    SpinConstraintRuleImpl.log
-                            .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
-                                    + nextStatement.toString());
+                    SpinConstraintRuleImpl.log.debug("SpinConstraintRuleImpl: unrecognisedStatement nextStatement: "
+                            + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
@@ -140,7 +135,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         if(SpinConstraintRuleImpl._DEBUG)
         {
-            SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
+            SpinConstraintRuleImpl.log.debug("SpinConstraintRuleImpl constructor: toString()=" + this.toString());
         }
     }
     
@@ -159,14 +154,14 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         if(nextModel != null)
         {
-            BaseRuleImpl.log.info("adding model to registry and ontology model list nextImport=" + nextImport
+            SpinConstraintRuleImpl.log.info("adding model to registry and ontology model list nextImport=" + nextImport
                     + " nextModel.size()=" + nextModel.size());
             this.ontologyModels.add(nextModel);
             this.getSpinModuleRegistry().registerAll(nextModel, nextImport);
         }
         else
         {
-            BaseRuleImpl.log.error("Failed to load import from URL nextImport=" + nextImport);
+            SpinConstraintRuleImpl.log.error("Failed to load import from URL nextImport=" + nextImport);
         }
         
         this.getSpinModuleRegistry().init();
@@ -181,14 +176,15 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         if(nextModel != null)
         {
-            BaseRuleImpl.log.info("adding model to registry and ontology model list nextImport="
+            SpinConstraintRuleImpl.log.info("adding model to registry and ontology model list nextImport="
                     + nextURLImport.stringValue() + " nextModel.size()=" + nextModel.size());
             this.ontologyModels.add(nextModel);
             this.getSpinModuleRegistry().registerAll(nextModel, nextURLImport.stringValue());
         }
         else
         {
-            BaseRuleImpl.log.error("Failed to load import from URL nextURLImport=" + nextURLImport.stringValue());
+            SpinConstraintRuleImpl.log.error("Failed to load import from URL nextURLImport="
+                    + nextURLImport.stringValue());
         }
         
         this.getSpinModuleRegistry().init();
@@ -290,73 +286,6 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     public boolean isEntailmentEnabled(final URI entailmentURI)
     {
         return this.activeEntailments.contains(entailmentURI);
-    }
-    
-    /**
-     * See OWLRLExample in spin-examples-1.2.0.jar
-     * 
-     * Currently limited to adding the resulting triples from the spin reasoning to the repository
-     * 
-     * TODO: add more modes, such as delete matching, add matching, only return matching triples
-     * etc.
-     * 
-     * @param inputRepository
-     *            The OpenRDF repository to use for the input triples
-     * @throws QueryAllException
-     */
-    public List<ConstraintViolation> verifySpinConstraints(final Repository inputRepository, final org.openrdf.model.Resource... contexts)
-        throws QueryAllException
-    {
-        SpinConstraintRuleImpl.log.info("Loading jena model from sesame repository");
-        final OntModel queryModel =
-                SpinUtils
-                        .addSesameRepositoryToJenaModel(inputRepository,
-                                ModelFactory.createDefaultModel(ReificationStyle.Minimal), "http://spin.example.org/",
-                                contexts);
-        
-        // Create and add Model for inferred triples
-        final Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        queryModel.addSubModel(newTriples);
-        
-        SpinConstraintRuleImpl.log.info("Loading ontologies...");
-        
-        // Register any new functions defined in OWL RL
-        // NOTE: The source for these rules is given as "this" so that they can be retrieved in
-        // future based on this object
-        
-        // Build one big union Model of everything
-        final Graph[] graphs = new Graph[this.ontologyModels.size() + 1];
-        
-        graphs[0] = queryModel.getGraph();
-        
-        int i = 1;
-        
-        for(final OntModel nextModel : this.ontologyModels)
-        {
-            SpinConstraintRuleImpl.log.info("i=" + i + " nextModel.size()=" + nextModel.size());
-            graphs[i++] = nextModel.getGraph();
-        }
-        
-        final MultiUnion multiUnion = new MultiUnion(graphs);
-        
-        final Model unionModel = ModelFactory.createModelForGraph(multiUnion);
-        
-        final Set<Object> allowedRuleSources = new HashSet<Object>();
-        
-        allowedRuleSources.addAll(this.localImports);
-        
-        List<ConstraintViolation> cvs = SPINConstraints.check(unionModel, new LinkedList<SPINStatistics>(), null, OntModelSpec.OWL_MEM, "http://topbraid.org/examples/kennedysSPIN", allowedRuleSources);
-        
-        log.info("Constraint violations:");
-
-        for(ConstraintViolation cv : cvs) 
-        {
-            log.info(" - at " + SPINLabels.get().getLabel(cv.getRoot()) + ": " + cv.getMessage());
-        }
-        
-        // Note: To optimise the process, we only add the new triples back into the original
-        // repository
-        return cvs;
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)
@@ -503,6 +432,76 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         result += "description=" + this.getDescription() + "\n";
         
         return result;
+    }
+    
+    /**
+     * See OWLRLExample in spin-examples-1.2.0.jar
+     * 
+     * Currently limited to adding the resulting triples from the spin reasoning to the repository
+     * 
+     * TODO: add more modes, such as delete matching, add matching, only return matching triples
+     * etc.
+     * 
+     * @param inputRepository
+     *            The OpenRDF repository to use for the input triples
+     * @throws QueryAllException
+     */
+    public List<ConstraintViolation> verifySpinConstraints(final Repository inputRepository,
+            final org.openrdf.model.Resource... contexts) throws QueryAllException
+    {
+        SpinConstraintRuleImpl.log.info("Loading jena model from sesame repository");
+        final OntModel queryModel =
+                SpinUtils
+                        .addSesameRepositoryToJenaModel(inputRepository,
+                                ModelFactory.createDefaultModel(ReificationStyle.Minimal), "http://spin.example.org/",
+                                contexts);
+        
+        // Create and add Model for inferred triples
+        final Model newTriples = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        queryModel.addSubModel(newTriples);
+        
+        SpinConstraintRuleImpl.log.info("Loading ontologies...");
+        
+        // Register any new functions defined in OWL RL
+        // NOTE: The source for these rules is given as "this" so that they can be retrieved in
+        // future based on this object
+        
+        // Build one big union Model of everything
+        final Graph[] graphs = new Graph[this.ontologyModels.size() + 1];
+        
+        graphs[0] = queryModel.getGraph();
+        
+        int i = 1;
+        
+        for(final OntModel nextModel : this.ontologyModels)
+        {
+            SpinConstraintRuleImpl.log.info("i=" + i + " nextModel.size()=" + nextModel.size());
+            graphs[i++] = nextModel.getGraph();
+        }
+        
+        final MultiUnion multiUnion = new MultiUnion(graphs);
+        
+        final Model unionModel = ModelFactory.createModelForGraph(multiUnion);
+        
+        final Set<Object> allowedRuleSources = new HashSet<Object>();
+        
+        allowedRuleSources.addAll(this.localImports);
+        
+        final List<ConstraintViolation> cvs =
+                SPINConstraints.check(unionModel, new LinkedList<SPINStatistics>(), null, OntModelSpec.OWL_MEM,
+                        "http://topbraid.org/examples/kennedysSPIN", allowedRuleSources);
+        
+        SpinConstraintRuleImpl.log.info("Constraint violations:");
+        
+        for(final ConstraintViolation cv : cvs)
+        {
+            SpinConstraintRuleImpl.log
+                    .info(" - at " + SPINLabels.get().getLabel(cv.getRoot()) + ": " + cv.getMessage());
+        }
+        
+        // Note: To optimise the process, we only add the new triples back into the original
+        // repository
+        return cvs;
     }
     
 }

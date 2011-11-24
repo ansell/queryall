@@ -7,7 +7,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.vocabulary.RDF;
-import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -15,7 +14,6 @@ import org.queryall.api.base.HtmlExport;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestSchema;
-import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.StringUtils;
@@ -49,11 +47,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -71,14 +65,6 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
                 }
                 
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
-            }
-            else if(nextStatement.getPredicate().equals(nextStatement.getPredicate().equals(RDFS.COMMENT)))
-            {
-                this.setDescription(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
             {
@@ -122,12 +108,6 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
     public void addStage(final URI stage)
     {
         this.stages.add(stage);
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override
@@ -217,48 +197,29 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         try
         {
             final URI keyUri = this.getKey();
             
-            URI curationStatusLiteral = null;
-            
-            if(this.getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
-            
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(keyUri, RDF.TYPE, nextElementType, contextKey);
             }
-            
-            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             if(this.rdfRuleUris != null)
             {
                 for(final URI nextRdfRuleUri : this.rdfRuleUris)
                 {
-                    con.add(keyUri, RuleTestSchema.getRuletestHasRuleUri(), nextRdfRuleUri, keyToUse);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
+                    con.add(keyUri, RuleTestSchema.getRuletestHasRuleUri(), nextRdfRuleUri, contextKey);
                 }
             }
             

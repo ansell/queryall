@@ -58,25 +58,10 @@ public class GeneralServlet extends HttpServlet
     public static final boolean _DEBUG = GeneralServlet.log.isDebugEnabled();
     public static final boolean _INFO = GeneralServlet.log.isInfoEnabled();
     
-    @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
-        IOException
-    {
-        final QueryAllConfiguration localSettings =
-                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
-        final BlacklistController localBlacklistController =
-                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
-        final ContentTypeNegotiator localContentTypeNegotiator =
-                (ContentTypeNegotiator)this.getServletContext().getAttribute(
-                        SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
-        final VelocityEngine localVelocityEngine =
-                (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
-        
-        doGetRequest(request, response, localSettings, localBlacklistController, localContentTypeNegotiator, localVelocityEngine);
-    }
-    
-    public static void doGetRequest(HttpServletRequest request, HttpServletResponse response, QueryAllConfiguration localSettings, BlacklistController localBlacklistController, ContentTypeNegotiator localContentTypeNegotiator, VelocityEngine localVelocityEngine)  throws ServletException,
-    IOException
+    public static void doGetRequest(final HttpServletRequest request, final HttpServletResponse response,
+            final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
+            final ContentTypeNegotiator localContentTypeNegotiator, final VelocityEngine localVelocityEngine)
+        throws ServletException, IOException
     {
         final long queryStartTime = System.currentTimeMillis();
         
@@ -130,8 +115,8 @@ public class GeneralServlet extends HttpServlet
         
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
-                        localContentTypeNegotiator,
-                        localSettings.getStringProperty(Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML));
+                        localContentTypeNegotiator, localSettings.getStringProperty(
+                                Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -160,7 +145,8 @@ public class GeneralServlet extends HttpServlet
         }
         
         // allow for users to perform redirections if the query did not contain an explicit format
-        if(ServletUtils.checkExplicitRedirect(response, localSettings, requestQueryOptions, contextPath, requestedContentType))
+        if(ServletUtils.checkExplicitRedirect(response, localSettings, requestQueryOptions, contextPath,
+                requestedContentType))
         {
             // no more code necessary here
             return;
@@ -243,8 +229,8 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                ServletUtils.doQueryUnknown(localSettings, realHostName, queryParameters, pageOffset, requestedContentType,
-                        includedProfiles, fetchController, debugStrings, myRepository);
+                ServletUtils.doQueryUnknown(localSettings, realHostName, queryParameters, pageOffset,
+                        requestedContentType, includedProfiles, fetchController, debugStrings, myRepository);
             }
             else
             {
@@ -291,8 +277,9 @@ public class GeneralServlet extends HttpServlet
             final Repository convertedPool =
                     ServletUtils.doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
             
-            ServletUtils.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName, queryString,
-                    pageOffset, requestedContentType, fetchController, debugStrings, convertedPool, contextPath);
+            ServletUtils.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName,
+                    queryString, pageOffset, requestedContentType, fetchController, debugStrings, convertedPool,
+                    contextPath);
             
             out.flush();
             
@@ -346,6 +333,24 @@ public class GeneralServlet extends HttpServlet
         {
             GeneralServlet.log.error("GeneralServlet.doGet: caught runtime exception", rex);
         }
+    }
+    
+    @Override
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+        IOException
+    {
+        final QueryAllConfiguration localSettings =
+                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        final BlacklistController localBlacklistController =
+                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
+        final ContentTypeNegotiator localContentTypeNegotiator =
+                (ContentTypeNegotiator)this.getServletContext().getAttribute(
+                        SettingsContextListener.QUERYALL_CONTENTNEGOTIATOR);
+        final VelocityEngine localVelocityEngine =
+                (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+        
+        GeneralServlet.doGetRequest(request, response, localSettings, localBlacklistController,
+                localContentTypeNegotiator, localVelocityEngine);
     }
     
 }

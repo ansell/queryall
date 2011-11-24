@@ -61,11 +61,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -175,14 +171,6 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             con.add(keyUri, RDF.TYPE, StringRuleTestSchema.getStringRuleTestTypeUri(), keyToUse);
             con.add(keyUri, StringRuleTestSchema.getRuletestInputTestString(), testInputStringLiteral, keyToUse);
             con.add(keyUri, StringRuleTestSchema.getRuletestOutputTestString(), testOutputStringLiteral, keyToUse);
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
-                }
-            }
             
             // If everything went as planned, we can commit the result
             con.commit();
