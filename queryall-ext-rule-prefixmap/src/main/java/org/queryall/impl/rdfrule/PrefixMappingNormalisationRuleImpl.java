@@ -17,7 +17,9 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.exception.InvalidStageException;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl implements PrefixMappingNormalisationRule
+public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl implements
+        PrefixMappingNormalisationRule
 {
     private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleImpl.class);
     private static final boolean _TRACE = PrefixMappingNormalisationRuleImpl.log.isTraceEnabled();
@@ -39,6 +42,8 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     {
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
+        PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
+                .add(TransformingRuleSchema.getTransformingRuleTypeUri());
         PrefixMappingNormalisationRuleImpl.SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES
                 .add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri());
     }
@@ -68,11 +73,7 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
@@ -214,15 +215,25 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     {
         if(this.validStages.size() == 0)
         {
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-            // Not sure how this would be implemented after query parsing, or why it would be
-            // different to after query creation, so leave it off the list for now
-            // this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-            this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+            try
+            {
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+                // Not sure how this would be implemented after query parsing, or why it would be
+                // different to after query creation, so leave it off the list for now
+                // this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+                this.addValidStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+            }
+            catch(final InvalidStageException e)
+            {
+                PrefixMappingNormalisationRuleImpl.log
+                        .error("InvalidStageException found from hardcoded stage URI insertion, bad things may happen now!",
+                                e);
+                throw new RuntimeException("Found fatal InvalidStageException in hardcoded stage URI insertion", e);
+            }
         }
         
         return Collections.unmodifiableSet(this.validStages);
@@ -313,10 +324,10 @@ public class PrefixMappingNormalisationRuleImpl extends NormalisationRuleImpl im
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
-        super.toRdf(myRepository, keyToUse, modelVersion);
+        super.toRdf(myRepository, modelVersion, keyToUse);
         
         final RepositoryConnection con = myRepository.getConnection();
         

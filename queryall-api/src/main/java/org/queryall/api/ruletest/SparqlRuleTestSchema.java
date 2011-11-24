@@ -3,6 +3,7 @@
  */
 package org.queryall.api.ruletest;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -20,7 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class SparqlRuleTestSchema
+@MetaInfServices(QueryAllSchema.class)
+public class SparqlRuleTestSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestSchema.class);
     @SuppressWarnings("unused")
@@ -50,6 +53,8 @@ public class SparqlRuleTestSchema
         SparqlRuleTestSchema.setSparqlRuletestInputTriples(f.createURI(baseUri, "inputTriples"));
         SparqlRuleTestSchema.setSparqlRuletestInputMimeType(f.createURI(baseUri, "inputMimeType"));
     }
+    
+    public static final QueryAllSchema SPARQL_RULE_TEST_SCHEMA = new SparqlRuleTestSchema();
     
     /**
      * @return the ruletestOutputTestString
@@ -91,7 +96,70 @@ public class SparqlRuleTestSchema
         return SparqlRuleTestSchema.sparqlRuletestTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param ruletestOutputTestString
+     *            the ruletestOutputTestString to set
+     */
+    public static void setSparqlRuletestExpectedResult(final URI ruletestOutputTestString)
+    {
+        SparqlRuleTestSchema.sparqlRuletestExpectedResult = ruletestOutputTestString;
+    }
+    
+    /**
+     * @param ruletestInputTestString
+     *            the ruletestInputTestString to set
+     */
+    public static void setSparqlRuletestInputMimeType(final URI ruletestInputTestString)
+    {
+        SparqlRuleTestSchema.sparqlRuletestInputMimeType = ruletestInputTestString;
+    }
+    
+    /**
+     * @param ruletestOutputTestString
+     *            the ruletestOutputTestString to set
+     */
+    public static void setSparqlRuletestInputTriples(final URI ruletestOutputTestString)
+    {
+        SparqlRuleTestSchema.sparqlRuletestInputTriples = ruletestOutputTestString;
+    }
+    
+    /**
+     * @param ruletestInputTestString
+     *            the ruletestInputTestString to set
+     */
+    public static void setSparqlRuletestSparqlAskPattern(final URI ruletestInputTestString)
+    {
+        SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern = ruletestInputTestString;
+    }
+    
+    /**
+     * @param ruletestTypeUri
+     *            the ruletestTypeUri to set
+     */
+    public static void setSparqlRuleTestTypeUri(final URI ruletestTypeUri)
+    {
+        SparqlRuleTestSchema.sparqlRuletestTypeUri = ruletestTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public SparqlRuleTestSchema()
+    {
+        this(SparqlRuleTestSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public SparqlRuleTestSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -166,51 +234,6 @@ public class SparqlRuleTestSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param ruletestOutputTestString
-     *            the ruletestOutputTestString to set
-     */
-    public static void setSparqlRuletestExpectedResult(final URI ruletestOutputTestString)
-    {
-        SparqlRuleTestSchema.sparqlRuletestExpectedResult = ruletestOutputTestString;
-    }
-    
-    /**
-     * @param ruletestInputTestString
-     *            the ruletestInputTestString to set
-     */
-    public static void setSparqlRuletestInputMimeType(final URI ruletestInputTestString)
-    {
-        SparqlRuleTestSchema.sparqlRuletestInputMimeType = ruletestInputTestString;
-    }
-    
-    /**
-     * @param ruletestOutputTestString
-     *            the ruletestOutputTestString to set
-     */
-    public static void setSparqlRuletestInputTriples(final URI ruletestOutputTestString)
-    {
-        SparqlRuleTestSchema.sparqlRuletestInputTriples = ruletestOutputTestString;
-    }
-    
-    /**
-     * @param ruletestInputTestString
-     *            the ruletestInputTestString to set
-     */
-    public static void setSparqlRuletestSparqlAskPattern(final URI ruletestInputTestString)
-    {
-        SparqlRuleTestSchema.sparqlRuletestSparqlAskPattern = ruletestInputTestString;
-    }
-    
-    /**
-     * @param ruletestTypeUri
-     *            the ruletestTypeUri to set
-     */
-    public static void setSparqlRuleTestTypeUri(final URI ruletestTypeUri)
-    {
-        SparqlRuleTestSchema.sparqlRuletestTypeUri = ruletestTypeUri;
     }
     
 }

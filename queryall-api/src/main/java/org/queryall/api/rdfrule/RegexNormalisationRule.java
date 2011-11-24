@@ -1,6 +1,6 @@
 package org.queryall.api.rdfrule;
 
-public interface RegexNormalisationRule extends NormalisationRule
+public interface RegexNormalisationRule extends TransformingRule
 {
     
     /**

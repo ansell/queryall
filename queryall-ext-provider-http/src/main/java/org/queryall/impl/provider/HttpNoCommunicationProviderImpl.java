@@ -37,6 +37,9 @@ public class HttpNoCommunicationProviderImpl extends HttpProviderImpl implements
         return HttpNoCommunicationProviderImpl.HTTP_NO_COMMUNICATION_PROVIDER_IMPL_TYPES;
     }
     
+    private boolean useSparqlGraph = false;
+    private String sparqlGraphUri = "";
+    
     /**
      * 
      */

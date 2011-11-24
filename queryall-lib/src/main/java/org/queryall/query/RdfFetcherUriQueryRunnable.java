@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherUriQueryRunnable.class);
-    private static final boolean _TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
+    private static final boolean _TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
     private static final boolean _DEBUG = RdfFetcherUriQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherUriQueryRunnable.log.isInfoEnabled();
@@ -29,7 +29,14 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
     }
     
     @Override
-    public void run()
+    public String call() throws Exception
+    {
+        this.doWork();
+        
+        return this.getNormalisedResult();
+    }
+    
+    private void doWork()
     {
         try
         {
@@ -46,23 +53,31 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                RdfFetcherUriQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                RdfFetcherUriQueryRunnable.log.error("There are " + (alternateEndpointsAndQueries.size() - 1)
                         + " alternative endpoints to choose from");
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
-                            + " originalEndpoint=" + this.getEndpointUrl());
-                    
-                    final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
-                    
-                    tempRawResult =
-                            fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
-                    
-                    if(!fetcher.getLastWasError())
+                    if(!alternateEndpoint.equals(this.getEndpointUrl()))
                     {
-                        // break on the first alternate that wasn't an error
-                        break;
+                        RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                                + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
+                        
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
+                        if(RdfFetcherUriQueryRunnable._DEBUG)
+                        {
+                            RdfFetcherUriQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                        }
+                        
+                        tempRawResult =
+                                fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
+                        
+                        if(!fetcher.getLastWasError())
+                        {
+                            // break on the first alternate that wasn't an error
+                            break;
+                        }
                     }
                 }
             }
@@ -104,5 +119,11 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
+    }
+    
+    @Override
+    public void run()
+    {
+        this.doWork();
     }
 }

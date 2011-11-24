@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class XsltNormalisationRuleSchema
+@MetaInfServices(QueryAllSchema.class)
+public class XsltNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -46,6 +49,8 @@ public class XsltNormalisationRuleSchema
         
     }
     
+    public static final QueryAllSchema XSLT_NORMALISATION_RULE_SCHEMA = new XsltNormalisationRuleSchema();
+    
     /**
      * @return the xsltRuleStylesheetUri
      */
@@ -62,11 +67,45 @@ public class XsltNormalisationRuleSchema
         return XsltNormalisationRuleSchema.xsltRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param xsltRuleStylesheetUri
+     *            the xsltRuleStylesheetUri to set
+     */
+    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @param xsltRuleTypeUri
+     *            the xsltRuleTypeUri to set
+     */
+    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public XsltNormalisationRuleSchema()
+    {
+        this(XsltNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public XsltNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -80,7 +119,7 @@ public class XsltNormalisationRuleSchema
                     f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."),
                     contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
             
             con.add(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
@@ -116,23 +155,4 @@ public class XsltNormalisationRuleSchema
         
         return false;
     }
-    
-    /**
-     * @param xsltRuleStylesheetUri
-     *            the xsltRuleStylesheetUri to set
-     */
-    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @param xsltRuleTypeUri
-     *            the xsltRuleTypeUri to set
-     */
-    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
-    }
-    
 }

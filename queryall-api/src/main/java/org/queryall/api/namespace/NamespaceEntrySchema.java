@@ -3,6 +3,7 @@
  */
 package org.queryall.api.namespace;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NamespaceEntrySchema
+@MetaInfServices(QueryAllSchema.class)
+public class NamespaceEntrySchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(NamespaceEntrySchema.class);
     @SuppressWarnings("unused")
@@ -63,6 +66,8 @@ public class NamespaceEntrySchema
                 "separator"));
         NamespaceEntrySchema.setOldNamespaceTitle(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "title"));
     }
+    
+    public static final QueryAllSchema NAMESPACE_ENTRY_SCHEMA = new NamespaceEntrySchema();
     
     /**
      * @return the namespaceAlternativePrefix
@@ -136,7 +141,106 @@ public class NamespaceEntrySchema
         return NamespaceEntrySchema.oldNamespaceTitle;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param namespaceAlternativePrefix
+     *            the namespaceAlternativePrefix to set
+     */
+    public static void setNamespaceAlternativePrefix(final URI namespaceAlternativePrefix)
+    {
+        NamespaceEntrySchema.namespaceAlternativePrefix = namespaceAlternativePrefix;
+    }
+    
+    /**
+     * @param namespaceAuthority
+     *            the namespaceAuthority to set
+     */
+    public static void setNamespaceAuthority(final URI namespaceAuthority)
+    {
+        NamespaceEntrySchema.namespaceAuthority = namespaceAuthority;
+    }
+    
+    /**
+     * @param namespaceConvertQueriesToPreferredPrefix
+     *            the namespaceConvertQueriesToPreferredPrefix to set
+     */
+    public static void setNamespaceConvertQueriesToPreferredPrefix(final URI namespaceConvertQueriesToPreferredPrefix)
+    {
+        NamespaceEntrySchema.namespaceConvertQueriesToPreferredPrefix = namespaceConvertQueriesToPreferredPrefix;
+    }
+    
+    /**
+     * @param namespaceDescription
+     *            the namespaceDescription to set
+     */
+    public static void setNamespaceDescription(final URI namespaceDescription)
+    {
+        NamespaceEntrySchema.namespaceDescription = namespaceDescription;
+    }
+    
+    /**
+     * @param namespacePreferredPrefix
+     *            the namespacePreferredPrefix to set
+     */
+    public static void setNamespacePreferredPrefix(final URI namespacePreferredPrefix)
+    {
+        NamespaceEntrySchema.namespacePreferredPrefix = namespacePreferredPrefix;
+    }
+    
+    /**
+     * @param namespaceSeparator
+     *            the namespaceSeparator to set
+     */
+    public static void setNamespaceSeparator(final URI namespaceSeparator)
+    {
+        NamespaceEntrySchema.namespaceSeparator = namespaceSeparator;
+    }
+    
+    /**
+     * @param namespaceTypeUri
+     *            the namespaceTypeUri to set
+     */
+    public static void setNamespaceTypeUri(final URI namespaceTypeUri)
+    {
+        NamespaceEntrySchema.namespaceTypeUri = namespaceTypeUri;
+    }
+    
+    /**
+     * @param namespaceUriTemplate
+     *            the namespaceUriTemplate to set
+     */
+    public static void setNamespaceUriTemplate(final URI namespaceUriTemplate)
+    {
+        NamespaceEntrySchema.namespaceUriTemplate = namespaceUriTemplate;
+    }
+    
+    /**
+     * @param oldNamespaceTitle
+     *            the oldNamespaceTitle to set
+     */
+    public static void setOldNamespaceTitle(final URI oldNamespaceTitle)
+    {
+        NamespaceEntrySchema.oldNamespaceTitle = oldNamespaceTitle;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public NamespaceEntrySchema()
+    {
+        this(NamespaceEntrySchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public NamespaceEntrySchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -241,87 +345,6 @@ public class NamespaceEntrySchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param namespaceAlternativePrefix
-     *            the namespaceAlternativePrefix to set
-     */
-    public static void setNamespaceAlternativePrefix(final URI namespaceAlternativePrefix)
-    {
-        NamespaceEntrySchema.namespaceAlternativePrefix = namespaceAlternativePrefix;
-    }
-    
-    /**
-     * @param namespaceAuthority
-     *            the namespaceAuthority to set
-     */
-    public static void setNamespaceAuthority(final URI namespaceAuthority)
-    {
-        NamespaceEntrySchema.namespaceAuthority = namespaceAuthority;
-    }
-    
-    /**
-     * @param namespaceConvertQueriesToPreferredPrefix
-     *            the namespaceConvertQueriesToPreferredPrefix to set
-     */
-    public static void setNamespaceConvertQueriesToPreferredPrefix(final URI namespaceConvertQueriesToPreferredPrefix)
-    {
-        NamespaceEntrySchema.namespaceConvertQueriesToPreferredPrefix = namespaceConvertQueriesToPreferredPrefix;
-    }
-    
-    /**
-     * @param namespaceDescription
-     *            the namespaceDescription to set
-     */
-    public static void setNamespaceDescription(final URI namespaceDescription)
-    {
-        NamespaceEntrySchema.namespaceDescription = namespaceDescription;
-    }
-    
-    /**
-     * @param namespacePreferredPrefix
-     *            the namespacePreferredPrefix to set
-     */
-    public static void setNamespacePreferredPrefix(final URI namespacePreferredPrefix)
-    {
-        NamespaceEntrySchema.namespacePreferredPrefix = namespacePreferredPrefix;
-    }
-    
-    /**
-     * @param namespaceSeparator
-     *            the namespaceSeparator to set
-     */
-    public static void setNamespaceSeparator(final URI namespaceSeparator)
-    {
-        NamespaceEntrySchema.namespaceSeparator = namespaceSeparator;
-    }
-    
-    /**
-     * @param namespaceTypeUri
-     *            the namespaceTypeUri to set
-     */
-    public static void setNamespaceTypeUri(final URI namespaceTypeUri)
-    {
-        NamespaceEntrySchema.namespaceTypeUri = namespaceTypeUri;
-    }
-    
-    /**
-     * @param namespaceUriTemplate
-     *            the namespaceUriTemplate to set
-     */
-    public static void setNamespaceUriTemplate(final URI namespaceUriTemplate)
-    {
-        NamespaceEntrySchema.namespaceUriTemplate = namespaceUriTemplate;
-    }
-    
-    /**
-     * @param oldNamespaceTitle
-     *            the oldNamespaceTitle to set
-     */
-    public static void setOldNamespaceTitle(final URI oldNamespaceTitle)
-    {
-        NamespaceEntrySchema.oldNamespaceTitle = oldNamespaceTitle;
     }
     
 }

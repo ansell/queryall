@@ -1,12 +1,12 @@
 package org.queryall.exception;
 
-public class QueryAllException extends RuntimeException
+public class QueryAllException extends Exception
 {
     /**
      * 
      */
     private static final long serialVersionUID = -2658083067730722287L;
-
+    
     /**
      * 
      */
@@ -18,27 +18,26 @@ public class QueryAllException extends RuntimeException
     /**
      * @param message
      */
-    public QueryAllException(String message)
+    public QueryAllException(final String message)
     {
         super(message);
-    }
-    
-    /**
-     * @param cause
-     */
-    public QueryAllException(Throwable cause)
-    {
-        super(cause);
     }
     
     /**
      * @param message
      * @param cause
      */
-    public QueryAllException(String message, Throwable cause)
+    public QueryAllException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
     
+    /**
+     * @param cause
+     */
+    public QueryAllException(final Throwable cause)
+    {
+        super(cause);
+    }
     
 }

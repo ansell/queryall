@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfOutputQueryTypeSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfOutputQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfOutputQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -47,6 +50,8 @@ public class RdfOutputQueryTypeSchema
         RdfOutputQueryTypeSchema.setQueryOutputRdfString(f.createURI(baseUri, "outputRdfString"));
         RdfOutputQueryTypeSchema.setQueryOutputRdfFormat(f.createURI(baseUri, "outputRdfFormat"));
     }
+    
+    public static final QueryAllSchema RDF_OUTPUT_QUERY_TYPE_SCHEMA = new RdfOutputQueryTypeSchema();
     
     /**
      * @return the queryOLDOutputRdfXmlString
@@ -74,7 +79,53 @@ public class RdfOutputQueryTypeSchema
         return RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param queryOLDOutputRdfXmlString
+     *            the queryOLDOutputRdfXmlString to set
+     */
+    public static void setOLDQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
+    {
+        RdfOutputQueryTypeSchema.queryOLDOutputRdfXmlString = queryOutputRdfXmlString;
+    }
+    
+    public static void setQueryOutputRdfFormat(final URI outputRdfFormat)
+    {
+        RdfOutputQueryTypeSchema.queryOutputRdfFormat = outputRdfFormat;
+    }
+    
+    public static void setQueryOutputRdfString(final URI outputRdfString)
+    {
+        RdfOutputQueryTypeSchema.queryOutputRdfString = outputRdfString;
+    }
+    
+    /**
+     * @param queryTypeUri
+     *            the queryTypeUri to set
+     */
+    public static void setRdfOutputQueryTypeUri(final URI queryTypeUri)
+    {
+        RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RdfOutputQueryTypeSchema()
+    {
+        this(RdfOutputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public RdfOutputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -140,33 +191,4 @@ public class RdfOutputQueryTypeSchema
         
         return false;
     }
-    
-    /**
-     * @param queryOLDOutputRdfXmlString
-     *            the queryOLDOutputRdfXmlString to set
-     */
-    public static void setOLDQueryOutputRdfXmlString(final URI queryOutputRdfXmlString)
-    {
-        RdfOutputQueryTypeSchema.queryOLDOutputRdfXmlString = queryOutputRdfXmlString;
-    }
-    
-    public static void setQueryOutputRdfFormat(final URI outputRdfFormat)
-    {
-        RdfOutputQueryTypeSchema.queryOutputRdfFormat = outputRdfFormat;
-    }
-    
-    public static void setQueryOutputRdfString(final URI outputRdfString)
-    {
-        RdfOutputQueryTypeSchema.queryOutputRdfString = outputRdfString;
-    }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setRdfOutputQueryTypeUri(final URI queryTypeUri)
-    {
-        RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
-    }
-    
 }

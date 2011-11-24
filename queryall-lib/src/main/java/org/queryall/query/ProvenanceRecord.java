@@ -23,13 +23,13 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
-import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.HtmlExport;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
+public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProvenanceRecord.class);
     private static final boolean _TRACE = ProvenanceRecord.log.isTraceEnabled();
@@ -90,14 +90,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         return false;
     }
     
-    public Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    private URI key;
     public String recordElementType = "";
     public String recordElementKey = "";
     public String hasAuthorOpenID = "";
     public Date recordDate = null;
     
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     public static URI provenanceTypeUri;
     public static URI provenanceElementTypeUri;
     public static URI provenanceElementKeyUri;
@@ -126,11 +123,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         
         // final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
-        final Collection<String> endpointUrls = new HashSet<String>();
-        
-        endpointUrls.add(hostToUse + "provenancebykey/" + StringUtils.percentEncode(nextElementKey));
-        
-        dummyProvider.setEndpointUrls(endpointUrls);
+        dummyProvider.addEndpointUrl(hostToUse + "provenancebykey/" + StringUtils.percentEncode(nextElementKey));
         
         nextQueryBundle.addAlternativeEndpointAndQuery(
                 hostToUse + "provenancebykey/" + StringUtils.percentEncode(nextElementKey), "");
@@ -141,25 +134,19 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         
         // TODO: remove calls to Settings.getSettings() and
         // BlacklistController.getDefaultController() here
-        final RdfFetchController fetchController =
-                new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(), queryBundles);
-        
-        try
-        {
-            fetchController.fetchRdfForQueries();
-        }
-        catch(final InterruptedException ie)
-        {
-            ProvenanceRecord.log.error("ProvenanceRecord: interrupted exception", ie);
-            throw ie;
-        }
-        
-        final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
-        
+        RdfFetchController fetchController = null;
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;
         try
         {
+            fetchController =
+                    new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(),
+                            queryBundles);
+            
+            fetchController.fetchRdfForQueries();
+            
+            final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
+            
             myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
             myRepositoryConnection = myRepository.getConnection();
@@ -234,6 +221,16 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
                 }
             } // end for(RdfFetcherQUeryRunnable nextResult : rdfResults)
         }
+        catch(final QueryAllException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch(final InterruptedException ie)
+        {
+            ProvenanceRecord.log.error("ProvenanceRecord: interrupted exception", ie);
+            throw ie;
+        }
         catch(final org.openrdf.repository.RepositoryException re)
         {
             ProvenanceRecord.log.error("ProvenanceRecord.fetchProvenanceForElementKey: RepositoryException outer", re);
@@ -277,9 +274,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         
         final URI provenanceTypeUri = ProvenanceRecord.provenanceTypeUri;
         
+        RepositoryConnection con = null;
+        
         try
         {
-            final RepositoryConnection con = myRepository.getConnection();
+            con = myRepository.getConnection();
             
             for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, provenanceTypeUri, true).asList())
             {
@@ -294,6 +293,13 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
             // handle exception
             ProvenanceRecord.log.error("getProvenanceRecordsFromRepository.:", e);
         }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
         
         return results;
     }
@@ -304,7 +310,11 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     public ProvenanceRecord(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(ProvenanceRecord._DEBUG)
             {
@@ -358,18 +368,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         }
     }
     
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -401,27 +399,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         return results;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return null;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     public boolean relatedToElementTypes(final Collection<URI> typesToCheck)
     {
         if(typesToCheck == null || this.recordElementType == null || this.recordElementType.trim().equals(""))
@@ -443,12 +420,6 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         }
         
         return false;
-    }
-    
-    @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
     }
     
     /**
@@ -475,33 +446,12 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     }
     
     /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    /**
      * @param nextDate
      *            the date the record was created at
      */
     public void setRecordDate(final Date nextDate)
     {
         this.recordDate = nextDate;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
     }
     
     @Override
@@ -538,7 +488,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -549,7 +499,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
         {
             ProvenanceRecord.log.debug("ProvenanceRecord.toRdf: 1");
             // create some resources and literals to make statements out of
-            final URI provenanceInstanceUri = keyToUse;
+            final URI provenanceInstanceUri = this.getKey();
             
             // allow automatic creation of recordDate at this point if it has not been previously
             // specified
@@ -572,23 +522,12 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
             
             con.setAutoCommit(false);
             
-            con.add(provenanceInstanceUri, RDF.TYPE, ProvenanceRecord.provenanceTypeUri, provenanceInstanceUri);
+            con.add(provenanceInstanceUri, RDF.TYPE, ProvenanceRecord.provenanceTypeUri, keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceHasAuthorOpenIDUri, hasAuthorOpenIDLiteral,
-                    provenanceInstanceUri);
-            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementTypeUri, elementTypeLiteral,
-                    provenanceInstanceUri);
-            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementKeyUri, elementKeyLiteral,
-                    provenanceInstanceUri);
-            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceRecordDateUri, recordDateLiteral,
-                    provenanceInstanceUri);
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement);
-                }
-            }
+                    keyToUse);
+            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementTypeUri, elementTypeLiteral, keyToUse);
+            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceElementKeyUri, elementKeyLiteral, keyToUse);
+            con.add(provenanceInstanceUri, ProvenanceRecord.provenanceRecordDateUri, recordDateLiteral, keyToUse);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -622,7 +561,7 @@ public class ProvenanceRecord implements BaseQueryAllInterface, HtmlExport
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + this.key + "\n");
+        sb.append("key=" + this.getKey() + "\n");
         sb.append("elementType=" + this.recordElementType + "\n");
         sb.append("elementKey=" + this.recordElementKey + "\n");
         sb.append("hasAuthorOpenID=" + this.hasAuthorOpenID + "\n");

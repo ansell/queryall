@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfInputQueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -44,6 +47,8 @@ public class RdfInputQueryTypeSchema
         RdfInputQueryTypeSchema.setQuerySparqlInputSelect(f.createURI(baseUri, "sparqlInputSelect"));
     }
     
+    public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new RdfInputQueryTypeSchema();
+    
     public static URI getQuerySparqlInputSelect()
     {
         return RdfInputQueryTypeSchema.querySparqlInputSelect;
@@ -57,7 +62,39 @@ public class RdfInputQueryTypeSchema
         return RdfInputQueryTypeSchema.rdfInputQueryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public static void setQuerySparqlInputSelect(final URI sparqlInputSelect)
+    {
+        RdfInputQueryTypeSchema.querySparqlInputSelect = sparqlInputSelect;
+    }
+    
+    /**
+     * @param queryTypeUri
+     *            the queryTypeUri to set
+     */
+    public static void setRdfInputQueryTypeUri(final URI queryTypeUri)
+    {
+        RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RdfInputQueryTypeSchema()
+    {
+        this(RdfInputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public RdfInputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -110,19 +147,4 @@ public class RdfInputQueryTypeSchema
         
         return false;
     }
-    
-    public static void setQuerySparqlInputSelect(final URI sparqlInputSelect)
-    {
-        RdfInputQueryTypeSchema.querySparqlInputSelect = sparqlInputSelect;
-    }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setRdfInputQueryTypeUri(final URI queryTypeUri)
-    {
-        RdfInputQueryTypeSchema.rdfInputQueryTypeUri = queryTypeUri;
-    }
-    
 }

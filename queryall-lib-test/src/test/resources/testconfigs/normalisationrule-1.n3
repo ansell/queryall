@@ -8,7 +8,7 @@
 @prefix oas_rdfrule: <http://oas.example.org/rdfrule:> .
 @prefix oas_ns: <http://oas.example.org/ns:> .
 
-<http://example.org/rdfrule:abc_issn> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:RegexNormalisationRule> ;
+<http://example.org/rdfrule:abc_issn> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:TransformationRule> , <http://purl.org/queryall/rdfrule:RegexNormalisationRule> ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:issn> ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:queryVariables> ;
 	<http://purl.org/queryall/rdfrule:inputMatchRegex> "http://example\\.org/issn:" ;
@@ -20,7 +20,7 @@
 	<http://purl.org/queryall/rdfrule:order> "110"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:includeThenExclude> .
 
-<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluri> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> ;
+<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriconstruct> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:TransformationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlConstructRule> ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:symbol> ;
     <http://purl.org/queryall/rdfrule:sparqlMode> <http://purl.org/queryall/rdfrule:addAllMatchingTriples> ;
     <http://purl.org/queryall/rdfrule:sparqlConstructQueryTarget> "?myUri <http://bio2rdf.org/bio2rdf_resource:dbxref> ?symbolUri . " ;
@@ -30,7 +30,15 @@
 	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
 	
-oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:PrefixMappingNormalisationRule ;
+<http://bio2rdf.org/rdfrule:neurocommonsgeneaddsymboluriask> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:ValidationRule> , <http://purl.org/queryall/rdfrule:SparqlNormalisationRule> , <http://purl.org/queryall/rdfrule:SparqlAskRule> ;
+	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:symbol> ;
+    <http://purl.org/queryall/rdfrule:sparqlWherePattern> " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . " ;
+	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:afterResultsImport> ;
+	rdfs:comment "Tests for the existence of Neurocommons gene symbol literals" ;
+	<http://purl.org/queryall/rdfrule:order> "110"^^<http://www.w3.org/2001/XMLSchema#int> ;
+	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
+	
+oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:TransformationRule, queryall_rdfrule:PrefixMappingNormalisationRule ;
 	queryall_rdfrule:hasRelatedNamespace oas_ns:po ;
     queryall_rdfrule:inputPrefix "http://bio2rdf.org/po:" ;
     queryall_rdfrule:outputPrefix "http://oas.example.org/po:" ;
@@ -42,7 +50,7 @@ oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:Pr
 	queryall_rdfrule:order "100"^^xsd:int ;
 	queryall_profile:profileIncludeExcludeOrder queryall_profile:includeThenExclude .
 	
-<http://bio2rdf.org/rdfrule:xsltNlmPubmed> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:XsltNormalisationRule> ;
+<http://bio2rdf.org/rdfrule:xsltNlmPubmed> a <http://purl.org/queryall/rdfrule:NormalisationRule> , <http://purl.org/queryall/rdfrule:TransformationRule> , <http://purl.org/queryall/rdfrule:XsltNormalisationRule> ;
     <http://purl.org/queryall/rdfrule:xsltStylesheet> """<?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="text" indent="no" encoding="UTF-8" omit-xml-declaration="yes"/>
@@ -145,7 +153,7 @@ oas_rdfrule:bio2rdfpo a queryall_rdfrule:NormalisationRule , queryall_rdfrule:Pr
 """ ;
 	<http://purl.org/queryall/rdfrule:hasRelatedNamespace> <http://example.org/ns:pubmed> ;
 	<http://purl.org/queryall/rdfrule:stage> <http://purl.org/queryall/rdfrule:beforeResultsImport> ;
-	<http://purl.org/queryall/rdfrule:description> "XSLT transformation of a Pubmed XML document into RDF NTriples" ;
+	rdfs:comment "XSLT transformation of a Pubmed XML document into RDF NTriples" ;
 	<http://purl.org/queryall/rdfrule:order> "100"^^<http://www.w3.org/2001/XMLSchema#int> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> .
 

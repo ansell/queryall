@@ -1,5 +1,6 @@
 package org.queryall.api.provider;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -10,6 +11,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.sail.memory.model.MemValueFactory;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfProviderSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfProviderSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(RdfProviderSchema.class);
     @SuppressWarnings("unused")
@@ -39,6 +42,8 @@ public class RdfProviderSchema
         RdfProviderSchema.setProviderRdfProviderUri(f.createURI(baseUri, "RdfProvider"));
     }
     
+    public static final QueryAllSchema RDF_PROVIDER_SCHEMA = new RdfProviderSchema();
+    
     /**
      * @return the providerRdfProviderUri
      */
@@ -47,11 +52,36 @@ public class RdfProviderSchema
         return RdfProviderSchema.providerRdfProviderUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param providerRdfProviderUri
+     *            the providerRdfProviderUri to set
+     */
+    public static void setProviderRdfProviderUri(final URI providerRdfProviderUri)
+    {
+        RdfProviderSchema.providerRdfProviderUri = providerRdfProviderUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public RdfProviderSchema()
+    {
+        this(RdfProviderSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public RdfProviderSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        ProviderSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = new MemValueFactory();
@@ -91,14 +121,5 @@ public class RdfProviderSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param providerRdfProviderUri
-     *            the providerRdfProviderUri to set
-     */
-    public static void setProviderRdfProviderUri(final URI providerRdfProviderUri)
-    {
-        RdfProviderSchema.providerRdfProviderUri = providerRdfProviderUri;
     }
 }

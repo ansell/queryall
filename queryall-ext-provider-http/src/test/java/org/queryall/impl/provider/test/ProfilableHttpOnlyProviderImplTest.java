@@ -3,10 +3,9 @@
  */
 package org.queryall.impl.provider.test;
 
-import org.openrdf.model.URI;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.test.AbstractProfilableTest;
+import org.queryall.api.test.AbstractProfilableProviderTest;
 import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.provider.HttpOnlyProviderImpl;
 
@@ -16,14 +15,8 @@ import org.queryall.impl.provider.HttpOnlyProviderImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfilableHttpOnlyProviderImplTest extends AbstractProfilableTest
+public class ProfilableHttpOnlyProviderImplTest extends AbstractProfilableProviderTest
 {
-    @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
     @Override
     public ProfilableInterface getNewTestProfilable()
     {
@@ -31,14 +24,8 @@ public class ProfilableHttpOnlyProviderImplTest extends AbstractProfilableTest
     }
     
     @Override
-    public void includeFalseUri(final Profile profilable, final URI uriToExclude)
+    public Profile getNewTestProfile()
     {
-        profilable.addExcludeProvider(uriToExclude);
-    }
-    
-    @Override
-    public void includeTrueUri(final Profile profilable, final URI uriToInclude)
-    {
-        profilable.addIncludeProvider(uriToInclude);
+        return new ProfileImpl();
     }
 }

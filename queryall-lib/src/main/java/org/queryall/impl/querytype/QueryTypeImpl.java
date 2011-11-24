@@ -18,7 +18,6 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.querytype.QueryType;
@@ -28,6 +27,7 @@ import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
@@ -38,22 +38,14 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class QueryTypeImpl implements QueryType, InputQueryType, SparqlProcessorQueryType, RdfOutputQueryType,
-        HtmlExport
+public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryType, InputQueryType,
+        SparqlProcessorQueryType, RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
     private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
-    
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    
-    private String title = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private boolean handleAllNamespaces = true;
     
@@ -135,7 +127,11 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     protected QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(QueryTypeImpl._DEBUG)
             {
@@ -151,11 +147,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                 }
                 
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTitle())
-                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryHandleAllNamespaces()))
             {
@@ -242,10 +233,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             {
                 this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
             }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
             else
             {
                 this.addUnrecognisedStatement(nextStatement);
@@ -297,12 +284,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
     public int compareTo(final QueryType otherQueryType)
     {
         @SuppressWarnings("unused")
@@ -317,12 +298,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         }
         
         return this.getKey().stringValue().compareTo(otherQueryType.getKey().stringValue());
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
     }
     
     /**
@@ -374,15 +349,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public boolean getIsPageable()
     {
         return this.isPageable;
-    }
-    
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
     }
     
     @Override
@@ -456,18 +422,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public String getTemplateString()
     {
         return this.templateString;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
     }
     
     @Override
@@ -686,12 +640,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
     public void setHandleAllNamespaces(final boolean handleAllNamespaces)
     {
         this.handleAllNamespaces = handleAllNamespaces;
@@ -725,22 +673,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     public void setIsPageable(final boolean isPageable)
     {
         this.isPageable = isPageable;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     @Override
@@ -793,12 +725,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
-    }
-    
-    @Override
     public String toHtml()
     {
         final StringBuilder sb = new StringBuilder();
@@ -828,7 +754,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
         
         sb.append("<div class=\"" + prefix + "title_div\"><span class=\"" + prefix
                 + "title_span\">Title:</span><input type=\"text\" name=\"" + prefix + "title\" value=\""
-                + StringUtils.xmlEncodeString(this.title) + "\" /></div>\n");
+                + StringUtils.xmlEncodeString(this.getTitle()) + "\" /></div>\n");
         
         sb.append("<div class=\"" + prefix + "templateString_div\"><span class=\"" + prefix
                 + "templateString_span\">Query Template:</span><input type=\"text\" name=\"" + prefix
@@ -922,9 +848,11 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -934,7 +862,6 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             // create some resources and literals to make statements out of
             final URI queryInstanceUri = this.getKey();
             
-            final Literal titleLiteral = f.createLiteral(this.title);
             final Literal handleAllNamespacesLiteral = f.createLiteral(this.handleAllNamespaces);
             final Literal isNamespaceSpecificLiteral = f.createLiteral(this.isNamespaceSpecific);
             final URI namespaceMatchMethodLiteral = this.namespaceMatchMethod;
@@ -951,60 +878,40 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             final Literal outputRdfStringLiteral = f.createLiteral(this.outputRdfString);
             final Literal outputRdfFormatLiteral = f.createLiteral(this.outputRdfFormat);
             
-            URI curationStatusLiteral = null;
-            
-            if(this.curationStatus == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.curationStatus;
-            }
-            
             // log.info("after literals created");
             
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(queryInstanceUri, RDF.TYPE, nextElementType, keyToUse);
-            }
-            
-            con.add(queryInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            if(modelVersion == 1)
-            {
-                con.add(queryInstanceUri, QueryTypeSchema.getQueryTitle(), titleLiteral, keyToUse);
-            }
-            else
-            {
-                con.add(queryInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+                con.add(queryInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
             
             con.add(queryInstanceUri, QueryTypeSchema.getQueryHandleAllNamespaces(), handleAllNamespacesLiteral,
-                    keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral, keyToUse);
+                    contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceSpecific(), isNamespaceSpecificLiteral,
+                    contextKey);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceMatchMethod(), namespaceMatchMethodLiteral,
-                    keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, keyToUse);
+                    contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeDefaults(), includeDefaultsLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryTemplateString(), templateStringLiteral, contextKey);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryQueryUriTemplateString(), queryUriTemplateStringLiteral,
-                    keyToUse);
+                    contextKey);
             con.add(queryInstanceUri, QueryTypeSchema.getQueryStandardUriTemplateString(),
-                    standardUriTemplateStringLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryInRobotsTxt(), inRobotsTxtLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, keyToUse);
-            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, keyToUse);
+                    standardUriTemplateStringLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryInRobotsTxt(), inRobotsTxtLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsPageable(), isPageableLiteral, contextKey);
+            con.add(queryInstanceUri, QueryTypeSchema.getQueryIsDummyQueryType(), isDummyQueryTypeLiteral, contextKey);
             
             con.add(queryInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
-                    profileIncludeExcludeOrderLiteral, keyToUse);
+                    profileIncludeExcludeOrderLiteral, contextKey);
             
             if(modelVersion < 5)
             {
                 if(this.getOutputRdfFormat().equals(Constants.APPLICATION_RDF_XML))
                 {
                     con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(),
-                            outputRdfStringLiteral, keyToUse);
+                            outputRdfStringLiteral, contextKey);
                 }
                 else
                 {
@@ -1015,9 +922,9 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
             else
             {
                 con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfString(), outputRdfStringLiteral,
-                        keyToUse);
+                        contextKey);
                 con.add(queryInstanceUri, RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), outputRdfFormatLiteral,
-                        keyToUse);
+                        contextKey);
                 
             }
             
@@ -1031,7 +938,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                     if(nextExpectedInputParameter != null)
                     {
                         con.add(queryInstanceUri, InputQueryTypeSchema.getQueryExpectedInputParameters(),
-                                f.createLiteral(nextExpectedInputParameter), keyToUse);
+                                f.createLiteral(nextExpectedInputParameter), contextKey);
                     }
                 }
             }
@@ -1044,7 +951,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                     if(nextNamespaceToHandle != null)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceToHandle(), nextNamespaceToHandle,
-                                keyToUse);
+                                contextKey);
                     }
                 }
             }
@@ -1061,7 +968,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                             {
                                 con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(), f
                                         .createLiteral(Integer.parseInt(nextPublicIdentifierTag.substring("input_"
-                                                .length()))), keyToUse);
+                                                .length()))), contextKey);
                             }
                             catch(final NumberFormatException nfe)
                             {
@@ -1079,7 +986,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                     for(final String nextPublicIdentifierTag : this.publicIdentifierTags)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryPublicIdentifierTag(),
-                                f.createLiteral(nextPublicIdentifierTag), keyToUse);
+                                f.createLiteral(nextPublicIdentifierTag), contextKey);
                     }
                 }
             }
@@ -1096,7 +1003,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                             {
                                 con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(), f
                                         .createLiteral(Integer.parseInt(nextNamespaceInputTag.substring("input_"
-                                                .length()))), keyToUse);
+                                                .length()))), contextKey);
                             }
                             catch(final NumberFormatException nfe)
                             {
@@ -1114,7 +1021,7 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                     for(final String nextNamespaceInputTag : this.namespaceInputTags)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryNamespaceInputTag(),
-                                f.createLiteral(nextNamespaceInputTag), keyToUse);
+                                f.createLiteral(nextNamespaceInputTag), contextKey);
                     }
                 }
             }
@@ -1126,21 +1033,10 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
                     if(nextSemanticallyLinkedQueryType != null)
                     {
                         con.add(queryInstanceUri, QueryTypeSchema.getQueryIncludeQueryType(),
-                                nextSemanticallyLinkedQueryType, keyToUse);
+                                nextSemanticallyLinkedQueryType, contextKey);
                     }
                 }
             }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
-                }
-            }
-            
-            // log.info("after unrecognised statements added");
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -1174,8 +1070,8 @@ public abstract class QueryTypeImpl implements QueryType, InputQueryType, Sparql
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + this.key + "\n");
-        sb.append("title=" + this.title + "\n");
+        sb.append("key=" + this.getKey() + "\n");
+        sb.append("title=" + this.getTitle() + "\n");
         
         // sb.append("templateString=" + templateString + "\n");
         // sb.append("standardUriTemplateString=" + standardUriTemplateString + "\n");

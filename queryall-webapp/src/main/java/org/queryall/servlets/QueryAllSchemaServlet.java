@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
@@ -175,9 +176,12 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         try
         {
-            final Repository myRepository = new SailRepository(new MemoryStore());
+            Repository myRepository = null;
             
-            Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
+            myRepository = new SailRepository(new MemoryStore());
+            myRepository.initialize();
+            
+            myRepository = Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
             
             final java.io.StringWriter stBuff = new java.io.StringWriter();
             
@@ -248,6 +252,14 @@ public class QueryAllSchemaServlet extends HttpServlet
                                 + requesterIpAddress + " queryString=" + queryString + " totalTime="
                                 + Long.toString(nextTotalTime));
             }
+        }
+        catch(final RepositoryException rex)
+        {
+            QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught repository exception", rex);
+        }
+        catch(final OpenRDFException ordfe)
+        {
+            QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught open rdf exception", ordfe);
         }
         catch(final RuntimeException rex)
         {

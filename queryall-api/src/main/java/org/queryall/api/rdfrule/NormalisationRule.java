@@ -7,7 +7,6 @@ import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.exception.InvalidStageException;
-import org.queryall.exception.QueryAllException;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -18,6 +17,7 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     
     void addStage(URI nextStage) throws InvalidStageException;
     
+    @Override
     String getDescription();
     
     int getOrder();
@@ -28,23 +28,7 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     
     Set<URI> getValidStages();
     
-    Object normaliseByStage(URI stage, Object input) throws InvalidStageException, QueryAllException;
-    
     void setOrder(int order);
-    
-    Object stageAfterQueryCreation(Object input) throws QueryAllException;
-    
-    Object stageAfterQueryParsing(Object input) throws QueryAllException;
-    
-    Object stageAfterResultsImport(Object input) throws QueryAllException;
-    
-    Object stageAfterResultsToDocument(Object input) throws QueryAllException;
-    
-    Object stageAfterResultsToPool(Object input) throws QueryAllException;
-    
-    Object stageBeforeResultsImport(Object input) throws QueryAllException;
-    
-    Object stageQueryVariables(Object input) throws QueryAllException;
     
     boolean usedInStage(URI stage);
     

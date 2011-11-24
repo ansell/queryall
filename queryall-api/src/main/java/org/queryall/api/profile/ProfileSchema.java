@@ -3,6 +3,7 @@
  */
 package org.queryall.api.profile;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -21,9 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfileSchema
+@MetaInfServices(QueryAllSchema.class)
+public class ProfileSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileSchema.class);
     @SuppressWarnings("unused")
@@ -99,6 +102,8 @@ public class ProfileSchema
         ProfileSchema.setProfileIncludeThenExcludeUri(f.createURI(baseUri, "includeThenExclude"));
         ProfileSchema.setProfileIncludeExcludeOrderUndefinedUri(f.createURI(baseUri, "includeExcludeOrderUndefined"));
     }
+    
+    public static final QueryAllSchema PROFILE_SCHEMA = new ProfileSchema();
     
     /**
      * @return the profileAdministratorUri
@@ -238,7 +243,187 @@ public class ProfileSchema
         return ProfileSchema.profileTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param profileAdministratorUri
+     *            the profileAdministratorUri to set
+     */
+    public static void setProfileAdministratorUri(final URI profileAdministratorUri)
+    {
+        ProfileSchema.profileAdministratorUri = profileAdministratorUri;
+    }
+    
+    /**
+     * @param profileAllowImplicitProviderInclusionsUri
+     *            the profileAllowImplicitProviderInclusionsUri to set
+     */
+    public static void setProfileAllowImplicitProviderInclusionsUri(final URI profileAllowImplicitProviderInclusionsUri)
+    {
+        ProfileSchema.profileAllowImplicitProviderInclusionsUri = profileAllowImplicitProviderInclusionsUri;
+    }
+    
+    /**
+     * @param profileAllowImplicitQueryInclusionsUri
+     *            the profileAllowImplicitQueryInclusionsUri to set
+     */
+    public static void setProfileAllowImplicitQueryInclusionsUri(final URI profileAllowImplicitQueryInclusionsUri)
+    {
+        ProfileSchema.profileAllowImplicitQueryInclusionsUri = profileAllowImplicitQueryInclusionsUri;
+    }
+    
+    /**
+     * @param profileAllowImplicitRdfRuleInclusionsUri
+     *            the profileAllowImplicitRdfRuleInclusionsUri to set
+     */
+    public static void setProfileAllowImplicitRdfRuleInclusionsUri(final URI profileAllowImplicitRdfRuleInclusionsUri)
+    {
+        ProfileSchema.profileAllowImplicitRdfRuleInclusionsUri = profileAllowImplicitRdfRuleInclusionsUri;
+    }
+    
+    /**
+     * @param profileDefaultIncludeExcludeOrderUri
+     *            the profileDefaultIncludeExcludeOrderUri to set
+     */
+    public static void setProfileDefaultIncludeExcludeOrderUri(final URI profileDefaultIncludeExcludeOrderUri)
+    {
+        ProfileSchema.profileDefaultIncludeExcludeOrderUri = profileDefaultIncludeExcludeOrderUri;
+    }
+    
+    /**
+     * @param profileExcludeProviderFromProfile
+     *            the profileExcludeProviderFromProfile to set
+     */
+    public static void setProfileExcludeProviderFromProfile(final URI profileExcludeProviderFromProfile)
+    {
+        ProfileSchema.profileExcludeProviderFromProfile = profileExcludeProviderFromProfile;
+    }
+    
+    /**
+     * @param profileExcludeQueryFromProfile
+     *            the profileExcludeQueryFromProfile to set
+     */
+    public static void setProfileExcludeQueryFromProfile(final URI profileExcludeQueryFromProfile)
+    {
+        ProfileSchema.profileExcludeQueryFromProfile = profileExcludeQueryFromProfile;
+    }
+    
+    /**
+     * @param profileExcludeRdfRuleFromProfile
+     *            the profileExcludeRdfRuleFromProfile to set
+     */
+    public static void setProfileExcludeRdfRuleFromProfile(final URI profileExcludeRdfRuleFromProfile)
+    {
+        ProfileSchema.profileExcludeRdfRuleFromProfile = profileExcludeRdfRuleFromProfile;
+    }
+    
+    /**
+     * @param profileExcludeThenIncludeUri
+     *            the profileExcludeThenIncludeUri to set
+     */
+    public static void setProfileExcludeThenIncludeUri(final URI profileExcludeThenIncludeUri)
+    {
+        ProfileSchema.profileExcludeThenIncludeUri = profileExcludeThenIncludeUri;
+    }
+    
+    /**
+     * @param profileIncludeExcludeOrderUndefinedUri
+     *            the profileIncludeExcludeOrderUndefinedUri to set
+     */
+    public static void setProfileIncludeExcludeOrderUndefinedUri(final URI profileIncludeExcludeOrderUndefinedUri)
+    {
+        ProfileSchema.profileIncludeExcludeOrderUndefinedUri = profileIncludeExcludeOrderUndefinedUri;
+    }
+    
+    /**
+     * @param profileIncludeExcludeOrderUri
+     *            the profileIncludeExcludeOrderUri to set
+     */
+    public static void setProfileIncludeExcludeOrderUri(final URI profileIncludeExcludeOrderUri)
+    {
+        ProfileSchema.profileIncludeExcludeOrderUri = profileIncludeExcludeOrderUri;
+    }
+    
+    /**
+     * @param profileIncludeProviderInProfile
+     *            the profileIncludeProviderInProfile to set
+     */
+    public static void setProfileIncludeProviderInProfile(final URI profileIncludeProviderInProfile)
+    {
+        ProfileSchema.profileIncludeProviderInProfile = profileIncludeProviderInProfile;
+    }
+    
+    /**
+     * @param profileIncludeQueryInProfile
+     *            the profileIncludeQueryInProfile to set
+     */
+    public static void setProfileIncludeQueryInProfile(final URI profileIncludeQueryInProfile)
+    {
+        ProfileSchema.profileIncludeQueryInProfile = profileIncludeQueryInProfile;
+    }
+    
+    /**
+     * @param profileIncludeRdfRuleInProfile
+     *            the profileIncludeRdfRuleInProfile to set
+     */
+    public static void setProfileIncludeRdfRuleInProfile(final URI profileIncludeRdfRuleInProfile)
+    {
+        ProfileSchema.profileIncludeRdfRuleInProfile = profileIncludeRdfRuleInProfile;
+    }
+    
+    /**
+     * @param profileIncludeThenExcludeUri
+     *            the profileIncludeThenExcludeUri to set
+     */
+    public static void setProfileIncludeThenExcludeUri(final URI profileIncludeThenExcludeUri)
+    {
+        ProfileSchema.profileIncludeThenExcludeUri = profileIncludeThenExcludeUri;
+    }
+    
+    /**
+     * @param profileOrderUri
+     *            the profileOrderUri to set
+     */
+    public static void setProfileOrderUri(final URI profileOrderUri)
+    {
+        ProfileSchema.profileOrderUri = profileOrderUri;
+    }
+    
+    /**
+     * @param profileTitle
+     *            the profileTitle to set
+     */
+    public static void setProfileTitle(final URI profileTitle)
+    {
+        ProfileSchema.profileTitle = profileTitle;
+    }
+    
+    /**
+     * @param profileTypeUri
+     *            the profileTypeUri to set
+     */
+    public static void setProfileTypeUri(final URI profileTypeUri)
+    {
+        ProfileSchema.profileTypeUri = profileTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ProfileSchema()
+    {
+        this(ProfileSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public ProfileSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -414,168 +599,6 @@ public class ProfileSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param profileAdministratorUri
-     *            the profileAdministratorUri to set
-     */
-    public static void setProfileAdministratorUri(final URI profileAdministratorUri)
-    {
-        ProfileSchema.profileAdministratorUri = profileAdministratorUri;
-    }
-    
-    /**
-     * @param profileAllowImplicitProviderInclusionsUri
-     *            the profileAllowImplicitProviderInclusionsUri to set
-     */
-    public static void setProfileAllowImplicitProviderInclusionsUri(final URI profileAllowImplicitProviderInclusionsUri)
-    {
-        ProfileSchema.profileAllowImplicitProviderInclusionsUri = profileAllowImplicitProviderInclusionsUri;
-    }
-    
-    /**
-     * @param profileAllowImplicitQueryInclusionsUri
-     *            the profileAllowImplicitQueryInclusionsUri to set
-     */
-    public static void setProfileAllowImplicitQueryInclusionsUri(final URI profileAllowImplicitQueryInclusionsUri)
-    {
-        ProfileSchema.profileAllowImplicitQueryInclusionsUri = profileAllowImplicitQueryInclusionsUri;
-    }
-    
-    /**
-     * @param profileAllowImplicitRdfRuleInclusionsUri
-     *            the profileAllowImplicitRdfRuleInclusionsUri to set
-     */
-    public static void setProfileAllowImplicitRdfRuleInclusionsUri(final URI profileAllowImplicitRdfRuleInclusionsUri)
-    {
-        ProfileSchema.profileAllowImplicitRdfRuleInclusionsUri = profileAllowImplicitRdfRuleInclusionsUri;
-    }
-    
-    /**
-     * @param profileDefaultIncludeExcludeOrderUri
-     *            the profileDefaultIncludeExcludeOrderUri to set
-     */
-    public static void setProfileDefaultIncludeExcludeOrderUri(final URI profileDefaultIncludeExcludeOrderUri)
-    {
-        ProfileSchema.profileDefaultIncludeExcludeOrderUri = profileDefaultIncludeExcludeOrderUri;
-    }
-    
-    /**
-     * @param profileExcludeProviderFromProfile
-     *            the profileExcludeProviderFromProfile to set
-     */
-    public static void setProfileExcludeProviderFromProfile(final URI profileExcludeProviderFromProfile)
-    {
-        ProfileSchema.profileExcludeProviderFromProfile = profileExcludeProviderFromProfile;
-    }
-    
-    /**
-     * @param profileExcludeQueryFromProfile
-     *            the profileExcludeQueryFromProfile to set
-     */
-    public static void setProfileExcludeQueryFromProfile(final URI profileExcludeQueryFromProfile)
-    {
-        ProfileSchema.profileExcludeQueryFromProfile = profileExcludeQueryFromProfile;
-    }
-    
-    /**
-     * @param profileExcludeRdfRuleFromProfile
-     *            the profileExcludeRdfRuleFromProfile to set
-     */
-    public static void setProfileExcludeRdfRuleFromProfile(final URI profileExcludeRdfRuleFromProfile)
-    {
-        ProfileSchema.profileExcludeRdfRuleFromProfile = profileExcludeRdfRuleFromProfile;
-    }
-    
-    /**
-     * @param profileExcludeThenIncludeUri
-     *            the profileExcludeThenIncludeUri to set
-     */
-    public static void setProfileExcludeThenIncludeUri(final URI profileExcludeThenIncludeUri)
-    {
-        ProfileSchema.profileExcludeThenIncludeUri = profileExcludeThenIncludeUri;
-    }
-    
-    /**
-     * @param profileIncludeExcludeOrderUndefinedUri
-     *            the profileIncludeExcludeOrderUndefinedUri to set
-     */
-    public static void setProfileIncludeExcludeOrderUndefinedUri(final URI profileIncludeExcludeOrderUndefinedUri)
-    {
-        ProfileSchema.profileIncludeExcludeOrderUndefinedUri = profileIncludeExcludeOrderUndefinedUri;
-    }
-    
-    /**
-     * @param profileIncludeExcludeOrderUri
-     *            the profileIncludeExcludeOrderUri to set
-     */
-    public static void setProfileIncludeExcludeOrderUri(final URI profileIncludeExcludeOrderUri)
-    {
-        ProfileSchema.profileIncludeExcludeOrderUri = profileIncludeExcludeOrderUri;
-    }
-    
-    /**
-     * @param profileIncludeProviderInProfile
-     *            the profileIncludeProviderInProfile to set
-     */
-    public static void setProfileIncludeProviderInProfile(final URI profileIncludeProviderInProfile)
-    {
-        ProfileSchema.profileIncludeProviderInProfile = profileIncludeProviderInProfile;
-    }
-    
-    /**
-     * @param profileIncludeQueryInProfile
-     *            the profileIncludeQueryInProfile to set
-     */
-    public static void setProfileIncludeQueryInProfile(final URI profileIncludeQueryInProfile)
-    {
-        ProfileSchema.profileIncludeQueryInProfile = profileIncludeQueryInProfile;
-    }
-    
-    /**
-     * @param profileIncludeRdfRuleInProfile
-     *            the profileIncludeRdfRuleInProfile to set
-     */
-    public static void setProfileIncludeRdfRuleInProfile(final URI profileIncludeRdfRuleInProfile)
-    {
-        ProfileSchema.profileIncludeRdfRuleInProfile = profileIncludeRdfRuleInProfile;
-    }
-    
-    /**
-     * @param profileIncludeThenExcludeUri
-     *            the profileIncludeThenExcludeUri to set
-     */
-    public static void setProfileIncludeThenExcludeUri(final URI profileIncludeThenExcludeUri)
-    {
-        ProfileSchema.profileIncludeThenExcludeUri = profileIncludeThenExcludeUri;
-    }
-    
-    /**
-     * @param profileOrderUri
-     *            the profileOrderUri to set
-     */
-    public static void setProfileOrderUri(final URI profileOrderUri)
-    {
-        ProfileSchema.profileOrderUri = profileOrderUri;
-    }
-    
-    /**
-     * @param profileTitle
-     *            the profileTitle to set
-     */
-    public static void setProfileTitle(final URI profileTitle)
-    {
-        ProfileSchema.profileTitle = profileTitle;
-    }
-    
-    /**
-     * @param profileTypeUri
-     *            the profileTypeUri to set
-     */
-    public static void setProfileTypeUri(final URI profileTypeUri)
-    {
-        ProfileSchema.profileTypeUri = profileTypeUri;
     }
     
 }

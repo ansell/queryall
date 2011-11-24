@@ -17,18 +17,17 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
-import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
+public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable<Profile>, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
     private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();
@@ -47,14 +46,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     {
         return ProfileImpl.PROFILE_IMPL_TYPES;
     }
-    
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    
-    private String title = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
     
     private int order = 100;
     
@@ -87,9 +78,13 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     public ProfileImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
+        
         boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
         
-        for(final Statement nextStatement : inputStatements)
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
             if(ProfileImpl._DEBUG)
             {
@@ -106,15 +101,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 
                 // resultIsValid = true;
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileTitle())
-                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileOrderUri()))
             {
@@ -268,12 +254,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
     public int compareTo(final Profile otherProfile)
     {
         final int BEFORE = -1;
@@ -343,14 +323,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         {
             return false;
         }
-        if(this.curationStatus == null)
+        if(this.getCurationStatus() == null)
         {
-            if(other.curationStatus != null)
+            if(other.getCurationStatus() != null)
             {
                 return false;
             }
         }
-        else if(!this.curationStatus.equals(other.curationStatus))
+        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
         {
             return false;
         }
@@ -431,14 +411,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         {
             return false;
         }
-        if(this.key == null)
+        if(this.getKey() == null)
         {
-            if(other.key != null)
+            if(other.getKey() != null)
             {
                 return false;
             }
         }
-        else if(!this.key.equals(other.key))
+        else if(!this.getKey().equals(other.getKey()))
         {
             return false;
         }
@@ -457,14 +437,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         {
             return false;
         }
-        if(this.title == null)
+        if(this.getTitle() == null)
         {
-            if(other.title != null)
+            if(other.getTitle() != null)
             {
                 return false;
             }
         }
-        else if(!this.title.equals(other.title))
+        else if(!this.getTitle().equals(other.getTitle()))
         {
             return false;
         }
@@ -487,12 +467,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     public boolean getAllowImplicitRdfRuleInclusions()
     {
         return this.allowImplicitRdfRuleInclusions;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
     }
     
     /**
@@ -556,15 +530,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         return this.includeRdfRules;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
     @Override
     public int getOrder()
     {
@@ -575,18 +540,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     public Collection<URI> getProfileAdministrators()
     {
         return this.profileAdministrators;
-    }
-    
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
     }
     
     /*
@@ -602,7 +555,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         result = prime * result + (this.allowImplicitProviderInclusions ? 1231 : 1237);
         result = prime * result + (this.allowImplicitQueryInclusions ? 1231 : 1237);
         result = prime * result + (this.allowImplicitRdfRuleInclusions ? 1231 : 1237);
-        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.getCurationStatus() == null) ? 0 : this.getCurationStatus().hashCode());
         result =
                 prime
                         * result
@@ -614,10 +567,10 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         result = prime * result + ((this.includeProviders == null) ? 0 : this.includeProviders.hashCode());
         result = prime * result + ((this.includeQueries == null) ? 0 : this.includeQueries.hashCode());
         result = prime * result + ((this.includeRdfRules == null) ? 0 : this.includeRdfRules.hashCode());
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
         result = prime * result + this.order;
         result = prime * result + ((this.profileAdministrators == null) ? 0 : this.profileAdministrators.hashCode());
-        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.getTitle() == null) ? 0 : this.getTitle().hashCode());
         return result;
     }
     
@@ -640,43 +593,15 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
     public void setDefaultProfileIncludeExcludeOrder(final URI defaultProfileIncludeExcludeOrder)
     {
         this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     @Override
     public void setOrder(final int order)
     {
         this.order = order;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override
@@ -702,9 +627,11 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -715,13 +642,13 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             
             Literal titleLiteral;
             
-            if(this.title == null)
+            if(this.getTitle() == null)
             {
                 titleLiteral = f.createLiteral("");
             }
             else
             {
-                titleLiteral = f.createLiteral(this.title);
+                titleLiteral = f.createLiteral(this.getTitle());
             }
             
             final Literal orderLiteral = f.createLiteral(this.order);
@@ -731,56 +658,39 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             final Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(this.allowImplicitRdfRuleInclusions);
             final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder;
             
-            URI curationStatusLiteral = null;
-            
-            if(this.curationStatus == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.curationStatus;
-            }
-            
             // log.info("About to add to the repository");
             
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(profileInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(profileInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
-            
-            con.add(profileInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             // log.info("About to add to the repository 2");
             if(modelVersion == 1)
             {
-                con.add(profileInstanceUri, ProfileSchema.getProfileTitle(), titleLiteral, keyToUse);
-            }
-            else
-            {
-                con.add(profileInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+                con.add(profileInstanceUri, ProfileSchema.getProfileTitle(), titleLiteral, contextKey);
             }
             
             // log.info("About to add to the repository 3");
-            con.add(profileInstanceUri, ProfileSchema.getProfileOrderUri(), orderLiteral, keyToUse);
+            con.add(profileInstanceUri, ProfileSchema.getProfileOrderUri(), orderLiteral, contextKey);
             
             // log.info("About to add to the repository 4");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(),
-                    allowImplicitQueryInclusionsLiteral, keyToUse);
+                    allowImplicitQueryInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 5");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(),
-                    allowImplicitProviderInclusionsLiteral, keyToUse);
+                    allowImplicitProviderInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 6");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(),
-                    allowImplicitRdfRuleInclusionsLiteral, keyToUse);
+                    allowImplicitRdfRuleInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 7");
             con.add(profileInstanceUri, ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(),
-                    defaultProfileIncludeExcludeOrderLiteral, keyToUse);
+                    defaultProfileIncludeExcludeOrderLiteral, contextKey);
             
             // log.info("About to add array based information");
             
@@ -790,7 +700,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextIncludeProviders : this.includeProviders)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeProviderInProfile(),
-                            nextIncludeProviders, keyToUse);
+                            nextIncludeProviders, contextKey);
                 }
             }
             
@@ -800,7 +710,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextExcludeProviders : this.excludeProviders)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeProviderFromProfile(),
-                            nextExcludeProviders, keyToUse);
+                            nextExcludeProviders, contextKey);
                 }
             }
             
@@ -810,7 +720,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextProfileAdministrator : this.profileAdministrators)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileAdministratorUri(), nextProfileAdministrator,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -825,7 +735,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeQueryInProfile(), nextIncludeQuery,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -840,7 +750,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeQueryFromProfile(), nextExcludeQuery,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -850,7 +760,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextIncludeRdfRules : this.includeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeRdfRuleInProfile(), nextIncludeRdfRules,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -860,16 +770,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextExcludeRdfRules : this.excludeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeRdfRuleFromProfile(),
-                            nextExcludeRdfRules, keyToUse);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
+                            nextExcludeRdfRules, contextKey);
                 }
             }
             

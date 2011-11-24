@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -22,7 +24,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeSchema
+@MetaInfServices(QueryAllSchema.class)
+public class QueryTypeSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeSchema.class);
     @SuppressWarnings("unused")
@@ -108,6 +111,8 @@ public class QueryTypeSchema
         QueryTypeSchema.setQueryIsDummyQueryType(f.createURI(baseUri, "isDummyQueryType"));
         
     }
+    
+    public static final QueryAllSchema QUERY_TYPE_SCHEMA = new QueryTypeSchema();
     
     public static URI getNamespaceMatchAllUri()
     {
@@ -298,161 +303,6 @@ public class QueryTypeSchema
     public static URI getQueryTypeUri()
     {
         return QueryTypeSchema.queryTypeUri;
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            final URI contextKeyUri = keyToUse;
-            con.setAutoCommit(false);
-            
-            con.add(QueryTypeSchema.getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            
-            if(modelVersion == 1)
-            {
-                con.add(QueryTypeSchema.getQueryTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(QueryTypeSchema.getQueryTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
-            }
-            
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.RANGE,
-                    NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL,
-                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."),
-                    contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL,
-                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."),
-                    contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(),
-                    RDFS.LABEL,
-                    f.createLiteral("Defines the tags that are to be identified as public, and hence convertable according to public registries and rules."),
-                    contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(),
-                    RDFS.LABEL,
-                    f.createLiteral("Defines the tags that are to be identified as namespaces, and hence convertable according to namespace registries."),
-                    contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
-            
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."),
-                    contextKeyUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            QueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
     }
     
     /**
@@ -658,4 +508,176 @@ public class QueryTypeSchema
         QueryTypeSchema.queryTypeUri = queryTypeUri;
     }
     
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public QueryTypeSchema()
+    {
+        this(QueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public QueryTypeSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            final URI contextKeyUri = keyToUse;
+            con.setAutoCommit(false);
+            
+            con.add(QueryTypeSchema.getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            
+            if(modelVersion == 1)
+            {
+                con.add(QueryTypeSchema.getQueryTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
+                con.add(QueryTypeSchema.getQueryTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
+            }
+            
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.RANGE,
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL,
+                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."),
+                    contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL,
+                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."),
+                    contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(),
+                    RDFS.LABEL,
+                    f.createLiteral("Defines the tags that are to be identified as public, and hence convertable according to public registries and rules."),
+                    contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(),
+                    RDFS.LABEL,
+                    f.createLiteral("Defines the tags that are to be identified as namespaces, and hence convertable according to namespace registries."),
+                    contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.DOMAIN,
+                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."),
+                    contextKeyUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            QueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
+    }
 }

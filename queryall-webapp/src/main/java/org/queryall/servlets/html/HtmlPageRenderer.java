@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -156,7 +157,7 @@ public class HtmlPageRenderer
         // context.put("disco_link", discoLink);
         // context.put("tabulator_link", tabulatorLink);
         // context.put("openlink_link", openLinkLink);
-        final Collection<String> endpointsList = new HashSet<String>();
+        final Set<String> endpointsList = new HashSet<String>();
         
         if(fetchController != null)
         {
@@ -164,11 +165,7 @@ public class HtmlPageRenderer
             {
                 for(final String nextAlternativeEndpoint : nextQueryBundle.getAlternativeEndpointsAndQueries().keySet())
                 {
-                    if(!endpointsList.contains(nextQueryBundle.getAlternativeEndpointsAndQueries().get(
-                            nextAlternativeEndpoint)))
-                    {
-                        endpointsList.add(nextAlternativeEndpoint);
-                    }
+                    endpointsList.add(nextAlternativeEndpoint);
                 }
             }
         }
