@@ -94,7 +94,7 @@ public abstract class AbstractNormalisationRuleTest
     }
     
     @Test
-    public void testAllValidAndInvalidStages()
+    public void testAllValidAndInvalidStages() throws InvalidStageException
     {
         final NormalisationRule queryallRule = this.getNewTestRule();
         
@@ -128,7 +128,7 @@ public abstract class AbstractNormalisationRuleTest
     }
     
     @Test
-    public void testInvalidStageInclusion()
+    public void testInvalidStageInclusion() throws InvalidStageException
     {
         final NormalisationRule queryallRule = this.getNewTestRule();
         
