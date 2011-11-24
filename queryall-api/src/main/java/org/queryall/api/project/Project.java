@@ -9,9 +9,11 @@ public interface Project extends BaseQueryAllInterface, Comparable<Project>
 {
     org.openrdf.model.URI getAuthority();
     
+    @Override
     String getDescription();
     
     void setAuthority(org.openrdf.model.URI authority);
     
+    @Override
     void setDescription(String description);
 }

@@ -1,6 +1,7 @@
 package org.queryall.query;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -175,7 +176,7 @@ public class QueryBundle
      */
     public Map<String, String> getAlternativeEndpointsAndQueries()
     {
-        return this.alternativeEndpointsAndQueries;
+        return Collections.unmodifiableMap(this.alternativeEndpointsAndQueries);
     }
     
     /**
@@ -358,17 +359,17 @@ public class QueryBundle
             
             // log.info("QueryBundle: About to add custom query RDF to the repository");
             
-            this.getQueryType().toRdf(myRepository, keyToUse, modelVersion);
+            this.getQueryType().toRdf(myRepository, modelVersion, keyToUse);
             
             // log.info("QueryBundle: About to add provider configuration RDF to the repository");
             
-            this.getOriginalProvider().toRdf(myRepository, keyToUse, modelVersion);
+            this.getOriginalProvider().toRdf(myRepository, modelVersion, keyToUse);
             
             for(final NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(this.getQueryallSettings()
                     .getAllNormalisationRules(), this.getOriginalProvider().getNormalisationUris(),
                     SortOrder.LOWEST_ORDER_FIRST))
             {
-                nextRelevantRdfRule.toRdf(myRepository, keyToUse, modelVersion);
+                nextRelevantRdfRule.toRdf(myRepository, modelVersion, keyToUse);
             }
             
             // log.info("QueryBundle: toRdf returning true");

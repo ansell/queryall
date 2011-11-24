@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.openrdf.model.URI;
 
-public interface PrefixMappingNormalisationRule extends NormalisationRule
+public interface PrefixMappingNormalisationRule extends TransformingRule
 {
     void addObjectMappingPredicate(URI sameas);
     

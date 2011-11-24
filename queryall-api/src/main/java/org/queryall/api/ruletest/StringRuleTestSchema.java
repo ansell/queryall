@@ -3,6 +3,7 @@
  */
 package org.queryall.api.ruletest;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -20,7 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StringRuleTestSchema
+@MetaInfServices(QueryAllSchema.class)
+public class StringRuleTestSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(StringRuleTestSchema.class);
     @SuppressWarnings("unused")
@@ -47,6 +50,8 @@ public class StringRuleTestSchema
         StringRuleTestSchema.setRuletestOutputTestString(f.createURI(baseUri, "outputTestString"));
     }
     
+    public static final QueryAllSchema STRING_RULE_TEST_SCHEMA = new StringRuleTestSchema();
+    
     /**
      * @return the ruletestInputTestString
      */
@@ -71,7 +76,52 @@ public class StringRuleTestSchema
         return StringRuleTestSchema.stringRuletestTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param ruletestInputTestString
+     *            the ruletestInputTestString to set
+     */
+    public static void setRuletestInputTestString(final URI ruletestInputTestString)
+    {
+        StringRuleTestSchema.ruletestInputTestString = ruletestInputTestString;
+    }
+    
+    /**
+     * @param ruletestOutputTestString
+     *            the ruletestOutputTestString to set
+     */
+    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
+    {
+        StringRuleTestSchema.ruletestOutputTestString = ruletestOutputTestString;
+    }
+    
+    /**
+     * @param ruletestTypeUri
+     *            the ruletestTypeUri to set
+     */
+    public static void setStringRuleTestTypeUri(final URI ruletestTypeUri)
+    {
+        StringRuleTestSchema.stringRuletestTypeUri = ruletestTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public StringRuleTestSchema()
+    {
+        this(StringRuleTestSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public StringRuleTestSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -123,33 +173,6 @@ public class StringRuleTestSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param ruletestInputTestString
-     *            the ruletestInputTestString to set
-     */
-    public static void setRuletestInputTestString(final URI ruletestInputTestString)
-    {
-        StringRuleTestSchema.ruletestInputTestString = ruletestInputTestString;
-    }
-    
-    /**
-     * @param ruletestOutputTestString
-     *            the ruletestOutputTestString to set
-     */
-    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
-    {
-        StringRuleTestSchema.ruletestOutputTestString = ruletestOutputTestString;
-    }
-    
-    /**
-     * @param ruletestTypeUri
-     *            the ruletestTypeUri to set
-     */
-    public static void setStringRuleTestTypeUri(final URI ruletestTypeUri)
-    {
-        StringRuleTestSchema.stringRuletestTypeUri = ruletestTypeUri;
     }
     
 }

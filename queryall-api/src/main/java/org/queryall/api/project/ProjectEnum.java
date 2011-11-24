@@ -3,7 +3,6 @@
  */
 package org.queryall.api.project;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,7 +29,7 @@ public class ProjectEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean _INFO = ProjectEnum.log.isInfoEnabled();
     
-    protected static final Collection<ProjectEnum> ALL_PROJECTS = new ArrayList<ProjectEnum>(5);
+    protected static final Set<ProjectEnum> ALL_PROJECTS = new HashSet<ProjectEnum>();
     
     public static Collection<ProjectEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
@@ -47,32 +46,11 @@ public class ProjectEnum extends QueryAllEnum
         
         for(final ProjectEnum nextEnum : ProjectEnum.ALL_PROJECTS)
         {
-            // NOTE: This restriction would force developers to include implementations for every
-            // possible combination of functionalities
-            // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default
-            // URI for this type of object
-            // boolean matching = (nextProjectEnum.getTypeURIs().size() == nextProjectUris.size());
-            boolean matching = true;
-            
-            for(final URI nextURI : nextTypeUris)
-            {
-                if(!nextEnum.getTypeURIs().contains(nextURI))
-                {
-                    if(ProjectEnum._DEBUG)
-                    {
-                        ProjectEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
-                    }
-                    
-                    matching = false;
-                }
-            }
-            
-            if(matching)
+            if(nextEnum.matchForTypeUris(nextTypeUris))
             {
                 if(ProjectEnum._DEBUG)
                 {
-                    ProjectEnum.log.debug("found an matching URI set for nextProjectUris=" + nextTypeUris);
+                    ProjectEnum.log.debug("found a matching URI set for nextProjectUris=" + nextTypeUris);
                 }
                 results.add(nextEnum);
             }

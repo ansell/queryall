@@ -1,9 +1,10 @@
-<http://example.org/provider:test-1> a <http://purl.org/queryall/provider:Provider> ;
+<http://example.org/provider:test-1> a <http://purl.org/queryall/provider:Provider> , <http://purl.org/queryall/provider:HttpProvider> ;
 	<http://purl.org/dc/elements/1.1/title> "Test provider 1" ;
 	<http://purl.org/queryall/provider:resolutionStrategy> <http://purl.org/queryall/provider:proxy> ;
-	<http://purl.org/queryall/provider:resolutionMethod> <http://purl.org/queryall/provider:nocommunication> ;
+	<http://purl.org/queryall/provider:resolutionMethod> <http://purl.org/queryall/provider:httpgeturl> ;
 	<http://purl.org/queryall/provider:isDefaultSource> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
 	<http://purl.org/queryall/profile:profileIncludeExcludeOrder> <http://purl.org/queryall/profile:excludeThenInclude> ;
+	<http://purl.org/queryall/provider:endpointUrl> "http://test1.org/other/interface" , "http://test2.org/next/interface" ;
 	<http://purl.org/queryall/provider:handlesNamespace> <http://example.org/ns:test1> ;
 	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:test-1> ;
 	<http://purl.org/queryall/provider:needsRdfNormalisation> <http://example.org/rdfrule:test-1> .

@@ -3,6 +3,7 @@
  */
 package org.queryall.api.project;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -20,7 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProjectSchema
+@MetaInfServices(QueryAllSchema.class)
+public class ProjectSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(ProjectSchema.class);
     @SuppressWarnings("unused")
@@ -63,6 +66,8 @@ public class ProjectSchema
         ProjectSchema.setProjectNotCuratedUri(f.createURI(baseUri, "notCurated"));
         
     }
+    
+    public static final QueryAllSchema PROJECT_SCHEMA = new ProjectSchema();
     
     /**
      * @return the projectAdminCuratedUri
@@ -128,7 +133,97 @@ public class ProjectSchema
         return ProjectSchema.projectUserCuratedUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param projectAdminCuratedUri
+     *            the projectAdminCuratedUri to set
+     */
+    public static void setProjectAdminCuratedUri(final URI projectAdminCuratedUri)
+    {
+        ProjectSchema.projectAdminCuratedUri = projectAdminCuratedUri;
+    }
+    
+    /**
+     * @param projectAuthority
+     *            the projectAuthority to set
+     */
+    public static void setProjectAuthority(final URI projectAuthority)
+    {
+        ProjectSchema.projectAuthority = projectAuthority;
+    }
+    
+    /**
+     * @param projectCurationStatusUri
+     *            the projectCurationStatusUri to set
+     */
+    public static void setProjectCurationStatusUri(final URI projectCurationStatusUri)
+    {
+        ProjectSchema.projectCurationStatusUri = projectCurationStatusUri;
+    }
+    
+    /**
+     * @param projectDescription
+     *            the projectDescription to set
+     */
+    public static void setProjectDescription(final URI projectDescription)
+    {
+        ProjectSchema.projectDescription = projectDescription;
+    }
+    
+    /**
+     * @param projectNotCuratedUri
+     *            the projectNotCuratedUri to set
+     */
+    public static void setProjectNotCuratedUri(final URI projectNotCuratedUri)
+    {
+        ProjectSchema.projectNotCuratedUri = projectNotCuratedUri;
+    }
+    
+    /**
+     * @param projectTitle
+     *            the projectTitle to set
+     */
+    public static void setProjectTitle(final URI projectTitle)
+    {
+        ProjectSchema.projectTitle = projectTitle;
+    }
+    
+    /**
+     * @param projectTypeUri
+     *            the projectTypeUri to set
+     */
+    public static void setProjectTypeUri(final URI projectTypeUri)
+    {
+        ProjectSchema.projectTypeUri = projectTypeUri;
+    }
+    
+    /**
+     * @param projectUserCuratedUri
+     *            the projectUserCuratedUri to set
+     */
+    public static void setProjectUserCuratedUri(final URI projectUserCuratedUri)
+    {
+        ProjectSchema.projectUserCuratedUri = projectUserCuratedUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ProjectSchema()
+    {
+        this(ProjectSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public ProjectSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -205,77 +300,5 @@ public class ProjectSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param projectAdminCuratedUri
-     *            the projectAdminCuratedUri to set
-     */
-    public static void setProjectAdminCuratedUri(final URI projectAdminCuratedUri)
-    {
-        ProjectSchema.projectAdminCuratedUri = projectAdminCuratedUri;
-    }
-    
-    /**
-     * @param projectAuthority
-     *            the projectAuthority to set
-     */
-    public static void setProjectAuthority(final URI projectAuthority)
-    {
-        ProjectSchema.projectAuthority = projectAuthority;
-    }
-    
-    /**
-     * @param projectCurationStatusUri
-     *            the projectCurationStatusUri to set
-     */
-    public static void setProjectCurationStatusUri(final URI projectCurationStatusUri)
-    {
-        ProjectSchema.projectCurationStatusUri = projectCurationStatusUri;
-    }
-    
-    /**
-     * @param projectDescription
-     *            the projectDescription to set
-     */
-    public static void setProjectDescription(final URI projectDescription)
-    {
-        ProjectSchema.projectDescription = projectDescription;
-    }
-    
-    /**
-     * @param projectNotCuratedUri
-     *            the projectNotCuratedUri to set
-     */
-    public static void setProjectNotCuratedUri(final URI projectNotCuratedUri)
-    {
-        ProjectSchema.projectNotCuratedUri = projectNotCuratedUri;
-    }
-    
-    /**
-     * @param projectTitle
-     *            the projectTitle to set
-     */
-    public static void setProjectTitle(final URI projectTitle)
-    {
-        ProjectSchema.projectTitle = projectTitle;
-    }
-    
-    /**
-     * @param projectTypeUri
-     *            the projectTypeUri to set
-     */
-    public static void setProjectTypeUri(final URI projectTypeUri)
-    {
-        ProjectSchema.projectTypeUri = projectTypeUri;
-    }
-    
-    /**
-     * @param projectUserCuratedUri
-     *            the projectUserCuratedUri to set
-     */
-    public static void setProjectUserCuratedUri(final URI projectUserCuratedUri)
-    {
-        ProjectSchema.projectUserCuratedUri = projectUserCuratedUri;
     }
 }

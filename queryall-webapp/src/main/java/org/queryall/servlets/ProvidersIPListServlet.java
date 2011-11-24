@@ -156,7 +156,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         try
         {
-            RdfFetchController.fetchRdfForQueries(sparqlThreads);
+            new RdfFetchController().fetchRdfForQueries(sparqlThreads);
         }
         catch(final InterruptedException e)
         {

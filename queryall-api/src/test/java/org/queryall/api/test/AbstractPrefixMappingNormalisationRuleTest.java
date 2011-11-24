@@ -27,6 +27,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
+@SuppressWarnings("unused")
 public abstract class AbstractPrefixMappingNormalisationRuleTest extends AbstractNormalisationRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
@@ -42,19 +44,13 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     private static final boolean _DEBUG = AbstractPrefixMappingNormalisationRuleTest.log.isDebugEnabled();
     private static final boolean _INFO = AbstractPrefixMappingNormalisationRuleTest.log.isInfoEnabled();
     
-    @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri1;
-    @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri2;
     
-    @SuppressWarnings("unused")
     private String testStartingUriAEOBase;
-    @SuppressWarnings("unused")
     private String testFinalUriAEOBase;
     
-    @SuppressWarnings("unused")
     private String testStartingUriPOBase;
-    @SuppressWarnings("unused")
     private String testFinalUriPOBase;
     
     private Repository testRepository;
@@ -163,7 +159,8 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
      */
     @Ignore
     @Test
-    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException,
+        QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -231,10 +228,11 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
+     * @throws QueryAllException
      */
     @Test
     public void testMoreAddMatchingTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException
+        MalformedQueryException, QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://bio2rdf.org/po:0000198");
         

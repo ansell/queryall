@@ -7,8 +7,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
 
 /**
- * Provides the implementation of the Provider class for the Abstract test class provided with
- * queryall-api-tests.jar
+ * 
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

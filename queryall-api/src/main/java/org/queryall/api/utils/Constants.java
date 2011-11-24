@@ -310,6 +310,10 @@ public final class Constants
     
     public static final String APPLICATION_JSON = "application/json";
     
+    public static final String APPLICATION_RDF_JSON = "application/rdf+json";
+    
+    public static final String APPLICATION_X_TRIG = "application/x-trig";
+    
     public static final String PREFERRED_DISPLAY_CONTENT_TYPE = "preferredDisplayContentType";
     
     public static final String TEXT_PLAIN = "text/plain";
@@ -317,6 +321,12 @@ public final class Constants
     public static final String TEXT_X_NQUADS = "text/x-nquads";
     
     public static final String QUERY = "queryString";
+    
+    public static final String APPLICATION_LD_JSON = "application/ld+json";
+    
+    public static final String APPLICATION_TRIX = "application/trix";
+    
+    public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
     
     public static final SimpleDateFormat ISO8601UTC()
     {

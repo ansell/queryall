@@ -100,32 +100,36 @@ public class BlacklistController
                                     + nextQueryObject.getEndpointUrl());
                 }
                 
-                if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getEndpointUrl()))
+                // FIXME: Need to know when this is null and not setup properly
+                if(nextQueryObject.getEndpointUrl() != null)
                 {
-                    final BlacklistEntry previousCount =
-                            this.accumulatedBlacklistStatistics.get(nextQueryObject.getEndpointUrl());
-                    
-                    if(BlacklistController._DEBUG)
+                    if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getEndpointUrl()))
                     {
-                        BlacklistController.log.debug("BlacklistController.accumulateBlacklist: There were "
-                                + previousCount + " previous instances on blacklist for endpointUrl="
-                                + nextQueryObject.getEndpointUrl());
+                        final BlacklistEntry previousCount =
+                                this.accumulatedBlacklistStatistics.get(nextQueryObject.getEndpointUrl());
+                        
+                        if(BlacklistController._DEBUG)
+                        {
+                            BlacklistController.log.debug("BlacklistController.accumulateBlacklist: There were "
+                                    + previousCount + " previous instances on blacklist for endpointUrl="
+                                    + nextQueryObject.getEndpointUrl());
+                        }
+                        
+                        previousCount.addErrorMessageForRunnable(nextQueryObject);
+                        
+                        this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), previousCount);
+                    }
+                    else
+                    {
+                        final BlacklistEntry newFailureCount = new BlacklistEntry();
+                        newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
+                        newFailureCount.addErrorMessageForRunnable(nextQueryObject);
+                        
+                        this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), newFailureCount);
                     }
                     
-                    previousCount.addErrorMessageForRunnable(nextQueryObject);
-                    
-                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), previousCount);
+                    this.allCurrentBadQueries.add(nextQueryObject);
                 }
-                else
-                {
-                    final BlacklistEntry newFailureCount = new BlacklistEntry();
-                    newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
-                    newFailureCount.addErrorMessageForRunnable(nextQueryObject);
-                    
-                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), newFailureCount);
-                }
-                
-                this.allCurrentBadQueries.add(nextQueryObject);
             }
         }
     }

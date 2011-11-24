@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -26,6 +30,8 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnnormalisableRuleException;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProviderUtils;
 import org.queryall.utils.QueryTypeUtils;
@@ -44,87 +50,16 @@ public class RdfFetchController
     private static final boolean _DEBUG = RdfFetchController.log.isDebugEnabled();
     private static final boolean _INFO = RdfFetchController.log.isInfoEnabled();
     
-    public static void fetchRdfForQueries(final Collection<RdfFetcherQueryRunnable> fetchThreads)
-        throws InterruptedException
-    {
-        final long start = System.currentTimeMillis();
-        
-        // TODO: FIXME: Should be using this to recover from errors if possible when there is an
-        // alternative endpoint available
-        final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist = new HashSet<RdfFetcherQueryRunnable>();
-        
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            if(RdfFetchController._DEBUG)
-            {
-                RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: about to start thread name="
-                        + nextThread.getName());
-            }
-            
-            nextThread.start();
-        }
-        
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log
-                    .debug("RdfFetchController.fetchRdfForQueries: about to sleep to let other threads do some work");
-        }
-        
-        // do some very minor waiting to let the other threads start to do some work
-        try
-        {
-            Thread.sleep(2);
-        }
-        catch(final InterruptedException ie)
-        {
-            RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread interruption occurred");
-            throw ie;
-        }
-        
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            try
-            {
-                // effectively attempt to join each of the threads, this loop will complete when
-                // they are all completed
-                nextThread.join();
-            }
-            catch(final InterruptedException ie)
-            {
-                RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: caught interrupted exception message="
-                                + ie.getMessage());
-                throw ie;
-            }
-        }
-        
-        // This loop is a safety check, although it doesn't actually fallover if something is wrong
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            if(!nextThread.getCompleted())
-            {
-                RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: Thread not completed properly name="
-                                + nextThread.getName());
-            }
-        }
-        
-        if(RdfFetchController._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            
-            RdfFetchController.log.info(String.format("%s: timing=%10d", "RdfFetchController.fetchRdfForQueries",
-                    (end - start)));
-        }
-    }
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     
     private Collection<RdfFetcherQueryRunnable> errorResults = new HashSet<RdfFetcherQueryRunnable>(10);
+    
     private Collection<RdfFetcherQueryRunnable> successfulResults = new HashSet<RdfFetcherQueryRunnable>(10);
     private Collection<RdfFetcherQueryRunnable> uncalledThreads = new HashSet<RdfFetcherQueryRunnable>(4);
-    
     private Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new HashSet<RdfFetcherQueryRunnable>(20);
     
     private volatile Collection<QueryBundle> queryBundles = null;
+    
     private Map<String, String> queryParameters;
     private List<Profile> sortedIncludedProfiles;
     private boolean useDefaultProviders = true;
@@ -133,8 +68,12 @@ public class RdfFetchController
     private boolean includeNonPagedQueries = true;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
-    
     private boolean namespaceNotRecognised = false;
+    
+    public RdfFetchController()
+    {
+        
+    }
     
     /**
      * Sets the controller up using a collection of predefined query bundles, along with the
@@ -143,9 +82,11 @@ public class RdfFetchController
      * @param settingsClass
      * @param localBlacklistController
      * @param nextQueryBundles
+     * @throws QueryAllException
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final Collection<QueryBundle> nextQueryBundles)
+        throws QueryAllException
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -168,11 +109,12 @@ public class RdfFetchController
      * @param nextUseDefaultProviders
      * @param nextRealHostName
      * @param nextPageOffset
+     * @throws QueryAllException
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final Map<String, String> nextQueryParameters,
             final List<Profile> nextIncludedSortedProfiles, final boolean nextUseDefaultProviders,
-            final String nextRealHostName, final int nextPageOffset)
+            final String nextRealHostName, final int nextPageOffset) throws QueryAllException
     {
         this.localSettings = settingsClass;
         this.localBlacklistController = localBlacklistController;
@@ -209,9 +151,9 @@ public class RdfFetchController
         return this.namespaceNotRecognised;
     }
     
-    public void fetchRdfForQueries() throws InterruptedException
+    public void fetchRdfForQueries() throws InterruptedException, UnnormalisableRuleException, QueryAllException
     {
-        RdfFetchController.fetchRdfForQueries(this.getFetchThreadGroup());
+        this.fetchRdfForQueries(this.getFetchThreadGroup());
         
         for(final RdfFetcherQueryRunnable nextThread : this.getFetchThreadGroup())
         {
@@ -296,6 +238,108 @@ public class RdfFetchController
         }
     }
     
+    public void fetchRdfForQueries(final Collection<RdfFetcherQueryRunnable> fetchThreads) throws InterruptedException
+    {
+        final long start = System.currentTimeMillis();
+        
+        // TODO: FIXME: Should be using this to recover from errors if possible when there is an
+        // alternative endpoint available
+        final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist = new HashSet<RdfFetcherQueryRunnable>();
+        
+        final List<Future<String>> futures = this.executor.invokeAll(fetchThreads, 30, TimeUnit.SECONDS);
+        
+        // for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+        // {
+        // if(RdfFetchController._DEBUG)
+        // {
+        // RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: about to start thread name="
+        // + nextThread.getName());
+        // }
+        // executor.in
+        // futures.add(executor.submit(nextThread));
+        // //nextThread.start();
+        // }
+        
+        // if(RdfFetchController._DEBUG)
+        // {
+        // RdfFetchController.log
+        // .debug("RdfFetchController.fetchRdfForQueries: about to sleep to let other threads do some work");
+        // }
+        
+        // do some very minor waiting to let the other threads start to do some work
+        // try
+        // {
+        // Thread.sleep(5);
+        // }
+        // catch(final InterruptedException ie)
+        // {
+        // RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread interruption occurred");
+        // throw ie;
+        // }
+        
+        // for(Future<?> nextFuture : futures)
+        // {
+        // try
+        // {
+        // nextFuture.get(30000, TimeUnit.MILLISECONDS);
+        // }
+        // catch(ExecutionException e)
+        // {
+        // RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution failed due to an exception");
+        // }
+        // catch(TimeoutException e)
+        // {
+        // RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread execution timed out");
+        // }
+        // }
+        
+        // for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+        // {
+        // try
+        // {
+        // // effectively attempt to join each of the threads, this loop will complete when
+        // // they are all completed
+        // nextThread.join();
+        // }
+        // catch(final InterruptedException ie)
+        // {
+        // RdfFetchController.log
+        // .error("RdfFetchController.fetchRdfForQueries: caught interrupted exception message="
+        // + ie.getMessage());
+        // throw ie;
+        // }
+        // }
+        
+        // This loop is a safety check, although it doesn't actually fallover if something is wrong
+        // it will happen if the executor returns before the thread is completed
+        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+        {
+            if(!nextThread.getCompleted())
+            {
+                RdfFetchController.log
+                        .error("RdfFetchController.fetchRdfForQueries: Thread not completed properly name="
+                                + nextThread.getName());
+            }
+        }
+        
+        for(final Future<String> nextFuture : futures)
+        {
+            if(nextFuture.isCancelled())
+            {
+                RdfFetchController.log
+                        .error("RdfFetchController.fetchRdfForQueries: Future was cancelled, thread not completed properly");
+            }
+        }
+        
+        if(RdfFetchController._INFO)
+        {
+            final long end = System.currentTimeMillis();
+            
+            RdfFetchController.log.info(String.format("%s: timing=%10d", "RdfFetchController.fetchRdfForQueries",
+                    (end - start)));
+        }
+    }
+    
     private Collection<RdfFetcherQueryRunnable> generateFetchThreadsFromQueryBundles(
             final Collection<QueryBundle> nextQueryBundles, final int pageoffsetIndividualQueryLimit)
     {
@@ -303,33 +347,51 @@ public class RdfFetchController
         
         for(final QueryBundle nextBundle : nextQueryBundles)
         {
-            // randomly choose one of the alternatives, the others will be resolved if necessary
-            // automagically
-            final String nextEndpoint =
-                    ListUtils.chooseRandomItemFromCollection(nextBundle.getAlternativeEndpointsAndQueries().keySet());
-            // nextBundle.getQueryEndpoint();
-            final String nextQuery = nextBundle.getAlternativeEndpointsAndQueries().get(nextEndpoint);
-            // nextBundle.getQuery();
-            
             if(RdfFetchController._DEBUG)
             {
                 RdfFetchController.log
-                        .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on endpoint="
-                                + nextEndpoint
-                                + " query="
-                                + nextQuery
-                                + " provider="
-                                + nextBundle.getOriginalProvider().getKey());
+                        .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on "
+                                // + "endpoint="
+                                // + nextEndpoint
+                                // + " query="
+                                // + nextQuery
+                                + " provider=" + nextBundle.getOriginalProvider().getKey());
             }
             
             RdfFetcherQueryRunnable nextThread = null;
             
             boolean addToFetchQueue = false;
             
+            // TODO: Make this section extensible, preferably defined by the provider itself
             if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
                     && nextBundle.getOriginalProvider().getEndpointMethod()
                             .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
+                // randomly choose one of the alternatives, the others will be resolved if necessary
+                // automagically
+                final Map<String, String> nextAlternativeEndpointsAndQueries =
+                        nextBundle.getAlternativeEndpointsAndQueries();
+                final String nextEndpoint =
+                        ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
+                
+                if(nextEndpoint == null)
+                {
+                    RdfFetchController.log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="
+                            + nextBundle.getOriginalProvider().getKey());
+                    continue;
+                }
+                
+                // nextBundle.getQueryEndpoint();
+                final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
+                // nextBundle.getQuery();
+                
+                if(nextQuery == null)
+                {
+                    RdfFetchController.log.error("nextQuery was retrieved as null nextBundle.getOriginalProvider()="
+                            + nextBundle.getOriginalProvider().getKey());
+                    continue;
+                }
+                
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
                                 ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(), nextQuery,
@@ -353,6 +415,29 @@ public class RdfFetchController
                     && nextBundle.getOriginalProvider().getEndpointMethod()
                             .equals(HttpProviderSchema.getProviderHttpGetUrl()))
             {
+                // randomly choose one of the alternatives, the others will be resolved if necessary
+                // automagically
+                final Map<String, String> nextAlternativeEndpointsAndQueries =
+                        nextBundle.getAlternativeEndpointsAndQueries();
+                final String nextEndpoint =
+                        ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
+                
+                if(nextEndpoint == null)
+                {
+                    RdfFetchController.log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="
+                            + nextBundle.getOriginalProvider().getKey());
+                    continue;
+                }
+                
+                // nextBundle.getQueryEndpoint();
+                final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
+                // nextBundle.getQuery();
+                
+                if(nextQuery == null)
+                {
+                    RdfFetchController.log.warn("nextQuery was retrieved as null");
+                }
+                
                 nextThread =
                         new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",
                                 ((HttpProvider)nextBundle.getOriginalProvider())
@@ -416,11 +501,13 @@ public class RdfFetchController
     /**
      * @param nextQueryType
      * @param chosenProviders
+     * @throws QueryAllException
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
             final QueryAllConfiguration localSettings, final QueryType nextQueryType,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider)
+        throws QueryAllException
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
@@ -560,32 +647,49 @@ public class RdfFetchController
                 nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
                 nextProviderQueryBundle.setQueryallSettings(localSettings);
                 
-                RdfFetchController.log.info("nextQueryType=" + nextQueryType.getKey().stringValue());
+                if(RdfFetchController._DEBUG)
+                {
+                    RdfFetchController.log.debug("nextQueryType=" + nextQueryType.getKey().stringValue());
+                }
                 
                 for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
                 {
                     final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
                     
-                    RdfFetchController.log.info("nextEndpoint=" + nextEndpoint);
+                    if(RdfFetchController._DEBUG)
+                    {
+                        RdfFetchController.log.debug("nextEndpoint=" + nextEndpoint);
+                    }
+                    
                     for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
                     {
-                        RdfFetchController.log.info("nextReplacedEndpoint=" + nextReplacedEndpoint);
+                        if(RdfFetchController._DEBUG)
+                        {
+                            RdfFetchController.log.debug("nextReplacedEndpoint=" + nextReplacedEndpoint);
+                        }
+                        
+                        if(nextReplacedEndpoint == null)
+                        {
+                            RdfFetchController.log.error("nextReplacedEndpoint was null nextEndpoint=" + nextEndpoint
+                                    + " nextQueryType=" + nextQueryType + " nextProvider=" + nextProvider);
+                            continue;
+                        }
                         
                         // Then test whether the endpoint is blacklisted before accepting it
                         if(noCommunicationProvider
                                 || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                         {
-                            RdfFetchController.log.info("not blacklisted");
+                            if(RdfFetchController._DEBUG)
+                            {
+                                RdfFetchController.log.debug("not blacklisted");
+                            }
                             
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
-                            if(useAllEndpointsForEachProvider)
+                            if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0
+                                    || useAllEndpointsForEachProvider)
                             {
-                                nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
-                                        originalEndpointEntries.get(nextReplacedEndpoint));
-                            }
-                            else if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0)
-                            {
+                                // FIXME: Check to make sure that this does not generate nulls
                                 nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
                                         originalEndpointEntries.get(nextReplacedEndpoint));
                             }
@@ -608,7 +712,11 @@ public class RdfFetchController
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                RdfFetchController.log.info("endpoint method = noCommunication key=" + nextProvider.getKey());
+                if(RdfFetchController._DEBUG)
+                {
+                    RdfFetchController.log.debug("endpoint method = noCommunication key=" + nextProvider.getKey());
+                }
+                
                 String nextStaticRdfXmlString = "";
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
@@ -739,7 +847,7 @@ public class RdfFetchController
     
     // Synchronize access to this method to ensure that only one thread tries to setup queryBundles
     // for each controller instance
-    private synchronized void initialise()
+    private synchronized void initialise() throws QueryAllException
     {
         final long start = System.currentTimeMillis();
         

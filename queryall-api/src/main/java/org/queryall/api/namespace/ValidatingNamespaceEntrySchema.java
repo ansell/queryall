@@ -3,6 +3,7 @@
  */
 package org.queryall.api.namespace;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,16 +13,17 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ValidatingNamespaceEntrySchema
+@MetaInfServices(QueryAllSchema.class)
+public class ValidatingNamespaceEntrySchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(ValidatingNamespaceEntrySchema.class);
     @SuppressWarnings("unused")
@@ -44,6 +46,8 @@ public class ValidatingNamespaceEntrySchema
                 QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "validationPossible"));
     }
     
+    public static final QueryAllSchema VALIDATING_NAMESPACE_ENTRY_SCHEMA = new ValidatingNamespaceEntrySchema();
+    
     /**
      * @return the validatingNamespaceTypeUri
      */
@@ -60,7 +64,43 @@ public class ValidatingNamespaceEntrySchema
         return ValidatingNamespaceEntrySchema.namespaceValidationPossible;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param validatingNamespaceTypeUri
+     *            the validatingNamespaceTypeUri to set
+     */
+    public static void setValidatingNamespaceTypeUri(final URI namespaceTypeUri)
+    {
+        ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri = namespaceTypeUri;
+    }
+    
+    /**
+     * @param namespaceValidationPossible
+     *            the namespaceValidationPossible to set
+     */
+    public static void setValidationPossibleUri(final URI namespaceIdentifierRegex)
+    {
+        ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public ValidatingNamespaceEntrySchema()
+    {
+        this(ValidatingNamespaceEntrySchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public ValidatingNamespaceEntrySchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -109,24 +149,6 @@ public class ValidatingNamespaceEntrySchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param validatingNamespaceTypeUri
-     *            the validatingNamespaceTypeUri to set
-     */
-    public static void setValidatingNamespaceTypeUri(final URI namespaceTypeUri)
-    {
-        ValidatingNamespaceEntrySchema.validatingNamespaceTypeUri = namespaceTypeUri;
-    }
-    
-    /**
-     * @param namespaceValidationPossible
-     *            the namespaceValidationPossible to set
-     */
-    public static void setValidationPossibleUri(final URI namespaceIdentifierRegex)
-    {
-        ValidatingNamespaceEntrySchema.namespaceValidationPossible = namespaceIdentifierRegex;
     }
     
 }

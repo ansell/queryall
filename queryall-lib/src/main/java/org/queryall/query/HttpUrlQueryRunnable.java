@@ -7,6 +7,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,14 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     }
     
     @Override
-    public void run()
+    public String call() throws Exception
+    {
+        this.doWork();
+        
+        return this.getNormalisedResult();
+    }
+    
+    private void doWork()
     {
         try
         {
@@ -64,10 +72,16 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                     
                     for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                     {
+                        
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
                         HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
                                 + " originalEndpoint=" + this.getEndpointUrl());
                         
-                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        if(HttpUrlQueryRunnable._DEBUG)
+                        {
+                            HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                        }
                         
                         tempRawResult =
                                 fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
@@ -81,8 +95,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                     }
                 }
             }
-            else if(this.httpOperation.equals(HttpProviderSchema.getProviderHttpPostUrlUri().stringValue())
-                    || this.httpOperation.equals(HttpProviderSchema.getProviderHttpGetUrlUri().stringValue()))
+            else if(this.httpOperation.equals(HttpProviderSchema.getProviderHttpPostUrl().stringValue())
+                    || this.httpOperation.equals(HttpProviderSchema.getProviderHttpGetUrl().stringValue()))
             {
                 tempRawResult =
                         fetcher.getDocumentFromUrl(this.getEndpointUrl(), this.getQuery(), this.getAcceptHeader());
@@ -103,6 +117,11 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                                 + " originalEndpoint=" + this.getEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
+                        if(HttpUrlQueryRunnable._DEBUG)
+                        {
+                            HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                        }
                         
                         tempRawResult =
                                 fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
@@ -145,6 +164,12 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 this.setLastException(fetcher.getLastException());
             }
         }
+        catch(final QueryAllException qae)
+        {
+            HttpUrlQueryRunnable.log.error("Found QueryAllException", qae);
+            this.setWasSuccessful(false);
+            this.setLastException(qae);
+        }
         catch(final Exception ex)
         {
             HttpUrlQueryRunnable.log.error("Found unknown exception", ex);
@@ -156,5 +181,11 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
+    }
+    
+    @Override
+    public void run()
+    {
+        this.doWork();
     }
 }

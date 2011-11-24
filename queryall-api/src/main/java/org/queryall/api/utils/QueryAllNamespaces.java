@@ -35,9 +35,41 @@ public enum QueryAllNamespaces
     WEBAPPCONFIG("queryall.namespaceWebApplicationConfiguration", "webapp_configuration",
             "Web Application Configurations");
     
+    public static String getPrefix()
+    {
+        return QueryAllNamespaces.prefix;
+    }
+    
+    public static String getSuffix()
+    {
+        return QueryAllNamespaces.suffix;
+    }
+    
+    public static QueryAllNamespaces uriMatch(final String nextUri)
+    {
+        if(nextUri == null)
+        {
+            return null;
+        }
+        
+        for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
+        {
+            if(nextUri.startsWith(nextNamespace.getBaseURI()))
+            {
+                return nextNamespace;
+            }
+        }
+        
+        return null;
+    }
+    
     private String defaultValue;
     private String description;
     private String namespace;
+    private static String prefix = PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
+            "http://purl.org/queryall/");
+    private static String suffix = PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":");
+    
     private String baseUri;
     
     QueryAllNamespaces(final String nextKey, final String defaultValue, final String nextDescription)
@@ -45,13 +77,15 @@ public enum QueryAllNamespaces
         this.defaultValue = defaultValue;
         this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, defaultValue);
         this.description = nextDescription;
-        this.baseUri =
-                PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix", "http://purl.org/queryall/")
-                        + this.namespace + PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":");
     }
     
     public String getBaseURI()
     {
+        if(this.baseUri == null)
+        {
+            this.baseUri = QueryAllNamespaces.prefix + this.namespace + QueryAllNamespaces.suffix;
+        }
+        
         return this.baseUri;
     }
     

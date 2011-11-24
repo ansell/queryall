@@ -38,7 +38,7 @@ import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 
 /**
- * @author karina
+ * @author Peter Ansell p_ansell@yahoo.com
  * 
  */
 public class ProviderUtilsTest

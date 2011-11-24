@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherSparqlQueryRunnable.class);
-    private static final boolean _TRACE = RdfFetcherSparqlQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
+    private static final boolean _TRACE = RdfFetcherSparqlQueryRunnable.log.isTraceEnabled();
     private static final boolean _DEBUG = RdfFetcherSparqlQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherSparqlQueryRunnable.log.isInfoEnabled();
@@ -36,7 +36,14 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
     }
     
     @Override
-    public void run()
+    public String call() throws Exception
+    {
+        this.doWork();
+        
+        return this.getNormalisedResult();
+    }
+    
+    private void doWork()
     {
         try
         {
@@ -55,24 +62,32 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                RdfFetcherSparqlQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                RdfFetcherSparqlQueryRunnable.log.error("There are " + (alternateEndpointsAndQueries.size() - 1)
                         + " alternative endpoints to choose from");
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
-                            + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
-                    
-                    final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
-                    
-                    tempRawResult =
-                            fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "", this.maxRowsParameter,
-                                    this.getAcceptHeader());
-                    
-                    if(!fetcher.getLastWasError())
+                    if(!alternateEndpoint.equals(this.getEndpointUrl()))
                     {
-                        // break on the first alternate that wasn't an error
-                        break;
+                        RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                                + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
+                        
+                        final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
+                        
+                        if(RdfFetcherSparqlQueryRunnable._DEBUG)
+                        {
+                            RdfFetcherSparqlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                        }
+                        
+                        tempRawResult =
+                                fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
+                                        this.maxRowsParameter, this.getAcceptHeader());
+                        
+                        if(!fetcher.getLastWasError())
+                        {
+                            // break on the first alternate that wasn't an error
+                            break;
+                        }
                     }
                 }
             }
@@ -113,5 +128,11 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
         }
+    }
+    
+    @Override
+    public void run()
+    {
+        this.doWork();
     }
 }

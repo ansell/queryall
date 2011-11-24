@@ -17,20 +17,19 @@ public class QueryallLanguageNegotiator
     @SuppressWarnings("unused")
     private static final boolean _INFO = QueryallLanguageNegotiator.log.isInfoEnabled();
     
-//    private static ContentTypeNegotiator contentNegotiator;
+    // private static ContentTypeNegotiator contentNegotiator;
     
     public static ContentTypeNegotiator getLanguageNegotiator(final String preferredDisplayLanguage)
     {
-        ContentTypeNegotiator contentNegotiator = new ContentTypeNegotiator();
+        final ContentTypeNegotiator contentNegotiator = new ContentTypeNegotiator();
         
-        if(preferredDisplayLanguage != null
-                && !preferredDisplayLanguage.trim().equals(""))
+        if(preferredDisplayLanguage != null && !preferredDisplayLanguage.trim().equals(""))
         {
             contentNegotiator.addVariant(preferredDisplayLanguage);
         }
         
-        contentNegotiator.addVariant("en;q=0.9").addAliasMediaType("en_GB;q=0.9")
-                .addAliasMediaType("en_AU;q=0.9").addAliasMediaType("en_CA;q=0.9").addAliasMediaType("en_US;q=0.9");
+        contentNegotiator.addVariant("en;q=0.9").addAliasMediaType("en_GB;q=0.9").addAliasMediaType("en_AU;q=0.9")
+                .addAliasMediaType("en_CA;q=0.9").addAliasMediaType("en_US;q=0.9");
         
         contentNegotiator.addVariant("de;q=0.85");
         
@@ -39,7 +38,8 @@ public class QueryallLanguageNegotiator
         return contentNegotiator;
     }
     
-    public static String getResponseLanguage(final String acceptHeader, final String userAgent, String preferredDisplayLanguage)
+    public static String getResponseLanguage(final String acceptHeader, final String userAgent,
+            final String preferredDisplayLanguage)
     {
         if(QueryallLanguageNegotiator._DEBUG)
         {
@@ -47,7 +47,8 @@ public class QueryallLanguageNegotiator
                     + " userAgent=" + userAgent);
         }
         
-        final ContentTypeNegotiator negotiator = QueryallLanguageNegotiator.getLanguageNegotiator(preferredDisplayLanguage);
+        final ContentTypeNegotiator negotiator =
+                QueryallLanguageNegotiator.getLanguageNegotiator(preferredDisplayLanguage);
         final MediaRangeSpec bestMatch = negotiator.getBestMatch(acceptHeader, userAgent);
         
         if(bestMatch == null)

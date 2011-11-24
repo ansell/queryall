@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class OwlNormalisationRuleSchema
+@MetaInfServices(QueryAllSchema.class)
+public class OwlNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(OwlNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -39,8 +42,10 @@ public class OwlNormalisationRuleSchema
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
-        OwlNormalisationRuleSchema.setOwlRuleTypeUri(f.createURI(baseUri, "OwlNormalisationRule"));
+        OwlNormalisationRuleSchema.setOwlRuleTypeUri(f.createURI(baseUri, "OwlValidatingRule"));
     }
+    
+    public static final QueryAllSchema OWL_NORMALISATION_RULE_SCHEMA = new OwlNormalisationRuleSchema();
     
     /**
      * @return the owlruleTypeUri
@@ -50,11 +55,36 @@ public class OwlNormalisationRuleSchema
         return OwlNormalisationRuleSchema.owlruleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param owlruleTypeUri
+     *            the owlruleTypeUri to set
+     */
+    public static void setOwlRuleTypeUri(final URI owlruleTypeUri)
+    {
+        OwlNormalisationRuleSchema.owlruleTypeUri = owlruleTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public OwlNormalisationRuleSchema()
+    {
+        this(OwlNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public OwlNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = Constants.valueFactory;
@@ -65,10 +95,10 @@ public class OwlNormalisationRuleSchema
             
             con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
             con.add(OwlNormalisationRuleSchema.getOwlRuleTypeUri(),
                     RDFS.LABEL,
-                    f.createLiteral("An OWL normalisation rule intended to entail extra triples into query results based on an OWL ontology."),
+                    f.createLiteral("An OWL normalisation rule intended to validate triples based on an OWL ontology."),
                     contextUri);
             
             // If everything went as planned, we can commit the result
@@ -96,14 +126,4 @@ public class OwlNormalisationRuleSchema
         
         return false;
     }
-    
-    /**
-     * @param owlruleTypeUri
-     *            the owlruleTypeUri to set
-     */
-    public static void setOwlRuleTypeUri(final URI owlruleTypeUri)
-    {
-        OwlNormalisationRuleSchema.owlruleTypeUri = owlruleTypeUri;
-    }
-    
 }

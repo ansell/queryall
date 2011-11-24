@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,7 +23,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class PrefixMappingNormalisationRuleSchema
+@MetaInfServices(QueryAllSchema.class)
+public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -55,6 +58,9 @@ public class PrefixMappingNormalisationRuleSchema
         PrefixMappingNormalisationRuleSchema.setObjectMappingPredicateUri(f
                 .createURI(baseUri, "objectMappingPredicate"));
     }
+    
+    public static final QueryAllSchema PREFIX_MAPPING_NORMALISATION_RULE_SCHEMA =
+            new PrefixMappingNormalisationRuleSchema();
     
     /**
      * @return the inputPrefixUri
@@ -98,54 +104,6 @@ public class PrefixMappingNormalisationRuleSchema
         return PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-        throws OpenRDFException
-    {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDF.TYPE, OWL.CLASS,
-                    contextUri);
-            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("A simple mapping rule for translating URI prefixes between two schemes. Internally it uses both Regular Expressions and Sparql rules."),
-                    contextUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            PrefixMappingNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
-    }
-    
     public static void setInputPrefixUri(final URI nextInputPrefixUri)
     {
         PrefixMappingNormalisationRuleSchema.inputPrefixUri = nextInputPrefixUri;
@@ -180,4 +138,67 @@ public class PrefixMappingNormalisationRuleSchema
         PrefixMappingNormalisationRuleSchema.subjectMappingPredicateUri = nextMappingPredicateUri;
     }
     
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public PrefixMappingNormalisationRuleSchema()
+    {
+        this(PrefixMappingNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public PrefixMappingNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            
+            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDF.TYPE, OWL.CLASS,
+                    contextUri);
+            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), RDFS.SUBCLASSOF,
+                    TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
+            con.add(PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("A simple mapping rule for translating URI prefixes between two schemes. Internally it uses both Regular Expressions and Sparql rules."),
+                    contextUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            PrefixMappingNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
+    }
 }

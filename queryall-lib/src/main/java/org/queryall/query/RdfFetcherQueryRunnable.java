@@ -1,6 +1,7 @@
 package org.queryall.query;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
@@ -10,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfFetcherQueryRunnable extends Thread
+public abstract class RdfFetcherQueryRunnable extends Thread implements Callable<String>
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherQueryRunnable.class);
     @SuppressWarnings("unused")

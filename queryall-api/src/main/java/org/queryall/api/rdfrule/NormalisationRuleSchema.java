@@ -6,6 +6,7 @@ package org.queryall.api.rdfrule;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -15,6 +16,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -25,7 +27,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NormalisationRuleSchema
+@MetaInfServices(QueryAllSchema.class)
+public class NormalisationRuleSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(NormalisationRuleSchema.class);
     @SuppressWarnings("unused")
@@ -34,7 +37,7 @@ public class NormalisationRuleSchema
     private static final boolean _DEBUG = NormalisationRuleSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean _INFO = NormalisationRuleSchema.log.isInfoEnabled();
-
+    
     private static final Set<URI> ALL_STAGES;
     
     private static URI normalisationRuleTypeUri;
@@ -97,19 +100,21 @@ public class NormalisationRuleSchema
         NormalisationRuleSchema.setRdfruleTypeValidForStage(f.createURI(baseUri, "typeValidForStage"));
         
         ALL_STAGES = new LinkedHashSet<URI>(7);
-        ALL_STAGES.add(getRdfruleStageAfterQueryCreation());
-        ALL_STAGES.add(getRdfruleStageAfterQueryParsing());
-        ALL_STAGES.add(getRdfruleStageAfterResultsImport());
-        ALL_STAGES.add(getRdfruleStageAfterResultsToDocument());
-        ALL_STAGES.add(getRdfruleStageAfterResultsToPool());
-        ALL_STAGES.add(getRdfruleStageBeforeResultsImport());
-        ALL_STAGES.add(getRdfruleStageQueryVariables());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
         
     }
     
+    public static final QueryAllSchema NORMALISATION_RULE_SCHEMA = new NormalisationRuleSchema();
+    
     public static Set<URI> getAllStages()
     {
-        return ALL_STAGES;
+        return NormalisationRuleSchema.ALL_STAGES;
     }
     
     /**
@@ -214,81 +219,6 @@ public class NormalisationRuleSchema
     public static URI getRdfruleTypeValidForStage()
     {
         return NormalisationRuleSchema.rdfruleTypeValidForStage;
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            con.setAutoCommit(false);
-            
-            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            
-            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
-                    contextUri);
-            
-            if(modelVersion == 1)
-            {
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.DOMAIN,
-                        NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.LABEL,
-                        f.createLiteral("The description of a normalisation rule."), contextUri);
-                
-            }
-            
-            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.RANGE, RDFS.LITERAL, contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.DOMAIN,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleOrder(),
-                    RDFS.LABEL,
-                    f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
-                    contextUri);
-            
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
-                    NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
-            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(),
-                    RDFS.LABEL,
-                    f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
-                    contextUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            NormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
     }
     
     /**
@@ -408,4 +338,96 @@ public class NormalisationRuleSchema
         NormalisationRuleSchema.rdfruleTypeValidForStage = rdfruleTypeValidForStage;
     }
     
+    /**
+     * Default constructor, uses the name of this class as the name
+     */
+    public NormalisationRuleSchema()
+    {
+        this(NormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public NormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.valueFactory;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            
+            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
+            
+            con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(),
+                    RDFS.LABEL,
+                    f.createLiteral("A normalisation rule intended to denormalise parts of queries to match endpoints, and renormalise the output of the query to match the normalised form."),
+                    contextUri);
+            
+            if(modelVersion == 1)
+            {
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.DOMAIN,
+                        NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                con.add(NormalisationRuleSchema.getRdfruleDescription(), RDFS.LABEL,
+                        f.createLiteral("The description of a normalisation rule."), contextUri);
+                
+            }
+            
+            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.RANGE, RDFS.LITERAL, contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleOrder(), RDFS.DOMAIN,
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleOrder(),
+                    RDFS.LABEL,
+                    f.createLiteral("The ordering variable that is used to identify what order the normalisation rules are designed to be applied in."),
+                    contextUri);
+            
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDF.TYPE, OWL.OBJECTPROPERTY, contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.RANGE,
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(), RDFS.DOMAIN,
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+            con.add(NormalisationRuleSchema.getRdfruleHasRelatedNamespace(),
+                    RDFS.LABEL,
+                    f.createLiteral("An informative property indicating that the target namespace is somehow related to this rule."),
+                    contextUri);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            NormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
+    }
 }

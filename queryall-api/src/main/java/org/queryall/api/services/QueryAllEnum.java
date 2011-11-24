@@ -7,7 +7,7 @@ import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryAllEnum
+public abstract class QueryAllEnum
 {
     private static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
     @SuppressWarnings("unused")
@@ -121,6 +121,24 @@ public class QueryAllEnum
         return result;
     }
     
+    protected boolean matchForTypeUris(final Set<URI> nextTypeURIs)
+    {
+        boolean matching = true;
+        
+        for(final URI nextURI : nextTypeURIs)
+        {
+            // Default implementation of this method is to check whether the given URIs are all in
+            // the type URIs for this Enum
+            // This behaviour can be overriden to provide different behaviour in implementations
+            if(!this.getTypeURIs().contains(nextURI))
+            {
+                matching = false;
+            }
+        }
+        
+        return matching;
+    }
+    
     /**
      * The name can only be set using the constructor.
      * 
@@ -151,5 +169,4 @@ public class QueryAllEnum
     {
         return this.name + " {" + this.typeURIs.toString() + "}";
     }
-    
 }
