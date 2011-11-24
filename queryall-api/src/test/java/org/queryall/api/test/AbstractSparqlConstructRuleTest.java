@@ -3,7 +3,6 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +77,17 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        
+        return results;
+    }
     
     /**
      * Create a new instance of the SparqlConstructRule implementation being tested.
@@ -371,16 +381,5 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
         Assert.assertNotNull(queryallRule.getMode());
         Assert.assertTrue(queryallRule.getMode()
                 .equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()));
-    }
-    
-    @Override
-    public final Set<URI> getExpectedValidStages()
-    {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        
-        return results;
     }
 }

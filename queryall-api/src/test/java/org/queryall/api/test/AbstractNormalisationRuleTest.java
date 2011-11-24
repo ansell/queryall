@@ -6,7 +6,6 @@ package org.queryall.api.test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -34,6 +33,12 @@ public abstract class AbstractNormalisationRuleTest
     protected Set<URI> invalidStages;
     
     /**
+     * 
+     * @return The set of URIs that are expected to be valid stages for this type of rule.
+     */
+    public abstract Set<URI> getExpectedValidStages();
+    
+    /**
      * Create a new profile instance with default properties
      * 
      * @return A new profile instance with default properties
@@ -48,12 +53,6 @@ public abstract class AbstractNormalisationRuleTest
     public abstract NormalisationRule getNewTestRule();
     
     /**
-     * 
-     * @return The set of URIs that are expected to be valid stages for this type of rule.
-     */
-    public abstract Set<URI> getExpectedValidStages();
-    
-    /**
      * @throws java.lang.Exception
      */
     @Before
@@ -65,12 +64,10 @@ public abstract class AbstractNormalisationRuleTest
         // f.createURI("http://example.org/test/includedNormalisationRule");
         // this.testFalseSparqlNormalisationRuleUri =
         // f.createURI("http://example.org/test/excludedNormalisationRule");
-        this.testStageInvalidInclusionRuleUri =
-                f.createURI("http://example.org/test/stageInclusionRule");
-        this.testStageAllValidAndInvalidRuleUri =
-                f.createURI("http://example.org/test/stageExclusionRule");
+        this.testStageInvalidInclusionRuleUri = f.createURI("http://example.org/test/stageInclusionRule");
+        this.testStageAllValidAndInvalidRuleUri = f.createURI("http://example.org/test/stageExclusionRule");
         
-        this.validStages = getExpectedValidStages();
+        this.validStages = this.getExpectedValidStages();
         
         // make sure that we have reasonable sizes for the relevant sets
         Assert.assertTrue(this.validStages.size() > 0);
@@ -79,7 +76,7 @@ public abstract class AbstractNormalisationRuleTest
         
         this.invalidStages = new HashSet<URI>(7);
         
-        for(URI nextStage : NormalisationRuleSchema.getAllStages())
+        for(final URI nextStage : NormalisationRuleSchema.getAllStages())
         {
             if(!this.validStages.contains(nextStage))
             {

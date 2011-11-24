@@ -3,7 +3,6 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,6 +50,17 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        
+        return results;
+    }
     
     /**
      * Create a new instance of the SpinInferencingRule implementation being tested.
@@ -134,15 +144,4 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
         this.testFinalUriPOBase = null;
     }
     
-    @Override
-    public final Set<URI> getExpectedValidStages()
-    {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        
-        return results;
-    }
-
 }

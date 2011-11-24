@@ -3,7 +3,6 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,6 +57,24 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        // Not sure how this would be implemented after query parsing, or why it would be
+        // different to after query creation, so leave it off the list for now
+        // results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        results.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        
+        return results;
+    }
     
     /**
      * Create a new instance of the SparqlNormalisationRule implementation being tested.
@@ -311,23 +328,6 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         
         Assert.assertEquals("The test statements were not added accurately to the repository", 4,
                 this.testRepositoryConnection.size());
-    }
-    
-    @Override
-    public final Set<URI> getExpectedValidStages() {
-        Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        // Not sure how this would be implemented after query parsing, or why it would be
-        // different to after query creation, so leave it off the list for now
-        // results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        results.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        
-        return results;
     }
     
 }

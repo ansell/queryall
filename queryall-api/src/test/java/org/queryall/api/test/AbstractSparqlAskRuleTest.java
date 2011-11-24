@@ -3,7 +3,6 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,6 +57,17 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        
+        return results;
+    }
     
     /**
      * Create a new instance of the SparqlAskRule implementation being tested.
@@ -267,17 +277,5 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
         
         Assert.assertTrue("Ask queries did not execute properly to return true", result);
     }
-
-    @Override
-    public final Set<URI> getExpectedValidStages()
-    {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        
-        return results;
-    }
     
-
 }
