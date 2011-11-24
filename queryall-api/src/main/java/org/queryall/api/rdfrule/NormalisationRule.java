@@ -53,7 +53,8 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     void addStage(URI nextStage) throws InvalidStageException;
     
     /**
-     * Gets the order that this rule will be processed in. If rules have the same integer for their order, they can be processed in any order.
+     * Gets the order that this rule will be processed in. If rules have the same integer for their
+     * order, they can be processed in any order.
      * 
      * @return The integer denoting the order in which this rule will be processed.
      */
@@ -61,7 +62,8 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     
     /**
      * 
-     * @return The collection of URIs that denote namespaces which are informatively linked to this rule.
+     * @return The collection of URIs that denote namespaces which are informatively linked to this
+     *         rule.
      */
     Collection<URI> getRelatedNamespaces();
     
@@ -79,25 +81,35 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     Set<URI> getValidStages();
     
     /**
-     * The order goes from lowest to highest for the first three stages, and then highest to lowest for the last three stages. This behaviour matches the general contract for rules which denormalise results in the first three stages and then normalise the results in the last four stages.
+     * The order goes from lowest to highest for the first three stages, and then highest to lowest
+     * for the last three stages. This behaviour matches the general contract for rules which
+     * denormalise results in the first three stages and then normalise the results in the last four
+     * stages.
      * 
-     * @param order An integer denoting the order in which this rule will be applied.
+     * @param order
+     *            An integer denoting the order in which this rule will be applied.
      */
     void setOrder(int order);
     
     /**
      * 
-     * @param stage A URI denoting a stage
+     * @param stage
+     *            A URI denoting a stage
      * @return True if the stage is valid and it is used in this rule, and false otherwise.
-     * @throws InvalidStageException if the given stage is not one of the stages defined in NormalisationRuleSchema.getAllStages
+     * @throws InvalidStageException
+     *             if the given stage is not one of the stages defined in
+     *             NormalisationRuleSchema.getAllStages
      */
     boolean usedInStage(URI stage) throws InvalidStageException;
     
     /**
      * 
-     * @param stage A URI denoting a stage
+     * @param stage
+     *            A URI denoting a stage
      * @return True if the stage is valid for this rule, and false otherwise
-     * @throws InvalidStageException if the given stage is not one of the stages defined in NormalisationRuleSchema.getAllStages
+     * @throws InvalidStageException
+     *             if the given stage is not one of the stages defined in
+     *             NormalisationRuleSchema.getAllStages
      */
     boolean validInStage(URI stage) throws InvalidStageException;
     
