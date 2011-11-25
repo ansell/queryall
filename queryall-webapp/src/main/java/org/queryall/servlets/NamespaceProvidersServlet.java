@@ -82,6 +82,8 @@ public class NamespaceProvidersServlet extends HttpServlet
         final Map<String, Collection<Provider>> allQueryTypesByNamespace =
                 new ConcurrentHashMap<String, Collection<Provider>>();
         
+        Collection<String> namespaceUseWithoutDefinitions = new ArrayList<String>();
+
         int overallQueryTypeProviders = 0;
         int overallNamespaceProviders = 0;
         int overallQueryTypeByNamespaceProviders = 0;
@@ -155,6 +157,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                     + nextProvider.getKey().stringValue()
                                     + " nextNamespace="
                                     + nextNamespace.stringValue());
+                    namespaceUseWithoutDefinitions.add("nextNamespace="+nextNamespace.stringValue()+" nextProvider="+nextProvider.getKey().stringValue());
                 }
             }
         }
@@ -184,6 +187,22 @@ public class NamespaceProvidersServlet extends HttpServlet
         out.write("<br />Number of query title and namespace combination provider options = "
                 + overallQueryTypeByNamespaceProviders + "<br /><br />\n");
         
+        if(namespaceUseWithoutDefinitions.size() > 0)
+        {
+            out.write("Namespaces found on providers without definitions:");
+            out.write("<ul>");
+        }
+        
+        for(String nextDebugString : namespaceUseWithoutDefinitions)
+        {
+            out.write("<li>"+nextDebugString+"</li>");
+        }
+        
+        if(namespaceUseWithoutDefinitions.size() > 0)
+        {
+            out.write("</ul>");
+        }
+
         out.write("Raw complete namespace Collection<br />\n");
         
         for(final URI nextUniqueNamespace : providersByNamespace.keySet())
@@ -339,7 +358,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 }
                             }
                             else if(nextQueryNamespaceProvider.getEndpointMethod().equals(
-                                    ProviderSchema.getProviderNoCommunication().stringValue()))
+                                    ProviderSchema.getProviderNoCommunication()))
                             {
                                 if(NamespaceProvidersServlet.log.isDebugEnabled())
                                 {
