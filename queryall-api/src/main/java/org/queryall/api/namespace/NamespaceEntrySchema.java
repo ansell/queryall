@@ -253,7 +253,8 @@ public class NamespaceEntrySchema extends QueryAllSchema
             con.setAutoCommit(false);
             
             con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            
+            con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDFS.SUBCLASSOF, f.createURI("http://purl.org/court/def/2009/coin#", "URISpace"), contextKeyUri);
+                     
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE,
                     contextKeyUri);
@@ -297,6 +298,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
                     contextKeyUri);
             
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.SUBPROPERTYOF, f.createURI("http://purl.org/court/def/2009/coin#", "uriTemplate"), contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
@@ -306,6 +308,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
                     contextKeyUri);
             
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
+            con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.SUBPROPERTYOF, f.createURI("http://purl.org/court/def/2009/coin#", "fragmentSeparator"), contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
@@ -313,6 +316,8 @@ public class NamespaceEntrySchema extends QueryAllSchema
                     RDFS.LABEL,
                     f.createLiteral("This value is used as the separator between the namespace and the identifier portion of the URI."),
                     contextKeyUri);
+            
+            
             
             if(modelVersion == 1)
             {
