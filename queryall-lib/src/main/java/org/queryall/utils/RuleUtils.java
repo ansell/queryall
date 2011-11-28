@@ -433,9 +433,8 @@ public final class RuleUtils
     /**
 	 * 
 	 */
-    public RuleUtils()
+    private RuleUtils()
     {
-        // TODO Auto-generated constructor stub
     }
     
 }
