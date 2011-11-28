@@ -56,6 +56,7 @@ public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormali
     {
         final Set<URI> results = new HashSet<URI>();
         
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
         results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
         results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
         

@@ -69,6 +69,8 @@ public abstract class AbstractNormalisationRuleTest
         
         this.validStages = this.getExpectedValidStages();
         
+        Assert.assertNotNull("Expected valid stages was null", this.validStages);
+        
         // make sure that we have reasonable sizes for the relevant sets
         Assert.assertTrue(this.validStages.size() > 0);
         Assert.assertTrue(this.validStages.size() <= 7);
@@ -109,8 +111,12 @@ public abstract class AbstractNormalisationRuleTest
         
         final Collection<URI> includedStages = this.validStages;
         
+        Assert.assertNotNull("Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places", this.validStages);
+
         final Collection<URI> excludedStages = this.invalidStages;
         
+        Assert.assertNotNull("Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places", this.invalidStages);
+
         for(final URI nextIncludedStage : includedStages)
         {
             try
@@ -141,12 +147,15 @@ public abstract class AbstractNormalisationRuleTest
         
         final Collection<URI> excludedStages = this.invalidStages;
         
+        Assert.assertNotNull("Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places", this.validStages);
+        Assert.assertNotNull("Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places", this.invalidStages);
+
         for(final URI nextInvalidStage : this.invalidStages)
         {
             try
             {
                 normalisationRule.addStage(nextInvalidStage);
-                Assert.fail("Did not find expected invalid stage exception for setStages");
+                Assert.fail("Did not find expected invalid stage exception for setStages nextInvalidStage="+nextInvalidStage);
             }
             catch(final InvalidStageException e)
             {

@@ -5,6 +5,7 @@ package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -12,13 +13,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.profile.Profile;
+import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.SpinConstraintRule;
+import org.queryall.api.test.AbstractNormalisationRuleTest;
+import org.queryall.api.test.AbstractSpinConstraintRuleTest;
 import org.queryall.exception.QueryAllException;
+import org.queryall.impl.profile.ProfileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.topbraid.spin.constraints.ConstraintViolation;
@@ -35,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author Peter Ansell p_ansell@yahoo.com
  * 
  */
-public class SpinConstraintRuleImplTest
+public class SpinConstraintRuleImplTest extends AbstractSpinConstraintRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImplTest.class);
     
@@ -57,6 +65,7 @@ public class SpinConstraintRuleImplTest
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
         // store a reference to the original locationMapper here so we can push it back after each
         // test
         // this.originalLocationMapper = LocationMapper.get();
@@ -177,6 +186,7 @@ public class SpinConstraintRuleImplTest
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
         // LocationMapper.setGlobalLocationMapper(this.originalLocationMapper);
         // FileManager.setGlobalFileManager(this.originalFileManager);
         
@@ -223,6 +233,18 @@ public class SpinConstraintRuleImplTest
         
         // TODO: make a case that contains constraints that fail to test the system
         Assert.assertEquals(0, results.size());
+    }
+
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
+    }
+
+    @Override
+    public SpinConstraintRule getNewTestSpinConstraintRule()
+    {
+        return new SpinConstraintRuleImpl();
     }
     
 }
