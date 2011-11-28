@@ -125,6 +125,9 @@ public abstract class AbstractNormalisationRuleTest
             }
             catch(final InvalidStageException ise)
             {
+                // do sanity checking on the exception before failing
+                Assert.assertEquals(nextIncludedStage, ise.getInvalidStageCause());
+                Assert.assertEquals(normalisationRule, ise.getRuleCause());
                 Assert.fail("InvalidStageException thrown for valid stage nextIncludedStage=" + nextIncludedStage);
             }
         }
@@ -157,9 +160,11 @@ public abstract class AbstractNormalisationRuleTest
                 normalisationRule.addStage(nextInvalidStage);
                 Assert.fail("Did not find expected invalid stage exception for setStages nextInvalidStage="+nextInvalidStage);
             }
-            catch(final InvalidStageException e)
+            catch(final InvalidStageException ise)
             {
-                // expected exception
+                // do sanity checking on the exception
+                Assert.assertEquals(nextInvalidStage, ise.getInvalidStageCause());
+                Assert.assertEquals(normalisationRule, ise.getRuleCause());
             }
         }
         
