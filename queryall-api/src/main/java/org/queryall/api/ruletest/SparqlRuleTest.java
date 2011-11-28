@@ -1,6 +1,6 @@
 package org.queryall.api.ruletest;
 
-public interface SparqlRuleTest
+public interface SparqlRuleTest extends RuleTest
 {
     boolean getExpectedResult();
     

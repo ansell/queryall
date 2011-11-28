@@ -386,7 +386,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                     "Cannot check if this rule to be used in this stage as it was not recognised.", this, stage);
         }
         
-        return this.stages.contains(stage);
+        return this.validStages.contains(stage) && this.stages.contains(stage);
     }
     
     @Override
