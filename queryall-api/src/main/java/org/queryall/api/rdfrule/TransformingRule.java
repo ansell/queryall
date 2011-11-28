@@ -119,5 +119,5 @@ public interface TransformingRule extends NormalisationRule
      * @throws QueryAllException
      *             If the transformation failed.
      */
-    Object stageQueryVariables(Object input) throws ValidationFailedException;
+    Object stageQueryVariables(Object input) throws QueryAllException;
 }
