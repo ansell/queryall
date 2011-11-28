@@ -3,20 +3,25 @@
  */
 package org.queryall.impl.querytype.test;
 
-import org.queryall.api.querytype.QueryType;
-import org.queryall.api.test.AbstractQueryTypeTest;
+import org.queryall.api.profile.Profile;
+import org.queryall.api.querytype.RdfInputQueryType;
+import org.queryall.api.test.AbstractRdfInputQueryTypeTest;
+import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 
 /**
- * Provides the implementation of the Provider class for the Abstract test class provided with
- * queryall-api-tests.jar
- * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeImplTest extends AbstractQueryTypeTest
+public class RdfInputQueryTypeImplTest extends AbstractRdfInputQueryTypeTest
 {
     @Override
-    public QueryType getNewTestQueryType()
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
+    }
+    
+    @Override
+    public RdfInputQueryType getNewTestRdfInputQueryType()
     {
         return new RdfInputQueryTypeImpl();
     }

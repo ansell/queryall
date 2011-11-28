@@ -82,8 +82,8 @@ public class NamespaceProvidersServlet extends HttpServlet
         final Map<String, Collection<Provider>> allQueryTypesByNamespace =
                 new ConcurrentHashMap<String, Collection<Provider>>();
         
-        Collection<String> namespaceUseWithoutDefinitions = new ArrayList<String>();
-
+        final Collection<String> namespaceUseWithoutDefinitions = new ArrayList<String>();
+        
         int overallQueryTypeProviders = 0;
         int overallNamespaceProviders = 0;
         int overallQueryTypeByNamespaceProviders = 0;
@@ -157,7 +157,8 @@ public class NamespaceProvidersServlet extends HttpServlet
                                     + nextProvider.getKey().stringValue()
                                     + " nextNamespace="
                                     + nextNamespace.stringValue());
-                    namespaceUseWithoutDefinitions.add("nextNamespace="+nextNamespace.stringValue()+" nextProvider="+nextProvider.getKey().stringValue());
+                    namespaceUseWithoutDefinitions.add("nextNamespace=" + nextNamespace.stringValue()
+                            + " nextProvider=" + nextProvider.getKey().stringValue());
                 }
             }
         }
@@ -193,16 +194,16 @@ public class NamespaceProvidersServlet extends HttpServlet
             out.write("<ul>");
         }
         
-        for(String nextDebugString : namespaceUseWithoutDefinitions)
+        for(final String nextDebugString : namespaceUseWithoutDefinitions)
         {
-            out.write("<li>"+nextDebugString+"</li>");
+            out.write("<li>" + nextDebugString + "</li>");
         }
         
         if(namespaceUseWithoutDefinitions.size() > 0)
         {
             out.write("</ul>");
         }
-
+        
         out.write("Raw complete namespace Collection<br />\n");
         
         for(final URI nextUniqueNamespace : providersByNamespace.keySet())

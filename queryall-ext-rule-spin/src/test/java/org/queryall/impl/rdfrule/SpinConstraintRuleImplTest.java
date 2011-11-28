@@ -5,7 +5,6 @@ package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -13,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.Repository;
@@ -21,9 +19,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.SpinConstraintRule;
-import org.queryall.api.test.AbstractNormalisationRuleTest;
 import org.queryall.api.test.AbstractSpinConstraintRuleTest;
 import org.queryall.exception.QueryAllException;
 import org.queryall.impl.profile.ProfileImpl;
@@ -59,9 +55,22 @@ public class SpinConstraintRuleImplTest extends AbstractSpinConstraintRuleTest
     // private SPINModuleRegistry testSpinModuleRegistry1;
     // private SPINModuleRegistry testSpinModuleRegistry2;
     
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
+    }
+    
+    @Override
+    public SpinConstraintRule getNewTestSpinConstraintRule()
+    {
+        return new SpinConstraintRuleImpl();
+    }
+    
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
@@ -183,6 +192,7 @@ public class SpinConstraintRuleImplTest extends AbstractSpinConstraintRuleTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
@@ -233,18 +243,6 @@ public class SpinConstraintRuleImplTest extends AbstractSpinConstraintRuleTest
         
         // TODO: make a case that contains constraints that fail to test the system
         Assert.assertEquals(0, results.size());
-    }
-
-    @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-
-    @Override
-    public SpinConstraintRule getNewTestSpinConstraintRule()
-    {
-        return new SpinConstraintRuleImpl();
     }
     
 }

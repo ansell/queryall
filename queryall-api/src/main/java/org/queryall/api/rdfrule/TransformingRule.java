@@ -6,7 +6,6 @@ package org.queryall.api.rdfrule;
 import org.openrdf.model.URI;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
-import org.queryall.exception.ValidationFailedException;
 
 /**
  * This interface provides object transformation methods based on the stages defined for

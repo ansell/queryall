@@ -21,7 +21,7 @@ import org.queryall.api.querytype.QueryTypeSchema;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractQueryTypeTest
+public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeTest
 {
     protected URI testTrueQueryTypeUri;
     protected URI testFalseQueryTypeUri;
@@ -70,6 +70,12 @@ public abstract class AbstractQueryTypeTest
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll;
     
+    @Override
+    public final QueryType getNewTestProfilable()
+    {
+        return this.getNewTestQueryType();
+    }
+    
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
      * for each successive invocation
@@ -81,9 +87,12 @@ public abstract class AbstractQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         final ValueFactory f = new MemValueFactory();
         
         this.testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
@@ -306,9 +315,12 @@ public abstract class AbstractQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testTrueQueryTypeUri = null;
         this.testFalseQueryTypeUri = null;
         this.testNamespaceUri1 = null;

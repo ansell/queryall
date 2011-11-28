@@ -8,13 +8,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.queryall.api.querytype.InputQueryType;
+import org.queryall.api.querytype.QueryType;
 
 /**
  * Abstract unit test for InputQueryType API
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractInputQueryTypeTest
+public abstract class AbstractInputQueryTypeTest extends AbstractQueryTypeTest
 {
     private InputQueryType testQueryType1;
     
@@ -26,12 +27,21 @@ public abstract class AbstractInputQueryTypeTest
      */
     public abstract InputQueryType getNewTestInputQueryType();
     
+    @Override
+    public final QueryType getNewTestQueryType()
+    {
+        return this.getNewTestInputQueryType();
+    }
+    
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         // final ValueFactory f = new MemValueFactory();
         
         this.testQueryType1 = this.getNewTestInputQueryType();
@@ -45,6 +55,7 @@ public abstract class AbstractInputQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {

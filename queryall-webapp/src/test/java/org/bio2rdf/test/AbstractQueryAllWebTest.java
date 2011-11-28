@@ -1,8 +1,8 @@
 package org.bio2rdf.test;
+
 /**
  * 
  */
-
 
 import net.sourceforge.jwebunit.junit.WebTester;
 
@@ -23,6 +23,10 @@ public abstract class AbstractQueryAllWebTest
     
     private WebTester tester;
     
+    protected abstract String getBaseUrl();
+    
+    protected abstract String getBeginAtPath();
+    
     /**
      * 
      * @return The WebTester object for the current test
@@ -32,19 +36,15 @@ public abstract class AbstractQueryAllWebTest
         return this.tester;
     }
     
-    protected abstract String getBaseUrl();
-    
-    protected abstract String getBeginAtPath();
-
     @Before
     public void setUp() throws Exception
     {
         this.tester = new WebTester();
-        this.tester.setBaseUrl(getBaseUrl());
+        this.tester.setBaseUrl(this.getBaseUrl());
         // NOTE: Do not remove the following. Apparently it is necessary to initialise some
         // variables that are not initialised earlier, and will cause unsightly
         // NullPointerExceptions if not done before the realistically named gotoPage
-        this.tester.beginAt(getBeginAtPath());
+        this.tester.beginAt(this.getBeginAtPath());
     }
     
     /**
@@ -63,15 +63,16 @@ public abstract class AbstractQueryAllWebTest
     @After
     public void tearDown() throws Exception
     {
-        // NOTE: enabling this causes a NullPointerException when trying to close the browser, so just close the browser instead
-//        try
-//        {
-//            this.getWebTester().closeWindow();
-//        }
-//        catch(final Exception ex)
-//        {
-//            AbstractOASIntegrationTest.LOGGER.error("Found exception closing window after test", ex);
-//        }
+        // NOTE: enabling this causes a NullPointerException when trying to close the browser, so
+        // just close the browser instead
+        // try
+        // {
+        // this.getWebTester().closeWindow();
+        // }
+        // catch(final Exception ex)
+        // {
+        // AbstractOASIntegrationTest.LOGGER.error("Found exception closing window after test", ex);
+        // }
         try
         {
             this.getWebTester().closeBrowser();

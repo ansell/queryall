@@ -14,7 +14,7 @@ import org.queryall.api.provider.Provider;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractProviderTest
+public abstract class AbstractProviderTest extends AbstractProfilableProviderTest
 {
     protected URI testTrueQueryTypeUri = null;
     protected URI testFalseQueryTypeUri = null;
@@ -29,6 +29,12 @@ public abstract class AbstractProviderTest
     private Provider providerSpecificDefault = null;
     private Provider providerNoNamespacesDefault = null;
     
+    @Override
+    public final Provider getNewTestProfilable()
+    {
+        return this.getNewTestProvider();
+    }
+    
     /**
      * This method must be overridden to return a new instance of the implemented Provider class for
      * each successive invocation
@@ -40,9 +46,12 @@ public abstract class AbstractProviderTest
      * fields using multiple calls to getNewTestProvider - Create org.openrdf.model.URI instances
      * for the test URIs - Add testTrue*'s using the relevant methods from the API
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         final ValueFactory f = new MemValueFactory();
         
         this.testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
@@ -75,9 +84,12 @@ public abstract class AbstractProviderTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testTrueQueryTypeUri = null;
         this.testFalseQueryTypeUri = null;
         this.testTrueRuleUri = null;

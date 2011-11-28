@@ -5,6 +5,7 @@ package org.queryall.api.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
  * 
@@ -13,6 +14,9 @@ import org.queryall.api.profile.Profile;
  */
 public abstract class AbstractProfilableNormalisationRuleTest extends AbstractProfilableTest
 {
+    @Override
+    public abstract NormalisationRule getNewTestProfilable();
+    
     @Override
     public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {

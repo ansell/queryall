@@ -3,8 +3,10 @@
  */
 package org.queryall.impl.provider.test;
 
+import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.test.AbstractProviderTest;
+import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.provider.HttpOnlyProviderImpl;
 
 /**
@@ -15,6 +17,12 @@ import org.queryall.impl.provider.HttpOnlyProviderImpl;
  */
 public class HttpOnlyProviderImplTest extends AbstractProviderTest
 {
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
+    }
+    
     @Override
     public Provider getNewTestProvider()
     {
