@@ -14,8 +14,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
+import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.test.DummyNormalisationRule;
+import org.queryall.api.test.DummyProvider;
 import org.queryall.api.utils.SortOrder;
 
 /**
@@ -32,6 +34,10 @@ public class RuleUtilsTest
     private NormalisationRule testRuleLowestOrder3;
     private Collection<URI> testRulesNeededAll;
     private Map<URI, NormalisationRule> testAllNormalisationRules;
+    private Provider testProviderNoRules;
+    private Collection<Provider> testProvidersNoRules;
+    private Provider testProviderAllRulesRandomInsertion;
+    private Collection<Provider> testProvidersAllRulesRandomInsertion;
     
     /**
      * @throws java.lang.Exception
@@ -72,6 +78,23 @@ public class RuleUtilsTest
         this.testRulesNeededAll.add(this.testRuleMidOrder50.getKey());
         this.testRulesNeededAll.add(this.testRuleHighOrder200.getKey());
         this.testRulesNeededAll.add(this.testRuleHighestOrder600.getKey());
+        
+        this.testProviderNoRules = new DummyProvider();
+        this.testProviderNoRules.setKey("http://test.ruleutils.example.com/test/provider/norules");
+        
+        this.testProvidersNoRules = new ArrayList<Provider>();
+        this.testProvidersNoRules.add(this.testProviderNoRules);
+        
+        this.testProviderAllRulesRandomInsertion = new DummyProvider();
+        this.testProviderAllRulesRandomInsertion.setKey("http://test.ruleutils.example.com/test/provider/allrules/randominsertion");
+        this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleHighOrder200.getKey());
+        this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleLowOrder15.getKey());
+        this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleLowestOrder3.getKey());
+        this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleMidOrder50.getKey());
+        this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleHighestOrder600.getKey());
+        
+        this.testProvidersAllRulesRandomInsertion = new ArrayList<Provider>();
+        this.testProvidersAllRulesRandomInsertion.add(this.testProviderAllRulesRandomInsertion);
     }
     
     /**
@@ -138,9 +161,45 @@ public class RuleUtilsTest
      * .
      */
     @Test
-    public void testGetSortedRulesForProviders()
+    public void testGetSortedRulesForProvidersEmpty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        List<NormalisationRule> sortedRulesForProvidersHighestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, testAllNormalisationRules, SortOrder.HIGHEST_ORDER_FIRST);
+        
+        Assert.assertEquals(0, sortedRulesForProvidersHighestFirst.size());
+        
+        List<NormalisationRule> sortedRulesForProvidersLowestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, testAllNormalisationRules, SortOrder.LOWEST_ORDER_FIRST);
+        
+        Assert.assertEquals(0, sortedRulesForProvidersLowestFirst.size());
+        
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#getSortedRulesForProviders(java.util.Collection, java.util.Map, org.queryall.api.utils.SortOrder)}
+     * .
+     */
+    @Test
+    public void testGetSortedRulesForProvidersRandomInsertion()
+    {
+        List<NormalisationRule> sortedRulesForProvidersHighestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion, testAllNormalisationRules, SortOrder.HIGHEST_ORDER_FIRST);
+        
+        Assert.assertEquals(5, sortedRulesForProvidersHighestFirst.size());
+        
+        Assert.assertEquals(this.testRuleHighestOrder600, sortedRulesForProvidersHighestFirst.get(0));
+        Assert.assertEquals(this.testRuleHighOrder200, sortedRulesForProvidersHighestFirst.get(1));
+        Assert.assertEquals(this.testRuleMidOrder50, sortedRulesForProvidersHighestFirst.get(2));
+        Assert.assertEquals(this.testRuleLowOrder15, sortedRulesForProvidersHighestFirst.get(3));
+        Assert.assertEquals(this.testRuleLowestOrder3, sortedRulesForProvidersHighestFirst.get(4));
+        
+        List<NormalisationRule> sortedRulesForProvidersLowestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion, testAllNormalisationRules, SortOrder.LOWEST_ORDER_FIRST);
+        
+        Assert.assertEquals(5, sortedRulesForProvidersLowestFirst.size());
+        
+        Assert.assertEquals(this.testRuleLowestOrder3, sortedRulesForProvidersLowestFirst.get(0));
+        Assert.assertEquals(this.testRuleLowOrder15, sortedRulesForProvidersLowestFirst.get(1));
+        Assert.assertEquals(this.testRuleMidOrder50, sortedRulesForProvidersLowestFirst.get(2));
+        Assert.assertEquals(this.testRuleHighOrder200, sortedRulesForProvidersLowestFirst.get(3));
+        Assert.assertEquals(this.testRuleHighestOrder600, sortedRulesForProvidersLowestFirst.get(4));
     }
     
     /**
