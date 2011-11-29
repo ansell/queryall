@@ -291,8 +291,16 @@ public final class RuleUtils
             {
                 final StringRuleTest nextStringRuleTest = (StringRuleTest)nextRuleTest;
                 
-                allPassed = RuleUtils.runStringRuleTest(allNormalisationRules, allPassed, nextStringRuleTest);
+                if(!RuleUtils.runStringRuleTest(allNormalisationRules, nextStringRuleTest))
+                {
+                    allPassed = false;
+                }
             } // end if(nextRuleTest instanceof StringRuleTest
+            else
+            {
+                log.error("Could not run rule test as we have not implemented it yet class="+nextRuleTest.getClass().getName());
+                allPassed = false;
+            }
         } // end for(nextRuleTest
         
         return allPassed;
@@ -311,10 +319,12 @@ public final class RuleUtils
      * @throws ValidationFailedException
      * @throws UntestableRuleException
      */
-    public static boolean runStringRuleTest(final Map<URI, NormalisationRule> allNormalisationRules, boolean allPassed,
+    public static boolean runStringRuleTest(final Map<URI, NormalisationRule> allNormalisationRules,
             final StringRuleTest nextStringRuleTest) throws InvalidStageException, QueryAllException, RuntimeException,
         ValidationFailedException, UntestableRuleException
     {
+        boolean allPassed = true;
+        
         final String nextTestInputString = nextStringRuleTest.getTestInputString();
         final String nextTestOutputString = nextStringRuleTest.getTestOutputString();
         
@@ -370,6 +380,7 @@ public final class RuleUtils
                         
                         if(!result)
                         {
+                            log.error("ValidatingRule failed nextRule.getKey()="+nextRule.getKey().stringValue());
                             allPassed = false;
                         }
                     }
@@ -398,8 +409,8 @@ public final class RuleUtils
                 {
                     RuleUtils.log
                             .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
-                                    + nextTestInputString + " actual output :: nextInputTestResult="
-                                    + nextInputTestResult + " expected output :: nextTestOutputString="
+                                    + nextTestInputString + " actual output was nextInputTestResult="
+                                    + nextInputTestResult + " expected output was nextTestOutputString="
                                     + nextTestOutputString);
                     RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
                 }
@@ -440,28 +451,29 @@ public final class RuleUtils
                             nextStringRuleTest);
                 }
                 
-                if(nextOutputTestResult.equals(nextTestInputString))
+            }
+            
+            if(allPassed && nextOutputTestResult.equals(nextTestInputString))
+            {
+                if(RuleUtils._DEBUG)
                 {
-                    if(RuleUtils._DEBUG)
-                    {
-                        RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString=" + nextTestInputString
-                                + " actual output :: nextOutputTestResult=" + nextOutputTestResult
-                                + " expected output :: nextTestOutputString=" + nextTestOutputString);
-                    }
+                    RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString=" + nextTestInputString
+                            + " actual output :: nextOutputTestResult=" + nextOutputTestResult
+                            + " expected output :: nextTestOutputString=" + nextTestOutputString);
                 }
-                else
+            }
+            else
+            {
+                allPassed = false;
+                
+                if(RuleUtils._INFO)
                 {
-                    allPassed = false;
-                    
-                    if(RuleUtils._INFO)
-                    {
-                        RuleUtils.log
-                                .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
-                                        + nextTestInputString + " actual output :: nextOutputTestResult="
-                                        + nextOutputTestResult + " expected output :: nextTestOutputString="
-                                        + nextTestOutputString);
-                        RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
-                    }
+                    RuleUtils.log
+                            .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
+                                    + nextTestInputString + " actual output :: nextOutputTestResult="
+                                    + nextOutputTestResult + " expected output :: nextTestOutputString="
+                                    + nextTestOutputString);
+                    RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
                 }
             }
         } // end if(this.stages.contains(rdfruleStageBeforeResultsImport)
