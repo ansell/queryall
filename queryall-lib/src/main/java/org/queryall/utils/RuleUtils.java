@@ -38,15 +38,23 @@ public final class RuleUtils
     private static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
     private static final boolean _INFO = RuleUtils.log.isInfoEnabled();
     
+    /**
+     * 
+     * @param allNormalisationRules
+     * @param neededRules
+     * @param sortOrder
+     * @return A sorted list of rules from allNormalisationRules using the URIs from neededRules and
+     *         the SortOrder given by sortOrder
+     */
     public static List<NormalisationRule> getSortedRulesByUris(final Map<URI, NormalisationRule> allNormalisationRules,
-            final Collection<URI> rdfNormalisationsNeeded, final SortOrder sortOrder)
+            final Collection<URI> neededRules, final SortOrder sortOrder)
     {
         final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         // final List<NormalisationRule> intermediateResults = new ArrayList<NormalisationRule>();
         // final Map<URI, NormalisationRule> allNormalisationRules =
         // this.getAllNormalisationRules();
         
-        for(final URI nextProviderNormalisationRule : rdfNormalisationsNeeded)
+        for(final URI nextProviderNormalisationRule : neededRules)
         {
             if(allNormalisationRules.containsKey(nextProviderNormalisationRule))
             {
@@ -150,6 +158,14 @@ public final class RuleUtils
         return results;
     }
     
+    /**
+     * 
+     * @param providers
+     * @param allNormalisationRules
+     * @param sortOrder
+     * @return An ordered list of rules based on all of the rules that are defined for the given
+     *         providers and the SortOrder given by sortOrder
+     */
     public static List<NormalisationRule> getSortedRulesForProviders(final Collection<Provider> providers,
             final Map<URI, NormalisationRule> allNormalisationRules, final SortOrder sortOrder)
     {
@@ -273,15 +289,15 @@ public final class RuleUtils
         {
             if(nextRuleTest instanceof StringRuleTest)
             {
-                StringRuleTest nextStringRuleTest = (StringRuleTest)nextRuleTest;
+                final StringRuleTest nextStringRuleTest = (StringRuleTest)nextRuleTest;
                 
-                allPassed = runStringRuleTest(allNormalisationRules, allPassed, nextStringRuleTest);
+                allPassed = RuleUtils.runStringRuleTest(allNormalisationRules, allPassed, nextStringRuleTest);
             } // end if(nextRuleTest instanceof StringRuleTest
         } // end for(nextRuleTest
         
         return allPassed;
     }
-
+    
     /**
      * Runs StringRuleTests against the Query Variables stage and the Before Results Import stage
      * 
@@ -296,7 +312,7 @@ public final class RuleUtils
      * @throws UntestableRuleException
      */
     public static boolean runStringRuleTest(final Map<URI, NormalisationRule> allNormalisationRules, boolean allPassed,
-            StringRuleTest nextStringRuleTest) throws InvalidStageException, QueryAllException, RuntimeException,
+            final StringRuleTest nextStringRuleTest) throws InvalidStageException, QueryAllException, RuntimeException,
         ValidationFailedException, UntestableRuleException
     {
         final String nextTestInputString = nextStringRuleTest.getTestInputString();
@@ -326,8 +342,8 @@ public final class RuleUtils
                             RuleUtils.log
                                     .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
                                             e);
-                            throw new QueryAllException(
-                                    "Found fatal InvalidStageException in hardcoded stage URI use", e);
+                            throw new QueryAllException("Found fatal InvalidStageException in hardcoded stage URI use",
+                                    e);
                         }
                     }
                     else if(nextRule instanceof ValidatingRule)
@@ -348,8 +364,8 @@ public final class RuleUtils
                             RuleUtils.log
                                     .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
                                             e);
-                            throw new QueryAllException(
-                                    "Found fatal InvalidStageException in hardcoded stage URI use", e);
+                            throw new QueryAllException("Found fatal InvalidStageException in hardcoded stage URI use",
+                                    e);
                         }
                         
                         if(!result)
@@ -360,8 +376,8 @@ public final class RuleUtils
                     else
                     {
                         throw new UntestableRuleException(
-                                "NormalisationRule type not supported for testing in this implementation",
-                                nextRule, nextStringRuleTest);
+                                "NormalisationRule type not supported for testing in this implementation", nextRule,
+                                nextStringRuleTest);
                     }
                 }
             }
@@ -402,16 +418,15 @@ public final class RuleUtils
                     final TransformingRule transformingRule = (TransformingRule)nextRule;
                     nextOutputTestResult =
                             (String)transformingRule.normaliseByStage(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(),
-                                    nextTestInputString);
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextTestInputString);
                 }
                 else if(nextRule instanceof ValidatingRule)
                 {
                     final ValidatingRule validatingRule = (ValidatingRule)nextRule;
                     
                     final boolean result =
-                            validatingRule.normaliseByStage(
-                                    NormalisationRuleSchema.getRdfruleStageQueryVariables(), nextTestInputString);
+                            validatingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                    nextTestInputString);
                     
                     if(!result)
                     {
@@ -429,10 +444,9 @@ public final class RuleUtils
                 {
                     if(RuleUtils._DEBUG)
                     {
-                        RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString="
-                                + nextTestInputString + " actual output :: nextOutputTestResult="
-                                + nextOutputTestResult + " expected output :: nextTestOutputString="
-                                + nextTestOutputString);
+                        RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString=" + nextTestInputString
+                                + " actual output :: nextOutputTestResult=" + nextOutputTestResult
+                                + " expected output :: nextTestOutputString=" + nextTestOutputString);
                     }
                 }
                 else
@@ -443,10 +457,8 @@ public final class RuleUtils
                     {
                         RuleUtils.log
                                 .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
-                                        + nextTestInputString
-                                        + " actual output :: nextOutputTestResult="
-                                        + nextOutputTestResult
-                                        + " expected output :: nextTestOutputString="
+                                        + nextTestInputString + " actual output :: nextOutputTestResult="
+                                        + nextOutputTestResult + " expected output :: nextTestOutputString="
                                         + nextTestOutputString);
                         RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
                     }

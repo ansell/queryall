@@ -17,11 +17,14 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.test.DummyNormalisationRule;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.QueryAllException;
+import org.queryall.impl.ruletest.StringRuleTestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +41,21 @@ public class RuleUtilsTest
     private NormalisationRule testRuleMidOrder50;
     private NormalisationRule testRuleLowOrder15;
     private NormalisationRule testRuleLowestOrder3;
-    private Collection<URI> testRulesNeededAll;
+    
     private Map<URI, NormalisationRule> testAllNormalisationRules;
+    private Collection<URI> testRulesNeededAll;
+    
     private Provider testProviderNoRules;
     private Collection<Provider> testProvidersNoRules;
+    
     private Provider testProviderAllRulesRandomInsertion;
     private Collection<Provider> testProvidersAllRulesRandomInsertion;
+    
     private Collection<RuleTest> testRuleTests;
+    
+    private StringRuleTest testStringRuleTestQueryVariables;
+    
+    private StringRuleTest testStringRuleTestBeforeResultsImport;
     
     /**
      * @throws java.lang.Exception
@@ -93,7 +104,8 @@ public class RuleUtilsTest
         this.testProvidersNoRules.add(this.testProviderNoRules);
         
         this.testProviderAllRulesRandomInsertion = new DummyProvider();
-        this.testProviderAllRulesRandomInsertion.setKey("http://test.ruleutils.example.com/test/provider/allrules/randominsertion");
+        this.testProviderAllRulesRandomInsertion
+                .setKey("http://test.ruleutils.example.com/test/provider/allrules/randominsertion");
         this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleHighOrder200.getKey());
         this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleLowOrder15.getKey());
         this.testProviderAllRulesRandomInsertion.addNormalisationUri(this.testRuleLowestOrder3.getKey());
@@ -104,6 +116,13 @@ public class RuleUtilsTest
         this.testProvidersAllRulesRandomInsertion.add(this.testProviderAllRulesRandomInsertion);
         
         this.testRuleTests = new ArrayList<RuleTest>();
+        
+        this.testStringRuleTestQueryVariables = new StringRuleTestImpl();
+        this.testStringRuleTestQueryVariables.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        
+        this.testStringRuleTestBeforeResultsImport = new StringRuleTestImpl();
+        this.testStringRuleTestBeforeResultsImport.addStage(NormalisationRuleSchema
+                .getRdfruleStageBeforeResultsImport());
     }
     
     /**
@@ -118,6 +137,18 @@ public class RuleUtilsTest
         this.testRuleHighOrder200 = null;
         this.testRuleHighestOrder600 = null;
         
+        this.testAllNormalisationRules = null;
+        
+        this.testRulesNeededAll = null;
+        
+        this.testProviderNoRules = null;
+        this.testProvidersNoRules = null;
+        
+        this.testProviderAllRulesRandomInsertion = null;
+        this.testProvidersAllRulesRandomInsertion = null;
+        
+        this.testStringRuleTestQueryVariables = null;
+        this.testStringRuleTestBeforeResultsImport = null;
     }
     
     /**
@@ -172,11 +203,15 @@ public class RuleUtilsTest
     @Test
     public void testGetSortedRulesForProvidersEmpty()
     {
-        List<NormalisationRule> sortedRulesForProvidersHighestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, testAllNormalisationRules, SortOrder.HIGHEST_ORDER_FIRST);
+        final List<NormalisationRule> sortedRulesForProvidersHighestFirst =
+                RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, this.testAllNormalisationRules,
+                        SortOrder.HIGHEST_ORDER_FIRST);
         
         Assert.assertEquals(0, sortedRulesForProvidersHighestFirst.size());
         
-        List<NormalisationRule> sortedRulesForProvidersLowestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, testAllNormalisationRules, SortOrder.LOWEST_ORDER_FIRST);
+        final List<NormalisationRule> sortedRulesForProvidersLowestFirst =
+                RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, this.testAllNormalisationRules,
+                        SortOrder.LOWEST_ORDER_FIRST);
         
         Assert.assertEquals(0, sortedRulesForProvidersLowestFirst.size());
         
@@ -188,9 +223,11 @@ public class RuleUtilsTest
      * .
      */
     @Test
-    public void testGetSortedRulesForProvidersRandomInsertion()
+    public void testGetSortedRulesForProvidersRandomInsertionHighestOrderFirst()
     {
-        List<NormalisationRule> sortedRulesForProvidersHighestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion, testAllNormalisationRules, SortOrder.HIGHEST_ORDER_FIRST);
+        final List<NormalisationRule> sortedRulesForProvidersHighestFirst =
+                RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion,
+                        this.testAllNormalisationRules, SortOrder.HIGHEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesForProvidersHighestFirst.size());
         
@@ -200,7 +237,19 @@ public class RuleUtilsTest
         Assert.assertEquals(this.testRuleLowOrder15, sortedRulesForProvidersHighestFirst.get(3));
         Assert.assertEquals(this.testRuleLowestOrder3, sortedRulesForProvidersHighestFirst.get(4));
         
-        List<NormalisationRule> sortedRulesForProvidersLowestFirst = RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion, testAllNormalisationRules, SortOrder.LOWEST_ORDER_FIRST);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#getSortedRulesForProviders(java.util.Collection, java.util.Map, org.queryall.api.utils.SortOrder)}
+     * .
+     */
+    @Test
+    public void testGetSortedRulesForProvidersRandomInsertionLowestOrderFirst()
+    {
+        final List<NormalisationRule> sortedRulesForProvidersLowestFirst =
+                RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion,
+                        this.testAllNormalisationRules, SortOrder.LOWEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesForProvidersLowestFirst.size());
         
@@ -232,11 +281,11 @@ public class RuleUtilsTest
     {
         try
         {
-            boolean runRuleTests = RuleUtils.runRuleTests(testRuleTests, testAllNormalisationRules);
+            final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTests, this.testAllNormalisationRules);
             
             Assert.assertTrue("Empty rule test running failed", runRuleTests);
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
             Assert.fail("Empty rule test running threw an exception");
         }
