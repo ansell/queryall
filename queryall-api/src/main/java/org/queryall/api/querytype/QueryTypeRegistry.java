@@ -14,13 +14,21 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class QueryTypeRegistry extends AbstractServiceLoader<QueryTypeEnum, QueryTypeFactory>
 {
-    private static QueryTypeRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
     
-    public static synchronized QueryTypeRegistry getInstance()
+    private static volatile QueryTypeRegistry defaultRegistry;
+    
+    public static QueryTypeRegistry getInstance()
     {
         if(QueryTypeRegistry.defaultRegistry == null)
         {
-            QueryTypeRegistry.defaultRegistry = new QueryTypeRegistry();
+            synchronized(QueryTypeRegistry.LOCK)
+            {
+                if(QueryTypeRegistry.defaultRegistry == null)
+                {
+                    QueryTypeRegistry.defaultRegistry = new QueryTypeRegistry();
+                }
+            }
         }
         
         return QueryTypeRegistry.defaultRegistry;

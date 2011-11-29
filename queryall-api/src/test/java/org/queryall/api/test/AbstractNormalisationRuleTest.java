@@ -25,7 +25,7 @@ import org.queryall.exception.InvalidStageException;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractNormalisationRuleTest
+public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNormalisationRuleTest
 {
     private URI testStageInvalidInclusionRuleUri;
     private URI testStageAllValidAndInvalidRuleUri;
@@ -38,11 +38,18 @@ public abstract class AbstractNormalisationRuleTest
      */
     public abstract Set<URI> getExpectedValidStages();
     
+    @Override
+    public final NormalisationRule getNewTestProfilable()
+    {
+        return this.getNewTestRule();
+    }
+    
     /**
      * Create a new profile instance with default properties
      * 
      * @return A new profile instance with default properties
      */
+    @Override
     public abstract Profile getNewTestProfile();
     
     /**
@@ -55,9 +62,12 @@ public abstract class AbstractNormalisationRuleTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         final ValueFactory f = new MemValueFactory();
         
         // this.testTrueSparqlNormalisationRuleUri =
@@ -68,6 +78,8 @@ public abstract class AbstractNormalisationRuleTest
         this.testStageAllValidAndInvalidRuleUri = f.createURI("http://example.org/test/stageExclusionRule");
         
         this.validStages = this.getExpectedValidStages();
+        
+        Assert.assertNotNull("Expected valid stages was null", this.validStages);
         
         // make sure that we have reasonable sizes for the relevant sets
         Assert.assertTrue(this.validStages.size() > 0);
@@ -88,9 +100,12 @@ public abstract class AbstractNormalisationRuleTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         // this.testTrueSparqlNormalisationRuleUri = null;
         // this.testFalseSparqlNormalisationRuleUri = null;
         this.testStageInvalidInclusionRuleUri = null;
@@ -109,7 +124,15 @@ public abstract class AbstractNormalisationRuleTest
         
         final Collection<URI> includedStages = this.validStages;
         
+        Assert.assertNotNull(
+                "Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places",
+                this.validStages);
+        
         final Collection<URI> excludedStages = this.invalidStages;
+        
+        Assert.assertNotNull(
+                "Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places",
+                this.invalidStages);
         
         for(final URI nextIncludedStage : includedStages)
         {
@@ -119,6 +142,9 @@ public abstract class AbstractNormalisationRuleTest
             }
             catch(final InvalidStageException ise)
             {
+                // do sanity checking on the exception before failing
+                Assert.assertEquals(nextIncludedStage, ise.getInvalidStageCause());
+                Assert.assertEquals(normalisationRule, ise.getRuleCause());
                 Assert.fail("InvalidStageException thrown for valid stage nextIncludedStage=" + nextIncludedStage);
             }
         }
@@ -141,16 +167,26 @@ public abstract class AbstractNormalisationRuleTest
         
         final Collection<URI> excludedStages = this.invalidStages;
         
+        Assert.assertNotNull(
+                "Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places",
+                this.validStages);
+        Assert.assertNotNull(
+                "Unexpected null stages. Check if super.setUp() and super.tearDown() are called in the relevant places",
+                this.invalidStages);
+        
         for(final URI nextInvalidStage : this.invalidStages)
         {
             try
             {
                 normalisationRule.addStage(nextInvalidStage);
-                Assert.fail("Did not find expected invalid stage exception for setStages");
+                Assert.fail("Did not find expected invalid stage exception for setStages nextInvalidStage="
+                        + nextInvalidStage);
             }
-            catch(final InvalidStageException e)
+            catch(final InvalidStageException ise)
             {
-                // expected exception
+                // do sanity checking on the exception
+                Assert.assertEquals(nextInvalidStage, ise.getInvalidStageCause());
+                Assert.assertEquals(normalisationRule, ise.getRuleCause());
             }
         }
         

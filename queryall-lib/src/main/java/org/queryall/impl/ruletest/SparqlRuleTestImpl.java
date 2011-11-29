@@ -50,7 +50,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     
     private String askQuery = "";
     
-    private boolean expectedResult = false;
+    private boolean expectedResult = true;
     private String testInputTriples;
     private String testInputMimeType;
     

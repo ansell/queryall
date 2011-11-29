@@ -3,18 +3,18 @@
  */
 package org.queryall.impl.test;
 
-import org.queryall.api.ruletest.RuleTest;
-import org.queryall.api.test.AbstractRuleTestTest;
+import org.queryall.api.ruletest.StringRuleTest;
+import org.queryall.api.test.AbstractStringRuleTestTest;
 import org.queryall.impl.ruletest.StringRuleTestImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StringRuleTestImplTest extends AbstractRuleTestTest
+public class StringRuleTestImplTest extends AbstractStringRuleTestTest
 {
     
     @Override
-    public RuleTest getNewTestRuleTest()
+    public StringRuleTest getNewTestStringRuleTest()
     {
         return new StringRuleTestImpl();
     }

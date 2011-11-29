@@ -44,19 +44,6 @@ public class PoddSPINRuleTest
     @Before
     public void setUp() throws Exception
     {
-        final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
-        
-        this.testOntologyModel = ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), testModel);
-        
-        final InputStream testInputStream = PoddSPINRuleTest.class.getResourceAsStream("/test/minimal-podd.rdf");
-        
-        // Use Jena OntModel to pull in all of the Ontology dependencies
-        testModel.read(testInputStream, "", "RDF/XML");
-        
-        Assert.assertEquals(9, this.testOntologyModel.size());
-        
-        this.testRepository = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
-        
     }
     
     /**
@@ -81,8 +68,21 @@ public class PoddSPINRuleTest
     }
     
     @Test
-    public void test() throws RepositoryException, QueryAllException
+    public void testMinimalPoddInferencingRule() throws RepositoryException, QueryAllException
     {
+        final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        this.testOntologyModel = ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), testModel);
+        
+        final InputStream testInputStream = PoddSPINRuleTest.class.getResourceAsStream("/test/minimal-podd.rdf");
+        
+        // Use Jena OntModel to pull in all of the Ontology dependencies
+        testModel.read(testInputStream, "", "RDF/XML");
+        
+        Assert.assertEquals(9, this.testOntologyModel.size());
+        
+        this.testRepository = SpinUtils.addJenaModelToSesameRepository(this.testOntologyModel, null);
+        
         RepositoryConnection testRepositoryConnection = null;
         RepositoryConnection resultConnection = null;
         

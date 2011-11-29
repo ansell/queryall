@@ -235,105 +235,72 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         {
             return true;
         }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(this.getClass() != obj.getClass())
-        {
-            return false;
-        }
-        final ProviderImpl other = (ProviderImpl)obj;
-        if(this.getKey() == null)
-        {
-            if(other.getKey() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.getKey().equals(other.getKey()))
+        if(!super.equals(obj))
         {
             return false;
         }
         
-        if(this.getCurationStatus() == null)
+        if(!(obj instanceof Provider))
         {
-            if(other.getCurationStatus() != null)
+            return false;
+        }
+        final Provider other = (Provider)obj;
+        if(this.getIncludedInQueryTypes() == null)
+        {
+            if(other.getIncludedInQueryTypes() != null)
             {
                 return false;
             }
         }
-        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
+        else if(!this.getIncludedInQueryTypes().equals(other.getIncludedInQueryTypes()))
         {
             return false;
         }
-        if(this.includedInQueryTypes == null)
+        if(this.getIsDefaultSource() != other.getIsDefaultSource())
         {
-            if(other.includedInQueryTypes != null)
+            return false;
+        }
+        if(this.getNamespaces() == null)
+        {
+            if(other.getNamespaces() != null)
             {
                 return false;
             }
         }
-        else if(!this.includedInQueryTypes.equals(other.includedInQueryTypes))
+        else if(!this.getNamespaces().equals(other.getNamespaces()))
         {
             return false;
         }
-        if(this.isDefaultSourceVar != other.isDefaultSourceVar)
+        if(this.getProfileIncludeExcludeOrder() == null)
         {
-            return false;
-        }
-        if(this.namespaces == null)
-        {
-            if(other.namespaces != null)
+            if(other.getProfileIncludeExcludeOrder() != null)
             {
                 return false;
             }
         }
-        else if(!this.namespaces.equals(other.namespaces))
+        else if(!this.getProfileIncludeExcludeOrder().equals(other.getProfileIncludeExcludeOrder()))
         {
             return false;
         }
-        if(this.profileIncludeExcludeOrder == null)
+        if(this.getNormalisationUris() == null)
         {
-            if(other.profileIncludeExcludeOrder != null)
+            if(other.getNormalisationUris() != null)
             {
                 return false;
             }
         }
-        else if(!this.profileIncludeExcludeOrder.equals(other.profileIncludeExcludeOrder))
+        else if(!this.getNormalisationUris().equals(other.getNormalisationUris()))
         {
             return false;
         }
-        if(this.rdfNormalisationsNeeded == null)
+        if(this.getRedirectOrProxy() == null)
         {
-            if(other.rdfNormalisationsNeeded != null)
+            if(other.getRedirectOrProxy() != null)
             {
                 return false;
             }
         }
-        else if(!this.rdfNormalisationsNeeded.equals(other.rdfNormalisationsNeeded))
-        {
-            return false;
-        }
-        if(this.redirectOrProxy == null)
-        {
-            if(other.redirectOrProxy != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.redirectOrProxy.equals(other.redirectOrProxy))
-        {
-            return false;
-        }
-        if(this.getTitle() == null)
-        {
-            if(other.getTitle() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.getTitle().equals(other.getTitle()))
+        else if(!this.getRedirectOrProxy().equals(other.getRedirectOrProxy()))
         {
             return false;
         }

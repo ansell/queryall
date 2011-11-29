@@ -14,13 +14,20 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class NormalisationRuleRegistry extends AbstractServiceLoader<NormalisationRuleEnum, NormalisationRuleFactory>
 {
-    private static NormalisationRuleRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
+    private static volatile NormalisationRuleRegistry defaultRegistry;
     
-    public static synchronized NormalisationRuleRegistry getInstance()
+    public static NormalisationRuleRegistry getInstance()
     {
         if(NormalisationRuleRegistry.defaultRegistry == null)
         {
-            NormalisationRuleRegistry.defaultRegistry = new NormalisationRuleRegistry();
+            synchronized(NormalisationRuleRegistry.LOCK)
+            {
+                if(NormalisationRuleRegistry.defaultRegistry == null)
+                {
+                    NormalisationRuleRegistry.defaultRegistry = new NormalisationRuleRegistry();
+                }
+            }
         }
         
         return NormalisationRuleRegistry.defaultRegistry;

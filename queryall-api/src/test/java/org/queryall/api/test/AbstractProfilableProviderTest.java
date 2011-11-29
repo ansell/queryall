@@ -5,6 +5,7 @@ package org.queryall.api.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.provider.Provider;
 
 /**
  * 
@@ -13,6 +14,9 @@ import org.queryall.api.profile.Profile;
  */
 public abstract class AbstractProfilableProviderTest extends AbstractProfilableTest
 {
+    @Override
+    public abstract Provider getNewTestProfilable();
+    
     @Override
     public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {
