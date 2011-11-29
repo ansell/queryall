@@ -13,6 +13,9 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 
 /**
+ * The QueryAllConfiguration object provides access to all of the properties and objects that are
+ * managed by the current application.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface QueryAllConfiguration

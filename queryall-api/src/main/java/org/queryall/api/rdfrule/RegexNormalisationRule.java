@@ -1,5 +1,12 @@
 package org.queryall.api.rdfrule;
 
+/**
+ * A RegexNormalisationRule uses Regular Expressions to transform data from a normalised scheme into
+ * a denormalised scheme to match providers, before translating the results from a provider back
+ * into the normalised scheme.
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface RegexNormalisationRule extends TransformingRule
 {
     

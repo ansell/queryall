@@ -6,6 +6,9 @@ import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
+ * A Rule Test provides a way to specify the expected results for a normalisation to ensure that the
+ * rule executes properly for the current implementation of QueryAll.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>

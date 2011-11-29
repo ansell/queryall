@@ -7,6 +7,10 @@ import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.ProfilableInterface;
 
 /**
+ * Providers encapsulate communication with datasets, based on the query types and namespaces that
+ * are defined. The input from the query types, and the output from the dataset are normalised using
+ * the normalisation rules that are defined for the provider.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, ProfilableInterface

@@ -10,6 +10,12 @@ import org.openrdf.repository.Repository;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
+ * The base of all QueryAll objects.
+ * 
+ * Contains the basic elements necessary to identify objects and keep track of RDF statements from
+ * the objects definitions that were not recognised, but need to be stored for future serialisation
+ * of the object.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface BaseQueryAllInterface

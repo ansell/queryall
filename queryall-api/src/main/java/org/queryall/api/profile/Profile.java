@@ -5,6 +5,12 @@ import java.util.Collection;
 import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
+ * Profiles define which query types, providers, and normalisation rules, are acceptable. They can
+ * be layered, and shared, independent of the objects they reference.
+ * 
+ * Objects that are influenced by Profiles should implement the
+ * org.queryall.api.base.ProfilableInterface interface.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface Profile extends BaseQueryAllInterface, Comparable<Profile>

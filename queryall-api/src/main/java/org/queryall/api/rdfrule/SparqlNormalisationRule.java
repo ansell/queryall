@@ -3,6 +3,10 @@ package org.queryall.api.rdfrule;
 import java.util.List;
 
 /**
+ * The SparqlNormalisationRule interface encapsulates the common functionality for the
+ * SparqlConstructRule and SparqlAskRule types. It is neither a ValidatingRule, nor a
+ * TransformationRule, so it cannot be used for transformations without further implementation.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface SparqlNormalisationRule extends NormalisationRule

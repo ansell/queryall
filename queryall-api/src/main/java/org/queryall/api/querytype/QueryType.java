@@ -9,6 +9,9 @@ import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.ProfilableInterface;
 
 /**
+ * The base type for queries, containing a variety of links to other query types, namespace
+ * matching, and named input tags.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface

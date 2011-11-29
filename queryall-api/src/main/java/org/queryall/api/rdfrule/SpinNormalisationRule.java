@@ -4,6 +4,13 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
+/**
+ * The SpinNormalisationRule interface encapsulates the common components for the SpinConstraintRule
+ * and SpinInferencingRules, providing a list of rules and spin profiles that are active for this
+ * rule.
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface SpinNormalisationRule extends NormalisationRule
 {
     

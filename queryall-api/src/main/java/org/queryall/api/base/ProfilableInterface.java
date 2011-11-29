@@ -6,7 +6,8 @@ import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
 
 /**
- * This interface provides the basis for profiles to be used to include or exclude objects
+ * This interface provides the basis for profiles to be used to include or exclude objects. All
+ * profilable objects are also BaseQueryAllInterface objects
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

@@ -1,6 +1,8 @@
 package org.queryall.api.provider;
 
 /**
+ * An HTTP Provider that is also a SPARQL Provider.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface HttpSparqlProvider extends HttpProvider, SparqlProvider
