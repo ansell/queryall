@@ -14,13 +14,20 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class RuleTestRegistry extends AbstractServiceLoader<RuleTestEnum, RuleTestFactory>
 {
-    private static RuleTestRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
+    private static volatile RuleTestRegistry defaultRegistry;
     
-    public static synchronized RuleTestRegistry getInstance()
+    public static RuleTestRegistry getInstance()
     {
         if(RuleTestRegistry.defaultRegistry == null)
         {
-            RuleTestRegistry.defaultRegistry = new RuleTestRegistry();
+            synchronized(LOCK)
+            {
+                if(RuleTestRegistry.defaultRegistry == null)
+                {
+                    RuleTestRegistry.defaultRegistry = new RuleTestRegistry();
+                }
+            }
         }
         
         return RuleTestRegistry.defaultRegistry;

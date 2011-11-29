@@ -14,15 +14,20 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class ProfileRegistry extends AbstractServiceLoader<ProfileEnum, ProfileFactory>
 {
-    private static ProfileRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
+    private static volatile ProfileRegistry defaultRegistry;
     
-    // RDFParserRegistry.getInstance();
-    //
-    public static synchronized ProfileRegistry getInstance()
+    public static ProfileRegistry getInstance()
     {
         if(ProfileRegistry.defaultRegistry == null)
         {
-            ProfileRegistry.defaultRegistry = new ProfileRegistry();
+            synchronized(LOCK)
+            {
+                if(ProfileRegistry.defaultRegistry == null)
+                {
+                    ProfileRegistry.defaultRegistry = new ProfileRegistry();
+                }
+            }
         }
         
         return ProfileRegistry.defaultRegistry;

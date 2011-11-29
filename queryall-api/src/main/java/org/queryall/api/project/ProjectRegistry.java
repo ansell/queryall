@@ -14,15 +14,21 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class ProjectRegistry extends AbstractServiceLoader<ProjectEnum, ProjectFactory>
 {
-    private static ProjectRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
     
-    // RDFParserRegistry.getInstance();
-    //
-    public static synchronized ProjectRegistry getInstance()
+    private static volatile ProjectRegistry defaultRegistry;
+    
+    public static ProjectRegistry getInstance()
     {
         if(ProjectRegistry.defaultRegistry == null)
         {
-            ProjectRegistry.defaultRegistry = new ProjectRegistry();
+            synchronized(LOCK)
+            {
+                if(ProjectRegistry.defaultRegistry == null)
+                {
+                    ProjectRegistry.defaultRegistry = new ProjectRegistry();
+                }
+            }
         }
         
         return ProjectRegistry.defaultRegistry;
