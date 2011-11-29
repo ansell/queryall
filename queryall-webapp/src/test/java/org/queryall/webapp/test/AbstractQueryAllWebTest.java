@@ -1,4 +1,4 @@
-package org.bio2rdf.test;
+package org.queryall.webapp.test;
 
 /**
  * 
