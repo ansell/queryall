@@ -102,6 +102,8 @@ public class RuleUtilsTest
         
         this.testProvidersAllRulesRandomInsertion = new ArrayList<Provider>();
         this.testProvidersAllRulesRandomInsertion.add(this.testProviderAllRulesRandomInsertion);
+        
+        this.testRuleTests = new ArrayList<RuleTest>();
     }
     
     /**
@@ -226,17 +228,17 @@ public class RuleUtilsTest
      * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
      */
     @Test
-    public void testRunRuleTests()
+    public void testRunRuleTestsEmpty()
     {
         try
         {
             boolean runRuleTests = RuleUtils.runRuleTests(testRuleTests, testAllNormalisationRules);
             
-            Assert.assertTrue("Rule test running failed", runRuleTests);
+            Assert.assertTrue("Empty rule test running failed", runRuleTests);
         }
         catch(QueryAllException e)
         {
-            Assert.fail("Rule test running threw an exception");
+            Assert.fail("Empty rule test running threw an exception");
         }
         
     }
