@@ -271,119 +271,86 @@ public final class RuleUtils
         
         for(final RuleTest nextRuleTest : myRuleTests)
         {
-            final String nextTestInputString = ((StringRuleTest)nextRuleTest).getTestInputString();
-            final String nextTestOutputString = ((StringRuleTest)nextRuleTest).getTestOutputString();
-            
-            String nextInputTestResult = nextTestInputString;
-            
-            if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+            if(nextRuleTest instanceof StringRuleTest)
             {
-                for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
-                        nextRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
-                {
-                    if(nextRule.usedInStage(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
-                    {
-                        if(nextRule instanceof TransformingRule)
-                        {
-                            final TransformingRule transformingRule = (TransformingRule)nextRule;
-                            try
-                            {
-                                nextInputTestResult =
-                                        (String)transformingRule.normaliseByStage(
-                                                NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                                nextTestInputString);
-                            }
-                            catch(final InvalidStageException e)
-                            {
-                                RuleUtils.log
-                                        .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
-                                                e);
-                                throw new RuntimeException(
-                                        "Found fatal InvalidStageException in hardcoded stage URI use", e);
-                            }
-                        }
-                        else if(nextRule instanceof ValidatingRule)
-                        {
-                            final ValidatingRule validatingRule = (ValidatingRule)nextRule;
-                            
-                            boolean result = false;
-                            
-                            try
-                            {
-                                result =
-                                        validatingRule.normaliseByStage(
-                                                NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                                nextTestInputString);
-                            }
-                            catch(final InvalidStageException e)
-                            {
-                                RuleUtils.log
-                                        .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
-                                                e);
-                                throw new RuntimeException(
-                                        "Found fatal InvalidStageException in hardcoded stage URI use", e);
-                            }
-                            
-                            if(!result)
-                            {
-                                allPassed = false;
-                            }
-                        }
-                        else
-                        {
-                            throw new UntestableRuleException(
-                                    "NormalisationRule type not supported for testing in this implementation",
-                                    nextRule, nextRuleTest);
-                        }
-                    }
-                }
+                StringRuleTest nextStringRuleTest = (StringRuleTest)nextRuleTest;
                 
-                if(allPassed && nextInputTestResult.equals(nextTestOutputString))
-                {
-                    if(RuleUtils._DEBUG)
-                    {
-                        RuleUtils.log.debug("TEST-PASS input test pass: nextTestInputString=" + nextTestInputString
-                                + " nextInputTestResult=" + nextInputTestResult);
-                    }
-                }
-                else
-                {
-                    allPassed = false;
-                    
-                    if(RuleUtils._INFO)
-                    {
-                        RuleUtils.log
-                                .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
-                                        + nextTestInputString + " actual output :: nextInputTestResult="
-                                        + nextInputTestResult + " expected output :: nextTestOutputString="
-                                        + nextTestOutputString);
-                        RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextRuleTest.toString());
-                    }
-                }
-            }
-            
-            if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
+                allPassed = runStringRuleTest(allNormalisationRules, allPassed, nextStringRuleTest);
+            } // end if(nextRuleTest instanceof StringRuleTest
+        } // end for(nextRuleTest
+        
+        return allPassed;
+    }
+
+    /**
+     * Runs StringRuleTests against the Query Variables stage and the Before Results Import stage
+     * 
+     * @param allNormalisationRules
+     * @param allPassed
+     * @param nextStringRuleTest
+     * @return
+     * @throws InvalidStageException
+     * @throws QueryAllException
+     * @throws RuntimeException
+     * @throws ValidationFailedException
+     * @throws UntestableRuleException
+     */
+    public static boolean runStringRuleTest(final Map<URI, NormalisationRule> allNormalisationRules, boolean allPassed,
+            StringRuleTest nextStringRuleTest) throws InvalidStageException, QueryAllException, RuntimeException,
+        ValidationFailedException, UntestableRuleException
+    {
+        final String nextTestInputString = nextStringRuleTest.getTestInputString();
+        final String nextTestOutputString = nextStringRuleTest.getTestOutputString();
+        
+        String nextInputTestResult = nextTestInputString;
+        
+        if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+        {
+            for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
+                    nextStringRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
             {
-                String nextOutputTestResult = nextTestInputString;
-                
-                for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
-                        nextRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
+                if(nextRule.usedInStage(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
                 {
                     if(nextRule instanceof TransformingRule)
                     {
                         final TransformingRule transformingRule = (TransformingRule)nextRule;
-                        nextOutputTestResult =
-                                (String)transformingRule.normaliseByStage(
-                                        NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(),
-                                        nextTestInputString);
+                        try
+                        {
+                            nextInputTestResult =
+                                    (String)transformingRule.normaliseByStage(
+                                            NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                            nextTestInputString);
+                        }
+                        catch(final InvalidStageException e)
+                        {
+                            RuleUtils.log
+                                    .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
+                                            e);
+                            throw new QueryAllException(
+                                    "Found fatal InvalidStageException in hardcoded stage URI use", e);
+                        }
                     }
                     else if(nextRule instanceof ValidatingRule)
                     {
                         final ValidatingRule validatingRule = (ValidatingRule)nextRule;
                         
-                        final boolean result =
-                                validatingRule.normaliseByStage(
-                                        NormalisationRuleSchema.getRdfruleStageQueryVariables(), nextTestInputString);
+                        boolean result = false;
+                        
+                        try
+                        {
+                            result =
+                                    validatingRule.normaliseByStage(
+                                            NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                            nextTestInputString);
+                        }
+                        catch(final InvalidStageException e)
+                        {
+                            RuleUtils.log
+                                    .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
+                                            e);
+                            throw new QueryAllException(
+                                    "Found fatal InvalidStageException in hardcoded stage URI use", e);
+                        }
                         
                         if(!result)
                         {
@@ -393,40 +360,99 @@ public final class RuleUtils
                     else
                     {
                         throw new UntestableRuleException(
-                                "NormalisationRule type not supported for testing in this implementation", nextRule,
-                                nextRuleTest);
-                    }
-                    
-                    if(nextOutputTestResult.equals(nextTestInputString))
-                    {
-                        if(RuleUtils._DEBUG)
-                        {
-                            RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString="
-                                    + nextTestInputString + " actual output :: nextOutputTestResult="
-                                    + nextOutputTestResult + " expected output :: nextTestOutputString="
-                                    + nextTestOutputString);
-                        }
-                    }
-                    else
-                    {
-                        allPassed = false;
-                        
-                        if(RuleUtils._INFO)
-                        {
-                            RuleUtils.log
-                                    .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
-                                            + nextTestInputString
-                                            + " actual output :: nextOutputTestResult="
-                                            + nextOutputTestResult
-                                            + " expected output :: nextTestOutputString="
-                                            + nextTestOutputString);
-                            RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextRuleTest.toString());
-                        }
+                                "NormalisationRule type not supported for testing in this implementation",
+                                nextRule, nextStringRuleTest);
                     }
                 }
-            } // end if(this.stages.contains(rdfruleStageBeforeResultsImport)
-        } // end for(nextRuleTest
+            }
+            
+            if(allPassed && nextInputTestResult.equals(nextTestOutputString))
+            {
+                if(RuleUtils._DEBUG)
+                {
+                    RuleUtils.log.debug("TEST-PASS input test pass: nextTestInputString=" + nextTestInputString
+                            + " nextInputTestResult=" + nextInputTestResult);
+                }
+            }
+            else
+            {
+                allPassed = false;
+                
+                if(RuleUtils._INFO)
+                {
+                    RuleUtils.log
+                            .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
+                                    + nextTestInputString + " actual output :: nextInputTestResult="
+                                    + nextInputTestResult + " expected output :: nextTestOutputString="
+                                    + nextTestOutputString);
+                    RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
+                }
+            }
+        }
         
+        if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
+        {
+            String nextOutputTestResult = nextTestInputString;
+            
+            for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
+                    nextStringRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
+            {
+                if(nextRule instanceof TransformingRule)
+                {
+                    final TransformingRule transformingRule = (TransformingRule)nextRule;
+                    nextOutputTestResult =
+                            (String)transformingRule.normaliseByStage(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(),
+                                    nextTestInputString);
+                }
+                else if(nextRule instanceof ValidatingRule)
+                {
+                    final ValidatingRule validatingRule = (ValidatingRule)nextRule;
+                    
+                    final boolean result =
+                            validatingRule.normaliseByStage(
+                                    NormalisationRuleSchema.getRdfruleStageQueryVariables(), nextTestInputString);
+                    
+                    if(!result)
+                    {
+                        allPassed = false;
+                    }
+                }
+                else
+                {
+                    throw new UntestableRuleException(
+                            "NormalisationRule type not supported for testing in this implementation", nextRule,
+                            nextStringRuleTest);
+                }
+                
+                if(nextOutputTestResult.equals(nextTestInputString))
+                {
+                    if(RuleUtils._DEBUG)
+                    {
+                        RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString="
+                                + nextTestInputString + " actual output :: nextOutputTestResult="
+                                + nextOutputTestResult + " expected output :: nextTestOutputString="
+                                + nextTestOutputString);
+                    }
+                }
+                else
+                {
+                    allPassed = false;
+                    
+                    if(RuleUtils._INFO)
+                    {
+                        RuleUtils.log
+                                .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
+                                        + nextTestInputString
+                                        + " actual output :: nextOutputTestResult="
+                                        + nextOutputTestResult
+                                        + " expected output :: nextTestOutputString="
+                                        + nextTestOutputString);
+                        RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
+                    }
+                }
+            }
+        } // end if(this.stages.contains(rdfruleStageBeforeResultsImport)
         return allPassed;
     }
     

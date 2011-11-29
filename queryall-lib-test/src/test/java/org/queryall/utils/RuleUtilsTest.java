@@ -12,13 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.model.URI;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.test.DummyNormalisationRule;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.exception.QueryAllException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -26,6 +31,7 @@ import org.queryall.api.utils.SortOrder;
  */
 public class RuleUtilsTest
 {
+    private static final Logger log = LoggerFactory.getLogger(RuleUtilsTest.class);
     
     private NormalisationRule testRuleHighestOrder600;
     private NormalisationRule testRuleHighOrder200;
@@ -38,6 +44,7 @@ public class RuleUtilsTest
     private Collection<Provider> testProvidersNoRules;
     private Provider testProviderAllRulesRandomInsertion;
     private Collection<Provider> testProvidersAllRulesRandomInsertion;
+    private Collection<RuleTest> testRuleTests;
     
     /**
      * @throws java.lang.Exception
@@ -207,6 +214,7 @@ public class RuleUtilsTest
      * {@link org.queryall.utils.RuleUtils#normaliseByStage(org.openrdf.model.URI, java.lang.Object, java.util.List, java.util.List, boolean, boolean)}
      * .
      */
+    @Ignore
     @Test
     public void testNormaliseByStage()
     {
@@ -220,7 +228,17 @@ public class RuleUtilsTest
     @Test
     public void testRunRuleTests()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        try
+        {
+            boolean runRuleTests = RuleUtils.runRuleTests(testRuleTests, testAllNormalisationRules);
+            
+            Assert.assertTrue("Rule test running failed", runRuleTests);
+        }
+        catch(QueryAllException e)
+        {
+            Assert.fail("Rule test running threw an exception");
+        }
+        
     }
     
 }
