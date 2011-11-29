@@ -42,8 +42,6 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         return results;
     }
     
-    private URI key = null;
-    
     private URI authority = null;
     
     public ProjectImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
@@ -98,8 +96,43 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         return this.getKey().stringValue().compareTo(otherProject.getKey().stringValue());
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
-    public URI getAuthority()
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(!super.equals(obj))
+        {
+            return false;
+        }
+        if(!(obj instanceof Project))
+        {
+            return false;
+        }
+        final Project other = (Project)obj;
+        if(this.getAuthority() == null)
+        {
+            if(other.getAuthority() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getAuthority().equals(other.getAuthority()))
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public final URI getAuthority()
     {
         return this.authority;
     }
@@ -123,8 +156,22 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         return ProjectImpl.myTypes();
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
     @Override
-    public void setAuthority(final URI authority)
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((this.authority == null) ? 0 : this.authority.hashCode());
+        return result;
+    }
+    
+    @Override
+    public final void setAuthority(final URI authority)
     {
         this.authority = authority;
     }
@@ -244,7 +291,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
     {
         final StringBuilder sb = new StringBuilder();
         
-        sb.append("key=" + this.key + "\n");
+        sb.append("key=" + this.getKey() + "\n");
         sb.append("authority=" + this.getAuthority() + "\n");
         sb.append("title=" + this.getTitle() + "\n");
         sb.append("description=" + this.getDescription() + "\n");

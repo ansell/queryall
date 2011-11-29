@@ -20,6 +20,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.InputQueryTypeSchema;
+import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryType;
@@ -28,7 +29,6 @@ import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.query.ProvenanceRecord;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -111,8 +111,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     private String outputRdfString = "";
     
     @SuppressWarnings("unused")
-    private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
-    
+    // private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
     private boolean isDummyQueryType = false;
     // default to universally available RDF/XML, and for backwards compatibility with previous
     // versions (<5) that only supported RDF/XML output
@@ -298,6 +297,219 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         }
         
         return this.getKey().stringValue().compareTo(otherQueryType.getKey().stringValue());
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(!super.equals(obj))
+        {
+            return false;
+        }
+        if(!(obj instanceof QueryType))
+        {
+            return false;
+        }
+        final QueryType other = (QueryType)obj;
+        if(other instanceof InputQueryType)
+        {
+            final InputQueryType otherInput = (InputQueryType)other;
+            
+            if(this.getExpectedInputParameters() == null)
+            {
+                if(otherInput.getExpectedInputParameters() != null)
+                {
+                    return false;
+                }
+            }
+            else if(!this.getExpectedInputParameters().equals(otherInput.getExpectedInputParameters()))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        
+        if(this.getHandleAllNamespaces() != other.getHandleAllNamespaces())
+        {
+            return false;
+        }
+        if(this.getInRobotsTxt() != other.getInRobotsTxt())
+        {
+            return false;
+        }
+        if(this.getIncludeDefaults() != other.getIncludeDefaults())
+        {
+            return false;
+        }
+        if(this.getIsDummyQueryType() != other.getIsDummyQueryType())
+        {
+            return false;
+        }
+        if(this.getIsNamespaceSpecific() != other.getIsNamespaceSpecific())
+        {
+            return false;
+        }
+        if(this.getIsPageable() != other.getIsPageable())
+        {
+            return false;
+        }
+        if(this.getNamespaceInputTags() == null)
+        {
+            if(other.getNamespaceInputTags() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getNamespaceInputTags().equals(other.getNamespaceInputTags()))
+        {
+            return false;
+        }
+        if(this.getNamespaceMatchMethod() == null)
+        {
+            if(other.getNamespaceMatchMethod() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getNamespaceMatchMethod().equals(other.getNamespaceMatchMethod()))
+        {
+            return false;
+        }
+        if(this.getNamespacesToHandle() == null)
+        {
+            if(other.getNamespacesToHandle() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getNamespacesToHandle().equals(other.getNamespacesToHandle()))
+        {
+            return false;
+        }
+        if(other instanceof OutputQueryType)
+        {
+            final OutputQueryType otherOutput = (OutputQueryType)other;
+            
+            if(this.getOutputString() == null)
+            {
+                if(otherOutput.getOutputString() != null)
+                {
+                    return false;
+                }
+            }
+            else if(!this.getOutputString().equals(otherOutput.getOutputString()))
+            {
+                return false;
+            }
+            
+            if(otherOutput instanceof RdfOutputQueryType)
+            {
+                final RdfOutputQueryType otherRdfOutput = (RdfOutputQueryType)otherOutput;
+                if(this.getOutputRdfFormat() == null)
+                {
+                    if(otherRdfOutput.getOutputRdfFormat() != null)
+                    {
+                        return false;
+                    }
+                }
+                else if(!this.getOutputRdfFormat().equals(otherRdfOutput.getOutputRdfFormat()))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        
+        if(this.getProfileIncludeExcludeOrder() == null)
+        {
+            if(other.getProfileIncludeExcludeOrder() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getProfileIncludeExcludeOrder().equals(other.getProfileIncludeExcludeOrder()))
+        {
+            return false;
+        }
+        
+        if(this.getPublicIdentifierTags() == null)
+        {
+            if(other.getPublicIdentifierTags() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getPublicIdentifierTags().equals(other.getPublicIdentifierTags()))
+        {
+            return false;
+        }
+        
+        if(this.getQueryUriTemplateString() == null)
+        {
+            if(other.getQueryUriTemplateString() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getQueryUriTemplateString().equals(other.getQueryUriTemplateString()))
+        {
+            return false;
+        }
+        
+        if(this.getLinkedQueryTypes() == null)
+        {
+            if(other.getLinkedQueryTypes() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getLinkedQueryTypes().equals(other.getLinkedQueryTypes()))
+        {
+            return false;
+        }
+        if(this.getStandardUriTemplateString() == null)
+        {
+            if(other.getStandardUriTemplateString() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getStandardUriTemplateString().equals(other.getStandardUriTemplateString()))
+        {
+            return false;
+        }
+        if(this.getTemplateString() == null)
+        {
+            if(other.getTemplateString() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getTemplateString().equals(other.getTemplateString()))
+        {
+            return false;
+        }
+        
+        return true;
     }
     
     /**
@@ -579,6 +791,46 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         {
             return this.handlesNamespacesSpecifically(namespacesToCheck);
         }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = super.hashCode();
+        result =
+                prime * result + ((this.expectedInputParameters == null) ? 0 : this.expectedInputParameters.hashCode());
+        result = prime * result + (this.handleAllNamespaces ? 1231 : 1237);
+        result = prime * result + (this.inRobotsTxt ? 1231 : 1237);
+        result = prime * result + (this.includeDefaults ? 1231 : 1237);
+        result = prime * result + (this.isDummyQueryType ? 1231 : 1237);
+        result = prime * result + (this.isNamespaceSpecific ? 1231 : 1237);
+        result = prime * result + (this.isPageable ? 1231 : 1237);
+        result = prime * result + ((this.namespaceInputTags == null) ? 0 : this.namespaceInputTags.hashCode());
+        result = prime * result + ((this.namespaceMatchMethod == null) ? 0 : this.namespaceMatchMethod.hashCode());
+        result = prime * result + ((this.namespacesToHandle == null) ? 0 : this.namespacesToHandle.hashCode());
+        result = prime * result + ((this.outputRdfFormat == null) ? 0 : this.outputRdfFormat.hashCode());
+        result = prime * result + ((this.outputRdfString == null) ? 0 : this.outputRdfString.hashCode());
+        result =
+                prime * result
+                        + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
+        result = prime * result + ((this.publicIdentifierTags == null) ? 0 : this.publicIdentifierTags.hashCode());
+        result = prime * result + ((this.queryUriTemplateString == null) ? 0 : this.queryUriTemplateString.hashCode());
+        result =
+                prime
+                        * result
+                        + ((this.semanticallyLinkedCustomQueries == null) ? 0 : this.semanticallyLinkedCustomQueries
+                                .hashCode());
+        result =
+                prime * result
+                        + ((this.standardUriTemplateString == null) ? 0 : this.standardUriTemplateString.hashCode());
+        result = prime * result + ((this.templateString == null) ? 0 : this.templateString.hashCode());
+        return result;
     }
     
     // returns true if the input variable is in the list of public input variables

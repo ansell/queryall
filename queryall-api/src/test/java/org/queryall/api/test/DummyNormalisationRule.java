@@ -14,6 +14,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
+import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
@@ -23,7 +24,7 @@ import org.queryall.exception.InvalidStageException;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public final class DummyNormalisationRule implements NormalisationRule
 {
@@ -44,13 +45,185 @@ public final class DummyNormalisationRule implements NormalisationRule
      */
     public DummyNormalisationRule()
     {
-
+        
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.rdfrule.NormalisationRule#addRelatedNamespace(org.openrdf.model.URI)
+     */
+    @Override
+    public void addRelatedNamespace(final URI nextRelatedNamespace)
+    {
+        this.relatedNamespaces.add(nextRelatedNamespace);
+    }
+    
+    /**
+     * NOTE: This is a dummy class, there are no InvalidStageExceptions thrown
+     * 
+     * @param nextStage
+     * @throws InvalidStageException
+     */
+    @Override
+    public void addStage(final URI nextStage) throws InvalidStageException
+    {
+        this.stages.add(nextStage);
     }
     
     @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    @Override
+    public int compareTo(final NormalisationRule otherRule)
+    {
+        if(this.getOrder() > otherRule.getOrder())
+        {
+            return 1;
+        }
+        else if(this.getOrder() == otherRule.getOrder())
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj == null)
+        {
+            return false;
+        }
+        if(!(obj instanceof BaseQueryAllInterface))
+        {
+            return false;
+        }
+        final BaseQueryAllInterface other = (BaseQueryAllInterface)obj;
+        if(this.getCurationStatus() == null)
+        {
+            if(other.getCurationStatus() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
+        {
+            return false;
+        }
+        if(this.getDescription() == null)
+        {
+            if(other.getDescription() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getDescription().equals(other.getDescription()))
+        {
+            return false;
+        }
+        if(this.getKey() == null)
+        {
+            if(other.getKey() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getKey().equals(other.getKey()))
+        {
+            return false;
+        }
+        if(this.getTitle() == null)
+        {
+            if(other.getTitle() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getTitle().equals(other.getTitle()))
+        {
+            return false;
+        }
+        if(this.getUnrecognisedStatements() == null)
+        {
+            if(other.getUnrecognisedStatements() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getUnrecognisedStatements().equals(other.getUnrecognisedStatements()))
+        {
+            return false;
+        }
+        if(!(obj instanceof NormalisationRule))
+        {
+            return false;
+        }
+        final NormalisationRule otherRule = (NormalisationRule)obj;
+        if(this.getOrder() != otherRule.getOrder())
+        {
+            return false;
+        }
+        if(this.getProfileIncludeExcludeOrder() == null)
+        {
+            if(otherRule.getProfileIncludeExcludeOrder() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getProfileIncludeExcludeOrder().equals(otherRule.getProfileIncludeExcludeOrder()))
+        {
+            return false;
+        }
+        if(this.getRelatedNamespaces() == null)
+        {
+            if(otherRule.getRelatedNamespaces() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getRelatedNamespaces().equals(otherRule.getRelatedNamespaces()))
+        {
+            return false;
+        }
+        if(this.getStages() == null)
+        {
+            if(otherRule.getStages() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getStages().equals(otherRule.getStages()))
+        {
+            return false;
+        }
+        if(this.getValidStages() == null)
+        {
+            if(otherRule.getValidStages() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getValidStages().equals(otherRule.getValidStages()))
+        {
+            return false;
+        }
+        return true;
     }
     
     @Override
@@ -74,7 +247,7 @@ public final class DummyNormalisationRule implements NormalisationRule
     @Override
     public Set<URI> getElementTypes()
     {
-        Set<URI> types = new HashSet<URI>();
+        final Set<URI> types = new HashSet<URI>();
         
         types.add(NormalisationRuleSchema.getNormalisationRuleTypeUri());
         
@@ -85,6 +258,45 @@ public final class DummyNormalisationRule implements NormalisationRule
     public URI getKey()
     {
         return this.key;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.rdfrule.NormalisationRule#getOrder()
+     */
+    @Override
+    public int getOrder()
+    {
+        return this.order;
+    }
+    
+    @Override
+    public URI getProfileIncludeExcludeOrder()
+    {
+        return this.profileIncludeExcludeOrder;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.rdfrule.NormalisationRule#getRelatedNamespaces()
+     */
+    @Override
+    public Collection<URI> getRelatedNamespaces()
+    {
+        return this.relatedNamespaces;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.rdfrule.NormalisationRule#getStages()
+     */
+    @Override
+    public Set<URI> getStages()
+    {
+        return this.stages;
     }
     
     @Override
@@ -99,78 +311,20 @@ public final class DummyNormalisationRule implements NormalisationRule
         return this.unrecognisedStatements;
     }
     
-    @Override
-    public Collection<Statement> resetUnrecognisedStatements()
-    {
-        Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
-        
-        this.unrecognisedStatements = new ArrayList<Statement>();
-        
-        return unrecognisedStatementsTemp;
-    }
-    
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-    
-    @Override
-    public void setKey(String nextKey) throws IllegalArgumentException
-    {
-        setKey(new ValueFactoryImpl().createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    /**
-     * NOTE: This is a dummy implementation. Always returns true with no sideeffects.
-     * @param myRepository
-     * @param modelVersion
-     * @param contextUris
-     * @return
-     * @throws OpenRDFException
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.rdfrule.NormalisationRule#getValidStages()
      */
     @Override
-    public boolean toRdf(Repository myRepository, int modelVersion, URI... contextUris) throws OpenRDFException
+    public Set<URI> getValidStages()
     {
-        return true;
+        return this.validStages;
     }
     
-    @Override
-    public int compareTo(NormalisationRule otherRule)
-    {
-        if(this.getOrder() > otherRule.getOrder())
-        {
-            return 1;
-        }
-        else if(this.getOrder() == otherRule.getOrder())
-        {
-            return 0;
-        }
-        else
-        {
-            return -1;
-        }
-    }
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -178,165 +332,19 @@ public final class DummyNormalisationRule implements NormalisationRule
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((curationStatus == null) ? 0 : curationStatus.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + order;
-        result = prime * result + ((profileIncludeExcludeOrder == null) ? 0 : profileIncludeExcludeOrder.hashCode());
-        result = prime * result + ((relatedNamespaces == null) ? 0 : relatedNamespaces.hashCode());
-        result = prime * result + ((stages == null) ? 0 : stages.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((unrecognisedStatements == null) ? 0 : unrecognisedStatements.hashCode());
-        result = prime * result + ((validStages == null) ? 0 : validStages.hashCode());
+        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
+        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + this.order;
+        result =
+                prime * result
+                        + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
+        result = prime * result + ((this.relatedNamespaces == null) ? 0 : this.relatedNamespaces.hashCode());
+        result = prime * result + ((this.stages == null) ? 0 : this.stages.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.unrecognisedStatements == null) ? 0 : this.unrecognisedStatements.hashCode());
+        result = prime * result + ((this.validStages == null) ? 0 : this.validStages.hashCode());
         return result;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj)
-    {
-        if(this == obj)
-        {
-            return true;
-        }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(!(obj instanceof DummyNormalisationRule))
-        {
-            return false;
-        }
-        DummyNormalisationRule other = (DummyNormalisationRule)obj;
-        if(curationStatus == null)
-        {
-            if(other.curationStatus != null)
-            {
-                return false;
-            }
-        }
-        else if(!curationStatus.equals(other.curationStatus))
-        {
-            return false;
-        }
-        if(description == null)
-        {
-            if(other.description != null)
-            {
-                return false;
-            }
-        }
-        else if(!description.equals(other.description))
-        {
-            return false;
-        }
-        if(key == null)
-        {
-            if(other.key != null)
-            {
-                return false;
-            }
-        }
-        else if(!key.equals(other.key))
-        {
-            return false;
-        }
-        if(order != other.order)
-        {
-            return false;
-        }
-        if(profileIncludeExcludeOrder == null)
-        {
-            if(other.profileIncludeExcludeOrder != null)
-            {
-                return false;
-            }
-        }
-        else if(!profileIncludeExcludeOrder.equals(other.profileIncludeExcludeOrder))
-        {
-            return false;
-        }
-        if(relatedNamespaces == null)
-        {
-            if(other.relatedNamespaces != null)
-            {
-                return false;
-            }
-        }
-        else if(!relatedNamespaces.equals(other.relatedNamespaces))
-        {
-            return false;
-        }
-        if(stages == null)
-        {
-            if(other.stages != null)
-            {
-                return false;
-            }
-        }
-        else if(!stages.equals(other.stages))
-        {
-            return false;
-        }
-        if(title == null)
-        {
-            if(other.title != null)
-            {
-                return false;
-            }
-        }
-        else if(!title.equals(other.title))
-        {
-            return false;
-        }
-        if(unrecognisedStatements == null)
-        {
-            if(other.unrecognisedStatements != null)
-            {
-                return false;
-            }
-        }
-        else if(!unrecognisedStatements.equals(other.unrecognisedStatements))
-        {
-            return false;
-        }
-        if(validStages == null)
-        {
-            if(other.validStages != null)
-            {
-                return false;
-            }
-        }
-        else if(!validStages.equals(other.validStages))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append("DummyNormalisationRule [order=");
-        builder.append(order);
-        builder.append(", title=");
-        builder.append(title);
-        builder.append(", key=");
-        builder.append(key);
-        builder.append("]");
-        return builder.toString();
-    }
-
-    @Override
-    public URI getProfileIncludeExcludeOrder()
-    {
-        return this.profileIncludeExcludeOrder;
     }
     
     /**
@@ -348,92 +356,116 @@ public final class DummyNormalisationRule implements NormalisationRule
      * @return
      */
     @Override
-    public boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,
-            boolean includeNonProfileMatched)
+    public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
+            final boolean includeNonProfileMatched)
     {
         return true;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.ProfilableInterface#setProfileIncludeExcludeOrder(org.openrdf.model.URI)
+    @Override
+    public Collection<Statement> resetUnrecognisedStatements()
+    {
+        final Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
+        
+        this.unrecognisedStatements = new ArrayList<Statement>();
+        
+        return unrecognisedStatementsTemp;
+    }
+    
+    @Override
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    @Override
+    public void setDescription(final String description)
+    {
+        this.description = description;
+    }
+    
+    @Override
+    public void setKey(final String nextKey) throws IllegalArgumentException
+    {
+        this.setKey(new ValueFactoryImpl().createURI(nextKey));
+    }
+    
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.rdfrule.NormalisationRule#setOrder(int)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
+    public void setOrder(final int order)
+    {
+        this.order = order;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.ProfilableInterface#setProfileIncludeExcludeOrder(org.openrdf.model
+     * .URI)
+     */
+    @Override
+    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.NormalisationRule#addRelatedNamespace(org.openrdf.model.URI)
-     */
     @Override
-    public void addRelatedNamespace(URI nextRelatedNamespace)
+    public void setTitle(final String title)
     {
-        this.relatedNamespaces.add(nextRelatedNamespace);
+        this.title = title;
     }
     
     /**
-     * NOTE: This is a dummy class, there are no InvalidStageExceptions thrown
+     * NOTE: This is a dummy implementation. Always returns true with no sideeffects.
      * 
-     * @param nextStage
-     * @throws InvalidStageException
+     * @param myRepository
+     * @param modelVersion
+     * @param contextUris
+     * @return
+     * @throws OpenRDFException
      */
     @Override
-    public void addStage(URI nextStage) throws InvalidStageException
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextUris)
+        throws OpenRDFException
     {
-        this.stages.add(nextStage);
+        return true;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.NormalisationRule#getOrder()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
      */
     @Override
-    public int getOrder()
+    public String toString()
     {
-        return this.order;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.NormalisationRule#getRelatedNamespaces()
-     */
-    @Override
-    public Collection<URI> getRelatedNamespaces()
-    {
-        return this.relatedNamespaces;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.NormalisationRule#getStages()
-     */
-    @Override
-    public Set<URI> getStages()
-    {
-        return this.stages;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.NormalisationRule#getValidStages()
-     */
-    @Override
-    public Set<URI> getValidStages()
-    {
-        return this.validStages;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.NormalisationRule#setOrder(int)
-     */
-    @Override
-    public void setOrder(int order)
-    {
-        this.order = order;
+        final StringBuilder builder = new StringBuilder();
+        builder.append("DummyNormalisationRule [order=");
+        builder.append(this.order);
+        builder.append(", title=");
+        builder.append(this.title);
+        builder.append(", key=");
+        builder.append(this.key);
+        builder.append("]");
+        return builder.toString();
     }
     
     /**
      * NOTE: This is a dummy implementation. Never throws InvalidStageException
      */
     @Override
-    public boolean usedInStage(URI stage) throws InvalidStageException
+    public boolean usedInStage(final URI stage) throws InvalidStageException
     {
         return this.stages.contains(stage);
     }
@@ -442,7 +474,7 @@ public final class DummyNormalisationRule implements NormalisationRule
      * NOTE: This is a dummy implementation. Never throws InvalidStageException
      */
     @Override
-    public boolean validInStage(URI stage) throws InvalidStageException
+    public boolean validInStage(final URI stage) throws InvalidStageException
     {
         return this.validStages.contains(stage);
     }

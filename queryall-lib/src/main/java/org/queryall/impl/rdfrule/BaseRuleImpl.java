@@ -210,6 +210,78 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         return this.getKey().stringValue().compareTo(otherRule.getKey().stringValue());
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(!super.equals(obj))
+        {
+            return false;
+        }
+        if(!(obj instanceof NormalisationRule))
+        {
+            return false;
+        }
+        final NormalisationRule other = (NormalisationRule)obj;
+        if(this.getOrder() != other.getOrder())
+        {
+            return false;
+        }
+        if(this.getProfileIncludeExcludeOrder() == null)
+        {
+            if(other.getProfileIncludeExcludeOrder() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getProfileIncludeExcludeOrder().equals(other.getProfileIncludeExcludeOrder()))
+        {
+            return false;
+        }
+        if(this.getRelatedNamespaces() == null)
+        {
+            if(other.getRelatedNamespaces() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getRelatedNamespaces().equals(other.getRelatedNamespaces()))
+        {
+            return false;
+        }
+        if(this.getStages() == null)
+        {
+            if(other.getStages() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getStages().equals(other.getStages()))
+        {
+            return false;
+        }
+        if(this.getValidStages() == null)
+        {
+            if(other.getValidStages() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getValidStages().equals(other.getValidStages()))
+        {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -256,6 +328,26 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     public final Set<URI> getValidStages()
     {
         return Collections.unmodifiableSet(this.validStages);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + this.order;
+        result =
+                prime * result
+                        + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
+        result = prime * result + ((this.relatedNamespaces == null) ? 0 : this.relatedNamespaces.hashCode());
+        result = prime * result + ((this.stages == null) ? 0 : this.stages.hashCode());
+        result = prime * result + ((this.validStages == null) ? 0 : this.validStages.hashCode());
+        return result;
     }
     
     @Override

@@ -14,6 +14,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
+import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
@@ -22,7 +23,7 @@ import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public final class DummyProvider implements Provider
 {
@@ -46,13 +47,218 @@ public final class DummyProvider implements Provider
      */
     public DummyProvider()
     {
-
+        
     }
     
     @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
+    public void addIncludedInQueryType(final URI includedInQueryType)
+    {
+        this.includedInQueryTypes.add(includedInQueryType);
+    }
+    
+    @Override
+    public void addNamespace(final URI namespace)
+    {
+        this.namespaces.add(namespace);
+    }
+    
+    @Override
+    public void addNormalisationUri(final URI rdfNormalisationNeeded)
+    {
+        this.normalisations.add(rdfNormalisationNeeded);
+    }
+    
+    @Override
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
+    }
+    
+    @Override
+    public int compareTo(final Provider o)
+    {
+        return this.getKey().stringValue().compareTo(o.getKey().stringValue());
+    }
+    
+    @Override
+    public boolean containsNamespaceOrDefault(final URI namespaceKey)
+    {
+        if(this.isDefault)
+        {
+            return true;
+        }
+        else
+        {
+            return this.namespaces.contains(namespaceKey);
+        }
+    }
+    
+    @Override
+    public boolean containsNamespaceUri(final URI namespaceKey)
+    {
+        return this.namespaces.contains(namespaceKey);
+    }
+    
+    @Override
+    public boolean containsNormalisationUri(final URI normalisationKey)
+    {
+        return this.normalisations.contains(normalisationKey);
+    }
+    
+    @Override
+    public boolean containsQueryTypeUri(final URI queryKey)
+    {
+        return this.queryTypes.contains(queryKey);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj == null)
+        {
+            return false;
+        }
+        if(!(obj instanceof BaseQueryAllInterface))
+        {
+            return false;
+        }
+        final BaseQueryAllInterface other = (BaseQueryAllInterface)obj;
+        if(this.getCurationStatus() == null)
+        {
+            if(other.getCurationStatus() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
+        {
+            return false;
+        }
+        if(this.getDescription() == null)
+        {
+            if(other.getDescription() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getDescription().equals(other.getDescription()))
+        {
+            return false;
+        }
+        if(this.getKey() == null)
+        {
+            if(other.getKey() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getKey().equals(other.getKey()))
+        {
+            return false;
+        }
+        if(this.getTitle() == null)
+        {
+            if(other.getTitle() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getTitle().equals(other.getTitle()))
+        {
+            return false;
+        }
+        if(this.getUnrecognisedStatements() == null)
+        {
+            if(other.getUnrecognisedStatements() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getUnrecognisedStatements().equals(other.getUnrecognisedStatements()))
+        {
+            return false;
+        }
+        
+        if(!(obj instanceof Provider))
+        {
+            return false;
+        }
+        final Provider otherProvider = (Provider)obj;
+        if(this.getIncludedInQueryTypes() == null)
+        {
+            if(otherProvider.getIncludedInQueryTypes() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getIncludedInQueryTypes().equals(otherProvider.getIncludedInQueryTypes()))
+        {
+            return false;
+        }
+        if(this.getIsDefaultSource() != otherProvider.getIsDefaultSource())
+        {
+            return false;
+        }
+        if(this.getNamespaces() == null)
+        {
+            if(otherProvider.getNamespaces() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getNamespaces().equals(otherProvider.getNamespaces()))
+        {
+            return false;
+        }
+        if(this.getProfileIncludeExcludeOrder() == null)
+        {
+            if(otherProvider.getProfileIncludeExcludeOrder() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getProfileIncludeExcludeOrder().equals(otherProvider.getProfileIncludeExcludeOrder()))
+        {
+            return false;
+        }
+        if(this.getNormalisationUris() == null)
+        {
+            if(otherProvider.getNormalisationUris() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getNormalisationUris().equals(otherProvider.getNormalisationUris()))
+        {
+            return false;
+        }
+        if(this.getRedirectOrProxy() == null)
+        {
+            if(otherProvider.getRedirectOrProxy() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getRedirectOrProxy().equals(otherProvider.getRedirectOrProxy()))
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public String getAssumedContentType()
+    {
+        return this.assumedContentType;
     }
     
     @Override
@@ -76,7 +282,7 @@ public final class DummyProvider implements Provider
     @Override
     public Set<URI> getElementTypes()
     {
-        Set<URI> types = new HashSet<URI>();
+        final Set<URI> types = new HashSet<URI>();
         
         types.add(ProviderSchema.getProviderTypeUri());
         
@@ -84,9 +290,51 @@ public final class DummyProvider implements Provider
     }
     
     @Override
+    public URI getEndpointMethod()
+    {
+        return this.endpointMethod;
+    }
+    
+    @Override
+    public Collection<URI> getIncludedInQueryTypes()
+    {
+        return this.includedInQueryTypes;
+    }
+    
+    @Override
+    public boolean getIsDefaultSource()
+    {
+        return this.isDefault;
+    }
+    
+    @Override
     public URI getKey()
     {
         return this.key;
+    }
+    
+    @Override
+    public Collection<URI> getNamespaces()
+    {
+        return this.namespaces;
+    }
+    
+    @Override
+    public Collection<URI> getNormalisationUris()
+    {
+        return this.normalisations;
+    }
+    
+    @Override
+    public URI getProfileIncludeExcludeOrder()
+    {
+        return this.profileIncludeExcludeOrder;
+    }
+    
+    @Override
+    public URI getRedirectOrProxy()
+    {
+        return this.redirectOrProxy;
     }
     
     @Override
@@ -101,64 +349,33 @@ public final class DummyProvider implements Provider
         return this.unrecognisedStatements;
     }
     
-    @Override
-    public Collection<Statement> resetUnrecognisedStatements()
-    {
-        Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
-        
-        this.unrecognisedStatements = new ArrayList<Statement>();
-        
-        return unrecognisedStatementsTemp;
-    }
-    
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-    
-    @Override
-    public void setKey(String nextKey) throws IllegalArgumentException
-    {
-        setKey(new ValueFactoryImpl().createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    /**
-     * NOTE: This is a dummy implementation. Always returns true with no sideeffects.
-     * @param myRepository
-     * @param modelVersion
-     * @param contextUris
-     * @return
-     * @throws OpenRDFException
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
      */
     @Override
-    public boolean toRdf(Repository myRepository, int modelVersion, URI... contextUris) throws OpenRDFException
+    public int hashCode()
     {
-        return true;
-    }
-    
-    @Override
-    public URI getProfileIncludeExcludeOrder()
-    {
-        return this.profileIncludeExcludeOrder;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.assumedContentType == null) ? 0 : this.assumedContentType.hashCode());
+        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
+        result = prime * result + ((this.endpointMethod == null) ? 0 : this.endpointMethod.hashCode());
+        result = prime * result + ((this.includedInQueryTypes == null) ? 0 : this.includedInQueryTypes.hashCode());
+        result = prime * result + (this.isDefault ? 1231 : 1237);
+        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.namespaces == null) ? 0 : this.namespaces.hashCode());
+        result = prime * result + ((this.normalisations == null) ? 0 : this.normalisations.hashCode());
+        result =
+                prime * result
+                        + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
+        result = prime * result + ((this.queryTypes == null) ? 0 : this.queryTypes.hashCode());
+        result = prime * result + ((this.redirectOrProxy == null) ? 0 : this.redirectOrProxy.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.unrecognisedStatements == null) ? 0 : this.unrecognisedStatements.hashCode());
+        return result;
     }
     
     /**
@@ -170,365 +387,136 @@ public final class DummyProvider implements Provider
      * @return
      */
     @Override
-    public boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,
-            boolean includeNonProfileMatched)
+    public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
+            final boolean includeNonProfileMatched)
     {
         return true;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.ProfilableInterface#setProfileIncludeExcludeOrder(org.openrdf.model.URI)
-     */
-    @Override
-    public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
-    {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
-    }
-
-    @Override
-    public int compareTo(Provider o)
-    {
-        return this.getKey().stringValue().compareTo(o.getKey().stringValue());
-    }
-
-    @Override
-    public void addIncludedInQueryType(URI includedInQueryType)
-    {
-        this.includedInQueryTypes.add(includedInQueryType);
-    }
-
-    @Override
-    public void addNamespace(URI namespace)
-    {
-        this.namespaces.add(namespace);
-    }
-
-    @Override
-    public void addNormalisationUri(URI rdfNormalisationNeeded)
-    {
-        this.normalisations.add(rdfNormalisationNeeded);
-    }
-
-    @Override
-    public boolean containsNamespaceOrDefault(URI namespaceKey)
-    {
-        if(this.isDefault)
-        {
-            return true;
-        }
-        else
-        {
-            return this.namespaces.contains(namespaceKey);
-        }
-    }
-
-    @Override
-    public boolean containsNamespaceUri(URI namespaceKey)
-    {
-        return this.namespaces.contains(namespaceKey);
-    }
-
-    @Override
-    public boolean containsNormalisationUri(URI normalisationKey)
-    {
-        return this.normalisations.contains(normalisationKey);
-    }
-
-    @Override
-    public boolean containsQueryTypeUri(URI queryKey)
-    {
-        return this.queryTypes.contains(queryKey);
-    }
-
-    @Override
-    public String getAssumedContentType()
-    {
-        return this.assumedContentType;
-    }
-
-    @Override
-    public URI getEndpointMethod()
-    {
-        return this.endpointMethod;
-    }
-
-    @Override
-    public Collection<URI> getIncludedInQueryTypes()
-    {
-        return this.includedInQueryTypes;
-    }
-
-    @Override
-    public boolean getIsDefaultSource()
-    {
-        return this.isDefault;
-    }
-
-    @Override
-    public Collection<URI> getNamespaces()
-    {
-        return this.namespaces;
-    }
-
-    @Override
-    public Collection<URI> getNormalisationUris()
-    {
-        return this.normalisations;
-    }
-
-    @Override
-    public URI getRedirectOrProxy()
-    {
-        return this.redirectOrProxy;
-    }
-
     @Override
     public boolean needsProxy()
     {
         return this.redirectOrProxy.equals(ProviderSchema.getProviderProxy());
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append("DummyProvider [title=");
-        builder.append(title);
-        builder.append(", key=");
-        builder.append(key);
-        builder.append(", endpointMethod=");
-        builder.append(endpointMethod);
-        builder.append(", redirectOrProxy=");
-        builder.append(redirectOrProxy);
-        builder.append("]");
-        return builder.toString();
-    }
-
+    
     @Override
     public boolean needsRedirect()
     {
         return this.redirectOrProxy.equals(ProviderSchema.getProviderRedirect());
     }
-
+    
     @Override
-    public void setAssumedContentType(String assumedContentType)
+    public Collection<Statement> resetUnrecognisedStatements()
+    {
+        final Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
+        
+        this.unrecognisedStatements = new ArrayList<Statement>();
+        
+        return unrecognisedStatementsTemp;
+    }
+    
+    @Override
+    public void setAssumedContentType(final String assumedContentType)
     {
         this.assumedContentType = assumedContentType;
     }
-
+    
     @Override
-    public void setEndpointMethod(URI endpointMethod)
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    @Override
+    public void setDescription(final String description)
+    {
+        this.description = description;
+    }
+    
+    @Override
+    public void setEndpointMethod(final URI endpointMethod)
     {
         this.endpointMethod = endpointMethod;
     }
-
+    
     @Override
-    public void setIsDefaultSource(boolean isDefaultSource)
+    public void setIsDefaultSource(final boolean isDefaultSource)
     {
         this.isDefault = isDefaultSource;
     }
-
+    
     @Override
-    public void setRedirectOrProxy(URI redirectOrProxy)
+    public void setKey(final String nextKey) throws IllegalArgumentException
+    {
+        this.setKey(new ValueFactoryImpl().createURI(nextKey));
+    }
+    
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.ProfilableInterface#setProfileIncludeExcludeOrder(org.openrdf.model
+     * .URI)
+     */
+    @Override
+    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    {
+        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+    }
+    
+    @Override
+    public void setRedirectOrProxy(final URI redirectOrProxy)
     {
         this.redirectOrProxy = redirectOrProxy;
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
+    
     @Override
-    public int hashCode()
+    public void setTitle(final String title)
     {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((assumedContentType == null) ? 0 : assumedContentType.hashCode());
-        result = prime * result + ((curationStatus == null) ? 0 : curationStatus.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((endpointMethod == null) ? 0 : endpointMethod.hashCode());
-        result = prime * result + ((includedInQueryTypes == null) ? 0 : includedInQueryTypes.hashCode());
-        result = prime * result + (isDefault ? 1231 : 1237);
-        result = prime * result + ((key == null) ? 0 : key.hashCode());
-        result = prime * result + ((namespaces == null) ? 0 : namespaces.hashCode());
-        result = prime * result + ((normalisations == null) ? 0 : normalisations.hashCode());
-        result = prime * result + ((profileIncludeExcludeOrder == null) ? 0 : profileIncludeExcludeOrder.hashCode());
-        result = prime * result + ((queryTypes == null) ? 0 : queryTypes.hashCode());
-        result = prime * result + ((redirectOrProxy == null) ? 0 : redirectOrProxy.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((unrecognisedStatements == null) ? 0 : unrecognisedStatements.hashCode());
-        return result;
+        this.title = title;
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+    
+    /**
+     * NOTE: This is a dummy implementation. Always returns true with no sideeffects.
+     * 
+     * @param myRepository
+     * @param modelVersion
+     * @param contextUris
+     * @return
+     * @throws OpenRDFException
      */
     @Override
-    public boolean equals(Object obj)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextUris)
+        throws OpenRDFException
     {
-        if(this == obj)
-        {
-            return true;
-        }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(!(obj instanceof DummyProvider))
-        {
-            return false;
-        }
-        DummyProvider other = (DummyProvider)obj;
-        if(assumedContentType == null)
-        {
-            if(other.assumedContentType != null)
-            {
-                return false;
-            }
-        }
-        else if(!assumedContentType.equals(other.assumedContentType))
-        {
-            return false;
-        }
-        if(curationStatus == null)
-        {
-            if(other.curationStatus != null)
-            {
-                return false;
-            }
-        }
-        else if(!curationStatus.equals(other.curationStatus))
-        {
-            return false;
-        }
-        if(description == null)
-        {
-            if(other.description != null)
-            {
-                return false;
-            }
-        }
-        else if(!description.equals(other.description))
-        {
-            return false;
-        }
-        if(endpointMethod == null)
-        {
-            if(other.endpointMethod != null)
-            {
-                return false;
-            }
-        }
-        else if(!endpointMethod.equals(other.endpointMethod))
-        {
-            return false;
-        }
-        if(includedInQueryTypes == null)
-        {
-            if(other.includedInQueryTypes != null)
-            {
-                return false;
-            }
-        }
-        else if(!includedInQueryTypes.equals(other.includedInQueryTypes))
-        {
-            return false;
-        }
-        if(isDefault != other.isDefault)
-        {
-            return false;
-        }
-        if(key == null)
-        {
-            if(other.key != null)
-            {
-                return false;
-            }
-        }
-        else if(!key.equals(other.key))
-        {
-            return false;
-        }
-        if(namespaces == null)
-        {
-            if(other.namespaces != null)
-            {
-                return false;
-            }
-        }
-        else if(!namespaces.equals(other.namespaces))
-        {
-            return false;
-        }
-        if(normalisations == null)
-        {
-            if(other.normalisations != null)
-            {
-                return false;
-            }
-        }
-        else if(!normalisations.equals(other.normalisations))
-        {
-            return false;
-        }
-        if(profileIncludeExcludeOrder == null)
-        {
-            if(other.profileIncludeExcludeOrder != null)
-            {
-                return false;
-            }
-        }
-        else if(!profileIncludeExcludeOrder.equals(other.profileIncludeExcludeOrder))
-        {
-            return false;
-        }
-        if(queryTypes == null)
-        {
-            if(other.queryTypes != null)
-            {
-                return false;
-            }
-        }
-        else if(!queryTypes.equals(other.queryTypes))
-        {
-            return false;
-        }
-        if(redirectOrProxy == null)
-        {
-            if(other.redirectOrProxy != null)
-            {
-                return false;
-            }
-        }
-        else if(!redirectOrProxy.equals(other.redirectOrProxy))
-        {
-            return false;
-        }
-        if(title == null)
-        {
-            if(other.title != null)
-            {
-                return false;
-            }
-        }
-        else if(!title.equals(other.title))
-        {
-            return false;
-        }
-        if(unrecognisedStatements == null)
-        {
-            if(other.unrecognisedStatements != null)
-            {
-                return false;
-            }
-        }
-        else if(!unrecognisedStatements.equals(other.unrecognisedStatements))
-        {
-            return false;
-        }
         return true;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("DummyProvider [title=");
+        builder.append(this.title);
+        builder.append(", key=");
+        builder.append(this.key);
+        builder.append(", endpointMethod=");
+        builder.append(this.endpointMethod);
+        builder.append(", redirectOrProxy=");
+        builder.append(this.redirectOrProxy);
+        builder.append("]");
+        return builder.toString();
     }
     
 }

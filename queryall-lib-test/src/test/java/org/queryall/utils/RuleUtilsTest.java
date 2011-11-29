@@ -5,14 +5,12 @@ package org.queryall.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.junit.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
@@ -22,7 +20,7 @@ import org.queryall.api.utils.SortOrder;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class RuleUtilsTest
 {
@@ -34,46 +32,46 @@ public class RuleUtilsTest
     private NormalisationRule testRuleLowestOrder3;
     private Collection<URI> testRulesNeededAll;
     private Map<URI, NormalisationRule> testAllNormalisationRules;
-
+    
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception
     {
-        testRuleLowestOrder3 = new DummyNormalisationRule();
-        testRuleLowestOrder3.setKey("http://test.ruleutils.example.com/test/rule/order/1");
-        testRuleLowestOrder3.setOrder(3);
-
-        testRuleLowOrder15 = new DummyNormalisationRule();
-        testRuleLowOrder15.setKey("http://test.ruleutils.example.com/test/rule/order/10");
-        testRuleLowOrder15.setOrder(15);
-    
-        testRuleMidOrder50 = new DummyNormalisationRule();
-        testRuleMidOrder50.setKey("http://test.ruleutils.example.com/test/rule/order/50");
-        testRuleMidOrder50.setOrder(50);
+        this.testRuleLowestOrder3 = new DummyNormalisationRule();
+        this.testRuleLowestOrder3.setKey("http://test.ruleutils.example.com/test/rule/order/1");
+        this.testRuleLowestOrder3.setOrder(3);
         
-        testRuleHighOrder200 = new DummyNormalisationRule();
-        testRuleHighOrder200.setKey("http://test.ruleutils.example.com/test/rule/order/200");
-        testRuleHighOrder200.setOrder(200);
+        this.testRuleLowOrder15 = new DummyNormalisationRule();
+        this.testRuleLowOrder15.setKey("http://test.ruleutils.example.com/test/rule/order/10");
+        this.testRuleLowOrder15.setOrder(15);
         
-        testRuleHighestOrder600 = new DummyNormalisationRule();
-        testRuleHighestOrder600.setKey("http://test.ruleutils.example.com/test/rule/order/500");
-        testRuleHighestOrder600.setOrder(600);
+        this.testRuleMidOrder50 = new DummyNormalisationRule();
+        this.testRuleMidOrder50.setKey("http://test.ruleutils.example.com/test/rule/order/50");
+        this.testRuleMidOrder50.setOrder(50);
         
-        testAllNormalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
-        testAllNormalisationRules.put(testRuleLowestOrder3.getKey(), testRuleLowestOrder3);
-        testAllNormalisationRules.put(testRuleLowOrder15.getKey(), testRuleLowOrder15);
-        testAllNormalisationRules.put(testRuleMidOrder50.getKey(), testRuleMidOrder50);
-        testAllNormalisationRules.put(testRuleHighOrder200.getKey(), testRuleHighOrder200);
-        testAllNormalisationRules.put(testRuleHighestOrder600.getKey(), testRuleHighestOrder600);
+        this.testRuleHighOrder200 = new DummyNormalisationRule();
+        this.testRuleHighOrder200.setKey("http://test.ruleutils.example.com/test/rule/order/200");
+        this.testRuleHighOrder200.setOrder(200);
         
-        testRulesNeededAll = new ArrayList<URI>();
-        testRulesNeededAll.add(testRuleLowestOrder3.getKey());
-        testRulesNeededAll.add(testRuleLowOrder15.getKey());
-        testRulesNeededAll.add(testRuleMidOrder50.getKey());
-        testRulesNeededAll.add(testRuleHighOrder200.getKey());
-        testRulesNeededAll.add(testRuleHighestOrder600.getKey());
+        this.testRuleHighestOrder600 = new DummyNormalisationRule();
+        this.testRuleHighestOrder600.setKey("http://test.ruleutils.example.com/test/rule/order/500");
+        this.testRuleHighestOrder600.setOrder(600);
+        
+        this.testAllNormalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
+        this.testAllNormalisationRules.put(this.testRuleLowestOrder3.getKey(), this.testRuleLowestOrder3);
+        this.testAllNormalisationRules.put(this.testRuleLowOrder15.getKey(), this.testRuleLowOrder15);
+        this.testAllNormalisationRules.put(this.testRuleMidOrder50.getKey(), this.testRuleMidOrder50);
+        this.testAllNormalisationRules.put(this.testRuleHighOrder200.getKey(), this.testRuleHighOrder200);
+        this.testAllNormalisationRules.put(this.testRuleHighestOrder600.getKey(), this.testRuleHighestOrder600);
+        
+        this.testRulesNeededAll = new ArrayList<URI>();
+        this.testRulesNeededAll.add(this.testRuleLowestOrder3.getKey());
+        this.testRulesNeededAll.add(this.testRuleLowOrder15.getKey());
+        this.testRulesNeededAll.add(this.testRuleMidOrder50.getKey());
+        this.testRulesNeededAll.add(this.testRuleHighOrder200.getKey());
+        this.testRulesNeededAll.add(this.testRuleHighestOrder600.getKey());
     }
     
     /**
@@ -82,52 +80,62 @@ public class RuleUtilsTest
     @After
     public void tearDown() throws Exception
     {
-        testRuleLowestOrder3 = null;
-        testRuleLowOrder15 = null;
-        testRuleMidOrder50 = null;
-        testRuleHighOrder200 = null;
-        testRuleHighestOrder600 = null;
+        this.testRuleLowestOrder3 = null;
+        this.testRuleLowOrder15 = null;
+        this.testRuleMidOrder50 = null;
+        this.testRuleHighOrder200 = null;
+        this.testRuleHighestOrder600 = null;
         
     }
     
     /**
-     * Test method for {@link org.queryall.utils.RuleUtils#getSortedRulesByUris(java.util.Map, java.util.Collection, org.queryall.api.utils.SortOrder)}.
-     */
-    @Test
-    public void testGetSortedRulesByUrisLowestOrderFirst()
-    {
-        List<NormalisationRule> sortedRulesByUris = RuleUtils.getSortedRulesByUris(testAllNormalisationRules, testRulesNeededAll, SortOrder.LOWEST_ORDER_FIRST);
-        
-        Assert.assertEquals(5, sortedRulesByUris.size());
-        
-        Assert.assertEquals(testRuleLowestOrder3, sortedRulesByUris.get(0));
-        Assert.assertEquals(testRuleLowOrder15, sortedRulesByUris.get(1));
-        Assert.assertEquals(testRuleMidOrder50, sortedRulesByUris.get(2));
-        Assert.assertEquals(testRuleHighOrder200, sortedRulesByUris.get(3));
-        Assert.assertEquals(testRuleHighestOrder600, sortedRulesByUris.get(4));
-        
-    }
-    
-    /**
-     * Test method for {@link org.queryall.utils.RuleUtils#getSortedRulesByUris(java.util.Map, java.util.Collection, org.queryall.api.utils.SortOrder)}.
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#getSortedRulesByUris(java.util.Map, java.util.Collection, org.queryall.api.utils.SortOrder)}
+     * .
      */
     @Test
     public void testGetSortedRulesByUrisHighestOrderFirst()
     {
-        List<NormalisationRule> sortedRulesByUris = RuleUtils.getSortedRulesByUris(testAllNormalisationRules, testRulesNeededAll, SortOrder.HIGHEST_ORDER_FIRST);
+        final List<NormalisationRule> sortedRulesByUris =
+                RuleUtils.getSortedRulesByUris(this.testAllNormalisationRules, this.testRulesNeededAll,
+                        SortOrder.HIGHEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesByUris.size());
         
-        Assert.assertEquals(testRuleHighestOrder600, sortedRulesByUris.get(0));
-        Assert.assertEquals(testRuleHighOrder200, sortedRulesByUris.get(1));
-        Assert.assertEquals(testRuleMidOrder50, sortedRulesByUris.get(2));
-        Assert.assertEquals(testRuleLowOrder15, sortedRulesByUris.get(3));
-        Assert.assertEquals(testRuleLowestOrder3, sortedRulesByUris.get(4));
+        Assert.assertEquals(this.testRuleHighestOrder600, sortedRulesByUris.get(0));
+        Assert.assertEquals(this.testRuleHighOrder200, sortedRulesByUris.get(1));
+        Assert.assertEquals(this.testRuleMidOrder50, sortedRulesByUris.get(2));
+        Assert.assertEquals(this.testRuleLowOrder15, sortedRulesByUris.get(3));
+        Assert.assertEquals(this.testRuleLowestOrder3, sortedRulesByUris.get(4));
         
     }
     
     /**
-     * Test method for {@link org.queryall.utils.RuleUtils#getSortedRulesForProviders(java.util.Collection, java.util.Map, org.queryall.api.utils.SortOrder)}.
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#getSortedRulesByUris(java.util.Map, java.util.Collection, org.queryall.api.utils.SortOrder)}
+     * .
+     */
+    @Test
+    public void testGetSortedRulesByUrisLowestOrderFirst()
+    {
+        final List<NormalisationRule> sortedRulesByUris =
+                RuleUtils.getSortedRulesByUris(this.testAllNormalisationRules, this.testRulesNeededAll,
+                        SortOrder.LOWEST_ORDER_FIRST);
+        
+        Assert.assertEquals(5, sortedRulesByUris.size());
+        
+        Assert.assertEquals(this.testRuleLowestOrder3, sortedRulesByUris.get(0));
+        Assert.assertEquals(this.testRuleLowOrder15, sortedRulesByUris.get(1));
+        Assert.assertEquals(this.testRuleMidOrder50, sortedRulesByUris.get(2));
+        Assert.assertEquals(this.testRuleHighOrder200, sortedRulesByUris.get(3));
+        Assert.assertEquals(this.testRuleHighestOrder600, sortedRulesByUris.get(4));
+        
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#getSortedRulesForProviders(java.util.Collection, java.util.Map, org.queryall.api.utils.SortOrder)}
+     * .
      */
     @Test
     public void testGetSortedRulesForProviders()
@@ -136,7 +144,9 @@ public class RuleUtilsTest
     }
     
     /**
-     * Test method for {@link org.queryall.utils.RuleUtils#normaliseByStage(org.openrdf.model.URI, java.lang.Object, java.util.List, java.util.List, boolean, boolean)}.
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#normaliseByStage(org.openrdf.model.URI, java.lang.Object, java.util.List, java.util.List, boolean, boolean)}
+     * .
      */
     @Test
     public void testNormaliseByStage()
@@ -145,7 +155,8 @@ public class RuleUtilsTest
     }
     
     /**
-     * Test method for {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
      */
     @Test
     public void testRunRuleTests()
