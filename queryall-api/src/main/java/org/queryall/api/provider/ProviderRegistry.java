@@ -14,13 +14,21 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class ProviderRegistry extends AbstractServiceLoader<ProviderEnum, ProviderFactory>
 {
-    private static ProviderRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
     
-    public static synchronized ProviderRegistry getInstance()
+    private static volatile ProviderRegistry defaultRegistry;
+    
+    public static ProviderRegistry getInstance()
     {
         if(ProviderRegistry.defaultRegistry == null)
         {
-            ProviderRegistry.defaultRegistry = new ProviderRegistry();
+            synchronized(ProviderRegistry.LOCK)
+            {
+                if(ProviderRegistry.defaultRegistry == null)
+                {
+                    ProviderRegistry.defaultRegistry = new ProviderRegistry();
+                }
+            }
         }
         
         return ProviderRegistry.defaultRegistry;

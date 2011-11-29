@@ -379,43 +379,46 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
     }
     
     @Override
-    public Object stageAfterQueryCreation(final Object input)
+    public Object stageAfterQueryCreation(final Object input) throws QueryAllException
     {
         return input;
     }
     
     @Override
-    public Object stageAfterQueryParsing(final Object input)
+    public Object stageAfterQueryParsing(final Object input) throws QueryAllException
+    {
+        // TODO: implement me as a way of manipulating parsed SPARQL queries
+        return input;
+    }
+    
+    @Override
+    public Object stageAfterResultsImport(final Object input) throws QueryAllException
+    {
+        // TODO: how should the varargs context parameter be supported
+        return this.processSpinRules((Repository)input);
+    }
+    
+    @Override
+    public Object stageAfterResultsToDocument(final Object input) throws QueryAllException
     {
         return input;
     }
     
     @Override
-    public Object stageAfterResultsImport(final Object input)
+    public Object stageAfterResultsToPool(final Object input) throws QueryAllException
+    {
+        // TODO: how should the varargs context parameter be supported
+        return this.processSpinRules((Repository)input);
+    }
+    
+    @Override
+    public Object stageBeforeResultsImport(final Object input) throws QueryAllException
     {
         return input;
     }
     
     @Override
-    public Object stageAfterResultsToDocument(final Object input)
-    {
-        return input;
-    }
-    
-    @Override
-    public Object stageAfterResultsToPool(final Object input)
-    {
-        return input;
-    }
-    
-    @Override
-    public Object stageBeforeResultsImport(final Object input)
-    {
-        return input;
-    }
-    
-    @Override
-    public Object stageQueryVariables(final Object input)
+    public Object stageQueryVariables(final Object input) throws QueryAllException
     {
         return input;
     }

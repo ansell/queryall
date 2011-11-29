@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -23,6 +24,7 @@ import org.queryall.api.rdfrule.SpinConstraintRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.exception.QueryAllException;
+import org.queryall.exception.ValidationFailedException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -291,44 +293,78 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         return SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES;
     }
     
+    /**
+     * @param input
+     * @return
+     * @throws ValidationFailedException
+     */
+    private boolean spinConstraintHelper(final Repository input, final Resource... contexts)
+        throws ValidationFailedException
+    {
+        // TODO: how should the varargs context parameter be supported
+        List<ConstraintViolation> verifySpinConstraints = null;
+        
+        try
+        {
+            verifySpinConstraints = this.verifySpinConstraints(input, contexts);
+            
+        }
+        catch(final QueryAllException e)
+        {
+            throw new ValidationFailedException("", this, e);
+        }
+        
+        if(verifySpinConstraints.size() > 0)
+        {
+            // TODO: customise behaviour in cases where spinConstraint failures are found
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    
     @Override
-    public boolean stageAfterQueryCreation(final Object input)
+    public boolean stageAfterQueryCreation(final Object input) throws ValidationFailedException
     {
         return true;
     }
     
     @Override
-    public boolean stageAfterQueryParsing(final Object input)
+    public boolean stageAfterQueryParsing(final Object input) throws ValidationFailedException
+    {
+        // TODO: implement me as a way of manipulating parsed SPARQL queries
+        return true;
+    }
+    
+    @Override
+    public boolean stageAfterResultsImport(final Object input) throws ValidationFailedException
+    {
+        return this.spinConstraintHelper((Repository)input);
+        
+    }
+    
+    @Override
+    public boolean stageAfterResultsToDocument(final Object input) throws ValidationFailedException
     {
         return true;
     }
     
     @Override
-    public boolean stageAfterResultsImport(final Object input)
+    public boolean stageAfterResultsToPool(final Object input) throws ValidationFailedException
+    {
+        return this.spinConstraintHelper((Repository)input);
+    }
+    
+    @Override
+    public boolean stageBeforeResultsImport(final Object input) throws ValidationFailedException
     {
         return true;
     }
     
     @Override
-    public boolean stageAfterResultsToDocument(final Object input)
-    {
-        return true;
-    }
-    
-    @Override
-    public boolean stageAfterResultsToPool(final Object input)
-    {
-        return true;
-    }
-    
-    @Override
-    public boolean stageBeforeResultsImport(final Object input)
-    {
-        return true;
-    }
-    
-    @Override
-    public boolean stageQueryVariables(final Object input)
+    public boolean stageQueryVariables(final Object input) throws ValidationFailedException
     {
         return true;
     }

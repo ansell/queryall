@@ -14,15 +14,21 @@ import org.queryall.api.services.AbstractServiceLoader;
  */
 public class NamespaceEntryRegistry extends AbstractServiceLoader<NamespaceEntryEnum, NamespaceEntryFactory>
 {
-    private static NamespaceEntryRegistry defaultRegistry;
+    private static final Object LOCK = new Object();
     
-    // RDFParserRegistry.getInstance();
-    //
-    public static synchronized NamespaceEntryRegistry getInstance()
+    private static volatile NamespaceEntryRegistry defaultRegistry;
+    
+    public static NamespaceEntryRegistry getInstance()
     {
         if(NamespaceEntryRegistry.defaultRegistry == null)
         {
-            NamespaceEntryRegistry.defaultRegistry = new NamespaceEntryRegistry();
+            synchronized(NamespaceEntryRegistry.LOCK)
+            {
+                if(NamespaceEntryRegistry.defaultRegistry == null)
+                {
+                    NamespaceEntryRegistry.defaultRegistry = new NamespaceEntryRegistry();
+                }
+            }
         }
         
         return NamespaceEntryRegistry.defaultRegistry;

@@ -17,15 +17,15 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.rdfrule.SpinInferencingRule;
+import org.queryall.api.rdfrule.SpinConstraintRule;
 import org.queryall.api.rdfrule.SpinNormalisationRule;
 
 /**
- * Abstract unit test for SpinInferencingRule API.
+ * Abstract unit test for SpinConstraintRule API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormalisationRuleTest
+public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormalisationRuleTest
 {
     /**
      * 
@@ -56,6 +56,7 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
     {
         final Set<URI> results = new HashSet<URI>();
         
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
         results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
         results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
         
@@ -63,22 +64,22 @@ public abstract class AbstractSpinInferencingRuleTest extends AbstractSpinNormal
     }
     
     /**
-     * Create a new instance of the SpinInferencingRule implementation being tested.
+     * Create a new instance of the SpinConstraintRule implementation being tested.
      * 
-     * @return a new instance of the implemented SpinInferencingRule
+     * @return a new instance of the implemented SpinConstraintRule
      */
-    public abstract SpinInferencingRule getNewTestSpinInferencingRule();
+    public abstract SpinConstraintRule getNewTestSpinConstraintRule();
     
     /**
-     * Final method, so that implementing test cases must supply a SpinInferencingRule instead,
-     * through getNewTestSpinInferencingRule.
+     * Final method, so that implementing test cases must supply a SpinConstraintRule instead,
+     * through getNewTestSpinConstraintRule.
      * 
      * @return A NormalisationRule that is also a SpinNormalisationRule
      */
     @Override
     public final SpinNormalisationRule getNewTestSpinNormalisationRule()
     {
-        return this.getNewTestSpinInferencingRule();
+        return this.getNewTestSpinConstraintRule();
     }
     
     /**

@@ -18,7 +18,11 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.profile.Profile;
+import org.queryall.api.rdfrule.SpinConstraintRule;
+import org.queryall.api.test.AbstractSpinConstraintRuleTest;
 import org.queryall.exception.QueryAllException;
+import org.queryall.impl.profile.ProfileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.topbraid.spin.constraints.ConstraintViolation;
@@ -35,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * @author Peter Ansell p_ansell@yahoo.com
  * 
  */
-public class SpinConstraintRuleImplTest
+public class SpinConstraintRuleImplTest extends AbstractSpinConstraintRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImplTest.class);
     
@@ -51,12 +55,26 @@ public class SpinConstraintRuleImplTest
     // private SPINModuleRegistry testSpinModuleRegistry1;
     // private SPINModuleRegistry testSpinModuleRegistry2;
     
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
+    }
+    
+    @Override
+    public SpinConstraintRule getNewTestSpinConstraintRule()
+    {
+        return new SpinConstraintRuleImpl();
+    }
+    
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
         // store a reference to the original locationMapper here so we can push it back after each
         // test
         // this.originalLocationMapper = LocationMapper.get();
@@ -174,9 +192,11 @@ public class SpinConstraintRuleImplTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
         // LocationMapper.setGlobalLocationMapper(this.originalLocationMapper);
         // FileManager.setGlobalFileManager(this.originalFileManager);
         

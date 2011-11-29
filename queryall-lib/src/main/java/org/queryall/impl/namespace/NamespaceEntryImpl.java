@@ -19,6 +19,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
 import org.queryall.api.namespace.RegexValidatingNamespaceEntrySchema;
+import org.queryall.api.namespace.ValidatingNamespaceEntry;
 import org.queryall.api.namespace.ValidatingNamespaceEntrySchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -190,6 +191,121 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         return this.getPreferredPrefix().compareTo(otherNamespace.getPreferredPrefix());
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(!super.equals(obj))
+        {
+            return false;
+        }
+        if(!(obj instanceof NamespaceEntry))
+        {
+            return false;
+        }
+        final NamespaceEntry other = (NamespaceEntry)obj;
+        if(this.alternativePrefixes == null)
+        {
+            if(other.getAlternativePrefixes() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getAlternativePrefixes().equals(other.getAlternativePrefixes()))
+        {
+            return false;
+        }
+        if(this.getAuthority() == null)
+        {
+            if(other.getAuthority() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getAuthority().equals(other.getAuthority()))
+        {
+            return false;
+        }
+        if(this.getConvertQueriesToPreferredPrefix() != other.getConvertQueriesToPreferredPrefix())
+        {
+            return false;
+        }
+        if(this.getPreferredPrefix() == null)
+        {
+            if(other.getPreferredPrefix() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getPreferredPrefix().equals(other.getPreferredPrefix()))
+        {
+            return false;
+        }
+        if(this.getSeparator() == null)
+        {
+            if(other.getSeparator() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getSeparator().equals(other.getSeparator()))
+        {
+            return false;
+        }
+        if(this.getUriTemplate() == null)
+        {
+            if(other.getUriTemplate() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getUriTemplate().equals(other.getUriTemplate()))
+        {
+            return false;
+        }
+        if(other instanceof ValidatingNamespaceEntry)
+        {
+            final ValidatingNamespaceEntry otherValidating = (ValidatingNamespaceEntry)other;
+            if(this.getValidationPossible() != otherValidating.getValidationPossible())
+            {
+                return false;
+            }
+            if(otherValidating instanceof RegexValidatingNamespaceEntry)
+            {
+                final RegexValidatingNamespaceEntry otherRegexValidating = (RegexValidatingNamespaceEntry)other;
+                if(this.getIdentifierRegex() == null)
+                {
+                    if(otherRegexValidating.getIdentifierRegex() != null)
+                    {
+                        return false;
+                    }
+                }
+                else if(!this.getIdentifierRegex().equals(otherRegexValidating.getIdentifierRegex()))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    
     @Override
     public Collection<String> getAlternativePrefixes()
     {
@@ -255,6 +371,28 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     public boolean getValidationPossible()
     {
         return this.validationPossible;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((this.alternativePrefixes == null) ? 0 : this.alternativePrefixes.hashCode());
+        result = prime * result + ((this.authority == null) ? 0 : this.authority.hashCode());
+        result = prime * result + (this.convertQueriesToPreferredPrefix ? 1231 : 1237);
+        result = prime * result + ((this.identifierRegex == null) ? 0 : this.identifierRegex.hashCode());
+        result = prime * result + ((this.identifierRegexPattern == null) ? 0 : this.identifierRegexPattern.hashCode());
+        result = prime * result + ((this.preferredPrefix == null) ? 0 : this.preferredPrefix.hashCode());
+        result = prime * result + ((this.separator == null) ? 0 : this.separator.hashCode());
+        result = prime * result + ((this.uriTemplate == null) ? 0 : this.uriTemplate.hashCode());
+        result = prime * result + (this.validationPossible ? 1231 : 1237);
+        return result;
     }
     
     @Override

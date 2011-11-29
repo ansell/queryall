@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 
 /**
@@ -17,11 +18,17 @@ import org.queryall.api.querytype.RegexInputQueryType;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractRegexInputQueryTypeTest
+public abstract class AbstractRegexInputQueryTypeTest extends AbstractInputQueryTypeTest
 {
     private RegexInputQueryType testRegexInputQueryType1;
     private String testRegex;
     private Map<String, String> testQueryParameters;
+    
+    @Override
+    public final InputQueryType getNewTestInputQueryType()
+    {
+        return this.getNewTestRegexInputQueryType();
+    }
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
@@ -34,9 +41,12 @@ public abstract class AbstractRegexInputQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         // final ValueFactory f = new MemValueFactory();
         
         this.testRegexInputQueryType1 = this.getNewTestRegexInputQueryType();
@@ -52,6 +62,7 @@ public abstract class AbstractRegexInputQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {

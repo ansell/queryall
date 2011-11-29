@@ -92,6 +92,85 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
         this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj == null)
+        {
+            return false;
+        }
+        if(!(obj instanceof BaseQueryAllInterface))
+        {
+            return false;
+        }
+        final BaseQueryAllInterface other = (BaseQueryAllInterface)obj;
+        if(this.getCurationStatus() == null)
+        {
+            if(other.getCurationStatus() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
+        {
+            return false;
+        }
+        if(this.getDescription() == null)
+        {
+            if(other.getDescription() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getDescription().equals(other.getDescription()))
+        {
+            return false;
+        }
+        if(this.getKey() == null)
+        {
+            if(other.getKey() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getKey().equals(other.getKey()))
+        {
+            return false;
+        }
+        if(this.getTitle() == null)
+        {
+            if(other.getTitle() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getTitle().equals(other.getTitle()))
+        {
+            return false;
+        }
+        if(this.getUnrecognisedStatements() == null)
+        {
+            if(other.getUnrecognisedStatements() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getUnrecognisedStatements().equals(other.getUnrecognisedStatements()))
+        {
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public final URI getCurationStatus()
     {
@@ -120,6 +199,24 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
     public final Collection<Statement> getUnrecognisedStatements()
     {
         return Collections.unmodifiableCollection(this.unrecognisedStatements);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
+        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.unrecognisedStatements == null) ? 0 : this.unrecognisedStatements.hashCode());
+        return result;
     }
     
     @Override

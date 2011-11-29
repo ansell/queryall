@@ -302,152 +302,123 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         {
             return true;
         }
-        if(obj == null)
+        if(!super.equals(obj))
         {
             return false;
         }
-        if(!(obj instanceof ProfileImpl))
+        if(!(obj instanceof Profile))
         {
             return false;
         }
-        final ProfileImpl other = (ProfileImpl)obj;
-        if(this.allowImplicitProviderInclusions != other.allowImplicitProviderInclusions)
+        final Profile other = (Profile)obj;
+        
+        if(this.getAllowImplicitProviderInclusions() != other.getAllowImplicitProviderInclusions())
         {
             return false;
         }
-        if(this.allowImplicitQueryInclusions != other.allowImplicitQueryInclusions)
+        if(this.getAllowImplicitQueryTypeInclusions() != other.getAllowImplicitQueryTypeInclusions())
         {
             return false;
         }
-        if(this.allowImplicitRdfRuleInclusions != other.allowImplicitRdfRuleInclusions)
+        if(this.getAllowImplicitRdfRuleInclusions() != other.getAllowImplicitRdfRuleInclusions())
         {
             return false;
         }
-        if(this.getCurationStatus() == null)
+        
+        if(this.getDefaultProfileIncludeExcludeOrder() == null)
         {
-            if(other.getCurationStatus() != null)
+            if(other.getDefaultProfileIncludeExcludeOrder() != null)
             {
                 return false;
             }
         }
-        else if(!this.getCurationStatus().equals(other.getCurationStatus()))
+        else if(!this.getDefaultProfileIncludeExcludeOrder().equals(other.getDefaultProfileIncludeExcludeOrder()))
         {
             return false;
         }
-        if(this.defaultProfileIncludeExcludeOrder == null)
+        if(this.getExcludeProviders() == null)
         {
-            if(other.defaultProfileIncludeExcludeOrder != null)
+            if(other.getExcludeProviders() != null)
             {
                 return false;
             }
         }
-        else if(!this.defaultProfileIncludeExcludeOrder.equals(other.defaultProfileIncludeExcludeOrder))
+        else if(!this.getExcludeProviders().equals(other.getExcludeProviders()))
         {
             return false;
         }
-        if(this.excludeProviders == null)
+        if(this.getExcludeQueryTypes() == null)
         {
-            if(other.excludeProviders != null)
+            if(other.getExcludeQueryTypes() != null)
             {
                 return false;
             }
         }
-        else if(!this.excludeProviders.equals(other.excludeProviders))
+        else if(!this.getExcludeQueryTypes().equals(other.getExcludeQueryTypes()))
         {
             return false;
         }
-        if(this.excludeQueries == null)
+        if(this.getExcludeRdfRules() == null)
         {
-            if(other.excludeQueries != null)
+            if(other.getExcludeRdfRules() != null)
             {
                 return false;
             }
         }
-        else if(!this.excludeQueries.equals(other.excludeQueries))
+        else if(!this.getExcludeRdfRules().equals(other.getExcludeRdfRules()))
         {
             return false;
         }
-        if(this.excludeRdfRules == null)
+        if(this.getIncludeProviders() == null)
         {
-            if(other.excludeRdfRules != null)
+            if(other.getIncludeProviders() != null)
             {
                 return false;
             }
         }
-        else if(!this.excludeRdfRules.equals(other.excludeRdfRules))
+        else if(!this.getIncludeProviders().equals(other.getIncludeProviders()))
         {
             return false;
         }
-        if(this.includeProviders == null)
+        if(this.getIncludeQueryTypes() == null)
         {
-            if(other.includeProviders != null)
+            if(other.getIncludeQueryTypes() != null)
             {
                 return false;
             }
         }
-        else if(!this.includeProviders.equals(other.includeProviders))
+        else if(!this.getIncludeQueryTypes().equals(other.getIncludeQueryTypes()))
         {
             return false;
         }
-        if(this.includeQueries == null)
+        if(this.getIncludeRdfRules() == null)
         {
-            if(other.includeQueries != null)
+            if(other.getIncludeRdfRules() != null)
             {
                 return false;
             }
         }
-        else if(!this.includeQueries.equals(other.includeQueries))
+        else if(!this.getIncludeRdfRules().equals(other.getIncludeRdfRules()))
         {
             return false;
         }
-        if(this.includeRdfRules == null)
+        
+        if(this.getOrder() != other.getOrder())
         {
-            if(other.includeRdfRules != null)
+            return false;
+        }
+        if(this.getProfileAdministrators() == null)
+        {
+            if(other.getProfileAdministrators() != null)
             {
                 return false;
             }
         }
-        else if(!this.includeRdfRules.equals(other.includeRdfRules))
+        else if(!this.getProfileAdministrators().equals(other.getProfileAdministrators()))
         {
             return false;
         }
-        if(this.getKey() == null)
-        {
-            if(other.getKey() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.getKey().equals(other.getKey()))
-        {
-            return false;
-        }
-        if(this.order != other.order)
-        {
-            return false;
-        }
-        if(this.profileAdministrators == null)
-        {
-            if(other.profileAdministrators != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.profileAdministrators.equals(other.profileAdministrators))
-        {
-            return false;
-        }
-        if(this.getTitle() == null)
-        {
-            if(other.getTitle() != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.getTitle().equals(other.getTitle()))
-        {
-            return false;
-        }
+        
         return true;
     }
     
@@ -551,11 +522,10 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     public int hashCode()
     {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + (this.allowImplicitProviderInclusions ? 1231 : 1237);
         result = prime * result + (this.allowImplicitQueryInclusions ? 1231 : 1237);
         result = prime * result + (this.allowImplicitRdfRuleInclusions ? 1231 : 1237);
-        result = prime * result + ((this.getCurationStatus() == null) ? 0 : this.getCurationStatus().hashCode());
         result =
                 prime
                         * result
@@ -567,10 +537,8 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         result = prime * result + ((this.includeProviders == null) ? 0 : this.includeProviders.hashCode());
         result = prime * result + ((this.includeQueries == null) ? 0 : this.includeQueries.hashCode());
         result = prime * result + ((this.includeRdfRules == null) ? 0 : this.includeRdfRules.hashCode());
-        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
         result = prime * result + this.order;
         result = prime * result + ((this.profileAdministrators == null) ? 0 : this.profileAdministrators.hashCode());
-        result = prime * result + ((this.getTitle() == null) ? 0 : this.getTitle().hashCode());
         return result;
     }
     

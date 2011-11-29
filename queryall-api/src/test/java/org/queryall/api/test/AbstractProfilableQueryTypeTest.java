@@ -5,6 +5,7 @@ package org.queryall.api.test;
 
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.querytype.QueryType;
 
 /**
  * 
@@ -13,6 +14,9 @@ import org.queryall.api.profile.Profile;
  */
 public abstract class AbstractProfilableQueryTypeTest extends AbstractProfilableTest
 {
+    @Override
+    public abstract QueryType getNewTestProfilable();
+    
     @Override
     public void includeFalseUri(final Profile profilable, final URI uriToExclude)
     {

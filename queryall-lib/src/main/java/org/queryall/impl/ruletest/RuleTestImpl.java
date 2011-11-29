@@ -127,6 +127,52 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         return this.getKey().stringValue().compareTo(otherRuleTest.getKey().stringValue());
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(!super.equals(obj))
+        {
+            return false;
+        }
+        if(!(obj instanceof RuleTest))
+        {
+            return false;
+        }
+        final RuleTest other = (RuleTest)obj;
+        if(this.getRuleUris() == null)
+        {
+            if(other.getRuleUris() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getRuleUris().equals(other.getRuleUris()))
+        {
+            return false;
+        }
+        if(this.getStages() == null)
+        {
+            if(other.getStages() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getStages().equals(other.getStages()))
+        {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -163,10 +209,9 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
     public int hashCode()
     {
         final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.getCurationStatus() == null) ? 0 : this.getCurationStatus().hashCode());
-        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
-        result = prime * result + ((this.getRuleUris() == null) ? 0 : this.getRuleUris().hashCode());
+        int result = super.hashCode();
+        result = prime * result + ((this.rdfRuleUris == null) ? 0 : this.rdfRuleUris.hashCode());
+        result = prime * result + ((this.stages == null) ? 0 : this.stages.hashCode());
         return result;
     }
     
