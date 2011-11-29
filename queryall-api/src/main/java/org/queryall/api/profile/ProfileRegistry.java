@@ -21,7 +21,7 @@ public class ProfileRegistry extends AbstractServiceLoader<ProfileEnum, ProfileF
     {
         if(ProfileRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(ProfileRegistry.LOCK)
             {
                 if(ProfileRegistry.defaultRegistry == null)
                 {

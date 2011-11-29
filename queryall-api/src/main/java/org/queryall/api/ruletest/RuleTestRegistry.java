@@ -21,7 +21,7 @@ public class RuleTestRegistry extends AbstractServiceLoader<RuleTestEnum, RuleTe
     {
         if(RuleTestRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(RuleTestRegistry.LOCK)
             {
                 if(RuleTestRegistry.defaultRegistry == null)
                 {

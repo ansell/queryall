@@ -12,13 +12,15 @@ public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>
 {
     /**
      * 
-     * @param rdfRuleUri A URI identifying a rule that needs to be tested by this rule test
+     * @param rdfRuleUri
+     *            A URI identifying a rule that needs to be tested by this rule test
      */
     void addRuleUri(URI rdfRuleUri);
     
     /**
      * 
-     * @param stage A URI identifying a stage that is relevant to this rule test
+     * @param stage
+     *            A URI identifying a stage that is relevant to this rule test
      */
     void addStage(URI stage);
     

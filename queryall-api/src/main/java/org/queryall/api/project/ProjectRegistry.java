@@ -22,7 +22,7 @@ public class ProjectRegistry extends AbstractServiceLoader<ProjectEnum, ProjectF
     {
         if(ProjectRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(ProjectRegistry.LOCK)
             {
                 if(ProjectRegistry.defaultRegistry == null)
                 {

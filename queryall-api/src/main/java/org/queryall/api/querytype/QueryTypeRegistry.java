@@ -22,7 +22,7 @@ public class QueryTypeRegistry extends AbstractServiceLoader<QueryTypeEnum, Quer
     {
         if(QueryTypeRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(QueryTypeRegistry.LOCK)
             {
                 if(QueryTypeRegistry.defaultRegistry == null)
                 {

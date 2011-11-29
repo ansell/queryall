@@ -22,7 +22,7 @@ public class ProviderRegistry extends AbstractServiceLoader<ProviderEnum, Provid
     {
         if(ProviderRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(ProviderRegistry.LOCK)
             {
                 if(ProviderRegistry.defaultRegistry == null)
                 {

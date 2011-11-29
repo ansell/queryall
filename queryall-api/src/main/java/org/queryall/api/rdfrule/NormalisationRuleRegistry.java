@@ -21,7 +21,7 @@ public class NormalisationRuleRegistry extends AbstractServiceLoader<Normalisati
     {
         if(NormalisationRuleRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(NormalisationRuleRegistry.LOCK)
             {
                 if(NormalisationRuleRegistry.defaultRegistry == null)
                 {

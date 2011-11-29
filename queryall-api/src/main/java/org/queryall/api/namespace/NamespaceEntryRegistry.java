@@ -22,7 +22,7 @@ public class NamespaceEntryRegistry extends AbstractServiceLoader<NamespaceEntry
     {
         if(NamespaceEntryRegistry.defaultRegistry == null)
         {
-            synchronized(LOCK)
+            synchronized(NamespaceEntryRegistry.LOCK)
             {
                 if(NamespaceEntryRegistry.defaultRegistry == null)
                 {
