@@ -34,7 +34,7 @@ public class SchemaServiceLoaderTest
      * This field contains the expected number of schemas, if and when new schemas are added it
      * needs to be updated to match the expected number
      */
-    private static final int CURRENT_EXPECTED_SCHEMA_COUNT = 32;
+    private static final int CURRENT_EXPECTED_SCHEMA_COUNT = 33;
     
     /**
      * @throws java.lang.Exception

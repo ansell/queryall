@@ -24,17 +24,17 @@ import org.slf4j.LoggerFactory;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 @MetaInfServices(QueryAllSchema.class)
-public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
+public class NoInputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlProcessorQueryTypeSchema.class);
+    private static final Logger log = LoggerFactory.getLogger(NoInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SparqlProcessorQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean _TRACE = NoInputQueryTypeSchema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SparqlProcessorQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean _DEBUG = NoInputQueryTypeSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlProcessorQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean _INFO = NoInputQueryTypeSchema.log.isInfoEnabled();
     
-    private static URI sparqlProcessorQueryTypeUri;
+    private static URI noInputQueryTypeUri;
     
     static
     {
@@ -42,41 +42,41 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
-        SparqlProcessorQueryTypeSchema.setSparqlProcessorQueryTypeUri(f.createURI(baseUri, "SparqlProcessorQuery"));
+        NoInputQueryTypeSchema.setNoInputInputQueryTypeUri(f.createURI(baseUri, "NoInputInputQuery"));
     }
     
-    public static final QueryAllSchema SPARQL_PROCESSOR_QUERY_TYPE_SCHEMA = new SparqlProcessorQueryTypeSchema();
+    public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new NoInputQueryTypeSchema();
     
     /**
      * @return the queryTypeUri
      */
-    public static URI getSparqlProcessorQueryTypeUri()
+    public static URI getNoInputQueryTypeUri()
     {
-        return SparqlProcessorQueryTypeSchema.sparqlProcessorQueryTypeUri;
+        return NoInputQueryTypeSchema.noInputQueryTypeUri;
     }
     
     /**
      * @param queryTypeUri
      *            the queryTypeUri to set
      */
-    public static void setSparqlProcessorQueryTypeUri(final URI queryTypeUri)
+    public static void setNoInputInputQueryTypeUri(final URI queryTypeUri)
     {
-        SparqlProcessorQueryTypeSchema.sparqlProcessorQueryTypeUri = queryTypeUri;
+        NoInputQueryTypeSchema.noInputQueryTypeUri = queryTypeUri;
     }
     
     /**
      * Default constructor, uses the name of this class as the name
      */
-    public SparqlProcessorQueryTypeSchema()
+    public NoInputQueryTypeSchema()
     {
-        this(SparqlProcessorQueryTypeSchema.class.getName());
+        this(NoInputQueryTypeSchema.class.getName());
     }
     
     /**
      * @param nextName
      *            The name for this schema object
      */
-    public SparqlProcessorQueryTypeSchema(final String nextName)
+    public NoInputQueryTypeSchema(final String nextName)
     {
         super(nextName);
     }
@@ -87,15 +87,16 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        // final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.valueFactory;
         
         try
         {
             final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -111,7 +112,7 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SparqlProcessorQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            NoInputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

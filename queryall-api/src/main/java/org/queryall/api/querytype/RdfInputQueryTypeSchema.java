@@ -107,6 +107,7 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
             con.setAutoCommit(false);
             
             con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
             
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);

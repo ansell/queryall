@@ -138,6 +138,7 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
             con.setAutoCommit(false);
             
             con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
             
             con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY,
                     contextKeyUri);
