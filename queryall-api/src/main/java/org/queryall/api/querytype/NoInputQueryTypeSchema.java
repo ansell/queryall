@@ -42,7 +42,7 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
-        NoInputQueryTypeSchema.setNoInputInputQueryTypeUri(f.createURI(baseUri, "NoInputInputQuery"));
+        NoInputQueryTypeSchema.setNoInputQueryTypeUri(f.createURI(baseUri, "NoInputQuery"));
     }
     
     public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new NoInputQueryTypeSchema();
@@ -59,7 +59,7 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
      * @param queryTypeUri
      *            the queryTypeUri to set
      */
-    public static void setNoInputInputQueryTypeUri(final URI queryTypeUri)
+    public static void setNoInputQueryTypeUri(final URI queryTypeUri)
     {
         NoInputQueryTypeSchema.noInputQueryTypeUri = queryTypeUri;
     }
