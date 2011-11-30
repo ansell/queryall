@@ -208,7 +208,7 @@ public final class RuleUtils
     public static Object normaliseByStage(final URI stage, Object input,
             final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
-        throws QueryAllException, UnnormalisableRuleException
+        throws QueryAllException, UnnormalisableRuleException, ValidationFailedException
     {
         if(RuleUtils._TRACE)
         {

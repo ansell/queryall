@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInputQueryType, SparqlProcessorQueryType,
+public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implements RegexInputQueryType, SparqlProcessorQueryType,
         RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(RegexInputQueryTypeImpl.class);

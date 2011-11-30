@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,13 +40,14 @@ import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.querytype.SparqlProcessorQueryTypeSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQueryType, SparqlProcessorQueryType,
+public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implements RdfInputQueryType, SparqlProcessorQueryType,
         RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeImpl.class);
@@ -127,8 +129,9 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
      * @param myRepository
      *            The repository to
      * @return
+     * @throws QueryAllException 
      */
-    private Map<String, List<String>> getBindingsForInput(final String input, final RDFFormat inputFormat)
+    private Map<String, List<String>> getBindingsForInput(final String input, final RDFFormat inputFormat) throws QueryAllException
     {
         final Map<String, List<String>> results = new HashMap<String, List<String>>();
         
@@ -147,19 +150,19 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
         }
         catch(final RDFParseException e1)
         {
-            throw new RuntimeException(
+            throw new QueryAllException(
                     "Could not initialise in memory repository with the query document due to an RDF parsing exception",
                     e1);
         }
         catch(final RepositoryException e1)
         {
-            throw new RuntimeException(
+            throw new QueryAllException(
                     "Could not initialise in memory repository with the query document due to a Repository exception",
                     e1);
         }
         catch(final IOException e1)
         {
-            throw new RuntimeException(
+            throw new QueryAllException(
                     "Could not initialise in memory repository with the query document due to an IO exception", e1);
         }
         finally
@@ -297,15 +300,33 @@ public class RdfInputQueryTypeImpl extends QueryTypeImpl implements RdfInputQuer
     @Override
     public Map<String, List<String>> matchesForQueryParameters(final Map<String, String> queryParameters)
     {
-        return this.getBindingsForInput(queryParameters.get(Constants.QUERY),
-                RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML));
+        try
+        {
+            return this.getBindingsForInput(queryParameters.get(Constants.QUERY),
+                    RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML));
+        }
+        catch(QueryAllException e)
+        {
+            log.error("Could not get matches for query parameters due to exception", e);
+        }
+        
+        return Collections.emptyMap();
     }
     
     @Override
     public boolean matchesQueryParameters(final Map<String, String> queryParameters)
     {
-        return (this.getBindingsForInput(queryParameters.get(Constants.QUERY),
-                RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML)).size() > 0);
+        try
+        {
+            return (this.getBindingsForInput(queryParameters.get(Constants.QUERY),
+                    RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML)).size() > 0);
+        }
+        catch(QueryAllException e)
+        {
+            log.error("Could not determine matches for query parameters due to exception", e);
+        }
+        
+        return false;
     }
     
     @Override

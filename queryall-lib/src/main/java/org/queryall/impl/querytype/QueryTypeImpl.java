@@ -21,6 +21,7 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.querytype.OutputQueryType;
+import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryType;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryType, InputQueryType,
-        SparqlProcessorQueryType, RdfOutputQueryType, HtmlExport
+        ProcessorQueryType, RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
@@ -618,13 +619,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public String getSparqlTemplateString()
-    {
-        // Wrappers around the getTemplateString function for now
-        return this.getTemplateString();
-    }
-    
-    @Override
     public String getStandardUriTemplateString()
     {
         return this.standardUriTemplateString;
@@ -955,13 +949,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     public void setQueryUriTemplateString(final String queryUriTemplateString)
     {
         this.queryUriTemplateString = queryUriTemplateString;
-    }
-    
-    @Override
-    public void setSparqlTemplateString(final String templateString)
-    {
-        // Wrappers around the setTemplateString function for now
-        this.setTemplateString(templateString);
     }
     
     @Override
