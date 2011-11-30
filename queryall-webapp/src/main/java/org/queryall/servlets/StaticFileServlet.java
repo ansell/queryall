@@ -66,10 +66,10 @@ public class StaticFileServlet extends HttpServlet
                                 + filename);
                 throw new ServletException("Could not find the requested static resource");
             }
-            else if(_INFO)
+            else if(_DEBUG)
             {
-                log.info("fileResource.toString()="+fileResource.toString());
-                log.info("fileResource.toURI()="+fileResource.toURI());
+                log.debug("fileResource.toString()="+fileResource.toString());
+                log.debug("fileResource.toURI()="+fileResource.toURI());
             }
             
             //f = new File(fileResource.toURI());
