@@ -95,8 +95,8 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
             con.setAutoCommit(false);
             
             con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            
+            con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -368,7 +368,7 @@ public final class RdfUtils
                 "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri . " + addObjectConstructBuilder.toString()
                         + " } WHERE { " + addObjectTemplateWhere + " } ";
         
-        if(_DEBUG)
+        if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("addObjectTemplate=" + addObjectTemplate);
         }
@@ -381,7 +381,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
         
-        if(_TRACE)
+        if(RdfUtils._TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -400,7 +400,7 @@ public final class RdfUtils
                         + deleteObjectConstructBuilder.toString()
                         + " filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"" + inputUriPrefix + "\")) . }";
         
-        if(_DEBUG)
+        if(RdfUtils._DEBUG)
         {
             RdfUtils.log.debug("deleteObjectTemplate=" + deleteObjectTemplate);
         }
@@ -413,7 +413,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteObjectQueries);
         
-        if(_TRACE)
+        if(RdfUtils._TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -444,7 +444,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
         
-        if(_TRACE)
+        if(RdfUtils._TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -461,7 +461,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteSubjectQueries);
         
-        if(_TRACE)
+        if(RdfUtils._TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -493,7 +493,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
         
-        if(_TRACE)
+        if(RdfUtils._TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -510,7 +510,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deletePredicateQueries);
         
-        if(_TRACE)
+        if(RdfUtils._TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }

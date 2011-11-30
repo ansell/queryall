@@ -5,7 +5,6 @@ package org.queryall.servlets;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -66,13 +65,13 @@ public class StaticFileServlet extends HttpServlet
                                 + filename);
                 throw new ServletException("Could not find the requested static resource");
             }
-            else if(_DEBUG)
+            else if(StaticFileServlet._DEBUG)
             {
-                log.debug("fileResource.toString()="+fileResource.toString());
-                log.debug("fileResource.toURI()="+fileResource.toURI());
+                StaticFileServlet.log.debug("fileResource.toString()=" + fileResource.toString());
+                StaticFileServlet.log.debug("fileResource.toURI()=" + fileResource.toURI());
             }
             
-            //f = new File(fileResource.toURI());
+            // f = new File(fileResource.toURI());
             
             // check to see if /static/ is in the path still
             if(fileResource.getPath().contains(File.separator + "static" + File.separator))
@@ -86,8 +85,9 @@ public class StaticFileServlet extends HttpServlet
                 {
                     StaticFileServlet.log.debug("this.getClass().getResource(filename).toURI()="
                             + this.getClass().getResource(filename).toURI().toString());
-//                    StaticFileServlet.log.debug("filename=" + filename + " f.getName()=" + f.getName() + " mimetype="
-//                            + mimetype + " f.length()=" + f.length());
+                    // StaticFileServlet.log.debug("filename=" + filename + " f.getName()=" +
+                    // f.getName() + " mimetype="
+                    // + mimetype + " f.length()=" + f.length());
                 }
                 
                 //
@@ -95,11 +95,11 @@ public class StaticFileServlet extends HttpServlet
                 //
                 //
                 response.setContentType((mimetype != null) ? mimetype : "application/octet-stream");
-                //response.setContentLength((int)f.length());
+                // response.setContentLength((int)f.length());
                 
-                //int lastIndexOf = fileResource.toURI().getPath().lastIndexOf("/");
+                // int lastIndexOf = fileResource.toURI().getPath().lastIndexOf("/");
                 
-                String parsedFilename = fileResource.getFile();
+                final String parsedFilename = fileResource.getFile();
                 
                 if(parsedFilename != null && parsedFilename.trim().length() > 0)
                 {
@@ -107,7 +107,8 @@ public class StaticFileServlet extends HttpServlet
                 }
                 else
                 {
-                    log.error("Could not find a filename for filename="+filename+" parsedFilename="+parsedFilename);
+                    StaticFileServlet.log.error("Could not find a filename for filename=" + filename
+                            + " parsedFilename=" + parsedFilename);
                 }
                 // TODO: put in expires and etag
                 

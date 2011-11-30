@@ -273,21 +273,22 @@ public class GeneralServlet extends HttpServlet
                         fetchController, multiProviderQueryBundles, debugStrings, myRepository);
             }
             
-            
             // Normalisation Stage : after results to pool
             Repository convertedPool = myRepository;
             
             try
             {
-                convertedPool = ServletUtils.doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
+                convertedPool =
+                        ServletUtils
+                                .doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
             }
-            catch(Exception ex)
+            catch(final Exception ex)
             {
-                log.error("Found exception while performing pool normalisation", ex);
+                GeneralServlet.log.error("Found exception while performing pool normalisation", ex);
             }
-            catch(Throwable th)
+            catch(final Throwable th)
             {
-                log.error("Found throwable while performing pool normalisation", th);
+                GeneralServlet.log.error("Found throwable while performing pool normalisation", th);
             }
             
             ServletUtils.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName,

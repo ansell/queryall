@@ -47,8 +47,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implements RdfInputQueryType, SparqlProcessorQueryType,
-        RdfOutputQueryType
+public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implements RdfInputQueryType,
+        SparqlProcessorQueryType, RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeImpl.class);
     private static final boolean _TRACE = RdfInputQueryTypeImpl.log.isTraceEnabled();
@@ -129,9 +129,10 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
      * @param myRepository
      *            The repository to
      * @return
-     * @throws QueryAllException 
+     * @throws QueryAllException
      */
-    private Map<String, List<String>> getBindingsForInput(final String input, final RDFFormat inputFormat) throws QueryAllException
+    private Map<String, List<String>> getBindingsForInput(final String input, final RDFFormat inputFormat)
+        throws QueryAllException
     {
         final Map<String, List<String>> results = new HashMap<String, List<String>>();
         
@@ -305,9 +306,9 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
             return this.getBindingsForInput(queryParameters.get(Constants.QUERY),
                     RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML));
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
-            log.error("Could not get matches for query parameters due to exception", e);
+            RdfInputQueryTypeImpl.log.error("Could not get matches for query parameters due to exception", e);
         }
         
         return Collections.emptyMap();
@@ -321,9 +322,9 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
             return (this.getBindingsForInput(queryParameters.get(Constants.QUERY),
                     RDFFormat.forMIMEType(queryParameters.get("inputMimeType"), RDFFormat.RDFXML)).size() > 0);
         }
-        catch(QueryAllException e)
+        catch(final QueryAllException e)
         {
-            log.error("Could not determine matches for query parameters due to exception", e);
+            RdfInputQueryTypeImpl.log.error("Could not determine matches for query parameters due to exception", e);
         }
         
         return false;

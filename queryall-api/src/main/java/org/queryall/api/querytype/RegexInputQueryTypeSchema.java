@@ -107,7 +107,8 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
             
             // TODO: add label for this type
             con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
             
             con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
             con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);

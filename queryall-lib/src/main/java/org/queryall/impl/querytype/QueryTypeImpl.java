@@ -26,7 +26,6 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
-import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
@@ -39,8 +38,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryType, InputQueryType,
-        ProcessorQueryType, RdfOutputQueryType, HtmlExport
+public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryType, InputQueryType, ProcessorQueryType,
+        RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
     private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();

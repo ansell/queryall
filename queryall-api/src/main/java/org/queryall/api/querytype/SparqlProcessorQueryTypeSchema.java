@@ -95,7 +95,8 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
             con.setAutoCommit(false);
             
             con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDFS.SUBCLASSOF, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

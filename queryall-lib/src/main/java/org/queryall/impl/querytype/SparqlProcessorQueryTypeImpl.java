@@ -31,11 +31,10 @@ public abstract class SparqlProcessorQueryTypeImpl extends QueryTypeImpl impleme
      * @param modelVersion
      * @throws OpenRDFException
      */
-    public SparqlProcessorQueryTypeImpl(Collection<Statement> inputStatements, URI keyToUse, int modelVersion)
-        throws OpenRDFException
+    public SparqlProcessorQueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse,
+            final int modelVersion) throws OpenRDFException
     {
         super(inputStatements, keyToUse, modelVersion);
-        
         
     }
     
