@@ -120,7 +120,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     
     protected QueryTypeImpl()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     protected QueryTypeImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)

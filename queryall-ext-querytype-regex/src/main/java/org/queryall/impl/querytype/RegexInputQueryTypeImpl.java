@@ -70,7 +70,7 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
      */
     public RegexInputQueryTypeImpl()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**
@@ -179,6 +179,15 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
         
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.querytype.InputQueryType#parseInputs(java.util.Map)
+     */
+    @Override
+    public Map<String, Object> parseInputs(Map<String, Object> inputParameterMap)
+    {
+        return inputParameterMap;
+    }
+
     @Override
     public void setInputRegex(final String nextInputRegex)
     {
