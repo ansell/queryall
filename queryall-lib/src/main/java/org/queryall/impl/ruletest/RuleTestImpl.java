@@ -215,6 +215,26 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         return result;
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.ruletest.RuleTest#resetRuleUris()
+     */
+    @Override
+    public boolean resetRuleUris()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.ruletest.RuleTest#resetStages()
+     */
+    @Override
+    public boolean resetStages()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     @Override
     public String toHtml()
     {

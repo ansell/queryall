@@ -413,6 +413,36 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         return this.getRedirectOrProxy().equals(ProviderSchema.getProviderRedirect());
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.provider.Provider#resetIncludedInQueryTypes()
+     */
+    @Override
+    public boolean resetIncludedInQueryTypes()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.provider.Provider#resetNamespaces()
+     */
+    @Override
+    public boolean resetNamespaces()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.provider.Provider#resetNormalisationUris()
+     */
+    @Override
+    public boolean resetNormalisationUris()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     @Override
     public void setAssumedContentType(final String assumedContentType)
     {

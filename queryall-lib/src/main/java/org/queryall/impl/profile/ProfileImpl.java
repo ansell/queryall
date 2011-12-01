@@ -542,6 +542,76 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         return result;
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetExcludedProviders()
+     */
+    @Override
+    public boolean resetExcludedProviders()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetExcludedQueryTypes()
+     */
+    @Override
+    public boolean resetExcludedQueryTypes()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetExcludedRdfRules()
+     */
+    @Override
+    public boolean resetExcludedRdfRules()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetIncludedProviders()
+     */
+    @Override
+    public boolean resetIncludedProviders()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetIncludedQueryTypes()
+     */
+    @Override
+    public boolean resetIncludedQueryTypes()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetIncludedRdfRules()
+     */
+    @Override
+    public boolean resetIncludedRdfRules()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.profile.Profile#resetProfileAdministrators()
+     */
+    @Override
+    public boolean resetProfileAdministrators()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     @Override
     public void setAllowImplicitProviderInclusions(final boolean allowImplicitProviderInclusions)
     {

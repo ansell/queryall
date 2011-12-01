@@ -224,6 +224,36 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         return Collections.unmodifiableCollection(this.subjectMappingPredicates);
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.PrefixMappingNormalisationRule#resetObjectMappingPredicates()
+     */
+    @Override
+    public boolean resetObjectMappingPredicates()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.PrefixMappingNormalisationRule#resetPredicateMappingPredicates()
+     */
+    @Override
+    public boolean resetPredicateMappingPredicates()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.PrefixMappingNormalisationRule#resetSubjectMappingPredicates()
+     */
+    @Override
+    public boolean resetSubjectMappingPredicates()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      * 

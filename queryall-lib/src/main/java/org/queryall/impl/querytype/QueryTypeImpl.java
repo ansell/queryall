@@ -884,6 +884,56 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                 includeNonProfileMatched);
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.querytype.InputQueryType#resetExpectedInputParameters()
+     */
+    @Override
+    public boolean resetExpectedInputParameters()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.querytype.QueryType#resetLinkedQueryTypes()
+     */
+    @Override
+    public boolean resetLinkedQueryTypes()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.querytype.QueryType#resetNamespaceInputTags()
+     */
+    @Override
+    public boolean resetNamespaceInputTags()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.querytype.QueryType#resetNamespacesToHandle()
+     */
+    @Override
+    public boolean resetNamespacesToHandle()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.querytype.QueryType#resetPublicIdentifierTags()
+     */
+    @Override
+    public boolean resetPublicIdentifierTags()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     @Override
     public void setHandleAllNamespaces(final boolean handleAllNamespaces)
     {

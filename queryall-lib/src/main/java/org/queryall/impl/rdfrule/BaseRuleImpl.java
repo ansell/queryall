@@ -358,6 +358,26 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                 includeNonProfileMatched);
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.NormalisationRule#resetRelatedNamespaces()
+     */
+    @Override
+    public boolean resetRelatedNamespaces()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.NormalisationRule#resetStages()
+     */
+    @Override
+    public boolean resetStages()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     @Override
     public final void setOrder(final int order)
     {

@@ -350,6 +350,36 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         return SpinUtils.addJenaModelToSesameRepository(newTriples, inputRepository);
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SpinNormalisationRule#resetEntailmentUris()
+     */
+    @Override
+    public boolean resetEntailmentUris()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SpinNormalisationRule#resetLocalImports()
+     */
+    @Override
+    public boolean resetLocalImports()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SpinNormalisationRule#resetUrlImports()
+     */
+    @Override
+    public boolean resetUrlImports()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     public boolean runTests(final Collection<RuleTest> myRules)
     {
         // TODO: implement me or delete me!

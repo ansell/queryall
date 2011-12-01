@@ -265,6 +265,36 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         return this.activeEntailments.contains(entailmentURI);
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SpinNormalisationRule#resetEntailmentUris()
+     */
+    @Override
+    public boolean resetEntailmentUris()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SpinNormalisationRule#resetLocalImports()
+     */
+    @Override
+    public boolean resetLocalImports()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SpinNormalisationRule#resetUrlImports()
+     */
+    @Override
+    public boolean resetUrlImports()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     public boolean runTests(final Collection<RuleTest> myRules)
     {
         // TODO: implement me or delete me!

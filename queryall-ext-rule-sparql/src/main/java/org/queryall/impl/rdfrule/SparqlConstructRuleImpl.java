@@ -261,6 +261,16 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
         return this.sparqlWherePatterns;
     }
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.rdfrule.SparqlNormalisationRule#resetSparqlWherePatterns()
+     */
+    @Override
+    public boolean resetSparqlWherePatterns()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     public boolean runTests(final Collection<RuleTest> myRules)
     {
         // TODO: implement me or delete me!
