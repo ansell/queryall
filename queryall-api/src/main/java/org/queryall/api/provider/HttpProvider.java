@@ -23,6 +23,13 @@ public interface HttpProvider extends Provider
     void addEndpointUrl(String endpointUrl);
     
     /**
+     * Resets the endpoint URL list
+     * 
+     * @return True if the endpointUrl list was successfully reset, and false otherwise
+     */
+    boolean resetEndpointUrls();
+    
+    /**
      * 
      * @param defaultAcceptHeader
      *            The default accept header to use for HTTP providers that do not define accept

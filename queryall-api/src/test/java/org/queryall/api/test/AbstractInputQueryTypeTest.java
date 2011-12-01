@@ -59,6 +59,8 @@ public abstract class AbstractInputQueryTypeTest extends AbstractQueryTypeTest
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testQueryType1 = null;
     }
     
@@ -71,6 +73,14 @@ public abstract class AbstractInputQueryTypeTest extends AbstractQueryTypeTest
     {
         Assert.assertEquals("Did not find all of the expected input parameters", 4, this.testQueryType1
                 .getExpectedInputParameters().size());
+    }
+    
+    @Test
+    public void testResetExpectedQueryParameters()
+    {
+        Assert.assertTrue(this.testQueryType1.resetExpectedInputParameters());
+        
+        Assert.assertEquals(0, this.testQueryType1.getExpectedInputParameters().size());
     }
     
 }

@@ -21,6 +21,8 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -28,11 +30,18 @@ import org.queryall.exception.InvalidStageException;
  */
 public final class DummyNormalisationRule implements NormalisationRule
 {
+    private static final Logger log = LoggerFactory.getLogger(DummyNormalisationRule.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = DummyNormalisationRule.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = DummyNormalisationRule.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = DummyNormalisationRule.log.isInfoEnabled();
     
     private int order = 0;
     private Set<URI> validStages = new HashSet<URI>();
     private Set<URI> stages = new HashSet<URI>();
-    private Collection<URI> relatedNamespaces = new HashSet<URI>();
+    private Set<URI> relatedNamespaces = new HashSet<URI>();
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     private String title = "";
     private URI key = null;
@@ -477,6 +486,44 @@ public final class DummyNormalisationRule implements NormalisationRule
     public boolean validInStage(final URI stage) throws InvalidStageException
     {
         return this.validStages.contains(stage);
+    }
+
+    @Override
+    public boolean resetRelatedNamespaces()
+    {
+        try
+        {
+            this.relatedNamespaces.clear();
+            
+            return true;
+        }
+        catch(UnsupportedOperationException uoe)
+        {
+            log.debug("Could not clear collection");
+        }
+        
+        this.relatedNamespaces = new HashSet<URI>();
+        
+        return true;
+    }
+
+    @Override
+    public boolean resetStages()
+    {
+        try
+        {
+            this.stages.clear();
+            
+            return true;
+        }
+        catch(UnsupportedOperationException uoe)
+        {
+            log.debug("Could not clear collection");
+        }
+        
+        this.stages = new HashSet<URI>();
+        
+        return true;
     }
     
 }

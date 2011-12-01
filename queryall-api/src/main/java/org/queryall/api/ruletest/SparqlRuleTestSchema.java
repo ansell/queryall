@@ -159,7 +159,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -168,47 +168,46 @@ public class SparqlRuleTestSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), RDFS.LABEL,
-                    f.createLiteral("A test case for RDF triples, based on a SPARQL select pattern."), contextKeyUri);
+                    f.createLiteral("A test case for RDF triples, based on a SPARQL select pattern."), contexts);
             
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+                    contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.DOMAIN,
-                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
+                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(),
                     RDFS.LABEL,
                     f.createLiteral("The body of a SPARQL ASK query that will generate either true or false, as defined in rdfrule:expectedResult."),
-                    contextKeyUri);
+                    contexts);
             
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+                    contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.DOMAIN,
-                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
+                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.LABEL,
-                    f.createLiteral("The expected result of the SPARQL ASK query, ie, true or false."), contextKeyUri);
+                    f.createLiteral("The expected result of the SPARQL ASK query, ie, true or false."), contexts);
             
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(), RDFS.DOMAIN,
-                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
+                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputTriples(),
                     RDFS.LABEL,
                     f.createLiteral("The RDF triples to normalise using the linked rules and stages before evaluating the ASK query."),
-                    contextKeyUri);
+                    contexts);
             
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+                    contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.DOMAIN,
-                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contextKeyUri);
+                    SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.LABEL,
-                    f.createLiteral("The mime type of the input triples."), contextKeyUri);
+                    f.createLiteral("The mime type of the input triples."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

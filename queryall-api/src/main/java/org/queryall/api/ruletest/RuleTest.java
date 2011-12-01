@@ -22,10 +22,22 @@ public interface RuleTest extends BaseQueryAllInterface, Comparable<RuleTest>
     
     /**
      * 
+     * @return True if the rule URIs collection was reset and false otherwise.
+     */
+    boolean resetRuleUris();
+    
+    /**
+     * 
      * @param stage
      *            A URI identifying a stage that is relevant to this rule test
      */
     void addStage(URI stage);
+    
+    /**
+     * 
+     * @return True if the stages collection was reset and false otherwise.
+     */
+    boolean resetStages();
     
     /**
      * 

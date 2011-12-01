@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
+import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 
 /**
@@ -148,5 +149,53 @@ public abstract class AbstractProviderTest extends AbstractProfilableProviderTes
         Assert.assertFalse(this.providerNonDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
         Assert.assertTrue(this.providerNoNamespacesDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
         Assert.assertFalse(this.providerNoNamespacesDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
+    }
+    
+    @Test
+    public void testResetIncludedInQueryTypes()
+    {
+        Provider testProvider = this.getNewTestProvider();
+        
+        Assert.assertEquals(0, testProvider.getIncludedInQueryTypes());
+
+        testProvider.addIncludedInQueryType(this.testTrueQueryTypeUri);
+        
+        Assert.assertEquals(1, testProvider.getIncludedInQueryTypes());
+        
+        Assert.assertTrue(testProvider.resetIncludedInQueryTypes());
+
+        Assert.assertEquals(0, testProvider.getIncludedInQueryTypes());
+    }
+
+    @Test
+    public void testResetNamespaces()
+    {
+        Provider testProvider = this.getNewTestProvider();
+        
+        Assert.assertEquals(0, testProvider.getNamespaces());
+
+        testProvider.addNamespace(this.testTrueNamespaceUri);
+        
+        Assert.assertEquals(1, testProvider.getNamespaces());
+        
+        Assert.assertTrue(testProvider.resetNamespaces());
+
+        Assert.assertEquals(0, testProvider.getNamespaces());
+    }
+
+    @Test
+    public void testResetNormalisationUris()
+    {
+        Provider testProvider = this.getNewTestProvider();
+        
+        Assert.assertEquals(0, testProvider.getNormalisationUris());
+
+        testProvider.addNormalisationUri(this.testTrueRuleUri);
+        
+        Assert.assertEquals(1, testProvider.getNormalisationUris());
+        
+        Assert.assertTrue(testProvider.resetNormalisationUris());
+
+        Assert.assertEquals(0, testProvider.getNormalisationUris());
     }
 }

@@ -20,6 +20,8 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -27,17 +29,25 @@ import org.queryall.api.utils.QueryAllNamespaces;
  */
 public final class DummyProvider implements Provider
 {
+    private static final Logger log = LoggerFactory.getLogger(DummyProvider.class);
+    @SuppressWarnings("unused")
+    private static final boolean _TRACE = DummyProvider.log.isTraceEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _DEBUG = DummyProvider.log.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean _INFO = DummyProvider.log.isInfoEnabled();
+    
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     private String title = "";
     private URI key = null;
     private String description = "";
     private URI curationStatus = null;
-    private Collection<Statement> unrecognisedStatements = new ArrayList<Statement>();
-    private Collection<URI> includedInQueryTypes = new ArrayList<URI>();
-    private Collection<URI> namespaces = new ArrayList<URI>();
+    private Set<Statement> unrecognisedStatements = new HashSet<Statement>();
+    private Set<URI> includedInQueryTypes = new HashSet<URI>();
+    private Set<URI> namespaces = new HashSet<URI>();
     private boolean isDefault = false;
-    private Collection<URI> normalisations = new ArrayList<URI>();
-    private Collection<URI> queryTypes = new ArrayList<URI>();
+    private Set<URI> normalisations = new HashSet<URI>();
+    private Set<URI> queryTypes = new HashSet<URI>();
     private String assumedContentType;
     private URI endpointMethod;
     private URI redirectOrProxy;
@@ -410,7 +420,7 @@ public final class DummyProvider implements Provider
     {
         final Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
         
-        this.unrecognisedStatements = new ArrayList<Statement>();
+        this.unrecognisedStatements = new HashSet<Statement>();
         
         return unrecognisedStatementsTemp;
     }
@@ -517,6 +527,63 @@ public final class DummyProvider implements Provider
         builder.append(this.redirectOrProxy);
         builder.append("]");
         return builder.toString();
+    }
+
+    @Override
+    public boolean resetIncludedInQueryTypes()
+    {
+        try
+        {
+            this.includedInQueryTypes.clear();
+            
+            return true;
+        }
+        catch(UnsupportedOperationException uoe)
+        {
+            log.debug("Could not clear collection");
+        }
+        
+        this.includedInQueryTypes = new HashSet<URI>();
+        
+        return true;
+    }
+
+    @Override
+    public boolean resetNamespaces()
+    {
+        try
+        {
+            this.namespaces.clear();
+            
+            return true;
+        }
+        catch(UnsupportedOperationException uoe)
+        {
+            log.debug("Could not clear collection");
+        }
+        
+        this.namespaces = new HashSet<URI>();
+        
+        return true;
+    }
+
+    @Override
+    public boolean resetNormalisationUris()
+    {
+        try
+        {
+            this.normalisations.clear();
+            
+            return true;
+        }
+        catch(UnsupportedOperationException uoe)
+        {
+            log.debug("Could not clear collection");
+        }
+        
+        this.normalisations = new HashSet<URI>();
+        
+        return true;
     }
     
 }

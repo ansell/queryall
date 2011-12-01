@@ -12,6 +12,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -424,4 +425,99 @@ public abstract class AbstractProfileTest
         Assert.assertEquals(200, this.testProfile2.getOrder());
     }
     
+    @Test
+    public void testResetExcludeRdfRules()
+    {
+        Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getExcludeRdfRules());
+
+        testProfile.addExcludeRdfRule(testExcludeRdfRule1);
+        
+        Assert.assertEquals(1, testProfile.getExcludeRdfRules());
+        
+        Assert.assertTrue(testProfile.resetExcludedRdfRules());
+
+        Assert.assertEquals(0, testProfile.getExcludeRdfRules());
+    }
+
+    @Test
+    public void testResetIncludeRdfRules()
+    {
+        Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getIncludeRdfRules());
+
+        testProfile.addIncludeRdfRule(testIncludeRdfRule1);
+        
+        Assert.assertEquals(1, testProfile.getIncludeRdfRules());
+        
+        Assert.assertTrue(testProfile.resetIncludedRdfRules());
+
+        Assert.assertEquals(0, testProfile.getIncludeRdfRules());
+    }
+
+    @Test
+    public void testResetExcludeQueryTypes()
+    {
+        Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getExcludeQueryTypes());
+
+        testProfile.addExcludeQueryType(testExcludeQueryType1);
+        
+        Assert.assertEquals(1, testProfile.getExcludeQueryTypes());
+        
+        Assert.assertTrue(testProfile.resetExcludedQueryTypes());
+
+        Assert.assertEquals(0, testProfile.getExcludeQueryTypes());
+    }
+
+    @Test
+    public void testResetIncludeQueryTypes()
+    {
+        Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getIncludeQueryTypes());
+
+        testProfile.addIncludeQueryType(testIncludeQueryType1);
+        
+        Assert.assertEquals(1, testProfile.getIncludeQueryTypes());
+        
+        Assert.assertTrue(testProfile.resetIncludedQueryTypes());
+
+        Assert.assertEquals(0, testProfile.getIncludeQueryTypes());
+    }
+
+    @Test
+    public void testResetExcludeProviders()
+    {
+        Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getExcludeProviders());
+
+        testProfile.addExcludeProvider(testExcludeProvider1);
+        
+        Assert.assertEquals(1, testProfile.getExcludeProviders());
+        
+        Assert.assertTrue(testProfile.resetExcludedProviders());
+
+        Assert.assertEquals(0, testProfile.getExcludeProviders());
+    }
+
+    @Test
+    public void testResetIncludeProviders()
+    {
+        Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getIncludeProviders());
+
+        testProfile.addIncludeProvider(testIncludeProvider1);
+        
+        Assert.assertEquals(1, testProfile.getIncludeProviders());
+        
+        Assert.assertTrue(testProfile.resetIncludedProviders());
+
+        Assert.assertEquals(0, testProfile.getIncludeProviders());
+    }
 }

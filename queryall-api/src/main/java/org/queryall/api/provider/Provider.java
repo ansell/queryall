@@ -24,12 +24,25 @@ public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, P
     void addIncludedInQueryType(URI includedInQueryType);
     
     /**
+     * 
+     * @return True if the included in query types collection was reset and false otherwise
+     */
+    boolean resetIncludedInQueryTypes();
+    
+    /**
      * Adds the namespace to the current collection of namespaces that are available using this
      * provider.
      * 
      * @param namespace
      */
     void addNamespace(URI namespace);
+    
+    
+    /**
+     * 
+     * @return True if the namespaces collection was reset and false otherwise
+     */
+    boolean resetNamespaces();
     
     /**
      * Adds the normalisation to this current collection of normalisations
@@ -38,6 +51,12 @@ public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, P
      *            The URI of a normalisation rule that is needed by this provider
      */
     void addNormalisationUri(URI rdfNormalisationNeeded);
+    
+    /**
+     * 
+     * @return True if the normalisation URIs collection was reset and false otherwise
+     */
+    boolean resetNormalisationUris();
     
     /**
      * 

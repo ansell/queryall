@@ -82,7 +82,7 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -91,12 +91,11 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDFS.SUBCLASSOF,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

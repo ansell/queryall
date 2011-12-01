@@ -10,9 +10,21 @@ import java.util.regex.Pattern;
  */
 public interface RegexInputQueryType extends InputQueryType
 {
+    /**
+     * 
+     * @return The Regular Expression used to match this query type against input query strings
+     */
     String getInputRegex();
     
+    /**
+     * 
+     * @return The compiled Regular Expression Pattern used to match this query type against input query strings
+     */
     Pattern getInputRegexPattern();
     
+    /**
+     * 
+     * @param nextInputRegex The Regular Expression used to match this query type against input query strings
+     */
     void setInputRegex(String nextInputRegex);
 }

@@ -93,7 +93,7 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -102,22 +102,21 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
             // TODO: add label for this type
-            con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDFS.SUBCLASSOF,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             
-            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(RegexInputQueryTypeSchema.getQueryInputRegex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(RegexInputQueryTypeSchema.getQueryInputRegex(),
                     RDFS.LABEL,
                     f.createLiteral("This input regex contains matching groups that correlate with the input_NN tags, where NN is the index of the matching group."),
-                    contextKeyUri);
+                    contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

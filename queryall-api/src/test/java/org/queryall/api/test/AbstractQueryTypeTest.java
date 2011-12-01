@@ -947,4 +947,68 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         Assert.assertEquals(1, this.queryTypeNamespaceInputIndexes.getNamespaceInputTags().size());
     }
     
+    @Test
+    public void testResetLinkedQueryTypes()
+    {
+        QueryType testQueryType = getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getLinkedQueryTypes().size());
+        
+        testQueryType.addLinkedQueryType(this.testTrueQueryTypeUri);
+        
+        Assert.assertEquals(1, testQueryType.getLinkedQueryTypes().size());
+        
+        Assert.assertTrue(testQueryType.resetLinkedQueryTypes());
+        
+        Assert.assertEquals(0, testQueryType.getLinkedQueryTypes().size());
+    }
+
+    
+    @Test
+    public void testResetNamespaceInputTags()
+    {
+        QueryType testQueryType = getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+        
+        testQueryType.addNamespaceInputTag("input_5");
+        
+        Assert.assertEquals(1, testQueryType.getNamespaceInputTags().size());
+        
+        Assert.assertTrue(testQueryType.resetNamespaceInputTags());
+        
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+    }
+
+    @Test
+    public void testResetPublicIdentifierTags()
+    {
+        QueryType testQueryType = getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getPublicIdentifierTags().size());
+        
+        testQueryType.addPublicIdentifierTag("input_5");
+        
+        Assert.assertEquals(1, testQueryType.getPublicIdentifierTags().size());
+        
+        Assert.assertTrue(testQueryType.resetPublicIdentifierTags());
+        
+        Assert.assertEquals(0, testQueryType.getPublicIdentifierTags().size());
+    }
+
+    @Test
+    public void testResetNamespacesToHandle()
+    {
+        QueryType testQueryType = getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
+        
+        testQueryType.addNamespaceToHandle(testNamespaceUri1);
+        
+        Assert.assertEquals(1, testQueryType.getNamespacesToHandle().size());
+        
+        Assert.assertTrue(testQueryType.resetNamespacesToHandle());
+        
+        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
+    }
 }

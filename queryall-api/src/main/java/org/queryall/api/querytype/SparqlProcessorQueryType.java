@@ -10,7 +10,15 @@ package org.queryall.api.querytype;
  */
 public interface SparqlProcessorQueryType extends OutputQueryType
 {
+    /**
+     * 
+     * @return The SPARQL Template string used by this query type
+     */
     String getSparqlTemplateString();
     
+    /**
+     * 
+     * @param templateString The SPARQL Template string to be used by this query type
+     */
     void setSparqlTemplateString(String templateString);
 }

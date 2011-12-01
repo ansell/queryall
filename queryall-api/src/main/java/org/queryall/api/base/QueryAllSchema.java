@@ -75,7 +75,7 @@ public abstract class QueryAllSchema
         return result;
     }
     
-    public abstract boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public abstract boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException;
     
     protected final void setName(final String name)

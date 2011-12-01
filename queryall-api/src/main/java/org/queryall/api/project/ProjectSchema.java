@@ -223,7 +223,7 @@ public class ProjectSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -232,48 +232,47 @@ public class ProjectSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(ProjectSchema.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(ProjectSchema.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(ProjectSchema.getProjectAuthority(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectSchema.getProjectAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectAuthority(), RDFS.RANGE, RDFS.RESOURCE, contexts);
+            con.add(ProjectSchema.getProjectAuthority(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contexts);
+            con.add(ProjectSchema.getProjectAuthority(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(ProjectSchema.getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(ProjectSchema.getProjectDescription(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(),
-                    contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectCurationStatusUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectCurationStatusUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectUserCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectUserCuratedUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectNotCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectNotCuratedUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

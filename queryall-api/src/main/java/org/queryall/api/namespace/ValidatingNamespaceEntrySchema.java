@@ -100,7 +100,7 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -109,20 +109,19 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = contextUri;
             con.setAutoCommit(false);
             
-            con.add(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+                    contexts);
+            con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.DOMAIN,
-                    ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), contextKeyUri);
+                    ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), contexts);
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(),
                     RDFS.LABEL,
                     f.createLiteral("If this property is true, then validation is possible for identifiers in this namespace."),
-                    contextKeyUri);
+                    contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -28,6 +28,12 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
     void addRelatedNamespace(URI nextRelatedNamespace);
     
     /**
+     * 
+     * @return True if the related namespaces collection was reset and false otherwise
+     */
+    boolean resetRelatedNamespaces();
+    
+    /**
      * Selects a stage in the QueryAll model as relevant to this rule.
      * <p/>
      * 
@@ -54,6 +60,12 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
      *             If the URI is not recognised as a valid stage for this type of rule.
      */
     void addStage(URI nextStage) throws InvalidStageException;
+    
+    /**
+     * 
+     * @return True if the related namespaces collection was reset and false otherwise
+     */
+    boolean resetStages();
     
     /**
      * Gets the order that this rule will be processed in. If rules have the same integer for their
