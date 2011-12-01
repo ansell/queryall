@@ -50,6 +50,8 @@ public interface BaseQueryAllInterface
      * This list may not be the only list of URIs that a class recognises, but it should map to
      * those URIs which are relevant for the currently stored object
      * 
+     * NOTE: This should only be overridden by final concrete implementations to match their list of implemented types.
+     * 
      * @return The set of URIs that this object recognises for the current object.
      */
     Set<URI> getElementTypes();
@@ -103,7 +105,7 @@ public interface BaseQueryAllInterface
      * Changes the object into RDF, and inserts the relevant triples into myRepository using the
      * URIs in contextUris as the context URIs.
      * 
-     * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
+     * The Configuration API version to attempt to use for the RDF export is given as modelVersion.
      * 
      * @param myRepository
      * @param modelVersion
