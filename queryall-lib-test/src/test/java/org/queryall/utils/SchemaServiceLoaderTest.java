@@ -96,8 +96,8 @@ public class SchemaServiceLoaderTest
             
             final boolean result =
                     nextSchema.schemaToRdf(testRepository,
-                            vf.createURI("http://test.queryall.example.com/schema/" + nextSchema.toString()),
-                            Settings.CONFIG_API_VERSION);
+                            Settings.CONFIG_API_VERSION,
+                            vf.createURI("http://test.queryall.example.com/schema/" + nextSchema.toString()));
             
             if(!result)
             {

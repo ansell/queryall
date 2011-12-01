@@ -685,7 +685,7 @@ public class RdfUtilsTest
                     Assert.assertEquals(
                             "Sparql construct query where pattern was not parsed correctly",
                             " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . bind(iri(concat(\"http://bio2rdf.org/symbol:\", encode_for_uri(lcase(str(?primarySymbol))))) AS ?symbolUri)",
-                            nextSparqlRule.getSparqlWherePatterns().get(0));
+                            nextSparqlRule.getSparqlWherePatterns().iterator().next());
                     
                     Assert.assertTrue("Normalisation rule was not implemented using the SparqlConstructRule interface",
                             nextNormalisationRule instanceof SparqlConstructRule);
@@ -838,7 +838,7 @@ public class RdfUtilsTest
                     Assert.assertEquals(
                             "Sparql construct query where pattern was not parsed correctly",
                             " ?myUri <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> ?primarysymbol . ",
-                            nextSparqlRule.getSparqlWherePatterns().get(0));
+                            nextSparqlRule.getSparqlWherePatterns().iterator().next());
                     
                     Assert.assertTrue("Normalisation rule was not implemented using the SparqlAskRule interface",
                             nextNormalisationRule instanceof SparqlAskRule);
