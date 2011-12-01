@@ -211,7 +211,7 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
         normalisationRule.addRelatedNamespace(this.testRelatedNamespace1);
         
         Assert.assertEquals(1, normalisationRule.getRelatedNamespaces().size());
-
+        
         Assert.assertTrue(normalisationRule.resetRelatedNamespaces());
         
         Assert.assertEquals(0, normalisationRule.getRelatedNamespaces().size());
@@ -224,13 +224,13 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
         
         Assert.assertTrue("Normalisation Rule should not have an empty valid stages list", this.validStages.size() > 0);
         
-        for(URI nextValidStage : this.validStages)
+        for(final URI nextValidStage : this.validStages)
         {
             normalisationRule.addStage(nextValidStage);
         }
         
         Assert.assertEquals(this.validStages.size(), normalisationRule.getStages().size());
-
+        
         Assert.assertTrue(normalisationRule.resetStages());
         
         Assert.assertEquals(0, normalisationRule.getStages().size());

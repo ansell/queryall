@@ -137,7 +137,9 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         return this.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpGetUrl());
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#resetEndpointUrls()
      */
     @Override
@@ -146,7 +148,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         // TODO Auto-generated method stub
         return false;
     }
-
+    
     @Override
     public void setAcceptHeaderString(final String acceptHeaderString)
     {

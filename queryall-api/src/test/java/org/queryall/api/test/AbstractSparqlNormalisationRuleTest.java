@@ -149,10 +149,10 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
     @Test
     public void testResetSparqlWherePatterns()
     {
-        SparqlNormalisationRule testSparqlNormalisationRule = getNewTestSparqlNormalisationRule();
+        final SparqlNormalisationRule testSparqlNormalisationRule = this.getNewTestSparqlNormalisationRule();
         
         Assert.assertEquals(0, testSparqlNormalisationRule.getSparqlWherePatterns().size());
-
+        
         testSparqlNormalisationRule.addSparqlWherePattern(" ?test ?one ?two . ");
         
         Assert.assertEquals(1, testSparqlNormalisationRule.getSparqlWherePatterns().size());

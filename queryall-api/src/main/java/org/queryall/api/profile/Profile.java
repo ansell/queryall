@@ -24,22 +24,10 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     
     /**
      * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetExcludedProviders();
-    
-    /**
-     * 
      * @param excludeQuery
      *            The URI of a query type that is explicitly excluded by this profile.
      */
     void addExcludeQueryType(org.openrdf.model.URI excludeQuery);
-    
-    /**
-     * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetExcludedQueryTypes();
     
     /**
      * 
@@ -50,22 +38,10 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     
     /**
      * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetExcludedRdfRules();
-    
-    /**
-     * 
      * @param includeProvider
      *            The URI of a provider that is explicitly included by this profile.
      */
     void addIncludeProvider(org.openrdf.model.URI includeProvider);
-    
-    /**
-     * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetIncludedProviders();
     
     /**
      * 
@@ -76,12 +52,6 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     
     /**
      * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetIncludedQueryTypes();
-    
-    /**
-     * 
      * @param includeRdfRule
      *            The URI of a normalisation rule that is explicitly included by this profile.
      */
@@ -89,22 +59,10 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     
     /**
      * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetIncludedRdfRules();
-    
-    /**
-     * 
      * @param profileAdministrator
      *            A URI denoting an administrator for this profile.
      */
     void addProfileAdministrator(org.openrdf.model.URI profileAdministrator);
-    
-    /**
-     * 
-     * @return True if the collection was reset and false otherwise.
-     */
-    boolean resetProfileAdministrators();
     
     /**
      * 
@@ -183,6 +141,48 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
      * @return A collection of URIs denoting the administrators of this profile
      */
     Collection<org.openrdf.model.URI> getProfileAdministrators();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetExcludedProviders();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetExcludedQueryTypes();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetExcludedRdfRules();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetIncludedProviders();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetIncludedQueryTypes();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetIncludedRdfRules();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetProfileAdministrators();
     
     /**
      * 

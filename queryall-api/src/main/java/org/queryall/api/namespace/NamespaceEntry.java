@@ -26,12 +26,6 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
     
     /**
      * 
-     * @return True if the alternative prefixes list was reset and false otherwise.
-     */
-    boolean resetAlternativePrefixes();
-    
-    /**
-     * 
      * @return A list of strings denoting the alternate inputs that map queries to this namespace.
      */
     Collection<String> getAlternativePrefixes();
@@ -70,6 +64,12 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
      *         items in this namespace to URIs.
      */
     String getUriTemplate();
+    
+    /**
+     * 
+     * @return True if the alternative prefixes list was reset and false otherwise.
+     */
+    boolean resetAlternativePrefixes();
     
     /**
      * 

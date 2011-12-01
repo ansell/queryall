@@ -254,8 +254,7 @@ public class ProjectSchema extends QueryAllSchema
             con.add(ProjectSchema.getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contexts);
             con.add(ProjectSchema.getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contexts);
             con.add(ProjectSchema.getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contexts);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(),
-                    contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contexts);
             con.add(ProjectSchema.getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description

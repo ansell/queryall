@@ -18,20 +18,12 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
 {
     void addLinkedQueryType(URI semanticallyLinkedQueryTypes);
     
-    boolean resetLinkedQueryTypes();
-    
     void addNamespaceInputTag(String namespaceInputTag);
     
-    boolean resetNamespaceInputTags();
-
     void addNamespaceToHandle(URI namespaceToHandle);
     
-    boolean resetNamespacesToHandle();
-
     void addPublicIdentifierTag(String publicIdentifierTag);
     
-    boolean resetPublicIdentifierTags();
-
     boolean getHandleAllNamespaces();
     
     boolean getIncludeDefaults();
@@ -71,6 +63,14 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
     
     boolean matchesQueryParameters(Map<String, String> queryString);
+    
+    boolean resetLinkedQueryTypes();
+    
+    boolean resetNamespaceInputTags();
+    
+    boolean resetNamespacesToHandle();
+    
+    boolean resetPublicIdentifierTags();
     
     void setHandleAllNamespaces(boolean handleAllNamespaces);
     

@@ -34,7 +34,7 @@ public class Schema
      * @throws OpenRDFException
      *             if an exception occured with the repository
      */
-    public static Repository getSchemas(final Repository myRepository, final int configVersion, URI... contextUri)
+    public static Repository getSchemas(final Repository myRepository, final int configVersion, final URI... contextUri)
         throws OpenRDFException
     {
         for(final QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())

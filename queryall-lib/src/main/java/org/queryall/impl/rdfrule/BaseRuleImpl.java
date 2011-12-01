@@ -1,6 +1,5 @@
 package org.queryall.impl.rdfrule;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,9 +43,9 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
-    private Collection<URI> relatedNamespaces = new ArrayList<URI>(2);
+    private Collection<URI> relatedNamespaces = new HashSet<URI>(10);
     
-    private final Set<URI> stages = new HashSet<URI>(10);
+    private Set<URI> stages = new HashSet<URI>(10);
     
     private final Set<URI> validStages = new HashSet<URI>(10);
     
@@ -358,26 +357,54 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                 includeNonProfileMatched);
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.rdfrule.NormalisationRule#resetRelatedNamespaces()
      */
     @Override
     public boolean resetRelatedNamespaces()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.relatedNamespaces.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            BaseRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.relatedNamespaces = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.rdfrule.NormalisationRule#resetStages()
      */
     @Override
     public boolean resetStages()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.stages.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            BaseRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.stages = new HashSet<URI>();
+        
+        return true;
     }
-
+    
     @Override
     public final void setOrder(final int order)
     {

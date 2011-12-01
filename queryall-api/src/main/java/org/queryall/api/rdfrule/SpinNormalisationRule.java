@@ -25,12 +25,6 @@ public interface SpinNormalisationRule extends NormalisationRule
     void addEntailmentUri(URI nextEntailmentURI);
     
     /**
-     * 
-     * @return True if the entailment URIs collection was reset and false otherwise.
-     */
-    boolean resetEntailmentUris();
-    
-    /**
      * Add an import to this rule based on a classpath resource
      * 
      * @param nextImport
@@ -38,23 +32,11 @@ public interface SpinNormalisationRule extends NormalisationRule
     void addLocalImport(String nextLocalImport);
     
     /**
-     * 
-     * @return True if the local imports collection was reset and false otherwise.
-     */
-    boolean resetLocalImports();
-    
-    /**
      * Add an import to this rule based on a URL
      * 
      * @param nextImport
      */
     void addUrlImport(URI nextURLImport);
-    
-    /**
-     * 
-     * @return True if the local imports collection was reset and false otherwise.
-     */
-    boolean resetUrlImports();
     
     /**
      * @return A set of URIs indicating which entailments are active for this rule
@@ -82,5 +64,23 @@ public interface SpinNormalisationRule extends NormalisationRule
      * @return True if the entailment is enabled or false otherwise
      */
     boolean isEntailmentEnabled(URI entailmentURI);
+    
+    /**
+     * 
+     * @return True if the entailment URIs collection was reset and false otherwise.
+     */
+    boolean resetEntailmentUris();
+    
+    /**
+     * 
+     * @return True if the local imports collection was reset and false otherwise.
+     */
+    boolean resetLocalImports();
+    
+    /**
+     * 
+     * @return True if the local imports collection was reset and false otherwise.
+     */
+    boolean resetUrlImports();
     
 }

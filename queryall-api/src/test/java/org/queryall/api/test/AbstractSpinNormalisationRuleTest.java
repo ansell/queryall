@@ -148,11 +148,12 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
     @Test
     public void testResetEntailmentUris()
     {
-        SpinNormalisationRule testSpinNormalisationRule = getNewTestSpinNormalisationRule();
+        final SpinNormalisationRule testSpinNormalisationRule = this.getNewTestSpinNormalisationRule();
         
         Assert.assertEquals(0, testSpinNormalisationRule.getEntailmentUris().size());
         
-        testSpinNormalisationRule.addEntailmentUri(this.testValueFactory.createURI("http://example.org/test/entailment/uri/1"));
+        testSpinNormalisationRule.addEntailmentUri(this.testValueFactory
+                .createURI("http://example.org/test/entailment/uri/1"));
         
         Assert.assertEquals(1, testSpinNormalisationRule.getEntailmentUris().size());
         
@@ -160,15 +161,15 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
         
         Assert.assertEquals(0, testSpinNormalisationRule.getEntailmentUris().size());
     }
-
+    
     @Test
     public void testResetLocalImports()
     {
-        SpinNormalisationRule testSpinNormalisationRule = getNewTestSpinNormalisationRule();
+        final SpinNormalisationRule testSpinNormalisationRule = this.getNewTestSpinNormalisationRule();
         
         Assert.assertEquals(0, testSpinNormalisationRule.getLocalImports().size());
         
-        testSpinNormalisationRule.addLocalImport("test/localimport");
+        testSpinNormalisationRule.addLocalImport("test/owlrl-all");
         
         Assert.assertEquals(1, testSpinNormalisationRule.getLocalImports().size());
         
@@ -176,15 +177,15 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
         
         Assert.assertEquals(0, testSpinNormalisationRule.getLocalImports().size());
     }
-
+    
     @Test
     public void testResetUrlImports()
     {
-        SpinNormalisationRule testSpinNormalisationRule = getNewTestSpinNormalisationRule();
+        final SpinNormalisationRule testSpinNormalisationRule = this.getNewTestSpinNormalisationRule();
         
         Assert.assertEquals(0, testSpinNormalisationRule.getURLImports().size());
         
-        testSpinNormalisationRule.addUrlImport(this.testValueFactory.createURI("http://example.org/test/urlimport/1"));
+        testSpinNormalisationRule.addUrlImport(this.testValueFactory.createURI("http://topbraid.org/spin/owlrl-all"));
         
         Assert.assertEquals(1, testSpinNormalisationRule.getURLImports().size());
         
@@ -192,5 +193,5 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
         
         Assert.assertEquals(0, testSpinNormalisationRule.getURLImports().size());
     }
-
+    
 }

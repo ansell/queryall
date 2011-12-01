@@ -113,8 +113,7 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
             
             con.add(ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             
-            con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contexts);
+            con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(ValidatingNamespaceEntrySchema.getValidationPossibleUri(), RDFS.DOMAIN,
                     ValidatingNamespaceEntrySchema.getValidatingNamespaceTypeUri(), contexts);

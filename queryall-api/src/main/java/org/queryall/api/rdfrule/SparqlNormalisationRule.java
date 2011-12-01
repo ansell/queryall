@@ -1,7 +1,6 @@
 package org.queryall.api.rdfrule;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The SparqlNormalisationRule interface encapsulates the common functionality for the
@@ -26,12 +25,6 @@ public interface SparqlNormalisationRule extends NormalisationRule
     
     /**
      * 
-     * @return True if the sparql where patterns collection was reset and false otherwise
-     */
-    boolean resetSparqlWherePatterns();
-    
-    /**
-     * 
      * @return The list of prefix declarations in an N3 compatible string.
      */
     String getSparqlPrefixes();
@@ -42,6 +35,12 @@ public interface SparqlNormalisationRule extends NormalisationRule
      *         one of the mappings that make up this rule.
      */
     Collection<String> getSparqlWherePatterns();
+    
+    /**
+     * 
+     * @return True if the sparql where patterns collection was reset and false otherwise
+     */
+    boolean resetSparqlWherePatterns();
     
     /**
      * 

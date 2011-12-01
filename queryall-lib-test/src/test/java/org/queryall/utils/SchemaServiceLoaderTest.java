@@ -95,8 +95,7 @@ public class SchemaServiceLoaderTest
             final long previousCount = testRepositoryConnection.size();
             
             final boolean result =
-                    nextSchema.schemaToRdf(testRepository,
-                            Settings.CONFIG_API_VERSION,
+                    nextSchema.schemaToRdf(testRepository, Settings.CONFIG_API_VERSION,
                             vf.createURI("http://test.queryall.example.com/schema/" + nextSchema.toString()));
             
             if(!result)

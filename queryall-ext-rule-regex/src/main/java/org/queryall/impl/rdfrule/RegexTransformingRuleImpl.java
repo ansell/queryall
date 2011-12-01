@@ -20,7 +20,6 @@ import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
-import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -354,7 +353,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
         return RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES;
     }
     
-    @Override       
+    @Override
     public Object stageAfterQueryCreation(final Object input) throws QueryAllException
     {
         if(this.usedInStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()))

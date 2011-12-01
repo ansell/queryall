@@ -553,8 +553,7 @@ public class QueryTypeSchema extends QueryAllSchema
             con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
-                    contexts);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contexts);
             con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.LABEL, f.createLiteral("."), contexts);
@@ -579,14 +578,12 @@ public class QueryTypeSchema extends QueryAllSchema
             
             con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.RANGE, RDFS.LITERAL, contexts);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contexts);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contexts);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contexts);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             con.add(QueryTypeSchema.getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
@@ -605,16 +602,14 @@ public class QueryTypeSchema extends QueryAllSchema
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contexts);
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL,
-                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."),
-                    contexts);
+                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."), contexts);
             
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
                     contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL,
-                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."),
-                    contexts);
+                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."), contexts);
             
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contexts);
@@ -636,8 +631,7 @@ public class QueryTypeSchema extends QueryAllSchema
             
             con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contexts);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contexts);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
@@ -650,8 +644,7 @@ public class QueryTypeSchema extends QueryAllSchema
             con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.DOMAIN,
                     QueryTypeSchema.getQueryTypeUri(), contexts);
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."),
-                    contexts);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

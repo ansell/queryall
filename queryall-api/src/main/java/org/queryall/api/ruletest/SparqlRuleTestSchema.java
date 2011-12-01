@@ -174,8 +174,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
             con.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), RDFS.LABEL,
                     f.createLiteral("A test case for RDF triples, based on a SPARQL select pattern."), contexts);
             
-            con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);
@@ -184,8 +183,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
                     f.createLiteral("The body of a SPARQL ASK query that will generate either true or false, as defined in rdfrule:expectedResult."),
                     contexts);
             
-            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);
@@ -201,8 +199,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
                     f.createLiteral("The RDF triples to normalise using the linked rules and stages before evaluating the ASK query."),
                     contexts);
             
-            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contexts);
+            con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), RDFS.DOMAIN,
                     SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), contexts);

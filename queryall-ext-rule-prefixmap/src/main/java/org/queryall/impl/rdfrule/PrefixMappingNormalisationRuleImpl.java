@@ -224,52 +224,69 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         return Collections.unmodifiableCollection(this.subjectMappingPredicates);
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.PrefixMappingNormalisationRule#resetObjectMappingPredicates()
-     */
     @Override
     public boolean resetObjectMappingPredicates()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.objectMappingPredicates.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.objectMappingPredicates = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.PrefixMappingNormalisationRule#resetPredicateMappingPredicates()
-     */
+    
     @Override
     public boolean resetPredicateMappingPredicates()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.predicateMappingPredicates.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.predicateMappingPredicates = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.PrefixMappingNormalisationRule#resetSubjectMappingPredicates()
-     */
+    
     @Override
     public boolean resetSubjectMappingPredicates()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.subjectMappingPredicates.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.subjectMappingPredicates = new HashSet<URI>();
+        
+        return true;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setInputMatchRegex(java.lang.String)
-     */
+    
     @Override
     public void setInputUriPrefix(final String inputUriPrefix)
     {
         this.inputPrefix = inputUriPrefix;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setOutputMatchRegex(java.lang.String)
-     */
     @Override
     public void setOutputUriPrefix(final String outputUriPrefix)
     {

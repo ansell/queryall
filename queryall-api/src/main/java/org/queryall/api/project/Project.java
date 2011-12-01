@@ -15,7 +15,8 @@ public interface Project extends BaseQueryAllInterface, Comparable<Project>
     
     /**
      * 
-     * @param authority The URI of the authority which is administrating this project
+     * @param authority
+     *            The URI of the authority which is administrating this project
      */
     void setAuthority(org.openrdf.model.URI authority);
 }

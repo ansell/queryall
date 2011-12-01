@@ -84,9 +84,9 @@ public class NoInputQueryTypeImpl extends QueryTypeImpl implements NoInputQueryT
     {
         return true;
     }
-
+    
     @Override
-    public Map<String, Object> parseInputs(Map<String, Object> inputParameterMap)
+    public Map<String, Object> parseInputs(final Map<String, Object> inputParameterMap)
     {
         return inputParameterMap;
     }

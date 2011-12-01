@@ -179,15 +179,17 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
         
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.InputQueryType#parseInputs(java.util.Map)
      */
     @Override
-    public Map<String, Object> parseInputs(Map<String, Object> inputParameterMap)
+    public Map<String, Object> parseInputs(final Map<String, Object> inputParameterMap)
     {
         return inputParameterMap;
     }
-
+    
     @Override
     public void setInputRegex(final String nextInputRegex)
     {

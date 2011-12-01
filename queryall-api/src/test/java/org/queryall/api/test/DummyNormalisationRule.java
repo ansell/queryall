@@ -372,6 +372,44 @@ public final class DummyNormalisationRule implements NormalisationRule
     }
     
     @Override
+    public boolean resetRelatedNamespaces()
+    {
+        try
+        {
+            this.relatedNamespaces.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            DummyNormalisationRule.log.debug("Could not clear collection");
+        }
+        
+        this.relatedNamespaces = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetStages()
+    {
+        try
+        {
+            this.stages.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            DummyNormalisationRule.log.debug("Could not clear collection");
+        }
+        
+        this.stages = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
     public Collection<Statement> resetUnrecognisedStatements()
     {
         final Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
@@ -486,44 +524,6 @@ public final class DummyNormalisationRule implements NormalisationRule
     public boolean validInStage(final URI stage) throws InvalidStageException
     {
         return this.validStages.contains(stage);
-    }
-
-    @Override
-    public boolean resetRelatedNamespaces()
-    {
-        try
-        {
-            this.relatedNamespaces.clear();
-            
-            return true;
-        }
-        catch(UnsupportedOperationException uoe)
-        {
-            log.debug("Could not clear collection");
-        }
-        
-        this.relatedNamespaces = new HashSet<URI>();
-        
-        return true;
-    }
-
-    @Override
-    public boolean resetStages()
-    {
-        try
-        {
-            this.stages.clear();
-            
-            return true;
-        }
-        catch(UnsupportedOperationException uoe)
-        {
-            log.debug("Could not clear collection");
-        }
-        
-        this.stages = new HashSet<URI>();
-        
-        return true;
     }
     
 }

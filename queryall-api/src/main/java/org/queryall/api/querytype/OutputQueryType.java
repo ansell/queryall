@@ -18,7 +18,8 @@ public interface OutputQueryType extends QueryType
     
     /**
      * 
-     * @param outputString Sets the output string for this query in the form of a String
+     * @param outputString
+     *            Sets the output string for this query in the form of a String
      */
     void setOutputString(String outputString);
 }

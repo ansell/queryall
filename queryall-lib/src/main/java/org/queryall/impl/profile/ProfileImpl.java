@@ -542,76 +542,139 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         return result;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetExcludedProviders()
-     */
     @Override
     public boolean resetExcludedProviders()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.excludeProviders.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.excludeProviders = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetExcludedQueryTypes()
-     */
+    
     @Override
     public boolean resetExcludedQueryTypes()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.excludeQueries.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.excludeQueries = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetExcludedRdfRules()
-     */
+    
     @Override
     public boolean resetExcludedRdfRules()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.excludeRdfRules.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.excludeRdfRules = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetIncludedProviders()
-     */
+    
     @Override
     public boolean resetIncludedProviders()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.includeProviders.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includeProviders = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetIncludedQueryTypes()
-     */
+    
     @Override
     public boolean resetIncludedQueryTypes()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.includeQueries.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includeQueries = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetIncludedRdfRules()
-     */
+    
     @Override
     public boolean resetIncludedRdfRules()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.includeRdfRules.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includeRdfRules = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.profile.Profile#resetProfileAdministrators()
-     */
+    
     @Override
     public boolean resetProfileAdministrators()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.profileAdministrators.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.profileAdministrators = new HashSet<URI>();
+        
+        return true;
     }
-
+    
     @Override
     public void setAllowImplicitProviderInclusions(final boolean allowImplicitProviderInclusions)
     {

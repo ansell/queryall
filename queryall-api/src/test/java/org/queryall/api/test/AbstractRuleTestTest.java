@@ -110,20 +110,6 @@ public abstract class AbstractRuleTestTest
     }
     
     @Test
-    public void testResetStages()
-    {
-        Assert.assertEquals(0, this.testRuleTest1.getStages().size());
-        
-        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        
-        Assert.assertEquals(1, this.testRuleTest1.getStages().size());
-        
-        Assert.assertTrue(this.testRuleTest1.resetStages());
-        
-        Assert.assertEquals(0, this.testRuleTest1.getStages().size());
-    }
-
-    @Test
     public void testResetRuleUris()
     {
         Assert.assertEquals(0, this.testRuleTest1.getRuleUris().size());
@@ -135,5 +121,19 @@ public abstract class AbstractRuleTestTest
         Assert.assertTrue(this.testRuleTest1.resetRuleUris());
         
         Assert.assertEquals(0, this.testRuleTest1.getRuleUris().size());
+    }
+    
+    @Test
+    public void testResetStages()
+    {
+        Assert.assertEquals(0, this.testRuleTest1.getStages().size());
+        
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        
+        Assert.assertEquals(1, this.testRuleTest1.getStages().size());
+        
+        Assert.assertTrue(this.testRuleTest1.resetStages());
+        
+        Assert.assertEquals(0, this.testRuleTest1.getStages().size());
     }
 }

@@ -950,7 +950,7 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
     @Test
     public void testResetLinkedQueryTypes()
     {
-        QueryType testQueryType = getNewTestQueryType();
+        final QueryType testQueryType = this.getNewTestQueryType();
         
         Assert.assertEquals(0, testQueryType.getLinkedQueryTypes().size());
         
@@ -962,12 +962,11 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         
         Assert.assertEquals(0, testQueryType.getLinkedQueryTypes().size());
     }
-
     
     @Test
     public void testResetNamespaceInputTags()
     {
-        QueryType testQueryType = getNewTestQueryType();
+        final QueryType testQueryType = this.getNewTestQueryType();
         
         Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
         
@@ -979,11 +978,27 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         
         Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
     }
-
+    
+    @Test
+    public void testResetNamespacesToHandle()
+    {
+        final QueryType testQueryType = this.getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
+        
+        testQueryType.addNamespaceToHandle(this.testNamespaceUri1);
+        
+        Assert.assertEquals(1, testQueryType.getNamespacesToHandle().size());
+        
+        Assert.assertTrue(testQueryType.resetNamespacesToHandle());
+        
+        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
+    }
+    
     @Test
     public void testResetPublicIdentifierTags()
     {
-        QueryType testQueryType = getNewTestQueryType();
+        final QueryType testQueryType = this.getNewTestQueryType();
         
         Assert.assertEquals(0, testQueryType.getPublicIdentifierTags().size());
         
@@ -994,21 +1009,5 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         Assert.assertTrue(testQueryType.resetPublicIdentifierTags());
         
         Assert.assertEquals(0, testQueryType.getPublicIdentifierTags().size());
-    }
-
-    @Test
-    public void testResetNamespacesToHandle()
-    {
-        QueryType testQueryType = getNewTestQueryType();
-        
-        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
-        
-        testQueryType.addNamespaceToHandle(testNamespaceUri1);
-        
-        Assert.assertEquals(1, testQueryType.getNamespacesToHandle().size());
-        
-        Assert.assertTrue(testQueryType.resetNamespacesToHandle());
-        
-        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
     }
 }

@@ -36,12 +36,6 @@ public interface PrefixMappingNormalisationRule extends TransformingRule
     void addObjectMappingPredicate(URI objectMappingPredicate);
     
     /**
-     * 
-     * @return True if the object mapping predicates list was reset and false otherwise.
-     */
-    boolean resetObjectMappingPredicates();
-    
-    /**
      * Adds a URI to the list of mapping predicates for predicates if their URIs are modified by
      * this rule.
      * 
@@ -54,12 +48,6 @@ public interface PrefixMappingNormalisationRule extends TransformingRule
      *            this rule.
      */
     void addPredicateMappingPredicate(URI predicateMappingPredicate);
-    
-    /**
-     * 
-     * @return True if the predicate mapping predicates list was reset and false otherwise.
-     */
-    boolean resetPredicateMappingPredicates();
     
     /**
      * Adds a URI to the list of mapping predicates for subjects if their URIs are modified by this
@@ -79,12 +67,6 @@ public interface PrefixMappingNormalisationRule extends TransformingRule
      *            rule.
      */
     void addSubjectMappingPredicate(URI subjectMappingPredicate);
-    
-    /**
-     * 
-     * @return True if the object mapping predicates list was reset and false otherwise.
-     */
-    boolean resetSubjectMappingPredicates();
     
     /**
      * Returns the URI prefix that will be used to determine whether to map a URI with this rule.
@@ -123,6 +105,24 @@ public interface PrefixMappingNormalisationRule extends TransformingRule
      * @return The collection of mapping predicates used to map subjects if their URIs change.
      */
     Collection<URI> getSubjectMappingPredicates();
+    
+    /**
+     * 
+     * @return True if the object mapping predicates list was reset and false otherwise.
+     */
+    boolean resetObjectMappingPredicates();
+    
+    /**
+     * 
+     * @return True if the predicate mapping predicates list was reset and false otherwise.
+     */
+    boolean resetPredicateMappingPredicates();
+    
+    /**
+     * 
+     * @return True if the object mapping predicates list was reset and false otherwise.
+     */
+    boolean resetSubjectMappingPredicates();
     
     /**
      * 

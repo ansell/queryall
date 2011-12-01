@@ -18,7 +18,8 @@ public interface SparqlProcessorQueryType extends OutputQueryType
     
     /**
      * 
-     * @param templateString The SPARQL Template string to be used by this query type
+     * @param templateString
+     *            The SPARQL Template string to be used by this query type
      */
     void setSparqlTemplateString(String templateString);
 }

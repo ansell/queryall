@@ -176,16 +176,25 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
         return this.sparqlWherePatterns;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.rdfrule.SparqlNormalisationRule#resetSparqlWherePatterns()
-     */
     @Override
     public boolean resetSparqlWherePatterns()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.sparqlWherePatterns.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            SparqlAskRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.sparqlWherePatterns = new ArrayList<String>(2);
+        
+        return true;
     }
-
+    
     public boolean runTests(final Collection<RuleTest> myRules)
     {
         // TODO: implement me or delete me!

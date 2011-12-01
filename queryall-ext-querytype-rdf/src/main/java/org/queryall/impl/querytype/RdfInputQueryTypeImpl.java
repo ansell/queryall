@@ -331,12 +331,12 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
     }
     
     @Override
-    public Map<String, Object> parseInputs(Map<String, Object> inputParameterMap)
+    public Map<String, Object> parseInputs(final Map<String, Object> inputParameterMap)
     {
         // TODO Auto-generated method stub
         return inputParameterMap;
     }
-
+    
     @Override
     public void setSparqlInputSelect(final String sparqlInputSelect)
     {

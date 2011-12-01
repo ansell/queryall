@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
@@ -275,6 +276,8 @@ public abstract class AbstractProfilableTest
     @Test
     public void testIsUsedWithProfileList()
     {
+        Assert.assertNotNull("Did you call super.setUp()?", this.providerIncludeImplicitly);
+        
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly, this.profileListEmpty, true, true,
                 false, false);
         

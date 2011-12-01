@@ -884,56 +884,106 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                 includeNonProfileMatched);
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.InputQueryType#resetExpectedInputParameters()
-     */
     @Override
     public boolean resetExpectedInputParameters()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.expectedInputParameters.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            QueryTypeImpl.log.debug("Could not clear collection");
+        }
+        
+        this.expectedInputParameters = new ArrayList<String>(5);
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#resetLinkedQueryTypes()
-     */
+    
     @Override
     public boolean resetLinkedQueryTypes()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.semanticallyLinkedCustomQueries.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            QueryTypeImpl.log.debug("Could not clear collection");
+        }
+        
+        this.semanticallyLinkedCustomQueries = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#resetNamespaceInputTags()
-     */
+    
     @Override
     public boolean resetNamespaceInputTags()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.namespaceInputTags.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            QueryTypeImpl.log.debug("Could not clear collection");
+        }
+        
+        this.namespaceInputTags = new ArrayList<String>(2);
+        
+        return true;
     }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#resetNamespacesToHandle()
-     */
+    
     @Override
     public boolean resetNamespacesToHandle()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.namespacesToHandle.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            QueryTypeImpl.log.debug("Could not clear collection");
+        }
+        
+        this.namespacesToHandle = new HashSet<URI>();
+        
+        return true;
     }
-
-    /* (non-Javadoc)
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#resetPublicIdentifierTags()
      */
     @Override
     public boolean resetPublicIdentifierTags()
     {
-        // TODO Auto-generated method stub
-        return false;
+        try
+        {
+            this.publicIdentifierTags.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            QueryTypeImpl.log.debug("Could not clear collection");
+        }
+        
+        this.publicIdentifierTags = new ArrayList<String>(2);
+        
+        return true;
     }
-
+    
     @Override
     public void setHandleAllNamespaces(final boolean handleAllNamespaces)
     {

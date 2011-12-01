@@ -416,6 +416,63 @@ public final class DummyProvider implements Provider
     }
     
     @Override
+    public boolean resetIncludedInQueryTypes()
+    {
+        try
+        {
+            this.includedInQueryTypes.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            DummyProvider.log.debug("Could not clear collection");
+        }
+        
+        this.includedInQueryTypes = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNamespaces()
+    {
+        try
+        {
+            this.namespaces.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            DummyProvider.log.debug("Could not clear collection");
+        }
+        
+        this.namespaces = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNormalisationUris()
+    {
+        try
+        {
+            this.normalisations.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            DummyProvider.log.debug("Could not clear collection");
+        }
+        
+        this.normalisations = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
     public Collection<Statement> resetUnrecognisedStatements()
     {
         final Collection<Statement> unrecognisedStatementsTemp = new ArrayList<Statement>(this.unrecognisedStatements);
@@ -527,63 +584,6 @@ public final class DummyProvider implements Provider
         builder.append(this.redirectOrProxy);
         builder.append("]");
         return builder.toString();
-    }
-
-    @Override
-    public boolean resetIncludedInQueryTypes()
-    {
-        try
-        {
-            this.includedInQueryTypes.clear();
-            
-            return true;
-        }
-        catch(UnsupportedOperationException uoe)
-        {
-            log.debug("Could not clear collection");
-        }
-        
-        this.includedInQueryTypes = new HashSet<URI>();
-        
-        return true;
-    }
-
-    @Override
-    public boolean resetNamespaces()
-    {
-        try
-        {
-            this.namespaces.clear();
-            
-            return true;
-        }
-        catch(UnsupportedOperationException uoe)
-        {
-            log.debug("Could not clear collection");
-        }
-        
-        this.namespaces = new HashSet<URI>();
-        
-        return true;
-    }
-
-    @Override
-    public boolean resetNormalisationUris()
-    {
-        try
-        {
-            this.normalisations.clear();
-            
-            return true;
-        }
-        catch(UnsupportedOperationException uoe)
-        {
-            log.debug("Could not clear collection");
-        }
-        
-        this.normalisations = new HashSet<URI>();
-        
-        return true;
     }
     
 }
