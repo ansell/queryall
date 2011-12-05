@@ -12,7 +12,7 @@ import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfInputQueryTypeImplTest extends AbstractRdfInputQueryTypeTest
+public class RdfInputQueryTypeImplInputTest extends AbstractRdfInputQueryTypeTest
 {
     @Override
     public Profile getNewTestProfile()
