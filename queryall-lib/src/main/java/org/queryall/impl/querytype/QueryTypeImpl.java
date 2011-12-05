@@ -49,55 +49,71 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     
     private boolean handleAllNamespaces = true;
     
-    // If present, this is a list of namespaces which can be handled by this type of custom query
-    // (or at least this form of it), unless handleAllNamespaces is true, in which case any
-    // namespace can be present here without effect
+    /**
+     * If present, this is a list of namespaces which can be handled by this type of custom query
+     * (or at least this form of it), unless handleAllNamespaces is true, in which case any
+     * namespace can be present here without effect
+     */
     private Collection<URI> namespacesToHandle = new HashSet<URI>();
     
-    // if a query is not namepsace specific it can be executed across providers which do not
-    // necessarily handle this namespace, but are not necessarily defaults per se
+    /**
+     * if a query is not namepsace specific it can be executed across providers which do not
+     * necessarily handle this namespace, but are not necessarily defaults per se
+     */
     private boolean isNamespaceSpecific = false;
     
-    // these are the input_NN indexes that are either namespaces, or correspond to public
-    // identifiers that are not untouchable internal private identifiers
-    // among other things, it can be used to make sure that these are lowercased per a given policy
-    // (in this case the Banff Manifesto)
+    /**
+     * these are the input_NN indexes that are either namespaces, or correspond to public
+     * identifiers that are not untouchable internal private identifiers among other things, it can
+     * be used to make sure that these are lowercased per a given policy (in this case the Banff
+     * Manifesto)
+     */
     private Collection<String> publicIdentifierTags = new ArrayList<String>(2);
     
-    // these are the input_NN indexes that we will use to determine which namespace providers to
-    // perform this query using
+    /**
+     * these are the input_NN indexes that we will use to determine which namespace providers to
+     * perform this query using
+     */
     private Collection<String> namespaceInputTags = new ArrayList<String>(2);
     
-    // This is the method by which we determine whether any or all of the namespaces are required on
-    // a particular endpoint before we utilise it
-    // if defaults are included in this query then we will always use default providers regardless
-    // of the namespaces they have declared on them
-    // if we do not use all namespaces then this setting will still be in effect, but it will first
-    // match against the list that we do handle before getting to the provider choice stage
-    // For example, if we match inputs 1 and 2 as namespaceInputIndexes, and we have the the
-    // namespaceMatchMethod set to QueryType.queryNamespaceMatchAll.stringValue(), and we do not
-    // handle all namespaces and inputs 1 and 2 both exist in namespacesToHandle then we will
-    // satisfy the initial test for query usability
-    // Possible values are QueryType.queryNamespaceMatchAll.stringValue() and
-    // QueryType.queryNamespaceMatchAny.stringValue()
+    /**
+     * This is the method by which we determine whether any or all of the namespaces are required on
+     * a particular endpoint before we utilise it if defaults are included in this query then we
+     * will always use default providers regardless of the namespaces they have declared on them if
+     * we do not use all namespaces then this setting will still be in effect, but it will first
+     * match against the list that we do handle before getting to the provider choice stage For
+     * example, if we match inputs 1 and 2 as namespaceInputIndexes, and we have the the
+     * namespaceMatchMethod set to QueryType.queryNamespaceMatchAll.stringValue(), and we do not
+     * handle all namespaces and inputs 1 and 2 both exist in namespacesToHandle then we will
+     * satisfy the initial test for query usability Possible values are
+     * QueryType.queryNamespaceMatchAll.stringValue() and
+     * QueryType.queryNamespaceMatchAny.stringValue()
+     **/
     private URI namespaceMatchMethod = QueryTypeSchema.getQueryNamespaceMatchAny();
     
-    // if we are told we can include defaults, even if we are known to be namespace specific we can
-    // utilise the default providers as sources
+    /**
+     * if we are told we can include defaults, even if we are known to be namespace specific we can
+     * utilise the default providers as sources
+     */
     private boolean includeDefaults = true;
     
-    // if this query can be paged using the pageoffsetNN mechanism, this should be true, and
-    // otherwise it should be false
+    /**
+     * if this query can be paged using the pageoffsetNN mechanism, this should be true, and
+     * otherwise it should be false
+     */
     private boolean isPageable = false;
     
-    // If this query is restricted by any of the robots.txt entries than declare that here, so that
-    // automatic bot detection is functional for this query
+    /**
+     * If this query is restricted by any of the robots.txt entries than declare that here, so that
+     * automatic bot detection is functional for this query
+     */
     private boolean inRobotsTxt = false;
     
-    // use this to define which additional custom query rdf triples to add to a particular type of
-    // custom query
-    // a typical use for this is for adding links and index triples to construct,index,links etc
-    // type queries, but not to others for instance
+    /**
+     * use this to define which additional custom query rdf triples to add to a particular type of
+     * custom query a typical use for this is for adding links and index triples to
+     * construct,index,links etc type queries, but not to others for instance
+     */
     private Collection<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
@@ -193,7 +209,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryTemplateString()))
             {
-                this.setTemplateString(nextStatement.getObject().stringValue());
+                this.setProcessingTemplateString(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryQueryUriTemplateString()))
             {
@@ -497,18 +513,26 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         {
             return false;
         }
-        if(this.getTemplateString() == null)
+        if(other instanceof ProcessorQueryType)
         {
-            if(other.getTemplateString() != null)
+            final ProcessorQueryType otherProcessor = (ProcessorQueryType)other;
+            
+            if(this.getProcessingTemplateString() == null)
+            {
+                if(otherProcessor.getProcessingTemplateString() != null)
+                {
+                    return false;
+                }
+            }
+            else if(!this.getProcessingTemplateString().equals(otherProcessor.getProcessingTemplateString()))
             {
                 return false;
             }
         }
-        else if(!this.getTemplateString().equals(other.getTemplateString()))
+        else
         {
             return false;
         }
-        
         return true;
     }
     
@@ -600,6 +624,12 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
+    public String getProcessingTemplateString()
+    {
+        return this.templateString;
+    }
+    
+    @Override
     public URI getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
@@ -621,12 +651,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     public String getStandardUriTemplateString()
     {
         return this.standardUriTemplateString;
-    }
-    
-    @Override
-    public String getTemplateString()
-    {
-        return this.templateString;
     }
     
     @Override
@@ -1039,6 +1063,12 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
+    public void setProcessingTemplateString(final String templateString)
+    {
+        this.templateString = templateString;
+    }
+    
+    @Override
     public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
@@ -1054,12 +1084,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     public void setStandardUriTemplateString(final String standardUriTemplateString)
     {
         this.standardUriTemplateString = standardUriTemplateString;
-    }
-    
-    @Override
-    public void setTemplateString(final String templateString)
-    {
-        this.templateString = templateString;
     }
     
     @Override

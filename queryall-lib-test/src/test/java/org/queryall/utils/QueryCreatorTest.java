@@ -36,7 +36,7 @@ public class QueryCreatorTest
 {
     private ValueFactory testValueFactory;
     
-    private RegexInputQueryType testRegexInputQueryType1;
+    private RegexInputQueryTypeImpl testRegexInputQueryType1;
     private Provider testProvider1;
     private Map<String, String> testAttributeList1;
     private List<Profile> testIncludedProfiles;
@@ -47,7 +47,7 @@ public class QueryCreatorTest
     private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables1;
     private NamespaceEntry testNamespaceEntry1;
     private Collection<NamespaceEntry> testNamespaceEntries1;
-    private RegexInputQueryType testRegexInputQueryType2;
+    private RegexInputQueryTypeImpl testRegexInputQueryType2;
     private Provider testProvider2;
     private NamespaceEntry testNamespaceEntry2;
     private Map<String, String> testAttributeList2;
@@ -96,7 +96,7 @@ public class QueryCreatorTest
         this.testRegexInputQueryType1.addNamespaceToHandle(this.testNamespaceEntry1.getKey());
         this.testRegexInputQueryType1.setInputRegex("^([\\w-]+):(.+)$");
         this.testRegexInputQueryType1
-                .setTemplateString("Select * Where { <http://example.org/ns/${input_1}> dc:identifier \"${input_2}\" . }");
+                .setProcessingTemplateString("Select * Where { <http://example.org/ns/${input_1}> dc:identifier \"${input_2}\" . }");
         
         this.testRegexInputQueryType2 = new RegexInputQueryTypeImpl();
         this.testRegexInputQueryType2.setKey("http://example.org/test/query/2");
@@ -106,7 +106,7 @@ public class QueryCreatorTest
         this.testRegexInputQueryType2.addNamespaceToHandle(this.testNamespaceEntry2.getKey());
         this.testRegexInputQueryType2.setInputRegex("^([\\w-]+):(.+)$");
         this.testRegexInputQueryType2
-                .setTemplateString("Select * Where { <${normalisedStandardUri}> dc:identifier \"${endpointSpecificUri}\" . }");
+                .setProcessingTemplateString("Select * Where { <${normalisedStandardUri}> dc:identifier \"${endpointSpecificUri}\" . }");
         
         this.testRegexInputQueryType3 = new RegexInputQueryTypeImpl();
         this.testRegexInputQueryType3.setKey("http://example.org/test/query/3");

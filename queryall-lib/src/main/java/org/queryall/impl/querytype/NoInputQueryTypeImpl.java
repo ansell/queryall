@@ -17,6 +17,7 @@ import org.queryall.api.querytype.NoInputQueryType;
 import org.queryall.api.querytype.NoInputQueryTypeSchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
+import org.queryall.api.utils.Constants;
 
 /**
  * Matches all inputs, but processes none of them. It always returns true from
@@ -85,10 +86,47 @@ public class NoInputQueryTypeImpl extends QueryTypeImpl implements NoInputQueryT
         return true;
     }
     
+    /**
+     * Returns the input map unchanged
+     */
     @Override
     public Map<String, Object> parseInputs(final Map<String, Object> inputParameterMap)
     {
         return inputParameterMap;
+    }
+
+    /**
+     * Returns the input map unchanged
+     */
+    @Override
+    public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
+    {
+        return queryVariables;
+    }
+
+    /**
+     * Returns the object from the given map with the same key as Constants.QUERY if it exists, or the empty string otherwise
+     */
+    @Override
+    public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
+    {
+        if(processedQueryVariables.containsKey(Constants.QUERY))
+        {
+            return (String)processedQueryVariables.get(Constants.QUERY);
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    /**
+     * Returns the given query unchanged
+     */
+    @Override
+    public Object parseProcessorQuery(String query)
+    {
+        return query;
     }
     
 }

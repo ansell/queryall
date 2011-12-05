@@ -4,6 +4,7 @@
 package org.queryall.impl.querytype;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -42,14 +43,35 @@ public abstract class SparqlProcessorQueryTypeImpl extends QueryTypeImpl impleme
     public String getSparqlTemplateString()
     {
         // Wrappers around the getTemplateString function for now
-        return this.getTemplateString();
+        return this.getProcessingTemplateString();
     }
     
     @Override
     public void setSparqlTemplateString(final String templateString)
     {
         // Wrappers around the setTemplateString function for now
-        this.setTemplateString(templateString);
+        this.setProcessingTemplateString(templateString);
+    }
+    
+    @Override
+    public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Object parseProcessorQuery(String query)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
     
 }

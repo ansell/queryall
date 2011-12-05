@@ -391,5 +391,5 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
         
         return false;
     }
-    
+
 }

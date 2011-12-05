@@ -46,11 +46,13 @@ import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.RdfProvider;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.InputQueryType;
+import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
+import org.queryall.api.querytype.SparqlProcessorQueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
@@ -1171,10 +1173,6 @@ public class RdfUtilsTest
                     Assert.assertTrue("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());
                     
-                    Assert.assertEquals("Query type template string was not parsed correctly",
-                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
-                            nextQueryType.getTemplateString());
-                    
                     Assert.assertEquals("Query type query uri template string was not parsed correctly",
                             "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}",
                             nextQueryType.getQueryUriTemplateString());
@@ -1230,6 +1228,28 @@ public class RdfUtilsTest
                             "Query type output rdf xml string was not parsed correctly",
                             "<rdf:Description rdf:about=\"${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedStandardUri}\"><ns0pred:xmlUrl xmlns:ns0pred=\"${defaultHostAddress}bio2rdf_resource:\">${xmlEncoded_inputUrlEncoded_privateuppercase_normalisedQueryUri}</ns0pred:xmlUrl></rdf:Description>",
                             nextRdfXmlQueryType.getOutputString());
+                    
+                    Assert.assertTrue("Query type was not parsed into a ProcessorQueryType",
+                            nextQueryType instanceof ProcessorQueryType);
+                    
+                    final ProcessorQueryType nextProcessorQueryType = (ProcessorQueryType)nextQueryType;
+                    
+                    
+                    Assert.assertEquals("Query type template string was not parsed correctly",
+                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
+                            nextProcessorQueryType.getProcessingTemplateString());
+                    
+                    Assert.assertTrue("Query type was not parsed into a SparqlProcessorQueryType",
+                            nextQueryType instanceof SparqlProcessorQueryType);
+                    
+                    final SparqlProcessorQueryType nextSparqlProcessorQueryType = (SparqlProcessorQueryType)nextQueryType;
+                    
+                    
+                    Assert.assertEquals("Query type template string was not parsed correctly",
+                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
+                            nextSparqlProcessorQueryType.getSparqlTemplateString());
+                    
+                    Assert.assertEquals(nextProcessorQueryType.getProcessingTemplateString(), nextSparqlProcessorQueryType.getSparqlTemplateString());
                 }
                 else if(nextQueryTypeUri.equals(this.testQueryTypeUri2))
                 {
@@ -1255,10 +1275,6 @@ public class RdfUtilsTest
                     
                     Assert.assertFalse("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());
-                    
-                    Assert.assertEquals("Query type template string was not parsed correctly",
-                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
-                            nextQueryType.getTemplateString());
                     
                     Assert.assertEquals("Query type query uri template string was not parsed correctly",
                             "${defaultHostAddress}${input_1}${defaultSeparator}${input_2}",
@@ -1320,6 +1336,26 @@ public class RdfUtilsTest
                             "Query type output rdf n3 string was not parsed correctly",
                             "<${ntriplesEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}> a <http://purl.org/queryall/query:QueryType>",
                             nextRdfOutputQueryType.getOutputString());
+                    
+                    
+                    final ProcessorQueryType nextProcessorQueryType = (ProcessorQueryType)nextQueryType;
+                    
+                    
+                    Assert.assertEquals("Query type template string was not parsed correctly",
+                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
+                            nextProcessorQueryType.getProcessingTemplateString());
+                    
+                    Assert.assertTrue("Query type was not parsed into a SparqlProcessorQueryType",
+                            nextQueryType instanceof SparqlProcessorQueryType);
+                    
+                    final SparqlProcessorQueryType nextSparqlProcessorQueryType = (SparqlProcessorQueryType)nextQueryType;
+                    
+                    
+                    Assert.assertEquals("Query type template string was not parsed correctly",
+                            "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
+                            nextSparqlProcessorQueryType.getSparqlTemplateString());
+                    
+                    Assert.assertEquals(nextProcessorQueryType.getProcessingTemplateString(), nextSparqlProcessorQueryType.getSparqlTemplateString());
                 }
                 else
                 {
