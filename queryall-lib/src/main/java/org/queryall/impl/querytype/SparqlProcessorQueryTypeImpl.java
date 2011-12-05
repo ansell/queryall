@@ -10,6 +10,7 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.queryall.api.querytype.SparqlProcessorQueryType;
+import org.queryall.api.utils.Constants;
 
 /**
  * 
@@ -56,22 +57,26 @@ public abstract class SparqlProcessorQueryTypeImpl extends QueryTypeImpl impleme
     @Override
     public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return queryVariables;
     }
 
     @Override
     public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
     {
-        // TODO Auto-generated method stub
-        return null;
+        if(processedQueryVariables.containsKey(Constants.QUERY))
+        {
+            return (String)processedQueryVariables.get(Constants.QUERY);
+        }
+        else
+        {
+            return "";
+        }
     }
 
     @Override
     public Object parseProcessorQuery(String query)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return query;
     }
     
 }

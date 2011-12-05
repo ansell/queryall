@@ -3,6 +3,7 @@
  */
 package org.queryall.api.test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
@@ -55,7 +56,8 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
         // final ValueFactory f = new MemValueFactory();
         
         this.testQueryType1 = this.getNewTestProcessorQueryType();
-        
+        this.testQueryType1.setProcessingTemplateString(getNewTestProcessingTemplateString());
+        this.testQueryVariables = new HashMap<String, Object>();
     }
     
     /**
@@ -99,8 +101,6 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
         String substitutedQuery = this.testQueryType1.substituteQueryVariables(testQueryVariables);
         
         Assert.assertNotNull(substitutedQuery);
-        
-        Assert.assertTrue(substitutedQuery.trim().length() > 0);
     }
 
     @Test
