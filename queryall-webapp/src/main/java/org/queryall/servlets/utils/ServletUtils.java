@@ -29,6 +29,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
@@ -238,8 +239,10 @@ public class ServletUtils
                 Repository tempRepository = new SailRepository(new MemoryStore());
                 tempRepository.initialize();
                 
-                RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
+                RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings.getStringProperty(
+                                                    "assumedResponseContentType", Constants.APPLICATION_RDF_XML), localSettings.getDefaultHostAddress());
                 
+                // Perform normalisation for the AfterResultsImport stage
                 tempRepository =
                         (Repository)RuleUtils.normaliseByStage(NormalisationRuleSchema
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
@@ -281,9 +284,23 @@ public class ServletUtils
                 
                 try
                 {
-                    myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
-                            localSettings.getDefaultHostAddress() + queryString, RDFFormat.RDFXML,
-                            nextPotentialQueryBundle.getOriginalProvider().getKey());
+                    // TODO: make this section customisable, so it doesn't always need to accept RDF directly 
+                    if(nextPotentialQueryBundle.getQueryType() != null && nextPotentialQueryBundle.getQueryType() instanceof RdfOutputQueryType)
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
+                                localSettings.getDefaultHostAddress() + queryString, RdfUtils.getWriterFormat(RdfUtils.findBestContentType(((RdfOutputQueryType)nextPotentialQueryBundle.getQueryType()).getOutputRdfFormat(), Constants.APPLICATION_RDF_XML, Constants.APPLICATION_RDF_XML)),
+                                nextPotentialQueryBundle.getOriginalProvider().getKey());
+                    }
+                    else if(nextPotentialQueryBundle.getQueryType() != null && nextPotentialQueryBundle.getQueryType() instanceof OutputQueryType)
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
+                                localSettings.getDefaultHostAddress() + queryString, RdfUtils.getWriterFormat(Constants.APPLICATION_RDF_XML),
+                                nextPotentialQueryBundle.getOriginalProvider().getKey());
+                    }
+                    else if(nextPotentialQueryBundle.getQueryType() != null)
+                    {
+                        GeneralServlet.log.warn("Found a query type that was not an instance of OutputQueryType");
+                    }
                 }
                 catch(final org.openrdf.rio.RDFParseException rdfpe)
                 {
