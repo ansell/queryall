@@ -136,17 +136,15 @@ public class ServletUtils
     }
     
     /**
-     * @param localSettings
      * @param localBlacklistController
      * @param queryString
      * @param requesterIpAddress
      * @param multiProviderQueryBundles
      * @param nextTotalTime
      */
-    public static void doQueryDebug(final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController, final String queryString,
-            final String requesterIpAddress, final Collection<QueryBundle> multiProviderQueryBundles,
-            final long nextTotalTime)
+    public static void doQueryDebug(final BlacklistController localBlacklistController,
+            final String queryString, final String requesterIpAddress,
+            final Collection<QueryBundle> multiProviderQueryBundles, final long nextTotalTime)
     {
         QueryDebug nextQueryDebug;
         nextQueryDebug = new QueryDebug();

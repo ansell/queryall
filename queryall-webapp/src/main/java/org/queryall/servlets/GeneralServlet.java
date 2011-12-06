@@ -325,8 +325,8 @@ public class GeneralServlet extends HttpServlet
             // functionalities
             if(GeneralServlet._INFO || localSettings.getBooleanProperty("automaticallyBlacklistClients", false))
             {
-                ServletUtils.doQueryDebug(localSettings, localBlacklistController, queryString, requesterIpAddress,
-                        multiProviderQueryBundles, nextTotalTime);
+                ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress, multiProviderQueryBundles,
+                        nextTotalTime);
             }
         }
         catch(final QueryAllException qex)
