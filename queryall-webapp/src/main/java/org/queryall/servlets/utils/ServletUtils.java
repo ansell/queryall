@@ -164,12 +164,7 @@ public class ServletUtils
         
         nextQueryDebug.setMatchingQueryTitles(queryTitles);
         
-        localBlacklistController.accumulateQueryDebug(nextQueryDebug, localSettings,
-                localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L),
-                localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
-                localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-                localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-                localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+        localBlacklistController.accumulateQueryDebug(nextQueryDebug);
     }
     
     /**

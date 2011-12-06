@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.blacklist.BlacklistEntry;
+import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
 import org.queryall.utils.test.DummySettings;
@@ -29,7 +30,7 @@ public class BlacklistControllerTest
     private QueryAllConfiguration testSettings;
     private BlacklistController testBlacklistController;
     private Collection<RdfFetcherQueryRunnable> testTemporaryEndpointBlacklist;
-
+    
     /**
      * @throws java.lang.Exception
      */
@@ -52,35 +53,31 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#getDefaultController()}.
-     */
-    @Test
-    public void testGetDefaultController()
-    {
-        Assert.assertNotNull(BlacklistController.getDefaultController());
-    }
-    
-    /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#accumulateBlacklist(java.util.Collection, long, boolean)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#accumulateBlacklist(java.util.Collection, long, boolean)}
+     * .
      */
     @Test
     public void testAccumulateBlacklist()
     {
         this.testTemporaryEndpointBlacklist = new ArrayList<RdfFetcherQueryRunnable>();
         
-        RdfFetcherQueryRunnable fetcherQueryRunnable = new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", testSettings, testBlacklistController, null);
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
         fetcherQueryRunnable.setLastException(new Exception());
         fetcherQueryRunnable.setCompleted(true);
         
-        // check that setting an exception and the completed flag identifies this runnable as being in error
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
         Assert.assertTrue(fetcherQueryRunnable.wasError());
         
         this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
         
         // then perform the actual accumulateBlacklist operation that we are testing here
-        this.testBlacklistController.accumulateBlacklist(testTemporaryEndpointBlacklist);
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
         
-        Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
         
         Assert.assertNotNull(statistics);
         
@@ -88,7 +85,7 @@ public class BlacklistControllerTest
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
         
-        BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
         
         Assert.assertNotNull(blacklistEntry);
         
@@ -98,7 +95,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#accumulateHttpResponseError(java.lang.String, int)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#accumulateHttpResponseError(java.lang.String, int)}
+     * .
      */
     @Test
     public void testAccumulateHttpResponseError()
@@ -108,10 +107,13 @@ public class BlacklistControllerTest
         this.testBlacklistController.accumulateHttpResponseError("http://example.org/test/endpoint/bad/2", 403);
         
         Assert.assertEquals(1, this.testBlacklistController.getAllHttpErrorResponseCodesByServer().size());
-
-        Assert.assertTrue(this.testBlacklistController.getAllHttpErrorResponseCodesByServer().containsKey("http://example.org/test/endpoint/bad/2"));
-    
-        Map<Integer, Integer> map = this.testBlacklistController.getAllHttpErrorResponseCodesByServer().get("http://example.org/test/endpoint/bad/2");
+        
+        Assert.assertTrue(this.testBlacklistController.getAllHttpErrorResponseCodesByServer().containsKey(
+                "http://example.org/test/endpoint/bad/2"));
+        
+        final Map<Integer, Integer> map =
+                this.testBlacklistController.getAllHttpErrorResponseCodesByServer().get(
+                        "http://example.org/test/endpoint/bad/2");
         
         Assert.assertNotNull(map);
         
@@ -123,17 +125,74 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#accumulateQueryDebug(org.queryall.query.QueryDebug, org.queryall.api.base.QueryAllConfiguration, long, boolean, boolean, int, int)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#accumulateQueryDebug(org.queryall.query.QueryDebug)}
+     * .
      */
-    @Ignore
     @Test
-    public void testAccumulateQueryDebug()
+    public void testAccumulateQueryDebugDefaultParameters()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        nextQueryObject.setClientIPAddress("127.0.0.1");
+        
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // By default, we assume that client blacklisting is not required, and we don't override
+        // this in DummySettings for the "automaticallyBlacklistClients" property so it should be
+        // false and hence there should be no accumulation
+        Assert.assertEquals(0, debugInformation.size());
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#accumulateQueryTotal(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#accumulateQueryDebug(org.queryall.query.QueryDebug, long, boolean, boolean, int, int)}
+     * .
+     */
+    @Test
+    public void testAccumulateQueryDebugExplicitParametersFalse()
+    {
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, false, 0, 0);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to false above, so we expect
+        // not to see any debug information
+        Assert.assertEquals(0, debugInformation.size());
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#accumulateQueryDebug(org.queryall.query.QueryDebug, long, boolean, boolean, int, int)}
+     * .
+     */
+    @Test
+    public void testAccumulateQueryDebugExplicitParametersTrue()
+    {
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        nextQueryObject.setClientIPAddress("127.0.0.1");
+        
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 0);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, debugInformation.size());
+        
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#accumulateQueryTotal(java.lang.String)}.
      */
     @Ignore
     @Test
@@ -143,7 +202,8 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#clearStatisticsUploadList()}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#clearStatisticsUploadList()}.
      */
     @Ignore
     @Test
@@ -163,7 +223,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#evaluateClientBlacklist(org.queryall.api.base.QueryAllConfiguration, boolean, int, float, int)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#evaluateClientBlacklist(org.queryall.api.base.QueryAllConfiguration, boolean, int, float, int)}
+     * .
      */
     @Ignore
     @Test
@@ -173,7 +235,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#getAlternativeUrl(java.lang.String, java.util.List)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#getAlternativeUrl(java.lang.String, java.util.List)}
+     * .
      */
     @Ignore
     @Test
@@ -183,7 +247,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#getCurrentDebugInformationFor(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#getCurrentDebugInformationFor(java.lang.String)}
+     * .
      */
     @Ignore
     @Test
@@ -213,7 +279,17 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#getEndpointUrlsInBlacklist(long, boolean)}.
+     * Test method for {@link org.queryall.blacklist.BlacklistController#getDefaultController()}.
+     */
+    @Test
+    public void testGetDefaultController()
+    {
+        Assert.assertNotNull(BlacklistController.getDefaultController());
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#getEndpointUrlsInBlacklist(long, boolean)}.
      */
     @Ignore
     @Test
@@ -233,7 +309,8 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#isClientBlacklisted(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#isClientBlacklisted(java.lang.String)}.
      */
     @Ignore
     @Test
@@ -243,7 +320,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#isClientPermanentlyBlacklisted(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#isClientPermanentlyBlacklisted(java.lang.String)}
+     * .
      */
     @Ignore
     @Test
@@ -253,7 +332,8 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#isClientWhitelisted(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#isClientWhitelisted(java.lang.String)}.
      */
     @Ignore
     @Test
@@ -263,7 +343,8 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#isEndpointBlacklisted(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#isEndpointBlacklisted(java.lang.String)}.
      */
     @Ignore
     @Test
@@ -273,7 +354,8 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#isUrlBlacklisted(java.lang.String)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#isUrlBlacklisted(java.lang.String)}.
      */
     @Ignore
     @Test
@@ -283,7 +365,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#persistStatistics(java.util.Collection, int)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#persistStatistics(java.util.Collection, int)}
+     * .
      */
     @Ignore
     @Test
@@ -293,7 +377,9 @@ public class BlacklistControllerTest
     }
     
     /**
-     * Test method for {@link org.queryall.blacklist.BlacklistController#removeEndpointsFromBlacklist(java.util.Collection, long, boolean)}.
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#removeEndpointsFromBlacklist(java.util.Collection, long, boolean)}
+     * .
      */
     @Ignore
     @Test
