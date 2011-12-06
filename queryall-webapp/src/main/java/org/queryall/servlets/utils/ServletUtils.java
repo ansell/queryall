@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -659,9 +658,6 @@ public class ServletUtils
     
     /**
      * Encapsulates the basic logging details for a single request
-     * 
-     * @param request
-     * @param requestQueryOptions
      * @param useDefaultProviders
      * @param serverName
      * @param queryString
@@ -672,21 +668,24 @@ public class ServletUtils
      * @param pageOffset
      * @param originalRequestedContentType
      * @param requestedContentType
+     * @param containsExplicitPageOffset TODO
+     * @param acceptHeader TODO
+     * @param userAgentHeader TODO
      */
-    public static void logRequestDetails(final HttpServletRequest request,
-            final DefaultQueryOptions requestQueryOptions, final boolean useDefaultProviders, final String serverName,
-            final String queryString, final String requesterIpAddress, final String locale,
-            final String characterEncoding, final boolean isPretendQuery, final int pageOffset,
-            final String originalRequestedContentType, final String requestedContentType)
+    public static void logRequestDetails(final boolean useDefaultProviders,
+            final String serverName, final String queryString, final String requesterIpAddress,
+            final String locale, final String characterEncoding, final boolean isPretendQuery,
+            final int pageOffset, final String originalRequestedContentType, final String requestedContentType,
+            boolean containsExplicitPageOffset, String acceptHeader, String userAgentHeader)
     {
         if(GeneralServlet._INFO)
         {
             GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
                     + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
-                    + requestQueryOptions.containsExplicitPageOffsetValue() + " pageOffset=" + pageOffset
+                    + containsExplicitPageOffset + " pageOffset=" + pageOffset
                     + " isPretendQuery=" + isPretendQuery + " useDefaultProviders=" + useDefaultProviders);
             GeneralServlet.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
-                    + request.getHeader("Accept") + " userAgent=" + request.getHeader("User-Agent"));
+                    + acceptHeader + " userAgent=" + userAgentHeader);
             GeneralServlet.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
             
             if(!originalRequestedContentType.equals(requestedContentType))
@@ -775,6 +774,7 @@ public class ServletUtils
             // the XML PI
             // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with
             // all RDF/XML results and we need to change the magic number here
+            // TODO: Make a sesametools version of the RDF/XML output writer that allows the choice of having a PI or not
             if(buffer.length() > 38)
             {
                 for(int i = 38; i < cleanOutput.getBuffer().length(); i++)
@@ -822,6 +822,7 @@ public class ServletUtils
         response.setCharacterEncoding("UTF-8");
         response.setStatus(responseCode);
         response.setHeader("Vary", "Accept");
+        // TODO: Make the Accept-Control-Allow-Origin header configurable
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.flushBuffer();
     }

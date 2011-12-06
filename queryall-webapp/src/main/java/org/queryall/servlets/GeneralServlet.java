@@ -139,9 +139,9 @@ public class GeneralServlet extends HttpServlet
         
         if(GeneralServlet._INFO)
         {
-            ServletUtils.logRequestDetails(request, requestQueryOptions, useDefaultProviders, serverName, queryString,
-                    requesterIpAddress, locale, characterEncoding, isPretendQuery, pageOffset,
-                    originalRequestedContentType, requestedContentType);
+            ServletUtils.logRequestDetails(useDefaultProviders, serverName, queryString, requesterIpAddress, locale,
+                    characterEncoding, isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
+                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"), request.getHeader("User-Agent"));
         }
         
         // allow for users to perform redirections if the query did not contain an explicit format
