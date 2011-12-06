@@ -17,7 +17,6 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.blacklist.BlacklistEntry;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
-import org.queryall.query.Settings;
 import org.queryall.utils.test.DummySettings;
 
 /**
@@ -101,11 +100,26 @@ public class BlacklistControllerTest
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#accumulateHttpResponseError(java.lang.String, int)}.
      */
-    @Ignore
     @Test
     public void testAccumulateHttpResponseError()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertEquals(0, this.testBlacklistController.getAllHttpErrorResponseCodesByServer().size());
+        
+        this.testBlacklistController.accumulateHttpResponseError("http://example.org/test/endpoint/bad/2", 403);
+        
+        Assert.assertEquals(1, this.testBlacklistController.getAllHttpErrorResponseCodesByServer().size());
+
+        Assert.assertTrue(this.testBlacklistController.getAllHttpErrorResponseCodesByServer().containsKey("http://example.org/test/endpoint/bad/2"));
+    
+        Map<Integer, Integer> map = this.testBlacklistController.getAllHttpErrorResponseCodesByServer().get("http://example.org/test/endpoint/bad/2");
+        
+        Assert.assertNotNull(map);
+        
+        Assert.assertEquals(1, map.size());
+        
+        Assert.assertTrue(map.containsKey(new Integer(403)));
+        
+        Assert.assertEquals(new Integer(1), map.get(new Integer(403)));
     }
     
     /**

@@ -141,21 +141,24 @@ public class BlacklistController
     
     public void accumulateHttpResponseError(final String endpointUrl, final int errorResponseCode)
     {
-        if(this.getAllHttpErrorResponseCodesByServer() == null)
+        if(this.allHttpErrorResponseCodesByServer == null)
         {
             synchronized(this)
             {
-                this.setAllHttpErrorResponseCodesByServer(new ConcurrentHashMap<String, Map<Integer, Integer>>(200));
+                if(this.allHttpErrorResponseCodesByServer == null)
+                {
+                    this.allHttpErrorResponseCodesByServer = new ConcurrentHashMap<String, Map<Integer, Integer>>(200);
+                }
             }
         }
         
-        synchronized(this.getAllHttpErrorResponseCodesByServer())
+        synchronized(this.allHttpErrorResponseCodesByServer)
         {
             Map<Integer, Integer> nextErrorList = null;
             
-            if(this.getAllHttpErrorResponseCodesByServer().containsKey(endpointUrl))
+            if(this.allHttpErrorResponseCodesByServer.containsKey(endpointUrl))
             {
-                nextErrorList = this.getAllHttpErrorResponseCodesByServer().get(endpointUrl);
+                nextErrorList = this.allHttpErrorResponseCodesByServer.get(endpointUrl);
                 
                 if(nextErrorList.containsKey(errorResponseCode))
                 {
@@ -174,7 +177,7 @@ public class BlacklistController
                 nextErrorList.put(errorResponseCode, 1);
             }
             
-            this.getAllHttpErrorResponseCodesByServer().put(endpointUrl, nextErrorList);
+            this.allHttpErrorResponseCodesByServer.put(endpointUrl, nextErrorList);
         }
     }
     
