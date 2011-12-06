@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils;
+package org.queryall.utils.test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,6 +67,7 @@ import org.queryall.api.ruletest.SparqlRuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.utils.RdfUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
