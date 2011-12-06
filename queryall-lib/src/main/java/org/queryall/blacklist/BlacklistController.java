@@ -23,6 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * The blacklist controller class aggregates failures and client queries.
+ * 
+ * It uses this aggregated information to identify clients that are performing too many requests in
+ * a short period of time and to temporarily isolate misbehaving endpoints so that queries are
+ * efficient, and servers are not overloaded while they are struggling.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class BlacklistController
@@ -46,36 +52,36 @@ public class BlacklistController
         return BlacklistControllerHolder.helper;
     }
     
-    public volatile Map<String, BlacklistEntry> accumulatedBlacklistStatistics =
+    private volatile Map<String, BlacklistEntry> accumulatedBlacklistStatistics =
             new ConcurrentHashMap<String, BlacklistEntry>(200);
     
-    public volatile Map<String, Map<Integer, Integer>> allHttpErrorResponseCodesByServer =
+    private volatile Map<String, Map<Integer, Integer>> allHttpErrorResponseCodesByServer =
             new ConcurrentHashMap<String, Map<Integer, Integer>>(200);
     
-    public volatile Map<String, Integer> allServerQueryTotals = new ConcurrentHashMap<String, Integer>(200);
+    private volatile Map<String, Integer> allServerQueryTotals = new ConcurrentHashMap<String, Integer>(200);
     
-    public volatile Collection<RdfFetcherQueryRunnable> allCurrentBadQueries = Collections
+    private volatile Collection<RdfFetcherQueryRunnable> allCurrentBadQueries = Collections
             .synchronizedSet(new HashSet<RdfFetcherQueryRunnable>(200));
     
-    public volatile Map<String, Collection<QueryDebug>> currentQueryDebugInformation =
+    private volatile Map<String, Collection<QueryDebug>> currentQueryDebugInformation =
             new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
     
-    public volatile Collection<String> currentIPBlacklist = null;
+    private volatile Collection<String> currentIPBlacklist = null;
     
-    public volatile Collection<String> permanentServletLifetimeIPBlacklist = Collections
+    private volatile Collection<String> permanentServletLifetimeIPBlacklist = Collections
             .synchronizedSet(new HashSet<String>(200));
     
-    public volatile Map<String, Collection<QueryDebug>> permanentServletLifetimeIPBlacklistEvidence =
+    private volatile Map<String, Collection<QueryDebug>> permanentServletLifetimeIPBlacklistEvidence =
             new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
     
-    public volatile Collection<String> currentIPWhitelist = null;
+    private volatile Collection<String> currentIPWhitelist = null;
     
-    public volatile Collection<HttpUrlQueryRunnable> internalStatisticsUploadList = Collections
+    private volatile Collection<HttpUrlQueryRunnable> internalStatisticsUploadList = Collections
             .synchronizedSet(new HashSet<HttpUrlQueryRunnable>());
     
-    public volatile Date lastServerStartupDate = new Date();
+    private volatile Date lastServerStartupDate = new Date();
     
-    public volatile Date lastExpiryDate = new Date();
+    private volatile Date lastExpiryDate = new Date();
     
     private final QueryAllConfiguration localSettings;
     
@@ -84,12 +90,11 @@ public class BlacklistController
         this.localSettings = queryAllConfiguration;
     }
     
-    public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist,
-            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
+    public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist)
     {
         this.doBlacklistExpiry();
         
-        synchronized(this.accumulatedBlacklistStatistics)
+        synchronized(this.getAccumulatedBlacklistStatistics())
         {
             for(final RdfFetcherQueryRunnable nextQueryObject : temporaryEndpointBlacklist)
             {
@@ -103,10 +108,10 @@ public class BlacklistController
                 // FIXME: Need to know when this is null and not setup properly
                 if(nextQueryObject.getEndpointUrl() != null)
                 {
-                    if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getEndpointUrl()))
+                    if(this.getAccumulatedBlacklistStatistics().containsKey(nextQueryObject.getEndpointUrl()))
                     {
                         final BlacklistEntry previousCount =
-                                this.accumulatedBlacklistStatistics.get(nextQueryObject.getEndpointUrl());
+                                this.getAccumulatedBlacklistStatistics().get(nextQueryObject.getEndpointUrl());
                         
                         if(BlacklistController._DEBUG)
                         {
@@ -117,7 +122,7 @@ public class BlacklistController
                         
                         previousCount.addErrorMessageForRunnable(nextQueryObject);
                         
-                        this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), previousCount);
+                        this.getAccumulatedBlacklistStatistics().put(nextQueryObject.getEndpointUrl(), previousCount);
                     }
                     else
                     {
@@ -125,7 +130,7 @@ public class BlacklistController
                         newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
                         newFailureCount.addErrorMessageForRunnable(nextQueryObject);
                         
-                        this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), newFailureCount);
+                        this.getAccumulatedBlacklistStatistics().put(nextQueryObject.getEndpointUrl(), newFailureCount);
                     }
                     
                     this.allCurrentBadQueries.add(nextQueryObject);
@@ -136,21 +141,21 @@ public class BlacklistController
     
     public void accumulateHttpResponseError(final String endpointUrl, final int errorResponseCode)
     {
-        if(this.allHttpErrorResponseCodesByServer == null)
+        if(this.getAllHttpErrorResponseCodesByServer() == null)
         {
             synchronized(this)
             {
-                this.allHttpErrorResponseCodesByServer = new ConcurrentHashMap<String, Map<Integer, Integer>>(200);
+                this.setAllHttpErrorResponseCodesByServer(new ConcurrentHashMap<String, Map<Integer, Integer>>(200));
             }
         }
         
-        synchronized(this.allHttpErrorResponseCodesByServer)
+        synchronized(this.getAllHttpErrorResponseCodesByServer())
         {
             Map<Integer, Integer> nextErrorList = null;
             
-            if(this.allHttpErrorResponseCodesByServer.containsKey(endpointUrl))
+            if(this.getAllHttpErrorResponseCodesByServer().containsKey(endpointUrl))
             {
-                nextErrorList = this.allHttpErrorResponseCodesByServer.get(endpointUrl);
+                nextErrorList = this.getAllHttpErrorResponseCodesByServer().get(endpointUrl);
                 
                 if(nextErrorList.containsKey(errorResponseCode))
                 {
@@ -169,7 +174,7 @@ public class BlacklistController
                 nextErrorList.put(errorResponseCode, 1);
             }
             
-            this.allHttpErrorResponseCodesByServer.put(endpointUrl, nextErrorList);
+            this.getAllHttpErrorResponseCodesByServer().put(endpointUrl, nextErrorList);
         }
     }
     
@@ -189,23 +194,23 @@ public class BlacklistController
             
             this.doBlacklistExpiry();
             
-            synchronized(this.currentQueryDebugInformation)
+            synchronized(this.getCurrentQueryDebugInformation())
             {
-                if(this.currentQueryDebugInformation.containsKey(nextQueryObject.getClientIPAddress()))
+                if(this.getCurrentQueryDebugInformation().containsKey(nextQueryObject.getClientIPAddress()))
                 {
                     final Collection<QueryDebug> previousQueries =
-                            this.currentQueryDebugInformation.get(nextQueryObject.getClientIPAddress());
+                            this.getCurrentQueryDebugInformation().get(nextQueryObject.getClientIPAddress());
                     
                     previousQueries.add(nextQueryObject);
                     
-                    this.currentQueryDebugInformation.put(nextQueryObject.getClientIPAddress(), previousQueries);
+                    this.getCurrentQueryDebugInformation().put(nextQueryObject.getClientIPAddress(), previousQueries);
                 }
                 else
                 {
                     final Collection<QueryDebug> newQueries = Collections.synchronizedSet(new HashSet<QueryDebug>());
                     newQueries.add(nextQueryObject);
                     
-                    this.currentQueryDebugInformation.put(nextQueryObject.getClientIPAddress(), newQueries);
+                    this.getCurrentQueryDebugInformation().put(nextQueryObject.getClientIPAddress(), newQueries);
                 }
             }
             
@@ -217,24 +222,24 @@ public class BlacklistController
     
     public void accumulateQueryTotal(final String endpointUrl)
     {
-        if(this.allServerQueryTotals == null)
+        if(this.getAllServerQueryTotals() == null)
         {
             synchronized(this)
             {
-                this.allServerQueryTotals = new ConcurrentHashMap<String, Integer>(200);
+                this.setAllServerQueryTotals(new ConcurrentHashMap<String, Integer>(200));
             }
         }
         
         int newCount = 1;
         
-        synchronized(this.allServerQueryTotals)
+        synchronized(this.getAllServerQueryTotals())
         {
-            if(this.allServerQueryTotals.containsKey(endpointUrl))
+            if(this.getAllServerQueryTotals().containsKey(endpointUrl))
             {
-                newCount = this.allServerQueryTotals.get(endpointUrl) + 1;
+                newCount = this.getAllServerQueryTotals().get(endpointUrl) + 1;
             }
             
-            this.allServerQueryTotals.put(endpointUrl, newCount);
+            this.getAllServerQueryTotals().put(endpointUrl, newCount);
         }
     }
     
@@ -332,7 +337,7 @@ public class BlacklistController
         
         final Date currentDate = new Date();
         
-        final long differenceMilliseconds = currentDate.getTime() - this.lastExpiryDate.getTime();
+        final long differenceMilliseconds = currentDate.getTime() - this.getLastExpiryDate().getTime();
         
         if((differenceMilliseconds - blacklistResetPeriodMilliseconds) >= 0)
         {
@@ -345,7 +350,7 @@ public class BlacklistController
             {
                 // Do not need to synchronize for debug messages, and in high load situations the
                 // trace level will not be used anyway
-                for(final String nextEndpointUrl : this.accumulatedBlacklistStatistics.keySet())
+                for(final String nextEndpointUrl : this.getAccumulatedBlacklistStatistics().keySet())
                 {
                     BlacklistController.log
                             .trace("BlacklistController: going to expire blacklist entry for endpointUrl="
@@ -353,18 +358,18 @@ public class BlacklistController
                 }
             }
             
-            synchronized(this.accumulatedBlacklistStatistics)
+            synchronized(this.getAccumulatedBlacklistStatistics())
             {
-                this.accumulatedBlacklistStatistics = new ConcurrentHashMap<String, BlacklistEntry>(200);
+                this.setAccumulatedBlacklistStatistics(new ConcurrentHashMap<String, BlacklistEntry>(200));
                 
                 this.allCurrentBadQueries = Collections.synchronizedSet(new HashSet<RdfFetcherQueryRunnable>(200));
                 
                 if(blacklistResetClientBlacklistWithEndpoints)
                 {
-                    this.currentQueryDebugInformation = new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
+                    this.setCurrentQueryDebugInformation(new ConcurrentHashMap<String, Collection<QueryDebug>>(200));
                 }
                 
-                this.lastExpiryDate = new Date();
+                this.setLastExpiryDate(new Date());
                 
                 neededToExpire = true;
             }
@@ -380,11 +385,12 @@ public class BlacklistController
     {
         if(automaticallyBlacklistClients)
         {
-            synchronized(this.currentQueryDebugInformation)
+            synchronized(this.getCurrentQueryDebugInformation())
             {
-                for(final String nextKey : this.currentQueryDebugInformation.keySet())
+                for(final String nextKey : this.getCurrentQueryDebugInformation().keySet())
                 {
-                    final Collection<QueryDebug> nextClientQueryList = this.currentQueryDebugInformation.get(nextKey);
+                    final Collection<QueryDebug> nextClientQueryList =
+                            this.getCurrentQueryDebugInformation().get(nextKey);
                     
                     final int overallCount = nextClientQueryList.size();
                     
@@ -467,6 +473,21 @@ public class BlacklistController
         }
     }
     
+    public Map<String, BlacklistEntry> getAccumulatedBlacklistStatistics()
+    {
+        return this.accumulatedBlacklistStatistics;
+    }
+    
+    public Map<String, Map<Integer, Integer>> getAllHttpErrorResponseCodesByServer()
+    {
+        return this.allHttpErrorResponseCodesByServer;
+    }
+    
+    public Map<String, Integer> getAllServerQueryTotals()
+    {
+        return this.allServerQueryTotals;
+    }
+    
     public String getAlternativeUrl(final String blacklistedUrl, List<String> urlList)
     {
         if(blacklistedUrl == null || blacklistedUrl == "" || urlList == null)
@@ -498,9 +519,9 @@ public class BlacklistController
     
     public Collection<QueryDebug> getCurrentDebugInformationFor(final String nextIpAddress)
     {
-        if(this.currentQueryDebugInformation.containsKey(nextIpAddress))
+        if(this.getCurrentQueryDebugInformation().containsKey(nextIpAddress))
         {
-            return this.currentQueryDebugInformation.get(nextIpAddress);
+            return this.getCurrentQueryDebugInformation().get(nextIpAddress);
         }
         else
         {
@@ -534,6 +555,11 @@ public class BlacklistController
         return this.currentIPWhitelist;
     }
     
+    public Map<String, Collection<QueryDebug>> getCurrentQueryDebugInformation()
+    {
+        return this.currentQueryDebugInformation;
+    }
+    
     public Collection<String> getEndpointUrlsInBlacklist(final long blacklistResetPeriodMilliseconds,
             final boolean blacklistResetClientBlacklistWithEndpoints)
     {
@@ -541,12 +567,22 @@ public class BlacklistController
         
         final Collection<String> results = new HashSet<String>();
         
-        for(final String nextKey : this.accumulatedBlacklistStatistics.keySet())
+        for(final String nextKey : this.getAccumulatedBlacklistStatistics().keySet())
         {
             results.add(nextKey);
         }
         
         return results;
+    }
+    
+    public Date getLastExpiryDate()
+    {
+        return this.lastExpiryDate;
+    }
+    
+    public Date getLastServerStartupDate()
+    {
+        return this.lastServerStartupDate;
     }
     
     public Collection<String> getPermanentIPBlacklist()
@@ -598,11 +634,11 @@ public class BlacklistController
     {
         this.doBlacklistExpiry();
         
-        synchronized(this.accumulatedBlacklistStatistics)
+        synchronized(this.getAccumulatedBlacklistStatistics())
         {
-            if(this.accumulatedBlacklistStatistics.containsKey(nextEndpointUrl))
+            if(this.getAccumulatedBlacklistStatistics().containsKey(nextEndpointUrl))
             {
-                final BlacklistEntry currentCount = this.accumulatedBlacklistStatistics.get(nextEndpointUrl);
+                final BlacklistEntry currentCount = this.getAccumulatedBlacklistStatistics().get(nextEndpointUrl);
                 
                 return (currentCount.numberOfFailures >= this.localSettings.getIntProperty(
                         "blacklistMaxAccumulatedFailures", 5));
@@ -718,6 +754,37 @@ public class BlacklistController
                 this.accumulatedBlacklistStatistics.remove(nextQueryObject.getEndpointUrl());
             }
         }
+    }
+    
+    public void setAccumulatedBlacklistStatistics(final Map<String, BlacklistEntry> accumulatedBlacklistStatistics)
+    {
+        this.accumulatedBlacklistStatistics = accumulatedBlacklistStatistics;
+    }
+    
+    public void setAllHttpErrorResponseCodesByServer(
+            final Map<String, Map<Integer, Integer>> allHttpErrorResponseCodesByServer)
+    {
+        this.allHttpErrorResponseCodesByServer = allHttpErrorResponseCodesByServer;
+    }
+    
+    public void setAllServerQueryTotals(final Map<String, Integer> allServerQueryTotals)
+    {
+        this.allServerQueryTotals = allServerQueryTotals;
+    }
+    
+    public void setCurrentQueryDebugInformation(final Map<String, Collection<QueryDebug>> currentQueryDebugInformation)
+    {
+        this.currentQueryDebugInformation = currentQueryDebugInformation;
+    }
+    
+    public void setLastExpiryDate(final Date lastExpiryDate)
+    {
+        this.lastExpiryDate = lastExpiryDate;
+    }
+    
+    public void setLastServerStartupDate(final Date lastServerStartupDate)
+    {
+        this.lastServerStartupDate = lastServerStartupDate;
     }
     
 }

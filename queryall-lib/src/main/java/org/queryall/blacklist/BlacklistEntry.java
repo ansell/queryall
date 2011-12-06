@@ -25,8 +25,16 @@ public class BlacklistEntry
     {
         final StringBuilder resultBuffer = new StringBuilder();
         
-        resultBuffer.append("Failed query key : "
-                + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");
+        if(errorRunnable.getOriginalQueryBundle() != null && errorRunnable.getOriginalQueryBundle().getQueryType() != null)
+        {
+            resultBuffer.append("Failed query key : "
+                    + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");
+        }
+        else
+        {
+            resultBuffer.append("Failed query, no details available for original query type <br />\n");
+        }
+        
         if(errorRunnable.getLastException() != null)
         {
             resultBuffer.append("Failure message : " + errorRunnable.getLastException().toString() + "<br />\n");
@@ -36,13 +44,20 @@ public class BlacklistEntry
             resultBuffer.append("Failure message not known <br />\n");
         }
         
-        resultBuffer.append("Time to fail (milliseconds) : "
-                + (errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime())
-                + " <br />\n");
+        if(errorRunnable.getQueryEndTime() != null && errorRunnable.getQueryStartTime() != null)
+        {
+            resultBuffer.append("Time to fail (milliseconds) : "
+                    + (errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime())
+                    + " <br />\n");
+            
+            this.totalTime += errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime();
+        }
+        else
+        {
+            resultBuffer.append("Time to fail unknown <br />\n");
+        }
         
         this.errorMessages.add(resultBuffer.toString());
-        
-        this.totalTime += errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime();
         
         this.numberOfFailures++;
     }

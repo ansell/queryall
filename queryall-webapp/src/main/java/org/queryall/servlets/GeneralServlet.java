@@ -312,9 +312,7 @@ public class GeneralServlet extends HttpServlet
             // Housekeeping
             
             // update a the blacklist
-            localBlacklistController.accumulateBlacklist(fetchController.getErrorResults(),
-                    localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 3600000),
-                    localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", false));
+            localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
             
             if(localSettings.getBooleanProperty("blacklistResetEndpointFailuresOnSuccess", true))
             {
