@@ -194,11 +194,31 @@ public class BlacklistControllerTest
      * Test method for
      * {@link org.queryall.blacklist.BlacklistController#accumulateQueryTotal(java.lang.String)}.
      */
-    @Ignore
     @Test
     public void testAccumulateQueryTotal()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertEquals(0, this.testBlacklistController.getAllServerQueryTotals().size());
+        
+        this.testBlacklistController.accumulateQueryTotal("http://example.org/test/query/total/endpoint/1");
+
+        Assert.assertEquals(1, this.testBlacklistController.getAllServerQueryTotals().size());
+        
+        Assert.assertTrue(this.testBlacklistController.getAllServerQueryTotals().containsKey("http://example.org/test/query/total/endpoint/1"));
+        
+        Assert.assertNotNull(this.testBlacklistController.getAllServerQueryTotals().get("http://example.org/test/query/total/endpoint/1"));
+        
+        Assert.assertEquals(new Integer(1), this.testBlacklistController.getAllServerQueryTotals().get("http://example.org/test/query/total/endpoint/1"));
+        
+        this.testBlacklistController.accumulateQueryTotal("http://example.org/test/query/total/endpoint/1");
+
+        Assert.assertEquals(1, this.testBlacklistController.getAllServerQueryTotals().size());
+        
+        Assert.assertTrue(this.testBlacklistController.getAllServerQueryTotals().containsKey("http://example.org/test/query/total/endpoint/1"));
+        
+        Assert.assertNotNull(this.testBlacklistController.getAllServerQueryTotals().get("http://example.org/test/query/total/endpoint/1"));
+        
+        Assert.assertEquals(new Integer(2), this.testBlacklistController.getAllServerQueryTotals().get("http://example.org/test/query/total/endpoint/1"));
+        
     }
     
     /**
