@@ -154,7 +154,7 @@ public class QueryCreator
             return queryString;
         }
         
-        ProcessorQueryType processorQueryType = (ProcessorQueryType)queryType;
+        final ProcessorQueryType processorQueryType = (ProcessorQueryType)queryType;
         
         if(queryString.trim().equals(""))
         {
@@ -167,8 +167,8 @@ public class QueryCreator
                     + queryType.getKey().stringValue());
         }
         
-        return QueryCreator.doReplacementsOnString(attributeList, processorQueryType.getProcessingTemplateString(), queryType, null,
-                nextProvider, attributeList, namespaceInputVariables, includedProfiles,
+        return QueryCreator.doReplacementsOnString(attributeList, processorQueryType.getProcessingTemplateString(),
+                queryType, null, nextProvider, attributeList, namespaceInputVariables, includedProfiles,
                 recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules,
                 overallConvertAlternateToPreferredPrefix, localSettings);
     }

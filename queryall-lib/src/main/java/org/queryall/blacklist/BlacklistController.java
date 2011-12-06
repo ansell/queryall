@@ -182,17 +182,19 @@ public class BlacklistController
     }
     
     /**
-     * Accumulates the statistics using properties from the settings object, or default values if the properties are not set
+     * Accumulates the statistics using properties from the settings object, or default values if
+     * the properties are not set
      * 
      * @param nextQueryObject
      */
     public void accumulateQueryDebug(final QueryDebug nextQueryObject)
     {
-        accumulateQueryDebug(nextQueryObject, localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L),
-        localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
-        localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-        localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-        localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+        this.accumulateQueryDebug(nextQueryObject,
+                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L),
+                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
+                this.localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
+                this.localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
+                this.localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
     }
     
     /**
@@ -205,10 +207,9 @@ public class BlacklistController
      * @param blacklistMinimumQueriesBeforeBlacklistRules
      * @param blacklistClientMaxQueriesPerPeriod
      */
-    public void accumulateQueryDebug(final QueryDebug nextQueryObject,
-            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints,
-            final boolean automaticallyBlacklistClients, final int blacklistMinimumQueriesBeforeBlacklistRules,
-            final int blacklistClientMaxQueriesPerPeriod)
+    public void accumulateQueryDebug(final QueryDebug nextQueryObject, final long blacklistResetPeriodMilliseconds,
+            final boolean blacklistResetClientBlacklistWithEndpoints, final boolean automaticallyBlacklistClients,
+            final int blacklistMinimumQueriesBeforeBlacklistRules, final int blacklistClientMaxQueriesPerPeriod)
     {
         if(automaticallyBlacklistClients)
         {
@@ -241,9 +242,8 @@ public class BlacklistController
                 }
             }
             
-            this.evaluateClientBlacklist(automaticallyBlacklistClients,
-                    blacklistMinimumQueriesBeforeBlacklistRules, blacklistResetPeriodMilliseconds,
-                    blacklistClientMaxQueriesPerPeriod);
+            this.evaluateClientBlacklist(automaticallyBlacklistClients, blacklistMinimumQueriesBeforeBlacklistRules,
+                    blacklistResetPeriodMilliseconds, blacklistClientMaxQueriesPerPeriod);
         }
     }
     
@@ -406,15 +406,15 @@ public class BlacklistController
     }
     
     /**
-     * Evaluates the client blacklist using the properties from the settings object, or defaults if the properties are not set.
+     * Evaluates the client blacklist using the properties from the settings object, or defaults if
+     * the properties are not set.
      */
     public void evaluateClientBlacklist()
     {
-        evaluateClientBlacklist(
-                localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-                localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-                localSettings.getFloatProperty("blacklistPercentageOfRobotTxtQueriesBeforeAutomatic", 0.75f),
-                localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+        this.evaluateClientBlacklist(this.localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
+                this.localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
+                this.localSettings.getFloatProperty("blacklistPercentageOfRobotTxtQueriesBeforeAutomatic", 0.75f),
+                this.localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
     }
     
     /**
@@ -425,7 +425,8 @@ public class BlacklistController
      * @param blacklistPercentageOfRobotTxtQueriesBeforeAutomatic
      * @param blacklistClientMaxQueriesPerPeriod
      */
-    public void evaluateClientBlacklist(final boolean automaticallyBlacklistClients, final int blacklistMinimumQueriesBeforeBlacklistRules,
+    public void evaluateClientBlacklist(final boolean automaticallyBlacklistClients,
+            final int blacklistMinimumQueriesBeforeBlacklistRules,
             final float blacklistPercentageOfRobotTxtQueriesBeforeAutomatic,
             final int blacklistClientMaxQueriesPerPeriod)
     {
@@ -448,9 +449,10 @@ public class BlacklistController
                         {
                             for(final URI nextQueryDebugTitle : nextQueryDebug.getMatchingQueryTitles())
                             {
-                                // TODO: add this property to the QueryDebug interface to avoid lookups here
+                                // TODO: add this property to the QueryDebug interface to avoid
+                                // lookups here
                                 final QueryType nextQueryDebugType =
-                                        localSettings.getAllQueryTypes().get(nextQueryDebugTitle);
+                                        this.localSettings.getAllQueryTypes().get(nextQueryDebugTitle);
                                 if(nextQueryDebugType.getInRobotsTxt())
                                 {
                                     if(BlacklistController._TRACE)

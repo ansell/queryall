@@ -25,7 +25,8 @@ public class BlacklistEntry
     {
         final StringBuilder resultBuffer = new StringBuilder();
         
-        if(errorRunnable.getOriginalQueryBundle() != null && errorRunnable.getOriginalQueryBundle().getQueryType() != null)
+        if(errorRunnable.getOriginalQueryBundle() != null
+                && errorRunnable.getOriginalQueryBundle().getQueryType() != null)
         {
             resultBuffer.append("Failed query key : "
                     + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");

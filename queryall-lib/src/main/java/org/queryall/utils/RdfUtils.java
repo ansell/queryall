@@ -2689,8 +2689,8 @@ public final class RdfUtils
     }
     
     public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult,
-            final Repository myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
-        java.io.IOException
+            final Repository myRepository, final String assumedResponseContentType, final String defaultHostAddress)
+        throws RepositoryException, java.io.IOException
     {
         if(RdfUtils._DEBUG)
         {
@@ -2723,9 +2723,7 @@ public final class RdfUtils
                 
                 if(nextReaderFormat == null)
                 {
-                    nextReaderFormat =
-                            Rio.getParserFormatForMIMEType(localSettings.getStringProperty(
-                                    "assumedResponseContentType", Constants.APPLICATION_RDF_XML));
+                    nextReaderFormat = Rio.getParserFormatForMIMEType(assumedResponseContentType);
                 }
                 
                 if(nextReaderFormat == null)
@@ -2736,7 +2734,7 @@ public final class RdfUtils
                                     + " nextResult.assumedContentType="
                                     + assumedContentType
                                     + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                    + localSettings.getStringProperty("assumedResponseContentType", ""));
+                                    + assumedResponseContentType);
                     // throw new
                     // RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
@@ -2768,8 +2766,8 @@ public final class RdfUtils
             if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
             {
                 myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
-                        localSettings.getDefaultHostAddress(), nextReaderFormat, nextResult.getOriginalQueryBundle()
-                                .getProvider().getKey());
+                        defaultHostAddress, nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider()
+                                .getKey());
                 
                 myRepositoryConnection.commit();
             }
@@ -2813,7 +2811,9 @@ public final class RdfUtils
     {
         for(final RdfFetcherQueryRunnable nextResult : results)
         {
-            RdfUtils.insertResultIntoRepository(nextResult, myRepository, localSettings);
+            RdfUtils.insertResultIntoRepository(nextResult, myRepository,
+                    localSettings.getStringProperty("assumedResponseContentType", Constants.APPLICATION_RDF_XML),
+                    localSettings.getDefaultHostAddress());
         }
     }
     

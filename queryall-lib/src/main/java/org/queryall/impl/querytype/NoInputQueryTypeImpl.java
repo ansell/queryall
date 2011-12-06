@@ -94,21 +94,31 @@ public class NoInputQueryTypeImpl extends QueryTypeImpl implements NoInputQueryT
     {
         return inputParameterMap;
     }
-
+    
+    /**
+     * Returns the given query unchanged
+     */
+    @Override
+    public Object parseProcessorQuery(final String query)
+    {
+        return query;
+    }
+    
     /**
      * Returns the input map unchanged
      */
     @Override
-    public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
+    public Map<String, Object> processQueryVariables(final Map<String, Object> queryVariables)
     {
         return queryVariables;
     }
-
+    
     /**
-     * Returns the object from the given map with the same key as Constants.QUERY if it exists, or the empty string otherwise
+     * Returns the object from the given map with the same key as Constants.QUERY if it exists, or
+     * the empty string otherwise
      */
     @Override
-    public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
+    public String substituteQueryVariables(final Map<String, Object> processedQueryVariables)
     {
         if(processedQueryVariables.containsKey(Constants.QUERY))
         {
@@ -118,15 +128,6 @@ public class NoInputQueryTypeImpl extends QueryTypeImpl implements NoInputQueryT
         {
             return "";
         }
-    }
-
-    /**
-     * Returns the given query unchanged
-     */
-    @Override
-    public Object parseProcessorQuery(String query)
-    {
-        return query;
     }
     
 }

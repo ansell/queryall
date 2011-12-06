@@ -48,6 +48,18 @@ public abstract class SparqlProcessorQueryTypeImpl extends QueryTypeImpl impleme
     }
     
     @Override
+    public Object parseProcessorQuery(final String query)
+    {
+        return query;
+    }
+    
+    @Override
+    public Map<String, Object> processQueryVariables(final Map<String, Object> queryVariables)
+    {
+        return queryVariables;
+    }
+    
+    @Override
     public void setSparqlTemplateString(final String templateString)
     {
         // Wrappers around the setTemplateString function for now
@@ -55,13 +67,7 @@ public abstract class SparqlProcessorQueryTypeImpl extends QueryTypeImpl impleme
     }
     
     @Override
-    public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
-    {
-        return queryVariables;
-    }
-
-    @Override
-    public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
+    public String substituteQueryVariables(final Map<String, Object> processedQueryVariables)
     {
         if(processedQueryVariables.containsKey(Constants.QUERY))
         {
@@ -71,12 +77,6 @@ public abstract class SparqlProcessorQueryTypeImpl extends QueryTypeImpl impleme
         {
             return "";
         }
-    }
-
-    @Override
-    public Object parseProcessorQuery(String query)
-    {
-        return query;
     }
     
 }
