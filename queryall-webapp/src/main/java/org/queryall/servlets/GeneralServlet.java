@@ -201,8 +201,8 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                ServletUtils.doQueryPretend(localSettings, queryString, responseCode, pageOffset, requestedContentType,
-                        multiProviderQueryBundles, myRepository);
+                ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType, multiProviderQueryBundles,
+                        myRepository, localSettings.getSeparator());
             }
             else if(!fetchController.queryKnown())
             {

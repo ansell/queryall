@@ -302,20 +302,20 @@ public class ServletUtils
     }
     
     /**
-     * @param response
-     * @param localSettings
      * @param queryString
      * @param responseCode
      * @param pageOffset
      * @param requestedContentType
      * @param multiProviderQueryBundles
      * @param myRepository
+     * @param separator TODO
+     * @param response
      * @throws IOException
      * @throws OpenRDFException
      */
-    public static void doQueryPretend(final QueryAllConfiguration localSettings, final String queryString,
-            final int responseCode, final int pageOffset, final String requestedContentType,
-            final Collection<QueryBundle> multiProviderQueryBundles, final Repository myRepository) throws IOException,
+    public static void doQueryPretend(final String queryString, final int responseCode,
+            final int pageOffset, final String requestedContentType, final Collection<QueryBundle> multiProviderQueryBundles,
+            final Repository myRepository, String separator) throws IOException,
         OpenRDFException
     {
         for(final QueryBundle nextScheduledQueryBundle : multiProviderQueryBundles)
@@ -323,15 +323,15 @@ public class ServletUtils
             nextScheduledQueryBundle.toRdf(
                     myRepository,
                     StringUtils.createURI(StringUtils.percentEncode(queryString)
-                            + localSettings.getSeparator()
+                            + separator
                             + "pageoffset"
                             + pageOffset
-                            + localSettings.getSeparator()
+                            + separator
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getOriginalProvider().getKey()
                                     .stringValue().toLowerCase())
-                            + localSettings.getSeparator()
+                            + separator
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
-                                    .toLowerCase()) + localSettings.getSeparator()),
+                                    .toLowerCase()) + separator),
                     // + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
                     Settings.CONFIG_API_VERSION);
         }
