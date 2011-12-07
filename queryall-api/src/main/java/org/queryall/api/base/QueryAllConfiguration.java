@@ -34,27 +34,15 @@ public interface QueryAllConfiguration
     
     Map<URI, NamespaceEntry> getAllNamespaceEntries();
     
-    NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri);
-    
     Map<URI, NormalisationRule> getAllNormalisationRules();
-    
-    NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri);
     
     Map<URI, Profile> getAllProfiles();
     
-    Profile getProfile(URI nextProfileUri);
-    
     Map<URI, Provider> getAllProviders();
-    
-    Provider getProvider(URI nextProviderUri);
     
     Map<URI, QueryType> getAllQueryTypes();
     
-    QueryType getQueryType(URI nextQueryTypeUri);
-    
     Map<URI, RuleTest> getAllRuleTests();
-    
-    RuleTest getRuleTest(URI nextRuleTestUri);
     
     boolean getBooleanProperty(String propertyKey, boolean defaultValue);
     
@@ -66,11 +54,23 @@ public interface QueryAllConfiguration
     
     long getLongProperty(String key, long defaultValue);
     
+    NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri);
+    
     Map<String, Collection<URI>> getNamespacePrefixesToUris();
+    
+    NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri);
     
     Pattern getPlainNamespaceAndIdentifierPattern();
     
     Pattern getPlainNamespacePattern();
+    
+    Profile getProfile(URI nextProfileUri);
+    
+    Provider getProvider(URI nextProviderUri);
+    
+    QueryType getQueryType(URI nextQueryTypeUri);
+    
+    RuleTest getRuleTest(URI nextRuleTestUri);
     
     String getSeparator();
     

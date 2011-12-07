@@ -1235,7 +1235,6 @@ public class RdfUtilsTest
                     
                     final ProcessorQueryType nextProcessorQueryType = (ProcessorQueryType)nextQueryType;
                     
-                    
                     Assert.assertEquals("Query type template string was not parsed correctly",
                             "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
                             nextProcessorQueryType.getProcessingTemplateString());
@@ -1243,14 +1242,15 @@ public class RdfUtilsTest
                     Assert.assertTrue("Query type was not parsed into a SparqlProcessorQueryType",
                             nextQueryType instanceof SparqlProcessorQueryType);
                     
-                    final SparqlProcessorQueryType nextSparqlProcessorQueryType = (SparqlProcessorQueryType)nextQueryType;
-                    
+                    final SparqlProcessorQueryType nextSparqlProcessorQueryType =
+                            (SparqlProcessorQueryType)nextQueryType;
                     
                     Assert.assertEquals("Query type template string was not parsed correctly",
                             "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
                             nextSparqlProcessorQueryType.getSparqlTemplateString());
                     
-                    Assert.assertEquals(nextProcessorQueryType.getProcessingTemplateString(), nextSparqlProcessorQueryType.getSparqlTemplateString());
+                    Assert.assertEquals(nextProcessorQueryType.getProcessingTemplateString(),
+                            nextSparqlProcessorQueryType.getSparqlTemplateString());
                 }
                 else if(nextQueryTypeUri.equals(this.testQueryTypeUri2))
                 {
@@ -1338,9 +1338,7 @@ public class RdfUtilsTest
                             "<${ntriplesEncoded_inputUrlEncoded_privatelowercase_normalisedStandardUri}> a <http://purl.org/queryall/query:QueryType>",
                             nextRdfOutputQueryType.getOutputString());
                     
-                    
                     final ProcessorQueryType nextProcessorQueryType = (ProcessorQueryType)nextQueryType;
-                    
                     
                     Assert.assertEquals("Query type template string was not parsed correctly",
                             "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
@@ -1349,14 +1347,15 @@ public class RdfUtilsTest
                     Assert.assertTrue("Query type was not parsed into a SparqlProcessorQueryType",
                             nextQueryType instanceof SparqlProcessorQueryType);
                     
-                    final SparqlProcessorQueryType nextSparqlProcessorQueryType = (SparqlProcessorQueryType)nextQueryType;
-                    
+                    final SparqlProcessorQueryType nextSparqlProcessorQueryType =
+                            (SparqlProcessorQueryType)nextQueryType;
                     
                     Assert.assertEquals("Query type template string was not parsed correctly",
                             "CONSTRUCT { ${normalisedStandardUri} ?p ?o . } WHERE { ${endpointSpecificUri} ?p ?o . }",
                             nextSparqlProcessorQueryType.getSparqlTemplateString());
                     
-                    Assert.assertEquals(nextProcessorQueryType.getProcessingTemplateString(), nextSparqlProcessorQueryType.getSparqlTemplateString());
+                    Assert.assertEquals(nextProcessorQueryType.getProcessingTemplateString(),
+                            nextSparqlProcessorQueryType.getSparqlTemplateString());
                 }
                 else
                 {

@@ -917,7 +917,8 @@ public class Settings implements QueryAllConfiguration
                         
                         if(nextInputStream == null)
                         {
-                            throw new QueryAllRuntimeException("Was not able to find base config location nextLocation="+nextLocation);
+                            throw new QueryAllRuntimeException(
+                                    "Was not able to find base config location nextLocation=" + nextLocation);
                         }
                         
                         try
@@ -1210,6 +1211,12 @@ public class Settings implements QueryAllConfiguration
         return result;
     }
     
+    @Override
+    public NamespaceEntry getNamespaceEntry(final URI nextNamespaceEntryUri)
+    {
+        return this.cachedNamespaceEntries.get(nextNamespaceEntryUri);
+    }
+    
     /**
      * @return the cachedNamespacePrefixToUriEntries
      */
@@ -1228,6 +1235,12 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
+    public NormalisationRule getNormalisationRule(final URI nextNormalisationRuleUri)
+    {
+        return this.cachedNormalisationRules.get(nextNormalisationRuleUri);
+    }
+    
+    @Override
     public Pattern getPlainNamespaceAndIdentifierPattern()
     {
         return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"));
@@ -1237,6 +1250,30 @@ public class Settings implements QueryAllConfiguration
     public Pattern getPlainNamespacePattern()
     {
         return Pattern.compile(this.getStringProperty("plainNamespaceRegex", "^([\\w-]+)$"));
+    }
+    
+    @Override
+    public Profile getProfile(final URI nextProfileUri)
+    {
+        return this.cachedProfiles.get(nextProfileUri);
+    }
+    
+    @Override
+    public Provider getProvider(final URI nextProviderUri)
+    {
+        return this.cachedProviders.get(nextProviderUri);
+    }
+    
+    @Override
+    public QueryType getQueryType(final URI nextQueryTypeUri)
+    {
+        return this.cachedQueryTypes.get(nextQueryTypeUri);
+    }
+    
+    @Override
+    public RuleTest getRuleTest(final URI nextRuleTestUri)
+    {
+        return this.cachedRuleTests.get(nextRuleTestUri);
     }
     
     /**
@@ -2201,41 +2238,5 @@ public class Settings implements QueryAllConfiguration
         {
             Settings.log.error("Interrupted", ex);
         }
-    }
-
-    @Override
-    public NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri)
-    {
-        return this.cachedNamespaceEntries.get(nextNamespaceEntryUri);
-    }
-
-    @Override
-    public NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri)
-    {
-        return this.cachedNormalisationRules.get(nextNormalisationRuleUri);
-    }
-
-    @Override
-    public Profile getProfile(URI nextProfileUri)
-    {
-        return this.cachedProfiles.get(nextProfileUri);
-    }
-
-    @Override
-    public Provider getProvider(URI nextProviderUri)
-    {
-        return this.cachedProviders.get(nextProviderUri);
-    }
-
-    @Override
-    public QueryType getQueryType(URI nextQueryTypeUri)
-    {
-        return this.cachedQueryTypes.get(nextQueryTypeUri);
-    }
-
-    @Override
-    public RuleTest getRuleTest(URI nextRuleTestUri)
-    {
-        return this.cachedRuleTests.get(nextRuleTestUri);
     }
 }

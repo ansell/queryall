@@ -79,13 +79,11 @@ public class PropertyUtilsTest
                 PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ""));
         Assert.assertEquals("Ontology URI Suffix was not as expected, even with default", "nothingspecial",
                 PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":"));
-
+        
         // clearProperty returns the previous value, so test that it matches what we expect
         Assert.assertEquals("somethingreallyrandom", System.clearProperty("queryall.ontologyPrefix"));
         Assert.assertEquals("nothingspecial", System.clearProperty("queryall.ontologySuffix"));
     }
-    
-    
     
     /**
      * Checks that the Property Utils bundle has not been changed without an explicit update here

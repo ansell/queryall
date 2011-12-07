@@ -141,7 +141,8 @@ public class GeneralServlet extends HttpServlet
         {
             ServletUtils.logRequestDetails(useDefaultProviders, serverName, queryString, requesterIpAddress, locale,
                     characterEncoding, isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
-                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"), request.getHeader("User-Agent"));
+                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"),
+                    request.getHeader("User-Agent"));
         }
         
         // allow for users to perform redirections if the query did not contain an explicit format
@@ -201,8 +202,8 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType, multiProviderQueryBundles,
-                        myRepository, localSettings.getSeparator());
+                ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType,
+                        multiProviderQueryBundles, myRepository, localSettings.getSeparator());
             }
             else if(!fetchController.queryKnown())
             {
@@ -325,8 +326,8 @@ public class GeneralServlet extends HttpServlet
             // functionalities
             if(GeneralServlet._INFO || localSettings.getBooleanProperty("automaticallyBlacklistClients", false))
             {
-                ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress, multiProviderQueryBundles,
-                        nextTotalTime);
+                ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress,
+                        multiProviderQueryBundles, nextTotalTime);
             }
         }
         catch(final QueryAllException qex)

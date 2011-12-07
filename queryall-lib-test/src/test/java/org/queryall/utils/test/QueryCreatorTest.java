@@ -20,7 +20,6 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
-import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.exception.QueryAllException;
 import org.queryall.impl.namespace.NamespaceEntryImpl;

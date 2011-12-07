@@ -21,9 +21,10 @@ public final class PropertyUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = PropertyUtils.log.isInfoEnabled();
     
-    // This matches the queryall.properties file where
-    // the generally static API specific section of the configuration settings
-    // are stored
+    /**
+     * This matches the queryall.properties file where the generally static API specific section of
+     * the configuration settings are stored
+     */
     public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
     
     /**

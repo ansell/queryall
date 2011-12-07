@@ -4,9 +4,7 @@
 package org.queryall.api.test;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.SparqlProcessorQueryType;
 
@@ -22,7 +20,7 @@ public abstract class AbstractSparqlProcessorQueryTypeTest extends AbstractProce
     {
         return "CONSTRUCT { ?test <http://example.org/test/predicate/1> ?somethingElse . } WHERE { ${normalisedStandardUri} a <http://example.org/test/class/a> } ";
     }
-
+    
     @Override
     public final ProcessorQueryType getNewTestProcessorQueryType()
     {
@@ -57,7 +55,6 @@ public abstract class AbstractSparqlProcessorQueryTypeTest extends AbstractProce
     {
         super.tearDown();
         
-    }    
-    
+    }
     
 }

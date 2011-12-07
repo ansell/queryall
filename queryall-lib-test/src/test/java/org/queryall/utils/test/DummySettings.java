@@ -26,66 +26,6 @@ import org.queryall.api.ruletest.RuleTest;
 public class DummySettings implements QueryAllConfiguration
 {
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getNamespaceEntry(org.openrdf.model.URI)
-     */
-    @Override
-    public NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getNormalisationRule(org.openrdf.model.URI)
-     */
-    @Override
-    public NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getProfile(org.openrdf.model.URI)
-     */
-    @Override
-    public Profile getProfile(URI nextProfileUri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getProvider(org.openrdf.model.URI)
-     */
-    @Override
-    public Provider getProvider(URI nextProviderUri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getQueryType(org.openrdf.model.URI)
-     */
-    @Override
-    public QueryType getQueryType(URI nextQueryTypeUri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getRuleTest(org.openrdf.model.URI)
-     */
-    @Override
-    public RuleTest getRuleTest(URI nextRuleTestUri)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     /**
      * 
      */
@@ -94,67 +34,89 @@ public class DummySettings implements QueryAllConfiguration
         // TODO Auto-generated constructor stub
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#addNamespaceEntry(org.queryall.api.namespace.NamespaceEntry)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#addNamespaceEntry(org.queryall.api.namespace.
+     * NamespaceEntry)
      */
     @Override
-    public void addNamespaceEntry(NamespaceEntry nextNamespaceEntry)
+    public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#addNormalisationRule(org.queryall.api.rdfrule.NormalisationRule)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#addNormalisationRule(org.queryall.api.rdfrule
+     * .NormalisationRule)
      */
     @Override
-    public void addNormalisationRule(NormalisationRule nextNormalisationRule)
+    public void addNormalisationRule(final NormalisationRule nextNormalisationRule)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#addProfile(org.queryall.api.profile.Profile)
      */
     @Override
-    public void addProfile(Profile nextProfile)
+    public void addProfile(final Profile nextProfile)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
      */
     @Override
-    public void addProvider(Provider nextProvider)
+    public void addProvider(final Provider nextProvider)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#addQueryType(org.queryall.api.querytype.QueryType)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#addQueryType(org.queryall.api.querytype.QueryType
+     * )
      */
     @Override
-    public void addQueryType(QueryType nextQueryType)
+    public void addQueryType(final QueryType nextQueryType)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
      */
     @Override
-    public void addRuleTest(RuleTest nextRuleTest)
+    public void addRuleTest(final RuleTest nextRuleTest)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getAllNamespaceEntries()
      */
     @Override
@@ -163,7 +125,9 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getAllNormalisationRules()
      */
     @Override
@@ -172,7 +136,9 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getAllProfiles()
      */
     @Override
@@ -181,7 +147,9 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getAllProviders()
      */
     @Override
@@ -190,7 +158,9 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getAllQueryTypes()
      */
     @Override
@@ -199,7 +169,9 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getAllRuleTests()
      */
     @Override
@@ -208,16 +180,21 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getBooleanProperty(java.lang.String, boolean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getBooleanProperty(java.lang.String,
+     * boolean)
      */
     @Override
-    public boolean getBooleanProperty(String propertyKey, boolean defaultValue)
+    public boolean getBooleanProperty(final String propertyKey, final boolean defaultValue)
     {
         return defaultValue;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getDefaultHostAddress()
      */
     @Override
@@ -226,34 +203,54 @@ public class DummySettings implements QueryAllConfiguration
         return "";
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getFloatProperty(java.lang.String, float)
      */
     @Override
-    public float getFloatProperty(String key, float defaultValue)
+    public float getFloatProperty(final String key, final float defaultValue)
     {
         return defaultValue;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getIntProperty(java.lang.String, int)
      */
     @Override
-    public int getIntProperty(String key, int defaultValue)
+    public int getIntProperty(final String key, final int defaultValue)
     {
         return defaultValue;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getLongProperty(java.lang.String, long)
      */
     @Override
-    public long getLongProperty(String key, long defaultValue)
+    public long getLongProperty(final String key, final long defaultValue)
     {
         return defaultValue;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getNamespaceEntry(org.openrdf.model.URI)
+     */
+    @Override
+    public NamespaceEntry getNamespaceEntry(final URI nextNamespaceEntryUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getNamespacePrefixesToUris()
      */
     @Override
@@ -262,7 +259,21 @@ public class DummySettings implements QueryAllConfiguration
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getNormalisationRule(org.openrdf.model.URI)
+     */
+    @Override
+    public NormalisationRule getNormalisationRule(final URI nextNormalisationRuleUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getPlainNamespaceAndIdentifierPattern()
      */
     @Override
@@ -271,7 +282,9 @@ public class DummySettings implements QueryAllConfiguration
         return Pattern.compile(".*");
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getPlainNamespacePattern()
      */
     @Override
@@ -280,7 +293,57 @@ public class DummySettings implements QueryAllConfiguration
         return Pattern.compile(".*");
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getProfile(org.openrdf.model.URI)
+     */
+    @Override
+    public Profile getProfile(final URI nextProfileUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getProvider(org.openrdf.model.URI)
+     */
+    @Override
+    public Provider getProvider(final URI nextProviderUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getQueryType(org.openrdf.model.URI)
+     */
+    @Override
+    public QueryType getQueryType(final URI nextQueryTypeUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getRuleTest(org.openrdf.model.URI)
+     */
+    @Override
+    public RuleTest getRuleTest(final URI nextRuleTestUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getSeparator()
      */
     @Override
@@ -289,25 +352,32 @@ public class DummySettings implements QueryAllConfiguration
         return "";
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getStringProperties(java.lang.String)
      */
     @Override
-    public Collection<String> getStringProperties(String string)
+    public Collection<String> getStringProperties(final String string)
     {
         return new ArrayList<String>(0);
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getStringProperty(java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getStringProperty(java.lang.String,
+     * java.lang.String)
      */
     @Override
-    public String getStringProperty(String key, String defaultValue)
+    public String getStringProperty(final String key, final String defaultValue)
     {
         return defaultValue;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#getTagPattern()
      */
     @Override
@@ -317,96 +387,120 @@ public class DummySettings implements QueryAllConfiguration
     }
     
     @Override
-    public Collection<URI> getURIProperties(String string)
+    public Collection<URI> getURIProperties(final String string)
     {
         return new ArrayList<URI>(0);
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#getURIProperty(java.lang.String, org.openrdf.model.URI)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getURIProperty(java.lang.String,
+     * org.openrdf.model.URI)
      */
     @Override
-    public URI getURIProperty(String key, URI defaultValue)
+    public URI getURIProperty(final String key, final URI defaultValue)
     {
         // TODO Auto-generated method stub
         return defaultValue;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, boolean)
      */
     @Override
-    public void setProperty(String propertyKey, boolean propertyValue)
+    public void setProperty(final String propertyKey, final boolean propertyValue)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, float)
      */
     @Override
-    public void setProperty(String propertyKey, float propertyValue)
+    public void setProperty(final String propertyKey, final float propertyValue)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, int)
      */
     @Override
-    public void setProperty(String propertyKey, int propertyValue)
+    public void setProperty(final String propertyKey, final int propertyValue)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, long)
      */
     @Override
-    public void setProperty(String propertyKey, long propertyValue)
+    public void setProperty(final String propertyKey, final long propertyValue)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String,
+     * java.lang.String)
      */
     @Override
-    public void setProperty(String propertyKey, String propertyValue)
+    public void setProperty(final String propertyKey, final String propertyValue)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, org.openrdf.model.URI)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String,
+     * org.openrdf.model.URI)
      */
     @Override
-    public void setProperty(String propertyKey, URI propertyValue)
+    public void setProperty(final String propertyKey, final URI propertyValue)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#setStringCollectionProperty(java.lang.String, java.util.Collection)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#setStringCollectionProperty(java.lang.String,
+     * java.util.Collection)
      */
     @Override
-    public void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues)
+    public void setStringCollectionProperty(final String propertyKey, final Collection<String> propertyValues)
     {
         // TODO Auto-generated method stub
         
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.QueryAllConfiguration#setURICollectionProperty(java.lang.String, java.util.Collection)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setURICollectionProperty(java.lang.String,
+     * java.util.Collection)
      */
     @Override
-    public void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues)
+    public void setURICollectionProperty(final String propertyKey, final Collection<URI> propertyValues)
     {
         // TODO Auto-generated method stub
         
