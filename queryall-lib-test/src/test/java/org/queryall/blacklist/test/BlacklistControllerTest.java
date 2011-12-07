@@ -929,22 +929,28 @@ public class BlacklistControllerTest
     @Test
     public void testIsEndpointBlacklistedDefaultParameters()
     {
-        final RdfFetcherQueryRunnable fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
-        fetcherQueryRunnable.setLastException(new Exception());
-        fetcherQueryRunnable.setCompleted(true);
-        
-        // check that setting an exception and the completed flag identifies this runnable as being
-        // in error
-        Assert.assertTrue(fetcherQueryRunnable.wasError());
-        
-        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
-        
+        // add 10 runnables to the list to make sure that it goes past the default limit of 5
+        for(int i = 0; i < 10; i++)
+        {
+            final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                    new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                            this.testBlacklistController, null);
+            fetcherQueryRunnable.setLastException(new Exception());
+            fetcherQueryRunnable.setCompleted(true);
+            
+            // check that setting an exception and the completed flag identifies this runnable as being
+            // in error
+            Assert.assertTrue(fetcherQueryRunnable.wasError());
+            
+            this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        }        
         
         // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
         this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
         
+        // Test the default parameter version of this method
+        Assert.assertTrue(this.testBlacklistController.isEndpointBlacklisted("http://test.example.org/endpoint/bad/1"));
+
         final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
         
         Assert.assertNotNull(statistics);
@@ -957,11 +963,10 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(10, blacklistEntry.numberOfFailures);
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
-        // Test the default parameter version of this method
         Collection<String> blacklist = this.testBlacklistController.getEndpointUrlsInBlacklist();
         
         Assert.assertNotNull(blacklist);
@@ -969,8 +974,6 @@ public class BlacklistControllerTest
         Assert.assertEquals(1, blacklist.size());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklist.iterator().next());
-        
-        Assert.assertTrue(this.testBlacklistController.isEndpointBlacklisted("http://test.example.org/endpoint/bad/1"));
         
     }
     
