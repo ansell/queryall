@@ -462,8 +462,15 @@ public class BlacklistController
                             // TODO: add this property to the QueryDebug interface to avoid
                             // lookups here
                             final QueryType nextQueryDebugType =
-                                    this.localSettings.getAllQueryTypes().get(nextQueryDebugTitle);
-                            if(nextQueryDebugType.getInRobotsTxt())
+                                    this.localSettings.getQueryType(nextQueryDebugTitle);
+                            
+                            if(nextQueryDebugType == null)
+                            {
+                                BlacklistController.log.warn("Could not find query, assuming it is in robots.txt nextQueryDebugType="+nextQueryDebugType);
+                                robotsTxtCount++;
+                                break;
+                            }
+                            else if(nextQueryDebugType.getInRobotsTxt())
                             {
                                 if(BlacklistController._TRACE)
                                 {
@@ -487,7 +494,7 @@ public class BlacklistController
                                 + " robotsPercentage=" + robotsPercentage);
                     }
                     
-                    if(robotsPercentage > blacklistPercentageOfRobotTxtQueriesBeforeAutomatic)
+                    if(robotsPercentage >= blacklistPercentageOfRobotTxtQueriesBeforeAutomatic)
                     {
                         BlacklistController.log
                                 .warn("BlacklistController: Found client performing too many robots.txt banned queries nextKey="

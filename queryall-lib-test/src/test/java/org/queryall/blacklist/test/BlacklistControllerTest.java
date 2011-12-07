@@ -405,14 +405,13 @@ public class BlacklistControllerTest
         
         nextQueryObject.setClientIPAddress("127.0.0.1");
         
-        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 0);
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, false, 50, 100);
         
         final Map<String, Collection<QueryDebug>> debugInformation =
                 this.testBlacklistController.getCurrentQueryDebugInformation();
         
-        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
-        // to see the query debug object in the results
-        Assert.assertEquals(1, debugInformation.size());
+        // the boolean automaticallyBlacklistClients parameter was set to false above, so we don't expect to see the debug information retained at this point
+        Assert.assertEquals(0, debugInformation.size());
         
         // Now test that evaluateClientBlacklist with false as the automaticallyBlacklistClients parameter does nothing to the query debug information
         this.testBlacklistController.evaluateClientBlacklist(false, 0, 0, 0);
@@ -420,9 +419,8 @@ public class BlacklistControllerTest
         final Map<String, Collection<QueryDebug>> afterEvaluateDebugInformation =
                 this.testBlacklistController.getCurrentQueryDebugInformation();
         
-        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
-        // to see the query debug object in the results
-        Assert.assertEquals(1, afterEvaluateDebugInformation.size());
+        // the boolean automaticallyBlacklistClients parameter was set to false above, so we don't expect to see the debug information retained at this point
+        Assert.assertEquals(0, afterEvaluateDebugInformation.size());
         
         Assert.assertFalse(this.testBlacklistController.isClientBlacklisted("127.0.0.1"));
     }
@@ -440,7 +438,8 @@ public class BlacklistControllerTest
         
         nextQueryObject.setClientIPAddress("127.0.0.1");
         
-        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 0);
+        // aggressively put the client on the blacklist for making a single query (ie, 1 as the blacklistClientMaxQueriesPerPeriod parameter)
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 1);
         
         final Map<String, Collection<QueryDebug>> debugInformation =
                 this.testBlacklistController.getCurrentQueryDebugInformation();
@@ -450,7 +449,7 @@ public class BlacklistControllerTest
         Assert.assertEquals(1, debugInformation.size());
         
         // Now test that evaluateClientBlacklist with true as the automaticallyBlacklistClients parameter adds the client to the blacklist
-        this.testBlacklistController.evaluateClientBlacklist(true, 0, 0, 0);
+        this.testBlacklistController.evaluateClientBlacklist(true, 0, 0, 1);
 
         final Map<String, Collection<QueryDebug>> afterEvaluateDebugInformation =
                 this.testBlacklistController.getCurrentQueryDebugInformation();
