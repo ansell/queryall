@@ -1033,11 +1033,111 @@ public class BlacklistControllerTest
      * Test method for
      * {@link org.queryall.blacklist.BlacklistController#isUrlBlacklisted(java.lang.String)}.
      */
-    @Ignore
     @Test
-    public void testIsUrlBlacklisted()
+    public void testIsUrlBlacklistedPartialSpecificParameters()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        int blacklistMaxAccumulatedFailures = 1;
+        long blacklistResetPeriodMilliseconds = 6000L;
+        boolean blacklistResetClientBlacklistWithEndpoints = true;
+
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org", blacklistEntry.endpointUrl);
+        
+        // Test the default parameter version of this method
+        Collection<String> blacklist = this.testBlacklistController.getEndpointUrlsInBlacklist(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+        
+        Assert.assertNotNull(blacklist);
+        
+        Assert.assertEquals(1, blacklist.size());
+        
+        Assert.assertEquals("http://test.example.org", blacklist.iterator().next());
+        
+        // test a full URL after having blacklisted the host
+        Assert.assertTrue(this.testBlacklistController.isUrlBlacklisted("http://test.example.org/endpoint/bad/1", blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints));    
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#isUrlBlacklisted(java.lang.String)}.
+     */
+    @Test
+    public void testIsUrlBlacklistedFullSpecificParameters()
+    {
+        int blacklistMaxAccumulatedFailures = 1;
+        long blacklistResetPeriodMilliseconds = 6000L;
+        boolean blacklistResetClientBlacklistWithEndpoints = true;
+
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
+        
+        // Test the default parameter version of this method
+        Collection<String> blacklist = this.testBlacklistController.getEndpointUrlsInBlacklist(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+        
+        Assert.assertNotNull(blacklist);
+        
+        Assert.assertEquals(1, blacklist.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklist.iterator().next());
+        
+        Assert.assertTrue(this.testBlacklistController.isUrlBlacklisted("http://test.example.org/endpoint/bad/1", blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints));    
     }
     
     /**
@@ -1057,11 +1157,52 @@ public class BlacklistControllerTest
      * {@link org.queryall.blacklist.BlacklistController#removeEndpointsFromBlacklist(java.util.Collection, long, boolean)}
      * .
      */
-    @Ignore
     @Test
     public void testRemoveEndpointsFromBlacklist()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
+        
+        // after verifying it is on the blacklist, remove it
+        this.testBlacklistController.removeEndpointsFromBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        // then run two checks to make sure it was removed
+        final Map<String, BlacklistEntry> afterRemovalStatistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(afterRemovalStatistics);
+        
+        Assert.assertEquals(0, afterRemovalStatistics.size());
+        
+        Assert.assertFalse(this.testBlacklistController.isUrlBlacklisted("http://test.example.org/endpoint/bad/1"));
     }
     
 }

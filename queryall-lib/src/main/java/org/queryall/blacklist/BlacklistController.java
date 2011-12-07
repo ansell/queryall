@@ -764,6 +764,25 @@ public class BlacklistController
      */
     public boolean isUrlBlacklisted(final String inputUrl)
     {
+        final int blacklistMaxAccumulatedFailures = this.localSettings.getIntProperty(
+                "blacklistMaxAccumulatedFailures", 5);
+        
+        final long blacklistResetPeriodMilliseconds =
+                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+        
+        final boolean blacklistResetClientBlacklistWithEndpoints =
+                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+        
+        return isUrlBlacklisted(inputUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+    }
+    /**
+     * 
+     * @param inputUrl The full URL to check
+     * 
+     * @return True if the complete inputUrl or the protocol://host subsection are blacklisted
+     */
+    public boolean isUrlBlacklisted(final String inputUrl, int blacklistMaxAccumulatedFailures, long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    {
         URL url = null;
         
         try
@@ -783,8 +802,8 @@ public class BlacklistController
         }
         
         // we test both the full URL and the protocol://host subsection
-        if(this.isEndpointBlacklisted(inputUrl)
-                || this.isEndpointBlacklisted(url.getProtocol() + "://" + url.getAuthority()))
+        if(this.isEndpointBlacklisted(inputUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints)
+                || this.isEndpointBlacklisted(url.getProtocol() + "://" + url.getAuthority(), blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints))
         {
             if(BlacklistController._DEBUG)
             {
