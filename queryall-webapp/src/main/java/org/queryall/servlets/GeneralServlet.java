@@ -139,9 +139,9 @@ public class GeneralServlet extends HttpServlet
         
         if(GeneralServlet._INFO)
         {
-            ServletUtils.logRequestDetails(request, requestQueryOptions, useDefaultProviders, serverName, queryString,
-                    requesterIpAddress, locale, characterEncoding, isPretendQuery, pageOffset,
-                    originalRequestedContentType, requestedContentType);
+            ServletUtils.logRequestDetails(useDefaultProviders, serverName, queryString, requesterIpAddress, locale,
+                    characterEncoding, isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
+                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"), request.getHeader("User-Agent"));
         }
         
         // allow for users to perform redirections if the query did not contain an explicit format
@@ -201,8 +201,8 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                ServletUtils.doQueryPretend(localSettings, queryString, responseCode, pageOffset, requestedContentType,
-                        multiProviderQueryBundles, myRepository);
+                ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType, multiProviderQueryBundles,
+                        myRepository, localSettings.getSeparator());
             }
             else if(!fetchController.queryKnown())
             {
@@ -274,8 +274,22 @@ public class GeneralServlet extends HttpServlet
             }
             
             // Normalisation Stage : after results to pool
-            final Repository convertedPool =
-                    ServletUtils.doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
+            Repository convertedPool = myRepository;
+            
+            try
+            {
+                convertedPool =
+                        ServletUtils
+                                .doPoolNormalisation(localSettings, includedProfiles, fetchController, myRepository);
+            }
+            catch(final Exception ex)
+            {
+                GeneralServlet.log.error("Found exception while performing pool normalisation", ex);
+            }
+            catch(final Throwable th)
+            {
+                GeneralServlet.log.error("Found throwable while performing pool normalisation", th);
+            }
             
             ServletUtils.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName,
                     queryString, pageOffset, requestedContentType, fetchController, debugStrings, convertedPool,
@@ -298,9 +312,7 @@ public class GeneralServlet extends HttpServlet
             // Housekeeping
             
             // update a the blacklist
-            localBlacklistController.accumulateBlacklist(fetchController.getErrorResults(),
-                    localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 3600000),
-                    localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", false));
+            localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
             
             if(localSettings.getBooleanProperty("blacklistResetEndpointFailuresOnSuccess", true))
             {
@@ -313,8 +325,8 @@ public class GeneralServlet extends HttpServlet
             // functionalities
             if(GeneralServlet._INFO || localSettings.getBooleanProperty("automaticallyBlacklistClients", false))
             {
-                ServletUtils.doQueryDebug(localSettings, localBlacklistController, queryString, requesterIpAddress,
-                        multiProviderQueryBundles, nextTotalTime);
+                ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress, multiProviderQueryBundles,
+                        nextTotalTime);
             }
         }
         catch(final QueryAllException qex)

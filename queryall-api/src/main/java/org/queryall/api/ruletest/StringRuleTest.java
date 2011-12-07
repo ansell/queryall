@@ -4,6 +4,11 @@
 package org.queryall.api.ruletest;
 
 /**
+ * A StringRuleTest determines whether a given normalised input string is transformed into the given
+ * denormalised output string by the given series of rules. It can also determine whether the given
+ * denormalised output string is converted back into the normalised input string for the
+ * normalisation rule stages after the results are returned.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface StringRuleTest extends RuleTest

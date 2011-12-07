@@ -20,6 +20,7 @@ import org.queryall.api.rdfrule.RegexNormalisationRule;
 import org.queryall.api.rdfrule.RegexNormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -353,10 +354,16 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     }
     
     @Override
-    public Object stageAfterQueryCreation(final Object input)
+    public Object stageAfterQueryCreation(final Object input) throws QueryAllException
     {
-        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()) ? this
-                .applyInputRuleToString((String)input) : input;
+        if(this.usedInStage(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation()))
+        {
+            return this.applyInputRuleToString((String)input);
+        }
+        else
+        {
+            return input;
+        }
     }
     
     @Override
@@ -372,10 +379,16 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     }
     
     @Override
-    public Object stageAfterResultsToDocument(final Object input)
+    public Object stageAfterResultsToDocument(final Object input) throws QueryAllException
     {
-        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()) ? this
-                .applyOutputRuleToString((String)input) : input;
+        if(this.usedInStage(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument()))
+        {
+            return this.applyOutputRuleToString((String)input);
+        }
+        else
+        {
+            return input;
+        }
     }
     
     @Override
@@ -385,17 +398,29 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     }
     
     @Override
-    public Object stageBeforeResultsImport(final Object input)
+    public Object stageBeforeResultsImport(final Object input) throws QueryAllException
     {
-        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()) ? this
-                .applyOutputRuleToString((String)input) : input;
+        if(this.usedInStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
+        {
+            return this.applyOutputRuleToString((String)input);
+        }
+        else
+        {
+            return input;
+        }
     }
     
     @Override
-    public Object stageQueryVariables(final Object input)
+    public Object stageQueryVariables(final Object input) throws QueryAllException
     {
-        return this.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()) ? this
-                .applyInputRuleToString((String)input) : input;
+        if(this.usedInStage(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+        {
+            return this.applyInputRuleToString((String)input);
+        }
+        else
+        {
+            return input;
+        }
     }
     
     @Override

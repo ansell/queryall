@@ -24,29 +24,24 @@ public class Schema
     @SuppressWarnings("unused")
     private static final boolean _INFO = Schema.log.isInfoEnabled();
     
-    public static Repository getSchemas(final Repository myRepository, final int configVersion) throws OpenRDFException
-    {
-        return Schema.getSchemas(myRepository, null, configVersion);
-    }
-    
     /**
      * 
      * 
      * @param myRepository
-     * @param contextUri
      * @param configVersion
+     * @param contextUri
      * @return
      * @throws OpenRDFException
      *             if an exception occured with the repository
      */
-    public static Repository getSchemas(final Repository myRepository, final URI contextUri, final int configVersion)
+    public static Repository getSchemas(final Repository myRepository, final int configVersion, final URI... contextUri)
         throws OpenRDFException
     {
         for(final QueryAllSchema nextSchema : SchemaServiceLoader.getInstance().getAll())
         {
             try
             {
-                nextSchema.schemaToRdf(myRepository, contextUri, configVersion);
+                nextSchema.schemaToRdf(myRepository, configVersion, contextUri);
             }
             catch(final OpenRDFException e)
             {

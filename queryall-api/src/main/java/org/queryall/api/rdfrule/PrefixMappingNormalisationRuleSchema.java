@@ -156,7 +156,7 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contextUri)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();

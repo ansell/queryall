@@ -34,8 +34,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInputQueryType, SparqlProcessorQueryType,
-        RdfOutputQueryType
+public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implements RegexInputQueryType,
+        SparqlProcessorQueryType, RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(RegexInputQueryTypeImpl.class);
     private static final boolean _TRACE = RegexInputQueryTypeImpl.log.isTraceEnabled();
@@ -70,7 +70,7 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
      */
     public RegexInputQueryTypeImpl()
     {
-        // TODO Auto-generated constructor stub
+        super();
     }
     
     /**
@@ -177,6 +177,17 @@ public class RegexInputQueryTypeImpl extends QueryTypeImpl implements RegexInput
             throw new IllegalArgumentException("Query Parameters must include a value for key='query'");
         }
         
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.InputQueryType#parseInputs(java.util.Map)
+     */
+    @Override
+    public Map<String, Object> parseInputs(final Map<String, Object> inputParameterMap)
+    {
+        return inputParameterMap;
     }
     
     @Override

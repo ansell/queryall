@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils;
+package org.queryall.utils.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +25,7 @@ import org.queryall.api.test.DummyProvider;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.QueryAllException;
 import org.queryall.impl.ruletest.StringRuleTestImpl;
+import org.queryall.utils.RuleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

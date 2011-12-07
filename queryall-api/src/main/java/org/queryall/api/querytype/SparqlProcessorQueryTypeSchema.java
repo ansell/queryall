@@ -9,6 +9,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -81,7 +82,7 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -90,10 +91,11 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
+            con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -215,6 +215,54 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         return result;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.ruletest.RuleTest#resetRuleUris()
+     */
+    @Override
+    public boolean resetRuleUris()
+    {
+        try
+        {
+            this.rdfRuleUris.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            RuleTestImpl.log.debug("Could not clear collection");
+        }
+        
+        this.rdfRuleUris = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.ruletest.RuleTest#resetStages()
+     */
+    @Override
+    public boolean resetStages()
+    {
+        try
+        {
+            this.stages.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            RuleTestImpl.log.debug("Could not clear collection");
+        }
+        
+        this.stages = new HashSet<URI>();
+        
+        return true;
+    }
+    
     @Override
     public String toHtml()
     {

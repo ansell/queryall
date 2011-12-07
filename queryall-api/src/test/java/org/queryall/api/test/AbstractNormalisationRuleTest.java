@@ -31,6 +31,7 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
     private URI testStageAllValidAndInvalidRuleUri;
     protected Set<URI> validStages;
     protected Set<URI> invalidStages;
+    private URI testRelatedNamespace1;
     
     /**
      * 
@@ -76,6 +77,7 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
         // f.createURI("http://example.org/test/excludedNormalisationRule");
         this.testStageInvalidInclusionRuleUri = f.createURI("http://example.org/test/stageInclusionRule");
         this.testStageAllValidAndInvalidRuleUri = f.createURI("http://example.org/test/stageExclusionRule");
+        this.testRelatedNamespace1 = f.createURI("http://example.org/test/relatednamespace/1");
         
         this.validStages = this.getExpectedValidStages();
         
@@ -110,6 +112,8 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
         // this.testFalseSparqlNormalisationRuleUri = null;
         this.testStageInvalidInclusionRuleUri = null;
         this.testStageAllValidAndInvalidRuleUri = null;
+        
+        this.testRelatedNamespace1 = null;
         
         this.invalidStages = null;
         this.validStages = null;
@@ -197,5 +201,38 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
         
         NormalisationRuleTestUtil.testIsUsedInStages(normalisationRule, includedStages, true);
         NormalisationRuleTestUtil.testIsUsedInStages(normalisationRule, excludedStages, false);
+    }
+    
+    @Test
+    public void testResetRelatedNamespaces()
+    {
+        final NormalisationRule normalisationRule = this.getNewTestRule();
+        
+        normalisationRule.addRelatedNamespace(this.testRelatedNamespace1);
+        
+        Assert.assertEquals(1, normalisationRule.getRelatedNamespaces().size());
+        
+        Assert.assertTrue(normalisationRule.resetRelatedNamespaces());
+        
+        Assert.assertEquals(0, normalisationRule.getRelatedNamespaces().size());
+    }
+    
+    @Test
+    public void testResetStages() throws InvalidStageException
+    {
+        final NormalisationRule normalisationRule = this.getNewTestRule();
+        
+        Assert.assertTrue("Normalisation Rule should not have an empty valid stages list", this.validStages.size() > 0);
+        
+        for(final URI nextValidStage : this.validStages)
+        {
+            normalisationRule.addStage(nextValidStage);
+        }
+        
+        Assert.assertEquals(this.validStages.size(), normalisationRule.getStages().size());
+        
+        Assert.assertTrue(normalisationRule.resetStages());
+        
+        Assert.assertEquals(0, normalisationRule.getStages().size());
     }
 }

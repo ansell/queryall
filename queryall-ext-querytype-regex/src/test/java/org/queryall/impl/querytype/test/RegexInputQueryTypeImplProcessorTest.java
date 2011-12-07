@@ -4,15 +4,15 @@
 package org.queryall.impl.querytype.test;
 
 import org.queryall.api.profile.Profile;
-import org.queryall.api.querytype.RegexInputQueryType;
-import org.queryall.api.test.AbstractRegexInputQueryTypeTest;
+import org.queryall.api.querytype.SparqlProcessorQueryType;
+import org.queryall.api.test.AbstractSparqlProcessorQueryTypeTest;
 import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RegexInputQueryTypeImpl3Test extends AbstractRegexInputQueryTypeTest
+public class RegexInputQueryTypeImplProcessorTest extends AbstractSparqlProcessorQueryTypeTest
 {
     @Override
     public Profile getNewTestProfile()
@@ -21,7 +21,7 @@ public class RegexInputQueryTypeImpl3Test extends AbstractRegexInputQueryTypeTes
     }
     
     @Override
-    public RegexInputQueryType getNewTestRegexInputQueryType()
+    public SparqlProcessorQueryType getNewTestSparqlProcessorQueryType()
     {
         return new RegexInputQueryTypeImpl();
     }

@@ -125,7 +125,7 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -134,36 +134,36 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
+            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.LABEL,
-                    f.createLiteral("DEPRECATED: Use rdfOutputString instead."), contextKeyUri);
+                    f.createLiteral("DEPRECATED: Use rdfOutputString instead."), contexts);
             
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(),
                     RDFS.LABEL,
                     f.createLiteral("Property for denoting an RDF template that can be used to generate static additional statements for this query type."),
-                    contextKeyUri);
+                    contexts);
             
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(),
                     RDFS.LABEL,
                     f.createLiteral("The RDF format used to design the rdfOutputString. This property defaults to application/rdf+xml if not defined."),
-                    contextKeyUri);
+                    contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

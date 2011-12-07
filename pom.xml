@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall-parent</artifactId>
@@ -16,7 +17,7 @@
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>
 		<module>queryall-ext-rule-prefixmap</module>
-		
+
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
@@ -128,6 +129,14 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
@@ -226,6 +235,11 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
 			</plugin>
 		</plugins>
 	</reporting>

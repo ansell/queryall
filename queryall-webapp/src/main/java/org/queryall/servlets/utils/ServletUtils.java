@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -29,6 +28,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
@@ -136,17 +136,15 @@ public class ServletUtils
     }
     
     /**
-     * @param localSettings
      * @param localBlacklistController
      * @param queryString
      * @param requesterIpAddress
      * @param multiProviderQueryBundles
      * @param nextTotalTime
      */
-    public static void doQueryDebug(final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController, final String queryString,
-            final String requesterIpAddress, final Collection<QueryBundle> multiProviderQueryBundles,
-            final long nextTotalTime)
+    public static void doQueryDebug(final BlacklistController localBlacklistController,
+            final String queryString, final String requesterIpAddress,
+            final Collection<QueryBundle> multiProviderQueryBundles, final long nextTotalTime)
     {
         QueryDebug nextQueryDebug;
         nextQueryDebug = new QueryDebug();
@@ -164,12 +162,7 @@ public class ServletUtils
         
         nextQueryDebug.setMatchingQueryTitles(queryTitles);
         
-        localBlacklistController.accumulateQueryDebug(nextQueryDebug, localSettings,
-                localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L),
-                localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
-                localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-                localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-                localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+        localBlacklistController.accumulateQueryDebug(nextQueryDebug);
     }
     
     /**
@@ -245,8 +238,10 @@ public class ServletUtils
                 Repository tempRepository = new SailRepository(new MemoryStore());
                 tempRepository.initialize();
                 
-                RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings);
+                RdfUtils.insertResultIntoRepository(nextResult, tempRepository, localSettings.getStringProperty(
+                                                    "assumedResponseContentType", Constants.APPLICATION_RDF_XML), localSettings.getDefaultHostAddress());
                 
+                // Perform normalisation for the AfterResultsImport stage
                 tempRepository =
                         (Repository)RuleUtils.normaliseByStage(NormalisationRuleSchema
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
@@ -288,9 +283,23 @@ public class ServletUtils
                 
                 try
                 {
-                    myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
-                            localSettings.getDefaultHostAddress() + queryString, RDFFormat.RDFXML,
-                            nextPotentialQueryBundle.getOriginalProvider().getKey());
+                    // TODO: make this section customisable, so it doesn't always need to accept RDF directly 
+                    if(nextPotentialQueryBundle.getQueryType() != null && nextPotentialQueryBundle.getQueryType() instanceof RdfOutputQueryType)
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
+                                localSettings.getDefaultHostAddress() + queryString, RdfUtils.getWriterFormat(RdfUtils.findBestContentType(((RdfOutputQueryType)nextPotentialQueryBundle.getQueryType()).getOutputRdfFormat(), Constants.APPLICATION_RDF_XML, Constants.APPLICATION_RDF_XML)),
+                                nextPotentialQueryBundle.getOriginalProvider().getKey());
+                    }
+                    else if(nextPotentialQueryBundle.getQueryType() != null && nextPotentialQueryBundle.getQueryType() instanceof OutputQueryType)
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
+                                localSettings.getDefaultHostAddress() + queryString, RdfUtils.getWriterFormat(Constants.APPLICATION_RDF_XML),
+                                nextPotentialQueryBundle.getOriginalProvider().getKey());
+                    }
+                    else if(nextPotentialQueryBundle.getQueryType() != null)
+                    {
+                        GeneralServlet.log.warn("Found a query type that was not an instance of OutputQueryType");
+                    }
                 }
                 catch(final org.openrdf.rio.RDFParseException rdfpe)
                 {
@@ -309,20 +318,20 @@ public class ServletUtils
     }
     
     /**
-     * @param response
-     * @param localSettings
      * @param queryString
      * @param responseCode
      * @param pageOffset
      * @param requestedContentType
      * @param multiProviderQueryBundles
      * @param myRepository
+     * @param separator TODO
+     * @param response
      * @throws IOException
      * @throws OpenRDFException
      */
-    public static void doQueryPretend(final QueryAllConfiguration localSettings, final String queryString,
-            final int responseCode, final int pageOffset, final String requestedContentType,
-            final Collection<QueryBundle> multiProviderQueryBundles, final Repository myRepository) throws IOException,
+    public static void doQueryPretend(final String queryString, final int responseCode,
+            final int pageOffset, final String requestedContentType, final Collection<QueryBundle> multiProviderQueryBundles,
+            final Repository myRepository, String separator) throws IOException,
         OpenRDFException
     {
         for(final QueryBundle nextScheduledQueryBundle : multiProviderQueryBundles)
@@ -330,15 +339,15 @@ public class ServletUtils
             nextScheduledQueryBundle.toRdf(
                     myRepository,
                     StringUtils.createURI(StringUtils.percentEncode(queryString)
-                            + localSettings.getSeparator()
+                            + separator
                             + "pageoffset"
                             + pageOffset
-                            + localSettings.getSeparator()
+                            + separator
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getOriginalProvider().getKey()
                                     .stringValue().toLowerCase())
-                            + localSettings.getSeparator()
+                            + separator
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
-                                    .toLowerCase()) + localSettings.getSeparator()),
+                                    .toLowerCase()) + separator),
                     // + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
                     Settings.CONFIG_API_VERSION);
         }
@@ -649,9 +658,6 @@ public class ServletUtils
     
     /**
      * Encapsulates the basic logging details for a single request
-     * 
-     * @param request
-     * @param requestQueryOptions
      * @param useDefaultProviders
      * @param serverName
      * @param queryString
@@ -662,21 +668,24 @@ public class ServletUtils
      * @param pageOffset
      * @param originalRequestedContentType
      * @param requestedContentType
+     * @param containsExplicitPageOffset TODO
+     * @param acceptHeader TODO
+     * @param userAgentHeader TODO
      */
-    public static void logRequestDetails(final HttpServletRequest request,
-            final DefaultQueryOptions requestQueryOptions, final boolean useDefaultProviders, final String serverName,
-            final String queryString, final String requesterIpAddress, final String locale,
-            final String characterEncoding, final boolean isPretendQuery, final int pageOffset,
-            final String originalRequestedContentType, final String requestedContentType)
+    public static void logRequestDetails(final boolean useDefaultProviders,
+            final String serverName, final String queryString, final String requesterIpAddress,
+            final String locale, final String characterEncoding, final boolean isPretendQuery,
+            final int pageOffset, final String originalRequestedContentType, final String requestedContentType,
+            boolean containsExplicitPageOffset, String acceptHeader, String userAgentHeader)
     {
         if(GeneralServlet._INFO)
         {
             GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
                     + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
-                    + requestQueryOptions.containsExplicitPageOffsetValue() + " pageOffset=" + pageOffset
+                    + containsExplicitPageOffset + " pageOffset=" + pageOffset
                     + " isPretendQuery=" + isPretendQuery + " useDefaultProviders=" + useDefaultProviders);
             GeneralServlet.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
-                    + request.getHeader("Accept") + " userAgent=" + request.getHeader("User-Agent"));
+                    + acceptHeader + " userAgent=" + userAgentHeader);
             GeneralServlet.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
             
             if(!originalRequestedContentType.equals(requestedContentType))
@@ -765,6 +774,7 @@ public class ServletUtils
             // the XML PI
             // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with
             // all RDF/XML results and we need to change the magic number here
+            // TODO: Make a sesametools version of the RDF/XML output writer that allows the choice of having a PI or not
             if(buffer.length() > 38)
             {
                 for(int i = 38; i < cleanOutput.getBuffer().length(); i++)
@@ -812,6 +822,7 @@ public class ServletUtils
         response.setCharacterEncoding("UTF-8");
         response.setStatus(responseCode);
         response.setHeader("Vary", "Accept");
+        // TODO: Make the Accept-Control-Allow-Origin header configurable
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.flushBuffer();
     }

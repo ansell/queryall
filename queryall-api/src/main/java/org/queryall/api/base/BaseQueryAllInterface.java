@@ -10,6 +10,12 @@ import org.openrdf.repository.Repository;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
+ * The base of all QueryAll objects.
+ * 
+ * Contains the basic elements necessary to identify objects and keep track of RDF statements from
+ * the objects definitions that were not recognised, but need to be stored for future serialisation
+ * of the object.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface BaseQueryAllInterface
@@ -43,6 +49,9 @@ public interface BaseQueryAllInterface
     /**
      * This list may not be the only list of URIs that a class recognises, but it should map to
      * those URIs which are relevant for the currently stored object
+     * 
+     * NOTE: This should only be overridden by final concrete implementations to match their list of
+     * implemented types.
      * 
      * @return The set of URIs that this object recognises for the current object.
      */
@@ -97,7 +106,7 @@ public interface BaseQueryAllInterface
      * Changes the object into RDF, and inserts the relevant triples into myRepository using the
      * URIs in contextUris as the context URIs.
      * 
-     * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
+     * The Configuration API version to attempt to use for the RDF export is given as modelVersion.
      * 
      * @param myRepository
      * @param modelVersion

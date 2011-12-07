@@ -43,7 +43,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     
     private Collection<URI> includedInQueryTypes = new HashSet<URI>();
     
-    private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
+    private Collection<URI> normalisationUris = new HashSet<URI>();
     
     private URI redirectOrProxy = ProviderSchema.getProviderRedirect();
     
@@ -157,12 +157,12 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     @Override
     public void addNormalisationUri(final URI rdfNormalisationNeeded)
     {
-        if(this.rdfNormalisationsNeeded == null)
+        if(this.normalisationUris == null)
         {
-            this.rdfNormalisationsNeeded = new LinkedList<URI>();
+            this.normalisationUris = new LinkedList<URI>();
         }
         
-        this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
+        this.normalisationUris.add(rdfNormalisationNeeded);
     }
     
     @Override
@@ -358,7 +358,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     @Override
     public Collection<URI> getNormalisationUris()
     {
-        return this.rdfNormalisationsNeeded;
+        return this.normalisationUris;
     }
     
     @Override
@@ -386,8 +386,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         result =
                 prime * result
                         + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
-        result =
-                prime * result + ((this.rdfNormalisationsNeeded == null) ? 0 : this.rdfNormalisationsNeeded.hashCode());
+        result = prime * result + ((this.normalisationUris == null) ? 0 : this.normalisationUris.hashCode());
         result = prime * result + ((this.redirectOrProxy == null) ? 0 : this.redirectOrProxy.hashCode());
         result = prime * result + ((this.getTitle() == null) ? 0 : this.getTitle().hashCode());
         return result;
@@ -411,6 +410,63 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     public boolean needsRedirect()
     {
         return this.getRedirectOrProxy().equals(ProviderSchema.getProviderRedirect());
+    }
+    
+    @Override
+    public boolean resetIncludedInQueryTypes()
+    {
+        try
+        {
+            this.includedInQueryTypes.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProviderImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includedInQueryTypes = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNamespaces()
+    {
+        try
+        {
+            this.namespaces.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProviderImpl.log.debug("Could not clear collection");
+        }
+        
+        this.namespaces = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNormalisationUris()
+    {
+        try
+        {
+            this.normalisationUris.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProviderImpl.log.debug("Could not clear collection");
+        }
+        
+        this.normalisationUris = new HashSet<URI>();
+        
+        return true;
     }
     
     @Override

@@ -16,6 +16,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.OutputQueryType;
+import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.TransformingRule;
@@ -148,19 +149,26 @@ public class QueryCreator
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
+        if(!(queryType instanceof ProcessorQueryType))
+        {
+            return queryString;
+        }
+        
+        final ProcessorQueryType processorQueryType = (ProcessorQueryType)queryType;
+        
         if(queryString.trim().equals(""))
         {
             QueryCreator.log.error("QueryCreator.createQuery: queryString was empty");
         }
         
-        if(queryType.getTemplateString() == null)
+        if(processorQueryType.getProcessingTemplateString() == null)
         {
             QueryCreator.log.error("QueryCreator.createQuery: template was null queryType.getKey()="
                     + queryType.getKey().stringValue());
         }
         
-        return QueryCreator.doReplacementsOnString(attributeList, queryType.getTemplateString(), queryType, null,
-                nextProvider, attributeList, namespaceInputVariables, includedProfiles,
+        return QueryCreator.doReplacementsOnString(attributeList, processorQueryType.getProcessingTemplateString(),
+                queryType, null, nextProvider, attributeList, namespaceInputVariables, includedProfiles,
                 recogniseImplicitRdfRuleInclusions, includeNonProfileMatchedRdfRules,
                 overallConvertAlternateToPreferredPrefix, localSettings);
     }

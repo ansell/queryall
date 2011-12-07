@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils;
+package org.queryall.utils.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,7 @@ import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.impl.namespace.NamespaceEntryImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
+import org.queryall.utils.QueryTypeUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

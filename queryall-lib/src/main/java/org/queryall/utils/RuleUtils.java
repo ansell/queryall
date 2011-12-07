@@ -208,7 +208,7 @@ public final class RuleUtils
     public static Object normaliseByStage(final URI stage, Object input,
             final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
-        throws QueryAllException, UnnormalisableRuleException
+        throws QueryAllException, UnnormalisableRuleException, ValidationFailedException
     {
         if(RuleUtils._TRACE)
         {
@@ -298,7 +298,8 @@ public final class RuleUtils
             } // end if(nextRuleTest instanceof StringRuleTest
             else
             {
-                log.error("Could not run rule test as we have not implemented it yet class="+nextRuleTest.getClass().getName());
+                RuleUtils.log.error("Could not run rule test as we have not implemented it yet class="
+                        + nextRuleTest.getClass().getName());
                 allPassed = false;
             }
         } // end for(nextRuleTest
@@ -380,7 +381,8 @@ public final class RuleUtils
                         
                         if(!result)
                         {
-                            log.error("ValidatingRule failed nextRule.getKey()="+nextRule.getKey().stringValue());
+                            RuleUtils.log.error("ValidatingRule failed nextRule.getKey()="
+                                    + nextRule.getKey().stringValue());
                             allPassed = false;
                         }
                     }

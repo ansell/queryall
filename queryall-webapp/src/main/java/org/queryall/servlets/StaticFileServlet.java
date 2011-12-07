@@ -5,7 +5,6 @@ package org.queryall.servlets;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -52,10 +51,12 @@ public class StaticFileServlet extends HttpServlet
             StaticFileServlet.log.debug("filename=" + filename);
         }
         
-        File f = null;
+        URL fileResource = null;
+        
         try
         {
-            final URL fileResource = this.getClass().getResource(filename);
+            
+            fileResource = this.getClass().getResource(filename);
             
             if(fileResource == null)
             {
@@ -64,11 +65,16 @@ public class StaticFileServlet extends HttpServlet
                                 + filename);
                 throw new ServletException("Could not find the requested static resource");
             }
+            else if(StaticFileServlet._DEBUG)
+            {
+                StaticFileServlet.log.debug("fileResource.toString()=" + fileResource.toString());
+                StaticFileServlet.log.debug("fileResource.toURI()=" + fileResource.toURI());
+            }
             
-            f = new File(fileResource.toURI());
+            // f = new File(fileResource.toURI());
             
             // check to see if /static/ is in the path still
-            if(f.getCanonicalPath().contains(File.separator + "static" + File.separator))
+            if(fileResource.getPath().contains(File.separator + "static" + File.separator))
             {
                 int length = 0;
                 final ServletOutputStream op = response.getOutputStream();
@@ -79,8 +85,9 @@ public class StaticFileServlet extends HttpServlet
                 {
                     StaticFileServlet.log.debug("this.getClass().getResource(filename).toURI()="
                             + this.getClass().getResource(filename).toURI().toString());
-                    StaticFileServlet.log.debug("filename=" + filename + " f.getName()=" + f.getName() + " mimetype="
-                            + mimetype + " f.length()=" + f.length());
+                    // StaticFileServlet.log.debug("filename=" + filename + " f.getName()=" +
+                    // f.getName() + " mimetype="
+                    // + mimetype + " f.length()=" + f.length());
                 }
                 
                 //
@@ -88,15 +95,28 @@ public class StaticFileServlet extends HttpServlet
                 //
                 //
                 response.setContentType((mimetype != null) ? mimetype : "application/octet-stream");
-                response.setContentLength((int)f.length());
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + f.getName() + "\"");
+                // response.setContentLength((int)f.length());
+                
+                // int lastIndexOf = fileResource.toURI().getPath().lastIndexOf("/");
+                
+                final String parsedFilename = fileResource.getFile();
+                
+                if(parsedFilename != null && parsedFilename.trim().length() > 0)
+                {
+                    response.setHeader("Content-Disposition", "attachment; filename=\"" + parsedFilename + "\"");
+                }
+                else
+                {
+                    StaticFileServlet.log.error("Could not find a filename for filename=" + filename
+                            + " parsedFilename=" + parsedFilename);
+                }
                 // TODO: put in expires and etag
                 
                 //
                 // Stream to the requester.
                 //
                 final byte[] bbuf = new byte[StaticFileServlet.BUFSIZE];
-                final DataInputStream in = new DataInputStream(new FileInputStream(f));
+                final DataInputStream in = new DataInputStream(this.getClass().getResourceAsStream(filename));
                 
                 while((in != null) && ((length = in.read(bbuf)) != -1))
                 {
@@ -110,7 +130,7 @@ public class StaticFileServlet extends HttpServlet
             else
             {
                 StaticFileServlet.log.error("Could not find the requested static resource. f.getCanonicalPath()="
-                        + f.getCanonicalPath() + " filename=" + filename);
+                        + fileResource.getPath() + " filename=" + filename);
                 throw new ServletException("Could not find the requested static resource");
             }
         }

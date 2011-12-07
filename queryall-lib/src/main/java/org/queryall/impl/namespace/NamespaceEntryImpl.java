@@ -395,6 +395,18 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         return result;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.namespace.NamespaceEntry#resetAlternativePrefixes()
+     */
+    @Override
+    public boolean resetAlternativePrefixes()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
     @Override
     public void setAuthority(final URI authority)
     {

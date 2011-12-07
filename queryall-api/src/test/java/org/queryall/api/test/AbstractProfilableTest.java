@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
@@ -273,8 +274,10 @@ public abstract class AbstractProfilableTest
      * default include exclude order was excludeThenInclude.
      */
     @Test
-    public void testIsUsedWithProfileList()
+    public void testIsUsedWithProfileListEmpty()
     {
+        Assert.assertNotNull("Did you call super.setUp()?", this.providerIncludeImplicitly);
+        
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly, this.profileListEmpty, true, true,
                 false, false);
         
@@ -283,7 +286,77 @@ public abstract class AbstractProfilableTest
         
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined, this.profileListEmpty,
                 true, true, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly()
+    {
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
+                this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true, false, false);
         
+        ProfilableTestUtil
+                .testIsUsedWithProfileList(this.providerExcludeImplicitly,
+                        this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false,
+                        false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
+                this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly()
+    {
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
+                this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true, true, false);
+        
+        ProfilableTestUtil
+                .testIsUsedWithProfileList(this.providerExcludeImplicitly,
+                        this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false,
+                        false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
+                this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true, true, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListSingleExcludeExplicitlyAndByDefault()
+    {
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
+                this.profileListSingleExcludeExplicitlyAndByDefault, true, true, false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerExcludeImplicitly,
+                this.profileListSingleExcludeExplicitlyAndByDefault, false, false, false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
+                this.profileListSingleExcludeExplicitlyAndByDefault, true, true, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListSingleExcludeFalse()
+    {
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri, this.profileListSingleExcludeFalse, true,
+                true, false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri, this.profileListSingleExcludeFalse, false,
+                false, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListSingleExcludeImplicitly()
+    {
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
+                this.profileListSingleExcludeImplicitly, true, true, false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerExcludeImplicitly,
+                this.profileListSingleExcludeImplicitly, false, false, false, false);
+        
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
+                this.profileListSingleExcludeImplicitly, true, true, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListSingleIncludeAllImplicitly()
+    {
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
                 this.profileListSingleIncludeAllImplicitly, true, true, true, false);
         
@@ -293,6 +366,11 @@ public abstract class AbstractProfilableTest
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
                 this.profileListSingleIncludeAllImplicitly, true, true, true, false);
         
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListSingleIncludeAllImplicitlyExcludeByDefault()
+    {
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
                 this.profileListSingleIncludeAllImplicitlyExcludeByDefault, true, true, true, false);
         
@@ -301,67 +379,41 @@ public abstract class AbstractProfilableTest
         
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
                 this.profileListSingleIncludeAllImplicitlyExcludeByDefault, true, true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
-                this.profileListSingleExcludeImplicitly, true, true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerExcludeImplicitly,
-                this.profileListSingleExcludeImplicitly, false, false, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
-                this.profileListSingleExcludeImplicitly, true, true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
-                this.profileListSingleExcludeExplicitlyAndByDefault, true, true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerExcludeImplicitly,
-                this.profileListSingleExcludeExplicitlyAndByDefault, false, false, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
-                this.profileListSingleExcludeExplicitlyAndByDefault, true, true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
-                this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true, true, false);
-        
-        ProfilableTestUtil
-                .testIsUsedWithProfileList(this.providerExcludeImplicitly,
-                        this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false,
-                        false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
-                this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true, true, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeImplicitly,
-                this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true, false, false);
-        
-        ProfilableTestUtil
-                .testIsUsedWithProfileList(this.providerExcludeImplicitly,
-                        this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false,
-                        false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerIncludeExcludeOrderUndefined,
-                this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true, false, false);
-        
+    }
+    
+    @Test
+    public void testIsUsedWithProfileListSingleIncludeTrue()
+    {
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri, this.profileListSingleIncludeTrue, true,
                 true, true, true);
         
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri, this.profileListSingleIncludeTrue, true,
                 true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri, this.profileListSingleExcludeFalse, true,
-                true, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri, this.profileListSingleExcludeFalse, false,
-                false, false, false);
-        
+    }
+    
+    @Test
+    public void testIsUsedWithProviderProfileListMultipleExcludeFalseThenIncludeTrue()
+    {
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri,
-                this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true, true, true);
+                this.profileListMultipleExcludeFalseThenIncludeTrue, true, true, true, true);
         
-        ProfilableTestUtil
-                .testIsUsedWithProfileList(this.providerFalseUri,
-                        this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false,
-                        false, false);
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri,
+                this.profileListMultipleExcludeFalseThenIncludeTrue, false, false, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProviderProfileListMultipleIncludeTrueThenExcludeFalse()
+    {
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri,
+                this.profileListMultipleIncludeTrueThenExcludeFalse, true, true, true, true);
         
+        ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri,
+                this.profileListMultipleIncludeTrueThenExcludeFalse, false, false, false, false);
+    }
+    
+    @Test
+    public void testIsUsedWithProviderProfileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly()
+    {
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri,
                 this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, true, true, true, true);
         
@@ -369,17 +421,17 @@ public abstract class AbstractProfilableTest
                 .testIsUsedWithProfileList(this.providerFalseUri,
                         this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly, false, false,
                         false, false);
-        
+    }
+    
+    @Test
+    public void testIsUsedWithProviderProfileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly()
+    {
         ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri,
-                this.profileListMultipleIncludeTrueThenExcludeFalse, true, true, true, true);
+                this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, true, true, true, true);
         
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri,
-                this.profileListMultipleIncludeTrueThenExcludeFalse, false, false, false, false);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerTrueUri,
-                this.profileListMultipleExcludeFalseThenIncludeTrue, true, true, true, true);
-        
-        ProfilableTestUtil.testIsUsedWithProfileList(this.providerFalseUri,
-                this.profileListMultipleExcludeFalseThenIncludeTrue, false, false, false, false);
+        ProfilableTestUtil
+                .testIsUsedWithProfileList(this.providerFalseUri,
+                        this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly, false, false,
+                        false, false);
     }
 }

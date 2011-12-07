@@ -12,7 +12,6 @@ import org.queryall.exception.QueryAllException;
  * normalisation rules.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
- * 
  */
 public interface TransformingRule extends NormalisationRule
 {

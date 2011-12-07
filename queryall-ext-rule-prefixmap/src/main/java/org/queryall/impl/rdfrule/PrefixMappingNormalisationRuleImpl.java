@@ -224,22 +224,69 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         return Collections.unmodifiableCollection(this.subjectMappingPredicates);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setInputMatchRegex(java.lang.String)
-     */
+    @Override
+    public boolean resetObjectMappingPredicates()
+    {
+        try
+        {
+            this.objectMappingPredicates.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.objectMappingPredicates = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetPredicateMappingPredicates()
+    {
+        try
+        {
+            this.predicateMappingPredicates.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.predicateMappingPredicates = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetSubjectMappingPredicates()
+    {
+        try
+        {
+            this.subjectMappingPredicates.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.subjectMappingPredicates = new HashSet<URI>();
+        
+        return true;
+    }
+    
     @Override
     public void setInputUriPrefix(final String inputUriPrefix)
     {
         this.inputPrefix = inputUriPrefix;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.impl.RegexNormalisationRule#setOutputMatchRegex(java.lang.String)
-     */
     @Override
     public void setOutputUriPrefix(final String outputUriPrefix)
     {

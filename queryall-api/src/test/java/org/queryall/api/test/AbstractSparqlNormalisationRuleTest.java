@@ -3,8 +3,11 @@
  */
 package org.queryall.api.test;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
@@ -143,4 +146,19 @@ public abstract class AbstractSparqlNormalisationRuleTest extends AbstractNormal
         this.setTestValueFactory(null);
     }
     
+    @Test
+    public void testResetSparqlWherePatterns()
+    {
+        final SparqlNormalisationRule testSparqlNormalisationRule = this.getNewTestSparqlNormalisationRule();
+        
+        Assert.assertEquals(0, testSparqlNormalisationRule.getSparqlWherePatterns().size());
+        
+        testSparqlNormalisationRule.addSparqlWherePattern(" ?test ?one ?two . ");
+        
+        Assert.assertEquals(1, testSparqlNormalisationRule.getSparqlWherePatterns().size());
+        
+        Assert.assertTrue(testSparqlNormalisationRule.resetSparqlWherePatterns());
+        
+        Assert.assertEquals(0, testSparqlNormalisationRule.getSparqlWherePatterns().size());
+    }
 }

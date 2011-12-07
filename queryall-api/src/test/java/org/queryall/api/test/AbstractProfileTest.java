@@ -326,6 +326,102 @@ public abstract class AbstractProfileTest
         Assert.assertEquals(this.testProfileAdministratorUri, this.testProfile1.getProfileAdministrators().toArray()[0]);
     }
     
+    @Test
+    public void testResetExcludeProviders()
+    {
+        final Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getExcludeProviders().size());
+        
+        testProfile.addExcludeProvider(this.testExcludeProvider1);
+        
+        Assert.assertEquals(1, testProfile.getExcludeProviders().size());
+        
+        Assert.assertTrue(testProfile.resetExcludedProviders());
+        
+        Assert.assertEquals(0, testProfile.getExcludeProviders().size());
+    }
+    
+    @Test
+    public void testResetExcludeQueryTypes()
+    {
+        final Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getExcludeQueryTypes().size());
+        
+        testProfile.addExcludeQueryType(this.testExcludeQueryType1);
+        
+        Assert.assertEquals(1, testProfile.getExcludeQueryTypes().size());
+        
+        Assert.assertTrue(testProfile.resetExcludedQueryTypes());
+        
+        Assert.assertEquals(0, testProfile.getExcludeQueryTypes().size());
+    }
+    
+    @Test
+    public void testResetExcludeRdfRules()
+    {
+        final Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getExcludeRdfRules().size());
+        
+        testProfile.addExcludeRdfRule(this.testExcludeRdfRule1);
+        
+        Assert.assertEquals(1, testProfile.getExcludeRdfRules().size());
+        
+        Assert.assertTrue(testProfile.resetExcludedRdfRules());
+        
+        Assert.assertEquals(0, testProfile.getExcludeRdfRules().size());
+    }
+    
+    @Test
+    public void testResetIncludeProviders()
+    {
+        final Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getIncludeProviders().size());
+        
+        testProfile.addIncludeProvider(this.testIncludeProvider1);
+        
+        Assert.assertEquals(1, testProfile.getIncludeProviders().size());
+        
+        Assert.assertTrue(testProfile.resetIncludedProviders());
+        
+        Assert.assertEquals(0, testProfile.getIncludeProviders().size());
+    }
+    
+    @Test
+    public void testResetIncludeQueryTypes()
+    {
+        final Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getIncludeQueryTypes().size());
+        
+        testProfile.addIncludeQueryType(this.testIncludeQueryType1);
+        
+        Assert.assertEquals(1, testProfile.getIncludeQueryTypes().size());
+        
+        Assert.assertTrue(testProfile.resetIncludedQueryTypes());
+        
+        Assert.assertEquals(0, testProfile.getIncludeQueryTypes().size());
+    }
+    
+    @Test
+    public void testResetIncludeRdfRules()
+    {
+        final Profile testProfile = this.getNewTestProfile();
+        
+        Assert.assertEquals(0, testProfile.getIncludeRdfRules().size());
+        
+        testProfile.addIncludeRdfRule(this.testIncludeRdfRule1);
+        
+        Assert.assertEquals(1, testProfile.getIncludeRdfRules().size());
+        
+        Assert.assertTrue(testProfile.resetIncludedRdfRules());
+        
+        Assert.assertEquals(0, testProfile.getIncludeRdfRules().size());
+    }
+    
     /**
      * Test method for
      * {@link org.queryall.api.profile.Profile#setAllowImplicitProviderInclusions(boolean)} .
@@ -423,5 +519,4 @@ public abstract class AbstractProfileTest
         Assert.assertEquals(100, this.testProfile1.getOrder());
         Assert.assertEquals(200, this.testProfile2.getOrder());
     }
-    
 }

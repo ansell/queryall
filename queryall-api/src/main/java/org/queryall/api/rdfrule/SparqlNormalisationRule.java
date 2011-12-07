@@ -1,8 +1,12 @@
 package org.queryall.api.rdfrule;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
+ * The SparqlNormalisationRule interface encapsulates the common functionality for the
+ * SparqlConstructRule and SparqlAskRule types. It is neither a ValidatingRule, nor a
+ * TransformationRule, so it cannot be used for transformations without further implementation.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface SparqlNormalisationRule extends NormalisationRule
@@ -30,7 +34,13 @@ public interface SparqlNormalisationRule extends NormalisationRule
      * @return A list of the SPARQL Where patterns that make up this rule. Each pattern represents
      *         one of the mappings that make up this rule.
      */
-    List<String> getSparqlWherePatterns();
+    Collection<String> getSparqlWherePatterns();
+    
+    /**
+     * 
+     * @return True if the sparql where patterns collection was reset and false otherwise
+     */
+    boolean resetSparqlWherePatterns();
     
     /**
      * 

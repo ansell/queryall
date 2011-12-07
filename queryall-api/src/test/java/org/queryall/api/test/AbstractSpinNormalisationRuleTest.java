@@ -4,7 +4,9 @@
 package org.queryall.api.test;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
@@ -141,6 +143,55 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
         
         this.setTestRepository(null);
         this.setTestValueFactory(null);
+    }
+    
+    @Test
+    public void testResetEntailmentUris()
+    {
+        final SpinNormalisationRule testSpinNormalisationRule = this.getNewTestSpinNormalisationRule();
+        
+        Assert.assertEquals(0, testSpinNormalisationRule.getEntailmentUris().size());
+        
+        testSpinNormalisationRule.addEntailmentUri(this.testValueFactory
+                .createURI("http://example.org/test/entailment/uri/1"));
+        
+        Assert.assertEquals(1, testSpinNormalisationRule.getEntailmentUris().size());
+        
+        Assert.assertTrue(testSpinNormalisationRule.resetEntailmentUris());
+        
+        Assert.assertEquals(0, testSpinNormalisationRule.getEntailmentUris().size());
+    }
+    
+    @Test
+    public void testResetLocalImports()
+    {
+        final SpinNormalisationRule testSpinNormalisationRule = this.getNewTestSpinNormalisationRule();
+        
+        Assert.assertEquals(0, testSpinNormalisationRule.getLocalImports().size());
+        
+        testSpinNormalisationRule.addLocalImport("test/owlrl-all");
+        
+        Assert.assertEquals(1, testSpinNormalisationRule.getLocalImports().size());
+        
+        Assert.assertTrue(testSpinNormalisationRule.resetLocalImports());
+        
+        Assert.assertEquals(0, testSpinNormalisationRule.getLocalImports().size());
+    }
+    
+    @Test
+    public void testResetUrlImports()
+    {
+        final SpinNormalisationRule testSpinNormalisationRule = this.getNewTestSpinNormalisationRule();
+        
+        Assert.assertEquals(0, testSpinNormalisationRule.getURLImports().size());
+        
+        testSpinNormalisationRule.addUrlImport(this.testValueFactory.createURI("http://topbraid.org/spin/owlrl-all"));
+        
+        Assert.assertEquals(1, testSpinNormalisationRule.getURLImports().size());
+        
+        Assert.assertTrue(testSpinNormalisationRule.resetUrlImports());
+        
+        Assert.assertEquals(0, testSpinNormalisationRule.getURLImports().size());
     }
     
 }

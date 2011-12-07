@@ -13,6 +13,9 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 
 /**
+ * The QueryAllConfiguration object provides access to all of the properties and objects that are
+ * managed by the current application.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface QueryAllConfiguration
@@ -31,15 +34,27 @@ public interface QueryAllConfiguration
     
     Map<URI, NamespaceEntry> getAllNamespaceEntries();
     
+    NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri);
+    
     Map<URI, NormalisationRule> getAllNormalisationRules();
+    
+    NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri);
     
     Map<URI, Profile> getAllProfiles();
     
+    Profile getProfile(URI nextProfileUri);
+    
     Map<URI, Provider> getAllProviders();
+    
+    Provider getProvider(URI nextProviderUri);
     
     Map<URI, QueryType> getAllQueryTypes();
     
+    QueryType getQueryType(URI nextQueryTypeUri);
+    
     Map<URI, RuleTest> getAllRuleTests();
+    
+    RuleTest getRuleTest(URI nextRuleTestUri);
     
     boolean getBooleanProperty(String propertyKey, boolean defaultValue);
     

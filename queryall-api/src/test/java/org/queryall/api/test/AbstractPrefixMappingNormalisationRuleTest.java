@@ -330,4 +330,52 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
                 this.testRepositoryConnection.size());
     }
     
+    @Test
+    public void testResetObjectMappingPredicates()
+    {
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        
+        Assert.assertEquals(0, mappingRule.getObjectMappingPredicates().size());
+        
+        mappingRule.addObjectMappingPredicate(OWL.SAMEAS);
+        
+        Assert.assertEquals(1, mappingRule.getObjectMappingPredicates().size());
+        
+        Assert.assertTrue(mappingRule.resetObjectMappingPredicates());
+        
+        Assert.assertEquals(0, mappingRule.getObjectMappingPredicates().size());
+    }
+    
+    @Test
+    public void testResetPredicateMappingPredicates()
+    {
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        
+        Assert.assertEquals(0, mappingRule.getPredicateMappingPredicates().size());
+        
+        mappingRule.addPredicateMappingPredicate(OWL.EQUIVALENTPROPERTY);
+        
+        Assert.assertEquals(1, mappingRule.getPredicateMappingPredicates().size());
+        
+        Assert.assertTrue(mappingRule.resetPredicateMappingPredicates());
+        
+        Assert.assertEquals(0, mappingRule.getPredicateMappingPredicates().size());
+    }
+    
+    @Test
+    public void testResetSubjectMappingPredicates()
+    {
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        
+        Assert.assertEquals(0, mappingRule.getSubjectMappingPredicates().size());
+        
+        mappingRule.addSubjectMappingPredicate(OWL.EQUIVALENTCLASS);
+        
+        Assert.assertEquals(1, mappingRule.getSubjectMappingPredicates().size());
+        
+        Assert.assertTrue(mappingRule.resetSubjectMappingPredicates());
+        
+        Assert.assertEquals(0, mappingRule.getSubjectMappingPredicates().size());
+    }
+    
 }

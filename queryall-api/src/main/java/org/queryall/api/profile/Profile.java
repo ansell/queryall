@@ -5,6 +5,12 @@ import java.util.Collection;
 import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
+ * Profiles define which query types, providers, and normalisation rules, are acceptable. They can
+ * be layered, and shared, independent of the objects they reference.
+ * 
+ * Objects that are influenced by Profiles should implement the
+ * org.queryall.api.base.ProfilableInterface interface.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
@@ -135,6 +141,48 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
      * @return A collection of URIs denoting the administrators of this profile
      */
     Collection<org.openrdf.model.URI> getProfileAdministrators();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetExcludedProviders();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetExcludedQueryTypes();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetExcludedRdfRules();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetIncludedProviders();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetIncludedQueryTypes();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetIncludedRdfRules();
+    
+    /**
+     * 
+     * @return True if the collection was reset and false otherwise.
+     */
+    boolean resetProfileAdministrators();
     
     /**
      * 
