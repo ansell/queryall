@@ -624,22 +624,32 @@ public class BlacklistControllerTest
     
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#getCurrentIPBlacklist()}.
+     * 
+     * TODO: add another test using a modified DummySettings that returns a non-empty blacklist
      */
-    @Ignore
     @Test
     public void testGetCurrentIPBlacklist()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Collection<String> currentIPBlacklist = this.testBlacklistController.getCurrentIPBlacklist();
+        
+        Assert.assertNotNull(currentIPBlacklist);
+        
+        Assert.assertEquals(0, currentIPBlacklist.size());
     }
     
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#getCurrentIPWhitelist()}.
+     * 
+     * TODO: add another test using a modified DummySettings that returns a non-empty whitelist
      */
-    @Ignore
     @Test
     public void testGetCurrentIPWhitelist()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Collection<String> currentIPWhitelist = this.testBlacklistController.getCurrentIPWhitelist();
+        
+        Assert.assertNotNull(currentIPWhitelist);
+        
+        Assert.assertEquals(0, currentIPWhitelist.size());
     }
     
     /**
