@@ -683,7 +683,7 @@ public class BlacklistController
     
     public boolean isClientBlacklisted(final String nextClientIPAddress)
     {
-        if(this.getCurrentIPWhitelist().contains(nextClientIPAddress))
+        if(this.isClientWhitelisted(nextClientIPAddress))
         {
             return false;
         }
@@ -697,7 +697,7 @@ public class BlacklistController
     
     public boolean isClientPermanentlyBlacklisted(final String nextClientIPAddress)
     {
-        if(this.getCurrentIPWhitelist().contains(nextClientIPAddress))
+        if(this.isClientWhitelisted(nextClientIPAddress))
         {
             return false;
         }
