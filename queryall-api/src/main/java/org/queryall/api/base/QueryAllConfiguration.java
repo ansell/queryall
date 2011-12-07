@@ -34,15 +34,27 @@ public interface QueryAllConfiguration
     
     Map<URI, NamespaceEntry> getAllNamespaceEntries();
     
+    NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri);
+    
     Map<URI, NormalisationRule> getAllNormalisationRules();
+    
+    NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri);
     
     Map<URI, Profile> getAllProfiles();
     
+    Profile getProfile(URI nextProfileUri);
+    
     Map<URI, Provider> getAllProviders();
+    
+    Provider getProvider(URI nextProviderUri);
     
     Map<URI, QueryType> getAllQueryTypes();
     
+    QueryType getQueryType(URI nextQueryTypeUri);
+    
     Map<URI, RuleTest> getAllRuleTests();
+    
+    RuleTest getRuleTest(URI nextRuleTestUri);
     
     boolean getBooleanProperty(String propertyKey, boolean defaultValue);
     

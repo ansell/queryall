@@ -26,6 +26,66 @@ import org.queryall.api.ruletest.RuleTest;
 public class DummySettings implements QueryAllConfiguration
 {
     
+    /* (non-Javadoc)
+     * @see org.queryall.api.base.QueryAllConfiguration#getNamespaceEntry(org.openrdf.model.URI)
+     */
+    @Override
+    public NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.base.QueryAllConfiguration#getNormalisationRule(org.openrdf.model.URI)
+     */
+    @Override
+    public NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.base.QueryAllConfiguration#getProfile(org.openrdf.model.URI)
+     */
+    @Override
+    public Profile getProfile(URI nextProfileUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.base.QueryAllConfiguration#getProvider(org.openrdf.model.URI)
+     */
+    @Override
+    public Provider getProvider(URI nextProviderUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.base.QueryAllConfiguration#getQueryType(org.openrdf.model.URI)
+     */
+    @Override
+    public QueryType getQueryType(URI nextQueryTypeUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.queryall.api.base.QueryAllConfiguration#getRuleTest(org.openrdf.model.URI)
+     */
+    @Override
+    public RuleTest getRuleTest(URI nextRuleTestUri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * 
      */
