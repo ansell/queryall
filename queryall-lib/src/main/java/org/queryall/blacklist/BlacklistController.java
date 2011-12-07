@@ -650,12 +650,7 @@ public class BlacklistController
     {
         this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
         
-        final Collection<String> results = new HashSet<String>();
-        
-        for(final String nextKey : this.getAccumulatedBlacklistStatistics().keySet())
-        {
-            results.add(nextKey);
-        }
+        final Collection<String> results = new HashSet<String>(this.getAccumulatedBlacklistStatistics().keySet());
         
         return results;
     }
