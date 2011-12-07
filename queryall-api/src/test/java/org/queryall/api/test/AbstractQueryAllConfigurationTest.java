@@ -7,6 +7,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.profile.Profile;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.ruletest.RuleTest;
 
 public abstract class AbstractQueryAllConfigurationTest
 {
@@ -18,6 +24,13 @@ public abstract class AbstractQueryAllConfigurationTest
      * @return A new instance of the QueryAllConfiguration implementation for this class
      */
     protected abstract QueryAllConfiguration getNewQueryAllConfiguration();
+
+    protected abstract NamespaceEntry getNewNamespaceEntry();
+    protected abstract NormalisationRule getNewNormalisationRule();
+    protected abstract Profile getNewProfile();
+    protected abstract Provider getNewProvider();
+    protected abstract QueryType getNewQueryType();
+    protected abstract RuleTest getNewRuleTest();
     
     @Before
     public void setUp() throws Exception
@@ -31,88 +44,250 @@ public abstract class AbstractQueryAllConfigurationTest
         this.testConfiguration = null;
     }
     
-    @Ignore
     @Test
     public void testAddNamespaceEntry()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        NamespaceEntry nextNamespaceEntry = getNewNamespaceEntry();
+        nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/1");
+        
+        Assert.assertNotNull(nextNamespaceEntry.getKey());
+        
+        Assert.assertEquals("http://example.org/test/queryallconfiguration/namespaceentry/add/1", nextNamespaceEntry.getKey().stringValue());
+        
+        this.testConfiguration.addNamespaceEntry(nextNamespaceEntry);
+        
+        Assert.assertNotNull(this.testConfiguration.getNamespaceEntry(nextNamespaceEntry.getKey()));
+        
+        Assert.assertEquals(1, this.testConfiguration.getAllNamespaceEntries().size());
+        
+        Assert.assertTrue(this.testConfiguration.getAllNamespaceEntries().containsKey(nextNamespaceEntry.getKey()));
     }
     
-    @Ignore
     @Test
     public void testAddNormalisationRule()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        NormalisationRule nextNormalisationRule = getNewNormalisationRule();
+        nextNormalisationRule.setKey("http://example.org/test/queryallconfiguration/NormalisationRule/add/1");
+        
+        Assert.assertNotNull(nextNormalisationRule.getKey());
+        
+        Assert.assertEquals("http://example.org/test/queryallconfiguration/NormalisationRule/add/1", nextNormalisationRule.getKey().stringValue());
+        
+        this.testConfiguration.addNormalisationRule(nextNormalisationRule);
+        
+        Assert.assertNotNull(this.testConfiguration.getNormalisationRule(nextNormalisationRule.getKey()));
+        
+        Assert.assertEquals(1, this.testConfiguration.getAllNormalisationRules().size());
+        
+        Assert.assertTrue(this.testConfiguration.getAllNormalisationRules().containsKey(nextNormalisationRule.getKey()));
     }
     
-    @Ignore
     @Test
     public void testAddProfile()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Profile nextProfile = getNewProfile();
+        nextProfile.setKey("http://example.org/test/queryallconfiguration/Profile/add/1");
+        
+        Assert.assertNotNull(nextProfile.getKey());
+        
+        Assert.assertEquals("http://example.org/test/queryallconfiguration/Profile/add/1", nextProfile.getKey().stringValue());
+        
+        this.testConfiguration.addProfile(nextProfile);
+        
+        Assert.assertNotNull(this.testConfiguration.getProfile(nextProfile.getKey()));
+        
+        Assert.assertEquals(1, this.testConfiguration.getAllProfiles().size());
+        
+        Assert.assertTrue(this.testConfiguration.getAllProfiles().containsKey(nextProfile.getKey()));
     }
     
-    @Ignore
     @Test
     public void testAddProvider()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Provider nextProvider = getNewProvider();
+        nextProvider.setKey("http://example.org/test/queryallconfiguration/Provider/add/1");
+        
+        Assert.assertNotNull(nextProvider.getKey());
+        
+        Assert.assertEquals("http://example.org/test/queryallconfiguration/Provider/add/1", nextProvider.getKey().stringValue());
+        
+        this.testConfiguration.addProvider(nextProvider);
+        
+        Assert.assertNotNull(this.testConfiguration.getProvider(nextProvider.getKey()));
+        
+        Assert.assertEquals(1, this.testConfiguration.getAllProviders().size());
+        
+        Assert.assertTrue(this.testConfiguration.getAllProviders().containsKey(nextProvider.getKey()));
     }
     
-    @Ignore
     @Test
     public void testAddQueryType()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        QueryType nextQueryType = getNewQueryType();
+        nextQueryType.setKey("http://example.org/test/queryallconfiguration/QueryType/add/1");
+        
+        Assert.assertNotNull(nextQueryType.getKey());
+        
+        Assert.assertEquals("http://example.org/test/queryallconfiguration/QueryType/add/1", nextQueryType.getKey().stringValue());
+        
+        this.testConfiguration.addQueryType(nextQueryType);
+        
+        Assert.assertNotNull(this.testConfiguration.getQueryType(nextQueryType.getKey()));
+        
+        Assert.assertEquals(1, this.testConfiguration.getAllQueryTypes().size());
+        
+        Assert.assertTrue(this.testConfiguration.getAllQueryTypes().containsKey(nextQueryType.getKey()));
     }
     
-    @Ignore
     @Test
     public void testAddRuleTest()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        RuleTest nextRuleTest = getNewRuleTest();
+        nextRuleTest.setKey("http://example.org/test/queryallconfiguration/RuleTest/add/1");
+        
+        Assert.assertNotNull(nextRuleTest.getKey());
+        
+        Assert.assertEquals("http://example.org/test/queryallconfiguration/RuleTest/add/1", nextRuleTest.getKey().stringValue());
+        
+        this.testConfiguration.addRuleTest(nextRuleTest);
+        
+        Assert.assertNotNull(this.testConfiguration.getRuleTest(nextRuleTest.getKey()));
+        
+        Assert.assertEquals(1, this.testConfiguration.getAllRuleTests().size());
+        
+        Assert.assertTrue(this.testConfiguration.getAllRuleTests().containsKey(nextRuleTest.getKey()));
     }
     
-    @Ignore
     @Test
     public void testGetAllNamespaceEntries()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            NamespaceEntry nextNamespaceEntry = getNewNamespaceEntry();
+            nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i);
+            
+            Assert.assertNotNull(nextNamespaceEntry.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i, nextNamespaceEntry.getKey().stringValue());
+            
+            this.testConfiguration.addNamespaceEntry(nextNamespaceEntry);
+            
+            Assert.assertNotNull(this.testConfiguration.getNamespaceEntry(nextNamespaceEntry.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNamespaceEntries().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNamespaceEntries().containsKey(nextNamespaceEntry.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetAllNormalisationRules()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            NormalisationRule nextNormalisationRule = getNewNormalisationRule();
+            nextNormalisationRule.setKey("http://example.org/test/queryallconfiguration/NormalisationRule/add/"+i);
+            
+            Assert.assertNotNull(nextNormalisationRule.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/NormalisationRule/add/"+i, nextNormalisationRule.getKey().stringValue());
+            
+            this.testConfiguration.addNormalisationRule(nextNormalisationRule);
+            
+            Assert.assertNotNull(this.testConfiguration.getNormalisationRule(nextNormalisationRule.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNormalisationRules().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNormalisationRules().containsKey(nextNormalisationRule.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetAllProfiles()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            Profile nextProfile = getNewProfile();
+            nextProfile.setKey("http://example.org/test/queryallconfiguration/Profile/add/"+i);
+            
+            Assert.assertNotNull(nextProfile.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/Profile/add/"+i, nextProfile.getKey().stringValue());
+            
+            this.testConfiguration.addProfile(nextProfile);
+            
+            Assert.assertNotNull(this.testConfiguration.getProfile(nextProfile.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllProfiles().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllProfiles().containsKey(nextProfile.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetAllProviders()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            Provider nextProvider = getNewProvider();
+            nextProvider.setKey("http://example.org/test/queryallconfiguration/Provider/add/"+i);
+            
+            Assert.assertNotNull(nextProvider.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/Provider/add/"+i, nextProvider.getKey().stringValue());
+            
+            this.testConfiguration.addProvider(nextProvider);
+            
+            Assert.assertNotNull(this.testConfiguration.getProvider(nextProvider.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllProviders().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllProviders().containsKey(nextProvider.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetAllQueryTypes()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            QueryType nextQueryType = getNewQueryType();
+            nextQueryType.setKey("http://example.org/test/queryallconfiguration/QueryType/add/"+i);
+            
+            Assert.assertNotNull(nextQueryType.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/QueryType/add/"+i, nextQueryType.getKey().stringValue());
+            
+            this.testConfiguration.addQueryType(nextQueryType);
+            
+            Assert.assertNotNull(this.testConfiguration.getQueryType(nextQueryType.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllQueryTypes().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllQueryTypes().containsKey(nextQueryType.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetAllRuleTests()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            RuleTest nextRuleTest = getNewRuleTest();
+            nextRuleTest.setKey("http://example.org/test/queryallconfiguration/RuleTest/add/"+i);
+            
+            Assert.assertNotNull(nextRuleTest.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/RuleTest/add/"+i, nextRuleTest.getKey().stringValue());
+            
+            this.testConfiguration.addRuleTest(nextRuleTest);
+            
+            Assert.assertNotNull(this.testConfiguration.getRuleTest(nextRuleTest.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllRuleTests().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllRuleTests().containsKey(nextRuleTest.getKey()));
+        }
     }
     
     @Ignore
@@ -150,11 +325,26 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public void testGetNamespaceEntry()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            NamespaceEntry nextNamespaceEntry = getNewNamespaceEntry();
+            nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i);
+            
+            Assert.assertNotNull(nextNamespaceEntry.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i, nextNamespaceEntry.getKey().stringValue());
+            
+            this.testConfiguration.addNamespaceEntry(nextNamespaceEntry);
+            
+            Assert.assertNotNull(this.testConfiguration.getNamespaceEntry(nextNamespaceEntry.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNamespaceEntries().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNamespaceEntries().containsKey(nextNamespaceEntry.getKey()));
+        }
     }
     
     @Ignore
@@ -164,11 +354,26 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public void testGetNormalisationRule()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            NormalisationRule nextNormalisationRule = getNewNormalisationRule();
+            nextNormalisationRule.setKey("http://example.org/test/queryallconfiguration/NormalisationRule/add/"+i);
+            
+            Assert.assertNotNull(nextNormalisationRule.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/NormalisationRule/add/"+i, nextNormalisationRule.getKey().stringValue());
+            
+            this.testConfiguration.addNormalisationRule(nextNormalisationRule);
+            
+            Assert.assertNotNull(this.testConfiguration.getNormalisationRule(nextNormalisationRule.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNormalisationRules().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNormalisationRules().containsKey(nextNormalisationRule.getKey()));
+        }
     }
     
     @Ignore
@@ -185,32 +390,92 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public void testGetProfile()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            Profile nextProfile = getNewProfile();
+            nextProfile.setKey("http://example.org/test/queryallconfiguration/Profile/add/"+i);
+            
+            Assert.assertNotNull(nextProfile.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/Profile/add/"+i, nextProfile.getKey().stringValue());
+            
+            this.testConfiguration.addProfile(nextProfile);
+            
+            Assert.assertNotNull(this.testConfiguration.getProfile(nextProfile.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllProfiles().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllProfiles().containsKey(nextProfile.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetProvider()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            Provider nextProvider = getNewProvider();
+            nextProvider.setKey("http://example.org/test/queryallconfiguration/Provider/add/"+i);
+            
+            Assert.assertNotNull(nextProvider.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/Provider/add/"+i, nextProvider.getKey().stringValue());
+            
+            this.testConfiguration.addProvider(nextProvider);
+            
+            Assert.assertNotNull(this.testConfiguration.getProvider(nextProvider.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllProviders().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllProviders().containsKey(nextProvider.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetQueryType()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            QueryType nextQueryType = getNewQueryType();
+            nextQueryType.setKey("http://example.org/test/queryallconfiguration/QueryType/add/"+i);
+            
+            Assert.assertNotNull(nextQueryType.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/QueryType/add/"+i, nextQueryType.getKey().stringValue());
+            
+            this.testConfiguration.addQueryType(nextQueryType);
+            
+            Assert.assertNotNull(this.testConfiguration.getQueryType(nextQueryType.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllQueryTypes().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllQueryTypes().containsKey(nextQueryType.getKey()));
+        }
     }
     
-    @Ignore
     @Test
     public void testGetRuleTest()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            RuleTest nextRuleTest = getNewRuleTest();
+            nextRuleTest.setKey("http://example.org/test/queryallconfiguration/RuleTest/add/"+i);
+            
+            Assert.assertNotNull(nextRuleTest.getKey());
+            
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/RuleTest/add/"+i, nextRuleTest.getKey().stringValue());
+            
+            this.testConfiguration.addRuleTest(nextRuleTest);
+            
+            Assert.assertNotNull(this.testConfiguration.getRuleTest(nextRuleTest.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllRuleTests().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllRuleTests().containsKey(nextRuleTest.getKey()));
+        }
     }
     
     @Ignore
