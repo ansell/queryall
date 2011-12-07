@@ -4,7 +4,9 @@
 package org.queryall.blacklist.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -466,11 +468,120 @@ public class BlacklistControllerTest
      * {@link org.queryall.blacklist.BlacklistController#getAlternativeUrl(java.lang.String, java.util.List)}
      * .
      */
-    @Ignore
     @Test
-    public void testGetAlternativeUrl()
+    public void testGetAlternativeUrlNoBlacklistedUrlsSingle()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        List<String> testList = new ArrayList<String>(1);
+        testList.add("http://test.example.org/endpoint/good/1");
+        
+        for(int i = 0; i < 1000; i++)
+        {
+            Assert.assertEquals("http://test.example.org/endpoint/good/1", this.testBlacklistController.getAlternativeUrl("http://test.example.org/endpoint/bad/1", testList));
+        }
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#getAlternativeUrl(java.lang.String, java.util.List)}
+     * .
+     */
+    @Test
+    public void testGetAlternativeUrlNoBlacklistedUrlsMultiple()
+    {
+        List<String> testList = new ArrayList<String>(2);
+        testList.add("http://test.example.org/endpoint/good/1");
+        testList.add("http://test.example.org/endpoint/bad/1");
+        
+        for(int i = 0; i < 1000; i++)
+        {
+            Assert.assertEquals("Failure on attempt i="+i, "http://test.example.org/endpoint/good/1", this.testBlacklistController.getAlternativeUrl("http://test.example.org/endpoint/bad/1", testList));
+        }
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#getAlternativeUrl(java.lang.String, java.util.List)}
+     * .
+     */
+    @Test
+    public void testGetAlternativeUrlWithSingleBlacklistedUrl()
+    {
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
+        
+        Assert.assertNull(this.testBlacklistController.getAlternativeUrl("http://test.example.org/endpoint/bad/1", Arrays.asList("http://test.example.org/endpoint/bad/1")));
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#getAlternativeUrl(java.lang.String, java.util.List)}
+     * .
+     */
+    @Test
+    public void testGetAlternativeUrlWithMultipleBlacklistedUrls()
+    {
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
+        
+        Assert.assertNotNull(this.testBlacklistController.getAlternativeUrl("http://test.example.org/endpoint/bad/1", Arrays.asList("http://test.example.org/endpoint/bad/1", "http://test.example.org/endpoint/good/1")));
     }
     
     /**
