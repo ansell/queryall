@@ -1,5 +1,10 @@
 package org.queryall.api.base;
 
+/**
+ * Provides conversions between QueryAll objects and HTML representations
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface HtmlExport
 {
     

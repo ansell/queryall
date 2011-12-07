@@ -4,6 +4,14 @@ import java.util.List;
 
 import org.openrdf.model.URI;
 
+/**
+ * A SparqlConstructRule uses the where patterns defined in the SparqlNormalisationRule together
+ * with a single Basic Graph Pattern for the construct section to create a set of SPARQL CONSTRUCT
+ * queries which either delete, add, or solely include, statements depending on the mode of this
+ * rule.
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface SparqlConstructRule extends TransformingRule, SparqlNormalisationRule
 {
     /**

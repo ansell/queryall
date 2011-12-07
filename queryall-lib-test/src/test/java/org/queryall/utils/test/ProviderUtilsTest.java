@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils;
+package org.queryall.utils.test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +36,8 @@ import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.impl.profile.ProfileImpl;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
+import org.queryall.utils.ProviderUtils;
+import org.queryall.utils.RdfUtils;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

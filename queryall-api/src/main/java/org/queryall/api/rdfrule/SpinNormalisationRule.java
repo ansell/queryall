@@ -4,6 +4,13 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
+/**
+ * The SpinNormalisationRule interface encapsulates the common components for the SpinConstraintRule
+ * and SpinInferencingRules, providing a list of rules and spin profiles that are active for this
+ * rule.
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface SpinNormalisationRule extends NormalisationRule
 {
     
@@ -57,5 +64,23 @@ public interface SpinNormalisationRule extends NormalisationRule
      * @return True if the entailment is enabled or false otherwise
      */
     boolean isEntailmentEnabled(URI entailmentURI);
+    
+    /**
+     * 
+     * @return True if the entailment URIs collection was reset and false otherwise.
+     */
+    boolean resetEntailmentUris();
+    
+    /**
+     * 
+     * @return True if the local imports collection was reset and false otherwise.
+     */
+    boolean resetLocalImports();
+    
+    /**
+     * 
+     * @return True if the local imports collection was reset and false otherwise.
+     */
+    boolean resetUrlImports();
     
 }

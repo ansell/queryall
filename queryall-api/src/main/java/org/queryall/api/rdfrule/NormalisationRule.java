@@ -9,6 +9,9 @@ import org.queryall.api.base.ProfilableInterface;
 import org.queryall.exception.InvalidStageException;
 
 /**
+ * Normalisation Rules modify queries to match the expected data for providers that they are linked
+ * to, and normalise the results of the query for the provider they are attached to.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface NormalisationRule extends BaseQueryAllInterface, Comparable<NormalisationRule>, ProfilableInterface
@@ -79,6 +82,18 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
      *         internally for each rule and cannot be modified externally by design.
      */
     Set<URI> getValidStages();
+    
+    /**
+     * 
+     * @return True if the related namespaces collection was reset and false otherwise
+     */
+    boolean resetRelatedNamespaces();
+    
+    /**
+     * 
+     * @return True if the related namespaces collection was reset and false otherwise
+     */
+    boolean resetStages();
     
     /**
      * The order goes from lowest to highest for the first three stages, and then highest to lowest

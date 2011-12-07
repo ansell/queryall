@@ -6,6 +6,8 @@ package org.queryall.api.provider;
 import java.util.Collection;
 
 /**
+ * A Provider that supports HTTP queries across a range of equivalent HTTP endpoints.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface HttpProvider extends Provider
@@ -49,6 +51,13 @@ public interface HttpProvider extends Provider
      *         HTTP GET should be used with this provider.
      */
     boolean isHttpGetUrl();
+    
+    /**
+     * Resets the endpoint URL list
+     * 
+     * @return True if the endpointUrl list was successfully reset, and false otherwise
+     */
+    boolean resetEndpointUrls();
     
     /**
      * 

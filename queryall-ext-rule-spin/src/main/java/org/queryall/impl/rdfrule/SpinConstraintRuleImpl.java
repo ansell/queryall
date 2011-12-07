@@ -81,13 +81,13 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         return SpinConstraintRuleImpl.SPIN_CONSTRAINT_RULE_IMPL_TYPES;
     }
     
-    private Set<org.openrdf.model.URI> activeEntailments;
+    private Set<org.openrdf.model.URI> activeEntailments = new HashSet<URI>();
     
-    protected Set<String> localImports = new HashSet<String>(10);
+    private Set<String> localImports = new HashSet<String>(10);
     
     private Set<URI> urlImports = new HashSet<URI>(10);
     
-    protected List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
+    private List<OntModel> ontologyModels = new ArrayList<OntModel>(5);
     
     private volatile SPINModuleRegistry registry;
     
@@ -263,6 +263,63 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
     public boolean isEntailmentEnabled(final URI entailmentURI)
     {
         return this.activeEntailments.contains(entailmentURI);
+    }
+    
+    @Override
+    public boolean resetEntailmentUris()
+    {
+        try
+        {
+            this.activeEntailments.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            SpinConstraintRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.activeEntailments = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetLocalImports()
+    {
+        try
+        {
+            this.localImports.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            SpinConstraintRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.localImports = new HashSet<String>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetUrlImports()
+    {
+        try
+        {
+            this.urlImports.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            SpinConstraintRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.urlImports = new HashSet<URI>();
+        
+        return true;
     }
     
     public boolean runTests(final Collection<RuleTest> myRules)

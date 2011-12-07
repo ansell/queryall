@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils;
+package org.queryall.utils.test;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class SchemaServiceLoaderTest
      * This field contains the expected number of schemas, if and when new schemas are added it
      * needs to be updated to match the expected number
      */
-    private static final int CURRENT_EXPECTED_SCHEMA_COUNT = 32;
+    private static final int CURRENT_EXPECTED_SCHEMA_COUNT = 33;
     
     /**
      * @throws java.lang.Exception
@@ -95,9 +95,8 @@ public class SchemaServiceLoaderTest
             final long previousCount = testRepositoryConnection.size();
             
             final boolean result =
-                    nextSchema.schemaToRdf(testRepository,
-                            vf.createURI("http://test.queryall.example.com/schema/" + nextSchema.toString()),
-                            Settings.CONFIG_API_VERSION);
+                    nextSchema.schemaToRdf(testRepository, Settings.CONFIG_API_VERSION,
+                            vf.createURI("http://test.queryall.example.com/schema/" + nextSchema.toString()));
             
             if(!result)
             {

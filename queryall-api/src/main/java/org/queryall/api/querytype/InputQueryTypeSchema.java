@@ -75,7 +75,7 @@ public class InputQueryTypeSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -84,20 +84,18 @@ public class InputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.LABEL,
-                    f.createLiteral("The list of input parameters to expect for this query."), contextKeyUri);
+                    f.createLiteral("The list of input parameters to expect for this query."), contexts);
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(),
                     RDFS.COMMENT,
                     f.createLiteral("The list of parameters must contain each and every valid parameter for this query. If a parameter is not in the query, and it is not a globally recognised parameter, it will be ignored completely."),
-                    contextKeyUri);
+                    contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

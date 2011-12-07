@@ -261,6 +261,25 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
         return this.sparqlWherePatterns;
     }
     
+    @Override
+    public boolean resetSparqlWherePatterns()
+    {
+        try
+        {
+            this.sparqlWherePatterns.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            SparqlConstructRuleImpl.log.debug("Could not clear collection");
+        }
+        
+        this.sparqlWherePatterns = new ArrayList<String>(2);
+        
+        return true;
+    }
+    
     public boolean runTests(final Collection<RuleTest> myRules)
     {
         // TODO: implement me or delete me!

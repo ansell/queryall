@@ -1,5 +1,11 @@
 package org.queryall.api.ruletest;
 
+/**
+ * A SparqlRuleTest uses a SPARQL ASK query to determine whether the given input triples match the
+ * desired specification, with either true or false able to be expected by a successful test.
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface SparqlRuleTest extends RuleTest
 {
     /**

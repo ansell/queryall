@@ -6,6 +6,11 @@ import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
+ * Tracks namespaces that can be referenced from queries using prefixes that appear in queries. It
+ * provides a many to many relation between query types and providers, as the same prefix can be
+ * used on different namespaces and different namespaces can be used on both query types and
+ * providers.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<NamespaceEntry>
@@ -59,6 +64,12 @@ public interface NamespaceEntry extends BaseQueryAllInterface, Comparable<Namesp
      *         items in this namespace to URIs.
      */
     String getUriTemplate();
+    
+    /**
+     * 
+     * @return True if the alternative prefixes list was reset and false otherwise.
+     */
+    boolean resetAlternativePrefixes();
     
     /**
      * 

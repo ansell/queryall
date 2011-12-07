@@ -4,6 +4,16 @@ import java.util.Collection;
 
 import org.openrdf.model.URI;
 
+/**
+ * Prefix Mapping Normalisation Rules encapsulate the necessary actions surrounding effective URI
+ * translation.
+ * 
+ * They map URIs using a common prefix from a normalised scheme into a denormalised scheme to match
+ * a provider, before also mapping the URI back to the normalised scheme in results from the
+ * provider.
+ * 
+ * @author Peter Ansell p_ansell@yahoo.com
+ */
 public interface PrefixMappingNormalisationRule extends TransformingRule
 {
     /**
@@ -95,6 +105,24 @@ public interface PrefixMappingNormalisationRule extends TransformingRule
      * @return The collection of mapping predicates used to map subjects if their URIs change.
      */
     Collection<URI> getSubjectMappingPredicates();
+    
+    /**
+     * 
+     * @return True if the object mapping predicates list was reset and false otherwise.
+     */
+    boolean resetObjectMappingPredicates();
+    
+    /**
+     * 
+     * @return True if the predicate mapping predicates list was reset and false otherwise.
+     */
+    boolean resetPredicateMappingPredicates();
+    
+    /**
+     * 
+     * @return True if the object mapping predicates list was reset and false otherwise.
+     */
+    boolean resetSubjectMappingPredicates();
     
     /**
      * 

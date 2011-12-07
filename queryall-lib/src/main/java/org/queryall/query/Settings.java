@@ -33,6 +33,7 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Schema;
+import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,7 @@ public class Settings implements QueryAllConfiguration
     private volatile Map<URI, Provider> cachedProviders = null;
     private volatile Map<URI, NormalisationRule> cachedNormalisationRules = null;
     private volatile Map<URI, RuleTest> cachedRuleTests = null;
-    private volatile Map<URI, QueryType> cachedCustomQueries = null;
+    private volatile Map<URI, QueryType> cachedQueryTypes = null;
     private volatile Map<URI, Profile> cachedProfiles = null;
     
     private volatile Map<URI, NamespaceEntry> cachedNamespaceEntries = null;
@@ -302,18 +303,18 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void addQueryType(final QueryType nextQueryType)
     {
-        if(this.cachedCustomQueries == null)
+        if(this.cachedQueryTypes == null)
         {
             synchronized(this)
             {
-                if(this.cachedCustomQueries == null)
+                if(this.cachedQueryTypes == null)
                 {
-                    this.cachedCustomQueries = new ConcurrentHashMap<URI, QueryType>(200);
+                    this.cachedQueryTypes = new ConcurrentHashMap<URI, QueryType>(200);
                 }
             }
         }
         
-        this.cachedCustomQueries.put(nextQueryType.getKey(), nextQueryType);
+        this.cachedQueryTypes.put(nextQueryType.getKey(), nextQueryType);
     }
     
     @Override
@@ -454,9 +455,9 @@ public class Settings implements QueryAllConfiguration
                         Settings.log
                                 .trace("Settings.configRefreshCheck: refresh required... cachedProviders refreshed");
                     }
-                    if(this.cachedCustomQueries != null)
+                    if(this.cachedQueryTypes != null)
                     {
-                        this.cachedCustomQueries = null;
+                        this.cachedQueryTypes = null;
                     }
                     this.getAllQueryTypes();
                     if(Settings._TRACE)
@@ -780,11 +781,11 @@ public class Settings implements QueryAllConfiguration
     
     public Map<URI, QueryType> getAllQueryTypes(final boolean useCache)
     {
-        if(this.cachedCustomQueries == null)
+        if(this.cachedQueryTypes == null)
         {
             synchronized(this)
             {
-                if(this.cachedCustomQueries == null)
+                if(this.cachedQueryTypes == null)
                 {
                     try
                     {
@@ -797,7 +798,7 @@ public class Settings implements QueryAllConfiguration
                             Settings.log.info("Settings.getAllQueryTypes: found " + results.size() + " queries");
                         }
                         
-                        this.cachedCustomQueries = results;
+                        this.cachedQueryTypes = results;
                     }
                     catch(final java.lang.InterruptedException ie)
                     {
@@ -811,7 +812,7 @@ public class Settings implements QueryAllConfiguration
             }
         }
         
-        return Collections.unmodifiableMap(this.cachedCustomQueries);
+        return Collections.unmodifiableMap(this.cachedQueryTypes);
     }
     
     @Override
@@ -913,6 +914,11 @@ public class Settings implements QueryAllConfiguration
                         
                         final String nextLocation = this.getBaseConfigLocation();
                         final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
+                        
+                        if(nextInputStream == null)
+                        {
+                            throw new QueryAllRuntimeException("Was not able to find base config location nextLocation="+nextLocation);
+                        }
                         
                         try
                         {
@@ -1597,9 +1603,9 @@ public class Settings implements QueryAllConfiguration
             Settings.log.trace("Settings.getStringCollectionPropertiesFromConfig: key=" + key);
         }
         
-        final Collection<String> results = new ArrayList<String>();
-        
         final Collection<Value> values = this.getValueProperties(key);
+        
+        final Collection<String> results = new ArrayList<String>(values.size());
         
         for(final Value nextValue : values)
         {
@@ -2195,5 +2201,41 @@ public class Settings implements QueryAllConfiguration
         {
             Settings.log.error("Interrupted", ex);
         }
+    }
+
+    @Override
+    public NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri)
+    {
+        return this.cachedNamespaceEntries.get(nextNamespaceEntryUri);
+    }
+
+    @Override
+    public NormalisationRule getNormalisationRule(URI nextNormalisationRuleUri)
+    {
+        return this.cachedNormalisationRules.get(nextNormalisationRuleUri);
+    }
+
+    @Override
+    public Profile getProfile(URI nextProfileUri)
+    {
+        return this.cachedProfiles.get(nextProfileUri);
+    }
+
+    @Override
+    public Provider getProvider(URI nextProviderUri)
+    {
+        return this.cachedProviders.get(nextProviderUri);
+    }
+
+    @Override
+    public QueryType getQueryType(URI nextQueryTypeUri)
+    {
+        return this.cachedQueryTypes.get(nextQueryTypeUri);
+    }
+
+    @Override
+    public RuleTest getRuleTest(URI nextRuleTestUri)
+    {
+        return this.cachedRuleTests.get(nextRuleTestUri);
     }
 }

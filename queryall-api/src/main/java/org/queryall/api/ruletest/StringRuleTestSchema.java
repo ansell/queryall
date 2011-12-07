@@ -121,7 +121,7 @@ public class StringRuleTestSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -130,24 +130,23 @@ public class StringRuleTestSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(StringRuleTestSchema.getStringRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(StringRuleTestSchema.getStringRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(StringRuleTestSchema.getStringRuleTestTypeUri(), RDFS.LABEL,
-                    f.createLiteral("A test case for regular expression normalisation rules."), contextKeyUri);
+                    f.createLiteral("A test case for regular expression normalisation rules."), contexts);
             
-            con.add(StringRuleTestSchema.getRuletestInputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(StringRuleTestSchema.getRuletestInputTestString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(StringRuleTestSchema.getRuletestInputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(StringRuleTestSchema.getRuletestInputTestString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(StringRuleTestSchema.getRuletestInputTestString(), RDFS.DOMAIN,
-                    StringRuleTestSchema.getStringRuleTestTypeUri(), contextKeyUri);
-            con.add(StringRuleTestSchema.getRuletestInputTestString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    StringRuleTestSchema.getStringRuleTestTypeUri(), contexts);
+            con.add(StringRuleTestSchema.getRuletestInputTestString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDFS.DOMAIN,
-                    StringRuleTestSchema.getStringRuleTestTypeUri(), contextKeyUri);
-            con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    StringRuleTestSchema.getStringRuleTestTypeUri(), contexts);
+            con.add(StringRuleTestSchema.getRuletestOutputTestString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

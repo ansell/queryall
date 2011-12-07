@@ -102,7 +102,7 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -111,22 +111,21 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = contextUri;
             con.setAutoCommit(false);
             
             con.add(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS,
-                    contextKeyUri);
+                    contexts);
             
             con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
+                    contexts);
             con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.RANGE, RDFS.LITERAL,
-                    contextKeyUri);
+                    contexts);
             con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(), RDFS.DOMAIN,
-                    RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), contextKeyUri);
+                    RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), contexts);
             con.add(RegexValidatingNamespaceEntrySchema.getNamespaceIdentifierRegex(),
                     RDFS.LABEL,
                     f.createLiteral("This namespace contains valid identifiers that match this regex. It may be used to identify before querying, whether this namespace and identifier combination is actually relevant."),
-                    contextKeyUri);
+                    contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

@@ -64,30 +64,31 @@ public class ServerStatsServlet extends HttpServlet
         // ISO8601UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
         final String now = Constants.ISO8601UTC().format(currentDate);
         
-        final long differenceMilliseconds = currentDate.getTime() - localBlacklistController.lastExpiryDate.getTime();
+        final long differenceMilliseconds =
+                currentDate.getTime() - localBlacklistController.getLastExpiryDate().getTime();
         
         out.write("Current date : " + currentDate.toString() + "<br />\n");
         out.write("Server Version : " + Settings.VERSION + "<br />\n");
         out.write("Now : " + now + "<br />\n");
-        out.write("Last error reset date: " + localBlacklistController.lastExpiryDate.toString() + "<br />\n");
-        out.write("Server startup date: " + localBlacklistController.lastServerStartupDate.toString() + "<br />\n");
+        out.write("Last error reset date: " + localBlacklistController.getLastExpiryDate().toString() + "<br />\n");
+        out.write("Server startup date: " + localBlacklistController.getLastServerStartupDate().toString() + "<br />\n");
         out.write("Reset period " + localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L) + "<br />\n");
         out.write("Client blacklist will reset in "
                 + ((localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L) - differenceMilliseconds) / 1000)
                 + " seconds.<br /><br />\n");
         
-        if(localBlacklistController.allHttpErrorResponseCodesByServer != null)
+        if(localBlacklistController.getAllHttpErrorResponseCodesByServer() != null)
         {
-            if(localBlacklistController.allHttpErrorResponseCodesByServer.size() > 0)
+            if(localBlacklistController.getAllHttpErrorResponseCodesByServer().size() > 0)
             {
                 out.write("All HTTP response error codes by endpoint since last server restart:<br /><br />\n");
                 
-                for(final String nextKey : localBlacklistController.allHttpErrorResponseCodesByServer.keySet())
+                for(final String nextKey : localBlacklistController.getAllHttpErrorResponseCodesByServer().keySet())
                 {
                     out.write("Endpoint=" + nextKey + "<br />\n");
                     
                     final Map<Integer, Integer> errorCodeList =
-                            localBlacklistController.allHttpErrorResponseCodesByServer.get(nextKey);
+                            localBlacklistController.getAllHttpErrorResponseCodesByServer().get(nextKey);
                     
                     out.write("<ul>\n");
                     
@@ -101,29 +102,30 @@ public class ServerStatsServlet extends HttpServlet
             }
         }
         
-        if(localBlacklistController.allServerQueryTotals != null)
+        if(localBlacklistController.getAllServerQueryTotals() != null)
         {
-            if(localBlacklistController.allServerQueryTotals.size() > 0)
+            if(localBlacklistController.getAllServerQueryTotals().size() > 0)
             {
                 out.write("Total queries by endpoint since last server restart:<br />\n");
                 
                 out.write("<ul>\n");
                 
-                for(final String nextKey : localBlacklistController.allServerQueryTotals.keySet())
+                for(final String nextKey : localBlacklistController.getAllServerQueryTotals().keySet())
                 {
                     out.write("<li>Endpoint=" + nextKey + " : "
-                            + localBlacklistController.allServerQueryTotals.get(nextKey) + "</li>\n");
+                            + localBlacklistController.getAllServerQueryTotals().get(nextKey) + "</li>\n");
                 }
                 
                 out.write("</ul>\n");
             }
         }
         
-        for(final String nextKey : localBlacklistController.accumulatedBlacklistStatistics.keySet())
+        for(final String nextKey : localBlacklistController.getAccumulatedBlacklistStatistics().keySet())
         {
-            out.write(localBlacklistController.accumulatedBlacklistStatistics.get(nextKey).toString() + "<br />\n");
-            out.write(localBlacklistController.accumulatedBlacklistStatistics.get(nextKey)
-                    .errorMessageSummaryToString() + "<br />\n");
+            out.write(localBlacklistController.getAccumulatedBlacklistStatistics().get(nextKey).toString() + "<br />\n");
+            out.write(localBlacklistController.getAccumulatedBlacklistStatistics().get(nextKey)
+                    .errorMessageSummaryToString()
+                    + "<br />\n");
         }
         
         final Collection<Long> overallQueryTimes = new HashSet<Long>();
@@ -131,12 +133,12 @@ public class ServerStatsServlet extends HttpServlet
         long overallQueryTime = 0;
         int overallQueryNumbers = 0;
         
-        for(final String nextKey : localBlacklistController.currentQueryDebugInformation.keySet())
+        for(final String nextKey : localBlacklistController.getCurrentQueryDebugInformation().keySet())
         {
             out.write("<br />Queries by : " + nextKey + "<br />\n");
             
             final Collection<QueryDebug> nextSetOfQueries =
-                    localBlacklistController.currentQueryDebugInformation.get(nextKey);
+                    localBlacklistController.getCurrentQueryDebugInformation().get(nextKey);
             
             final Collection<Long> nextQueryTimes = new HashSet<Long>();
             long nextTotalQueryTime = 0;

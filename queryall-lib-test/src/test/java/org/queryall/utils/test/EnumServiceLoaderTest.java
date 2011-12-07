@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.queryall.utils;
+package org.queryall.utils.test;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class EnumServiceLoaderTest
      * This field contains the expected number of enums, if and when new enums are added it needs to
      * be updated to match the expected number
      */
-    private static final int CURRENT_EXPECTED_ENUM_COUNT = 19;
+    private static final int CURRENT_EXPECTED_ENUM_COUNT = 20;
     
     private Set<URI> getBaseTypes(final Set<URI> nextTypeURIs)
     {

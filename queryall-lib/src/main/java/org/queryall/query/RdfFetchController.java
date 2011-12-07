@@ -580,15 +580,15 @@ public class RdfFetchController
                             replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY,
                                     StringUtils.percentEncode(nextEndpointQuery));
                     
-                    final Map<String, String> newList = new HashMap<String, String>();
-                    newList.put(replacedEndpoint, nextEndpointQuery);
-                    
                     if(replacedEndpoints.containsKey(nextEndpoint))
                     {
                         replacedEndpoints.get(nextEndpoint).put(replacedEndpoint, nextEndpointQuery);
                     }
                     else
                     {
+                        final Map<String, String> newList = new HashMap<String, String>();
+                        newList.put(replacedEndpoint, nextEndpointQuery);
+                        
                         replacedEndpoints.put(nextEndpoint, newList);
                     }
                 }

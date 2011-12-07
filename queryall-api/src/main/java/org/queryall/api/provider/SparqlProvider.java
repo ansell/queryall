@@ -1,6 +1,10 @@
 package org.queryall.api.provider;
 
 /**
+ * A SPARQL Provider provides RDF statements using SPARQL queries, including references to Graphs
+ * that may be defined as variables on the input template from a SparqlProcessingQueryType that is
+ * linked to it.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface SparqlProvider extends Provider

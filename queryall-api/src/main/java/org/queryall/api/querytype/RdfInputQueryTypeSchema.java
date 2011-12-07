@@ -94,7 +94,7 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
     }
     
     @Override
-    public boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
@@ -103,23 +103,24 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
+            con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             
-            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(),
                     RDFS.LABEL,
                     f.createLiteral("The SPARQL input select statement that will convert the input RDF document into named parameters for use in templates."),
-                    contextKeyUri);
+                    contexts);
             con.add(RdfInputQueryTypeSchema.getQuerySparqlInputSelect(),
                     RDFS.COMMENT,
                     f.createLiteral("For compatibility with the RegexInput style, the parameters will need to stick to using input_NN where NN is the index of the parameter in the equivalent HTTP REST Regex match pattern. Any parameters of the same name that are defined in the HTTP GET query parameters will override these bindings. Any bindings that represent public identifiers or namespace identifiers must be defined in the relevant publicIdentifierTag etc., lists."),
-                    contextKeyUri);
+                    contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();

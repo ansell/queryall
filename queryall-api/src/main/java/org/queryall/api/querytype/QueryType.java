@@ -9,6 +9,9 @@ import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.ProfilableInterface;
 
 /**
+ * The base type for queries, containing a variety of links to other query types, namespace
+ * matching, and named input tags.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>, ProfilableInterface
@@ -47,8 +50,6 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     String getStandardUriTemplateString();
     
-    String getTemplateString();
-    
     boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
     
     boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
@@ -60,6 +61,14 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
     
     boolean matchesQueryParameters(Map<String, String> queryString);
+    
+    boolean resetLinkedQueryTypes();
+    
+    boolean resetNamespaceInputTags();
+    
+    boolean resetNamespacesToHandle();
+    
+    boolean resetPublicIdentifierTags();
     
     void setHandleAllNamespaces(boolean handleAllNamespaces);
     
@@ -78,7 +87,5 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     void setQueryUriTemplateString(String queryUriTemplateString);
     
     void setStandardUriTemplateString(String standardUriTemplateString);
-    
-    void setTemplateString(String templateString);
     
 }
