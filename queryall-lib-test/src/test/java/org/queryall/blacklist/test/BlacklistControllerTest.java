@@ -762,12 +762,67 @@ public class BlacklistControllerTest
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#getPermanentIPBlacklist()}.
      */
-    @Ignore
     @Test
-    public void testGetPermanentIPBlacklist()
+    public void testGetPermanentIPBlacklistEmpty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Collection<String> blacklist = this.testBlacklistController.getPermanentIPBlacklist();
+        
+        Assert.assertNotNull(blacklist);
+        
+        Assert.assertEquals(0, blacklist.size());
+        
     }
+    
+    /**
+     * Test method for {@link org.queryall.blacklist.BlacklistController#getPermanentIPBlacklist()}.
+     */
+    @Test
+    public void testGetPermanentIPBlacklistNonEmpty()
+    {
+        Collection<String> blacklist = this.testBlacklistController.getPermanentIPBlacklist();
+        
+        Assert.assertNotNull(blacklist);
+        
+        Assert.assertEquals(0, blacklist.size());
+        
+        // add some query debug information in
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        nextQueryObject.setClientIPAddress("127.0.0.1");
+        
+        // aggressively put the client on the blacklist for making a single query (ie, 1 as the blacklistClientMaxQueriesPerPeriod parameter)
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 1);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, debugInformation.size());
+        
+        // Now test that evaluateClientBlacklist with true as the automaticallyBlacklistClients parameter adds the client to the permanent blacklist
+        this.testBlacklistController.evaluateClientBlacklist(true, 0, 0, 0);
+    
+        final Map<String, Collection<QueryDebug>> afterEvaluateDebugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, afterEvaluateDebugInformation.size());
+    
+        Assert.assertTrue(this.testBlacklistController.isClientBlacklisted("127.0.0.1"));
+        
+        Assert.assertTrue(this.testBlacklistController.isClientPermanentlyBlacklisted("127.0.0.1"));
+
+        // Now verify that the permanent IP blacklist contains this item
+        Collection<String> permanentBlacklist = this.testBlacklistController.getPermanentIPBlacklist();
+        
+        Assert.assertNotNull(permanentBlacklist);
+        
+        Assert.assertEquals(1, permanentBlacklist.size());
+        
+        Assert.assertEquals("127.0.0.1", permanentBlacklist.iterator().next());
+    }    
     
     /**
      * Test method for
