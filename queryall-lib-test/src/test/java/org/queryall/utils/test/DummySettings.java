@@ -3,6 +3,7 @@
  */
 package org.queryall.utils.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -234,7 +235,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Collection<String> getStringProperties(String string)
     {
-        return Collections.emptySet();
+        return new ArrayList<String>(0);
     }
     
     /* (non-Javadoc)
@@ -258,7 +259,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Collection<URI> getURIProperties(String string)
     {
-        return Collections.emptySet();
+        return new ArrayList<URI>(0);
     }
     
     /* (non-Javadoc)

@@ -19,6 +19,8 @@ import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
 import org.queryall.utils.test.DummySettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -26,6 +28,7 @@ import org.queryall.utils.test.DummySettings;
  */
 public class BlacklistControllerTest
 {
+    private static final Logger log = LoggerFactory.getLogger(BlacklistControllerTest.class);
     
     private QueryAllConfiguration testSettings;
     private BlacklistController testBlacklistController;
@@ -39,6 +42,7 @@ public class BlacklistControllerTest
     {
         this.testSettings = new DummySettings();
         this.testBlacklistController = new BlacklistController(this.testSettings);
+        this.testTemporaryEndpointBlacklist = new ArrayList<RdfFetcherQueryRunnable>();
     }
     
     /**
@@ -60,8 +64,6 @@ public class BlacklistControllerTest
     @Test
     public void testAccumulateBlacklist()
     {
-        this.testTemporaryEndpointBlacklist = new ArrayList<RdfFetcherQueryRunnable>();
-        
         final RdfFetcherQueryRunnable fetcherQueryRunnable =
                 new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
                         this.testBlacklistController, null);
@@ -234,24 +236,230 @@ public class BlacklistControllerTest
     
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#doBlacklistExpiry()}.
+     * @throws InterruptedException If the Thread.sleep call that simulates time between blacklist period start and expiry time is interrupted
      */
-    @Ignore
     @Test
-    public void testDoBlacklistExpiry()
+    public void testDoBlacklistExpiryDefaultParameters() throws InterruptedException
     {
-        Assert.fail("Not yet implemented"); // TODO
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
+        
+
+        // Blacklist shouldn't expire immediately, so test that it hasn't before waiting for the time period where it should expire
+        Assert.assertFalse(this.testBlacklistController.doBlacklistExpiry());
+
+
+        // Test that the accumulated blacklist statistics were preserved
+        final Map<String, BlacklistEntry> noExpiryStatistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(noExpiryStatistics);
+        
+        Assert.assertEquals(1, noExpiryStatistics.size());
+
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", noExpiryStatistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry nonExpiredBlacklistEntry = noExpiryStatistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(nonExpiredBlacklistEntry);
+        
+        Assert.assertEquals(1, nonExpiredBlacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", nonExpiredBlacklistEntry.endpointUrl);
+        
+        log.info("About to sleep to wait out the default blacklist reset period");
+        
+        // By default, the period is 60000 milliseconds, so sleep for a little more than that to make sure
+        Thread.sleep(70000);
+        
+        log.info("Finished sleeping, default blacklist reset period should be complete now");
+
+        // Blacklist should expire now
+        Assert.assertTrue(this.testBlacklistController.doBlacklistExpiry());
+
+        // Test that the accumulated blacklist statistics were wiped out this time
+        final Map<String, BlacklistEntry> afterExpiryStatistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(afterExpiryStatistics);
+        
+        Assert.assertEquals(0, afterExpiryStatistics.size());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.blacklist.BlacklistController#doBlacklistExpiry(long, boolean)}.
+     * @throws InterruptedException If the Thread.sleep call that simulates time between blacklist period start and expiry time is interrupted
+     */
+    @Test
+    public void testDoBlacklistExpiryWithParameters() throws InterruptedException
+    {
+        final RdfFetcherQueryRunnable fetcherQueryRunnable =
+                new RdfFetcherUriQueryRunnable("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
+                        this.testBlacklistController, null);
+        fetcherQueryRunnable.setLastException(new Exception());
+        fetcherQueryRunnable.setCompleted(true);
+        
+        // check that setting an exception and the completed flag identifies this runnable as being
+        // in error
+        Assert.assertTrue(fetcherQueryRunnable.wasError());
+        
+        this.testTemporaryEndpointBlacklist.add(fetcherQueryRunnable);
+        
+        
+        // then perform the accumulateBlacklist operation to make the controller ready to test doBlacklistExpiry
+        this.testBlacklistController.accumulateBlacklist(this.testTemporaryEndpointBlacklist);
+        
+        final Map<String, BlacklistEntry> statistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(statistics);
+        
+        Assert.assertEquals(1, statistics.size());
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", statistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry blacklistEntry = statistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(blacklistEntry);
+        
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
+        
+
+        // Blacklist shouldn't expire immediately with these parameters, so test that it hasn't before waiting for the time period where it should expire
+        Assert.assertFalse(this.testBlacklistController.doBlacklistExpiry(120000L, true));
+
+
+        // Test that the accumulated blacklist statistics were preserved
+        final Map<String, BlacklistEntry> noExpiryStatistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(noExpiryStatistics);
+        
+        Assert.assertEquals(1, noExpiryStatistics.size());
+
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", noExpiryStatistics.keySet().toArray()[0]);
+        
+        final BlacklistEntry nonExpiredBlacklistEntry = noExpiryStatistics.get("http://test.example.org/endpoint/bad/1");
+        
+        Assert.assertNotNull(nonExpiredBlacklistEntry);
+        
+        Assert.assertEquals(1, nonExpiredBlacklistEntry.numberOfFailures);
+        
+        Assert.assertEquals("http://test.example.org/endpoint/bad/1", nonExpiredBlacklistEntry.endpointUrl);
+        
+        log.info("About to sleep to wait out the desired test blacklist reset period");
+        
+        // The desired period is 6000 milliseconds, so sleep for a little more than that to make sure
+        Thread.sleep(7000);
+        
+        log.info("Finished sleeping, desired test blacklist reset period should be complete now");
+
+        // Blacklist should expire now
+        Assert.assertTrue(this.testBlacklistController.doBlacklistExpiry(6000L, true));
+
+        // Test that the accumulated blacklist statistics were wiped out this time
+        final Map<String, BlacklistEntry> afterExpiryStatistics = this.testBlacklistController.getAccumulatedBlacklistStatistics();
+        
+        Assert.assertNotNull(afterExpiryStatistics);
+        
+        Assert.assertEquals(0, afterExpiryStatistics.size());
     }
     
     /**
      * Test method for
-     * {@link org.queryall.blacklist.BlacklistController#evaluateClientBlacklist(org.queryall.api.base.QueryAllConfiguration, boolean, int, float, int)}
+     * {@link org.queryall.blacklist.BlacklistController#evaluateClientBlacklist(boolean, int, float, int)}
      * .
      */
-    @Ignore
     @Test
-    public void testEvaluateClientBlacklist()
+    public void testEvaluateClientBlacklistFalse()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        // add some query debug information in
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        nextQueryObject.setClientIPAddress("127.0.0.1");
+        
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 0);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, debugInformation.size());
+        
+        // Now test that evaluateClientBlacklist with false as the automaticallyBlacklistClients parameter does nothing to the query debug information
+        this.testBlacklistController.evaluateClientBlacklist(false, 0, 0, 0);
+
+        final Map<String, Collection<QueryDebug>> afterEvaluateDebugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, afterEvaluateDebugInformation.size());
+        
+        Assert.assertFalse(this.testBlacklistController.isClientBlacklisted("127.0.0.1"));
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.blacklist.BlacklistController#evaluateClientBlacklist(boolean, int, float, int)}
+     * .
+     */
+    @Test
+    public void testEvaluateClientBlacklistTrue()
+    {
+        // add some query debug information in
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        nextQueryObject.setClientIPAddress("127.0.0.1");
+        
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 0);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, debugInformation.size());
+        
+        // Now test that evaluateClientBlacklist with true as the automaticallyBlacklistClients parameter adds the client to the blacklist
+        this.testBlacklistController.evaluateClientBlacklist(true, 0, 0, 0);
+
+        final Map<String, Collection<QueryDebug>> afterEvaluateDebugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, afterEvaluateDebugInformation.size());
+
+        Assert.assertTrue(this.testBlacklistController.isClientBlacklisted("127.0.0.1"));
     }
     
     /**

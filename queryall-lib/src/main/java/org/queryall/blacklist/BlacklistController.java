@@ -52,6 +52,15 @@ public class BlacklistController
         return BlacklistControllerHolder.helper;
     }
     
+    public BlacklistController(final QueryAllConfiguration queryAllConfiguration)
+    {
+        this.localSettings = queryAllConfiguration;
+        this.currentIPBlacklist = Collections
+                .synchronizedCollection(queryAllConfiguration.getStringProperties("blacklistBaseClientIPAddresses"));
+        this.currentIPWhitelist = Collections
+                .synchronizedCollection(queryAllConfiguration.getStringProperties("whitelistBaseClientIPAddresses"));        
+    }
+    
     private volatile ConcurrentHashMap<String, BlacklistEntry> accumulatedBlacklistStatistics =
             new ConcurrentHashMap<String, BlacklistEntry>(200);
     
@@ -84,11 +93,6 @@ public class BlacklistController
     private volatile Date lastExpiryDate = new Date();
     
     private final QueryAllConfiguration localSettings;
-    
-    public BlacklistController(final QueryAllConfiguration queryAllConfiguration)
-    {
-        this.localSettings = queryAllConfiguration;
-    }
     
     public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist)
     {
@@ -273,7 +277,7 @@ public class BlacklistController
         
         int numberRemoved = 0;
         
-        synchronized(this.internalStatisticsUploadList)
+        synchronized(this)
         {
             if(BlacklistController._DEBUG)
             {
@@ -339,9 +343,9 @@ public class BlacklistController
         return numberRemoved;
     }
     
-    // this method checks for the expiry of the blacklist and clears the
-    // blacklist if it has expired, and returns true if it has expired since
-    // last time, even if there were no errors since then
+    /**
+     * This method checks for the expiry of the blacklist and clears the blacklist if it has expired, and returns true if it has expired since last time, even if there were no errors since then
+     */
     public boolean doBlacklistExpiry()
     {
         final long blacklistResetPeriodMilliseconds =
@@ -350,6 +354,17 @@ public class BlacklistController
         final boolean blacklistResetClientBlacklistWithEndpoints =
                 this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
         
+        return doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+    }
+    
+    /**
+     * 
+     * @param blacklistResetPeriodMilliseconds The period of time between resets to the blacklist. If it is less than or equal to 0 (ie, <= 0), then no resets will ever occur
+     * @param blacklistResetClientBlacklistWithEndpoints True if the client blacklist should be reset along with endpoints
+     * @return True if the blacklist had expired and was reset, and false otherwise
+     */
+    public boolean doBlacklistExpiry(long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    {
         // magic values for no expiry are <= 0
         
         if(blacklistResetPeriodMilliseconds <= 0)
@@ -368,29 +383,29 @@ public class BlacklistController
             if(BlacklistController._INFO)
             {
                 BlacklistController.log.info("BlacklistController: needToExpire");
-            }
-            
-            if(BlacklistController._TRACE)
-            {
-                // Do not need to synchronize for debug messages, and in high load situations the
-                // trace level will not be used anyway
-                for(final String nextEndpointUrl : this.getAccumulatedBlacklistStatistics().keySet())
+
+                if(BlacklistController._TRACE)
                 {
-                    BlacklistController.log
-                            .trace("BlacklistController: going to expire blacklist entry for endpointUrl="
-                                    + nextEndpointUrl);
+                    // Do not need to synchronize for debug messages, and in high load situations the
+                    // trace level will not be used anyway
+                    for(final String nextEndpointUrl : this.getAccumulatedBlacklistStatistics().keySet())
+                    {
+                        BlacklistController.log
+                                .trace("BlacklistController: going to expire blacklist entry for endpointUrl="
+                                        + nextEndpointUrl);
+                    }
                 }
             }
             
             synchronized(this)
             {
-                this.accumulatedBlacklistStatistics = new ConcurrentHashMap<String, BlacklistEntry>(200);
+                this.accumulatedBlacklistStatistics.clear();
                 
-                this.allCurrentBadQueries = Collections.synchronizedSet(new HashSet<RdfFetcherQueryRunnable>(200));
+                this.allCurrentBadQueries.clear();
                 
                 if(blacklistResetClientBlacklistWithEndpoints)
                 {
-                    this.currentQueryDebugInformation = new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
+                    this.currentQueryDebugInformation.clear();
                 }
                 
                 this.setLastExpiryDate(new Date());
@@ -507,8 +522,9 @@ public class BlacklistController
                             this.permanentServletLifetimeIPBlacklist.add(nextKey);
                             this.permanentServletLifetimeIPBlacklistEvidence.put(nextKey, nextClientQueryList);
                             
-                            BlacklistController.log
-                                    .warn("Did not properly add ip to the permanent blacklist: nextKey=" + nextKey);
+                            
+//                            BlacklistController.log
+//                                    .warn("Did not properly add ip to the permanent blacklist: nextKey=" + nextKey);
                         }
                     }
                 }
@@ -578,7 +594,10 @@ public class BlacklistController
         {
             synchronized(this)
             {
-                this.currentIPBlacklist = this.localSettings.getStringProperties("blacklistBaseClientIPAddresses");
+                if(this.currentIPBlacklist == null)
+                {
+                    this.currentIPBlacklist = this.localSettings.getStringProperties("blacklistBaseClientIPAddresses");
+                }
             }
         }
         
@@ -591,7 +610,10 @@ public class BlacklistController
         {
             synchronized(this)
             {
-                this.currentIPWhitelist = this.localSettings.getStringProperties("whitelistBaseClientIPAddresses");
+                if(this.currentIPWhitelist == null)
+                {
+                    this.currentIPWhitelist = this.localSettings.getStringProperties("whitelistBaseClientIPAddresses");
+                }
             }
         }
         

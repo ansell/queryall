@@ -33,6 +33,7 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Schema;
+import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -914,6 +915,11 @@ public class Settings implements QueryAllConfiguration
                         final String nextLocation = this.getBaseConfigLocation();
                         final InputStream nextInputStream = this.getClass().getResourceAsStream(nextLocation);
                         
+                        if(nextInputStream == null)
+                        {
+                            throw new QueryAllRuntimeException("Was not able to find base config location nextLocation="+nextLocation);
+                        }
+                        
                         try
                         {
                             if(Settings._INFO)
@@ -1597,9 +1603,9 @@ public class Settings implements QueryAllConfiguration
             Settings.log.trace("Settings.getStringCollectionPropertiesFromConfig: key=" + key);
         }
         
-        final Collection<String> results = new ArrayList<String>();
-        
         final Collection<Value> values = this.getValueProperties(key);
+        
+        final Collection<String> results = new ArrayList<String>(values.size());
         
         for(final Value nextValue : values)
         {
