@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
@@ -26,6 +27,13 @@ import org.queryall.api.ruletest.RuleTest;
 public class DummySettings implements QueryAllConfiguration
 {
     
+    private Map<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
+    private Map<URI, NormalisationRule> normalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
+    private Map<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
+    private Map<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
+    private Map<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
+    private Map<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
+
     /**
      * 
      */
@@ -34,22 +42,13 @@ public class DummySettings implements QueryAllConfiguration
         // TODO Auto-generated constructor stub
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.queryall.api.base.QueryAllConfiguration#addNamespaceEntry(org.queryall.api.namespace.
-     * NamespaceEntry)
-     */
     @Override
     public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry)
     {
-        // TODO Auto-generated method stub
-        
+        this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
     }
     
-    /*
-     * (non-Javadoc)
+    /**
      * 
      * @see
      * org.queryall.api.base.QueryAllConfiguration#addNormalisationRule(org.queryall.api.rdfrule
@@ -58,24 +57,22 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public void addNormalisationRule(final NormalisationRule nextNormalisationRule)
     {
-        // TODO Auto-generated method stub
-        
+        this.normalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
     }
     
-    /*
-     * (non-Javadoc)
+    /**
+     * 
      * 
      * @see org.queryall.api.base.QueryAllConfiguration#addProfile(org.queryall.api.profile.Profile)
      */
     @Override
     public void addProfile(final Profile nextProfile)
     {
-        // TODO Auto-generated method stub
-        
+        this.profiles.put(nextProfile.getKey(), nextProfile);
     }
     
-    /*
-     * (non-Javadoc)
+    /**
+     * 
      * 
      * @see
      * org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
@@ -83,12 +80,11 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public void addProvider(final Provider nextProvider)
     {
-        // TODO Auto-generated method stub
-        
+        this.providers.put(nextProvider.getKey(), nextProvider);
     }
     
-    /*
-     * (non-Javadoc)
+    /**
+     *
      * 
      * @see
      * org.queryall.api.base.QueryAllConfiguration#addQueryType(org.queryall.api.querytype.QueryType
@@ -97,12 +93,11 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public void addQueryType(final QueryType nextQueryType)
     {
-        // TODO Auto-generated method stub
-        
+        this.queryTypes.put(nextQueryType.getKey(), nextQueryType);
     }
     
-    /*
-     * (non-Javadoc)
+    /**
+     * 
      * 
      * @see
      * org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
@@ -110,8 +105,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public void addRuleTest(final RuleTest nextRuleTest)
     {
-        // TODO Auto-generated method stub
-        
+        this.ruleTests.put(nextRuleTest.getKey(), nextRuleTest);
     }
     
     /*
@@ -122,7 +116,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(namespaceEntries);
     }
     
     /*
@@ -133,7 +127,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, NormalisationRule> getAllNormalisationRules()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(normalisationRules);
     }
     
     /*
@@ -144,7 +138,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, Profile> getAllProfiles()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(profiles);
     }
     
     /*
@@ -155,7 +149,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, Provider> getAllProviders()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(providers);
     }
     
     /*
@@ -166,7 +160,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, QueryType> getAllQueryTypes()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(queryTypes);
     }
     
     /*
@@ -177,7 +171,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, RuleTest> getAllRuleTests()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(ruleTests);
     }
     
     /*
@@ -244,8 +238,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public NamespaceEntry getNamespaceEntry(final URI nextNamespaceEntryUri)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return namespaceEntries.get(nextNamespaceEntryUri);
     }
     
     /*
@@ -267,8 +260,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public NormalisationRule getNormalisationRule(final URI nextNormalisationRuleUri)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return normalisationRules.get(nextNormalisationRuleUri);
     }
     
     /*
@@ -301,8 +293,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Profile getProfile(final URI nextProfileUri)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return profiles.get(nextProfileUri);
     }
     
     /*
@@ -313,8 +304,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Provider getProvider(final URI nextProviderUri)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return providers.get(nextProviderUri);
     }
     
     /*
@@ -325,8 +315,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public QueryType getQueryType(final URI nextQueryTypeUri)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return queryTypes.get(nextQueryTypeUri);
     }
     
     /*
@@ -337,8 +326,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public RuleTest getRuleTest(final URI nextRuleTestUri)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return ruleTests.get(nextRuleTestUri);
     }
     
     /*
@@ -349,7 +337,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public String getSeparator()
     {
-        return "";
+        return ":";
     }
     
     /*
