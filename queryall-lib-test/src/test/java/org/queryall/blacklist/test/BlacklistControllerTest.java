@@ -589,11 +589,37 @@ public class BlacklistControllerTest
      * {@link org.queryall.blacklist.BlacklistController#getCurrentDebugInformationFor(java.lang.String)}
      * .
      */
-    @Ignore
     @Test
     public void testGetCurrentDebugInformationFor()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        // add some query debug information in
+        final QueryDebug nextQueryObject = new QueryDebug();
+        
+        nextQueryObject.setClientIPAddress("127.0.0.1");
+        
+        // aggressively put the client on the blacklist for making a single query (ie, 1 as the blacklistClientMaxQueriesPerPeriod parameter)
+        this.testBlacklistController.accumulateQueryDebug(nextQueryObject, 0, false, true, 0, 1);
+        
+        final Map<String, Collection<QueryDebug>> debugInformation =
+                this.testBlacklistController.getCurrentQueryDebugInformation();
+        
+        // the boolean automaticallyBlacklistClients parameter was set to true above, so we expect
+        // to see the query debug object in the results
+        Assert.assertEquals(1, debugInformation.size());
+        
+        Assert.assertTrue(debugInformation.containsKey("127.0.0.1"));
+        
+        Collection<QueryDebug> specificDebugInfo = this.testBlacklistController.getCurrentDebugInformationFor("127.0.0.1");
+        
+        Assert.assertNotNull(specificDebugInfo);
+        
+        Assert.assertEquals(1, specificDebugInfo.size());
+        
+        QueryDebug next = specificDebugInfo.iterator().next();
+        
+        Assert.assertNotNull(next);
+        
+        Assert.assertEquals("127.0.0.1", next.getClientIPAddress());
     }
     
     /**
