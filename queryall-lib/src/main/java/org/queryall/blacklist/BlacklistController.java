@@ -19,6 +19,7 @@ import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class BlacklistController
     // Wrap up the singleton in its own inner static class
     private static class BlacklistControllerHolder
     {
-        public static final BlacklistController helper = new BlacklistController(Settings.getSettings());
+        public static final BlacklistController helper = new BlacklistController(SettingsFactory.generateSettings());
     }
     
     private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);

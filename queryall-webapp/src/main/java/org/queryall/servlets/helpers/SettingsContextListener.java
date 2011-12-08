@@ -13,6 +13,7 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.servlets.html.VelocityHelper;
 import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 
@@ -54,15 +55,7 @@ public class SettingsContextListener implements ServletContextListener
     public void contextInitialized(final ServletContextEvent sce)
     {
         // create a new settings object
-        final QueryAllConfiguration tempSettings = new Settings();
-        
-        // TODO: Make this preloading configurable
-        tempSettings.getAllNamespaceEntries();
-        tempSettings.getAllQueryTypes();
-        tempSettings.getAllProviders();
-        tempSettings.getAllProfiles();
-        tempSettings.getAllNormalisationRules();
-        tempSettings.getAllRuleTests();
+        final QueryAllConfiguration tempSettings = SettingsFactory.generateSettings();
         
         // Use these settings to create a blacklistcontroller object
         final BlacklistController tempBlacklist = new BlacklistController(tempSettings);

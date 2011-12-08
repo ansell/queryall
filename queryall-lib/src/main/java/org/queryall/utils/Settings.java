@@ -241,10 +241,10 @@ public class Settings implements QueryAllConfiguration
         
         final Collection<Object> values = this.configPropertiesCache.get(key);
         
-        if(values.size() != 1)
+        if(values == null || values.size() != 1)
         {
-            Settings.log.warn("Settings.getBooleanPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            Settings.log.warn("getBooleanProperty: Did not find a unique result for key=" + key
+                    + " values=" + values + " defaultValue=" + defaultValue);
             return defaultValue;
         }
         
@@ -252,7 +252,7 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getBooleanPropertyFromConfig: key=" + key + " result=" + result);
+            Settings.log.trace("getBooleanProperty: key=" + key + " result=" + result);
         }
         
         return result;
@@ -280,10 +280,10 @@ public class Settings implements QueryAllConfiguration
         
         final Collection<Object> values = this.configPropertiesCache.get(key);
         
-        if(values.size() != 1)
+        if(values == null || values.size() != 1)
         {
-            Settings.log.warn("Settings.getFloatProperty: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            Settings.log.warn("getFloatProperty: Did not find a unique result for key=" + key
+                    + " values=" + values + " defaultValue=" + defaultValue);
             return defaultValue;
         }
         
@@ -291,7 +291,7 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getFloatProperty: key=" + key + " result=" + result);
+            Settings.log.trace("getFloatProperty: key=" + key + " result=" + result);
         }
         
         return result;
@@ -304,10 +304,10 @@ public class Settings implements QueryAllConfiguration
         
         final Collection<Object> values = this.configPropertiesCache.get(key);
         
-        if(values.size() != 1)
+        if(values == null || values.size() != 1)
         {
-            Settings.log.warn("Settings.getIntProperty: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            Settings.log.warn("getIntProperty: Did not find a unique result for key=" + key
+                    + " values=" + values + " defaultValue=" + defaultValue);
             return defaultValue;
         }
         
@@ -315,7 +315,7 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getIntProperty: key=" + key + " result=" + result);
+            Settings.log.trace("getIntProperty: key=" + key + " result=" + result);
         }
         
         return result;
@@ -328,10 +328,10 @@ public class Settings implements QueryAllConfiguration
         
         final Collection<Object> values = this.configPropertiesCache.get(key);
         
-        if(values.size() != 1)
+        if(values == null || values.size() != 1)
         {
-            Settings.log.warn("Settings.getIntProperty: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            Settings.log.warn("getLongProperty: Did not find a unique result for key=" + key
+                    + " values=" + values + " defaultValue=" + defaultValue);
             return defaultValue;
         }
         
@@ -339,7 +339,7 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getIntProperty: key=" + key + " result=" + result);
+            Settings.log.trace("getLongProperty: key=" + key + " result=" + result);
         }
         
         return result;
@@ -427,16 +427,20 @@ public class Settings implements QueryAllConfiguration
     {
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getStringCollectionPropertiesFromConfig: key=" + key);
+            Settings.log.trace("getStringCollectionPropertiesFromConfig: key=" + key);
         }
         
         final Collection<Object> values = this.configPropertiesCache.get(key);
         
-        final Collection<String> results = new ArrayList<String>(values.size());
         
-        for(final Object nextValue : values)
+        final Collection<String> results = new ArrayList<String>();
+        
+        if(values != null)
         {
-            results.add(nextValue.toString());
+            for(final Object nextValue : values)
+            {
+                results.add(nextValue.toString());
+            }
         }
         
         return results;
@@ -449,15 +453,15 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
+            Settings.log.trace("getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
         }
         
         final Collection<String> values = this.getStringProperties(key);
         
-        if(values.size() != 1)
+        if(values == null || values.size() != 1)
         {
-            Settings.log.error("Settings.getStringPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            Settings.log.error("getStringPropertyFromConfig: Did not find a unique result for key=" + key
+                    + " values=" + values + " defaultValue=" + defaultValue);
             return defaultValue;
         }
         
@@ -468,7 +472,7 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue
+            Settings.log.trace("getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue
                     + " returning result=" + result);
         }
         
@@ -501,7 +505,7 @@ public class Settings implements QueryAllConfiguration
     {
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getURICollectionPropertiesFromConfig: key=" + key);
+            Settings.log.trace("getURICollectionPropertiesFromConfig: key=" + key);
         }
         
         final Collection<Object> cachedObjects = this.configPropertiesCache.get(key);
@@ -521,7 +525,7 @@ public class Settings implements QueryAllConfiguration
             }
             else
             {
-                Settings.log.error("Settings.getURIProperties: nextValue was not an instance of URI key=" + key
+                Settings.log.error("getURIProperties: nextValue was not an instance of URI key=" + key
                         + " nextValue=" + nextValue);
             }
         }
@@ -536,15 +540,15 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getURIProperty: key=" + key + " defaultValue=" + defaultValue);
+            Settings.log.trace("getURIProperty: key=" + key + " defaultValue=" + defaultValue);
         }
         
         final Collection<URI> values = this.getURIProperties(key);
         
-        if(values.size() != 1)
+        if(values == null || values.size() != 1)
         {
-            Settings.log.warn("Settings.getURIProperty: Did not find a unique result for key=" + key
-                    + " values.size()=" + values.size() + " defaultValue=" + defaultValue);
+            Settings.log.warn("getURIProperty: Did not find a unique result for key=" + key
+                    + " values=" + values + " defaultValue=" + defaultValue);
             return defaultValue;
         }
         
@@ -555,7 +559,7 @@ public class Settings implements QueryAllConfiguration
         
         if(Settings._TRACE)
         {
-            Settings.log.trace("Settings.getURIProperty: key=" + key + " result=" + result);
+            Settings.log.trace("getURIProperty: key=" + key + " result=" + result);
         }
         
         return result;

@@ -254,6 +254,16 @@ public class SettingsFactory
         return false;
     }
     
+    /**
+     * Creates a new QueryAllConfiguration instance using the default properties, derived from System properties and the /queryall.properties file if it exists
+     * 
+     * @return A new Settings object
+     */
+    public static QueryAllConfiguration generateSettings()
+    {
+        return generateSettings(getDefaultBaseConfigLocationProperty(), getDefaultBaseConfigMimeFormatProperty(), getDefaultBaseConfigUriProperty());
+    }
+    
     public static QueryAllConfiguration generateSettings(final String baseConfigLocation, final String baseConfigMimeType,
             final String baseConfigUri)
     {
@@ -279,12 +289,12 @@ public class SettingsFactory
             
             final QueryAllConfiguration result = new Settings();
             
-            SettingsFactory.addNamespaceEntries(webAppConfigurationRdf, result);
-            SettingsFactory.addNormalisationRules(webAppConfigurationRdf, result);
-            SettingsFactory.addRuleTests(webAppConfigurationRdf, result);
-            SettingsFactory.addProviders(webAppConfigurationRdf, result);
-            SettingsFactory.addProfiles(webAppConfigurationRdf, result);
-            SettingsFactory.addQueryTypes(webAppConfigurationRdf, result);
+            SettingsFactory.addNamespaceEntries(serverConfigurationRdf, result);
+            SettingsFactory.addNormalisationRules(serverConfigurationRdf, result);
+            SettingsFactory.addRuleTests(serverConfigurationRdf, result);
+            SettingsFactory.addProviders(serverConfigurationRdf, result);
+            SettingsFactory.addProfiles(serverConfigurationRdf, result);
+            SettingsFactory.addQueryTypes(serverConfigurationRdf, result);
             
             return result;
         }

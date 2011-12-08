@@ -24,6 +24,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -141,8 +142,9 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
         RepositoryConnection myRepositoryConnection = null;
         try
         {
+            QueryAllConfiguration settings = SettingsFactory.generateSettings();
             fetchController =
-                    new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(),
+                    new RdfFetchController(settings, new BlacklistController(settings),
                             queryBundles);
             
             fetchController.fetchRdfForQueries();
