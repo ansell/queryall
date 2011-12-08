@@ -18,7 +18,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.services.SchemaServiceLoader;
-import org.queryall.query.Settings;
+import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

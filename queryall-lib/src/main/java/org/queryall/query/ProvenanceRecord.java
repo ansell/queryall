@@ -31,6 +31,7 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

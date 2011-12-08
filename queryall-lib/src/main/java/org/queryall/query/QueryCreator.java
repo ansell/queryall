@@ -24,6 +24,7 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.QueryAllException;
 import org.queryall.utils.RuleUtils;
+import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

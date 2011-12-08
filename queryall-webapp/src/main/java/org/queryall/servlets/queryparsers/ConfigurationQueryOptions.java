@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
-import org.queryall.query.Settings;
+import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

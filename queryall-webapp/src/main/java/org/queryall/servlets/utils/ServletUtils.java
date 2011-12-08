@@ -40,12 +40,12 @@ import org.queryall.query.QueryCreator;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.Settings;
 import org.queryall.servlets.GeneralServlet;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
+import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 
 /**

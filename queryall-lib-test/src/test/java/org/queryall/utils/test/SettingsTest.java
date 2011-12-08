@@ -6,7 +6,7 @@ package org.queryall.utils.test;
 import org.junit.After;
 import org.junit.Before;
 import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.query.Settings;
+import org.queryall.utils.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

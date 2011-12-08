@@ -16,9 +16,9 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.QueryDebug;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.MathsUtils;
+import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

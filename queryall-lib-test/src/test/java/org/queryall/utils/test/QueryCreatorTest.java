@@ -26,7 +26,7 @@ import org.queryall.impl.namespace.NamespaceEntryImpl;
 import org.queryall.impl.provider.HttpSparqlProviderImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.query.QueryCreator;
-import org.queryall.query.Settings;
+import org.queryall.utils.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com

@@ -1,4 +1,4 @@
-package org.queryall.query;
+package org.queryall.utils;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -34,7 +34,6 @@ import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Schema;
 import org.queryall.exception.QueryAllRuntimeException;
-import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

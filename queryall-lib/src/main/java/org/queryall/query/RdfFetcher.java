@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
+import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -89,7 +89,6 @@ import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
-import org.queryall.query.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

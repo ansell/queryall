@@ -16,9 +16,9 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.Settings;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
+import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

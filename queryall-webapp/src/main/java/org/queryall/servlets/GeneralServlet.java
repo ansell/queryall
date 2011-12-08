@@ -31,13 +31,13 @@ import org.queryall.exception.QueryAllException;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.servlets.utils.ServletUtils;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

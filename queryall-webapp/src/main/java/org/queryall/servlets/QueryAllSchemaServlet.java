@@ -23,10 +23,10 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.Schema;
 import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
