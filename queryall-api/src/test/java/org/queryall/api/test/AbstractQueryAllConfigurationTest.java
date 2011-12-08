@@ -1,5 +1,8 @@
 package org.queryall.api.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 
 import org.junit.After;
@@ -347,11 +350,129 @@ public abstract class AbstractQueryAllConfigurationTest
         }
     }
     
-    @Ignore
     @Test
-    public void testGetNamespacePrefixesToUris()
+    public void testGetNamespacePrefixesToUrisPreferredOnlyUnique()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        for(int i = 0; i < 1000; i++)
+        {
+            NamespaceEntry nextNamespaceEntry = getNewNamespaceEntry();
+            nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i);
+            nextNamespaceEntry.setPreferredPrefix("testprefix-"+i);
+            
+            Assert.assertNotNull(nextNamespaceEntry.getKey());
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i, nextNamespaceEntry.getKey().stringValue());
+            
+            Assert.assertEquals("testprefix-"+i, nextNamespaceEntry.getPreferredPrefix());
+            
+            this.testConfiguration.addNamespaceEntry(nextNamespaceEntry);
+            
+            Assert.assertNotNull(this.testConfiguration.getNamespaceEntry(nextNamespaceEntry.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNamespaceEntries().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNamespaceEntries().containsKey(nextNamespaceEntry.getKey()));
+            
+            Assert.assertTrue(this.testConfiguration.getNamespacePrefixesToUris().containsKey("testprefix-"+i));
+        }
+    }
+    
+    @Test
+    public void testGetNamespacePrefixesToUrisPreferredOnlyOverlapping()
+    {
+        List<String> testPrefixes = new ArrayList<String>(5);
+        testPrefixes.add(0, "testoverlappingprefix-0");
+        testPrefixes.add(1, "testoverlappingprefix-1");
+        testPrefixes.add(2, "testoverlappingprefix-2");
+        testPrefixes.add(3, "testoverlappingprefix-3");
+        testPrefixes.add(4, "testoverlappingprefix-4");
+        
+        for(int i = 0; i < 1000; i++)
+        {
+            // cycle through the 5 test prefixes to create overlapping namespaces to test the namespace prefix to URIs map
+            String nextPreferredPrefix = testPrefixes.get(i % 5);
+            
+            NamespaceEntry nextNamespaceEntry = getNewNamespaceEntry();
+            nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i);
+            nextNamespaceEntry.setPreferredPrefix(nextPreferredPrefix);
+            
+            Assert.assertNotNull(nextNamespaceEntry.getKey());
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i, nextNamespaceEntry.getKey().stringValue());
+            
+            // different method of constructing the prefix
+            Assert.assertEquals("testoverlappingprefix-"+(i%5), nextNamespaceEntry.getPreferredPrefix());
+            
+            this.testConfiguration.addNamespaceEntry(nextNamespaceEntry);
+            
+            Assert.assertNotNull(this.testConfiguration.getNamespaceEntry(nextNamespaceEntry.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNamespaceEntries().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNamespaceEntries().containsKey(nextNamespaceEntry.getKey()));
+            
+            Assert.assertTrue(this.testConfiguration.getNamespacePrefixesToUris().containsKey(nextPreferredPrefix));
+            
+            // before the first 5 are processed, we expect i+1 elements, and after that, it should stay at size 5
+            int expectedPrefixMapSize = i < 5 ? i+1 : 5;
+            
+            Assert.assertEquals(expectedPrefixMapSize, this.testConfiguration.getNamespacePrefixesToUris().size());
+        }
+    }
+    
+    @Test
+    public void testGetNamespacePrefixesToUrisPreferredAndAlternateOverlapping()
+    {
+        List<String> testPrefixes = new ArrayList<String>(5);
+        testPrefixes.add(0, "testoverlappingprefix-0");
+        testPrefixes.add(1, "testoverlappingprefix-1");
+        testPrefixes.add(2, "testoverlappingprefix-2");
+        testPrefixes.add(3, "testoverlappingprefix-3");
+        testPrefixes.add(4, "testoverlappingprefix-4");
+        
+        List<String> testAlternatePrefixes = new ArrayList<String>(5);
+        testAlternatePrefixes.add(0, "testoverlappingalternateprefix-0");
+        testAlternatePrefixes.add(1, "testoverlappingalternateprefix-1");
+        testAlternatePrefixes.add(2, "testoverlappingalternateprefix-2");
+        testAlternatePrefixes.add(3, "testoverlappingalternateprefix-3");
+        testAlternatePrefixes.add(4, "testoverlappingalternateprefix-4");
+        
+        for(int i = 0; i < 1000; i++)
+        {
+            // cycle through the 5 test prefixes to create overlapping namespaces to test the namespace prefix to URIs map
+            String nextPreferredPrefix = testPrefixes.get(i % 5);
+            String nextAlternatePrefix = testAlternatePrefixes.get(i % 5);
+            
+            NamespaceEntry nextNamespaceEntry = getNewNamespaceEntry();
+            nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i);
+            nextNamespaceEntry.setPreferredPrefix(nextPreferredPrefix);
+            nextNamespaceEntry.addAlternativePrefix(nextAlternatePrefix);
+            
+            Assert.assertNotNull(nextNamespaceEntry.getKey());
+            Assert.assertEquals("http://example.org/test/queryallconfiguration/namespaceentry/add/"+i, nextNamespaceEntry.getKey().stringValue());
+            
+            // different method of constructing the prefix
+            Assert.assertEquals("testoverlappingprefix-"+(i%5), nextNamespaceEntry.getPreferredPrefix());
+            
+            Assert.assertNotNull(nextNamespaceEntry.getAlternativePrefixes());
+            Assert.assertEquals(1, nextNamespaceEntry.getAlternativePrefixes().size());
+            Assert.assertTrue(nextNamespaceEntry.getAlternativePrefixes().contains(nextAlternatePrefix));
+            
+            this.testConfiguration.addNamespaceEntry(nextNamespaceEntry);
+            
+            Assert.assertNotNull(this.testConfiguration.getNamespaceEntry(nextNamespaceEntry.getKey()));
+        
+            Assert.assertEquals((i+1), this.testConfiguration.getAllNamespaceEntries().size());
+            
+            Assert.assertTrue(this.testConfiguration.getAllNamespaceEntries().containsKey(nextNamespaceEntry.getKey()));
+            
+            Assert.assertTrue(this.testConfiguration.getNamespacePrefixesToUris().containsKey(nextPreferredPrefix));
+            
+            Assert.assertTrue(this.testConfiguration.getNamespacePrefixesToUris().containsKey(nextAlternatePrefix));
+
+            // before the first 5 are processed, we expect (i+1)*2 (one preferred and one alternate for each of the first 5) elements, and after that, it should stay at size 10 (all preferred and alternates)
+            int expectedPrefixMapSize = i < 5 ? (i+1)*2 : 10;
+            
+            Assert.assertEquals(expectedPrefixMapSize, this.testConfiguration.getNamespacePrefixesToUris().size());
+        }
     }
     
     @Test

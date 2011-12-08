@@ -6,6 +6,7 @@ package org.queryall.utils.test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -27,12 +28,13 @@ import org.queryall.api.ruletest.RuleTest;
 public class DummySettings implements QueryAllConfiguration
 {
     
-    private Map<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
-    private Map<URI, NormalisationRule> normalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
-    private Map<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
-    private Map<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
-    private Map<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
-    private Map<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
+    private ConcurrentHashMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
+    private ConcurrentHashMap<URI, NormalisationRule> normalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
+    private ConcurrentHashMap<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
+    private ConcurrentHashMap<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
+    private ConcurrentHashMap<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
+    private ConcurrentHashMap<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
+    private ConcurrentHashMap<String, Collection<URI>> namespacePrefixesToUris = new ConcurrentHashMap<String, Collection<URI>>();
 
     /**
      * 
@@ -46,6 +48,31 @@ public class DummySettings implements QueryAllConfiguration
     public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry)
     {
         this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
+        
+        Collection<URI> nextPreferredList = new HashSet<URI>();
+        nextPreferredList.add(nextNamespaceEntry.getKey());
+
+        Collection<URI> ifPreferredAbsent = this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+        
+        if(ifPreferredAbsent != null)
+        {
+            nextPreferredList.addAll(ifPreferredAbsent);
+            this.namespacePrefixesToUris.put(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+        }
+        
+        for(String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
+        {
+            Collection<URI> nextAlternateList = new HashSet<URI>();
+            nextAlternateList.add(nextNamespaceEntry.getKey());
+
+            Collection<URI> ifAlternateAbsent = this.namespacePrefixesToUris.putIfAbsent(nextAlternate, nextAlternateList);
+            
+            if(ifAlternateAbsent != null)
+            {
+                nextAlternateList.addAll(ifAlternateAbsent);
+                this.namespacePrefixesToUris.put(nextAlternate, nextAlternateList);
+            }
+        }
     }
     
     /**
@@ -249,7 +276,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<String, Collection<URI>> getNamespacePrefixesToUris()
     {
-        return Collections.emptyMap();
+        return Collections.unmodifiableMap(this.namespacePrefixesToUris);
     }
     
     /*
