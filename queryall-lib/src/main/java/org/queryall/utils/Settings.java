@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package org.queryall.utils;
 
 import java.util.ArrayList;
@@ -8,6 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import org.openrdf.model.BNode;
+import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -17,509 +22,500 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.utils.Constants;
 import org.queryall.exception.QueryAllRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class used to get access to settings
+ * This is a dummy class used for testing, it does not perform the actual operations needed
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class Settings implements QueryAllConfiguration
 {
-    // Wrap up a singleton instance in its own inner static class
-    // Note: this class does not need to be used as a singleton
-    private static class SettingsHolder
-    {
-        public static final QueryAllConfiguration helper = new Settings();
-    }
-    
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
     private static final boolean _TRACE = Settings.log.isTraceEnabled();
     private static final boolean _DEBUG = Settings.log.isDebugEnabled();
     private static final boolean _INFO = Settings.log.isInfoEnabled();
     
-    public static QueryAllConfiguration getSettings()
-    {
-        return SettingsHolder.helper;
-    }
+    private ConcurrentHashMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
+    private ConcurrentHashMap<URI, NormalisationRule> normalisationRules =
+            new ConcurrentHashMap<URI, NormalisationRule>();
+    private ConcurrentHashMap<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
+    private ConcurrentHashMap<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
+    private ConcurrentHashMap<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
+    private ConcurrentHashMap<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
+    private ConcurrentHashMap<String, Collection<URI>> namespacePrefixesToUris =
+            new ConcurrentHashMap<String, Collection<URI>>();
     
-    private volatile ConcurrentHashMap<URI, Provider> cachedProviders = new ConcurrentHashMap<URI, Provider>(200);
-    private volatile ConcurrentHashMap<URI, NormalisationRule> cachedNormalisationRules =
-            new ConcurrentHashMap<URI, NormalisationRule>(200);
-    private volatile ConcurrentHashMap<URI, RuleTest> cachedRuleTests = new ConcurrentHashMap<URI, RuleTest>(200);
-    private volatile ConcurrentHashMap<URI, QueryType> cachedQueryTypes = new ConcurrentHashMap<URI, QueryType>(200);
-    private volatile ConcurrentHashMap<URI, Profile> cachedProfiles = new ConcurrentHashMap<URI, Profile>(200);
-    private volatile ConcurrentHashMap<URI, NamespaceEntry> cachedNamespaceEntries =
-            new ConcurrentHashMap<URI, NamespaceEntry>(200);
-    private volatile ConcurrentHashMap<String, Collection<URI>> cachedNamespacePrefixToUriEntries =
-            new ConcurrentHashMap<String, Collection<URI>>(200);
+    private ConcurrentHashMap<String, Collection<Object>> properties = new ConcurrentHashMap<String, Collection<Object>>();
+    private Pattern cachedTagPattern;
     
-    private volatile ConcurrentHashMap<String, Collection<Object>> configPropertiesCache =
-            new ConcurrentHashMap<String, Collection<Object>>(200);
-    private volatile Pattern cachedTagPattern = null;
-    
-    private volatile long initialisedTimestamp = System.currentTimeMillis();
-    
-    private volatile String separator;
-    
+    /**
+     * 
+     */
     public Settings()
     {
+        // TODO Auto-generated constructor stub
     }
     
     @Override
     public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry)
     {
-        this.addNamespaceEntryAndPrefix(nextNamespaceEntry.getKey(), nextNamespaceEntry);
+        this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
+        
+        final Collection<URI> nextPreferredList = new HashSet<URI>();
+        nextPreferredList.add(nextNamespaceEntry.getKey());
+        
+        final Collection<URI> ifPreferredAbsent =
+                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+        
+        if(ifPreferredAbsent != null)
+        {
+            nextPreferredList.addAll(ifPreferredAbsent);
+            this.namespacePrefixesToUris.put(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+        }
+        
+        for(final String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
+        {
+            final Collection<URI> nextAlternateList = new HashSet<URI>();
+            nextAlternateList.add(nextNamespaceEntry.getKey());
+            
+            final Collection<URI> ifAlternateAbsent =
+                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, nextAlternateList);
+            
+            if(ifAlternateAbsent != null)
+            {
+                nextAlternateList.addAll(ifAlternateAbsent);
+                this.namespacePrefixesToUris.put(nextAlternate, nextAlternateList);
+            }
+        }
     }
     
     /**
-     * Helper method to add a new namespace entry and its prefixes to the internal caches.
      * 
-     * @param nextNamespaceEntryUri
-     * @param nextNamespaceEntryConfiguration
+     * @see org.queryall.api.base.QueryAllConfiguration#addNormalisationRule(org.queryall.api.rdfrule
+     *      .NormalisationRule)
      */
-    private void addNamespaceEntryAndPrefix(final URI nextNamespaceEntryUri,
-            final NamespaceEntry nextNamespaceEntryConfiguration)
-    {
-        // TODO: refactor this code to use the ConcurrentHashMap API
-        
-        this.cachedNamespaceEntries.put(nextNamespaceEntryUri, nextNamespaceEntryConfiguration);
-        
-        // cache the preferred prefix
-        if(this.cachedNamespacePrefixToUriEntries.containsKey(nextNamespaceEntryConfiguration.getPreferredPrefix()))
-        {
-            final Collection<URI> currentnamespacePreferredPrefixToUriList =
-                    this.cachedNamespacePrefixToUriEntries.get(nextNamespaceEntryConfiguration.getPreferredPrefix());
-            if(!currentnamespacePreferredPrefixToUriList.contains(nextNamespaceEntryUri))
-            {
-                currentnamespacePreferredPrefixToUriList.add(nextNamespaceEntryUri);
-            }
-        }
-        else
-        {
-            final Collection<URI> newnamespacePreferredPrefixToUriList = new HashSet<URI>();
-            newnamespacePreferredPrefixToUriList.add(nextNamespaceEntryConfiguration.getKey());
-            this.cachedNamespacePrefixToUriEntries.put(nextNamespaceEntryConfiguration.getPreferredPrefix(),
-                    newnamespacePreferredPrefixToUriList);
-        }
-        
-        // then cache any alternative prefixes as well
-        if(nextNamespaceEntryConfiguration.getAlternativePrefixes() != null)
-        {
-            for(final String nextAlternativePrefix : nextNamespaceEntryConfiguration.getAlternativePrefixes())
-            {
-                if(this.cachedNamespacePrefixToUriEntries.containsKey(nextAlternativePrefix))
-                {
-                    final Collection<URI> currentNamespacePrefixToUriList =
-                            this.cachedNamespacePrefixToUriEntries.get(nextAlternativePrefix);
-                    if(!currentNamespacePrefixToUriList.contains(nextNamespaceEntryUri))
-                    {
-                        currentNamespacePrefixToUriList.add(nextNamespaceEntryUri);
-                    }
-                }
-                else
-                {
-                    final Collection<URI> newNamespacePrefixToUriList = new HashSet<URI>();
-                    newNamespacePrefixToUriList.add(nextNamespaceEntryUri);
-                    this.cachedNamespacePrefixToUriEntries.put(nextAlternativePrefix, newNamespacePrefixToUriList);
-                }
-            }
-        }
-    }
-    
     @Override
     public void addNormalisationRule(final NormalisationRule nextNormalisationRule)
     {
-        this.cachedNormalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
+        this.normalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
     }
     
+    /**
+     * 
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#addProfile(org.queryall.api.profile.Profile)
+     */
     @Override
     public void addProfile(final Profile nextProfile)
     {
-        this.cachedProfiles.put(nextProfile.getKey(), nextProfile);
+        this.profiles.put(nextProfile.getKey(), nextProfile);
     }
     
+    /**
+     * 
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
+     */
     @Override
     public void addProvider(final Provider nextProvider)
     {
-        this.cachedProviders.put(nextProvider.getKey(), nextProvider);
+        this.providers.put(nextProvider.getKey(), nextProvider);
     }
     
+    /**
+     * 
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#addQueryType(org.queryall.api.querytype.QueryType
+     *      )
+     */
     @Override
     public void addQueryType(final QueryType nextQueryType)
     {
-        this.cachedQueryTypes.put(nextQueryType.getKey(), nextQueryType);
+        this.queryTypes.put(nextQueryType.getKey(), nextQueryType);
     }
     
+    /**
+     * 
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
+     */
     @Override
     public void addRuleTest(final RuleTest nextRuleTest)
     {
-        this.cachedRuleTests.put(nextRuleTest.getKey(), nextRuleTest);
+        this.ruleTests.put(nextRuleTest.getKey(), nextRuleTest);
     }
     
-    /**
-     * 
-     * @return The Collection of Objects that were set for this property or null if the property was
-     *         not set
-     */
     @Override
     public Collection<Object> clearProperty(final String propertyKey)
     {
-        return this.configPropertiesCache.remove(propertyKey);
+        // TODO Auto-generated method stub
+        return null;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getAllNamespaceEntries()
+     */
     @Override
     public Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
-        return this.getAllNamespaceEntries(true);
+        return Collections.unmodifiableMap(this.namespaceEntries);
     }
     
-    public Map<URI, NamespaceEntry> getAllNamespaceEntries(final boolean useCache)
-    {
-        return Collections.unmodifiableMap(this.cachedNamespaceEntries);
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getAllNormalisationRules()
+     */
     @Override
     public Map<URI, NormalisationRule> getAllNormalisationRules()
     {
-        return this.getAllNormalisationRules(true);
+        return Collections.unmodifiableMap(this.normalisationRules);
     }
     
-    public synchronized Map<URI, NormalisationRule> getAllNormalisationRules(final boolean useCache)
-    {
-        return Collections.unmodifiableMap(this.cachedNormalisationRules);
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getAllProfiles()
+     */
     @Override
     public Map<URI, Profile> getAllProfiles()
     {
-        return this.getAllProfiles(true);
+        return Collections.unmodifiableMap(this.profiles);
     }
     
-    public Map<URI, Profile> getAllProfiles(final boolean useCache)
-    {
-        return Collections.unmodifiableMap(this.cachedProfiles);
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getAllProviders()
+     */
     @Override
     public Map<URI, Provider> getAllProviders()
     {
-        return this.getAllProviders(true);
+        return Collections.unmodifiableMap(this.providers);
     }
     
-    public Map<URI, Provider> getAllProviders(final boolean useCache)
-    {
-        return Collections.unmodifiableMap(this.cachedProviders);
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getAllQueryTypes()
+     */
     @Override
     public Map<URI, QueryType> getAllQueryTypes()
     {
-        return this.getAllQueryTypes(true);
+        return Collections.unmodifiableMap(this.queryTypes);
     }
     
-    public Map<URI, QueryType> getAllQueryTypes(final boolean useCache)
-    {
-        return Collections.unmodifiableMap(this.cachedQueryTypes);
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getAllRuleTests()
+     */
     @Override
     public Map<URI, RuleTest> getAllRuleTests()
     {
-        return this.getAllRuleTests(true);
+        return Collections.unmodifiableMap(this.ruleTests);
     }
     
-    public Map<URI, RuleTest> getAllRuleTests(final boolean useCache)
-    {
-        return Collections.unmodifiableMap(this.cachedRuleTests);
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getBooleanProperty(java.lang.String,
+     * boolean)
+     */
     @Override
-    public boolean getBooleanProperty(final String key, final boolean defaultValue)
+    public boolean getBooleanProperty(final String propertyKey, final boolean defaultValue)
     {
-        boolean result = defaultValue;
-        
-        final Collection<Object> values = this.configPropertiesCache.get(key);
-        
-        if(values == null || values.size() != 1)
+        if(this.properties.containsKey(propertyKey))
         {
-            Settings.log.warn("getBooleanProperty: Did not find a unique result for key=" + key
-                    + " values=" + values + " defaultValue=" + defaultValue);
-            return defaultValue;
+            Collection<Object> properties = this.properties.get(propertyKey);
+                    
+            if(properties.size() == 1)
+            {
+                Boolean next = (Boolean)properties.iterator().next();
+                
+                return next;
+            }
+            else if(properties.size() == 0)
+            {
+                log.error("No property value found for propertyKey="+propertyKey);
+            }
+            else
+            {
+                log.error("More than one property value found for propertyKey="+propertyKey);
+            }
         }
         
-        Object nextValue = values.iterator().next();
-        
-        if(nextValue instanceof String)
-        {
-            result = Boolean.valueOf((String)values.iterator().next());
-        }
-        else
-        {
-            result = (Boolean)nextValue;
-        }
-        
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getBooleanProperty: key=" + key + " result=" + result);
-        }
-        
-        return result;
+        return defaultValue;
     }
     
-    /**
-     * Defaults to http://bio2rdf.org/ if the configuration files do not contain any of the relevant
-     * properties, or some part of that if they only contain some of the relevant properties.
+    /*
+     * (non-Javadoc)
      * 
-     * The properties used to generate the result are {uriPrefix}{hostName}{uriSuffix}
-     * 
-     * @return the Default host address for this configuration
+     * @see org.queryall.api.base.QueryAllConfiguration#getDefaultHostAddress()
      */
     @Override
     public String getDefaultHostAddress()
     {
-        return this.getStringProperty("uriPrefix", "http://") + this.getStringProperty("hostName", "bio2rdf.org")
-                + this.getStringProperty("uriSuffix", "/");
+        return "";
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getFloatProperty(java.lang.String, float)
+     */
     @Override
-    public float getFloatProperty(final String key, final float defaultValue)
+    public float getFloatProperty(final String propertyKey, final float defaultValue)
     {
-        float result = defaultValue;
-        
-        final Collection<Object> values = this.configPropertiesCache.get(key);
-        
-        if(values == null || values.size() != 1)
+        if(this.properties.containsKey(propertyKey))
         {
-            Settings.log.warn("getFloatProperty: Did not find a unique result for key=" + key
-                    + " values=" + values + " defaultValue=" + defaultValue);
-            return defaultValue;
+            Collection<Object> properties = this.properties.get(propertyKey);
+                    
+            if(properties.size() == 1)
+            {
+                Float next = (Float)properties.iterator().next();
+                
+                return next;
+            }
+            else if(properties.size() == 0)
+            {
+                log.error("No property value found for propertyKey="+propertyKey);
+            }
+            else
+            {
+                log.error("More than one property value found for propertyKey="+propertyKey);
+            }
         }
         
-        Object nextValue = values.iterator().next();
-        
-        if(nextValue instanceof String)
-        {
-            result = Float.valueOf((String)values.iterator().next());
-        }
-        else
-        {
-            result = (Float)nextValue;
-        }
-        
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getFloatProperty: key=" + key + " result=" + result);
-        }
-        
-        return result;
+        return defaultValue;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getIntProperty(java.lang.String, int)
+     */
     @Override
-    public int getIntProperty(final String key, final int defaultValue)
+    public int getIntProperty(final String propertyKey, final int defaultValue)
     {
-        int result = defaultValue;
-        
-        final Collection<Object> values = this.configPropertiesCache.get(key);
-        
-        if(values == null || values.size() != 1)
+        if(this.properties.containsKey(propertyKey))
         {
-            Settings.log.warn("getIntProperty: Did not find a unique result for key=" + key
-                    + " values=" + values + " defaultValue=" + defaultValue);
-            return defaultValue;
+            Collection<Object> properties = this.properties.get(propertyKey);
+                    
+            if(properties.size() == 1)
+            {
+                Integer next = (Integer)properties.iterator().next();
+                
+                return next;
+            }
+            else if(properties.size() == 0)
+            {
+                log.error("No property value found for propertyKey="+propertyKey);
+            }
+            else
+            {
+                log.error("More than one property value found for propertyKey="+propertyKey);
+            }
         }
         
-        Object nextValue = values.iterator().next();
-        
-        if(nextValue instanceof String)
-        {
-            result = Integer.valueOf((String)values.iterator().next());
-        }
-        else
-        {
-            result = (Integer)nextValue;
-        }
-        
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getIntProperty: key=" + key + " result=" + result);
-        }
-        
-        return result;
+        return defaultValue;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getLongProperty(java.lang.String, long)
+     */
     @Override
-    public long getLongProperty(final String key, final long defaultValue)
+    public long getLongProperty(final String propertyKey, final long defaultValue)
     {
-        long result = defaultValue;
-        
-        final Collection<Object> values = this.configPropertiesCache.get(key);
-        
-        if(values == null || values.size() != 1)
+        if(this.properties.containsKey(propertyKey))
         {
-            Settings.log.warn("getLongProperty: Did not find a unique result for key=" + key
-                    + " values=" + values + " defaultValue=" + defaultValue);
-            return defaultValue;
+            Collection<Object> properties = this.properties.get(propertyKey);
+                    
+            if(properties.size() == 1)
+            {
+                Long next = (Long)properties.iterator().next();
+                
+                return next;
+            }
+            else if(properties.size() == 0)
+            {
+                log.error("No property value found for propertyKey="+propertyKey);
+            }
+            else
+            {
+                log.error("More than one property value found for propertyKey="+propertyKey);
+            }
         }
         
-        Object nextValue = values.iterator().next();
-        
-        if(nextValue instanceof String)
-        {
-            result = Long.valueOf((String)values.iterator().next());
-        }
-        else
-        {
-            result = (Long)nextValue;
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getLongProperty: key=" + key + " result=" + result);
-        }
-        
-        return result;
+        return defaultValue;
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getNamespaceEntry(org.openrdf.model.URI)
+     */
     @Override
     public NamespaceEntry getNamespaceEntry(final URI nextNamespaceEntryUri)
     {
-        return this.cachedNamespaceEntries.get(nextNamespaceEntryUri);
+        return this.namespaceEntries.get(nextNamespaceEntryUri);
     }
     
-    /**
-     * @return the cachedNamespacePrefixToUriEntries
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getNamespacePrefixesToUris()
      */
     @Override
     public Map<String, Collection<URI>> getNamespacePrefixesToUris()
     {
-        return this.cachedNamespacePrefixToUriEntries;
+        return Collections.unmodifiableMap(this.namespacePrefixesToUris);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getNormalisationRule(org.openrdf.model.URI)
+     */
     @Override
     public NormalisationRule getNormalisationRule(final URI nextNormalisationRuleUri)
     {
-        return this.cachedNormalisationRules.get(nextNormalisationRuleUri);
+        return this.normalisationRules.get(nextNormalisationRuleUri);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getPlainNamespaceAndIdentifierPattern()
+     */
     @Override
     public Pattern getPlainNamespaceAndIdentifierPattern()
     {
-        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"));
+        return Pattern.compile(".*");
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getPlainNamespacePattern()
+     */
     @Override
     public Pattern getPlainNamespacePattern()
     {
-        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", "^([\\w-]+)$"));
+        return Pattern.compile(".*");
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getProfile(org.openrdf.model.URI)
+     */
     @Override
     public Profile getProfile(final URI nextProfileUri)
     {
-        return this.cachedProfiles.get(nextProfileUri);
+        return this.profiles.get(nextProfileUri);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getProvider(org.openrdf.model.URI)
+     */
     @Override
     public Provider getProvider(final URI nextProviderUri)
     {
-        return this.cachedProviders.get(nextProviderUri);
+        return this.providers.get(nextProviderUri);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getQueryType(org.openrdf.model.URI)
+     */
     @Override
     public QueryType getQueryType(final URI nextQueryTypeUri)
     {
-        return this.cachedQueryTypes.get(nextQueryTypeUri);
+        return this.queryTypes.get(nextQueryTypeUri);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getRuleTest(org.openrdf.model.URI)
+     */
     @Override
     public RuleTest getRuleTest(final URI nextRuleTestUri)
     {
-        return this.cachedRuleTests.get(nextRuleTestUri);
+        return this.ruleTests.get(nextRuleTestUri);
     }
     
-    /**
-     * Helper method to get the default separator, using a non-lookup cache if possible
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getSeparator()
      */
     @Override
     public String getSeparator()
     {
-        if(this.separator == null)
+        return ":";
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getStringProperties(java.lang.String)
+     */
+    @Override
+    public Collection<String> getStringProperties(final String string)
+    {
+        return new ArrayList<String>(0);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getStringProperty(java.lang.String,
+     * java.lang.String)
+     */
+    @Override
+    public String getStringProperty(final String propertyKey, final String defaultValue)
+    {
+        if(this.properties.containsKey(propertyKey))
         {
-            synchronized(this)
+            Collection<Object> properties = this.properties.get(propertyKey);
+                    
+            if(properties.size() == 1)
             {
-                if(this.separator == null)
-                {
-                    this.separator = this.getStringProperty("separator", ":");
-                }
+                String next = (String)properties.iterator().next();
+                
+                return next;
+            }
+            else if(properties.size() == 0)
+            {
+                log.error("No property value found for propertyKey="+propertyKey);
+            }
+            else
+            {
+                log.error("More than one property value found for propertyKey="+propertyKey);
             }
         }
         
-        return this.separator;
+        return defaultValue;
     }
     
-    @Override
-    public Collection<String> getStringProperties(final String key)
-    {
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getStringCollectionPropertiesFromConfig: key=" + key);
-        }
-        
-        final Collection<Object> values = this.configPropertiesCache.get(key);
-        
-        
-        final Collection<String> results = new ArrayList<String>();
-        
-        if(values != null)
-        {
-            for(final Object nextValue : values)
-            {
-                results.add(nextValue.toString());
-            }
-        }
-        
-        return results;
-    }
-    
-    @Override
-    public String getStringProperty(final String key, final String defaultValue)
-    {
-        String result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<String> values = this.getStringProperties(key);
-        
-        if(values == null || values.size() != 1)
-        {
-            Settings.log.error("getStringPropertyFromConfig: Did not find a unique result for key=" + key
-                    + " values=" + values + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final String nextValue : values)
-        {
-            result = nextValue;
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getStringPropertyFromConfig: key=" + key + " defaultValue=" + defaultValue
-                    + " returning result=" + result);
-        }
-        
-        return result;
-    }
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getTagPattern()
+     */
     @Override
     public Pattern getTagPattern()
     {
@@ -542,236 +538,282 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public Collection<URI> getURIProperties(final String key)
+    public Collection<URI> getURIProperties(final String string)
     {
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getURICollectionPropertiesFromConfig: key=" + key);
-        }
-        
-        final Collection<Object> cachedObjects = this.configPropertiesCache.get(key);
-        
-        final Collection<URI> results = new HashSet<URI>();
-        
-        if(cachedObjects == null)
-        {
-            return results;
-        }
-        
-        for(final Object nextValue : cachedObjects)
-        {
-            if(nextValue instanceof URI)
-            {
-                results.add((URI)nextValue);
-            }
-            else
-            {
-                Settings.log.error("getURIProperties: nextValue was not an instance of URI key=" + key
-                        + " nextValue=" + nextValue);
-            }
-        }
-        
-        return results;
+        return new ArrayList<URI>(0);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#getURIProperty(java.lang.String,
+     * org.openrdf.model.URI)
+     */
     @Override
-    public URI getURIProperty(final String key, final URI defaultValue)
+    public URI getURIProperty(final String propertyKey, final URI defaultValue)
     {
-        URI result = defaultValue;
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getURIProperty: key=" + key + " defaultValue=" + defaultValue);
-        }
-        
-        final Collection<URI> values = this.getURIProperties(key);
-        
-        if(values == null || values.size() != 1)
-        {
-            Settings.log.warn("getURIProperty: Did not find a unique result for key=" + key
-                    + " values=" + values + " defaultValue=" + defaultValue);
-            return defaultValue;
-        }
-        
-        for(final URI nextValue : values)
-        {
-            result = nextValue;
-        }
-        
-        if(Settings._TRACE)
-        {
-            Settings.log.trace("getURIProperty: key=" + key + " result=" + result);
-        }
-        
-        return result;
-        
+        // TODO Auto-generated method stub
+        return defaultValue;
     }
     
-    @Deprecated
-    public boolean isManualRefreshAllowed()
+    /**
+     * Sets the property into the internal property cache
+     * 
+     * @param propertyKey The key for the property value
+     * @param propertyValue The property value to set
+     * @param overwrite If true, the given property value will overwrite the current properties, otherwise they will both be included
+     */
+    private void setObjectPropertyHelper(final String propertyKey, final Object propertyValue, boolean overwrite)
     {
-        final boolean manualRefresh = this.getBooleanProperty("enableManualConfigurationRefresh", true);
-        final long timestampDiff = (System.currentTimeMillis() - this.initialisedTimestamp);
-        final long manualRefreshMinimum = this.getLongProperty("manualConfigurationMinimumMilliseconds", 60000L);
-        
-        if(Settings._DEBUG)
-        {
-            Settings.log.debug("isManualRefreshAllowed: manualRefresh=" + manualRefresh);
-            Settings.log.debug("isManualRefreshAllowed: timestampDiff=" + timestampDiff);
-            Settings.log.debug("isManualRefreshAllowed: manualRefreshMinimum=" + manualRefreshMinimum);
-            
-        }
-        
-        if(manualRefreshMinimum < 0)
-        {
-            Settings.log.error("isManualRefreshAllowed: manualRefreshMinimum was less than 0");
-        }
-        
-        return manualRefresh && (timestampDiff > manualRefreshMinimum);
-    }
-    
-    private void setObjectPropertyHelper(final String propertyKey, final Object propertyValue)
-    {
+        log.info("setObjectPropertyHelper(String,Object) propertyKey="+propertyKey+" propertyValue="+propertyValue.toString());
         final Collection<Object> nextList = new ArrayList<Object>(5);
         nextList.add(propertyValue);
         
-        final Collection<Object> ifAbsent = this.configPropertiesCache.putIfAbsent(propertyKey, nextList);
+        final Collection<Object> ifAbsent = this.properties.putIfAbsent(propertyKey, nextList);
         
+        log.info("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="+this.properties.get(propertyKey));
+
+        // if there were properties previously, than synchronise access to the properties object and add the list, any other additions to this property should wait to synchronise here
         if(ifAbsent != null)
         {
-            synchronized(this.configPropertiesCache)
+            log.info("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
+            synchronized(this.properties)
             {
-                if(!this.configPropertiesCache.containsKey(propertyKey))
+                if(!overwrite)
                 {
                     nextList.addAll(ifAbsent);
-                    this.configPropertiesCache.put(propertyKey, nextList);
                 }
+                log.info("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="+nextList);
+                this.properties.put(propertyKey, nextList);
             }
         }
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, boolean)
+     */
     @Override
     public void setProperty(final String propertyKey, final boolean propertyValue)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValue);
+        log.info("setProperty(String,boolean) propertyKey="+propertyKey+" propertyValue="+Boolean.valueOf(propertyValue).toString());
+        setObjectPropertyHelper(propertyKey, Boolean.valueOf(propertyValue), true);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, float)
+     */
     @Override
     public void setProperty(final String propertyKey, final float propertyValue)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValue);
+        log.info("setProperty(String,float) propertyKey="+propertyKey+" propertyValue="+Float.valueOf(propertyValue).toString());
+        setObjectPropertyHelper(propertyKey, Float.valueOf(propertyValue), true);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, int)
+     */
     @Override
     public void setProperty(final String propertyKey, final int propertyValue)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValue);
+        log.info("setProperty(String,int) propertyKey="+propertyKey+" propertyValue="+Integer.valueOf(propertyValue).toString());
+        setObjectPropertyHelper(propertyKey, Integer.valueOf(propertyValue), true);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, long)
+     */
     @Override
     public void setProperty(final String propertyKey, final long propertyValue)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValue);
+        log.info("setProperty(String,long) propertyKey="+propertyKey+" propertyValue="+Long.valueOf(propertyValue).toString());
+        setObjectPropertyHelper(propertyKey, Long.valueOf(propertyValue), true);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String,
+     * java.lang.String)
+     */
     @Override
     public void setProperty(final String propertyKey, final String propertyValue)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValue);
+        if(propertyValue == null)
+        {
+            throw new NullPointerException("property value cannot be null propertyKey="+propertyKey);
+        }
+        
+        log.info("setProperty(String,String) propertyKey="+propertyKey+" propertyValue="+String.valueOf(propertyValue));
+        setObjectPropertyHelper(propertyKey, String.valueOf(propertyValue), true);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String,
+     * org.openrdf.model.URI)
+     */
     @Override
     public void setProperty(final String propertyKey, final URI propertyValue)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValue);
+        if(propertyValue == null)
+        {
+            throw new NullPointerException("property value cannot be null propertyKey="+propertyKey);
+        }
+        
+        log.info("setProperty(String,String) propertyKey="+propertyKey+" propertyValue="+propertyValue.stringValue());
+        setObjectPropertyHelper(propertyKey, propertyValue, true);
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.QueryAllConfiguration#setStringCollectionProperty(java.lang.String,
+     * java.util.Collection)
+     */
     @Override
     public void setStringCollectionProperty(final String propertyKey, final Collection<String> propertyValues)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValues);
+        log.info("setProperty(String,Collection<String>) propertyKey="+propertyKey+" propertyValue="+propertyValues.toString());
+        log.info("TODO: Implement me!");
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#setURICollectionProperty(java.lang.String,
+     * java.util.Collection)
+     */
     @Override
     public void setURICollectionProperty(final String propertyKey, final Collection<URI> propertyValues)
     {
-        this.setObjectPropertyHelper(propertyKey, propertyValues);
+        log.info("setProperty(String,Collection<URI>) propertyKey="+propertyKey+" propertyValue="+propertyValues.toString());
+        log.info("TODO: Implement me!");
     }
 
     @Override
     public void setProperty(String propertyKey, Value propertyValue)
     {
+        log.info("setProperty(String,Value) propertyKey="+propertyKey+" propertyValue="+propertyValue+" propertyValue.stringValue()="+propertyValue.stringValue()+" propertyValue.getClass().getName()="+propertyValue.getClass().getName());
+                
+        
         if(propertyValue instanceof URI)
         {
             setProperty(propertyKey, (URI)propertyValue);
             return;
         }
         
-        try
+        if(propertyValue instanceof BNode)
         {
-            boolean booleanFromValue = RdfUtils.getBooleanFromValue(propertyValue);
-            
-            setProperty(propertyKey, booleanFromValue);
-            
-            return;
-        }
-        catch(QueryAllRuntimeException rex)
-        {
-            if(_DEBUG)
-            {
-                log.debug("Could not parse boolean value="+propertyValue);
-            }
+            throw new QueryAllRuntimeException("Cannot handle blank nodes as property values, they have no meaning");
         }
         
-        try
+        if(propertyValue instanceof Literal)
         {
-            int intFromValue = RdfUtils.getIntegerFromValue(propertyValue);
+            Literal literalValue = (Literal)propertyValue;
+            URI datatype = literalValue.getDatatype();
             
-            setProperty(propertyKey, intFromValue);
-            
-            return;
-        }
-        catch(NumberFormatException nfe)
-        {
-            if(_DEBUG)
+            log.info("literalValue.getDatatype()="+datatype);
+            if(datatype == null)
             {
-                log.debug("Could not parse int value="+propertyValue);
+                // resort to setting it as a String as it didn't have type information attached
+                setProperty(propertyKey, propertyValue.stringValue());
+            }
+            else
+            {
+                
+                if(datatype.equals(Constants.XSD_BOOLEAN))
+                {
+                    log.info("boolean datatype");
+                    try
+                    {
+                        boolean booleanFromValue = RdfUtils.getBooleanFromValue(literalValue);
+                        
+                        log.info("booleanFromValue="+booleanFromValue);
+                        setProperty(propertyKey, booleanFromValue);
+                        
+                        return;
+                    }
+                    catch(QueryAllRuntimeException rex)
+                    {
+                        log.info("Could not parse boolean value="+literalValue);
+                    }
+                }
+                else if(datatype.equals(Constants.XSD_INT) || datatype.equals(Constants.XSD_INTEGER))
+                {
+                    log.info("int or integer datatype");
+                    try
+                    {
+                        int intFromValue = RdfUtils.getIntegerFromValue(literalValue);
+                        
+                        log.info("intFromValue="+intFromValue);
+                        setProperty(propertyKey, intFromValue);
+                        
+                        return;
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        log.info("Could not parse int value="+literalValue);
+                    }
+                }
+                else if(datatype.equals(Constants.XSD_LONG))
+                {
+                    log.info("long datatype");
+                    try
+                    {
+                        long longFromValue = RdfUtils.getLongFromValue(literalValue);
+                        
+                        log.info("longFromValue="+longFromValue);
+                        setProperty(propertyKey, longFromValue);
+                        
+                        return;
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        log.info("Could not parse long value="+literalValue);
+                    }
+                }
+                else if(datatype.equals(Constants.XSD_FLOAT))
+                {
+                    log.info("float datatype");
+                    try
+                    {
+                        float floatFromValue = RdfUtils.getFloatFromValue(literalValue);
+                        
+                        log.info("floatFromValue="+floatFromValue);
+                        setProperty(propertyKey, floatFromValue);
+                        
+                        return;
+                    }
+                    catch(NumberFormatException nfe)
+                    {
+                        log.info("Could not parse float value="+literalValue);
+                    }
+                }
+                else
+                {
+                    log.info("unrecognised datatype");
+                    // resort to setting it as a String
+                    setProperty(propertyKey, propertyValue.stringValue());
+                }
             }
         }
-        
-        try
-        {
-            long longFromValue = RdfUtils.getLongFromValue(propertyValue);
-            
-            setProperty(propertyKey, longFromValue);
-            
-            return;
-        }
-        catch(NumberFormatException nfe)
-        {
-            if(_DEBUG)
-            {
-                log.debug("Could not parse long value="+propertyValue);
-            }
-        }
-        
-        try
-        {
-            float floatFromValue = RdfUtils.getFloatFromValue(propertyValue);
-            
-            setProperty(propertyKey, floatFromValue);
-            
-            return;
-        }
-        catch(NumberFormatException nfe)
-        {
-            if(_DEBUG)
-            {
-                log.debug("Could not parse float value="+propertyValue);
-            }
-        }
-        
-        // resort to setting it as a String
-        setProperty(propertyKey, propertyValue.stringValue());
     }
+
+    @Override
+    public void setValueCollectionProperty(String propertyKey, Collection<Value> propertyValues)
+    {
+        log.info("setProperty(String,Collection<URI>) propertyKey="+propertyKey+" propertyValue="+propertyValues.toString());
+        log.info("TODO: Implement me!");
+    }
+    
 }

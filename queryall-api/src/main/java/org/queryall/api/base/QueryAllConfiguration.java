@@ -105,4 +105,5 @@ public interface QueryAllConfiguration
     
     void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
     
+    void setValueCollectionProperty(String propertyKey, Collection<Value> propertyValues);
 }

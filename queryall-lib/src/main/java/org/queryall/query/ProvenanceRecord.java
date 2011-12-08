@@ -119,7 +119,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
     }
     
     public static Map<URI, ProvenanceRecord> fetchProvenanceForElementKey(final String hostToUse,
-            final String nextElementKey, final int modelVersion, final HttpProvider dummyProvider)
+            final String nextElementKey, final int modelVersion, final HttpProvider dummyProvider, String defaultHostAddress, String assumedResponseContentType)
         throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
@@ -171,8 +171,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                     if(nextReaderFormat == null)
                     {
                         nextReaderFormat =
-                                Rio.getParserFormatForMIMEType(Settings.getSettings().getStringProperty(
-                                        "assumedResponseContentType", Constants.APPLICATION_RDF_XML));
+                                Rio.getParserFormatForMIMEType(assumedResponseContentType);
                         
                         if(nextReaderFormat == null)
                         {
@@ -180,8 +179,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                                     .error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + Settings.getSettings()
-                                                    .getStringProperty("assumedResponseContentType", ""));
+                                            + assumedResponseContentType);
                             continue;
                         }
                         else
@@ -190,8 +188,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                                     .warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + Settings.getSettings()
-                                                    .getStringProperty("assumedResponseContentType", ""));
+                                            + assumedResponseContentType);
                         }
                     }
                     else if(ProvenanceRecord.log.isDebugEnabled())
@@ -205,7 +202,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                     {
                         myRepositoryConnection.add(
                                 new java.io.StringReader(nextResult.getNormalisedResult()),
-                                Settings.getSettings().getDefaultHostAddress() + "provenancebykey/"
+                                defaultHostAddress + "provenancebykey/"
                                         + StringUtils.percentEncode(nextElementKey), nextReaderFormat);
                     }
                 }

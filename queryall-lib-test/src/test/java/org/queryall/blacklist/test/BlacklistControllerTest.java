@@ -20,7 +20,7 @@ import org.queryall.blacklist.BlacklistEntry;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
-import org.queryall.utils.test.DummySettings;
+import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class BlacklistControllerTest
     @Before
     public void setUp() throws Exception
     {
-        this.testSettings = new DummySettings();
+        this.testSettings = new Settings();
         this.testBlacklistController = new BlacklistController(this.testSettings);
         this.testTemporaryEndpointBlacklist = new ArrayList<RdfFetcherQueryRunnable>();
     }
@@ -146,7 +146,7 @@ public class BlacklistControllerTest
                 this.testBlacklistController.getCurrentQueryDebugInformation();
         
         // By default, we assume that client blacklisting is not required, and we don't override
-        // this in DummySettings for the "automaticallyBlacklistClients" property so it should be
+        // this in Settings for the "automaticallyBlacklistClients" property so it should be
         // false and hence there should be no accumulation
         Assert.assertEquals(0, debugInformation.size());
     }
@@ -662,7 +662,7 @@ public class BlacklistControllerTest
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#getCurrentIPBlacklist()}.
      * 
-     * TODO: add another test using a modified DummySettings that returns a non-empty blacklist
+     * TODO: add another test using a modified Settings that returns a non-empty blacklist
      */
     @Test
     public void testGetCurrentIPBlacklist()
@@ -677,7 +677,7 @@ public class BlacklistControllerTest
     /**
      * Test method for {@link org.queryall.blacklist.BlacklistController#getCurrentIPWhitelist()}.
      * 
-     * TODO: add another test using a modified DummySettings that returns a non-empty whitelist
+     * TODO: add another test using a modified Settings that returns a non-empty whitelist
      */
     @Test
     public void testGetCurrentIPWhitelist()
@@ -957,7 +957,7 @@ public class BlacklistControllerTest
      * Test method for
      * {@link org.queryall.blacklist.BlacklistController#isClientWhitelisted(java.lang.String)}.
      * 
-     * TODO: make up a test using a modified DummySettings that creates a non-empty client whitelist
+     * TODO: make up a test using a modified Settings that creates a non-empty client whitelist
      */
     @Test
     public void testIsClientWhitelisted()

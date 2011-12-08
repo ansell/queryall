@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
@@ -20,6 +22,7 @@ import org.queryall.api.ruletest.RuleTest;
 public abstract class AbstractQueryAllConfigurationTest
 {
     private QueryAllConfiguration testConfiguration;
+    private ValueFactory testValueFactory;
 
     /**
      * This method is used to create new instances of the QueryAllConfiguration implementation for each test, to enable the test to be abstract and separate from the implementations of this class
@@ -39,12 +42,14 @@ public abstract class AbstractQueryAllConfigurationTest
     public void setUp() throws Exception
     {
         this.testConfiguration = getNewQueryAllConfiguration();
+        this.testValueFactory = new ValueFactoryImpl();
     }
     
     @After
     public void tearDown() throws Exception
     {
         this.testConfiguration = null;
+        this.testValueFactory = null;
     }
     
     @Test
@@ -293,11 +298,16 @@ public abstract class AbstractQueryAllConfigurationTest
         }
     }
     
-    @Ignore
     @Test
     public void testGetBooleanProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", true);
+        
+        Assert.assertTrue(this.testConfiguration.getBooleanProperty("testProperty", false));
+        
+        this.testConfiguration.setProperty("testProperty", false);
+        
+        Assert.assertFalse(this.testConfiguration.getBooleanProperty("testProperty", true));
     }
     
     @Ignore
@@ -307,25 +317,43 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public void testGetFloatProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", 0.5f);
+
+        // assert that they are equal to within 0.001 of each other, which is enough to distinguish between the real and false cases
+        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty("testProperty", -1.0f), 0.001f);
+    
+        this.testConfiguration.setProperty("testProperty", -0.5f);
+
+        // assert that they are equal to within 0.001 of each other, which is enough to distinguish between the real and false cases
+        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty("testProperty", 1.0f), 0.001f);
     }
     
-    @Ignore
     @Test
     public void testGetIntProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", 1);
+
+        Assert.assertEquals(1, this.testConfiguration.getIntProperty("testProperty", -1));
+
+        this.testConfiguration.setProperty("testProperty", -1);
+
+        Assert.assertEquals(-1, this.testConfiguration.getIntProperty("testProperty", 1));
     }
     
-    @Ignore
     @Test
     public void testGetLongProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", 4321L);
+
+        Assert.assertEquals(4321L, this.testConfiguration.getLongProperty("testProperty", -1L));
+
+        this.testConfiguration.setProperty("testProperty", -4321L);
+
+        Assert.assertEquals(-4321L, this.testConfiguration.getLongProperty("testProperty", 1L));
+    
     }
     
     @Test
@@ -613,11 +641,12 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public void testGetStringProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", "my test string");
+        
+        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty("testProperty", "default value"));
     }
     
     @Ignore
@@ -641,39 +670,78 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public void testSetPropertyStringBoolean()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", true);
+        
+        Assert.assertTrue(this.testConfiguration.getBooleanProperty("testProperty", false));
     }
     
-    @Ignore
     @Test
     public void testSetPropertyStringFloat()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", 0.5f);
+
+        // assert that they are equal to within 0.001 of each other, which is enough to distinguish between the real and false cases
+        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty("testProperty", -1.0f), 0.001f);
     }
     
-    @Ignore
     @Test
     public void testSetPropertyStringInt()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", 1);
+
+        Assert.assertEquals(1, this.testConfiguration.getIntProperty("testProperty", -1));
     }
     
-    @Ignore
     @Test
     public void testSetPropertyStringLong()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", 4321L);
+
+        Assert.assertEquals(4321L, this.testConfiguration.getLongProperty("testProperty", -1L));
     }
     
-    @Ignore
     @Test
     public void testSetPropertyStringString()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", "my test string");
+        
+        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty("testProperty", "default value"));
+    }
+    
+    @Test
+    public void testSetPropertyStringValueBoolean()
+    {
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(true));
+        
+        Assert.assertTrue(this.testConfiguration.getBooleanProperty("testProperty", false));
+    }
+    
+    @Test
+    public void testSetPropertyStringValueFloat()
+    {
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(0.5f));
+
+        // assert that they are equal to within 0.001 of each other, which is enough to distinguish between the real and false cases
+        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty("testProperty", -1.0f), 0.001f);
+    }
+    
+    @Test
+    public void testSetPropertyStringValueInt()
+    {
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(1));
+
+        Assert.assertEquals(1, this.testConfiguration.getIntProperty("testProperty", -1));
+    }
+    
+    @Test
+    public void testSetPropertyStringValueLong()
+    {
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(4321L));
+
+        Assert.assertEquals(4321L, this.testConfiguration.getLongProperty("testProperty", -1L));
     }
     
     @Ignore
