@@ -253,6 +253,7 @@ public class BlacklistControllerTest
      *             If the Thread.sleep call that simulates time between blacklist period start and
      *             expiry time is interrupted
      */
+    @Ignore
     @Test
     public void testDoBlacklistExpiryDefaultParameters() throws InterruptedException
     {
@@ -339,6 +340,7 @@ public class BlacklistControllerTest
      *             If the Thread.sleep call that simulates time between blacklist period start and
      *             expiry time is interrupted
      */
+    @Ignore
     @Test
     public void testDoBlacklistExpiryWithParameters() throws InterruptedException
     {
