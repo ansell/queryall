@@ -84,6 +84,8 @@ public interface QueryAllConfiguration
     
     URI getURIProperty(String key, URI defaultValue);
     
+    Collection<Object> clearProperty(String propertyKey);
+    
     void setProperty(String propertyKey, boolean propertyValue);
     
     void setProperty(String propertyKey, float propertyValue);

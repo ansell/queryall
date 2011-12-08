@@ -9,10 +9,16 @@ import org.queryall.api.base.QueryAllConfiguration;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class DummySettingsTest extends BaseQueryAllConfigurationTest
 {
+    
+    @Override
+    protected QueryAllConfiguration getNewQueryAllConfiguration()
+    {
+        return new DummySettings();
+    }
     
     /**
      * @throws java.lang.Exception
@@ -32,12 +38,6 @@ public class DummySettingsTest extends BaseQueryAllConfigurationTest
     public void tearDown() throws Exception
     {
         super.tearDown();
-    }
-    
-    @Override
-    protected QueryAllConfiguration getNewQueryAllConfiguration()
-    {
-        return new DummySettings();
     }
     
 }

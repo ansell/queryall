@@ -45,7 +45,7 @@ import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
-import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 import org.queryall.utils.StringUtils;
 
 /**
@@ -357,7 +357,7 @@ public class ServletUtils
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
                                     .toLowerCase()) + separator),
                     // + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryEndpoint())),
-                    Settings.CONFIG_API_VERSION);
+                    SettingsFactory.CONFIG_API_VERSION);
         }
         
         if(GeneralServlet._TRACE)

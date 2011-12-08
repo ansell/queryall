@@ -67,6 +67,14 @@ public final class PropertyUtils
             return result;
         }
     }
+
+    /**
+     * Checks for the configured version first in the system vm properties, then in the localisation
+     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
+     * 
+     * The version defaults to "0.0.1"
+     */
+    public static final String VERSION = getSystemOrPropertyString("queryall.Version", "0.0.1");
     
     /**
      * Private constructor

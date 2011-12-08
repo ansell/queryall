@@ -32,6 +32,7 @@ import org.queryall.exception.QueryAllException;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -286,7 +287,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                 final URI nextSubjectUri = (URI)nextProvider.getSubject();
                 results.put(nextSubjectUri,
                         new ProvenanceRecord(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
             }
         }
         catch(final OpenRDFException e)

@@ -29,13 +29,15 @@ public class DummySettings implements QueryAllConfiguration
 {
     
     private ConcurrentHashMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
-    private ConcurrentHashMap<URI, NormalisationRule> normalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
+    private ConcurrentHashMap<URI, NormalisationRule> normalisationRules =
+            new ConcurrentHashMap<URI, NormalisationRule>();
     private ConcurrentHashMap<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
     private ConcurrentHashMap<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
     private ConcurrentHashMap<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
     private ConcurrentHashMap<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
-    private ConcurrentHashMap<String, Collection<URI>> namespacePrefixesToUris = new ConcurrentHashMap<String, Collection<URI>>();
-
+    private ConcurrentHashMap<String, Collection<URI>> namespacePrefixesToUris =
+            new ConcurrentHashMap<String, Collection<URI>>();
+    
     /**
      * 
      */
@@ -49,10 +51,11 @@ public class DummySettings implements QueryAllConfiguration
     {
         this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
         
-        Collection<URI> nextPreferredList = new HashSet<URI>();
+        final Collection<URI> nextPreferredList = new HashSet<URI>();
         nextPreferredList.add(nextNamespaceEntry.getKey());
-
-        Collection<URI> ifPreferredAbsent = this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+        
+        final Collection<URI> ifPreferredAbsent =
+                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
         
         if(ifPreferredAbsent != null)
         {
@@ -60,12 +63,13 @@ public class DummySettings implements QueryAllConfiguration
             this.namespacePrefixesToUris.put(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
         }
         
-        for(String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
+        for(final String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
         {
-            Collection<URI> nextAlternateList = new HashSet<URI>();
+            final Collection<URI> nextAlternateList = new HashSet<URI>();
             nextAlternateList.add(nextNamespaceEntry.getKey());
-
-            Collection<URI> ifAlternateAbsent = this.namespacePrefixesToUris.putIfAbsent(nextAlternate, nextAlternateList);
+            
+            final Collection<URI> ifAlternateAbsent =
+                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, nextAlternateList);
             
             if(ifAlternateAbsent != null)
             {
@@ -77,9 +81,8 @@ public class DummySettings implements QueryAllConfiguration
     
     /**
      * 
-     * @see
-     * org.queryall.api.base.QueryAllConfiguration#addNormalisationRule(org.queryall.api.rdfrule
-     * .NormalisationRule)
+     * @see org.queryall.api.base.QueryAllConfiguration#addNormalisationRule(org.queryall.api.rdfrule
+     *      .NormalisationRule)
      */
     @Override
     public void addNormalisationRule(final NormalisationRule nextNormalisationRule)
@@ -101,8 +104,7 @@ public class DummySettings implements QueryAllConfiguration
     /**
      * 
      * 
-     * @see
-     * org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
+     * @see org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
      */
     @Override
     public void addProvider(final Provider nextProvider)
@@ -111,11 +113,10 @@ public class DummySettings implements QueryAllConfiguration
     }
     
     /**
-     *
      * 
-     * @see
-     * org.queryall.api.base.QueryAllConfiguration#addQueryType(org.queryall.api.querytype.QueryType
-     * )
+     * 
+     * @see org.queryall.api.base.QueryAllConfiguration#addQueryType(org.queryall.api.querytype.QueryType
+     *      )
      */
     @Override
     public void addQueryType(final QueryType nextQueryType)
@@ -126,13 +127,19 @@ public class DummySettings implements QueryAllConfiguration
     /**
      * 
      * 
-     * @see
-     * org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
+     * @see org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
      */
     @Override
     public void addRuleTest(final RuleTest nextRuleTest)
     {
         this.ruleTests.put(nextRuleTest.getKey(), nextRuleTest);
+    }
+    
+    @Override
+    public Collection<Object> clearProperty(final String propertyKey)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
     
     /*
@@ -143,7 +150,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, NamespaceEntry> getAllNamespaceEntries()
     {
-        return Collections.unmodifiableMap(namespaceEntries);
+        return Collections.unmodifiableMap(this.namespaceEntries);
     }
     
     /*
@@ -154,7 +161,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, NormalisationRule> getAllNormalisationRules()
     {
-        return Collections.unmodifiableMap(normalisationRules);
+        return Collections.unmodifiableMap(this.normalisationRules);
     }
     
     /*
@@ -165,7 +172,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, Profile> getAllProfiles()
     {
-        return Collections.unmodifiableMap(profiles);
+        return Collections.unmodifiableMap(this.profiles);
     }
     
     /*
@@ -176,7 +183,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, Provider> getAllProviders()
     {
-        return Collections.unmodifiableMap(providers);
+        return Collections.unmodifiableMap(this.providers);
     }
     
     /*
@@ -187,7 +194,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, QueryType> getAllQueryTypes()
     {
-        return Collections.unmodifiableMap(queryTypes);
+        return Collections.unmodifiableMap(this.queryTypes);
     }
     
     /*
@@ -198,7 +205,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Map<URI, RuleTest> getAllRuleTests()
     {
-        return Collections.unmodifiableMap(ruleTests);
+        return Collections.unmodifiableMap(this.ruleTests);
     }
     
     /*
@@ -265,7 +272,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public NamespaceEntry getNamespaceEntry(final URI nextNamespaceEntryUri)
     {
-        return namespaceEntries.get(nextNamespaceEntryUri);
+        return this.namespaceEntries.get(nextNamespaceEntryUri);
     }
     
     /*
@@ -287,7 +294,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public NormalisationRule getNormalisationRule(final URI nextNormalisationRuleUri)
     {
-        return normalisationRules.get(nextNormalisationRuleUri);
+        return this.normalisationRules.get(nextNormalisationRuleUri);
     }
     
     /*
@@ -320,7 +327,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Profile getProfile(final URI nextProfileUri)
     {
-        return profiles.get(nextProfileUri);
+        return this.profiles.get(nextProfileUri);
     }
     
     /*
@@ -331,7 +338,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public Provider getProvider(final URI nextProviderUri)
     {
-        return providers.get(nextProviderUri);
+        return this.providers.get(nextProviderUri);
     }
     
     /*
@@ -342,7 +349,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public QueryType getQueryType(final URI nextQueryTypeUri)
     {
-        return queryTypes.get(nextQueryTypeUri);
+        return this.queryTypes.get(nextQueryTypeUri);
     }
     
     /*
@@ -353,7 +360,7 @@ public class DummySettings implements QueryAllConfiguration
     @Override
     public RuleTest getRuleTest(final URI nextRuleTestUri)
     {
-        return ruleTests.get(nextRuleTestUri);
+        return this.ruleTests.get(nextRuleTestUri);
     }
     
     /*

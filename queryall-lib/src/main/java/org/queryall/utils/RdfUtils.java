@@ -1312,7 +1312,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedNamespaceEntryException e)
                     {
@@ -1442,7 +1442,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedNormalisationRuleException e)
                     {
@@ -1665,7 +1665,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProfileParser(nextProfileEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedProfileException e)
                     {
@@ -1790,7 +1790,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProjectParser(nextProjectEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedProjectException e)
                     {
@@ -1933,7 +1933,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProviderParser(nextProviderEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedProviderException e)
                     {
@@ -2060,7 +2060,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedQueryTypeException e)
                     {
@@ -2299,7 +2299,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedRuleTestException e)
                     {
@@ -2357,7 +2357,7 @@ public final class RdfUtils
         
         // All queryall objects can be serialised to RDF using this method, along with a given
         // subject URI, which in this case is derived from the object
-        final boolean rdfOkay = rdfObject.toRdf(myRepository, Settings.CONFIG_API_VERSION, rdfObject.getKey());
+        final boolean rdfOkay = rdfObject.toRdf(myRepository, SettingsFactory.CONFIG_API_VERSION, rdfObject.getKey());
         
         if(!rdfOkay && isInsert)
         {

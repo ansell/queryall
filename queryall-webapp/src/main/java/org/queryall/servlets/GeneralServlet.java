@@ -25,6 +25,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
@@ -37,7 +38,6 @@ import org.queryall.servlets.utils.ServletUtils;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
-import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +154,7 @@ public class GeneralServlet extends HttpServlet
         }
         
         // TODO: avoid cast here
-        ((Settings)localSettings).configRefreshCheck(false);
+        // ((Settings)localSettings).configRefreshCheck(false);
         localBlacklistController.doBlacklistExpiry();
         
         if(localBlacklistController.isClientBlacklisted(requesterIpAddress))
@@ -169,7 +169,7 @@ public class GeneralServlet extends HttpServlet
         
         // TODO: arrange to move this into the header include function
         response.setHeader("X-Application", localSettings.getStringProperty("userAgent", "queryall") + "/"
-                + Settings.VERSION);
+                + PropertyUtils.VERSION);
         
         final List<Profile> includedProfiles =
                 ProfileUtils.getAndSortProfileList(localSettings.getURIProperties("activeProfiles"),

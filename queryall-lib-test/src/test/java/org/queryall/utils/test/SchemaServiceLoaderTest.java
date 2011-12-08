@@ -18,7 +18,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.services.SchemaServiceLoader;
-import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +95,7 @@ public class SchemaServiceLoaderTest
             final long previousCount = testRepositoryConnection.size();
             
             final boolean result =
-                    nextSchema.schemaToRdf(testRepository, Settings.CONFIG_API_VERSION,
+                    nextSchema.schemaToRdf(testRepository, SettingsFactory.CONFIG_API_VERSION,
                             vf.createURI("http://test.queryall.example.com/schema/" + nextSchema.toString()));
             
             if(!result)

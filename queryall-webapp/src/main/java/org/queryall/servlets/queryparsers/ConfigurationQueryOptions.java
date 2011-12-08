@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
-import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class ConfigurationQueryOptions
     public ConfigurationQueryOptions(final String requestUri, final String contextPath,
             final QueryAllConfiguration localSettings)
     {
-        this._apiVersion = Settings.CONFIG_API_VERSION;
+        this._apiVersion = SettingsFactory.CONFIG_API_VERSION;
         
         String requestString = requestUri;
         this.localSettings = localSettings;
@@ -388,7 +388,7 @@ public class ConfigurationQueryOptions
             
             if(this._apiVersion == 0)
             {
-                this._apiVersion = Settings.CONFIG_API_VERSION;
+                this._apiVersion = SettingsFactory.CONFIG_API_VERSION;
             }
             else
             {
@@ -397,7 +397,7 @@ public class ConfigurationQueryOptions
         }
         catch(final NumberFormatException nfe)
         {
-            this._apiVersion = Settings.CONFIG_API_VERSION;
+            this._apiVersion = SettingsFactory.CONFIG_API_VERSION;
             ConfigurationQueryOptions.log
                     .error("ConfigurationQueryOptions: nfe: check the adminConfigurationApiOpeningPrefix for the likely mistake",
                             nfe);

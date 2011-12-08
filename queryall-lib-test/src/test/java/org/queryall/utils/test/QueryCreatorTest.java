@@ -26,7 +26,7 @@ import org.queryall.impl.namespace.NamespaceEntryImpl;
 import org.queryall.impl.provider.HttpSparqlProviderImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.query.QueryCreator;
-import org.queryall.utils.Settings;
+import org.queryall.utils.SettingsFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -150,7 +150,7 @@ public class QueryCreatorTest
         this.testConvertAlternateToPreferredPrefix = true;
         
         this.testLocalSettings1 =
-                new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
+                SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
                         "http://example.org/test/config/querycreator-1");
         
         this.testLocalSettings1.addQueryType(this.testRegexInputQueryType1);
@@ -158,7 +158,7 @@ public class QueryCreatorTest
         this.testLocalSettings1.addNamespaceEntry(this.testNamespaceEntry1);
         
         this.testLocalSettings2 =
-                new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
+                SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
                         "http://example.org/test/config/querycreator-1");
         
         this.testLocalSettings2.addQueryType(this.testRegexInputQueryType2);
@@ -166,7 +166,7 @@ public class QueryCreatorTest
         this.testLocalSettings2.addNamespaceEntry(this.testNamespaceEntry2);
         
         this.testLocalSettings3 =
-                new Settings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
+                SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
                         "http://example.org/test/config/querycreator-1");
         
         this.testLocalSettings3.addQueryType(this.testRegexInputQueryType3);

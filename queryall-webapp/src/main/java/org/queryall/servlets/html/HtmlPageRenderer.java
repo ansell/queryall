@@ -16,12 +16,12 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.repository.Repository;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.PropertyUtils;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.RdfUtils;
-import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +104,7 @@ public class HtmlPageRenderer
         velocityContext.put("project_html_url_suffix", localSettings.getStringProperty("htmlUrlSuffix", ""));
         velocityContext.put("project_link", localSettings.getStringProperty("projectHomeUrl", "http://bio2rdf.org/"));
         velocityContext.put("application_name", localSettings.getStringProperty("userAgent", "queryall") + "/"
-                + Settings.VERSION);
+                + PropertyUtils.VERSION);
         velocityContext
                 .put("application_help", localSettings.getStringProperty("applicationHelpUrl",
                         "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
@@ -453,7 +453,7 @@ public class HtmlPageRenderer
         velocityContext.put("project_html_url_suffix", localSettings.getStringProperty("htmlUrlSuffix", ""));
         velocityContext.put("project_link", localSettings.getStringProperty("projectHomeUrl", "http://bio2rdf.org/"));
         velocityContext.put("application_name", localSettings.getStringProperty("userAgent", "queryall") + "/"
-                + Settings.VERSION);
+                + PropertyUtils.VERSION);
         velocityContext
                 .put("application_help", localSettings.getStringProperty("applicationHelpUrl",
                         "http://sourceforge.net/apps/mediawiki/bio2rdf/"));

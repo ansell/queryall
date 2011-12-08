@@ -10,10 +10,16 @@ import org.queryall.utils.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class SettingsTest extends BaseQueryAllConfigurationTest
 {
+    
+    @Override
+    protected QueryAllConfiguration getNewQueryAllConfiguration()
+    {
+        return new Settings();
+    }
     
     /**
      * @throws java.lang.Exception
@@ -33,12 +39,6 @@ public class SettingsTest extends BaseQueryAllConfigurationTest
     public void tearDown() throws Exception
     {
         super.tearDown();
-    }
-    
-    @Override
-    protected QueryAllConfiguration getNewQueryAllConfiguration()
-    {
-        return new Settings();
     }
     
 }

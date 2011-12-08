@@ -11,9 +11,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.PropertyUtils;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
-import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +100,7 @@ public class RdfFetcher
                     "Mozilla/5.0 (compatible; "
                             + this.localSettings.getStringProperty("userAgent", "queryall")
                             + "/"
-                            + Settings.VERSION
+                            + PropertyUtils.VERSION
                             + " +"
                             + this.localSettings.getStringProperty("robotHelpUrl",
                                     "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp") + ")");

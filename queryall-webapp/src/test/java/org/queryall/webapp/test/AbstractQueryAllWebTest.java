@@ -48,16 +48,6 @@ public abstract class AbstractQueryAllWebTest
     }
     
     /**
-     * 
-     * @param tester
-     *            The new WebTester instance for the next test about to be executed
-     */
-    private void setWebTester(final WebTester tester)
-    {
-        this.tester = tester;
-    }
-    
-    /**
      * @throws java.lang.Exception
      */
     @After

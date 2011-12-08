@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.PropertyUtils;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.QueryDebug;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.MathsUtils;
-import org.queryall.utils.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class ServerStatsServlet extends HttpServlet
                 currentDate.getTime() - localBlacklistController.getLastExpiryDate().getTime();
         
         out.write("Current date : " + currentDate.toString() + "<br />\n");
-        out.write("Server Version : " + Settings.VERSION + "<br />\n");
+        out.write("Server Version : " + PropertyUtils.VERSION + "<br />\n");
         out.write("Now : " + now + "<br />\n");
         out.write("Last error reset date: " + localBlacklistController.getLastExpiryDate().toString() + "<br />\n");
         out.write("Server startup date: " + localBlacklistController.getLastServerStartupDate().toString() + "<br />\n");

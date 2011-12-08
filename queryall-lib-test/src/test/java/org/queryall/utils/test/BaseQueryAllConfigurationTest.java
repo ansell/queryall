@@ -21,10 +21,50 @@ import org.queryall.impl.ruletest.StringRuleTestImpl;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public abstract class BaseQueryAllConfigurationTest extends AbstractQueryAllConfigurationTest
 {
+    @Override
+    protected final NamespaceEntry getNewNamespaceEntry()
+    {
+        // TODO: replace this with dummy class
+        return new NamespaceEntryImpl();
+    }
+    
+    @Override
+    protected final NormalisationRule getNewNormalisationRule()
+    {
+        return new DummyNormalisationRule();
+    }
+    
+    @Override
+    protected final Profile getNewProfile()
+    {
+        // TODO: replace this with dummy class
+        return new ProfileImpl();
+    }
+    
+    @Override
+    protected final Provider getNewProvider()
+    {
+        return new DummyProvider();
+    }
+    
+    @Override
+    protected final QueryType getNewQueryType()
+    {
+        // TODO: replace this with dummy class
+        return new NoInputQueryTypeImpl();
+    }
+    
+    @Override
+    protected final RuleTest getNewRuleTest()
+    {
+        // TODO: replace this with dummy class
+        return new StringRuleTestImpl();
+    }
+    
     /**
      * @throws java.lang.Exception
      */
@@ -44,46 +84,5 @@ public abstract class BaseQueryAllConfigurationTest extends AbstractQueryAllConf
     {
         super.tearDown();
     }
-
-    @Override
-    protected final NamespaceEntry getNewNamespaceEntry()
-    {
-        // TODO: replace this with dummy class
-        return new NamespaceEntryImpl();
-    }
-
-    @Override
-    protected final NormalisationRule getNewNormalisationRule()
-    {
-        return new DummyNormalisationRule();
-    }
-
-    @Override
-    protected final Profile getNewProfile()
-    {
-        // TODO: replace this with dummy class
-        return new ProfileImpl();
-    }
-
-    @Override
-    protected final Provider getNewProvider()
-    {
-        return new DummyProvider();
-    }
-
-    @Override
-    protected final QueryType getNewQueryType()
-    {
-        // TODO: replace this with dummy class
-        return new NoInputQueryTypeImpl();
-    }
-
-    @Override
-    protected final RuleTest getNewRuleTest()
-    {
-        // TODO: replace this with dummy class
-        return new StringRuleTestImpl();
-    }
-    
     
 }
