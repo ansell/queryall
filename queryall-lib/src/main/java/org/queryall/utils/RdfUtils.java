@@ -77,6 +77,7 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
+import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.exception.UnsupportedNamespaceEntryException;
 import org.queryall.exception.UnsupportedNormalisationRuleException;
 import org.queryall.exception.UnsupportedProfileException;
@@ -770,15 +771,18 @@ public final class RdfUtils
      */
     public static boolean getBooleanFromValue(final Value nextValue)
     {
-        boolean result = false;
+        if(nextValue == null)
+        {
+            throw new QueryAllRuntimeException("Could not parse null as a boolean");
+        }
         
         if(nextValue instanceof BooleanLiteralImpl)
         {
-            result = ((BooleanLiteralImpl)nextValue).booleanValue();
+            return ((BooleanLiteralImpl)nextValue).booleanValue();
         }
         else if(nextValue instanceof BooleanMemLiteral)
         {
-            result = ((BooleanMemLiteral)nextValue).booleanValue();
+            return ((BooleanMemLiteral)nextValue).booleanValue();
         }
         else if(nextValue instanceof IntegerMemLiteral)
         {
@@ -794,12 +798,16 @@ public final class RdfUtils
                 return true;
             }
         }
-        else
+        else if(nextValue.stringValue().toLowerCase().equals("true"))
         {
-            result = Boolean.parseBoolean(nextValue.stringValue());
+            return true;
+        }
+        else if(nextValue.stringValue().toLowerCase().equals("false"))
+        {
+            return false;
         }
         
-        return result;
+        throw new QueryAllRuntimeException("Could not parse value as boolean");
     }
     
     public static String getConstructQueryByType(final BaseQueryAllInterface nextObject, final int offset,
@@ -1158,7 +1166,7 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static float getFloatFromValue(final Value nextValue)
+    public static float getFloatFromValue(final Value nextValue) throws NumberFormatException
     {
         float result = 0.0f;
         
@@ -1178,7 +1186,7 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static int getIntegerFromValue(final Value nextValue)
+    public static int getIntegerFromValue(final Value nextValue) throws NumberFormatException
     {
         int result = 0;
         
@@ -1202,7 +1210,7 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static long getLongFromValue(final Value nextValue)
+    public static long getLongFromValue(final Value nextValue) throws NumberFormatException
     {
         long result = 0L;
         
@@ -1212,17 +1220,7 @@ public final class RdfUtils
         }
         else
         {
-            try
-            {
-                result = Long.parseLong(nextValue.stringValue());
-            }
-            catch(final NumberFormatException nfe)
-            {
-                RdfUtils.log.error("getLongFromValue: failed to parse value using Long.parseLong type="
-                        + nextValue.getClass().getName() + " nextValue.stringValue=" + nextValue.stringValue());
-                
-                throw nfe;
-            }
+            result = Long.parseLong(nextValue.stringValue());
         }
         
         return result;

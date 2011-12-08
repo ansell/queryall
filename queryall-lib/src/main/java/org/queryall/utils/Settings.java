@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
@@ -16,6 +17,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.exception.QueryAllRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -248,7 +250,17 @@ public class Settings implements QueryAllConfiguration
             return defaultValue;
         }
         
-        result = (Boolean)values.iterator().next();
+        Object nextValue = values.iterator().next();
+        
+        if(nextValue instanceof String)
+        {
+            result = Boolean.valueOf((String)values.iterator().next());
+        }
+        else
+        {
+            result = (Boolean)nextValue;
+        }
+        
         
         if(Settings._TRACE)
         {
@@ -287,7 +299,17 @@ public class Settings implements QueryAllConfiguration
             return defaultValue;
         }
         
-        result = (Float)values.iterator().next();
+        Object nextValue = values.iterator().next();
+        
+        if(nextValue instanceof String)
+        {
+            result = Float.valueOf((String)values.iterator().next());
+        }
+        else
+        {
+            result = (Float)nextValue;
+        }
+        
         
         if(Settings._TRACE)
         {
@@ -311,7 +333,17 @@ public class Settings implements QueryAllConfiguration
             return defaultValue;
         }
         
-        result = (Integer)values.iterator().next();
+        Object nextValue = values.iterator().next();
+        
+        if(nextValue instanceof String)
+        {
+            result = Integer.valueOf((String)values.iterator().next());
+        }
+        else
+        {
+            result = (Integer)nextValue;
+        }
+        
         
         if(Settings._TRACE)
         {
@@ -335,7 +367,16 @@ public class Settings implements QueryAllConfiguration
             return defaultValue;
         }
         
-        result = (Long)values.iterator().next();
+        Object nextValue = values.iterator().next();
+        
+        if(nextValue instanceof String)
+        {
+            result = Long.valueOf((String)values.iterator().next());
+        }
+        else
+        {
+            result = (Long)nextValue;
+        }
         
         if(Settings._TRACE)
         {
@@ -655,5 +696,82 @@ public class Settings implements QueryAllConfiguration
     public void setURICollectionProperty(final String propertyKey, final Collection<URI> propertyValues)
     {
         this.setObjectPropertyHelper(propertyKey, propertyValues);
+    }
+
+    @Override
+    public void setProperty(String propertyKey, Value propertyValue)
+    {
+        if(propertyValue instanceof URI)
+        {
+            setProperty(propertyKey, (URI)propertyValue);
+            return;
+        }
+        
+        try
+        {
+            boolean booleanFromValue = RdfUtils.getBooleanFromValue(propertyValue);
+            
+            setProperty(propertyKey, booleanFromValue);
+            
+            return;
+        }
+        catch(QueryAllRuntimeException rex)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse boolean value="+propertyValue);
+            }
+        }
+        
+        try
+        {
+            int intFromValue = RdfUtils.getIntegerFromValue(propertyValue);
+            
+            setProperty(propertyKey, intFromValue);
+            
+            return;
+        }
+        catch(NumberFormatException nfe)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse int value="+propertyValue);
+            }
+        }
+        
+        try
+        {
+            long longFromValue = RdfUtils.getLongFromValue(propertyValue);
+            
+            setProperty(propertyKey, longFromValue);
+            
+            return;
+        }
+        catch(NumberFormatException nfe)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse long value="+propertyValue);
+            }
+        }
+        
+        try
+        {
+            float floatFromValue = RdfUtils.getFloatFromValue(propertyValue);
+            
+            setProperty(propertyKey, floatFromValue);
+            
+            return;
+        }
+        catch(NumberFormatException nfe)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse float value="+propertyValue);
+            }
+        }
+        
+        // resort to setting it as a String
+        setProperty(propertyKey, propertyValue.stringValue());
     }
 }

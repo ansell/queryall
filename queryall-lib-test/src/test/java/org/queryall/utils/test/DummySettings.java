@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
@@ -19,6 +20,10 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.exception.QueryAllRuntimeException;
+import org.queryall.utils.RdfUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a dummy class used for testing, it does not perform the actual operations needed
@@ -27,6 +32,10 @@ import org.queryall.api.ruletest.RuleTest;
  */
 public class DummySettings implements QueryAllConfiguration
 {
+    private static final Logger log = LoggerFactory.getLogger(DummySettings.class);
+    private static final boolean _TRACE = DummySettings.log.isTraceEnabled();
+    private static final boolean _DEBUG = DummySettings.log.isDebugEnabled();
+    private static final boolean _INFO = DummySettings.log.isInfoEnabled();
     
     private ConcurrentHashMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
     private ConcurrentHashMap<URI, NormalisationRule> normalisationRules =
@@ -526,6 +535,83 @@ public class DummySettings implements QueryAllConfiguration
     {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void setProperty(String propertyKey, Value propertyValue)
+    {
+        if(propertyValue instanceof URI)
+        {
+            setProperty(propertyKey, (URI)propertyValue);
+            return;
+        }
+        
+        try
+        {
+            boolean booleanFromValue = RdfUtils.getBooleanFromValue(propertyValue);
+            
+            setProperty(propertyKey, booleanFromValue);
+            
+            return;
+        }
+        catch(QueryAllRuntimeException rex)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse boolean value="+propertyValue);
+            }
+        }
+        
+        try
+        {
+            int intFromValue = RdfUtils.getIntegerFromValue(propertyValue);
+            
+            setProperty(propertyKey, intFromValue);
+            
+            return;
+        }
+        catch(NumberFormatException nfe)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse int value="+propertyValue);
+            }
+        }
+        
+        try
+        {
+            long longFromValue = RdfUtils.getLongFromValue(propertyValue);
+            
+            setProperty(propertyKey, longFromValue);
+            
+            return;
+        }
+        catch(NumberFormatException nfe)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse long value="+propertyValue);
+            }
+        }
+        
+        try
+        {
+            float floatFromValue = RdfUtils.getFloatFromValue(propertyValue);
+            
+            setProperty(propertyKey, floatFromValue);
+            
+            return;
+        }
+        catch(NumberFormatException nfe)
+        {
+            if(_DEBUG)
+            {
+                log.debug("Could not parse float value="+propertyValue);
+            }
+        }
+        
+        // resort to setting it as a String
+        setProperty(propertyKey, propertyValue.stringValue());
     }
     
 }

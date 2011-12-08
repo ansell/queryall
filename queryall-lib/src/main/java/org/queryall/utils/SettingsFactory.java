@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.openrdf.OpenRDFException;
@@ -17,6 +18,13 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.query.Binding;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -282,12 +290,14 @@ public class SettingsFactory
             webAppConfigurationRdf =
                     SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation, baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
             
+            final QueryAllConfiguration result = new Settings();
+            
+            SettingsFactory.extractProperties(result, webAppConfigurationRdf, webappConfigUris);
+            
             Collection<String> configLocations = getConfigLocations(webAppConfigurationRdf, webappConfigUris);
             Collection<String> backupConfigLocations = getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
-                    
-            serverConfigurationRdf = getServerConfigurationRdf(configLocations, backupConfigLocations);
             
-            final QueryAllConfiguration result = new Settings();
+            serverConfigurationRdf = getServerConfigurationRdf(configLocations, backupConfigLocations);
             
             SettingsFactory.addNamespaceEntries(serverConfigurationRdf, result);
             SettingsFactory.addNormalisationRules(serverConfigurationRdf, result);
@@ -308,6 +318,67 @@ public class SettingsFactory
         }
     };
     
+    public static void extractProperties(QueryAllConfiguration nextSettings, Repository webAppConfigurationRdf, Collection<URI> webappConfigUris)
+    {
+        RepositoryConnection conn = null;
+        try
+        {
+            conn = webAppConfigurationRdf.getConnection();
+            
+            Collection<String> propertyBaseUriQueries = new ArrayList<String>();
+//http://purl.org/queryall/webapp_config:            
+            propertyBaseUriQueries.add("SELECT ?key ?uri ?value WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?uri), \"http://purl.org/queryall/webapp_config:\") . BIND(substr(str(?uri), 39) AS ?key) . } ");
+            
+            for(String nextQuery : propertyBaseUriQueries)
+            {
+                try
+                {
+                    TupleQuery tupleQuery = conn.prepareTupleQuery(QueryLanguage.SPARQL, nextQuery);
+                    
+                    TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+                    
+                    // for each result, insert the property into the nextSettings object using the given key
+                    while(tupleQueryResult.hasNext())
+                    {
+                        BindingSet bindingSet = tupleQueryResult.next();
+                        
+                        Binding key = bindingSet.getBinding("key");
+                        Binding value = bindingSet.getBinding("value");
+                        
+                        nextSettings.setProperty(key.getValue().stringValue(), value.getValue());
+                    }
+                    
+                }
+                catch(MalformedQueryException e)
+                {
+                    log.error("Found MalformedQueryException nextQuery="+nextQuery, e);
+                }
+                catch(QueryEvaluationException e)
+                {
+                    log.error("Found QueryEvaluationException nextQuery="+nextQuery, e);
+                }
+            }            
+        }
+        catch(RepositoryException e)
+        {
+            log.error("Found exception while extracting properties", e);
+        }
+        finally
+        {
+            if(conn != null)
+            {
+                try
+                {
+                    conn.close();
+                }
+                catch(RepositoryException e)
+                {
+                    log.error("Found exception while closing connection", e);
+                }
+            }
+        }
+    }
+
     public static Collection<String> getBackupConfigLocations(Repository webAppConfigurationRdf, Collection<URI> webappConfigUris) throws OpenRDFException
     {
         Collection<String> results = new ArrayList<String>();

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
@@ -98,6 +99,8 @@ public interface QueryAllConfiguration
     
     void setProperty(String propertyKey, URI propertyValue);
     
+    void setProperty(String propertyKey, Value propertyValue);
+
     void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues);
     
     void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
