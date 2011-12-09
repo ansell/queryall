@@ -1,6 +1,9 @@
 package org.queryall.api.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -9,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -627,18 +631,59 @@ public abstract class AbstractQueryAllConfigurationTest
         }
     }
     
-    @Ignore
     @Test
     public void testGetSeparator()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertEquals(":", this.testConfiguration.getSeparator());
     }
     
-    @Ignore
     @Test
-    public void testGetStringProperties()
+    public void testGetStringPropertiesSingleItem()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setStringCollectionProperty("testProperty", Arrays.asList("my test string"));
+        
+        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty("testProperty", "default value"));
+
+        Collection<String> stringProperties = this.testConfiguration.getStringProperties("testProperty");
+        
+        Assert.assertNotNull(stringProperties);
+        
+        Assert.assertEquals(1, stringProperties.size());
+    
+        Assert.assertEquals("my test string", stringProperties.iterator().next());
+    }
+    
+    @Test
+    public void testGetStringPropertiesNoItems()
+    {
+        this.testConfiguration.setStringCollectionProperty("testProperty", new ArrayList<String>(0));
+        
+        Assert.assertEquals("default value", this.testConfiguration.getStringProperty("testProperty", "default value"));
+
+        Collection<String> stringProperties = this.testConfiguration.getStringProperties("testProperty");
+        
+        Assert.assertNotNull(stringProperties);
+        
+        Assert.assertEquals(0, stringProperties.size());
+    }
+    
+    @Test
+    public void testGetStringPropertiesMultipleItems()
+    {
+        this.testConfiguration.setStringCollectionProperty("testProperty", Arrays.asList("my test string", "other different string"));
+        
+        // test that with multiple properties, random choices are not made, and the default is returned instead
+        Assert.assertEquals("default value", this.testConfiguration.getStringProperty("testProperty", "default value"));
+
+        Collection<String> stringProperties = this.testConfiguration.getStringProperties("testProperty");
+        
+        Assert.assertNotNull(stringProperties);
+        
+        Assert.assertEquals(2, stringProperties.size());
+    
+        Assert.assertTrue(stringProperties.contains("my test string"));
+
+        Assert.assertTrue(stringProperties.contains("other different string"));
     }
     
     @Test
@@ -647,27 +692,102 @@ public abstract class AbstractQueryAllConfigurationTest
         this.testConfiguration.setProperty("testProperty", "my test string");
         
         Assert.assertEquals("my test string", this.testConfiguration.getStringProperty("testProperty", "default value"));
+
+        this.testConfiguration.setProperty("testProperty", "different test string");
+        
+        Assert.assertEquals("different test string", this.testConfiguration.getStringProperty("testProperty", "default value"));
+    
     }
     
-    @Ignore
+    /**
+     * Tests the default tag pattern to make sure it works for our desired purposes
+     */
     @Test
     public void testGetTagPattern()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertNotNull(this.testConfiguration.getTagPattern());
+        
+        Assert.assertTrue(this.testConfiguration.getTagPattern().matcher("${input_1}").matches());
+
+        Assert.assertTrue(this.testConfiguration.getTagPattern().matcher("${queryString}").matches());
+
+        Assert.assertTrue(this.testConfiguration.getTagPattern().matcher("${xmlEncoded_urlEncoded_input_1}").matches());
     }
     
-    @Ignore
     @Test
-    public void testGetURIProperties()
+    public void testGetURIPropertiesSingle()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Collection<URI> testUris = new ArrayList<URI>(3);
+        
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
+        
+        this.testConfiguration.setURICollectionProperty("testProperty", testUris);
+
+        // ensure that the default is returned from getURIProperty if more than one property is set
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+
+        Collection<URI> uriProperties = this.testConfiguration.getURIProperties("testProperty");
+        
+        Assert.assertNotNull(uriProperties);
+        
+        Assert.assertEquals(1, uriProperties.size());
+    
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1")));
     }
     
-    @Ignore
+    @Test
+    public void testGetURIPropertiesMultiple()
+    {
+        Collection<URI> testUris = new ArrayList<URI>(3);
+        
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"));
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/3"));
+        
+        this.testConfiguration.setURICollectionProperty("testProperty", testUris);
+
+        // ensure that the default is returned from getURIProperty if more than one property is set
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/default"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+
+        Collection<URI> uriProperties = this.testConfiguration.getURIProperties("testProperty");
+        
+        Assert.assertNotNull(uriProperties);
+        
+        Assert.assertEquals(3, uriProperties.size());
+    
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1")));
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2")));
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/3")));
+    }
+    
+    @Test
+    public void testGetURIPropertiesNoItems()
+    {
+        Collection<URI> testUris = new ArrayList<URI>(0);
+        
+        this.testConfiguration.setURICollectionProperty("testProperty", testUris);
+
+        // ensure that the default is returned from getURIProperty if no properties are set
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/default"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+
+        Collection<URI> uriProperties = this.testConfiguration.getURIProperties("testProperty");
+        
+        Assert.assertNotNull(uriProperties);
+        
+        Assert.assertEquals(0, uriProperties.size());
+    }
+    
     @Test
     public void testGetURIProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
+
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"));
+
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+    
     }
     
     @Test
@@ -717,6 +837,11 @@ public abstract class AbstractQueryAllConfigurationTest
         this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(true));
         
         Assert.assertTrue(this.testConfiguration.getBooleanProperty("testProperty", false));
+
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(false));
+        
+        Assert.assertFalse(this.testConfiguration.getBooleanProperty("testProperty", true));
+    
     }
     
     @Test
@@ -726,6 +851,12 @@ public abstract class AbstractQueryAllConfigurationTest
 
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish between the real and false cases
         Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty("testProperty", -1.0f), 0.001f);
+
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(-0.5f));
+
+        // assert that they are equal to within 0.001 of each other, which is enough to distinguish between the real and false cases
+        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty("testProperty", 1.0f), 0.001f);
+    
     }
     
     @Test
@@ -734,6 +865,11 @@ public abstract class AbstractQueryAllConfigurationTest
         this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(1));
 
         Assert.assertEquals(1, this.testConfiguration.getIntProperty("testProperty", -1));
+
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(-123));
+
+        Assert.assertEquals(-123, this.testConfiguration.getIntProperty("testProperty", 1));
+    
     }
     
     @Test
@@ -742,27 +878,68 @@ public abstract class AbstractQueryAllConfigurationTest
         this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(4321L));
 
         Assert.assertEquals(4321L, this.testConfiguration.getLongProperty("testProperty", -1L));
+
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createLiteral(-4321L));
+
+        Assert.assertEquals(-4321L, this.testConfiguration.getLongProperty("testProperty", 1L));
+    
     }
     
-    @Ignore
     @Test
     public void testSetPropertyStringURI()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
+
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+
+        this.testConfiguration.setProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"));
+
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+    
     }
     
-    @Ignore
     @Test
     public void testSetStringCollectionProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testConfiguration.setStringCollectionProperty("testProperty", Arrays.asList("my test string", "other different string"));
+        
+        // test that with multiple properties, random choices are not made, and the default is returned instead
+        Assert.assertEquals("default value", this.testConfiguration.getStringProperty("testProperty", "default value"));
+
+        Collection<String> stringProperties = this.testConfiguration.getStringProperties("testProperty");
+        
+        Assert.assertNotNull(stringProperties);
+        
+        Assert.assertEquals(2, stringProperties.size());
+    
+        Assert.assertTrue(stringProperties.contains("my test string"));
+
+        Assert.assertTrue(stringProperties.contains("other different string"));
     }
     
-    @Ignore
     @Test
     public void testSetURICollectionProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Collection<URI> testUris = new ArrayList<URI>(3);
+        
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"));
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/3"));
+        
+        this.testConfiguration.setURICollectionProperty("testProperty", testUris);
+
+        // ensure that the default is returned from getURIProperty if more than one property is set
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/default"), this.testConfiguration.getURIProperty("testProperty", this.testValueFactory.createURI("http://example.org/test/default")));
+
+        Collection<URI> uriProperties = this.testConfiguration.getURIProperties("testProperty");
+        
+        Assert.assertNotNull(uriProperties);
+        
+        Assert.assertEquals(3, uriProperties.size());
+    
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1")));
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2")));
+        Assert.assertTrue(uriProperties.contains(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/3")));
     }
     
 }
