@@ -1,6 +1,7 @@
 package org.queryall.blacklist;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -91,11 +92,11 @@ public class BlacklistController
     {
         this.localSettings = queryAllConfiguration;
         this.currentIPBlacklist =
-                Collections.synchronizedCollection(queryAllConfiguration
-                        .getStringProperties("blacklistBaseClientIPAddresses"));
+                Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
+                        .getStringProperties("blacklistBaseClientIPAddresses")));
         this.currentIPWhitelist =
-                Collections.synchronizedCollection(queryAllConfiguration
-                        .getStringProperties("whitelistBaseClientIPAddresses"));
+                Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
+                        .getStringProperties("whitelistBaseClientIPAddresses")));
     }
     
     public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist)
