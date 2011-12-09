@@ -164,25 +164,55 @@ public class SettingsFactoryTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
     public final void testGetDefaultBaseConfigLocationProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        String defaultBaseConfigLocationProperty = SettingsFactory.getDefaultBaseConfigLocationProperty();
+        
+        Assert.assertEquals("/queryallBaseConfig.n3", defaultBaseConfigLocationProperty);
+        
+        // now set the system property to see if it changes the default
+        System.setProperty("queryall.BaseConfigLocation", "/testallyourbasearebelongtous.n3");
+        
+        String alteredBaseConfigLocationProperty = SettingsFactory.getDefaultBaseConfigLocationProperty();
+        
+        Assert.assertEquals("/testallyourbasearebelongtous.n3", alteredBaseConfigLocationProperty);
+        
+        System.clearProperty("queryall.BaseConfigLocation");
     }
-    
-    @Ignore
+
     @Test
     public final void testGetDefaultBaseConfigMimeFormatProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        String defaultBaseConfigMimeFormatProperty = SettingsFactory.getDefaultBaseConfigMimeFormatProperty();
+        
+        Assert.assertEquals("text/rdf+n3", defaultBaseConfigMimeFormatProperty);
+        
+        // now set the system property to see if it changes the default
+        System.setProperty("queryall.BaseConfigMimeFormat", "application/rdf+xml");
+        
+        String alteredBaseConfigMimeFormatProperty = SettingsFactory.getDefaultBaseConfigMimeFormatProperty();
+        
+        Assert.assertEquals("application/rdf+xml", alteredBaseConfigMimeFormatProperty);
+        
+        System.clearProperty("queryall.BaseConfigMimeFormat");
     }
     
-    @Ignore
     @Test
     public final void testGetDefaultBaseConfigUriProperty()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        String defaultBaseConfigUriProperty = SettingsFactory.getDefaultBaseConfigUriProperty();
+        
+        Assert.assertEquals("http://purl.org/queryall/webapp_configuration:theBaseConfig", defaultBaseConfigUriProperty);
+        
+        // now set the system property to see if it changes the default
+        System.setProperty("queryall.BaseConfigUri", "http://example.org/mytest");
+        
+        String alteredBaseConfigUriProperty = SettingsFactory.getDefaultBaseConfigUriProperty();
+        
+        Assert.assertEquals("http://example.org/mytest", alteredBaseConfigUriProperty);
+        
+        System.clearProperty("queryall.BaseConfigUri");
     }
     
     @Ignore
