@@ -314,11 +314,25 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.assertFalse(this.testConfiguration.getBooleanProperty("testProperty", true));
     }
     
-    @Ignore
+    /**
+     * Test that the default host address is set in the absence of any values being set in a configuration file
+     * 
+     * By default it tests for http://bio2rdf.org/ but this can be overridden in subtests if needed
+     */
     @Test
     public void testGetDefaultHostAddress()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertEquals(getExpectedDefaultHostAddress(), this.testConfiguration.getDefaultHostAddress());
+    }
+
+    /**
+     * Override this in subtests to modify the expected default host address
+     * 
+     * @return http://bio2rdf.org/ by default
+     */
+    protected String getExpectedDefaultHostAddress()
+    {
+        return "http://bio2rdf.org/";
     }
     
     @Test
@@ -529,18 +543,34 @@ public abstract class AbstractQueryAllConfigurationTest
         }
     }
     
-    @Ignore
     @Test
     public void testGetPlainNamespaceAndIdentifierPattern()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertNotNull(this.testConfiguration.getPlainNamespaceAndIdentifierPattern());
+        
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("abc:zyx").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("123abc:zyx").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("123-abc:yzx_$").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("123_abc:xuz:9").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("123_abc:putmeaway").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("somethingrandom-plus_one_123:test").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("somethingrandom-plus_one_123:1244").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespaceAndIdentifierPattern().matcher("somethingrandom-plus_one_123:./shelltest").matches());
     }
     
-    @Ignore
     @Test
     public void testGetPlainNamespacePattern()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Assert.assertNotNull(this.testConfiguration.getPlainNamespacePattern());
+        
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("abc").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123abc").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123-abc").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123_abc").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123_abc").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("somethingrandom-plus_one_123").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("somethingrandom-plus_one_123").matches());
+        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("somethingrandom-plus_one_123").matches());
     }
     
     @Test
@@ -634,7 +664,17 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testGetSeparator()
     {
-        Assert.assertEquals(":", this.testConfiguration.getSeparator());
+        Assert.assertEquals(getExpectedSeparator(), this.testConfiguration.getSeparator());
+    }
+
+    /**
+     * Override this to return something other than ":" which is the default separator in the absence of any configuration files
+     * 
+     * @return ":" by default, this can be overriden in subtests to return a different expected value
+     */
+    protected String getExpectedSeparator()
+    {
+        return ":";
     }
     
     @Test

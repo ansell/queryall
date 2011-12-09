@@ -255,15 +255,19 @@ public class Settings implements QueryAllConfiguration
         return defaultValue;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getDefaultHostAddress()
-     */
+    /**
+    * Defaults to http://bio2rdf.org/ if the configuration files do not contain any of the relevant
+    * properties, or some part of that if they only contain some of the relevant properties.
+    *
+    * The properties used to generate the result are {uriPrefix}{hostName}{uriSuffix}
+    *
+    * @return the Default host address for this configuration
+    */
     @Override
     public String getDefaultHostAddress()
     {
-        return "";
+        return this.getStringProperty("uriPrefix", "http://") + this.getStringProperty("hostName", "bio2rdf.org")
+                + this.getStringProperty("uriSuffix", "/");
     }
     
     /*
@@ -392,26 +396,16 @@ public class Settings implements QueryAllConfiguration
         return this.normalisationRules.get(nextNormalisationRuleUri);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getPlainNamespaceAndIdentifierPattern()
-     */
     @Override
     public Pattern getPlainNamespaceAndIdentifierPattern()
     {
-        return Pattern.compile(".*");
+        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"));
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getPlainNamespacePattern()
-     */
     @Override
     public Pattern getPlainNamespacePattern()
     {
-        return Pattern.compile(".*");
+        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", "^([\\w-]+)$"));
     }
     
     /*
