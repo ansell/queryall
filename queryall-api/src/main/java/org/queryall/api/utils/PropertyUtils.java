@@ -28,6 +28,14 @@ public final class PropertyUtils
     public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
     
     /**
+     * Checks for the configured version first in the system vm properties, then in the localisation
+     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
+     * 
+     * The version defaults to "0.0.1"
+     */
+    public static final String VERSION = PropertyUtils.getSystemOrPropertyString("queryall.Version", "0.0.1");
+    
+    /**
      * Checks for the key first in the system vm properties, then in the localisation properties
      * file, by default, "queryall.properties", then uses the defaultValue if the location is still
      * unknown
@@ -67,14 +75,6 @@ public final class PropertyUtils
             return result;
         }
     }
-
-    /**
-     * Checks for the configured version first in the system vm properties, then in the localisation
-     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
-     * 
-     * The version defaults to "0.0.1"
-     */
-    public static final String VERSION = getSystemOrPropertyString("queryall.Version", "0.0.1");
     
     /**
      * Private constructor

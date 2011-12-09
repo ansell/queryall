@@ -12,7 +12,6 @@ import org.queryall.api.utils.Constants;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.servlets.html.VelocityHelper;
-import org.queryall.utils.Settings;
 import org.queryall.utils.SettingsFactory;
 
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;

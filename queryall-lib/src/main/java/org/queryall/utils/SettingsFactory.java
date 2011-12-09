@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import org.openrdf.OpenRDFException;
@@ -86,8 +85,8 @@ public class SettingsFactory
     }
     
     /**
-     * Generates all of the NormalisationRule objects from the RDF found in serverConfigurationRdf and
-     * inserts them into nextSettings
+     * Generates all of the NormalisationRule objects from the RDF found in serverConfigurationRdf
+     * and inserts them into nextSettings
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
@@ -111,14 +110,13 @@ public class SettingsFactory
     }
     
     /**
-     * Generates all of the Profile objects from the RDF found in serverConfigurationRdf and
-     * inserts them into nextSettings
+     * Generates all of the Profile objects from the RDF found in serverConfigurationRdf and inserts
+     * them into nextSettings
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
      */
-    public static void addProfiles(final Repository serverConfigurationRdf,
-            final QueryAllConfiguration nextSettings)
+    public static void addProfiles(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
     {
         final Map<URI, Profile> results = RdfUtils.getProfiles(serverConfigurationRdf);
         
@@ -142,8 +140,7 @@ public class SettingsFactory
      * @param serverConfigurationRdf
      * @param nextSettings
      */
-    public static void addProviders(final Repository serverConfigurationRdf,
-            final QueryAllConfiguration nextSettings)
+    public static void addProviders(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
     {
         final Map<URI, Provider> results = RdfUtils.getProviders(serverConfigurationRdf);
         
@@ -167,8 +164,7 @@ public class SettingsFactory
      * @param serverConfigurationRdf
      * @param nextSettings
      */
-    public static void addQueryTypes(final Repository serverConfigurationRdf,
-            final QueryAllConfiguration nextSettings)
+    public static void addQueryTypes(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
     {
         final Map<URI, QueryType> results = RdfUtils.getQueryTypes(serverConfigurationRdf);
         
@@ -192,8 +188,7 @@ public class SettingsFactory
      * @param serverConfigurationRdf
      * @param nextSettings
      */
-    public static void addRuleTests(final Repository serverConfigurationRdf,
-            final QueryAllConfiguration nextSettings)
+    public static void addRuleTests(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
     {
         final Map<URI, RuleTest> results = RdfUtils.getRuleTests(serverConfigurationRdf);
         
@@ -262,42 +257,115 @@ public class SettingsFactory
         return false;
     }
     
+    public static void extractProperties(final QueryAllConfiguration nextSettings,
+            final Repository webAppConfigurationRdf, final Collection<URI> webappConfigUris)
+    {
+        RepositoryConnection conn = null;
+        try
+        {
+            conn = webAppConfigurationRdf.getConnection();
+            
+            final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
+            // http://purl.org/queryall/webapp_config:
+            propertyBaseUriQueries
+                    .add("SELECT ?key ?uri ?value WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?uri), \"http://purl.org/queryall/webapp_config:\") . BIND(substr(str(?uri), 39) AS ?key) . } ");
+            
+            for(final String nextQuery : propertyBaseUriQueries)
+            {
+                try
+                {
+                    final TupleQuery tupleQuery = conn.prepareTupleQuery(QueryLanguage.SPARQL, nextQuery);
+                    
+                    final TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+                    
+                    // for each result, insert the property into the nextSettings object using the
+                    // given key
+                    while(tupleQueryResult.hasNext())
+                    {
+                        final BindingSet bindingSet = tupleQueryResult.next();
+                        
+                        final Binding key = bindingSet.getBinding("key");
+                        final Binding value = bindingSet.getBinding("value");
+                        
+                        nextSettings.setProperty(key.getValue().stringValue(), value.getValue());
+                    }
+                    
+                }
+                catch(final MalformedQueryException e)
+                {
+                    SettingsFactory.log.error("Found MalformedQueryException nextQuery=" + nextQuery, e);
+                }
+                catch(final QueryEvaluationException e)
+                {
+                    SettingsFactory.log.error("Found QueryEvaluationException nextQuery=" + nextQuery, e);
+                }
+            }
+        }
+        catch(final RepositoryException e)
+        {
+            SettingsFactory.log.error("Found exception while extracting properties", e);
+        }
+        finally
+        {
+            if(conn != null)
+            {
+                try
+                {
+                    conn.close();
+                }
+                catch(final RepositoryException e)
+                {
+                    SettingsFactory.log.error("Found exception while closing connection", e);
+                }
+            }
+        }
+    }
+    
     /**
-     * Creates a new QueryAllConfiguration instance using the default properties, derived from System properties and the /queryall.properties file if it exists
+     * Creates a new QueryAllConfiguration instance using the default properties, derived from
+     * System properties and the /queryall.properties file if it exists
      * 
      * @return A new Settings object
      */
     public static QueryAllConfiguration generateSettings()
     {
-        return generateSettings(getDefaultBaseConfigLocationProperty(), getDefaultBaseConfigMimeFormatProperty(), getDefaultBaseConfigUriProperty());
-    }
+        return SettingsFactory.generateSettings(SettingsFactory.getDefaultBaseConfigLocationProperty(),
+                SettingsFactory.getDefaultBaseConfigMimeFormatProperty(),
+                SettingsFactory.getDefaultBaseConfigUriProperty());
+    };
     
-    public static QueryAllConfiguration generateSettings(final String baseConfigLocation, final String baseConfigMimeType,
-            final String baseConfigUri)
+    public static QueryAllConfiguration generateSettings(final String baseConfigLocation,
+            final String baseConfigMimeType, final String baseConfigUri)
     {
         Repository baseConfigurationRdf;
         Repository webAppConfigurationRdf;
         Repository serverConfigurationRdf;
         try
         {
-            baseConfigurationRdf = getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
+            baseConfigurationRdf =
+                    SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
             
-            URI realBaseConfigUri = baseConfigurationRdf.getValueFactory().createURI(baseConfigUri);
-            Collection<Value> webappConfigLocations = getWebappConfigLocations(baseConfigurationRdf, realBaseConfigUri);
+            final URI realBaseConfigUri = baseConfigurationRdf.getValueFactory().createURI(baseConfigUri);
+            final Collection<Value> webappConfigLocations =
+                    SettingsFactory.getWebappConfigLocations(baseConfigurationRdf, realBaseConfigUri);
             
-            Collection<URI> webappConfigUris = getWebappConfigUris(baseConfigurationRdf, realBaseConfigUri);
+            final Collection<URI> webappConfigUris =
+                    SettingsFactory.getWebappConfigUris(baseConfigurationRdf, realBaseConfigUri);
             
             webAppConfigurationRdf =
-                    SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation, baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
+                    SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation,
+                            baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
             
             final QueryAllConfiguration result = new Settings();
             
             SettingsFactory.extractProperties(result, webAppConfigurationRdf, webappConfigUris);
             
-            Collection<String> configLocations = getConfigLocations(webAppConfigurationRdf, webappConfigUris);
-            Collection<String> backupConfigLocations = getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
+            final Collection<String> configLocations =
+                    SettingsFactory.getConfigLocations(webAppConfigurationRdf, webappConfigUris);
+            final Collection<String> backupConfigLocations =
+                    SettingsFactory.getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
             
-            serverConfigurationRdf = getServerConfigurationRdf(configLocations, backupConfigLocations);
+            serverConfigurationRdf = SettingsFactory.getServerConfigurationRdf(configLocations, backupConfigLocations);
             
             SettingsFactory.addNamespaceEntries(serverConfigurationRdf, result);
             SettingsFactory.addNormalisationRules(serverConfigurationRdf, result);
@@ -312,87 +380,28 @@ public class SettingsFactory
         {
             throw new RuntimeException(e);
         }
-        catch(OpenRDFException e)
+        catch(final OpenRDFException e)
         {
             throw new RuntimeException(e);
         }
-    };
-    
-    public static void extractProperties(QueryAllConfiguration nextSettings, Repository webAppConfigurationRdf, Collection<URI> webappConfigUris)
-    {
-        RepositoryConnection conn = null;
-        try
-        {
-            conn = webAppConfigurationRdf.getConnection();
-            
-            Collection<String> propertyBaseUriQueries = new ArrayList<String>();
-//http://purl.org/queryall/webapp_config:            
-            propertyBaseUriQueries.add("SELECT ?key ?uri ?value WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?uri), \"http://purl.org/queryall/webapp_config:\") . BIND(substr(str(?uri), 39) AS ?key) . } ");
-            
-            for(String nextQuery : propertyBaseUriQueries)
-            {
-                try
-                {
-                    TupleQuery tupleQuery = conn.prepareTupleQuery(QueryLanguage.SPARQL, nextQuery);
-                    
-                    TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
-                    
-                    // for each result, insert the property into the nextSettings object using the given key
-                    while(tupleQueryResult.hasNext())
-                    {
-                        BindingSet bindingSet = tupleQueryResult.next();
-                        
-                        Binding key = bindingSet.getBinding("key");
-                        Binding value = bindingSet.getBinding("value");
-                        
-                        nextSettings.setProperty(key.getValue().stringValue(), value.getValue());
-                    }
-                    
-                }
-                catch(MalformedQueryException e)
-                {
-                    log.error("Found MalformedQueryException nextQuery="+nextQuery, e);
-                }
-                catch(QueryEvaluationException e)
-                {
-                    log.error("Found QueryEvaluationException nextQuery="+nextQuery, e);
-                }
-            }            
-        }
-        catch(RepositoryException e)
-        {
-            log.error("Found exception while extracting properties", e);
-        }
-        finally
-        {
-            if(conn != null)
-            {
-                try
-                {
-                    conn.close();
-                }
-                catch(RepositoryException e)
-                {
-                    log.error("Found exception while closing connection", e);
-                }
-            }
-        }
     }
-
-    public static Collection<String> getBackupConfigLocations(Repository webAppConfigurationRdf, Collection<URI> webappConfigUris) throws OpenRDFException
+    
+    public static Collection<String> getBackupConfigLocations(final Repository webAppConfigurationRdf,
+            final Collection<URI> webappConfigUris) throws OpenRDFException
     {
-        Collection<String> results = new ArrayList<String>();
+        final Collection<String> results = new ArrayList<String>();
         
-        for(URI nextWebappConfigUri : webappConfigUris)
+        for(final URI nextWebappConfigUri : webappConfigUris)
         {
             final URI queryConfigLocationsUri =
-                    webAppConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "backupQueryConfigLocations");
+                    webAppConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(),
+                            "backupQueryConfigLocations");
             
             final Collection<Value> backupQueryConfigLocationValues =
                     RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(webAppConfigurationRdf,
                             queryConfigLocationsUri, nextWebappConfigUri);
             
-            for(Value nextValue : backupQueryConfigLocationValues)
+            for(final Value nextValue : backupQueryConfigLocationValues)
             {
                 // BNode string values are useless, ignore them silently here
                 if(nextValue instanceof URI || nextValue instanceof Literal)
@@ -400,83 +409,11 @@ public class SettingsFactory
                     results.add(nextValue.stringValue());
                 }
             }
-        }        
-        
-        return results;
-    }
-
-    public static Collection<String> getConfigLocations(Repository webAppConfigurationRdf, Collection<URI> webappConfigUris) throws OpenRDFException
-    {
-        Collection<String> results = new ArrayList<String>();
-        
-        for(URI nextWebappConfigUri : webappConfigUris)
-        {
-            final URI queryConfigLocationsUri =
-                    webAppConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "queryConfigLocations");
-            
-            final Collection<Value> queryConfigLocationValues =
-                    RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(webAppConfigurationRdf,
-                            queryConfigLocationsUri, nextWebappConfigUri);
-            
-            for(Value nextValue : queryConfigLocationValues)
-            {
-                // BNode string values are useless, ignore them silently here
-                if(nextValue instanceof URI || nextValue instanceof Literal)
-                {
-                    results.add(nextValue.stringValue());
-                }
-            }
-        }        
-        
-        return results;
-    }
-
-    public static Collection<Value> getWebappConfigLocations(Repository baseConfigurationRdf, URI baseConfigUri) throws OpenRDFException
-    {
-        Collection<Value> results = new ArrayList<Value>();
-        
-        final URI queryConfigLocationsUri =
-                baseConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "webappConfigLocations");
-        
-        final Collection<Value> backupQueryConfigLocationValues =
-                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(baseConfigurationRdf,
-                        queryConfigLocationsUri, baseConfigUri);
-        
-        for(Value nextValue : backupQueryConfigLocationValues)
-        {
-            // BNode string values are useless, ignore them silently here
-            if(nextValue instanceof URI || nextValue instanceof Literal)
-            {
-                results.add(nextValue);
-            }
         }
         
         return results;
     }
-
-    public static Collection<URI> getWebappConfigUris(Repository baseConfigurationRdf, URI baseConfigUri) throws OpenRDFException
-    {
-        Collection<URI> results = new ArrayList<URI>();
-        
-        final URI queryConfigLocationsUri =
-                baseConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), "activeWebappConfigs");
-        
-        final Collection<Value> queryConfigLocationValues =
-                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(baseConfigurationRdf,
-                        queryConfigLocationsUri, baseConfigUri);
-        
-        for(Value nextValue : queryConfigLocationValues)
-        {
-            // BNode string values are useless, ignore them silently here
-            if(nextValue instanceof URI)
-            {
-                results.add((URI)nextValue);
-            }
-        }
-        
-        return results;
-    }
-
+    
     private static Repository getBaseConfigurationRdf(final String baseConfigLocation, final String baseConfigMimeType,
             final String baseConfigUri) throws java.lang.InterruptedException
     {
@@ -624,6 +561,34 @@ public class SettingsFactory
         return currentBaseConfigurationRepository;
     }
     
+    public static Collection<String> getConfigLocations(final Repository webAppConfigurationRdf,
+            final Collection<URI> webappConfigUris) throws OpenRDFException
+    {
+        final Collection<String> results = new ArrayList<String>();
+        
+        for(final URI nextWebappConfigUri : webappConfigUris)
+        {
+            final URI queryConfigLocationsUri =
+                    webAppConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(),
+                            "queryConfigLocations");
+            
+            final Collection<Value> queryConfigLocationValues =
+                    RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(webAppConfigurationRdf,
+                            queryConfigLocationsUri, nextWebappConfigUri);
+            
+            for(final Value nextValue : queryConfigLocationValues)
+            {
+                // BNode string values are useless, ignore them silently here
+                if(nextValue instanceof URI || nextValue instanceof Literal)
+                {
+                    results.add(nextValue.stringValue());
+                }
+            }
+        }
+        
+        return results;
+    }
+    
     /**
      * Checks for the base config location first in the system vm properties, then in the
      * localisation properties file, by default, "queryall.properties", Uses the key
@@ -677,8 +642,10 @@ public class SettingsFactory
             currentConfigurationRepository = new SailRepository(new MemoryStore());
             currentConfigurationRepository.initialize();
             
-            // Initialise the repository with the schemas so that we can perform inferencing if necessary
-            // TODO: reenable inferencing on this information to infer all types of objects based on their properties and/or rdf:type definitions and rdfs:subclass etc.
+            // Initialise the repository with the schemas so that we can perform inferencing if
+            // necessary
+            // TODO: reenable inferencing on this information to infer all types of objects based on
+            // their properties and/or rdf:type definitions and rdfs:subclass etc.
             currentConfigurationRepository =
                     Schema.getSchemas(currentConfigurationRepository, SettingsFactory.CONFIG_API_VERSION);
             
@@ -911,8 +878,35 @@ public class SettingsFactory
         return currentConfigurationRepository;
     }
     
-    private static Repository getWebAppConfigurationRdf(Repository baseConfigurationRepository, final String baseConfigLocation,
-            final String baseConfigMimeType, final String baseConfigUri, Collection<Value> webappConfigFiles, Collection<URI> activeWebappConfigs) throws java.lang.InterruptedException
+    public static Collection<Value> getWebappConfigLocations(final Repository baseConfigurationRdf,
+            final URI baseConfigUri) throws OpenRDFException
+    {
+        final Collection<Value> results = new ArrayList<Value>();
+        
+        final URI queryConfigLocationsUri =
+                baseConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(),
+                        "webappConfigLocations");
+        
+        final Collection<Value> backupQueryConfigLocationValues =
+                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(baseConfigurationRdf,
+                        queryConfigLocationsUri, baseConfigUri);
+        
+        for(final Value nextValue : backupQueryConfigLocationValues)
+        {
+            // BNode string values are useless, ignore them silently here
+            if(nextValue instanceof URI || nextValue instanceof Literal)
+            {
+                results.add(nextValue);
+            }
+        }
+        
+        return results;
+    }
+    
+    private static Repository getWebAppConfigurationRdf(final Repository baseConfigurationRepository,
+            final String baseConfigLocation, final String baseConfigMimeType, final String baseConfigUri,
+            final Collection<Value> webappConfigFiles, final Collection<URI> activeWebappConfigs)
+        throws java.lang.InterruptedException
     {
         if(SettingsFactory._DEBUG)
         {
@@ -926,9 +920,10 @@ public class SettingsFactory
         
         final long start = System.currentTimeMillis();
         final Repository nextBaseConfigurationRepository = baseConfigurationRepository;
-//                SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
+        // SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType,
+        // baseConfigUri);
         final String configMIMEFormat = baseConfigMimeType;
-//        final String baseURI = baseConfigUri;
+        // final String baseURI = baseConfigUri;
         Repository tempConfigurationRepository = null;
         Repository currentWebAppConfigurationRepository = null;
         boolean backupNeeded = false;
@@ -952,7 +947,7 @@ public class SettingsFactory
             
             final ValueFactory f = currentWebAppConfigurationRepository.getValueFactory();
             
-//            final URI subjectConfigUri = f.createURI(baseURI);
+            // final URI subjectConfigUri = f.createURI(baseURI);
             
             if(SettingsFactory._DEBUG)
             {
@@ -989,7 +984,8 @@ public class SettingsFactory
                                             + " myRepositoryConnection.size()=" + myRepositoryConnection.size());
                         }
                         
-                        myRepositoryConnection.add(url, nextConfigFile.stringValue(), RDFFormat.forMIMEType(configMIMEFormat));
+                        myRepositoryConnection.add(url, nextConfigFile.stringValue(),
+                                RDFFormat.forMIMEType(configMIMEFormat));
                         
                         if(SettingsFactory._INFO)
                         {
@@ -1035,7 +1031,7 @@ public class SettingsFactory
                                         + nextValue.stringValue()
                                         + " finalRepositoryConnection.size()="
                                         + finalRepositoryConnection.size());
-//                        webappConfigUriList.add(nextValue.stringValue());
+                        // webappConfigUriList.add(nextValue.stringValue());
                         finalRepositoryConnection.add(myRepositoryConnection.getStatements(nextValue, (URI)null,
                                 (Resource)null, true));
                         SettingsFactory.log
@@ -1132,6 +1128,31 @@ public class SettingsFactory
         }
         
         return currentWebAppConfigurationRepository;
+    }
+    
+    public static Collection<URI> getWebappConfigUris(final Repository baseConfigurationRdf, final URI baseConfigUri)
+        throws OpenRDFException
+    {
+        final Collection<URI> results = new ArrayList<URI>();
+        
+        final URI queryConfigLocationsUri =
+                baseConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(),
+                        "activeWebappConfigs");
+        
+        final Collection<Value> queryConfigLocationValues =
+                RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(baseConfigurationRdf,
+                        queryConfigLocationsUri, baseConfigUri);
+        
+        for(final Value nextValue : queryConfigLocationValues)
+        {
+            // BNode string values are useless, ignore them silently here
+            if(nextValue instanceof URI)
+            {
+                results.add((URI)nextValue);
+            }
+        }
+        
+        return results;
     }
     
     /**

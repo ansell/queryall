@@ -333,7 +333,7 @@ public final class Constants
     public static final String APPLICATION_TRIX = "application/trix";
     
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
-
+    
     public static final SimpleDateFormat ISO8601UTC()
     {
         final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);

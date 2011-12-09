@@ -33,6 +33,8 @@ public interface QueryAllConfiguration
     
     void addRuleTest(RuleTest nextRuleTest);
     
+    Collection<Object> clearProperty(String propertyKey);
+    
     Map<URI, NamespaceEntry> getAllNamespaceEntries();
     
     Map<URI, NormalisationRule> getAllNormalisationRules();
@@ -85,8 +87,6 @@ public interface QueryAllConfiguration
     
     URI getURIProperty(String key, URI defaultValue);
     
-    Collection<Object> clearProperty(String propertyKey);
-    
     void setProperty(String propertyKey, boolean propertyValue);
     
     void setProperty(String propertyKey, float propertyValue);
@@ -100,7 +100,7 @@ public interface QueryAllConfiguration
     void setProperty(String propertyKey, URI propertyValue);
     
     void setProperty(String propertyKey, Value propertyValue);
-
+    
     void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues);
     
     void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
