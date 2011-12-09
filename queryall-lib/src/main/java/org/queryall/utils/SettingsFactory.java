@@ -566,12 +566,12 @@ public class SettingsFactory
     {
         final Collection<String> results = new ArrayList<String>();
         
+        final URI queryConfigLocationsUri =
+                webAppConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(),
+                        "queryConfigLocations");
+        
         for(final URI nextWebappConfigUri : webappConfigUris)
         {
-            final URI queryConfigLocationsUri =
-                    webAppConfigurationRdf.getValueFactory().createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(),
-                            "queryConfigLocations");
-            
             final Collection<Value> queryConfigLocationValues =
                     RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(webAppConfigurationRdf,
                             queryConfigLocationsUri, nextWebappConfigUri);

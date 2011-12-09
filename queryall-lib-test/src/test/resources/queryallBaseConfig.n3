@@ -1,4 +1,3 @@
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix queryall: <http://purl.org/queryall/webapp_configuration:>.
 @prefix test: <http://example.org/test/webappconfig/>.
 

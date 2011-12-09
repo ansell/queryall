@@ -2,6 +2,7 @@ package org.queryall.utils.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.After;
@@ -150,18 +151,42 @@ public class SettingsFactoryTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
-    public final void testGetBackupConfigLocations()
+    public final void testGetBackupConfigLocations() throws Exception
     {
-        Assert.fail("Not yet implemented"); // TODO
+        InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/configLocationsTest.n3");
+        
+        Assert.assertNotNull(testInput);
+        
+        testRepositoryConnection.add(testInput, "", RDFFormat.N3);
+        
+        testRepositoryConnection.commit();
+        
+        Collection<String> webappConfigLocations = SettingsFactory.getBackupConfigLocations(testRepository, Arrays.asList(testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific")));
+        
+        Assert.assertEquals(2, webappConfigLocations.size());
+        
+        Assert.assertTrue(webappConfigLocations.contains("/testconfigs/ruletest-1.n3"));
+        Assert.assertTrue(webappConfigLocations.contains("/testconfigs/provider-1.n3"));
     }
     
-    @Ignore
     @Test
-    public final void testGetConfigLocations()
+    public final void testGetConfigLocations() throws Exception
     {
-        Assert.fail("Not yet implemented"); // TODO
+        InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/configLocationsTest.n3");
+        
+        Assert.assertNotNull(testInput);
+        
+        testRepositoryConnection.add(testInput, "", RDFFormat.N3);
+        
+        testRepositoryConnection.commit();
+        
+        Collection<String> webappConfigLocations = SettingsFactory.getConfigLocations(testRepository, Arrays.asList(testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific")));
+        
+        Assert.assertEquals(2, webappConfigLocations.size());
+        
+        Assert.assertTrue(webappConfigLocations.contains("/testconfigs/namespaceentry-1.n3"));
+        Assert.assertTrue(webappConfigLocations.contains("/testconfigs/normalisationrule-1.n3"));
     }
     
     @Test
