@@ -159,7 +159,7 @@ public class QueryCreatorTest
         
         this.testLocalSettings2 =
                 SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
-                        "http://example.org/test/config/querycreator-1");
+                        "http://example.org/test/config/querycreator-2");
         
         this.testLocalSettings2.addQueryType(this.testRegexInputQueryType2);
         this.testLocalSettings2.addProvider(this.testProvider2);
@@ -167,7 +167,7 @@ public class QueryCreatorTest
         
         this.testLocalSettings3 =
                 SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
-                        "http://example.org/test/config/querycreator-1");
+                        "http://example.org/test/config/querycreator-3");
         
         this.testLocalSettings3.addQueryType(this.testRegexInputQueryType3);
         this.testLocalSettings3.addProvider(this.testProvider3);
