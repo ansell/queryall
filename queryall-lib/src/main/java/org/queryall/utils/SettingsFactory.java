@@ -268,7 +268,7 @@ public class SettingsFactory
             final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
             // http://purl.org/queryall/webapp_config:
             propertyBaseUriQueries
-                    .add("SELECT ?key ?uri ?value WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?uri), \"http://purl.org/queryall/webapp_config:\") . BIND(substr(str(?uri), 39) AS ?key) . } ");
+                    .add("SELECT ?key ?uri ?value WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?uri), \"http://purl.org/queryall/webapp_config:\")) . BIND(substr(str(?uri), 39) AS ?key) . } ");
             
             for(final String nextQuery : propertyBaseUriQueries)
             {
