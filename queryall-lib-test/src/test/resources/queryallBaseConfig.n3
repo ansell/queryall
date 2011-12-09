@@ -1,0 +1,14 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix queryall: <http://purl.org/queryall/webapp_configuration:>.
+@prefix test: <http://example.org/test/webappconfig/>.
+
+test:testWebappBaseConfig
+
+a queryall:defaultConfig ;
+
+queryall:webappConfigLocations 
+"http://queryall.example.org/test/webappconfigLocation" ;
+
+queryall:activeWebappConfigs test:default , test:locationSpecific .
+
+

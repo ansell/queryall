@@ -1175,8 +1175,6 @@ public class SettingsFactory
         
         try
         {
-            // final Repository webappConfig = getWebAppConfigurationRdf(key, key, key);
-            
             final ValueFactory f = webappConfig.getValueFactory();
             
             // TODO: in future should reform this to accept a full URI as the
@@ -1184,22 +1182,8 @@ public class SettingsFactory
             // for properties
             final URI propertyUri = f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), key);
             
-            // if(_TRACE)
-            // {
-            // log.trace("getStatementPropertiesFromConfig: WEBAPP_CONFIG_URI_LIST.size()="
-            // + getWebappConfigUriList().size());
-            // }
-            
             for(final URI nextConfigUri : webappConfigUris)
             {
-                // final URI configUri = f.createURI(nextConfigUri);
-                
-                if(SettingsFactory._TRACE)
-                {
-                    SettingsFactory.log.trace("getStatementPropertiesFromConfig: configUri="
-                            + nextConfigUri.stringValue() + " propertyUri=" + propertyUri.stringValue());
-                }
-                
                 results.addAll(this.getStatementProperties(nextConfigUri, propertyUri, webappConfig));
             }
         }

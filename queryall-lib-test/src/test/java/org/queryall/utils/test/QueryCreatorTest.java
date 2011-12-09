@@ -239,8 +239,8 @@ public class QueryCreatorTest
      * 
      * @throws QueryAllException
      */
-    @Test
     @Ignore
+    @Test
     public void testCreateStaticRdfXmlString() throws QueryAllException
     {
         Assert.assertEquals("testsomething", QueryCreator.createStaticRdfXmlString(this.testRegexInputQueryType3,
