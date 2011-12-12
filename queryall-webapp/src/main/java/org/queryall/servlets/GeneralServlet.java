@@ -27,6 +27,7 @@ import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.negotiation.QueryallContentNegotiator;
@@ -314,8 +315,8 @@ public class GeneralServlet extends HttpServlet
             
             // update a the blacklist
             localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
-            
-            if(localSettings.getBooleanProperty("blacklistResetEndpointFailuresOnSuccess", true))
+
+            if(localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS, (Boolean)WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS.getDefaultValue()))
             {
                 localBlacklistController.removeEndpointsFromBlacklist(fetchController.getSuccessfulResults(),
                         nextTotalTime, useDefaultProviders);
@@ -324,7 +325,9 @@ public class GeneralServlet extends HttpServlet
             // Don't keep local error statistics if GeneralServlet debug level is higher than or
             // equal to info and we aren't interested in using the client IP blacklist
             // functionalities
-            if(GeneralServlet._INFO || localSettings.getBooleanProperty("automaticallyBlacklistClients", false))
+            if(GeneralServlet._INFO || 
+                    localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS, (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue())
+                    )
             {
                 ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress,
                         multiProviderQueryBundles, nextTotalTime);

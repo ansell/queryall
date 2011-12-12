@@ -1,0 +1,229 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix queryall: <http://purl.org/queryall/webapp_configuration:>.
+@prefix test: <http://example.org/test/webappconfig/>.
+@prefix queryall_provider: <http://purl.org/queryall/provider:>.
+@prefix bio2rdf: <http://bio2rdf.org/webapp_configuration:>.
+@prefix bio2rdf_profile: <http://bio2rdf.org/profile:>.
+@prefix bio2rdf_query: <http://bio2rdf.org/query:>.
+@prefix bio2rdf_bio2rdf_resource: <http://bio2rdf.org/bio2rdf_resource:>.
+@prefix bio2rdf_go_resource: <http://bio2rdf.org/go_resource:>.
+@prefix bio2rdf_geneid_resource: <http://bio2rdf.org/geneid_resource:>.
+@prefix bio2rdf_taxonomy_resource: <http://bio2rdf.org/taxonomy_resource:>.
+@prefix bio2rdf_kegg_resource: <http://bio2rdf.org/kegg_resource:>.
+@prefix bio2rdf_drugbank_ontology: <http://bio2rdf.org/drugbank_ontology:>.
+
+test:default a queryall:webappConfig ;
+
+queryall:userAgent "Bio2RDF" ;
+
+queryall:robotHelpUrl "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp" ;
+
+queryall:projectHomeUri "http://bio2rdf.org/" ;
+
+queryall:uriPrefix "http://" ;
+
+queryall:hostName "bio2rdf.org" ;
+
+queryall:uriSuffix "/" ;
+
+queryall:separator ":" ;
+
+queryall:rdfXmlUrlPrefix "rdfxml/" ;
+
+queryall:rdfXmlUrlSuffix "" ;
+
+queryall:n3UrlPrefix "n3/" ;
+
+queryall:n3UrlSuffix "" ;
+
+queryall:htmlUrlPrefix "page/" ;
+
+queryall:htmlUrlSuffix "" ;
+
+queryall:jsonUrlPrefix "json/" ;
+
+queryall:jsonUrlSuffix "" ;
+
+queryall:ntriplesUrlPrefix "ntriples/" ;
+
+queryall:ntriplesUrlSuffix "" ;
+
+queryall:nquadsUrlPrefix "nquads/" ;
+
+queryall:nquadsUrlSuffix "" ;
+
+queryall:alwaysRedirectToExplicitFormatUrl "false"^^xsd:boolean ;
+
+queryall:redirectToExplicitFormatHttpCode "303"^^xsd:int ;
+
+queryall:queryplanUrlPrefix "queryplan/" ;
+
+queryall:queryplanUrlSuffix "" ;
+
+queryall:pageoffsetUrlOpeningPrefix "pageoffset" ;
+
+queryall:pageoffsetUrlClosingPrefix "/" ;
+
+queryall:pageoffsetUrlSuffix "" ;
+
+queryall:adminUrlPrefix "admin/" ;
+
+queryall:adminWebappConfigurationPrefix "webappconfiguration/" ;
+
+queryall:adminConfigurationPrefix "configuration/" ;
+
+queryall:adminConfigurationRefreshPrefix "refresh" ;
+
+queryall:adminConfigurationApiVersionOpeningPrefix "" ;
+
+queryall:adminConfigurationApiVersionClosingPrefix "/" ;
+
+queryall:adminConfigurationApiVersionSuffix "" ;
+
+queryall:adminConfigurationHtmlPrefix "" ;
+
+queryall:adminConfigurationHtmlSuffix "html" ;
+
+queryall:adminConfigurationRdfxmlPrefix "" ;
+
+queryall:adminConfigurationRdfxmlSuffix "rdfxml" ;
+
+queryall:adminConfigurationN3Prefix "" ;
+
+queryall:adminConfigurationN3Suffix "n3" ;
+
+queryall:adminConfigurationJsonPrefix "" ;
+
+queryall:adminConfigurationJsonSuffix "json" ;
+
+queryall:adminConfigurationNTriplesPrefix "" ;
+
+queryall:adminConfigurationNTriplesSuffix "ntriples" ;
+
+queryall:adminConfigurationNQuadsPrefix "" ;
+
+queryall:adminConfigurationNQuadsSuffix "nquads" ;
+
+queryall:pageoffsetOnlyShowForNsId "true"^^xsd:boolean ;
+
+queryall:plainNamespaceAndIdentifierRegex "^([\\w-]+):(.+)$" ;
+
+queryall:plainNamespaceRegex "^([\\w-]+)$" ;
+
+queryall:tagPatternRegex ".*(\\$\\{[\\w_-]+\\}).*" ;
+
+queryall:blankTitle "(No title found)" ;
+
+queryall:projectHomeUrl "http://bio2rdf.org/" ;
+
+queryall:projectName "Bio2RDF" ;
+
+queryall:applicationHelpUrl "http://sourceforge.net/apps/mediawiki/bio2rdf/" ;
+
+queryall:blacklistContactEmailAddress "bio2rdf@googlegroups.com" ;
+
+queryall:blacklistRedirectPage "error/blacklist" ;
+
+queryall:autogenerateIncludeStubList 
+bio2rdf_query:html ,
+bio2rdf_query:unsafehtml ,
+bio2rdf_query:htmlfromlowercase ,
+bio2rdf_query:image ,
+bio2rdf_query:imagefromlowercase ,
+bio2rdf_query:genbankfull ,
+bio2rdf_query:genbankpartial ,
+bio2rdf_query:fasta ,
+bio2rdf_query:asn1 ,
+bio2rdf_query:xml ,
+bio2rdf_query:xmlfromlowercase ,
+bio2rdf_query:related ,
+bio2rdf_query:relatedfromlowercase ,
+bio2rdf_query:pubmedrefs ,
+bio2rdf_query:pubmedcentral ,
+bio2rdf_query:hubmed ,
+bio2rdf_query:ihop ,
+bio2rdf_query:fulltext ,
+bio2rdf_query:medline ,
+bio2rdf_query:ispy ;
+
+#TODO: make this into a list for more reliable ordering
+queryall:titleProperties 
+<http://purl.org/dc/terms/title> , dc:title , bio2rdf_go_resource:name , <http://www.w3.org/2000/01/rdf-schema#label> , <http://purl.uniprot.org/core/title> , <http://www.w3.org/2004/02/skos/core#prefLabel> , <http://rdfs.org/sioc/ns#name> , <http://purl.org/science/owl/sciencecommons/ggp_has_primary_symbol> , bio2rdf_kegg_resource:systematicName , <http://purl.org/dc/elements/1.1/identifier> , <http://purl.org/dc/terms/identifier> , bio2rdf_drugbank_ontology:name , bio2rdf_geneid_resource:text , bio2rdf_geneid_resource:taxname , bio2rdf_geneid_resource:heading , <http://xmlns.com/foaf/0.1/name> ;
+
+#TODO: make this into a list for more reliable ordering
+queryall:imageProperties 
+bio2rdf_bio2rdf_resource:urlImage , bio2rdf_bio2rdf_resource:image , <http://xmlns.com/foaf/0.1/thumbnail> , <http://xmlns.com/foaf/0.1/depiction> , <http://xmlns.com/foaf/0.1/img> , <http://rdf.myexperiment.org/ontologies/contributions/preview> , <http://rdf.myexperiment.org/ontologies/contributions/thumbnail> , <http://rdf.myexperiment.org/ontologies/contributions/thumbnail-big> , <http://rdfs.org/sioc/ns#avatar> , bio2rdf_taxonomy_resource:depiction ;
+
+#TODO: make this into a list for more reliable ordering
+queryall:commentProperties 
+<http://purl.org/dc/elements/1.1/description> , <http://purl.org/dc/terms/description> , <http://purl.org/dc/elements/1.1/abstract> , <http://purl.org/dc/terms/abstract> , <http://www.w3.org/2000/01/rdf-schema#comment> , <http://purl.org/science/owl/sciencecommons/ggp_has_description> , bio2rdf_bio2rdf_resource:synonym , bio2rdf_drugbank_ontology:synonym , bio2rdf_bio2rdf_resource:formula , <http://www.w3.org/2004/02/skos/core#annotation> , <http://www.w3.org/2004/02/skos/core#scopeNote> ;
+
+#TODO: make this into a list for more reliable ordering
+queryall:urlProperties 
+bio2rdf_bio2rdf_resource:url , <http://xmlns.com/foaf/0.1/page> , <http://xmlns.com/foaf/0.1/homepage> , <http://rdf.myexperiment.org/ontologies/base/human-start-page> , <http://purl.org/dc/terms/hasFormat> , <http://rdf.myexperiment.org/ontologies/base/content-url> ;
+
+queryall:indexTemplate "/templates/default-index.vm" ;
+
+queryall:resultsTemplate "/templates/page.vm" ;
+
+queryall:errorTemplate "/templates/error.vm" ;
+
+queryall:indexPageScripts "http://www.google.com/jsapi" , "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" ;
+
+queryall:indexPageScriptsLocal "static/includes-scripts/script.js" ;
+
+queryall:indexPageStylesheets "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.css" ;
+
+# TODO: create a stylesheet if necessary for the refitted front page
+#queryall:indexPageStylesheetsLocal "static/includes-css/html_page_styles.css" ;
+
+queryall:resultsPageScripts "http://www.google.com/jsapi" , "http://www.google.com/uds/solutions/dynamicfeed/gfdynamicfeedcontrol.js" ;
+
+queryall:resultsPageScriptsLocal "static/includes-scripts/script.js" ;
+
+queryall:resultsPageStylesheetsLocal "static/includes-css/html_page_styles.css" ;
+
+queryall:shortcutIconPath "static/includes-images/favicon.ico" ;
+
+queryall:indexBannerImagePath "static/includes-images/merged-bio2rdf-banner.jpg" ;
+
+queryall:indexProjectImagePath "static/includes-images/Bio2RDF.jpg" ;
+
+queryall:unknownQueryStaticAdditions bio2rdf_query:unknownquery ;
+
+queryall:unknownQueryHttpResponseCode "400"^^xsd:int ;
+
+queryall:unknownNamespaceStaticAdditions bio2rdf_query:unknownnamespace ;
+
+queryall:unknownNamespaceHttpResponseCode "404"^^xsd:int ;
+
+queryall:tryAllEndpointsForEachProvider "true"^^xsd:boolean ;
+
+queryall:pageoffsetMaxValue "20"^^xsd:int ;
+
+queryall:pageoffsetIndividualQueryLimit "500"^^xsd:int ; # SPARQL_MAX_RESULTS_LIMIT
+
+queryall:pageoffsetQuickQueryLimit "20"^^xsd:int ;
+
+queryall:preferredDisplayContentType "text/html" ;
+
+queryall:preferredDisplayLanguage "en" ;
+
+queryall:assumedResponseContentType "application/rdf+xml" ;
+
+queryall:defaultAcceptHeader "application/rdf+xml, text/rdf+n3, text/turtle;q=0.8, text/plain;q=0.7, application/x-turtle;q=0.35, text/n3;q=0.35, application/xhtml+xml;q=0.3, text/html;q=0.3, text/xml;q=0.2, application/xml;q=0.2" ;
+
+queryall:useRequestCache "true"^^xsd:boolean ;
+
+queryall:convertAlternateNamespacePrefixesToPreferred "true"^^xsd:boolean ;
+
+queryall:useVirtuosoMaxRowsParameter "false"^^xsd:boolean ;
+
+
+.
+
+
+
+
+

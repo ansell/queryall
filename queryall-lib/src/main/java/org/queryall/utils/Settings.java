@@ -23,6 +23,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.exception.QueryAllRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,8 @@ public class Settings implements QueryAllConfiguration
     private ConcurrentHashMap<String, Collection<URI>> namespacePrefixesToUris =
             new ConcurrentHashMap<String, Collection<URI>>();
     
-    private ConcurrentHashMap<String, Collection<Object>> properties =
-            new ConcurrentHashMap<String, Collection<Object>>();
+    private ConcurrentHashMap<WebappConfig, Collection<Object>> properties =
+            new ConcurrentHashMap<WebappConfig, Collection<Object>>();
     private Pattern cachedTagPattern;
     private String cachedSeparator;
     
@@ -152,10 +153,9 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public Collection<Object> clearProperty(final String propertyKey)
+    public Collection<Object> clearProperty(final WebappConfig propertyKey)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.properties.remove(propertyKey);
     }
     
     /*
@@ -231,7 +231,7 @@ public class Settings implements QueryAllConfiguration
      * boolean)
      */
     @Override
-    public boolean getBooleanProperty(final String propertyKey, final boolean defaultValue)
+    public boolean getBooleanProperty(final WebappConfig propertyKey, final boolean defaultValue)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -267,8 +267,8 @@ public class Settings implements QueryAllConfiguration
     @Override
     public String getDefaultHostAddress()
     {
-        return this.getStringProperty("uriPrefix", "http://") + this.getStringProperty("hostName", "bio2rdf.org")
-                + this.getStringProperty("uriSuffix", "/");
+        return this.getStringProperty(WebappConfig.URI_PREFIX, (String)WebappConfig.URI_PREFIX.getDefaultValue()) + this.getStringProperty(WebappConfig.HOST_NAME, (String)WebappConfig.HOST_NAME.getDefaultValue())
+                + this.getStringProperty(WebappConfig.URI_SUFFIX, (String)WebappConfig.URI_SUFFIX.getDefaultValue());
     }
     
     /*
@@ -277,7 +277,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#getFloatProperty(java.lang.String, float)
      */
     @Override
-    public float getFloatProperty(final String propertyKey, final float defaultValue)
+    public float getFloatProperty(final WebappConfig propertyKey, final float defaultValue)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -308,7 +308,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#getIntProperty(java.lang.String, int)
      */
     @Override
-    public int getIntProperty(final String propertyKey, final int defaultValue)
+    public int getIntProperty(final WebappConfig propertyKey, final int defaultValue)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -339,7 +339,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#getLongProperty(java.lang.String, long)
      */
     @Override
-    public long getLongProperty(final String propertyKey, final long defaultValue)
+    public long getLongProperty(final WebappConfig propertyKey, final long defaultValue)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -400,13 +400,13 @@ public class Settings implements QueryAllConfiguration
     @Override
     public Pattern getPlainNamespaceAndIdentifierPattern()
     {
-        return Pattern.compile(this.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"));
+        return Pattern.compile(this.getStringProperty(WebappConfig.PLAIN_NAMESPACE_AND_IDENTIFIER_REGEX, (String)WebappConfig.PLAIN_NAMESPACE_AND_IDENTIFIER_REGEX.getDefaultValue()));
     }
     
     @Override
     public Pattern getPlainNamespacePattern()
     {
-        return Pattern.compile(this.getStringProperty("plainNamespaceRegex", "^([\\w-]+)$"));
+        return Pattern.compile(this.getStringProperty(WebappConfig.PLAIN_NAMESPACE_REGEX, (String)WebappConfig.PLAIN_NAMESPACE_REGEX.getDefaultValue()));
     }
     
     /*
@@ -469,7 +469,7 @@ public class Settings implements QueryAllConfiguration
             return this.cachedSeparator;
         }
         
-        final String separator = this.getStringProperty("defaultSeparator", ":");
+        final String separator = this.getStringProperty(WebappConfig.DEFAULT_SEPARATOR, ":");
         
         if(separator != null)
         {
@@ -485,7 +485,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#getStringProperties(java.lang.String)
      */
     @Override
-    public Collection<String> getStringProperties(final String propertyKey)
+    public Collection<String> getStringProperties(final WebappConfig propertyKey)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -522,7 +522,7 @@ public class Settings implements QueryAllConfiguration
      * java.lang.String)
      */
     @Override
-    public String getStringProperty(final String propertyKey, final String defaultValue)
+    public String getStringProperty(final WebappConfig propertyKey, final String defaultValue)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -563,7 +563,7 @@ public class Settings implements QueryAllConfiguration
         // TODO: Do we need to split this into two patterns so that we can identify the parameter
         // names as separate matching groups from the entire tag with braces etc.?
         final Pattern tempPattern =
-                Pattern.compile(this.getStringProperty("tagPatternRegex", ".*(\\$\\{[\\w_-]+\\}).*"));
+                Pattern.compile(this.getStringProperty(WebappConfig.TAG_PATTERN_REGEX, (String)WebappConfig.TAG_PATTERN_REGEX.getDefaultValue()));
         
         if(tempPattern != null)
         {
@@ -574,7 +574,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public Collection<URI> getURIProperties(final String propertyKey)
+    public Collection<URI> getURIProperties(final WebappConfig propertyKey)
     {
         if(this.properties.containsKey(propertyKey))
         {
@@ -608,7 +608,7 @@ public class Settings implements QueryAllConfiguration
      * org.openrdf.model.URI)
      */
     @Override
-    public URI getURIProperty(final String propertyKey, final URI defaultValue)
+    public URI getURIProperty(final WebappConfig propertyKey, final URI defaultValue)
     {
         final Collection<URI> uriProperties = this.getURIProperties(propertyKey);
         
@@ -636,7 +636,7 @@ public class Settings implements QueryAllConfiguration
      *            If true, the given property value will overwrite the current properties, otherwise
      *            they will both be included
      */
-    private void setObjectCollectionPropertyHelper(final String propertyKey, final Collection<Object> propertyValue,
+    private void setObjectCollectionPropertyHelper(final WebappConfig propertyKey, final Collection<Object> propertyValue,
             final boolean overwrite)
     {
         Settings.log.info("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
@@ -682,7 +682,7 @@ public class Settings implements QueryAllConfiguration
      *            If true, the given property value will overwrite the current properties, otherwise
      *            they will both be included
      */
-    private void setObjectPropertyHelper(final String propertyKey, final Object propertyValue, final boolean overwrite)
+    private void setObjectPropertyHelper(final WebappConfig propertyKey, final Object propertyValue, final boolean overwrite)
     {
         Settings.log.info("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
                 + propertyValue.toString());
@@ -718,7 +718,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, boolean)
      */
     @Override
-    public void setProperty(final String propertyKey, final boolean propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final boolean propertyValue)
     {
         Settings.log.info("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
                 + Boolean.valueOf(propertyValue).toString());
@@ -726,7 +726,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final boolean propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final boolean propertyValue, final boolean overwrite)
     {
         this.setObjectPropertyHelper(propertyKey, Boolean.valueOf(propertyValue), overwrite);
     }
@@ -737,7 +737,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, float)
      */
     @Override
-    public void setProperty(final String propertyKey, final float propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final float propertyValue)
     {
         Settings.log.info("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
                 + Float.valueOf(propertyValue).toString());
@@ -745,7 +745,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final float propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final float propertyValue, final boolean overwrite)
     {
         this.setObjectPropertyHelper(propertyKey, Float.valueOf(propertyValue), overwrite);
     }
@@ -756,7 +756,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, int)
      */
     @Override
-    public void setProperty(final String propertyKey, final int propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final int propertyValue)
     {
         Settings.log.info("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
                 + Integer.valueOf(propertyValue).toString());
@@ -764,7 +764,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final int propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final int propertyValue, final boolean overwrite)
     {
         this.setObjectPropertyHelper(propertyKey, Integer.valueOf(propertyValue), overwrite);
     }
@@ -775,7 +775,7 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#setProperty(java.lang.String, long)
      */
     @Override
-    public void setProperty(final String propertyKey, final long propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final long propertyValue)
     {
         Settings.log.info("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
                 + Long.valueOf(propertyValue).toString());
@@ -783,7 +783,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final long propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final long propertyValue, final boolean overwrite)
     {
         this.setObjectPropertyHelper(propertyKey, Long.valueOf(propertyValue), overwrite);
     }
@@ -795,7 +795,7 @@ public class Settings implements QueryAllConfiguration
      * java.lang.String)
      */
     @Override
-    public void setProperty(final String propertyKey, final String propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final String propertyValue)
     {
         if(propertyValue == null)
         {
@@ -808,7 +808,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final String propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final String propertyValue, final boolean overwrite)
     {
         this.setObjectPropertyHelper(propertyKey, String.valueOf(propertyValue), overwrite);
     }
@@ -820,7 +820,7 @@ public class Settings implements QueryAllConfiguration
      * org.openrdf.model.URI)
      */
     @Override
-    public void setProperty(final String propertyKey, final URI propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final URI propertyValue)
     {
         if(propertyValue == null)
         {
@@ -832,7 +832,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final URI propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final URI propertyValue, final boolean overwrite)
     {
         if(propertyValue == null)
         {
@@ -842,7 +842,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public void setProperty(final String propertyKey, final Value propertyValue)
+    public void setProperty(final WebappConfig propertyKey, final Value propertyValue)
     {
         Settings.log.info("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue=" + propertyValue
                 + " propertyValue.stringValue()=" + propertyValue.stringValue()
@@ -850,7 +850,7 @@ public class Settings implements QueryAllConfiguration
         this.setProperty(propertyKey, propertyValue, true);
     }
     
-    private void setProperty(final String propertyKey, final Value propertyValue, final boolean overwrite)
+    private void setProperty(final WebappConfig propertyKey, final Value propertyValue, final boolean overwrite)
     {
         if(propertyValue instanceof URI)
         {
@@ -963,7 +963,7 @@ public class Settings implements QueryAllConfiguration
      * java.util.Collection)
      */
     @Override
-    public void setStringCollectionProperty(final String propertyKey, final Collection<String> propertyValues)
+    public void setStringCollectionProperty(final WebappConfig propertyKey, final Collection<String> propertyValues)
     {
         Settings.log.info("setProperty(String,Collection<String>) propertyKey=" + propertyKey + " propertyValue="
                 + propertyValues.toString());
@@ -980,7 +980,7 @@ public class Settings implements QueryAllConfiguration
      * java.util.Collection)
      */
     @Override
-    public void setURICollectionProperty(final String propertyKey, final Collection<URI> propertyValues)
+    public void setURICollectionProperty(final WebappConfig propertyKey, final Collection<URI> propertyValues)
     {
         Settings.log.info("setProperty(String,Collection<URI>) propertyKey=" + propertyKey + " propertyValue="
                 + propertyValues.toString());
@@ -990,7 +990,7 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public void setValueCollectionProperty(final String propertyKey, final Collection<Value> propertyValues)
+    public void setValueCollectionProperty(final WebappConfig propertyKey, final Collection<Value> propertyValues)
     {
         this.clearProperty(propertyKey);
         

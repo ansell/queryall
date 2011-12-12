@@ -16,7 +16,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -75,6 +78,7 @@ import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.QueryAllRuntimeException;
@@ -769,34 +773,16 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static boolean getBooleanFromValue(final Value nextValue)
+    public static boolean getBooleanFromValue(final Value nextValue) throws IllegalArgumentException
     {
         if(nextValue == null)
         {
             throw new QueryAllRuntimeException("Could not parse null as a boolean");
         }
         
-        if(nextValue instanceof BooleanLiteralImpl)
+        if(nextValue instanceof Literal)
         {
-            return ((BooleanLiteralImpl)nextValue).booleanValue();
-        }
-        else if(nextValue instanceof BooleanMemLiteral)
-        {
-            return ((BooleanMemLiteral)nextValue).booleanValue();
-        }
-        else if(nextValue instanceof IntegerMemLiteral)
-        {
-            final int tempValue = ((IntegerMemLiteral)nextValue).intValue();
-            
-            if(tempValue == 0)
-            {
-                return false;
-            }
-            
-            if(tempValue == 1)
-            {
-                return true;
-            }
+            return ((Literal)nextValue).booleanValue();
         }
         else if(nextValue.stringValue().toLowerCase().equals("true"))
         {
@@ -828,7 +814,7 @@ public final class RdfUtils
         int counter = 0;
         
         // TODO: change this to List<String> when titleProperties are ordered in the configuration
-        final Collection<URI> titleProperties = localSettings.getURIProperties("titleProperties");
+        final Collection<URI> titleProperties = localSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES);
         
         for(final URI nextTitleUri : titleProperties)
         {
@@ -921,6 +907,12 @@ public final class RdfUtils
     public static Date getDateTimeFromValue(final Value nextValue) throws java.text.ParseException
     {
         Date result;
+        
+        // TODO: use this method and convert it to a Calendar instance
+        if(nextValue instanceof Literal)
+        {
+            XMLGregorianCalendar calendarValue = ((Literal)nextValue).calendarValue();
+        }
         
         // if(nextValue instanceof CalendarLiteralImpl)
         // {
@@ -1170,13 +1162,9 @@ public final class RdfUtils
     {
         float result = 0.0f;
         
-        try
+        if(nextValue instanceof Literal)
         {
-            result = ((NumericLiteralImpl)nextValue).floatValue();
-        }
-        catch(final ClassCastException cce)
-        {
-            result = Float.parseFloat(nextValue.stringValue());
+            result = ((Literal)nextValue).floatValue();
         }
         
         return result;
@@ -1190,17 +1178,9 @@ public final class RdfUtils
     {
         int result = 0;
         
-        if(nextValue instanceof IntegerLiteralImpl)
+        if(nextValue instanceof Literal)
         {
-            result = ((IntegerLiteralImpl)nextValue).intValue();
-        }
-        else if(nextValue instanceof IntegerMemLiteral)
-        {
-            result = ((IntegerMemLiteral)nextValue).intValue();
-        }
-        else
-        {
-            result = Integer.parseInt(nextValue.stringValue());
+            result = ((Literal)nextValue).intValue();
         }
         
         return result;
@@ -1214,13 +1194,9 @@ public final class RdfUtils
     {
         long result = 0L;
         
-        if(nextValue instanceof IntegerMemLiteral)
+        if(nextValue instanceof Literal)
         {
-            result = ((IntegerMemLiteral)nextValue).longValue();
-        }
-        else
-        {
-            result = Long.parseLong(nextValue.stringValue());
+            result = ((Literal)nextValue).longValue();
         }
         
         return result;

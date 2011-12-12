@@ -266,9 +266,12 @@ public class SettingsFactory
             conn = webAppConfigurationRdf.getConnection();
             
             final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
-            // http://purl.org/queryall/webapp_config:
+            // HACK TODO: Generalise properties to URIs instead of substrings so that arbitrary properties can be set
+            // http://purl.org/queryall/webapp_configuration:
             propertyBaseUriQueries
-                    .add("SELECT ?key ?uri ?value WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?uri), \"http://purl.org/queryall/webapp_config:\")) . BIND(substr(str(?uri), 39) AS ?key) . } ");
+                    .add("SELECT ?key ?uri ?value ?predicate WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?predicate), \"http://purl.org/queryall/webapp_configuration:\")) . BIND(substr(str(?predicate), 47) AS ?key) . } ");
+            
+            log.info("propertyBaseUriQueries="+propertyBaseUriQueries);
             
             for(final String nextQuery : propertyBaseUriQueries)
             {
@@ -277,6 +280,11 @@ public class SettingsFactory
                     final TupleQuery tupleQuery = conn.prepareTupleQuery(QueryLanguage.SPARQL, nextQuery);
                     
                     final TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+                    
+                    if(!tupleQueryResult.hasNext())
+                    {
+                        log.error("Could not find any properties for query="+propertyBaseUriQueries);
+                    }
                     
                     // for each result, insert the property into the nextSettings object using the
                     // given key

@@ -2,6 +2,7 @@ package org.queryall.utils.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -20,6 +21,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.utils.Settings;
 import org.queryall.utils.SettingsFactory;
 
 /**
@@ -44,6 +46,9 @@ public class SettingsFactoryTest
         testValueFactory = testRepository.getValueFactory();
         
         testRepositoryConnection = testRepository.getConnection();
+        
+        // verify before all tests that testRepositoryConnection does not contain any triples which could interfere with tests
+        Assert.assertEquals(0L, testRepositoryConnection.size());        
     }
     
     @After
@@ -130,11 +135,55 @@ public class SettingsFactoryTest
         Assert.fail("Not yet implemented"); // TODO
     }
     
-    @Ignore
     @Test
-    public final void testExtractProperties()
+    public final void testExtractProperties() throws RDFParseException, RepositoryException, IOException
     {
-        Assert.fail("Not yet implemented"); // TODO
+        Collection<URI> webappConfigUris = new ArrayList<URI>(2);
+        
+        URI defaultConfigUri = testValueFactory.createURI("http://example.org/test/webappconfig/default");
+        URI locationSpecificConfigUri = testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific");
+        
+        webappConfigUris.add(defaultConfigUri);
+        webappConfigUris.add(locationSpecificConfigUri);
+        
+        // import the properties from the standard two configuration file format using two different config URIs
+        InputStream testDefaultInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-default.n3");
+        
+        Assert.assertNotNull(testDefaultInput);
+        
+        testRepositoryConnection.add(testDefaultInput, "", RDFFormat.N3);
+        
+        testRepositoryConnection.commit();
+        
+        Assert.assertEquals(148, testRepositoryConnection.size());
+
+        InputStream testSpecificInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-locationspecific.n3");
+        
+        Assert.assertNotNull(testSpecificInput);
+        
+        testRepositoryConnection.add(testSpecificInput, "", RDFFormat.N3);
+        
+        testRepositoryConnection.commit();
+        
+        Assert.assertEquals(260, testRepositoryConnection.size());
+        
+        // TODO: test the properties have been pulled into testRepository correctly
+        
+        URI useHardcodedRequestHostnameUri = testValueFactory.createURI("http://purl.org/queryall/webapp_configuration:useHardcodedRequestHostname");
+
+        Assert.assertTrue(testRepositoryConnection.hasStatement(null, useHardcodedRequestHostnameUri, null, false));
+        
+        Assert.assertTrue(testRepositoryConnection.hasStatement(locationSpecificConfigUri, useHardcodedRequestHostnameUri, null, false));
+        
+        // setup the test Settings object to extract the properties into
+        // the property add methods for Settings are unit tested in AbstractQueryAllConfigurationTest which is overridden eventually by SettingsTest
+        Settings testSettings = new Settings();
+        
+        SettingsFactory.extractProperties(testSettings, testRepository, webappConfigUris);
+        
+        // TODO: test the expected list of properties from testRepository against the properties available from testSettings
+        
+        Assert.assertTrue("boolean property not set correctly", testSettings.getBooleanProperty("useHardcodedRequestHostname", false));
     }
     
     @Ignore

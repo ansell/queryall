@@ -12,6 +12,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.utils.WebappConfig;
 
 /**
  * The QueryAllConfiguration object provides access to all of the properties and objects that are
@@ -33,7 +34,7 @@ public interface QueryAllConfiguration
     
     void addRuleTest(RuleTest nextRuleTest);
     
-    Collection<Object> clearProperty(String propertyKey);
+    Collection<Object> clearProperty(WebappConfig propertyKey);
     
     Map<URI, NamespaceEntry> getAllNamespaceEntries();
     
@@ -47,15 +48,15 @@ public interface QueryAllConfiguration
     
     Map<URI, RuleTest> getAllRuleTests();
     
-    boolean getBooleanProperty(String propertyKey, boolean defaultValue);
+    boolean getBooleanProperty(WebappConfig propertyKey, boolean defaultValue);
     
     String getDefaultHostAddress();
     
-    float getFloatProperty(String key, float defaultValue);
+    float getFloatProperty(WebappConfig key, float defaultValue);
     
-    int getIntProperty(String key, int defaultValue);
+    int getIntProperty(WebappConfig key, int defaultValue);
     
-    long getLongProperty(String key, long defaultValue);
+    long getLongProperty(WebappConfig key, long defaultValue);
     
     NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri);
     
@@ -77,33 +78,33 @@ public interface QueryAllConfiguration
     
     String getSeparator();
     
-    Collection<String> getStringProperties(String string);
+    Collection<String> getStringProperties(WebappConfig key);
     
-    String getStringProperty(String key, String defaultValue);
+    String getStringProperty(WebappConfig key, String defaultValue);
     
     Pattern getTagPattern();
     
-    Collection<URI> getURIProperties(String string);
+    Collection<URI> getURIProperties(WebappConfig string);
     
-    URI getURIProperty(String key, URI defaultValue);
+    URI getURIProperty(WebappConfig key, URI defaultValue);
     
-    void setProperty(String propertyKey, boolean propertyValue);
+    void setProperty(WebappConfig propertyKey, boolean propertyValue);
     
-    void setProperty(String propertyKey, float propertyValue);
+    void setProperty(WebappConfig propertyKey, float propertyValue);
     
-    void setProperty(String propertyKey, int propertyValue);
+    void setProperty(WebappConfig propertyKey, int propertyValue);
     
-    void setProperty(String propertyKey, long propertyValue);
+    void setProperty(WebappConfig propertyKey, long propertyValue);
     
-    void setProperty(String propertyKey, String propertyValue);
+    void setProperty(WebappConfig propertyKey, String propertyValue);
     
-    void setProperty(String propertyKey, URI propertyValue);
+    void setProperty(WebappConfig propertyKey, URI propertyValue);
     
-    void setProperty(String propertyKey, Value propertyValue);
+    void setProperty(WebappConfig propertyKey, Value propertyValue);
     
-    void setStringCollectionProperty(String propertyKey, Collection<String> propertyValues);
+    void setStringCollectionProperty(WebappConfig propertyKey, Collection<String> propertyValues);
     
-    void setURICollectionProperty(String propertyKey, Collection<URI> propertyValues);
+    void setURICollectionProperty(WebappConfig propertyKey, Collection<URI> propertyValues);
     
-    void setValueCollectionProperty(String propertyKey, Collection<Value> propertyValues);
+    void setValueCollectionProperty(WebappConfig propertyKey, Collection<Value> propertyValues);
 }
