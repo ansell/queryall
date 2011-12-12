@@ -98,17 +98,13 @@ public class RdfFetcher
             conn = (HttpURLConnection)url.openConnection();
             conn.setRequestProperty(
                     "User-Agent",
-                    "Mozilla/5.0 (compatible; "
-                            + this.localSettings.getStringProperty(WebappConfig.USER_AGENT)
-                            + "/"
-                            + PropertyUtils.VERSION
-                            + " +"
+                    "Mozilla/5.0 (compatible; " + this.localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                            + PropertyUtils.VERSION + " +"
                             + this.localSettings.getStringProperty(WebappConfig.ROBOT_HELP_URL) + ")");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
-                acceptHeader =
-                        this.localSettings.getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER);
+                acceptHeader = this.localSettings.getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER);
             }
             
             conn.setRequestProperty("Accept", acceptHeader);
@@ -423,10 +419,10 @@ public class RdfFetcher
         String postQuery = "";
         
         // TODO: Decide where it is appropriate to arrange for this property
-        //        if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
-//        {
-//            postQuery += "maxrows=" + maxRowsParameter + "&";
-//        }
+        // if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
+        // {
+        // postQuery += "maxrows=" + maxRowsParameter + "&";
+        // }
         
         postQuery += "formatting=Raw&";
         postQuery += "softlimit=50&";

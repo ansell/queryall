@@ -72,7 +72,8 @@ public class ServletUtils
         {
             if(localSettings.getBooleanProperty(WebappConfig.ALWAYS_REDIRECT_TO_EXPLICIT_FORMAT_URL))
             {
-                final int redirectCode = localSettings.getIntProperty(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE);
+                final int redirectCode =
+                        localSettings.getIntProperty(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE);
                 
                 final StringBuilder redirectString = new StringBuilder();
                 final boolean ignoreContextPath = false;
@@ -249,10 +250,9 @@ public class ServletUtils
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
                                 localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle()
                                         .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
-                                includedProfiles, 
-                                localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                includedProfiles, localSettings
+                                        .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
                                 localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
-
                 
                 if(GeneralServlet._DEBUG)
                 {
@@ -404,11 +404,13 @@ public class ServletUtils
             // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
             if(fetchController.anyNamespaceNotRecognised())
             {
-                staticQueryTypesForUnknown = localSettings.getURIProperties(WebappConfig.UNKNOWN_NAMESPACE_STATIC_ADDITIONS);
+                staticQueryTypesForUnknown =
+                        localSettings.getURIProperties(WebappConfig.UNKNOWN_NAMESPACE_STATIC_ADDITIONS);
             }
             else
             {
-                staticQueryTypesForUnknown = localSettings.getURIProperties(WebappConfig.UNKNOWN_QUERY_STATIC_ADDITIONS);
+                staticQueryTypesForUnknown =
+                        localSettings.getURIProperties(WebappConfig.UNKNOWN_QUERY_STATIC_ADDITIONS);
             }
             
             for(final URI nextStaticQueryTypeForUnknown : staticQueryTypesForUnknown)
@@ -428,18 +430,26 @@ public class ServletUtils
                 {
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
-                                    localSettings.getStringProperty(WebappConfig.HOST_NAME), realHostName,
-                                    pageOffset, localSettings);
+                                    localSettings.getStringProperty(WebappConfig.HOST_NAME), realHostName, pageOffset,
+                                    localSettings);
                     
                     // This is a last ditch solution to giving some meaningful feedback, as we
                     // assume that the unknown query type will handle the input, so we pass it in as
                     // both parameters
                     String nextBackupString =
-                            QueryCreator.createStaticRdfXmlString(nextIncludeType, (OutputQueryType)nextIncludeType,
-                                    null, attributeList, emptyNamespaceEntryMap, includedProfiles,
-                                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
-                                    convertAlternateToPreferredPrefix, localSettings)
+                            QueryCreator
+                                    .createStaticRdfXmlString(
+                                            nextIncludeType,
+                                            (OutputQueryType)nextIncludeType,
+                                            null,
+                                            attributeList,
+                                            emptyNamespaceEntryMap,
+                                            includedProfiles,
+                                            localSettings
+                                                    .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                            localSettings
+                                                    .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
+                                            convertAlternateToPreferredPrefix, localSettings)
                                     + "\n";
                     
                     nextBackupString =
@@ -555,7 +565,8 @@ public class ServletUtils
         {
             redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX));
         }
-        else // or throw an error if we don't recognise it
+        else
+        // or throw an error if we don't recognise it
         {
             throw new IllegalArgumentException(
                     "GeneralServlet.getRedirectString: did not recognise requestedContentType=" + requestedContentType);

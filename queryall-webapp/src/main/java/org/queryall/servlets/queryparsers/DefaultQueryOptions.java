@@ -55,7 +55,8 @@ public class DefaultQueryOptions
         
         this.pageoffsetUrlOpeningPrefix =
                 this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX);
-        this.pageoffsetUrlClosingPrefix = this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX);
+        this.pageoffsetUrlClosingPrefix =
+                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX);
         this.pageoffsetUrlSuffix = this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX);
         this.htmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX);
         this.htmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX);

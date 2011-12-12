@@ -149,8 +149,8 @@ public class QueryAllSchemaServlet extends HttpServlet
         // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using
         // this method
         requestedContentType =
-                RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
+                RdfUtils.findBestContentType(requestedContentType,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases

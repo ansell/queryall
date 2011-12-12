@@ -25,9 +25,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.BooleanLiteralImpl;
-import org.openrdf.model.impl.IntegerLiteralImpl;
-import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
@@ -45,8 +42,6 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.BooleanMemLiteral;
-import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
@@ -911,7 +906,7 @@ public final class RdfUtils
         // TODO: use this method and convert it to a Calendar instance
         if(nextValue instanceof Literal)
         {
-            XMLGregorianCalendar calendarValue = ((Literal)nextValue).calendarValue();
+            final XMLGregorianCalendar calendarValue = ((Literal)nextValue).calendarValue();
         }
         
         // if(nextValue instanceof CalendarLiteralImpl)
@@ -2122,7 +2117,8 @@ public final class RdfUtils
                     if(nextReaderFormat == null)
                     {
                         nextReaderFormat =
-                                Rio.getParserFormatForMIMEType(localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                                Rio.getParserFormatForMIMEType(localSettings
+                                        .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         
                         if(nextReaderFormat == null)
                         {
@@ -2130,7 +2126,8 @@ public final class RdfUtils
                                     .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
-                                            + localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                                            + localSettings
+                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                             continue;
                         }
                         else
@@ -2139,7 +2136,8 @@ public final class RdfUtils
                                     .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " using configured preferred content type as fallback localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
-                                            + localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                                            + localSettings
+                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         }
                     }
                     else if(RdfUtils.log.isDebugEnabled())

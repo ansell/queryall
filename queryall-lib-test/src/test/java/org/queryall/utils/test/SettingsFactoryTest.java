@@ -37,19 +37,20 @@ public class SettingsFactoryTest
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
-
+    
     @Before
     public void setUp() throws Exception
     {
-        testRepository = new SailRepository(new MemoryStore());
-        testRepository.initialize();
+        this.testRepository = new SailRepository(new MemoryStore());
+        this.testRepository.initialize();
         
-        testValueFactory = testRepository.getValueFactory();
+        this.testValueFactory = this.testRepository.getValueFactory();
         
-        testRepositoryConnection = testRepository.getConnection();
+        this.testRepositoryConnection = this.testRepository.getConnection();
         
-        // verify before all tests that testRepositoryConnection does not contain any triples which could interfere with tests
-        Assert.assertEquals(0L, testRepositoryConnection.size());        
+        // verify before all tests that testRepositoryConnection does not contain any triples which
+        // could interfere with tests
+        Assert.assertEquals(0L, this.testRepositoryConnection.size());
     }
     
     @After
@@ -61,7 +62,7 @@ public class SettingsFactoryTest
             {
                 this.testRepositoryConnection.close();
             }
-            catch(RepositoryException rex)
+            catch(final RepositoryException rex)
             {
                 rex.printStackTrace();
             }
@@ -77,7 +78,7 @@ public class SettingsFactoryTest
         {
             this.testRepository.shutDown();
         }
-        catch(RepositoryException rex)
+        catch(final RepositoryException rex)
         {
             rex.printStackTrace();
         }
@@ -139,52 +140,62 @@ public class SettingsFactoryTest
     @Test
     public final void testExtractProperties() throws RDFParseException, RepositoryException, IOException
     {
-        Collection<URI> webappConfigUris = new ArrayList<URI>(2);
+        final Collection<URI> webappConfigUris = new ArrayList<URI>(2);
         
-        URI defaultConfigUri = testValueFactory.createURI("http://example.org/test/webappconfig/default");
-        URI locationSpecificConfigUri = testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific");
+        final URI defaultConfigUri = this.testValueFactory.createURI("http://example.org/test/webappconfig/default");
+        final URI locationSpecificConfigUri =
+                this.testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific");
         
         webappConfigUris.add(defaultConfigUri);
         webappConfigUris.add(locationSpecificConfigUri);
         
-        // import the properties from the standard two configuration file format using two different config URIs
-        InputStream testDefaultInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-default.n3");
+        // import the properties from the standard two configuration file format using two different
+        // config URIs
+        final InputStream testDefaultInput =
+                SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-default.n3");
         
         Assert.assertNotNull(testDefaultInput);
         
-        testRepositoryConnection.add(testDefaultInput, "", RDFFormat.N3);
+        this.testRepositoryConnection.add(testDefaultInput, "", RDFFormat.N3);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Assert.assertEquals(148, testRepositoryConnection.size());
-
-        InputStream testSpecificInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-locationspecific.n3");
+        Assert.assertEquals(148, this.testRepositoryConnection.size());
+        
+        final InputStream testSpecificInput =
+                SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-locationspecific.n3");
         
         Assert.assertNotNull(testSpecificInput);
         
-        testRepositoryConnection.add(testSpecificInput, "", RDFFormat.N3);
+        this.testRepositoryConnection.add(testSpecificInput, "", RDFFormat.N3);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Assert.assertEquals(260, testRepositoryConnection.size());
+        Assert.assertEquals(260, this.testRepositoryConnection.size());
         
         // TODO: test the properties have been pulled into testRepository correctly
         
-        URI useHardcodedRequestHostnameUri = testValueFactory.createURI("http://purl.org/queryall/webapp_configuration:useHardcodedRequestHostname");
-
-        Assert.assertTrue(testRepositoryConnection.hasStatement(null, useHardcodedRequestHostnameUri, null, false));
+        final URI useHardcodedRequestHostnameUri =
+                this.testValueFactory
+                        .createURI("http://purl.org/queryall/webapp_configuration:useHardcodedRequestHostname");
         
-        Assert.assertTrue(testRepositoryConnection.hasStatement(locationSpecificConfigUri, useHardcodedRequestHostnameUri, null, false));
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, useHardcodedRequestHostnameUri, null, false));
+        
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(locationSpecificConfigUri,
+                useHardcodedRequestHostnameUri, null, false));
         
         // setup the test Settings object to extract the properties into
-        // the property add methods for Settings are unit tested in AbstractQueryAllConfigurationTest which is overridden eventually by SettingsTest
-        Settings testSettings = new Settings();
+        // the property add methods for Settings are unit tested in
+        // AbstractQueryAllConfigurationTest which is overridden eventually by SettingsTest
+        final Settings testSettings = new Settings();
         
-        SettingsFactory.extractProperties(testSettings, testRepository, webappConfigUris);
+        SettingsFactory.extractProperties(testSettings, this.testRepository, webappConfigUris);
         
-        // TODO: test the expected list of properties from testRepository against the properties available from testSettings
+        // TODO: test the expected list of properties from testRepository against the properties
+        // available from testSettings
         
-        Assert.assertTrue("boolean property not set correctly", testSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME));
+        Assert.assertTrue("boolean property not set correctly",
+                testSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME));
     }
     
     @Ignore
@@ -204,15 +215,18 @@ public class SettingsFactoryTest
     @Test
     public final void testGetBackupConfigLocations() throws Exception
     {
-        InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/configLocationsTest.n3");
+        final InputStream testInput =
+                SettingsFactoryTest.class.getResourceAsStream("/testconfigs/configLocationsTest.n3");
         
         Assert.assertNotNull(testInput);
         
-        testRepositoryConnection.add(testInput, "", RDFFormat.N3);
+        this.testRepositoryConnection.add(testInput, "", RDFFormat.N3);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Collection<String> webappConfigLocations = SettingsFactory.getBackupConfigLocations(testRepository, Arrays.asList(testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific")));
+        final Collection<String> webappConfigLocations =
+                SettingsFactory.getBackupConfigLocations(this.testRepository, Arrays.asList(this.testValueFactory
+                        .createURI("http://example.org/test/webappconfig/locationSpecific")));
         
         Assert.assertEquals(2, webappConfigLocations.size());
         
@@ -223,15 +237,18 @@ public class SettingsFactoryTest
     @Test
     public final void testGetConfigLocations() throws Exception
     {
-        InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/testconfigs/configLocationsTest.n3");
+        final InputStream testInput =
+                SettingsFactoryTest.class.getResourceAsStream("/testconfigs/configLocationsTest.n3");
         
         Assert.assertNotNull(testInput);
         
-        testRepositoryConnection.add(testInput, "", RDFFormat.N3);
+        this.testRepositoryConnection.add(testInput, "", RDFFormat.N3);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Collection<String> webappConfigLocations = SettingsFactory.getConfigLocations(testRepository, Arrays.asList(testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific")));
+        final Collection<String> webappConfigLocations =
+                SettingsFactory.getConfigLocations(this.testRepository, Arrays.asList(this.testValueFactory
+                        .createURI("http://example.org/test/webappconfig/locationSpecific")));
         
         Assert.assertEquals(2, webappConfigLocations.size());
         
@@ -242,31 +259,31 @@ public class SettingsFactoryTest
     @Test
     public final void testGetDefaultBaseConfigLocationProperty()
     {
-        String defaultBaseConfigLocationProperty = SettingsFactory.getDefaultBaseConfigLocationProperty();
+        final String defaultBaseConfigLocationProperty = SettingsFactory.getDefaultBaseConfigLocationProperty();
         
         Assert.assertEquals("/queryallBaseConfig.n3", defaultBaseConfigLocationProperty);
         
         // now set the system property to see if it changes the default
         System.setProperty("queryall.BaseConfigLocation", "/testallyourbasearebelongtous.n3");
         
-        String alteredBaseConfigLocationProperty = SettingsFactory.getDefaultBaseConfigLocationProperty();
+        final String alteredBaseConfigLocationProperty = SettingsFactory.getDefaultBaseConfigLocationProperty();
         
         Assert.assertEquals("/testallyourbasearebelongtous.n3", alteredBaseConfigLocationProperty);
         
         System.clearProperty("queryall.BaseConfigLocation");
     }
-
+    
     @Test
     public final void testGetDefaultBaseConfigMimeFormatProperty()
     {
-        String defaultBaseConfigMimeFormatProperty = SettingsFactory.getDefaultBaseConfigMimeFormatProperty();
+        final String defaultBaseConfigMimeFormatProperty = SettingsFactory.getDefaultBaseConfigMimeFormatProperty();
         
         Assert.assertEquals("text/rdf+n3", defaultBaseConfigMimeFormatProperty);
         
         // now set the system property to see if it changes the default
         System.setProperty("queryall.BaseConfigMimeFormat", "application/rdf+xml");
         
-        String alteredBaseConfigMimeFormatProperty = SettingsFactory.getDefaultBaseConfigMimeFormatProperty();
+        final String alteredBaseConfigMimeFormatProperty = SettingsFactory.getDefaultBaseConfigMimeFormatProperty();
         
         Assert.assertEquals("application/rdf+xml", alteredBaseConfigMimeFormatProperty);
         
@@ -276,14 +293,14 @@ public class SettingsFactoryTest
     @Test
     public final void testGetDefaultBaseConfigUriProperty()
     {
-        String defaultBaseConfigUriProperty = SettingsFactory.getDefaultBaseConfigUriProperty();
+        final String defaultBaseConfigUriProperty = SettingsFactory.getDefaultBaseConfigUriProperty();
         
         Assert.assertEquals("http://purl.org/queryall/webapp_configuration:theBaseConfig", defaultBaseConfigUriProperty);
         
         // now set the system property to see if it changes the default
         System.setProperty("queryall.BaseConfigUri", "http://example.org/mytest");
         
-        String alteredBaseConfigUriProperty = SettingsFactory.getDefaultBaseConfigUriProperty();
+        final String alteredBaseConfigUriProperty = SettingsFactory.getDefaultBaseConfigUriProperty();
         
         Assert.assertEquals("http://example.org/mytest", alteredBaseConfigUriProperty);
         
@@ -300,38 +317,45 @@ public class SettingsFactoryTest
     @Test
     public final void testGetWebappConfigLocations() throws Exception
     {
-        InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/queryallBaseConfig.n3");
+        final InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/queryallBaseConfig.n3");
         
         Assert.assertNotNull(testInput);
         
-        testRepositoryConnection.add(testInput, "", RDFFormat.N3);
+        this.testRepositoryConnection.add(testInput, "", RDFFormat.N3);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Collection<Value> webappConfigLocations = SettingsFactory.getWebappConfigLocations(testRepository, testValueFactory.createURI("http://example.org/test/webappconfig/testWebappBaseConfig"));
+        final Collection<Value> webappConfigLocations =
+                SettingsFactory.getWebappConfigLocations(this.testRepository,
+                        this.testValueFactory.createURI("http://example.org/test/webappconfig/testWebappBaseConfig"));
         
         Assert.assertEquals(1, webappConfigLocations.size());
         
-        Assert.assertTrue(webappConfigLocations.contains(testValueFactory.createLiteral("http://queryall.example.org/test/webappconfigLocation")));
+        Assert.assertTrue(webappConfigLocations.contains(this.testValueFactory
+                .createLiteral("http://queryall.example.org/test/webappconfigLocation")));
     }
     
     @Test
     public final void testGetWebappConfigUris() throws Exception
     {
-        InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/queryallBaseConfig.n3");
+        final InputStream testInput = SettingsFactoryTest.class.getResourceAsStream("/queryallBaseConfig.n3");
         
         Assert.assertNotNull(testInput);
         
-        testRepositoryConnection.add(testInput, "", RDFFormat.N3);
+        this.testRepositoryConnection.add(testInput, "", RDFFormat.N3);
         
-        testRepositoryConnection.commit();
+        this.testRepositoryConnection.commit();
         
-        Collection<URI> webappConfigUris = SettingsFactory.getWebappConfigUris(testRepository, testValueFactory.createURI("http://example.org/test/webappconfig/testWebappBaseConfig"));
+        final Collection<URI> webappConfigUris =
+                SettingsFactory.getWebappConfigUris(this.testRepository,
+                        this.testValueFactory.createURI("http://example.org/test/webappconfig/testWebappBaseConfig"));
         
         Assert.assertEquals(2, webappConfigUris.size());
         
-        Assert.assertTrue(webappConfigUris.contains(testValueFactory.createURI("http://example.org/test/webappconfig/default")));
-        Assert.assertTrue(webappConfigUris.contains(testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific")));
+        Assert.assertTrue(webappConfigUris.contains(this.testValueFactory
+                .createURI("http://example.org/test/webappconfig/default")));
+        Assert.assertTrue(webappConfigUris.contains(this.testValueFactory
+                .createURI("http://example.org/test/webappconfig/locationSpecific")));
     }
     
 }

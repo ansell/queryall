@@ -1146,7 +1146,8 @@ public class QueryCreator
         }
         
         // TODO: decide on default for hostName
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringProperty(WebappConfig.HOST_NAME));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME,
+                localSettings.getStringProperty(WebappConfig.HOST_NAME));
         
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getSeparator());
@@ -1195,11 +1196,9 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING,
                 StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
         
-        attributeList
-                .put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                        .xmlEncodeString(StringUtils.percentEncode(localSettings.getStringProperty(WebappConfig.HOST_NAME))));
-        attributeList.put(
-                Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS,
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
+                .xmlEncodeString(StringUtils.percentEncode(localSettings.getStringProperty(WebappConfig.HOST_NAME))));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS,
                 StringUtils.xmlEncodeString(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(localSettings.getSeparator())));

@@ -45,7 +45,8 @@ public class RobotsTxtServlet extends HttpServlet
         
         final PrintWriter out = response.getWriter();
         
-        final Collection<String> robotsList = localSettings.getStringProperties(WebappConfig.BLACKLIST_BASE_USER_AGENTS);
+        final Collection<String> robotsList =
+                localSettings.getStringProperties(WebappConfig.BLACKLIST_BASE_USER_AGENTS);
         
         if(robotsList != null)
         {

@@ -387,13 +387,15 @@ public abstract class AbstractQueryAllConfigurationTest
         
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish
         // between the real and false cases
-        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.0f), 0.001f);
+        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.0f),
+                0.001f);
         
         this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY, -0.5f);
         
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish
         // between the real and false cases
-        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, 1.0f), 0.001f);
+        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, 1.0f),
+                0.001f);
     }
     
     @Test
@@ -755,9 +757,11 @@ public abstract class AbstractQueryAllConfigurationTest
         
         // test that with multiple properties, random choices are not made, and the default is
         // returned instead
-        Assert.assertEquals("default value", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
+        Assert.assertEquals("default value", this.testConfiguration.getStringProperty(
+                WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
         
-        final Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        final Collection<String> stringProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(stringProperties);
         
@@ -771,11 +775,14 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testGetStringPropertiesNoItems()
     {
-        this.testConfiguration.setStringCollectionProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, new ArrayList<String>(0));
+        this.testConfiguration.setStringCollectionProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY,
+                new ArrayList<String>(0));
         
-        Assert.assertEquals("default value", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
+        Assert.assertEquals("default value", this.testConfiguration.getStringProperty(
+                WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
         
-        final Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        final Collection<String> stringProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(stringProperties);
         
@@ -785,11 +792,14 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testGetStringPropertiesSingleItem()
     {
-        this.testConfiguration.setStringCollectionProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, Arrays.asList("my test string"));
+        this.testConfiguration.setStringCollectionProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY,
+                Arrays.asList("my test string"));
         
-        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
+        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty(
+                WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
         
-        final Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        final Collection<String> stringProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(stringProperties);
         
@@ -803,11 +813,13 @@ public abstract class AbstractQueryAllConfigurationTest
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, "my no default string");
         
-        Assert.assertEquals("my no default string", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY));
+        Assert.assertEquals("my no default string",
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY));
         
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, "my test string");
         
-        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY, "default value"));
+        Assert.assertEquals("my test string",
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY, "default value"));
         
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, "different test string");
         
@@ -848,7 +860,8 @@ public abstract class AbstractQueryAllConfigurationTest
                 this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY,
                         this.testValueFactory.createURI("http://example.org/test/default")));
         
-        final Collection<URI> uriProperties = this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(uriProperties);
         
@@ -875,7 +888,8 @@ public abstract class AbstractQueryAllConfigurationTest
                 this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY,
                         this.testValueFactory.createURI("http://example.org/test/default")));
         
-        final Collection<URI> uriProperties = this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(uriProperties);
         
@@ -897,7 +911,8 @@ public abstract class AbstractQueryAllConfigurationTest
                 this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY,
                         this.testValueFactory.createURI("http://example.org/test/default")));
         
-        final Collection<URI> uriProperties = this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(uriProperties);
         
@@ -913,8 +928,7 @@ public abstract class AbstractQueryAllConfigurationTest
         this.testConfiguration.setProperty(WebappConfig._TEST_URI_PROPERTY,
                 this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
         
-        Assert.assertEquals(
-                this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"),
+        Assert.assertEquals(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"),
                 this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_PROPERTY));
         
         this.testConfiguration.setProperty(WebappConfig._TEST_URI_PROPERTY,
@@ -968,13 +982,15 @@ public abstract class AbstractQueryAllConfigurationTest
         
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish
         // between the real and false cases
-        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.0f), 0.001f);
+        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.0f),
+                0.001f);
         
         this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY, -0.5f);
         
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish
         // between the real and false cases
-        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, 1.0f), 0.001f);
+        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, 1.0f),
+                0.001f);
     }
     
     @Test
@@ -1015,11 +1031,13 @@ public abstract class AbstractQueryAllConfigurationTest
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, "my non-default string");
         
-        Assert.assertEquals("my non-default string", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY));
-
+        Assert.assertEquals("my non-default string",
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY));
+        
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, "my test string");
         
-        Assert.assertEquals("my test string", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY, "default value"));
+        Assert.assertEquals("my test string",
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY, "default value"));
     }
     
     @Test
@@ -1046,19 +1064,23 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringValueBoolean()
     {
-        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, this.testValueFactory.createLiteral(false));
+        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY,
+                this.testValueFactory.createLiteral(false));
         
         Assert.assertFalse(this.testConfiguration.getBooleanProperty(WebappConfig._TEST_BOOLEAN_PROPERTY));
         
-        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, this.testValueFactory.createLiteral(true));
+        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY,
+                this.testValueFactory.createLiteral(true));
         
         Assert.assertTrue(this.testConfiguration.getBooleanProperty(WebappConfig._TEST_BOOLEAN_PROPERTY));
         
-        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, this.testValueFactory.createLiteral(true));
+        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY,
+                this.testValueFactory.createLiteral(true));
         
         Assert.assertTrue(this.testConfiguration.getBooleanProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, false));
         
-        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, this.testValueFactory.createLiteral(false));
+        this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY,
+                this.testValueFactory.createLiteral(false));
         
         Assert.assertFalse(this.testConfiguration.getBooleanProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, true));
         
@@ -1067,17 +1089,21 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringValueFloat()
     {
-        this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY, this.testValueFactory.createLiteral(0.5f));
+        this.testConfiguration
+                .setProperty(WebappConfig._TEST_FLOAT_PROPERTY, this.testValueFactory.createLiteral(0.5f));
         
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish
         // between the real and false cases
-        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.0f), 0.001f);
+        Assert.assertEquals(0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.0f),
+                0.001f);
         
-        this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY, this.testValueFactory.createLiteral(-0.5f));
+        this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY,
+                this.testValueFactory.createLiteral(-0.5f));
         
         // assert that they are equal to within 0.001 of each other, which is enough to distinguish
         // between the real and false cases
-        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, 1.0f), 0.001f);
+        Assert.assertEquals(-0.5f, this.testConfiguration.getFloatProperty(WebappConfig._TEST_FLOAT_PROPERTY, 1.0f),
+                0.001f);
         
     }
     
@@ -1097,11 +1123,13 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringValueLong()
     {
-        this.testConfiguration.setProperty(WebappConfig._TEST_LONG_PROPERTY, this.testValueFactory.createLiteral(4321L));
+        this.testConfiguration
+                .setProperty(WebappConfig._TEST_LONG_PROPERTY, this.testValueFactory.createLiteral(4321L));
         
         Assert.assertEquals(4321L, this.testConfiguration.getLongProperty(WebappConfig._TEST_LONG_PROPERTY, -1L));
         
-        this.testConfiguration.setProperty(WebappConfig._TEST_LONG_PROPERTY, this.testValueFactory.createLiteral(-4321L));
+        this.testConfiguration.setProperty(WebappConfig._TEST_LONG_PROPERTY,
+                this.testValueFactory.createLiteral(-4321L));
         
         Assert.assertEquals(-4321L, this.testConfiguration.getLongProperty(WebappConfig._TEST_LONG_PROPERTY, 1L));
         
@@ -1115,9 +1143,11 @@ public abstract class AbstractQueryAllConfigurationTest
         
         // test that with multiple properties, random choices are not made, and the default is
         // returned instead
-        Assert.assertEquals("default value", this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
+        Assert.assertEquals("default value", this.testConfiguration.getStringProperty(
+                WebappConfig._TEST_STRING_COLLECTION_PROPERTY, "default value"));
         
-        final Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        final Collection<String> stringProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(stringProperties);
         
@@ -1145,7 +1175,8 @@ public abstract class AbstractQueryAllConfigurationTest
                 this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY,
                         this.testValueFactory.createURI("http://example.org/test/default")));
         
-        final Collection<URI> uriProperties = this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(uriProperties);
         

@@ -105,8 +105,7 @@ public class GeneralServlet extends HttpServlet
         
         if(originalAcceptHeader == null || originalAcceptHeader.equals(""))
         {
-            acceptHeader =
-                    localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE);
+            acceptHeader = localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE);
         }
         else
         {
@@ -115,7 +114,8 @@ public class GeneralServlet extends HttpServlet
         
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
-                        localContentTypeNegotiator, localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
+                        localContentTypeNegotiator,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -128,8 +128,8 @@ public class GeneralServlet extends HttpServlet
         // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using
         // this method
         requestedContentType =
-                RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
+                RdfUtils.findBestContentType(requestedContentType,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases
@@ -313,8 +313,9 @@ public class GeneralServlet extends HttpServlet
             
             // update a the blacklist
             localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
-
-            if(localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS, (Boolean)WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS.getDefaultValue()))
+            
+            if(localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS,
+                    (Boolean)WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS.getDefaultValue()))
             {
                 localBlacklistController.removeEndpointsFromBlacklist(fetchController.getSuccessfulResults(),
                         nextTotalTime, useDefaultProviders);
@@ -323,9 +324,9 @@ public class GeneralServlet extends HttpServlet
             // Don't keep local error statistics if GeneralServlet debug level is higher than or
             // equal to info and we aren't interested in using the client IP blacklist
             // functionalities
-            if(GeneralServlet._INFO || 
-                    localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS, (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue())
-                    )
+            if(GeneralServlet._INFO
+                    || localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
+                            (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue()))
             {
                 ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress,
                         multiProviderQueryBundles, nextTotalTime);
