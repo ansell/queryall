@@ -224,12 +224,12 @@ public class Settings implements QueryAllConfiguration
         return Collections.unmodifiableMap(this.ruleTests);
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getBooleanProperty(java.lang.String,
-     * boolean)
-     */
+    @Override
+    public boolean getBooleanProperty(final WebappConfig propertyKey)
+    {
+        return getBooleanProperty(propertyKey, (Boolean)propertyKey.getDefaultValue());
+    }
+    
     @Override
     public boolean getBooleanProperty(final WebappConfig propertyKey, final boolean defaultValue)
     {
@@ -271,11 +271,12 @@ public class Settings implements QueryAllConfiguration
                 + this.getStringProperty(WebappConfig.URI_SUFFIX, (String)WebappConfig.URI_SUFFIX.getDefaultValue());
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getFloatProperty(java.lang.String, float)
-     */
+    @Override
+    public float getFloatProperty(final WebappConfig propertyKey)
+    {
+        return getFloatProperty(propertyKey, (Float)propertyKey.getDefaultValue());
+    }
+    
     @Override
     public float getFloatProperty(final WebappConfig propertyKey, final float defaultValue)
     {
@@ -302,11 +303,12 @@ public class Settings implements QueryAllConfiguration
         return defaultValue;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getIntProperty(java.lang.String, int)
-     */
+    @Override
+    public int getIntProperty(final WebappConfig propertyKey)
+    {
+        return getIntProperty(propertyKey, (Integer)propertyKey.getDefaultValue());
+    }
+    
     @Override
     public int getIntProperty(final WebappConfig propertyKey, final int defaultValue)
     {
@@ -333,11 +335,12 @@ public class Settings implements QueryAllConfiguration
         return defaultValue;
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getLongProperty(java.lang.String, long)
-     */
+    @Override
+    public long getLongProperty(final WebappConfig propertyKey)
+    {
+        return getLongProperty(propertyKey, (Long)propertyKey.getDefaultValue());
+    }
+    
     @Override
     public long getLongProperty(final WebappConfig propertyKey, final long defaultValue)
     {
@@ -515,12 +518,12 @@ public class Settings implements QueryAllConfiguration
         return Collections.emptySet();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getStringProperty(java.lang.String,
-     * java.lang.String)
-     */
+    @Override
+    public String getStringProperty(final WebappConfig propertyKey)
+    {
+        return getStringProperty(propertyKey, (String)propertyKey.getDefaultValue());
+    }
+    
     @Override
     public String getStringProperty(final WebappConfig propertyKey, final String defaultValue)
     {
@@ -601,12 +604,12 @@ public class Settings implements QueryAllConfiguration
         return Collections.emptySet();
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.queryall.api.base.QueryAllConfiguration#getURIProperty(java.lang.String,
-     * org.openrdf.model.URI)
-     */
+    @Override
+    public URI getURIProperty(final WebappConfig propertyKey)
+    {
+        return getURIProperty(propertyKey, (URI)propertyKey.getDefaultValue());
+    }
+    
     @Override
     public URI getURIProperty(final WebappConfig propertyKey, final URI defaultValue)
     {
