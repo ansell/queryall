@@ -48,13 +48,21 @@ public interface QueryAllConfiguration
     
     Map<URI, RuleTest> getAllRuleTests();
     
+    boolean getBooleanProperty(WebappConfig propertyKey);
+    
     boolean getBooleanProperty(WebappConfig propertyKey, boolean defaultValue);
     
     String getDefaultHostAddress();
     
+    float getFloatProperty(WebappConfig key);
+    
     float getFloatProperty(WebappConfig key, float defaultValue);
     
+    int getIntProperty(WebappConfig key);
+    
     int getIntProperty(WebappConfig key, int defaultValue);
+    
+    long getLongProperty(WebappConfig key);
     
     long getLongProperty(WebappConfig key, long defaultValue);
     
@@ -80,11 +88,15 @@ public interface QueryAllConfiguration
     
     Collection<String> getStringProperties(WebappConfig key);
     
+    String getStringProperty(WebappConfig key);
+    
     String getStringProperty(WebappConfig key, String defaultValue);
     
     Pattern getTagPattern();
     
     Collection<URI> getURIProperties(WebappConfig string);
+    
+    URI getURIProperty(WebappConfig key);
     
     URI getURIProperty(WebappConfig key, URI defaultValue);
     

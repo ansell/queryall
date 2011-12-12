@@ -41,6 +41,7 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Schema;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.exception.QueryAllRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,9 +229,9 @@ public class SettingsFactory
         // }
         
         final boolean enablePeriodicConfigurationRefresh =
-                nextSettings.getBooleanProperty("enablePeriodicConfigurationRefresh", true);
+                nextSettings.getBooleanProperty(WebappConfig.ENABLE_PERIODIC_CONFIGURATION_REFRESH);
         final long periodicConfigurationMilliseconds =
-                nextSettings.getLongProperty("periodicConfigurationMilliseconds", 60000L);
+                nextSettings.getLongProperty(WebappConfig.PERIODIC_CONFIGURATION_REFRESH_MILLISECONDS);
         
         if(SettingsFactory._DEBUG)
         {
@@ -268,13 +269,29 @@ public class SettingsFactory
             final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
             // HACK TODO: Generalise properties to URIs instead of substrings so that arbitrary properties can be set
             // http://purl.org/queryall/webapp_configuration:
-            propertyBaseUriQueries
-                    .add("SELECT ?key ?uri ?value ?predicate WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?predicate), \"http://purl.org/queryall/webapp_configuration:\")) . BIND(substr(str(?predicate), 47) AS ?key) . } ");
+//            propertyBaseUriQueries
+//                    .add("SELECT ?key ?uri ?value ?predicate WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?predicate), \"http://purl.org/queryall/webapp_configuration:\")) . BIND(substr(str(?predicate), 47) AS ?key) . } ");
             
-            log.info("propertyBaseUriQueries="+propertyBaseUriQueries);
+//            propertyBaseUriQueries
+//                .add("SELECT ?key ?uri ?value ?predicate WHERE { ?uri ?predicate ?value . FILTER(strstarts(str(?predicate), \"http://purl.org/queryall/webapp_configuration:\")) . BIND(substr(str(?predicate), 47) AS ?key) . } ");
             
-            for(final String nextQuery : propertyBaseUriQueries)
+            StringBuilder configInList = new StringBuilder(100);
+
+            for(URI nextWebappConfigUri : webappConfigUris)
             {
+                if(configInList.length() > 0)
+                {
+                    configInList.append(",");
+                }
+                
+                configInList.append(nextWebappConfigUri.stringValue());
+            }
+            
+            String configList = configInList.toString();
+            
+            for(WebappConfig nextConfig : WebappConfig.values())
+            {
+                String nextQuery = "SELECT ?value WHERE { ?uri <"+nextConfig.getUri().stringValue()+"> ?value . FILTER(?uri IN("+configList+")}";
                 try
                 {
                     final TupleQuery tupleQuery = conn.prepareTupleQuery(QueryLanguage.SPARQL, nextQuery);
@@ -286,16 +303,15 @@ public class SettingsFactory
                         log.error("Could not find any properties for query="+propertyBaseUriQueries);
                     }
                     
-                    // for each result, insert the property into the nextSettings object using the
-                    // given key
+                    // for each result, insert the property into the nextSettings object using the nextConfig object that this query was derived from
                     while(tupleQueryResult.hasNext())
                     {
                         final BindingSet bindingSet = tupleQueryResult.next();
                         
-                        final Binding key = bindingSet.getBinding("key");
                         final Binding value = bindingSet.getBinding("value");
                         
-                        nextSettings.setProperty(key.getValue().stringValue(), value.getValue());
+                        // TODO: verify or compile a collection of the values?
+                        nextSettings.setProperty(nextConfig, value.getValue());
                     }
                     
                 }

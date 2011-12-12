@@ -106,8 +106,7 @@ public class GeneralServlet extends HttpServlet
         if(originalAcceptHeader == null || originalAcceptHeader.equals(""))
         {
             acceptHeader =
-                    localSettings.getStringProperty(Constants.PREFERRED_DISPLAY_CONTENT_TYPE,
-                            Constants.APPLICATION_RDF_XML);
+                    localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE);
         }
         else
         {
@@ -116,8 +115,7 @@ public class GeneralServlet extends HttpServlet
         
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
-                        localContentTypeNegotiator, localSettings.getStringProperty(
-                                Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML));
+                        localContentTypeNegotiator, localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -131,7 +129,7 @@ public class GeneralServlet extends HttpServlet
         // this method
         requestedContentType =
                 RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML),
+                        WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases
@@ -164,16 +162,16 @@ public class GeneralServlet extends HttpServlet
                     + " to blacklist redirect page");
             
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setHeader("Location", localSettings.getStringProperty("blacklistRedirectPage", "/error/blacklist"));
+            response.setHeader("Location", localSettings.getStringProperty(WebappConfig.BLACKLIST_REDIRECT_PAGE));
             return;
         }
         
         // TODO: arrange to move this into the header include function
-        response.setHeader("X-Application", localSettings.getStringProperty("userAgent", "queryall") + "/"
+        response.setHeader("X-Application", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
                 + PropertyUtils.VERSION);
         
         final List<Profile> includedProfiles =
-                ProfileUtils.getAndSortProfileList(localSettings.getURIProperties("activeProfiles"),
+                ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),
                         SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
         
         try
@@ -220,13 +218,13 @@ public class GeneralServlet extends HttpServlet
                     // 404 for document not found, as a query type matched somewhere without having
                     // the namespace recognised
                     // There are still no results, but this is a more specific exception
-                    responseCode = localSettings.getIntProperty("unknownNamespaceHttpResponseCode", 404);
+                    responseCode = localSettings.getIntProperty(WebappConfig.UNKNOWN_NAMESPACE_HTTP_RESPONSE_CODE);
                 }
                 else
                 {
                     // 400 for query completely unrecognised, even when not including namespace in
                     // each query type calculation
-                    responseCode = localSettings.getIntProperty("unknownQueryHttpResponseCode", 400);
+                    responseCode = localSettings.getIntProperty(WebappConfig.UNKNOWN_QUERY_HTTP_RESPONSE_CODE);
                 }
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);

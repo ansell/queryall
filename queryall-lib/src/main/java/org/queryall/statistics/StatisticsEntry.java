@@ -691,6 +691,8 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
+        // TODO: Convert this to new structure
+        /**
         if(localSettings.getURIProperty("statisticsServerMethod", SparqlProviderSchema.getProviderHttpPostSparql())
                 .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
         {
@@ -726,7 +728,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
             }
             
             return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "*/*",
+                    localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "* / *",
                     localSettings, localBlacklistController);
         }
         else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostUrl())
@@ -740,7 +742,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
             }
             
             return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), postInformation, "*/*", localSettings,
+                    localSettings.getStringProperty("statisticsServerUrl", ""), postInformation, "* / *", localSettings,
                     localBlacklistController);
         }
         else
@@ -749,6 +751,9 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                     "StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
                             + localSettings.getStringProperty("statisticsServerMethod", ""));
         }
+        **/
+        
+        return null;
     }
     
     /**
@@ -770,7 +775,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     /**
      * @return the connecttimeout
      */
-    public int getConnecttimeout()
+    public int getConnectTimeout()
     {
         return this.connecttimeout;
     }

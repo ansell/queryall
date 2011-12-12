@@ -21,6 +21,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.utils.Settings;
 import org.queryall.utils.SettingsFactory;
 
@@ -183,7 +184,7 @@ public class SettingsFactoryTest
         
         // TODO: test the expected list of properties from testRepository against the properties available from testSettings
         
-        Assert.assertTrue("boolean property not set correctly", testSettings.getBooleanProperty("useHardcodedRequestHostname", false));
+        Assert.assertTrue("boolean property not set correctly", testSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME));
     }
     
     @Ignore
