@@ -63,15 +63,23 @@ public enum WebappConfig
     
     N3_URL_SUFFIX("n3UrlSuffix", ""), 
     
+    NTRIPLES_URL_PREFIX("ntriplesUrlPrefix", "ntriples/"), 
+    
+    NTRIPLES_URL_SUFFIX("ntriplesUrlSuffix", ""), 
+    
+    NQUADS_URL_PREFIX("nquadsUrlPrefix", "nquads/"), 
+    
+    NQUADS_URL_SUFFIX("nquadsUrlSuffix", ""), 
+    
     INDEX_BANNER_IMAGE_PATH("indexBannerImagePath", "static/includes-images/merged-bio2rdf-banner.jpg"), 
     
-    INDEX_PAGE_SCRIPTS("indexPageScripts", ""),
+    INDEX_PAGE_SCRIPTS("indexPageScripts", Collections.emptyList()),
     
-    INDEX_PAGE_SCRIPTS_LOCAL("indexPageScriptsLocal", ""),
+    INDEX_PAGE_SCRIPTS_LOCAL("indexPageScriptsLocal", Collections.emptyList()),
 
-    INDEX_PAGE_STYLESHEETS("indexPageStylesheets", ""), 
+    INDEX_PAGE_STYLESHEETS("indexPageStylesheets", Collections.emptyList()), 
     
-    INDEX_PAGE_STYLESHEETS_LOCAL("indexPageStylesheetsLocal", ""), 
+    INDEX_PAGE_STYLESHEETS_LOCAL("indexPageStylesheetsLocal", Collections.emptyList()), 
     
     INDEX_PROJECT_IMAGE_PATH("indexProjectImagePath", "static/includes-images/Bio2RDF.jpg"), 
     
@@ -129,17 +137,17 @@ public enum WebappConfig
     
     PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT("pageoffsetIndividualQueryLimit", 500), 
     
-    BLANK_TITLE("blankTitle", ""), 
+    BLANK_TITLE("blankTitle", "(No title)"), 
     
-    COMMENT_PROPERTIES("titleProperties", ""), 
+    COMMENT_PROPERTIES("titleProperties", Collections.emptyList()), 
     
-    IMAGE_PROPERTIES("imageProperties", ""), 
+    IMAGE_PROPERTIES("imageProperties", Collections.emptyList()), 
     
     UNKNOWN_NAMESPACE_HTTP_RESPONSE_CODE("unknownNamespaceHttpResponseCode", 404), 
     
     UNKNOWN_QUERY_HTTP_RESPONSE_CODE("unknownQueryHttpResponseCode", 400), 
     
-    ACTIVE_PROFILES("activeProfiles", ""), 
+    ACTIVE_PROFILES("activeProfiles", Collections.emptyList()), 
     
     BLACKLIST_REDIRECT_PAGE("blacklistRedirectPage", "/error/blacklist"), 
     
@@ -235,6 +243,98 @@ public enum WebappConfig
      * Defaults to "mySampleOnlyTestString"
      */
     _TEST_STRING_PROPERTY("http://test.example.org/", "_testStringProperty", "mySampleOnlyTestString"), 
+    
+    
+    DEFAULT_ACCEPT_HEADER("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3"), 
+    
+    
+    
+    CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED("convertAlternateNamespacePrefixesToPreferred", true), 
+    
+    TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER("tryAllEndpointsForEachProvider", true), 
+    
+    READ_TIMEOUT("readTimeout", 30000), 
+    
+    CONNECT_TIMEOUT("connectTimeout", 3000), 
+    
+    USE_REQUEST_CACHE("useRequestCache", true), 
+    
+    ROBOT_HELP_URL("robotHelpUrl", "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp"), 
+    
+    ALWAYS_REDIRECT_TO_EXPLICIT_FORMAT_URL("alwaysRedirectToExplicitFormatUrl", false), 
+    
+    REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE("redirectToExplicitFormatHttpCode", 303), 
+    
+    ASSUMED_RESPONSE_CONTENT_TYPE("assumedResponseContentType", Constants.APPLICATION_RDF_XML), 
+    
+    UNKNOWN_NAMESPACE_STATIC_ADDITIONS("unknownNamespaceStaticAdditions", Collections.emptyList()), 
+    
+    
+    UNKNOWN_QUERY_STATIC_ADDITIONS("unknownQueryStaticAdditions", Collections.emptyList()), 
+    
+    
+    QUERYPLAN_URL_PREFIX("queryplanUrlPrefix", "queryplan/"), 
+    
+    QUERYPLAN_URL_SUFFIX("queryplanUrlSuffix", ""), 
+    
+    
+    PAGEOFFSET_QUICK_QUERY_LIMIT("pageoffsetQuickQueryLimit", 20), 
+    
+    
+    
+    ADMIN_CONFIGURATION_PREFIX("adminConfigurationPrefix", "configuration/"), 
+    
+    
+    ADMIN_WEBAPP_CONFIGURATION_PREFIX("adminWebappConfigurationPrefix", "webappconfiguration/"), 
+    
+    ADMIN_CONFIGURATION_HTML_PREFIX("adminConfigurationHtmlPrefix", ""), 
+    
+    
+    ADMIN_CONFIGURATION_HTML_SUFFIX("adminConfigurationHtmlSuffix", "/html"), 
+    
+    
+    ADMIN_CONFIGURATION_RDFXML_PREFIX("adminConfigurationRdfxmlPrefix", ""),
+    
+    ADMIN_CONFIGURATION_RDFXML_SUFFIX("adminConfigurationRdfxmlSuffix", "/rdfxml"), 
+    
+    ADMIN_CONFIGURATION_N3_PREFIX("adminConfigurationN3Prefix", ""),
+    
+    ADMIN_CONFIGURATION_N3_SUFFIX("adminConfigurationN3Suffix", "/n3"), 
+    
+    
+    ADMIN_CONFIGURATION_NTRIPLES_PREFIX("adminConfigurationNTriplesPrefix", ""),
+    
+    ADMIN_CONFIGURATION_NTRIPLES_SUFFIX("adminConfigurationNTriplesSuffix", "/ntriples"), 
+    
+    
+    ADMIN_CONFIGURATION_NQUADS_PREFIX("adminConfigurationNQuadsPrefix", ""),
+    
+    ADMIN_CONFIGURATION_NQUADS_SUFFIX("adminConfigurationNQuadsSuffix", "/nquads"), 
+    
+    
+    ADMIN_CONFIGURATION_JSON_PREFIX("adminConfigurationJsonPrefix", ""),
+    
+    ADMIN_CONFIGURATION_JSON_SUFFIX("adminConfigurationJsonSuffix", "/json"), 
+    
+    
+    ADMIN_URL_PREFIX("adminUrlPrefix", "admin/"), 
+    
+    
+    ADMIN_CONFIGURATION_REFRESH_PREFIX("adminConfigurationRefreshPrefix", "refresh"), 
+    
+    
+    ADMIN_CONFIGURATION_API_VERSION_OPENING_PREFIX("adminConfigurationApiVersionOpeningPrefix", ""),
+    
+    ADMIN_CONFIGURATION_API_VERSION_CLOSING_PREFIX("adminConfigurationApiVersionClosingPrefix", "/"),
+    
+    ADMIN_CONFIGURATION_API_VERSION_SUFFIX("adminConfigurationApiVersionSuffix", ""), 
+    
+    BLACKLIST_BASE_CLIENT_IP_ADDRESSES("blacklistBaseClientIPAddresses", Collections.emptyList()),
+    
+    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList()), 
+    
+    BLACKLIST_BASE_USER_AGENTS("blacklistBaseUserAgents", Collections.emptyList()),
+    
     
     
     

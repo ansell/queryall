@@ -32,6 +32,7 @@ import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.UnnormalisableRuleException;
@@ -69,9 +70,9 @@ public class ServletUtils
     {
         if(!requestQueryOptions.containsExplicitFormat())
         {
-            if(localSettings.getBooleanProperty("alwaysRedirectToExplicitFormatUrl", false))
+            if(localSettings.getBooleanProperty(WebappConfig.ALWAYS_REDIRECT_TO_EXPLICIT_FORMAT_URL))
             {
-                final int redirectCode = localSettings.getIntProperty("redirectToExplicitFormatHttpCode", 303);
+                final int redirectCode = localSettings.getIntProperty(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE);
                 
                 final StringBuilder redirectString = new StringBuilder();
                 final boolean ignoreContextPath = false;
@@ -120,8 +121,8 @@ public class ServletUtils
                     myRepository,
                     RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
                             localSettings.getAllNormalisationRules(), SortOrder.HIGHEST_ORDER_FIRST), includedProfiles,
-                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true));
+                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         }
         catch(final UnnormalisableRuleException e)
         {
@@ -239,7 +240,7 @@ public class ServletUtils
                 tempRepository.initialize();
                 
                 RdfUtils.insertResultIntoRepository(nextResult, tempRepository,
-                        localSettings.getStringProperty("assumedResponseContentType", Constants.APPLICATION_RDF_XML),
+                        localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
                         localSettings.getDefaultHostAddress());
                 
                 // Perform normalisation for the AfterResultsImport stage
@@ -248,9 +249,10 @@ public class ServletUtils
                                 .getRdfruleStageAfterResultsImport(), tempRepository, RuleUtils.getSortedRulesByUris(
                                 localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle()
                                         .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
-                                includedProfiles, localSettings.getBooleanProperty(
-                                        "recogniseImplicitRdfRuleInclusions", true), localSettings.getBooleanProperty(
-                                        "includeNonProfileMatchedRdfRules", true));
+                                includedProfiles, 
+                                localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+
                 
                 if(GeneralServlet._DEBUG)
                 {
@@ -389,7 +391,7 @@ public class ServletUtils
         RepositoryConnection myRepositoryConnection = null;
         
         final boolean convertAlternateToPreferredPrefix =
-                localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", false);
+                localSettings.getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED);
         
         try
         {
@@ -402,11 +404,11 @@ public class ServletUtils
             // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
             if(fetchController.anyNamespaceNotRecognised())
             {
-                staticQueryTypesForUnknown = localSettings.getURIProperties("unknownNamespaceStaticAdditions");
+                staticQueryTypesForUnknown = localSettings.getURIProperties(WebappConfig.UNKNOWN_NAMESPACE_STATIC_ADDITIONS);
             }
             else
             {
-                staticQueryTypesForUnknown = localSettings.getURIProperties("unknownQueryStaticAdditions");
+                staticQueryTypesForUnknown = localSettings.getURIProperties(WebappConfig.UNKNOWN_QUERY_STATIC_ADDITIONS);
             }
             
             for(final URI nextStaticQueryTypeForUnknown : staticQueryTypesForUnknown)
@@ -426,7 +428,7 @@ public class ServletUtils
                 {
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
-                                    localSettings.getStringProperty("hostName", "bio2rdf.org"), realHostName,
+                                    localSettings.getStringProperty(WebappConfig.HOST_NAME), realHostName,
                                     pageOffset, localSettings);
                     
                     // This is a last ditch solution to giving some meaningful feedback, as we
@@ -435,8 +437,8 @@ public class ServletUtils
                     String nextBackupString =
                             QueryCreator.createStaticRdfXmlString(nextIncludeType, (OutputQueryType)nextIncludeType,
                                     null, attributeList, emptyNamespaceEntryMap, includedProfiles,
-                                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
+                                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
                                     convertAlternateToPreferredPrefix, localSettings)
                                     + "\n";
                     
@@ -511,14 +513,14 @@ public class ServletUtils
             final DefaultQueryOptions requestQueryOptions, final String requestedContentType,
             boolean ignoreContextPath, final String contextPath)
     {
-        if(localSettings.getBooleanProperty("useHardcodedRequestHostname", false))
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
         {
-            redirectString.append(localSettings.getStringProperty("hardcodedRequestHostname", ""));
+            redirectString.append(localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME));
         }
         
-        if(localSettings.getBooleanProperty("useHardcodedRequestContext", false))
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
         {
-            redirectString.append(localSettings.getStringProperty("hardcodedRequestContext", ""));
+            redirectString.append(localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT));
             ignoreContextPath = true;
         }
         
@@ -536,131 +538,69 @@ public class ServletUtils
             
         }
         
+        // add the prefix for this type
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
-            redirectString.append(localSettings.getStringProperty("htmlUrlPrefix", "page/"));
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/"));
-            }
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset"));
-                redirectString.append(requestQueryOptions.getPageOffset());
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/"));
-            }
-            
-            redirectString.append(requestQueryOptions.getParsedRequest());
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlSuffix", ""));
-            }
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlSuffix", ""));
-            }
-            
-            redirectString.append(localSettings.getStringProperty("htmlUrlSuffix", ""));
+            redirectString.append(localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX));
         }
         else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
         {
-            redirectString.append(localSettings.getStringProperty("n3UrlPrefix", "n3/"));
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/"));
-            }
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset"));
-                redirectString.append(requestQueryOptions.getPageOffset());
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/"));
-            }
-            
-            redirectString.append(requestQueryOptions.getParsedRequest());
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlSuffix", ""));
-            }
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlSuffix", ""));
-            }
-            
-            redirectString.append(localSettings.getStringProperty("n3UrlSuffix", ""));
+            redirectString.append(localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX));
         }
         else if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
         {
-            redirectString.append(localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/"));
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/"));
-            }
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset"));
-                redirectString.append(requestQueryOptions.getPageOffset());
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/"));
-            }
-            
-            redirectString.append(requestQueryOptions.getParsedRequest());
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlSuffix", ""));
-            }
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlSuffix", ""));
-            }
-            
-            redirectString.append(localSettings.getStringProperty("rdfXmlUrlSuffix", ""));
+            redirectString.append(localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX));
         }
-        
         else if(requestedContentType.equals(Constants.APPLICATION_JSON))
         {
-            redirectString.append(localSettings.getStringProperty("jsonUrlPrefix", "json/"));
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/"));
-            }
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset"));
-                redirectString.append(requestQueryOptions.getPageOffset());
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/"));
-            }
-            
-            redirectString.append(requestQueryOptions.getParsedRequest());
-            
-            if(requestQueryOptions.containsExplicitPageOffsetValue())
-            {
-                redirectString.append(localSettings.getStringProperty("pageoffsetUrlSuffix", ""));
-            }
-            
-            if(requestQueryOptions.isQueryPlanRequest())
-            {
-                redirectString.append(localSettings.getStringProperty("queryplanUrlSuffix", ""));
-            }
-            
-            redirectString.append(localSettings.getStringProperty("jsonUrlSuffix", ""));
+            redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX));
         }
-        else
+        else // or throw an error if we don't recognise it
         {
             throw new IllegalArgumentException(
                     "GeneralServlet.getRedirectString: did not recognise requestedContentType=" + requestedContentType);
+        }
+        
+        if(requestQueryOptions.isQueryPlanRequest())
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_PREFIX));
+        }
+        
+        if(requestQueryOptions.containsExplicitPageOffsetValue())
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX));
+            redirectString.append(requestQueryOptions.getPageOffset());
+            redirectString.append(localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX));
+        }
+        
+        redirectString.append(requestQueryOptions.getParsedRequest());
+        
+        if(requestQueryOptions.containsExplicitPageOffsetValue())
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX));
+        }
+        
+        if(requestQueryOptions.isQueryPlanRequest())
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_SUFFIX));
+        }
+        
+        // Then add on the suffix for this type
+        if(requestedContentType.equals(Constants.TEXT_HTML))
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+        }
+        else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX));
+        }
+        else if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX));
+        }
+        else if(requestedContentType.equals(Constants.APPLICATION_JSON))
+        {
+            redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX));
         }
     }
     

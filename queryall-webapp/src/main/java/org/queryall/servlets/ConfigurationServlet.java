@@ -27,6 +27,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.servlets.helpers.SettingsContextListener;
@@ -87,7 +88,7 @@ public class ConfigurationServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"), localContentTypeNegotiator,
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -178,7 +179,7 @@ public class ConfigurationServlet extends HttpServlet
         
         final String writerFormatString =
                 RdfUtils.findBestContentType(requestedContentType,
-                        localSettings.getStringProperty("preferredDisplayContentType", ""), "application/rdf+xml");
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE), "application/rdf+xml");
         
         RDFFormat writerFormat = null;
         

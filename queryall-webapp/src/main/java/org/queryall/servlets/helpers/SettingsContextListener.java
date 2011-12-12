@@ -9,6 +9,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.velocity.app.VelocityEngine;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.servlets.html.VelocityHelper;
@@ -66,7 +67,7 @@ public class SettingsContextListener implements ServletContextListener
         // setup the default content type negotiator using the users given preference
         final ContentTypeNegotiator contentTypeNegotiator =
                 QueryallContentNegotiator.getContentNegotiator(tempSettings.getStringProperty(
-                        "preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         // then put both of them into servlet context so they can be shared between requests in this
         // servlet

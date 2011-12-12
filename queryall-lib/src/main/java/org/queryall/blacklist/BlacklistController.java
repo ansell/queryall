@@ -93,10 +93,10 @@ public class BlacklistController
         this.localSettings = queryAllConfiguration;
         this.currentIPBlacklist =
                 Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
-                        .getStringProperties("blacklistBaseClientIPAddresses")));
+                        .getStringProperties(WebappConfig.BLACKLIST_BASE_CLIENT_IP_ADDRESSES)));
         this.currentIPWhitelist =
                 Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
-                        .getStringProperties("whitelistBaseClientIPAddresses")));
+                        .getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES)));
     }
     
     public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist)
@@ -619,7 +619,7 @@ public class BlacklistController
             {
                 if(this.currentIPBlacklist == null)
                 {
-                    this.currentIPBlacklist = this.localSettings.getStringProperties("blacklistBaseClientIPAddresses");
+                    this.currentIPBlacklist = this.localSettings.getStringProperties(WebappConfig.BLACKLIST_BASE_CLIENT_IP_ADDRESSES);
                 }
             }
         }
@@ -635,7 +635,7 @@ public class BlacklistController
             {
                 if(this.currentIPWhitelist == null)
                 {
-                    this.currentIPWhitelist = this.localSettings.getStringProperties("whitelistBaseClientIPAddresses");
+                    this.currentIPWhitelist = this.localSettings.getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES);
                 }
             }
         }

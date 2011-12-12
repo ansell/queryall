@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.QueryDebug;
 import org.queryall.servlets.helpers.SettingsContextListener;
@@ -72,9 +73,9 @@ public class ServerStatsServlet extends HttpServlet
         out.write("Now : " + now + "<br />\n");
         out.write("Last error reset date: " + localBlacklistController.getLastExpiryDate().toString() + "<br />\n");
         out.write("Server startup date: " + localBlacklistController.getLastServerStartupDate().toString() + "<br />\n");
-        out.write("Reset period " + localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L) + "<br />\n");
+        out.write("Reset period " + localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS) + "<br />\n");
         out.write("Client blacklist will reset in "
-                + ((localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 0L) - differenceMilliseconds) / 1000)
+                + ((localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS) - differenceMilliseconds) / 1000)
                 + " seconds.<br /><br />\n");
         
         if(localBlacklistController.getAllHttpErrorResponseCodesByServer() != null)

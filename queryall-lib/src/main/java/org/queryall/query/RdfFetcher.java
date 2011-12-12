@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.PropertyUtils;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
@@ -54,7 +55,7 @@ public class RdfFetcher
         {
             RdfFetcher.log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
                     + " Settings.getStringPropertyFromConfig(\"connectTimeout\")="
-                    + this.localSettings.getIntProperty("connectTimeout", 3000));
+                    + this.localSettings.getIntProperty(WebappConfig.CONNECT_TIMEOUT));
         }
         
         if(endpointUrl == null)
@@ -98,24 +99,23 @@ public class RdfFetcher
             conn.setRequestProperty(
                     "User-Agent",
                     "Mozilla/5.0 (compatible; "
-                            + this.localSettings.getStringProperty("userAgent", "queryall")
+                            + this.localSettings.getStringProperty(WebappConfig.USER_AGENT)
                             + "/"
                             + PropertyUtils.VERSION
                             + " +"
-                            + this.localSettings.getStringProperty("robotHelpUrl",
-                                    "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp") + ")");
+                            + this.localSettings.getStringProperty(WebappConfig.ROBOT_HELP_URL) + ")");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
                 acceptHeader =
-                        this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
+                        this.localSettings.getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER);
             }
             
             conn.setRequestProperty("Accept", acceptHeader);
             
-            conn.setUseCaches(this.localSettings.getBooleanProperty("useRequestCache", true));
-            conn.setConnectTimeout(this.localSettings.getIntProperty("connectTimeout", 3000));
-            conn.setReadTimeout(this.localSettings.getIntProperty("readTimeout", 30000));
+            conn.setUseCaches(this.localSettings.getBooleanProperty(WebappConfig.USE_REQUEST_CACHE));
+            conn.setConnectTimeout(this.localSettings.getIntProperty(WebappConfig.CONNECT_TIMEOUT));
+            conn.setReadTimeout(this.localSettings.getIntProperty(WebappConfig.READ_TIMEOUT));
             
             if(postInformation != null && !postInformation.trim().equals(""))
             {
@@ -422,10 +422,11 @@ public class RdfFetcher
         // particular HTTP server or intermediate proxy
         String postQuery = "";
         
-        if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
-        {
-            postQuery += "maxrows=" + maxRowsParameter + "&";
-        }
+        // TODO: Decide where it is appropriate to arrange for this property
+        //        if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
+//        {
+//            postQuery += "maxrows=" + maxRowsParameter + "&";
+//        }
         
         postQuery += "formatting=Raw&";
         postQuery += "softlimit=50&";

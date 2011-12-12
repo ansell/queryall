@@ -22,6 +22,7 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.Schema;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
@@ -72,7 +73,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"), localContentTypeNegotiator,
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -149,7 +150,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         // this method
         requestedContentType =
                 RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML),
+                        WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases

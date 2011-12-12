@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
     private static final boolean _INFO = RdfFetcherSparqlQueryRunnable.log.isInfoEnabled();
     
     public String graphUri = "";
-    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 500);
+    public int maxRowsParameter = this.getLocalSettings().getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
     
     public RdfFetcherSparqlQueryRunnable(final String nextEndpointUrl, final String nextGraphUri,
             final String nextQuery, final String nextDebug, final String nextAcceptHeader,

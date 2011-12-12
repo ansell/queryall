@@ -2122,16 +2122,15 @@ public final class RdfUtils
                     if(nextReaderFormat == null)
                     {
                         nextReaderFormat =
-                                Rio.getParserFormatForMIMEType(localSettings.getStringProperty(
-                                        "assumedResponseContentType", Constants.APPLICATION_RDF_XML));
+                                Rio.getParserFormatForMIMEType(localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         
                         if(nextReaderFormat == null)
                         {
                             RdfUtils.log
                                     .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
-                                            + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + localSettings.getStringProperty("assumedResponseContentType", ""));
+                                            + " localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
+                                            + localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                             continue;
                         }
                         else
@@ -2139,8 +2138,8 @@ public final class RdfUtils
                             RdfUtils.log
                                     .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
-                                            + " using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + localSettings.getStringProperty("assumedResponseContentType", ""));
+                                            + " using configured preferred content type as fallback localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
+                                            + localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         }
                     }
                     else if(RdfUtils.log.isDebugEnabled())
@@ -2785,7 +2784,7 @@ public final class RdfUtils
         for(final RdfFetcherQueryRunnable nextResult : results)
         {
             RdfUtils.insertResultIntoRepository(nextResult, myRepository,
-                    localSettings.getStringProperty("assumedResponseContentType", Constants.APPLICATION_RDF_XML),
+                    localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
                     localSettings.getDefaultHostAddress());
         }
     }
