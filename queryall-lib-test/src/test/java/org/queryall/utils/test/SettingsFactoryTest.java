@@ -179,8 +179,10 @@ public class SettingsFactoryTest
                 this.testValueFactory
                         .createURI("http://purl.org/queryall/webapp_configuration:useHardcodedRequestHostname");
         
+        // verify that the predicate exists
         Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, useHardcodedRequestHostnameUri, null, false));
         
+        // verify that the predicate is attached to the location specific config URI
         Assert.assertTrue(this.testRepositoryConnection.hasStatement(locationSpecificConfigUri,
                 useHardcodedRequestHostnameUri, null, false));
         
