@@ -281,17 +281,18 @@ public class SettingsFactory
             {
                 if(configInList.length() > 0)
                 {
-                    configInList.append(",");
+                    configInList.append(", ");
                 }
                 
-                configInList.append(nextWebappConfigUri.stringValue());
+                configInList.append("<").append(nextWebappConfigUri.stringValue()).append(">");
             }
             
             String configList = configInList.toString();
             
             for(WebappConfig nextConfig : WebappConfig.values())
             {
-                String nextQuery = "SELECT ?value WHERE { ?uri <"+nextConfig.getUri().stringValue()+"> ?value . FILTER(?uri IN("+configList+")}";
+                String nextQuery = "SELECT ?value WHERE { ?uri <"+nextConfig.getUri().stringValue()+"> ?value . FILTER(?uri IN("+configList+")) . }";
+                
                 try
                 {
                     final TupleQuery tupleQuery = conn.prepareTupleQuery(QueryLanguage.SPARQL, nextQuery);
