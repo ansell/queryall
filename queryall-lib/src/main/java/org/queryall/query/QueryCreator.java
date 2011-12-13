@@ -1275,7 +1275,7 @@ public class QueryCreator
                     QueryCreator.log.debug("isNamespace and namespaceInputVariables.containsKey(nextMatchTag)");
                     
                     boolean foundANamespace = false;
-                    // TODO: What happens if there could be more than one match here, as we aren't
+                    // FIXME: What happens if there could be more than one match here, as we aren't
                     // ordering the NamespaceEntries... could have irregular behaviour
                     // Currently, the first namespace to match will set the separatorString and
                     // authorityString to match its definition and then break the loop
@@ -1568,22 +1568,6 @@ public class QueryCreator
         }
         
         return inputString;
-    }
-    
-    public static String testReplaceMethod(final String inputString, final QueryAllConfiguration localSettings)
-    {
-        final Map<String, String> myTestMap = new TreeMap<String, String>();
-        
-        myTestMap.put("${input_1}", "MyInput1");
-        myTestMap.put("${inputUrlEncoded_privatelowercase_input_1}", "myinput1");
-        myTestMap.put("${input_2}", "YourInput2");
-        myTestMap.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
-        
-        final String returnString = QueryCreator.replaceTags(inputString, myTestMap, localSettings.getTagPattern());
-        
-        // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
-        
-        return returnString;
     }
     
 }
