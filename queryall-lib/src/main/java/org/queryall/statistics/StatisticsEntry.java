@@ -684,7 +684,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
         // TODO: Convert this to new structure
-        /**
+/**
          * if(localSettings.getURIProperty("statisticsServerMethod",
          * SparqlProviderSchema.getProviderHttpPostSparql())
          * .equals(SparqlProviderSchema.getProviderHttpPostSparql())) { final Repository

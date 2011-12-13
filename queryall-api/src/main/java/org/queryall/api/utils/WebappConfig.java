@@ -392,22 +392,6 @@ public enum WebappConfig
         this.uriValue = uri;
     }
     
-    /**
-     * 
-     * @return False if the default value is a collection, or more generally, any Iterable, indicating that the property can contain multiple values simultaneously, and return true to overwrite all subsequent properties for non-collection properties
-     */
-    public boolean overwrite()
-    {
-        if(defaultValue instanceof Iterable<?>)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    
     public Object getDefaultValue()
     {
         return this.defaultValue;
@@ -426,5 +410,23 @@ public enum WebappConfig
     public URI getUri()
     {
         return this.uriValue;
+    }
+    
+    /**
+     * 
+     * @return False if the default value is a collection, or more generally, any Iterable,
+     *         indicating that the property can contain multiple values simultaneously, and return
+     *         true to overwrite all subsequent properties for non-collection properties
+     */
+    public boolean overwrite()
+    {
+        if(this.defaultValue instanceof Iterable<?>)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 }
