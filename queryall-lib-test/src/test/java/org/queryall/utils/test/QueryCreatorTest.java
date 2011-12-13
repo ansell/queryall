@@ -21,6 +21,7 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.WebappConfig;
@@ -29,47 +30,51 @@ import org.queryall.impl.namespace.NamespaceEntryImpl;
 import org.queryall.impl.provider.HttpSparqlProviderImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.query.QueryCreator;
-import org.queryall.utils.SettingsFactory;
+import org.queryall.utils.Settings;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryCreatorTest
 {
-    private ValueFactory testValueFactory;
+    private List<String> emptySpecialInstructions;
+    
+    private Map<String, String> testAttributeList1;
+    private Map<String, String> testAttributeList2;
+    private Map<String, String> testAttributeList3;
+    
+    private boolean testConvertAlternateToPreferredPrefix;
+    
+    private List<Profile> testIncludedProfiles;
+    
+    private boolean testIncludeNonProfileMatchedRdfRules;
+    
+    private QueryAllConfiguration testLocalSettings1;
+    private QueryAllConfiguration testLocalSettings2;
+    private QueryAllConfiguration testLocalSettings3;
+    
+    private Collection<NamespaceEntry> testNamespaceEntries1;
+    private Collection<NamespaceEntry> testNamespaceEntries2;
+    private Collection<NamespaceEntry> testNamespaceEntries3;
+    
+    private NamespaceEntry testNamespaceEntry1;
+    private NamespaceEntry testNamespaceEntry2;
+    
+    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables1;
+    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables2;
+    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables3;
+    
+    private Provider testProvider1;
+    private Provider testProvider2;
+    private HttpProvider testHttpProvider3;
+    
+    private boolean testRecogniseImplicitRdfRuleInclusions;
     
     private RegexInputQueryTypeImpl testRegexInputQueryType1;
-    private Provider testProvider1;
-    private Map<String, String> testAttributeList1;
-    private List<Profile> testIncludedProfiles;
-    private boolean testRecogniseImplicitRdfRuleInclusions;
-    private boolean testIncludeNonProfileMatchedRdfRules;
-    private boolean testConvertAlternateToPreferredPrefix;
-    private QueryAllConfiguration testLocalSettings1;
-    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables1;
-    private NamespaceEntry testNamespaceEntry1;
-    private Collection<NamespaceEntry> testNamespaceEntries1;
     private RegexInputQueryTypeImpl testRegexInputQueryType2;
-    private Provider testProvider2;
-    private NamespaceEntry testNamespaceEntry2;
-    private Map<String, String> testAttributeList2;
-    private Map<String, Collection<NamespaceEntry>> testNamespaceInputVariables2;
-    private Collection<NamespaceEntry> testNamespaceEntries2;
-    private QueryAllConfiguration testLocalSettings2;
-    
     private RegexInputQueryTypeImpl testRegexInputQueryType3;
     
-    private HttpSparqlProviderImpl testProvider3;
-    
-    private HashMap<String, Collection<NamespaceEntry>> testNamespaceInputVariables3;
-    
-    private ArrayList<NamespaceEntry> testNamespaceEntries3;
-    
-    private HashMap<String, String> testAttributeList3;
-    
-    private QueryAllConfiguration testLocalSettings3;
-
-    private List<String> emptySpecialInstructions;
+    private ValueFactory testValueFactory;
     
     /**
      * @throws java.lang.Exception
@@ -132,10 +137,10 @@ public class QueryCreatorTest
         this.testProvider2.addIncludedInQueryType(this.testRegexInputQueryType2.getKey());
         this.testProvider2.addNamespace(this.testNamespaceEntry2.getKey());
         
-        this.testProvider3 = new HttpSparqlProviderImpl();
-        this.testProvider3.setKey("http://example.org/test/provider/2");
-        this.testProvider3.addIncludedInQueryType(this.testRegexInputQueryType3.getKey());
-        this.testProvider3.addEndpointUrl("http://testendpointurl.net/${input_1}/goingwell/${input_2}");
+        this.testHttpProvider3 = new HttpSparqlProviderImpl();
+        this.testHttpProvider3.setKey("http://example.org/test/provider/2");
+        this.testHttpProvider3.addIncludedInQueryType(this.testRegexInputQueryType3.getKey());
+        this.testHttpProvider3.addEndpointUrl("http://testendpointurl.net/${input_1}/goingwell/${input_2}");
         this.testProvider2.addNamespace(this.testNamespaceEntry1.getKey());
         
         this.testAttributeList1 = new HashMap<String, String>();
@@ -154,28 +159,26 @@ public class QueryCreatorTest
         this.testIncludeNonProfileMatchedRdfRules = true;
         this.testConvertAlternateToPreferredPrefix = true;
         
-        this.testLocalSettings1 =
-                SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
-                        "http://example.org/test/config/querycreator-1");
-        
+        this.testLocalSettings1 = new Settings();
+        this.testLocalSettings1.setProperty(WebappConfig.HOST_NAME, "1.example.org");
+        this.testLocalSettings1.setProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
         this.testLocalSettings1.addQueryType(this.testRegexInputQueryType1);
         this.testLocalSettings1.addProvider(this.testProvider1);
         this.testLocalSettings1.addNamespaceEntry(this.testNamespaceEntry1);
         
-        this.testLocalSettings2 =
-                SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
-                        "http://example.org/test/config/querycreator-1");
-        
+        this.testLocalSettings2 = new Settings();
+        this.testLocalSettings2.setProperty(WebappConfig.HOST_NAME, "1.example.org");
+        this.testLocalSettings2.setProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
         this.testLocalSettings2.addQueryType(this.testRegexInputQueryType2);
         this.testLocalSettings2.addProvider(this.testProvider2);
         this.testLocalSettings2.addNamespaceEntry(this.testNamespaceEntry2);
         
-        this.testLocalSettings3 =
-                SettingsFactory.generateSettings("/testconfigs/querycreatortestconfig-base.n3", "text/rdf+n3",
-                        "http://example.org/test/config/querycreator-1");
+        this.testLocalSettings3 = new Settings();
+        this.testLocalSettings3.setProperty(WebappConfig.HOST_NAME, "1.example.org");
+        this.testLocalSettings3.setProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
         
         this.testLocalSettings3.addQueryType(this.testRegexInputQueryType3);
-        this.testLocalSettings3.addProvider(this.testProvider3);
+        this.testLocalSettings3.addProvider(this.testHttpProvider3);
         this.testLocalSettings3.addNamespaceEntry(this.testNamespaceEntry1);
         
         this.testNamespaceInputVariables1 = new HashMap<String, Collection<NamespaceEntry>>();
@@ -193,7 +196,7 @@ public class QueryCreatorTest
         this.testNamespaceEntries3.add(this.testNamespaceEntry1);
         this.testNamespaceInputVariables3.put("input_1", this.testNamespaceEntries3);
         
-        emptySpecialInstructions = Collections.emptyList();
+        this.emptySpecialInstructions = Collections.emptyList();
     }
     
     /**
@@ -272,7 +275,7 @@ public class QueryCreatorTest
     public void testCreateStaticRdfXmlString() throws QueryAllException
     {
         Assert.assertEquals("testsomething", QueryCreator.createStaticRdfXmlString(this.testRegexInputQueryType3,
-                this.testRegexInputQueryType3, this.testProvider3, this.testAttributeList3,
+                this.testRegexInputQueryType3, this.testHttpProvider3, this.testAttributeList3,
                 this.testNamespaceInputVariables3, this.testIncludedProfiles,
                 this.testRecogniseImplicitRdfRuleInclusions, this.testIncludeNonProfileMatchedRdfRules,
                 this.testConvertAlternateToPreferredPrefix, this.testLocalSettings3));
@@ -310,7 +313,10 @@ public class QueryCreatorTest
     @Test
     public void testMatchAndReplaceInputVariablesForQueryTypeEmptyTemplate()
     {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType1, testAttributeList1, "", emptySpecialInstructions, false, testNamespaceInputVariables1, testProvider1);
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
+                        this.testAttributeList1, "", this.emptySpecialInstructions, false,
+                        this.testNamespaceInputVariables1, this.testProvider1);
         
         Assert.assertEquals("", resultString);
     }
@@ -321,9 +327,44 @@ public class QueryCreatorTest
      * .
      */
     @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeFourVariableAlternateNs2()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${authority}${input_1}${separator}${input_2}",
+                        this.emptySpecialInstructions, false, this.testNamespaceInputVariables2, this.testProvider2);
+        
+        Assert.assertEquals("http://other.example.org/otherNs/otherNsUniqueId", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeFourVariablePreferredNs2()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${authority}${input_1}${separator}${input_2}",
+                        this.emptySpecialInstructions, true, this.testNamespaceInputVariables2, this.testProvider2);
+        
+        Assert.assertEquals("http://other.example.org/myOtherNamespace/otherNsUniqueId", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
     public void testMatchAndReplaceInputVariablesForQueryTypeSingleVariableAlternateNs1()
     {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType1, testAttributeList1, "${input_1}", emptySpecialInstructions, false, testNamespaceInputVariables1, testProvider1);
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
+                        this.testAttributeList1, "${input_1}", this.emptySpecialInstructions, false,
+                        this.testNamespaceInputVariables1, this.testProvider1);
         
         Assert.assertEquals("alternateNs", resultString);
     }
@@ -334,48 +375,12 @@ public class QueryCreatorTest
      * .
      */
     @Test
-    public void testMatchAndReplaceInputVariablesForQueryTypeSingleVariablePreferredNs1()
-    {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType1, testAttributeList1, "${input_1}", emptySpecialInstructions, true, testNamespaceInputVariables1, testProvider1);
-        
-        Assert.assertEquals("myPreferredNamespace", resultString);
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
-     * .
-     */
-    @Test
-    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariableAlternateNs1()
-    {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType1, testAttributeList1, "${input_1}${separator}", emptySpecialInstructions, false, testNamespaceInputVariables1, testProvider1);
-        
-        Assert.assertEquals("alternateNs:", resultString);
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
-     * .
-     */
-    @Test
-    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariablePreferredNs1()
-    {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType1, testAttributeList1, "${input_1}${separator}", emptySpecialInstructions, true, testNamespaceInputVariables1, testProvider1);
-        
-        Assert.assertEquals("myPreferredNamespace:", resultString);
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
-     * .
-     */
-    @Test
     public void testMatchAndReplaceInputVariablesForQueryTypeSingleVariableAlternateNs2()
     {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType2, testAttributeList2, "${input_1}", emptySpecialInstructions, false, testNamespaceInputVariables2, testProvider2);
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${input_1}", this.emptySpecialInstructions, false,
+                        this.testNamespaceInputVariables2, this.testProvider2);
         
         Assert.assertEquals("otherNs", resultString);
     }
@@ -386,9 +391,28 @@ public class QueryCreatorTest
      * .
      */
     @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeSingleVariablePreferredNs1()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
+                        this.testAttributeList1, "${input_1}", this.emptySpecialInstructions, true,
+                        this.testNamespaceInputVariables1, this.testProvider1);
+        
+        Assert.assertEquals("myPreferredNamespace", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
     public void testMatchAndReplaceInputVariablesForQueryTypeSingleVariablePreferredNs2()
     {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType2, testAttributeList2, "${input_1}", emptySpecialInstructions, true, testNamespaceInputVariables2, testProvider2);
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${input_1}", this.emptySpecialInstructions, true,
+                        this.testNamespaceInputVariables2, this.testProvider2);
         
         Assert.assertEquals("myOtherNamespace", resultString);
     }
@@ -399,35 +423,12 @@ public class QueryCreatorTest
      * .
      */
     @Test
-    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariableAlternateNs2()
-    {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType2, testAttributeList2, "${input_1}${separator}", emptySpecialInstructions, false, testNamespaceInputVariables2, testProvider2);
-        
-        Assert.assertEquals("otherNs/", resultString);
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
-     * .
-     */
-    @Test
-    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariablePreferredNs2()
-    {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType2, testAttributeList2, "${input_1}${separator}", emptySpecialInstructions, true, testNamespaceInputVariables2, testProvider2);
-        
-        Assert.assertEquals("myOtherNamespace/", resultString);
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
-     * .
-     */
-    @Test
     public void testMatchAndReplaceInputVariablesForQueryTypeThreeVariableAlternateNs2()
     {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType2, testAttributeList2, "${authority}${input_1}${separator}", emptySpecialInstructions, false, testNamespaceInputVariables2, testProvider2);
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${authority}${input_1}${separator}", this.emptySpecialInstructions,
+                        false, this.testNamespaceInputVariables2, this.testProvider2);
         
         Assert.assertEquals("http://other.example.org/otherNs/", resultString);
     }
@@ -440,9 +441,76 @@ public class QueryCreatorTest
     @Test
     public void testMatchAndReplaceInputVariablesForQueryTypeThreeVariablePreferredNs2()
     {
-        String resultString = QueryCreator.matchAndReplaceInputVariablesForQueryType(testRegexInputQueryType2, testAttributeList2, "${authority}${input_1}${separator}", emptySpecialInstructions, true, testNamespaceInputVariables2, testProvider2);
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${authority}${input_1}${separator}", this.emptySpecialInstructions,
+                        true, this.testNamespaceInputVariables2, this.testProvider2);
         
         Assert.assertEquals("http://other.example.org/myOtherNamespace/", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariableAlternateNs1()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
+                        this.testAttributeList1, "${input_1}${separator}", this.emptySpecialInstructions, false,
+                        this.testNamespaceInputVariables1, this.testProvider1);
+        
+        Assert.assertEquals("alternateNs:", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariableAlternateNs2()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${input_1}${separator}", this.emptySpecialInstructions, false,
+                        this.testNamespaceInputVariables2, this.testProvider2);
+        
+        Assert.assertEquals("otherNs/", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariablePreferredNs1()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
+                        this.testAttributeList1, "${input_1}${separator}", this.emptySpecialInstructions, true,
+                        this.testNamespaceInputVariables1, this.testProvider1);
+        
+        Assert.assertEquals("myPreferredNamespace:", resultString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.query.QueryCreator#matchAndReplaceInputVariablesForQueryType(org.queryall.api.querytype.QueryType, java.util.Map, java.lang.String, java.util.List, boolean, java.util.Map, org.queryall.api.provider.Provider)}
+     * .
+     */
+    @Test
+    public void testMatchAndReplaceInputVariablesForQueryTypeTwoVariablePreferredNs2()
+    {
+        final String resultString =
+                QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
+                        this.testAttributeList2, "${input_1}${separator}", this.emptySpecialInstructions, true,
+                        this.testNamespaceInputVariables2, this.testProvider2);
+        
+        Assert.assertEquals("myOtherNamespace/", resultString);
     }
     
     /**
@@ -475,7 +543,11 @@ public class QueryCreatorTest
         myTestMap.put("${input_2}", "YourInput2");
         myTestMap.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
         
-        final String returnString = QueryCreator.replaceTags("${input_1}:--:${inputUrlEncoded_privatelowercase_input_2}:--:${input_2}:--:${inputUrlEncoded_privatelowercase_input_1}", myTestMap, testLocalSettings1.getTagPattern());
+        final String returnString =
+                QueryCreator
+                        .replaceTags(
+                                "${input_1}:--:${inputUrlEncoded_privatelowercase_input_2}:--:${input_2}:--:${inputUrlEncoded_privatelowercase_input_1}",
+                                myTestMap, this.testLocalSettings1.getTagPattern());
         
         // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
         
