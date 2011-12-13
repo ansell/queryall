@@ -1043,6 +1043,11 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringStringCollection()
     {
+        Collection<String> testEmptyProperty = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(testEmptyProperty);
+        Assert.assertEquals(0, testEmptyProperty.size());
+        
         String testStringDefault = "default value";
 
         String testStringNonDefault = "my non-default string";
@@ -1094,6 +1099,11 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringURICollection()
     {
+        Collection<URI> testEmptyProperty = this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(testEmptyProperty);
+        Assert.assertEquals(0, testEmptyProperty.size());
+        
         final URI testDefault = this.testValueFactory.createURI("http://example.org/test/default");
         
         final URI testUri1 = this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1");
