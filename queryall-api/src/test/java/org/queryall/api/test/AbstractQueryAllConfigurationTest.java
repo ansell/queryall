@@ -1043,18 +1043,19 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringStringCollection()
     {
+        String testStringDefault = "default value";
+
         String testStringNonDefault = "my non-default string";
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringNonDefault);
         
         Assert.assertEquals(testStringNonDefault,
-                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY));
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
         
         String testString1 = "my test string";
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testString1);
         
         // verify that the default value is returned now that there are two properties with the same name, as it should not attempt to choose one of them
-        String testStringDefault = "default value";
-        Assert.assertEquals(testString1,
+        Assert.assertEquals(testStringDefault,
                 this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
         
         Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
