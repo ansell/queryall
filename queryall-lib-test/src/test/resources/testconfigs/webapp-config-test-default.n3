@@ -55,7 +55,7 @@ queryall:nquadsUrlSuffix "" ;
 
 queryall:alwaysRedirectToExplicitFormatUrl "false"^^xsd:boolean ;
 
-queryall:redirectToExplicitFormatHttpCode "303"^^xsd:int ;
+queryall:redirectToExplicitFormatHttpCode "302"^^xsd:int ;
 
 queryall:queryplanUrlPrefix "queryplan/" ;
 

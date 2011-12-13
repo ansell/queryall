@@ -76,7 +76,7 @@ queryall:blacklistClientMaxQueriesPerPeriod "1500"^^xsd:int ;
 
 queryall:blacklistMinimumQueriesBeforeBlacklistRules "150"^^xsd:int ;
 
-queryall:blacklistPercentageOfRobotTxtQueriesBeforeAutomatic "0.75"^^xsd:float ;
+queryall:blacklistPercentageOfRobotTxtQueriesBeforeAutomatic "0.50"^^xsd:float ;
 
 queryall:blacklistBaseClientIPAddresses 
 "58.212.227.208" , 

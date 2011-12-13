@@ -94,7 +94,7 @@ public interface QueryAllConfiguration
     
     Pattern getTagPattern();
     
-    Collection<URI> getURIProperties(WebappConfig string);
+    Collection<URI> getURIProperties(WebappConfig key);
     
     URI getURIProperty(WebappConfig key);
     

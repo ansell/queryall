@@ -1041,6 +1041,35 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
+    public void testSetPropertyStringStringCollection()
+    {
+        String testStringNonDefault = "my non-default string";
+        this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringNonDefault);
+        
+        Assert.assertEquals(testStringNonDefault,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY));
+        
+        String testString1 = "my test string";
+        this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testString1);
+        
+        // verify that the default value is returned now that there are two properties with the same name, as it should not attempt to choose one of them
+        String testStringDefault = "default value";
+        Assert.assertEquals(testString1,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
+        
+        Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(stringProperties);
+        Assert.assertEquals(2, stringProperties.size());
+        Assert.assertTrue(stringProperties.contains(testStringNonDefault));
+        Assert.assertTrue(stringProperties.contains(testString1));
+        
+        // check that the default test string was not accidentally inserted at any point
+        Assert.assertFalse(stringProperties.contains(testStringDefault));
+        
+    }
+    
+    @Test
     public void testSetPropertyStringURI()
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_URI_PROPERTY,
@@ -1058,6 +1087,39 @@ public abstract class AbstractQueryAllConfigurationTest
                 this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"),
                 this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_PROPERTY,
                         this.testValueFactory.createURI("http://example.org/test/default")));
+        
+    }
+    
+    @Test
+    public void testSetPropertyStringURICollection()
+    {
+        final URI testDefault = this.testValueFactory.createURI("http://example.org/test/default");
+        
+        final URI testUri1 = this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1");
+        this.testConfiguration.setProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testUri1);
+        
+        Assert.assertEquals(testUri1,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testDefault));
+        
+        final URI testUri2 = this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2");
+        this.testConfiguration.setProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testUri2);
+        
+        // expect the default to be returned as there should now be two values for this property, so
+        // getURIProperty should always use the default in these circumstances
+        Assert.assertEquals(testDefault,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testDefault));
+        
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        
+        Assert.assertEquals(2, uriProperties.size());
+        
+        // check that both of the URIs exist
+        Assert.assertTrue(uriProperties.contains(testUri1));
+        Assert.assertTrue(uriProperties.contains(testUri2));
+        
+        // check that the default URI was never accidentally inserted into the collection
+        Assert.assertFalse(uriProperties.contains(testDefault));
         
     }
     

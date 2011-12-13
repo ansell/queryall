@@ -272,6 +272,16 @@ public enum WebappConfig
     
     RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS("recogniseImplicitRdfRuleInclusions", true),
     
+    /**
+     * The HTTP Status code to use when redirecting from a format-agnostic, content negotiated URL
+     * to a URL that explicitly contains the format, as required by some Linked Data applications
+     * 
+     * <br/>
+     * Defaults to "303"
+     * 
+     * <br/>
+     * NOTE: This may be set to 301, 302, or 307 for similar redirect behaviour
+     */
     REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE("redirectToExplicitFormatHttpCode", 303),
     
     RESULTS_TEMPLATE("resultsTemplate", "page.vm"),
@@ -313,6 +323,15 @@ public enum WebappConfig
     
     USE_REQUEST_CACHE("useRequestCache", true),
     
+    /**
+     * The user agent to use in the HTTP User-Agent header
+     * 
+     * <br/>
+     * Defaults to "queryall"
+     * 
+     * <br/>
+     * NOTE: This may be overriden to indicate the application using this library
+     */
     USER_AGENT("userAgent", "queryall"),
     
     WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList()),
@@ -371,6 +390,22 @@ public enum WebappConfig
         this.key = uri.getLocalName();
         this.namespace = uri.getNamespace();
         this.uriValue = uri;
+    }
+    
+    /**
+     * 
+     * @return False if the default value is a collection, or more generally, any Iterable, indicating that the property can contain multiple values simultaneously, and return true to overwrite all subsequent properties for non-collection properties
+     */
+    public boolean overwrite()
+    {
+        if(defaultValue instanceof Iterable<?>)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
     
     public Object getDefaultValue()

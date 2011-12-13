@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -21,6 +22,8 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
+import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.utils.Settings;
 import org.queryall.utils.SettingsFactory;
@@ -140,12 +143,12 @@ public class SettingsFactoryTest
     @Test
     public final void testExtractProperties() throws RDFParseException, RepositoryException, IOException
     {
+        // setup the two URIs that are used to identify properties relevant to this test
         final Collection<URI> webappConfigUris = new ArrayList<URI>(2);
         
         final URI defaultConfigUri = this.testValueFactory.createURI("http://example.org/test/webappconfig/default");
         final URI locationSpecificConfigUri =
                 this.testValueFactory.createURI("http://example.org/test/webappconfig/locationSpecific");
-        
         webappConfigUris.add(defaultConfigUri);
         webappConfigUris.add(locationSpecificConfigUri);
         
@@ -155,9 +158,7 @@ public class SettingsFactoryTest
                 SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-default.n3");
         
         Assert.assertNotNull(testDefaultInput);
-        
         this.testRepositoryConnection.add(testDefaultInput, "", RDFFormat.N3);
-        
         this.testRepositoryConnection.commit();
         
         Assert.assertEquals(148, this.testRepositoryConnection.size());
@@ -166,38 +167,123 @@ public class SettingsFactoryTest
                 SettingsFactoryTest.class.getResourceAsStream("/testconfigs/webapp-config-test-locationspecific.n3");
         
         Assert.assertNotNull(testSpecificInput);
-        
         this.testRepositoryConnection.add(testSpecificInput, "", RDFFormat.N3);
-        
         this.testRepositoryConnection.commit();
         
         Assert.assertEquals(260, this.testRepositoryConnection.size());
         
-        // TODO: test the properties have been pulled into testRepository correctly
+        // Test for each of the categories of properties to verify that each type is being parsed
+        // correctly
         
+        // URI
         final URI useHardcodedRequestHostnameUri =
                 this.testValueFactory
                         .createURI("http://purl.org/queryall/webapp_configuration:useHardcodedRequestHostname");
-        
         // verify that the predicate exists
         Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, useHardcodedRequestHostnameUri, null, false));
-        
         // verify that the predicate is attached to the location specific config URI
         Assert.assertTrue(this.testRepositoryConnection.hasStatement(locationSpecificConfigUri,
                 useHardcodedRequestHostnameUri, null, false));
         
-        // setup the test Settings object to extract the properties into
-        // the property add methods for Settings are unit tested in
+        // Integer
+        final URI redirectToExplicitFormatHttpCodeUri =
+                this.testValueFactory
+                        .createURI("http://purl.org/queryall/webapp_configuration:redirectToExplicitFormatHttpCode");
+        // verify that the predicate exists
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, redirectToExplicitFormatHttpCodeUri, null,
+                false));
+        // verify that the predicate is attached to the default config URI
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(defaultConfigUri,
+                redirectToExplicitFormatHttpCodeUri, null, false));
+        
+        // String
+        final URI userAgentUri =
+                this.testValueFactory.createURI("http://purl.org/queryall/webapp_configuration:userAgent");
+        // verify that the predicate exists
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, userAgentUri, null, false));
+        // verify that the predicate is attached to the default config URI
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(defaultConfigUri, userAgentUri, null, false));
+        
+        // URI Collection
+        final URI titlePropertiesUri =
+                this.testValueFactory.createURI("http://purl.org/queryall/webapp_configuration:titleProperties");
+        // verify that the predicate exists
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, titlePropertiesUri, null, false));
+        // verify that the predicate is attached to the default config URI
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(defaultConfigUri, titlePropertiesUri, null, false));
+        
+        // Long
+        final URI blacklistResetPeriodMillisecondsUri =
+                this.testValueFactory
+                        .createURI("http://purl.org/queryall/webapp_configuration:blacklistResetPeriodMilliseconds");
+        // verify that the predicate exists
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, blacklistResetPeriodMillisecondsUri, null,
+                false));
+        // verify that the predicate is attached to the location specific config URI
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(locationSpecificConfigUri,
+                blacklistResetPeriodMillisecondsUri, null, false));
+        
+        // FLOAT
+        final URI blacklistPercentageOfRobotTxtQueriesBeforeAutomaticUri =
+                this.testValueFactory
+                        .createURI("http://purl.org/queryall/webapp_configuration:blacklistPercentageOfRobotTxtQueriesBeforeAutomatic");
+        // verify that the predicate exists
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null,
+                blacklistPercentageOfRobotTxtQueriesBeforeAutomaticUri, null, false));
+        // verify that the predicate is attached to the location specific config URI
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(locationSpecificConfigUri,
+                blacklistPercentageOfRobotTxtQueriesBeforeAutomaticUri, null, false));
+        
+        // String Collection
+        final URI whitelistBaseClientIPAddressesUri =
+                this.testValueFactory
+                        .createURI("http://purl.org/queryall/webapp_configuration:whitelistBaseClientIPAddresses");
+        // verify that the predicate exists
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(null, whitelistBaseClientIPAddressesUri, null,
+                false));
+        // verify that the predicate is attached to the location specific config URI
+        Assert.assertTrue(this.testRepositoryConnection.hasStatement(locationSpecificConfigUri,
+                whitelistBaseClientIPAddressesUri, null, false));
+        
+        // Setup the test Settings object to extract the properties into
+        // NOTE: The property add methods for Settings are unit tested in
         // AbstractQueryAllConfigurationTest which is overridden eventually by SettingsTest
-        final Settings testSettings = new Settings();
+        final QueryAllConfiguration testSettings = new Settings();
         
+        // Then perform the actual test by calling extractProperties to suck the properties out of
+        // the rdf world into the QueryAllConfiguration world
         SettingsFactory.extractProperties(testSettings, this.testRepository, webappConfigUris);
-        
-        // TODO: test the expected list of properties from testRepository against the properties
-        // available from testSettings
         
         Assert.assertTrue("boolean property not set correctly",
                 testSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME));
+        
+        // NOTE: This is 302 to distinguish it from the default for this property which is 303
+        Assert.assertEquals("int property not set correctly", 302,
+                testSettings.getIntProperty(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE));
+        
+        Assert.assertEquals("string property not set correctly", "Bio2RDF",
+                testSettings.getStringProperty(WebappConfig.USER_AGENT));
+        
+        final Collection<URI> titlePropertiesList = testSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES);
+        
+        Assert.assertNotNull(titlePropertiesList);
+        Assert.assertEquals(20, titlePropertiesList.size());
+        Assert.assertTrue(titlePropertiesList.contains(Constants.DC_TITLE));
+        Assert.assertTrue(titlePropertiesList.contains(RDFS.LABEL));
+        
+        Assert.assertEquals(1440000L, testSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS));
+        
+        // verify equality to accuracy of 0.0001
+        Assert.assertEquals(0.50f, testSettings.getFloatProperty(WebappConfig.BLACKLIST_ROBOTS_TXT_PERCENTAGE), 0.0001f);
+        
+        final Collection<String> whitelistIpAddressList =
+                testSettings.getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES);
+        
+        Assert.assertNotNull(whitelistIpAddressList);
+        Assert.assertEquals(20, whitelistIpAddressList.size());
+        Assert.assertTrue(whitelistIpAddressList.contains("::1"));
+        Assert.assertTrue(whitelistIpAddressList.contains("127.0.0.1"));
+        Assert.assertTrue(whitelistIpAddressList.contains("0:0:0:0:0:0:0:1%0"));
     }
     
     @Ignore

@@ -731,7 +731,7 @@ public class Settings implements QueryAllConfiguration
         Settings.log.info("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
                 + Boolean.valueOf(propertyValue).toString());
         
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final boolean propertyValue, final boolean overwrite)
@@ -750,7 +750,7 @@ public class Settings implements QueryAllConfiguration
         Settings.log.info("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
                 + Float.valueOf(propertyValue).toString());
         
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final float propertyValue, final boolean overwrite)
@@ -769,7 +769,7 @@ public class Settings implements QueryAllConfiguration
         Settings.log.info("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
                 + Integer.valueOf(propertyValue).toString());
         
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final int propertyValue, final boolean overwrite)
@@ -788,7 +788,7 @@ public class Settings implements QueryAllConfiguration
         Settings.log.info("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
                 + Long.valueOf(propertyValue).toString());
         
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final long propertyValue, final boolean overwrite)
@@ -813,7 +813,7 @@ public class Settings implements QueryAllConfiguration
         Settings.log.info("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
                 + String.valueOf(propertyValue));
         
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final String propertyValue, final boolean overwrite)
@@ -837,7 +837,7 @@ public class Settings implements QueryAllConfiguration
         
         Settings.log.info("setProperty(String,URI) propertyKey=" + propertyKey + " propertyValue="
                 + propertyValue.stringValue());
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final URI propertyValue, final boolean overwrite)
@@ -855,7 +855,7 @@ public class Settings implements QueryAllConfiguration
         Settings.log.info("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue=" + propertyValue
                 + " propertyValue.stringValue()=" + propertyValue.stringValue()
                 + " propertyValue.getClass().getName()=" + propertyValue.getClass().getName());
-        this.setProperty(propertyKey, propertyValue, true);
+        this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
     private void setProperty(final WebappConfig propertyKey, final Value propertyValue, final boolean overwrite)
@@ -1004,7 +1004,7 @@ public class Settings implements QueryAllConfiguration
         
         for(final Value nextValue : propertyValues)
         {
-            this.setProperty(propertyKey, nextValue, false);
+            this.setProperty(propertyKey, nextValue, propertyKey.overwrite());
         }
     }
     
