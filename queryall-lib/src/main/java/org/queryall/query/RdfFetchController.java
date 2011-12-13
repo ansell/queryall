@@ -515,6 +515,7 @@ public class RdfFetchController
         
         // Note: We default to converting alternate namespaces to preferred unless it is turned off
         // in the configuration. It can always be turned off for each namespace entry individually
+        // FIXME: The current processing code ignores the preferences given by namespace entries, and just uses this setting
         final boolean overallConvertAlternateToPreferredPrefix =
                 localSettings.getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED);
         
@@ -554,7 +555,7 @@ public class RdfFetchController
                     // replacements on nextEndpoint before using it in the attribute list
                     replacedEndpoint =
                             QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryParameters,
-                                    replacedEndpoint, new ArrayList<String>(),
+                                    replacedEndpoint, Constants.EMPTY_STRING_LIST,
                                     overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
                     
                     attributeList =
