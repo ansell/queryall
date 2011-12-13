@@ -292,7 +292,7 @@ public enum WebappConfig
     
     TAG_PATTERN_REGEX("tagPatternRegex", ".*(\\$\\{[\\w_-]+\\}).*"),
     
-    TITLE_PROPERTIES("titleProperties", ""),
+    TITLE_PROPERTIES("titleProperties", Collections.emptyList()),
     
     TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER("tryAllEndpointsForEachProvider", true),
     
