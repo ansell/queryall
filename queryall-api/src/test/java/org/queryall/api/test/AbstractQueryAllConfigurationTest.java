@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -1043,27 +1044,30 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringStringCollection()
     {
-        Collection<String> testEmptyProperty = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        final Collection<String> testEmptyProperty =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(testEmptyProperty);
         Assert.assertEquals(0, testEmptyProperty.size());
         
-        String testStringDefault = "default value";
-
-        String testStringNonDefault = "my non-default string";
+        final String testStringDefault = "default value";
+        
+        final String testStringNonDefault = "my non-default string";
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringNonDefault);
         
-        Assert.assertEquals(testStringNonDefault,
-                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
+        Assert.assertEquals(testStringNonDefault, this.testConfiguration.getStringProperty(
+                WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
         
-        String testString1 = "my test string";
+        final String testString1 = "my test string";
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testString1);
         
-        // verify that the default value is returned now that there are two properties with the same name, as it should not attempt to choose one of them
-        Assert.assertEquals(testStringDefault,
-                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
+        // verify that the default value is returned now that there are two properties with the same
+        // name, as it should not attempt to choose one of them
+        Assert.assertEquals(testStringDefault, this.testConfiguration.getStringProperty(
+                WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testStringDefault));
         
-        Collection<String> stringProperties = this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        final Collection<String> stringProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(stringProperties);
         Assert.assertEquals(2, stringProperties.size());
@@ -1099,7 +1103,8 @@ public abstract class AbstractQueryAllConfigurationTest
     @Test
     public void testSetPropertyStringURICollection()
     {
-        Collection<URI> testEmptyProperty = this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        final Collection<URI> testEmptyProperty =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
         
         Assert.assertNotNull(testEmptyProperty);
         Assert.assertEquals(0, testEmptyProperty.size());
@@ -1206,6 +1211,141 @@ public abstract class AbstractQueryAllConfigurationTest
         
         Assert.assertEquals(-4321L, this.testConfiguration.getLongProperty(WebappConfig._TEST_LONG_PROPERTY, 1L));
         
+    }
+    
+    @Test
+    public void testSetPropertyStringValueString()
+    {
+        // NOTE: These should be cast to Value to enable testing of the
+        // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
+        // method
+        final String defaultString = "default value";
+        final String testString1 = "first string value";
+        final String testString2 = "second string value";
+        
+        final Value testValue1 = this.testValueFactory.createLiteral(testString1);
+        final Value testValue2 = this.testValueFactory.createLiteral(testString2);
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, testValue1);
+        
+        Assert.assertEquals(testString1,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY, defaultString));
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, testValue2);
+        
+        Assert.assertEquals(testString2,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_PROPERTY, defaultString));
+        
+    }
+    
+    @Test
+    public void testSetPropertyStringValueStringCollection()
+    {
+        // NOTE: These should be cast to Value to enable testing of the
+        // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
+        // method
+        final String defaultString = "default value";
+        final String testString1 = "first string value";
+        final String testString2 = "second string value";
+        
+        final Value testValue1 = this.testValueFactory.createLiteral(testString1);
+        final Value testValue2 = this.testValueFactory.createLiteral(testString2);
+        
+        Assert.assertEquals(defaultString,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, defaultString));
+        
+        final Collection<String> emptyProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        Assert.assertNotNull(emptyProperties);
+        Assert.assertEquals(0, emptyProperties.size());
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testValue1);
+        
+        Assert.assertEquals(testString1,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, defaultString));
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, testValue2);
+        
+        // verify that the default is now returned as there is no other unique value
+        Assert.assertEquals(defaultString,
+                this.testConfiguration.getStringProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY, defaultString));
+        
+        final Collection<String> stringProperties =
+                this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(stringProperties);
+        Assert.assertEquals(2, stringProperties.size());
+        
+        Assert.assertTrue(stringProperties.contains(testString1));
+        Assert.assertTrue(stringProperties.contains(testString2));
+        
+        Assert.assertFalse(stringProperties.contains(defaultString));
+    }
+    
+    @Test
+    public void testSetPropertyStringValueURI()
+    {
+        // NOTE: These should be cast to Value to enable testing of the
+        // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
+        // method
+        final Value testUriDefault =
+                this.testValueFactory.createURI("http://test.example.org/test/setproperty/string/uri/default");
+        final Value testUri1 = this.testValueFactory.createURI("http://test.example.org/test/setproperty/string/uri/1");
+        final Value testUri2 = this.testValueFactory.createURI("http://test.example.org/test/setproperty/string/uri/2");
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_URI_PROPERTY, testUri1);
+        
+        Assert.assertEquals(testUri1,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_PROPERTY, (URI)testUriDefault));
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_URI_PROPERTY, testUri2);
+        
+        Assert.assertEquals(testUri2,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_PROPERTY, (URI)testUriDefault));
+        
+    }
+    
+    @Test
+    public void testSetPropertyStringValueURICollection()
+    {
+        // NOTE: These should be cast to Value to enable testing of the
+        // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
+        // method
+        final Value testUriDefault =
+                this.testValueFactory.createURI("http://test.example.org/test/setproperty/string/uri/default");
+        final Value testUri1 = this.testValueFactory.createURI("http://test.example.org/test/setproperty/string/uri/1");
+        final Value testUri2 = this.testValueFactory.createURI("http://test.example.org/test/setproperty/string/uri/2");
+        
+        Assert.assertEquals(testUriDefault,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, (URI)testUriDefault));
+        
+        final Collection<URI> emptyProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        Assert.assertNotNull(emptyProperties);
+        Assert.assertEquals(0, emptyProperties.size());
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testUri1);
+        
+        Assert.assertEquals(testUri1,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, (URI)testUriDefault));
+        
+        this.testConfiguration.setProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testUri2);
+        
+        // check that the default is now returned as there is no single unique value for this
+        // property
+        Assert.assertEquals(testUriDefault,
+                this.testConfiguration.getURIProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, (URI)testUriDefault));
+        
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(uriProperties);
+        Assert.assertEquals(2, uriProperties.size());
+        
+        Assert.assertTrue(uriProperties.contains(testUri1));
+        Assert.assertTrue(uriProperties.contains(testUri2));
+        
+        Assert.assertFalse(uriProperties.contains(testUriDefault));
     }
     
     @Test
