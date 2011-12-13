@@ -267,7 +267,7 @@ public class SettingsFactoryTest
         final Collection<URI> titlePropertiesList = testSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES);
         
         Assert.assertNotNull(titlePropertiesList);
-        Assert.assertEquals(20, titlePropertiesList.size());
+        Assert.assertEquals(16, titlePropertiesList.size());
         Assert.assertTrue(titlePropertiesList.contains(Constants.DC_TITLE));
         Assert.assertTrue(titlePropertiesList.contains(RDFS.LABEL));
         
@@ -280,7 +280,7 @@ public class SettingsFactoryTest
                 testSettings.getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES);
         
         Assert.assertNotNull(whitelistIpAddressList);
-        Assert.assertEquals(20, whitelistIpAddressList.size());
+        Assert.assertEquals(8, whitelistIpAddressList.size());
         Assert.assertTrue(whitelistIpAddressList.contains("::1"));
         Assert.assertTrue(whitelistIpAddressList.contains("127.0.0.1"));
         Assert.assertTrue(whitelistIpAddressList.contains("0:0:0:0:0:0:0:1%0"));
