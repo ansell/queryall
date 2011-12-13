@@ -15,30 +15,35 @@ public interface ProcessorQueryType extends QueryType
     String getProcessingTemplateString();
     
     /**
+     * Parses the query for this Processor Query Type to create an object that matches the type of
+     * this ProcessorQueryType.
+     * 
+     * @param query
+     *            A string that contains the query after it has had all of its variables processed
+     *            and substituted.
+     * @return An object representing the parsed query as relevant to this processor type.
+     */
+    Object parseProcessorQuery(String query);
+    
+    /**
      * Processes the query variables based on the context of this processor query type.
      * 
-     * The query variables are created by the InputQueryType implementation for this QueryType using InputQueryType.parseInputs()
+     * The query variables are created by the InputQueryType implementation for this QueryType using
+     * InputQueryType.parseInputs()
      * 
-     * @param queryVariables 
+     * @param queryVariables
      * @return The query variables after processing to match the processor for this query type
      */
     Map<String, Object> processQueryVariables(Map<String, Object> queryVariables);
     
+    void setProcessingTemplateString(String templateString);
+    
     /**
-     * Substitutes the given processed query variables into the processing template that is returned from getProcessingTemplateString()
+     * Substitutes the given processed query variables into the processing template that is returned
+     * from getProcessingTemplateString()
      * 
      * @param processedQueryVariables
      * @return The query template with the given variables substituted into the query
      */
     String substituteQueryVariables(Map<String, Object> processedQueryVariables);
-    
-    /**
-     * Parses the query for this Processor Query Type to create an object that matches the type of this ProcessorQueryType.
-     * 
-     * @param query A string that contains the query after it has had all of its variables processed and substituted.
-     * @return An object representing the parsed query as relevant to this processor type.
-     */
-    Object parseProcessorQuery(String query);
-    
-    void setProcessingTemplateString(String templateString);
 }

@@ -16,15 +16,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.BooleanLiteralImpl;
-import org.openrdf.model.impl.IntegerLiteralImpl;
-import org.openrdf.model.impl.NumericLiteralImpl;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
@@ -42,8 +42,6 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.memory.model.BooleanMemLiteral;
-import org.openrdf.sail.memory.model.IntegerMemLiteral;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
@@ -75,8 +73,10 @@ import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.services.ServiceUtils;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
+import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.exception.UnsupportedNamespaceEntryException;
 import org.queryall.exception.UnsupportedNormalisationRuleException;
 import org.queryall.exception.UnsupportedProfileException;
@@ -89,7 +89,6 @@ import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
 import org.queryall.query.RdfFetcherUriQueryRunnable;
-import org.queryall.query.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -769,38 +768,27 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static boolean getBooleanFromValue(final Value nextValue)
+    public static boolean getBooleanFromValue(final Value nextValue) throws IllegalArgumentException
     {
-        boolean result = false;
-        
-        if(nextValue instanceof BooleanLiteralImpl)
+        if(nextValue == null)
         {
-            result = ((BooleanLiteralImpl)nextValue).booleanValue();
-        }
-        else if(nextValue instanceof BooleanMemLiteral)
-        {
-            result = ((BooleanMemLiteral)nextValue).booleanValue();
-        }
-        else if(nextValue instanceof IntegerMemLiteral)
-        {
-            final int tempValue = ((IntegerMemLiteral)nextValue).intValue();
-            
-            if(tempValue == 0)
-            {
-                return false;
-            }
-            
-            if(tempValue == 1)
-            {
-                return true;
-            }
-        }
-        else
-        {
-            result = Boolean.parseBoolean(nextValue.stringValue());
+            throw new QueryAllRuntimeException("Could not parse null as a boolean");
         }
         
-        return result;
+        if(nextValue instanceof Literal)
+        {
+            return ((Literal)nextValue).booleanValue();
+        }
+        else if(nextValue.stringValue().toLowerCase().equals("true"))
+        {
+            return true;
+        }
+        else if(nextValue.stringValue().toLowerCase().equals("false"))
+        {
+            return false;
+        }
+        
+        throw new QueryAllRuntimeException("Could not parse value as boolean");
     }
     
     public static String getConstructQueryByType(final BaseQueryAllInterface nextObject, final int offset,
@@ -821,7 +809,7 @@ public final class RdfUtils
         int counter = 0;
         
         // TODO: change this to List<String> when titleProperties are ordered in the configuration
-        final Collection<URI> titleProperties = localSettings.getURIProperties("titleProperties");
+        final Collection<URI> titleProperties = localSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES);
         
         for(final URI nextTitleUri : titleProperties)
         {
@@ -914,6 +902,12 @@ public final class RdfUtils
     public static Date getDateTimeFromValue(final Value nextValue) throws java.text.ParseException
     {
         Date result;
+        
+        // TODO: use this method and convert it to a Calendar instance
+        if(nextValue instanceof Literal)
+        {
+            final XMLGregorianCalendar calendarValue = ((Literal)nextValue).calendarValue();
+        }
         
         // if(nextValue instanceof CalendarLiteralImpl)
         // {
@@ -1159,17 +1153,13 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static float getFloatFromValue(final Value nextValue)
+    public static float getFloatFromValue(final Value nextValue) throws NumberFormatException
     {
         float result = 0.0f;
         
-        try
+        if(nextValue instanceof Literal)
         {
-            result = ((NumericLiteralImpl)nextValue).floatValue();
-        }
-        catch(final ClassCastException cce)
-        {
-            result = Float.parseFloat(nextValue.stringValue());
+            result = ((Literal)nextValue).floatValue();
         }
         
         return result;
@@ -1179,21 +1169,13 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static int getIntegerFromValue(final Value nextValue)
+    public static int getIntegerFromValue(final Value nextValue) throws NumberFormatException
     {
         int result = 0;
         
-        if(nextValue instanceof IntegerLiteralImpl)
+        if(nextValue instanceof Literal)
         {
-            result = ((IntegerLiteralImpl)nextValue).intValue();
-        }
-        else if(nextValue instanceof IntegerMemLiteral)
-        {
-            result = ((IntegerMemLiteral)nextValue).intValue();
-        }
-        else
-        {
-            result = Integer.parseInt(nextValue.stringValue());
+            result = ((Literal)nextValue).intValue();
         }
         
         return result;
@@ -1203,27 +1185,13 @@ public final class RdfUtils
      * @param nextValue
      * @return
      */
-    public static long getLongFromValue(final Value nextValue)
+    public static long getLongFromValue(final Value nextValue) throws NumberFormatException
     {
         long result = 0L;
         
-        if(nextValue instanceof IntegerMemLiteral)
+        if(nextValue instanceof Literal)
         {
-            result = ((IntegerMemLiteral)nextValue).longValue();
-        }
-        else
-        {
-            try
-            {
-                result = Long.parseLong(nextValue.stringValue());
-            }
-            catch(final NumberFormatException nfe)
-            {
-                RdfUtils.log.error("getLongFromValue: failed to parse value using Long.parseLong type="
-                        + nextValue.getClass().getName() + " nextValue.stringValue=" + nextValue.stringValue());
-                
-                throw nfe;
-            }
+            result = ((Literal)nextValue).longValue();
         }
         
         return result;
@@ -1313,7 +1281,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedNamespaceEntryException e)
                     {
@@ -1443,7 +1411,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedNormalisationRuleException e)
                     {
@@ -1666,7 +1634,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProfileParser(nextProfileEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedProfileException e)
                     {
@@ -1791,7 +1759,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProjectParser(nextProjectEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedProjectException e)
                     {
@@ -1934,7 +1902,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProviderParser(nextProviderEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedProviderException e)
                     {
@@ -2061,7 +2029,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedQueryTypeException e)
                     {
@@ -2149,16 +2117,17 @@ public final class RdfUtils
                     if(nextReaderFormat == null)
                     {
                         nextReaderFormat =
-                                Rio.getParserFormatForMIMEType(localSettings.getStringProperty(
-                                        "assumedResponseContentType", Constants.APPLICATION_RDF_XML));
+                                Rio.getParserFormatForMIMEType(localSettings
+                                        .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         
                         if(nextReaderFormat == null)
                         {
                             RdfUtils.log
                                     .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
-                                            + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + localSettings.getStringProperty("assumedResponseContentType", ""));
+                                            + " localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
+                                            + localSettings
+                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                             continue;
                         }
                         else
@@ -2166,8 +2135,9 @@ public final class RdfUtils
                             RdfUtils.log
                                     .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
-                                            + " using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + localSettings.getStringProperty("assumedResponseContentType", ""));
+                                            + " using configured preferred content type as fallback localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
+                                            + localSettings
+                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         }
                     }
                     else if(RdfUtils.log.isDebugEnabled())
@@ -2300,7 +2270,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
                     }
                     catch(final UnsupportedRuleTestException e)
                     {
@@ -2358,7 +2328,7 @@ public final class RdfUtils
         
         // All queryall objects can be serialised to RDF using this method, along with a given
         // subject URI, which in this case is derived from the object
-        final boolean rdfOkay = rdfObject.toRdf(myRepository, Settings.CONFIG_API_VERSION, rdfObject.getKey());
+        final boolean rdfOkay = rdfObject.toRdf(myRepository, SettingsFactory.CONFIG_API_VERSION, rdfObject.getKey());
         
         if(!rdfOkay && isInsert)
         {
@@ -2812,7 +2782,7 @@ public final class RdfUtils
         for(final RdfFetcherQueryRunnable nextResult : results)
         {
             RdfUtils.insertResultIntoRepository(nextResult, myRepository,
-                    localSettings.getStringProperty("assumedResponseContentType", Constants.APPLICATION_RDF_XML),
+                    localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
                     localSettings.getDefaultHostAddress());
         }
     }

@@ -15,14 +15,14 @@ import org.queryall.impl.querytype.NoInputQueryTypeImpl;
 public class NoInputQueryTypeImplInputTest extends AbstractInputQueryTypeTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new ProfileImpl();
-    }
-    
-    @Override
     public InputQueryType getNewTestInputQueryType()
     {
         return new NoInputQueryTypeImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new ProfileImpl();
     }
 }

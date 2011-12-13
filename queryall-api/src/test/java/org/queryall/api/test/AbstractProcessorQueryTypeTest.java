@@ -24,6 +24,14 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
     private Map<String, Object> testQueryVariables;
     
     /**
+     * This method must be overridden to return a new String for each invocation representing a
+     * valid processing template string for this processor query type
+     * 
+     * @return A new valid processing template string to match this processor query type
+     */
+    public abstract String getNewTestProcessingTemplateString();
+    
+    /**
      * This method must be overridden to return a new instance of the implemented QueryType class
      * for each successive invocation
      * 
@@ -38,13 +46,6 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
     }
     
     /**
-     * This method must be overridden to return a new String for each invocation representing a valid processing template string for this processor query type
-     * 
-     * @return A new valid processing template string to match this processor query type
-     */
-    public abstract String getNewTestProcessingTemplateString();
-    
-    /**
      * @throws java.lang.Exception
      */
     @Override
@@ -56,7 +57,7 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
         // final ValueFactory f = new MemValueFactory();
         
         this.testQueryType1 = this.getNewTestProcessorQueryType();
-        this.testQueryType1.setProcessingTemplateString(getNewTestProcessingTemplateString());
+        this.testQueryType1.setProcessingTemplateString(this.getNewTestProcessingTemplateString());
         this.testQueryVariables = new HashMap<String, Object>();
     }
     
@@ -73,9 +74,18 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
     }
     
     @Test
+    public void testParseProcessorQuery()
+    {
+        final Object parsedQuery = this.testQueryType1.parseProcessorQuery("");
+        
+        Assert.assertNotNull(parsedQuery);
+        
+    }
+    
+    @Test
     public void testProcessorGetProcessingTemplateString()
     {
-        String templateString = getNewTestProcessingTemplateString();
+        final String templateString = this.getNewTestProcessingTemplateString();
         
         Assert.assertNotNull(templateString);
         
@@ -89,28 +99,19 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
     @Test
     public void testProcessorProcessQueryVariables()
     {
-        Map<String, Object> processedQueryVariables = this.testQueryType1.processQueryVariables(testQueryVariables);
+        final Map<String, Object> processedQueryVariables =
+                this.testQueryType1.processQueryVariables(this.testQueryVariables);
         
         Assert.assertNotNull(processedQueryVariables);
         
     }
-
+    
     @Test
     public void testSubstituteQueryVariables()
     {
-        String substitutedQuery = this.testQueryType1.substituteQueryVariables(testQueryVariables);
+        final String substitutedQuery = this.testQueryType1.substituteQueryVariables(this.testQueryVariables);
         
         Assert.assertNotNull(substitutedQuery);
     }
-
-    @Test
-    public void testParseProcessorQuery()
-    {
-        Object parsedQuery = this.testQueryType1.parseProcessorQuery("");
-        
-        Assert.assertNotNull(parsedQuery);
-        
-    }
-
-
+    
 }

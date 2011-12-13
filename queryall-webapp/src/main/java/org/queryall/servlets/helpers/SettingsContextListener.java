@@ -8,11 +8,11 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.query.Settings;
 import org.queryall.servlets.html.VelocityHelper;
+import org.queryall.utils.SettingsFactory;
 
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 
@@ -54,15 +54,7 @@ public class SettingsContextListener implements ServletContextListener
     public void contextInitialized(final ServletContextEvent sce)
     {
         // create a new settings object
-        final QueryAllConfiguration tempSettings = new Settings();
-        
-        // TODO: Make this preloading configurable
-        tempSettings.getAllNamespaceEntries();
-        tempSettings.getAllQueryTypes();
-        tempSettings.getAllProviders();
-        tempSettings.getAllProfiles();
-        tempSettings.getAllNormalisationRules();
-        tempSettings.getAllRuleTests();
+        final QueryAllConfiguration tempSettings = SettingsFactory.generateSettings();
         
         // Use these settings to create a blacklistcontroller object
         final BlacklistController tempBlacklist = new BlacklistController(tempSettings);
@@ -73,8 +65,8 @@ public class SettingsContextListener implements ServletContextListener
         
         // setup the default content type negotiator using the users given preference
         final ContentTypeNegotiator contentTypeNegotiator =
-                QueryallContentNegotiator.getContentNegotiator(tempSettings.getStringProperty(
-                        "preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                QueryallContentNegotiator.getContentNegotiator(tempSettings
+                        .getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         // then put both of them into servlet context so they can be shared between requests in this
         // servlet

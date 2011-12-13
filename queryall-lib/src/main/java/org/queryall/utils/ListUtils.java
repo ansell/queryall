@@ -169,8 +169,10 @@ public class ListUtils
     /**
      * Randomises the layout of the given collection and returns the resulting list
      * 
-     * @param <T> The generic type of the given collection
-     * @param nextCollection The collection to be randomised
+     * @param <T>
+     *            The generic type of the given collection
+     * @param nextCollection
+     *            The collection to be randomised
      * @return A reference to the randomised list, which may be the original list
      */
     public static <T> List<T> randomiseListLayout(final Collection<T> nextCollection)
@@ -188,8 +190,10 @@ public class ListUtils
     /**
      * Randomises the layout of the given list and returns the resulting list
      * 
-     * @param <T> The generic type of the given collection
-     * @param nextList The list to be randomised
+     * @param <T>
+     *            The generic type of the given collection
+     * @param nextList
+     *            The list to be randomised
      * @return A reference to the randomised list, which may be the original list
      */
     public static <T> List<T> randomiseListLayout(final List<T> nextList)

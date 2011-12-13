@@ -24,6 +24,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
+import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -31,6 +32,7 @@ import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.SettingsFactory;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,8 +118,8 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
     }
     
     public static Map<URI, ProvenanceRecord> fetchProvenanceForElementKey(final String hostToUse,
-            final String nextElementKey, final int modelVersion, final HttpProvider dummyProvider)
-        throws InterruptedException
+            final String nextElementKey, final int modelVersion, final HttpProvider dummyProvider,
+            final String defaultHostAddress, final String assumedResponseContentType) throws InterruptedException
     {
         final QueryBundle nextQueryBundle = new QueryBundle();
         
@@ -139,9 +141,8 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
         RepositoryConnection myRepositoryConnection = null;
         try
         {
-            fetchController =
-                    new RdfFetchController(Settings.getSettings(), BlacklistController.getDefaultController(),
-                            queryBundles);
+            final QueryAllConfiguration settings = SettingsFactory.generateSettings();
+            fetchController = new RdfFetchController(settings, new BlacklistController(settings), queryBundles);
             
             fetchController.fetchRdfForQueries();
             
@@ -166,9 +167,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                     
                     if(nextReaderFormat == null)
                     {
-                        nextReaderFormat =
-                                Rio.getParserFormatForMIMEType(Settings.getSettings().getStringProperty(
-                                        "assumedResponseContentType", Constants.APPLICATION_RDF_XML));
+                        nextReaderFormat = Rio.getParserFormatForMIMEType(assumedResponseContentType);
                         
                         if(nextReaderFormat == null)
                         {
@@ -176,8 +175,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                                     .error("ProvenanceRecord.fetchProvenanceForElementKey: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + Settings.getSettings()
-                                                    .getStringProperty("assumedResponseContentType", ""));
+                                            + assumedResponseContentType);
                             continue;
                         }
                         else
@@ -186,8 +184,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                                     .warn("ProvenanceRecord.fetchProvenanceForElementKey: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " using configured preferred content type as fallback Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                            + Settings.getSettings()
-                                                    .getStringProperty("assumedResponseContentType", ""));
+                                            + assumedResponseContentType);
                         }
                     }
                     else if(ProvenanceRecord.log.isDebugEnabled())
@@ -199,10 +196,9 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                     
                     if(nextResult.getNormalisedResult().length() > 0)
                     {
-                        myRepositoryConnection.add(
-                                new java.io.StringReader(nextResult.getNormalisedResult()),
-                                Settings.getSettings().getDefaultHostAddress() + "provenancebykey/"
-                                        + StringUtils.percentEncode(nextElementKey), nextReaderFormat);
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
+                                defaultHostAddress + "provenancebykey/" + StringUtils.percentEncode(nextElementKey),
+                                nextReaderFormat);
                     }
                 }
                 catch(final org.openrdf.rio.RDFParseException rdfpe)
@@ -285,7 +281,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                 final URI nextSubjectUri = (URI)nextProvider.getSubject();
                 results.put(nextSubjectUri,
                         new ProvenanceRecord(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, Settings.CONFIG_API_VERSION));
+                                nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
             }
         }
         catch(final OpenRDFException e)

@@ -1,0 +1,12 @@
+@prefix queryall: <http://purl.org/queryall/webapp_configuration:>.
+@prefix test: <http://example.org/test/webappconfig/>.
+
+test:locationSpecific
+
+queryall:queryConfigLocations 
+"/testconfigs/namespaceentry-1.n3" , 
+"/testconfigs/normalisationrule-1.n3" ;
+
+queryall:backupQueryConfigLocations 
+"/testconfigs/ruletest-1.n3" ,
+"/testconfigs/provider-1.n3" .

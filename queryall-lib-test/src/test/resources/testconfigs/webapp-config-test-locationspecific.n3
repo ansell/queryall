@@ -1,0 +1,171 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix queryall: <http://purl.org/queryall/webapp_configuration:>.
+@prefix test: <http://example.org/test/webappconfig/>.
+@prefix queryall_provider: <http://purl.org/queryall/provider:>.
+
+test:locationSpecific a queryall:webappConfig ;
+
+queryall:queryConfigLocations 
+"/config/base-bio2rdf-namespaceentries-config.n3" , 
+"/config/base-bio2rdf-providers-httpgetproxy-config.n3" , 
+"/config/base-bio2rdf-providers-httpgetredirect-config.n3" , 
+"/config/base-bio2rdf-providers-nocommunication-config.n3" , 
+"/config/base-bio2rdf-providers-sparql-config.n3" , 
+"/config/base-bio2rdf-providers-html-config.n3" , 
+"/config/base-bio2rdf-providers-image-config.n3" , 
+"/config/base-bio2rdf-providers-fasta-config.n3" , 
+"/config/base-bio2rdf-providers-licenses-config.n3" , 
+"/config/base-bio2rdf-rdfrules-config.n3" , 
+"/config/base-bio2rdf-rdfrules-sparql-config.n3" , 
+"/config/base-bio2rdf-rdfrules-xslt-config.n3" , 
+"/config/base-bio2rdf-profiles-config.n3" , 
+"/config/base-bio2rdf-queries-config.n3" , 
+"/config/base-bio2rdf-ruletests-config.n3" ,
+"/config/myexperiment_providers-config.n3" ,
+"/config/myexperiment_namespaceentries-config.n3" ,
+"/config/myexperiment_rdfrules-config.n3" ;
+
+queryall:backupQueryConfigLocations 
+"/config/base-bio2rdf-namespaceentries-config.n3" , 
+"/config/base-bio2rdf-providers-httpgetproxy-config.n3" , 
+"/config/base-bio2rdf-providers-httpgetredirect-config.n3" , 
+"/config/base-bio2rdf-providers-nocommunication-config.n3" , 
+"/config/base-bio2rdf-providers-sparql-config.n3" , 
+"/config/base-bio2rdf-providers-html-config.n3" , 
+"/config/base-bio2rdf-providers-image-config.n3" , 
+"/config/base-bio2rdf-providers-fasta-config.n3" , 
+"/config/base-bio2rdf-providers-licenses-config.n3" , 
+"/config/base-bio2rdf-rdfrules-config.n3" , 
+"/config/base-bio2rdf-rdfrules-sparql-config.n3" , 
+"/config/base-bio2rdf-rdfrules-xslt-config.n3" , 
+"/config/base-bio2rdf-profiles-config.n3" , 
+"/config/base-bio2rdf-queries-config.n3" , 
+"/config/base-bio2rdf-ruletests-config.n3" ,
+"/config/myexperiment_providers-config.n3" ,
+"/config/myexperiment_namespaceentries-config.n3" ,
+"/config/myexperiment_rdfrules-config.n3" ;
+
+queryall:enablePeriodicConfigurationRefresh "true"^^xsd:boolean ;
+
+queryall:periodicConfigurationMilliseconds "43200000"^^xsd:long ;
+
+queryall:enableManualConfigurationRefresh "true"^^xsd:boolean ;
+
+queryall:manualConfigurationMinimumMilliseconds "120000"^^xsd:int ;
+
+queryall:activeProfiles test:profile_locationSpecific ;
+
+queryall:readTimeout "35000"^^xsd:int ;
+
+queryall:connectTimeout "1500"^^xsd:int ;
+
+queryall:submitStatistics "false"^^xsd:boolean ;
+
+queryall:automaticallyBlacklistClients "false"^^xsd:boolean ;
+
+queryall:blacklistResetClientBlacklistWithEndpoints "true"^^xsd:boolean ;
+
+queryall:blacklistResetPeriodMilliseconds "1440000"^^xsd:long ;
+
+queryall:blacklistMaxAccumulatedFailures "15"^^xsd:int ;
+
+queryall:blacklistResetEndpointFailuresOnSuccess "false"^^xsd:boolean ;
+
+queryall:blacklistClientMaxQueriesPerPeriod "1500"^^xsd:int ;
+
+queryall:blacklistMinimumQueriesBeforeBlacklistRules "150"^^xsd:int ;
+
+queryall:blacklistPercentageOfRobotTxtQueriesBeforeAutomatic "0.50"^^xsd:float ;
+
+queryall:blacklistBaseClientIPAddresses 
+"58.212.227.208" , 
+"88.72.244.12" , 
+"140.203.154.197" , 
+"140.203.154.182" , 
+"66.249.68.27" , 
+"66.249.68.38" ;
+
+queryall:whitelistBaseClientIPAddresses 
+"127.0.0.1" , 
+"::1" , 
+"0:0:0:0:0:0:0:1" , 
+"0:0:0:0:0:0:0:1%0" , 
+"132.203.117.5" , 
+"131.181.206.143" , 
+"131.181.206.7" , 
+"134.117.53.81" ;
+
+queryall:blacklistBaseUserAgents 
+"Falconsbot" , 
+"msnbot" , 
+"Googlebot" , 
+"hclsreport" , 
+"heritrix" , 
+"Sogou" , 
+"Twiceler" , 
+"Baiduspider" , 
+"sindice" ;
+
+queryall:useHardcodedRequestHostname "true"^^xsd:boolean ;
+
+queryall:hardcodedRequestHostname "http://test.example.org/" ;
+
+queryall:useHardcodedRequestContext "true"^^xsd:boolean ;
+
+queryall:hardcodedRequestContext "" ;
+
+queryall:includeNonProfileMatchedRdfRules "false"^^xsd:boolean ;
+
+queryall:recogniseImplicitRdfRuleInclusions "true"^^xsd:boolean ;
+
+queryall:includeNonProfileMatchedProviders "false"^^xsd:boolean ;
+
+queryall:recogniseImplicitProviderInclusions "true"^^xsd:boolean ;
+
+queryall:includeNonProfileMatchedQueries "false"^^xsd:boolean ;
+
+queryall:recogniseImplicitQueryInclusions "true"^^xsd:boolean ;
+
+queryall:statisticsSubmitStatistics "false"^^xsd:boolean ;
+
+queryall:statisticsServerApiVersion "1"^^xsd:int ;
+
+queryall:statisticsServerMethod queryall_provider:httppostsparql ;
+
+queryall:statisticsServerUrl "http://bio2rdf.mquter.qut.edu.au/admin/submitstats" ;
+
+queryall:statisticsServerUseGraphUri "false"^^xsd:boolean ;
+
+queryall:statisticsServerGraphUri "" ;
+
+queryall:statisticsToSubmit 
+
+queryall:statisticsItemProfiles ,
+queryall:statisticsItemSuccessfulProviders ,
+queryall:statisticsItemErrorProviders ,
+queryall:statisticsItemConfigLocations ,
+queryall:statisticsItemQueryTypes ,
+queryall:statisticsItemNamespaces ,
+queryall:statisticsItemConfigApiVersion ,
+queryall:statisticsItemReadTimeout ,
+queryall:statisticsItemConnectTimeout ,
+queryall:statisticsItemUserHostAddress ,
+queryall:statisticsItemUserAgent ,
+queryall:statisticsItemRealHostName ,
+queryall:statisticsItemQueryString ,
+queryall:statisticsItemResponseTime ,
+queryall:statisticsItemSumLatency ,
+queryall:statisticsItemSumQueries ,
+queryall:statisticsItemStdevLatency ,
+queryall:statisticsItemSumErrors ,
+queryall:statisticsItemSumErrorLatency ,
+queryall:statisticsItemStdevErrorLatency ;
+
+.
+
+
+
+
+
+

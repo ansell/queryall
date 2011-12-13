@@ -1,6 +1,5 @@
 package org.queryall.statistics;
 
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -16,20 +15,13 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.Rio;
-import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.api.provider.HttpProviderSchema;
-import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.query.HttpUrlQueryRunnable;
-import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -691,64 +683,70 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
-        if(localSettings.getURIProperty("statisticsServerMethod", SparqlProviderSchema.getProviderHttpPostSparql())
-                .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
-        {
-            final Repository myRepository = new SailRepository(new MemoryStore());
-            myRepository.initialize();
-            
-            @SuppressWarnings("unused")
-            final boolean rdfOkay = this.toRdf(myRepository, modelVersion, this.getKey());
-            
-            final RDFFormat writerFormat = Rio.getWriterFormatForMIMEType("text/plain");
-            
-            final StringWriter insertTriples = new StringWriter();
-            
-            RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
-            
-            final String insertTriplesContent = insertTriples.toString();
-            
-            // log.info("StatisticsEntry: insertTriplesContent="+insertTriplesContent);
-            
-            String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
-            
-            if(localSettings.getBooleanProperty("statisticsServerUseGraphUri", true))
-            {
-                sparqlInsertQuery +=
-                        " INTO GRAPH <" + localSettings.getStringProperty("statisticsServerGraphUri", "") + "> ";
-            }
-            
-            sparqlInsertQuery += " { " + insertTriplesContent + " } ";
-            
-            if(StatisticsEntry._DEBUG)
-            {
-                StatisticsEntry.log.debug("StatisticsEntry: sparqlInsertQuery=" + sparqlInsertQuery);
-            }
-            
-            return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "*/*",
-                    localSettings, localBlacklistController);
-        }
-        else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostUrl())
-                .equals(HttpProviderSchema.getProviderHttpPostUrl()))
-        {
-            final String postInformation = this.toPostArray();
-            
-            if(StatisticsEntry._DEBUG)
-            {
-                StatisticsEntry.log.debug("StatisticsEntry: postInformation=" + postInformation);
-            }
-            
-            return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), postInformation, "*/*", localSettings,
-                    localBlacklistController);
-        }
-        else
-        {
-            throw new RuntimeException(
-                    "StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
-                            + localSettings.getStringProperty("statisticsServerMethod", ""));
-        }
+        // TODO: Convert this to new structure
+/**
+         * if(localSettings.getURIProperty("statisticsServerMethod",
+         * SparqlProviderSchema.getProviderHttpPostSparql())
+         * .equals(SparqlProviderSchema.getProviderHttpPostSparql())) { final Repository
+         * myRepository = new SailRepository(new MemoryStore()); myRepository.initialize();
+         * 
+         * @SuppressWarnings("unused") final boolean rdfOkay = this.toRdf(myRepository,
+         *                             modelVersion, this.getKey());
+         * 
+         *                             final RDFFormat writerFormat =
+         *                             Rio.getWriterFormatForMIMEType("text/plain");
+         * 
+         *                             final StringWriter insertTriples = new StringWriter();
+         * 
+         *                             RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
+         * 
+         *                             final String insertTriplesContent = insertTriples.toString();
+         * 
+         *                             // log.info("StatisticsEntry: insertTriplesContent="+
+         *                             insertTriplesContent);
+         * 
+         *                             String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
+         * 
+         *                             if(localSettings.getBooleanProperty(
+         *                             "statisticsServerUseGraphUri", true)) { sparqlInsertQuery +=
+         *                             " INTO GRAPH <" +
+         *                             localSettings.getStringProperty("statisticsServerGraphUri",
+         *                             "") + "> "; }
+         * 
+         *                             sparqlInsertQuery += " { " + insertTriplesContent + " } ";
+         * 
+         *                             if(StatisticsEntry._DEBUG) {
+         *                             StatisticsEntry.log.debug("StatisticsEntry: sparqlInsertQuery="
+         *                             + sparqlInsertQuery); }
+         * 
+         *                             return new
+         *                             HttpUrlQueryRunnable(localSettings.getStringProperty
+         *                             ("statisticsServerMethod", ""),
+         *                             localSettings.getStringProperty("statisticsServerUrl", ""),
+         *                             sparqlInsertQuery, "* / *", localSettings,
+         *                             localBlacklistController); } else
+         *                             if(localSettings.getURIProperty("statisticsServerMethod",
+         *                             HttpProviderSchema.getProviderHttpPostUrl())
+         *                             .equals(HttpProviderSchema.getProviderHttpPostUrl())) { final
+         *                             String postInformation = this.toPostArray();
+         * 
+         *                             if(StatisticsEntry._DEBUG) {
+         *                             StatisticsEntry.log.debug("StatisticsEntry: postInformation="
+         *                             + postInformation); }
+         * 
+         *                             return new
+         *                             HttpUrlQueryRunnable(localSettings.getStringProperty
+         *                             ("statisticsServerMethod", ""),
+         *                             localSettings.getStringProperty("statisticsServerUrl", ""),
+         *                             postInformation, "* / *", localSettings,
+         *                             localBlacklistController); } else { throw new
+         *                             RuntimeException(
+         *                             "StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
+         *                             + localSettings.getStringProperty("statisticsServerMethod",
+         *                             "")); }
+         **/
+        
+        return null;
     }
     
     /**
@@ -770,7 +768,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     /**
      * @return the connecttimeout
      */
-    public int getConnecttimeout()
+    public int getConnectTimeout()
     {
         return this.connecttimeout;
     }

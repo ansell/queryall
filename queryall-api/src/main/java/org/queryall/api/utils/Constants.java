@@ -23,6 +23,7 @@ public final class Constants
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
     public static final String SKOS_NAMESPACE = "http://www.w3.org/2004/02/skos/core#";
+    public static final String XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema#";
     
     public static final String INPUT_NTRIPLES_ENCODED = "inputNTriplesEncoded";
     public static final String INPUT_PLUS_URL_ENCODED = "inputPlusUrlEncoded";
@@ -38,6 +39,11 @@ public final class Constants
     public static final URI DC_TITLE = Constants.valueFactory.createURI(Constants.DC_NAMESPACE, "title");
     public static final URI SKOS_ALTLABEL = Constants.valueFactory.createURI(Constants.SKOS_NAMESPACE, "altLabel");
     public static final URI SKOS_PREFLABEL = Constants.valueFactory.createURI(Constants.SKOS_NAMESPACE, "prefLabel");
+    public static final URI XSD_BOOLEAN = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "boolean");
+    public static final URI XSD_FLOAT = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "float");
+    public static final URI XSD_INT = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "int");
+    public static final URI XSD_INTEGER = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "integer");;
+    public static final URI XSD_LONG = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "long");
     
     public static final String STATISTICS_ITEM_CONFIGLOCATIONS = "configlocations";
     public static final String STATISTICS_ITEM_CONFIGVERSION = "configversion";
