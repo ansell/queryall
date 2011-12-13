@@ -22,11 +22,12 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.Schema;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"), localContentTypeNegotiator,
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -97,7 +98,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         final String versionParameter = (String)request.getAttribute("org.queryall.RuleTesterServlet.apiVersion");
         
-        int apiVersion = Settings.CONFIG_API_VERSION;
+        int apiVersion = SettingsFactory.CONFIG_API_VERSION;
         
         if(versionParameter != null && !versionParameter.equals("") && !Constants.CURRENT.equals(versionParameter))
         {
@@ -112,16 +113,16 @@ public class QueryAllSchemaServlet extends HttpServlet
             }
         }
         
-        if(apiVersion > Settings.CONFIG_API_VERSION)
+        if(apiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
             QueryAllSchemaServlet.log
                     .error("QueryAllSchemaServlet: requested API version not supported by this server. apiVersion="
-                            + apiVersion + " Settings.CONFIG_API_VERSION=" + Settings.CONFIG_API_VERSION);
+                            + apiVersion + " Settings.CONFIG_API_VERSION=" + SettingsFactory.CONFIG_API_VERSION);
             
             response.setContentType("text/plain");
             response.setStatus(400);
             out.write("Requested API version not supported by this server. Current supported version="
-                    + Settings.CONFIG_API_VERSION);
+                    + SettingsFactory.CONFIG_API_VERSION);
             return;
         }
         
@@ -148,8 +149,8 @@ public class QueryAllSchemaServlet extends HttpServlet
         // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using
         // this method
         requestedContentType =
-                RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML),
+                RdfUtils.findBestContentType(requestedContentType,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases
@@ -169,7 +170,7 @@ public class QueryAllSchemaServlet extends HttpServlet
                             + originalRequestedContentType + " requestedContentType=" + requestedContentType);
         }
         
-        ((Settings)localSettings).configRefreshCheck(false);
+        // ((Settings)localSettings).configRefreshCheck(false);
         
         response.setContentType(requestedContentType);
         response.setCharacterEncoding("UTF-8");
@@ -181,7 +182,7 @@ public class QueryAllSchemaServlet extends HttpServlet
             myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
             
-            myRepository = Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
+            myRepository = Schema.getSchemas(myRepository, SettingsFactory.CONFIG_API_VERSION);
             
             final java.io.StringWriter stBuff = new java.io.StringWriter();
             

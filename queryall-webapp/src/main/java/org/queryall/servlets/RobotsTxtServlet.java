@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,8 @@ public class RobotsTxtServlet extends HttpServlet
         
         final PrintWriter out = response.getWriter();
         
-        final Collection<String> robotsList = localSettings.getStringProperties("blacklistBaseUserAgents");
+        final Collection<String> robotsList =
+                localSettings.getStringProperties(WebappConfig.BLACKLIST_BASE_USER_AGENTS);
         
         if(robotsList != null)
         {

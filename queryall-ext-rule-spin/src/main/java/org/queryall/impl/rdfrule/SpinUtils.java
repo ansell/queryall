@@ -15,8 +15,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.utils.Schema;
 import org.queryall.exception.QueryAllException;
-import org.queryall.query.Settings;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.topbraid.spin.arq.ARQ2SPIN;
@@ -84,7 +84,7 @@ public class SpinUtils
             myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
             
-            myRepository = Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
+            myRepository = Schema.getSchemas(myRepository, SettingsFactory.CONFIG_API_VERSION);
             
             SpinUtils.fileManager.addLocator(new QueryAllSchemaLocatorClass(myRepository));
         }

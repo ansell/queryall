@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,27 +39,28 @@ public class ManualRefreshServlet extends HttpServlet
         
         final PrintWriter out = response.getWriter();
         
-        final boolean refreshAllowed = ((Settings)localSettings).isManualRefreshAllowed();
+        // final boolean refreshAllowed = ((Settings)localSettings).isManualRefreshAllowed();
+        final boolean refreshAllowed = false;
         
         if(refreshAllowed)
         {
-            if(((Settings)localSettings).configRefreshCheck(true))
-            {
-                localBlacklistController.doBlacklistExpiry();
-                
-                response.setStatus(HttpServletResponse.SC_OK);
-                ManualRefreshServlet.log.info("manualrefresh.jsp: manual refresh succeeded requesterIpAddress="
-                        + request.getRemoteAddr());
-                out.write("Refresh succeeded.");
-            }
-            else
-            {
-                response.setStatus(500);
-                ManualRefreshServlet.log
-                        .error("manualrefresh.jsp: refresh failed for an unknown reason, as it was supposedly allowed in a previous check requesterIpAddress="
-                                + request.getRemoteAddr());
-                out.write("Refresh failed for an unknown reason");
-            }
+            // if(((Settings)localSettings).configRefreshCheck(true))
+            // {
+            // localBlacklistController.doBlacklistExpiry();
+            //
+            // response.setStatus(HttpServletResponse.SC_OK);
+            // ManualRefreshServlet.log.info("manualrefresh.jsp: manual refresh succeeded requesterIpAddress="
+            // + request.getRemoteAddr());
+            // out.write("Refresh succeeded.");
+            // }
+            // else
+            // {
+            // response.setStatus(500);
+            // ManualRefreshServlet.log
+            // .error("manualrefresh.jsp: refresh failed for an unknown reason, as it was supposedly allowed in a previous check requesterIpAddress="
+            // + request.getRemoteAddr());
+            // out.write("Refresh failed for an unknown reason");
+            // }
         }
         else
         {

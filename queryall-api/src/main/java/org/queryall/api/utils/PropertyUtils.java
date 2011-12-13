@@ -21,10 +21,19 @@ public final class PropertyUtils
     @SuppressWarnings("unused")
     private static final boolean _INFO = PropertyUtils.log.isInfoEnabled();
     
-    // This matches the queryall.properties file where
-    // the generally static API specific section of the configuration settings
-    // are stored
+    /**
+     * This matches the queryall.properties file where the generally static API specific section of
+     * the configuration settings are stored
+     */
     public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
+    
+    /**
+     * Checks for the configured version first in the system vm properties, then in the localisation
+     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
+     * 
+     * The version defaults to "0.0.1"
+     */
+    public static final String VERSION = PropertyUtils.getSystemOrPropertyString("queryall.Version", "0.0.1");
     
     /**
      * Checks for the key first in the system vm properties, then in the localisation properties

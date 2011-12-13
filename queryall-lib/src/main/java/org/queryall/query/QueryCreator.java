@@ -22,8 +22,10 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.TransformingRule;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.exception.QueryAllException;
 import org.queryall.utils.RuleUtils;
+import org.queryall.utils.Settings;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -280,19 +282,19 @@ public class QueryCreator
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_QUICK_LIMIT,
-                        "LIMIT " + localSettings.getIntProperty("pageoffsetQuickQueryLimit", 20));
+                        "LIMIT " + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_QUICK_LIMIT,
-                        "limit/" + localSettings.getIntProperty("pageoffsetQuickQueryLimit", 20));
+                        "limit/" + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_LIMIT,
-                        "LIMIT " + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
+                        "LIMIT " + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT,
-                        "limit/" + localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500));
+                        "limit/" + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {
@@ -311,7 +313,7 @@ public class QueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset =
-                        (pageOffset - 1) * localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500);
+                        (pageOffset - 1) * localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
                 
                 replacedString = replacedString.replace(Constants.TEMPLATE_SPARQL_OFFSET, "OFFSET " + actualPageOffset);
                 replacedString = replacedString.replace(Constants.TEMPLATE_PAGEOFFSET, String.valueOf(pageOffset));
@@ -1144,10 +1146,11 @@ public class QueryCreator
         }
         
         // TODO: decide on default for hostName
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, localSettings.getStringProperty("hostName", ""));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME,
+                localSettings.getStringProperty(WebappConfig.HOST_NAME));
         
         attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getStringProperty("separator", ":"));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getSeparator());
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
         attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryParameters.get(Constants.QUERY));
         
@@ -1172,20 +1175,20 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_ENDPOINT_URL, nextEndpoint);
         
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME,
-                StringUtils.percentEncode(localSettings.getStringProperty("hostName", "")));
+                StringUtils.percentEncode(localSettings.getStringProperty(WebappConfig.HOST_NAME)));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS,
                 StringUtils.percentEncode(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR,
-                StringUtils.percentEncode(localSettings.getStringProperty("separator", "")));
+                StringUtils.percentEncode(localSettings.getSeparator()));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils.percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils.percentEncode(realHostName));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING,
                 StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME,
-                StringUtils.xmlEncodeString(localSettings.getStringProperty("hostName", "")));
+                StringUtils.xmlEncodeString(localSettings.getStringProperty(WebappConfig.HOST_NAME)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_ADDRESS,
-                StringUtils.xmlEncodeString("http://" + localSettings.getStringProperty("hostName", "") + "/"));
+                StringUtils.xmlEncodeString(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR,
                 StringUtils.xmlEncodeString(localSettings.getSeparator()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils.xmlEncodeString(nextEndpoint));
@@ -1193,13 +1196,10 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING,
                 StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
         
-        attributeList
-                .put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                        .xmlEncodeString(StringUtils.percentEncode(localSettings.getStringProperty("hostName", ""))));
-        attributeList.put(
-                Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS,
-                StringUtils.xmlEncodeString(StringUtils.percentEncode("http://"
-                        + localSettings.getStringProperty("hostName", "") + "/")));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
+                .xmlEncodeString(StringUtils.percentEncode(localSettings.getStringProperty(WebappConfig.HOST_NAME))));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS,
+                StringUtils.xmlEncodeString(localSettings.getDefaultHostAddress()));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(localSettings.getSeparator())));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL,

@@ -1,6 +1,7 @@
 package org.queryall.blacklist;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -13,12 +14,13 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.query.HttpUrlQueryRunnable;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.Settings;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +38,7 @@ public class BlacklistController
     // Wrap up the singleton in its own inner static class
     private static class BlacklistControllerHolder
     {
-        public static final BlacklistController helper = new BlacklistController(Settings.getSettings());
+        public static final BlacklistController helper = new BlacklistController(SettingsFactory.generateSettings());
     }
     
     private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);
@@ -52,22 +54,14 @@ public class BlacklistController
         return BlacklistControllerHolder.helper;
     }
     
-    public BlacklistController(final QueryAllConfiguration queryAllConfiguration)
-    {
-        this.localSettings = queryAllConfiguration;
-        this.currentIPBlacklist = Collections
-                .synchronizedCollection(queryAllConfiguration.getStringProperties("blacklistBaseClientIPAddresses"));
-        this.currentIPWhitelist = Collections
-                .synchronizedCollection(queryAllConfiguration.getStringProperties("whitelistBaseClientIPAddresses"));        
-    }
-    
     private volatile ConcurrentHashMap<String, BlacklistEntry> accumulatedBlacklistStatistics =
             new ConcurrentHashMap<String, BlacklistEntry>(200);
     
     private volatile ConcurrentHashMap<String, Map<Integer, Integer>> allHttpErrorResponseCodesByServer =
             new ConcurrentHashMap<String, Map<Integer, Integer>>(200);
     
-    private volatile ConcurrentHashMap<String, Integer> allServerQueryTotals = new ConcurrentHashMap<String, Integer>(200);
+    private volatile ConcurrentHashMap<String, Integer> allServerQueryTotals = new ConcurrentHashMap<String, Integer>(
+            200);
     
     private volatile Collection<RdfFetcherQueryRunnable> allCurrentBadQueries = Collections
             .synchronizedSet(new HashSet<RdfFetcherQueryRunnable>(200));
@@ -93,6 +87,17 @@ public class BlacklistController
     private volatile Date lastExpiryDate = new Date();
     
     private final QueryAllConfiguration localSettings;
+    
+    public BlacklistController(final QueryAllConfiguration queryAllConfiguration)
+    {
+        this.localSettings = queryAllConfiguration;
+        this.currentIPBlacklist =
+                Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
+                        .getStringProperties(WebappConfig.BLACKLIST_BASE_CLIENT_IP_ADDRESSES)));
+        this.currentIPWhitelist =
+                Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
+                        .getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES)));
+    }
     
     public void accumulateBlacklist(final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist)
     {
@@ -190,12 +195,17 @@ public class BlacklistController
      */
     public void accumulateQueryDebug(final QueryDebug nextQueryObject)
     {
-        this.accumulateQueryDebug(nextQueryObject,
-                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 120000L),
-                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true),
-                this.localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-                this.localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-                this.localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+        this.accumulateQueryDebug(nextQueryObject, this.localSettings.getLongProperty(
+                WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS,
+                (Long)WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS.getDefaultValue()), this.localSettings
+                .getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS,
+                        (Boolean)WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS.getDefaultValue()),
+                this.localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
+                        (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue()),
+                this.localSettings.getIntProperty(WebappConfig.BLACKLIST_MINIMUM_QUERIES_BEFORE_BLACKLIST_RULES,
+                        (Integer)WebappConfig.BLACKLIST_MINIMUM_QUERIES_BEFORE_BLACKLIST_RULES.getDefaultValue()),
+                this.localSettings.getIntProperty(WebappConfig.BLACKLIST_CLIENT_MAX_QUERIES_PER_PERIOD,
+                        (Integer)WebappConfig.BLACKLIST_CLIENT_MAX_QUERIES_PER_PERIOD.getDefaultValue()));
     }
     
     /**
@@ -345,26 +355,34 @@ public class BlacklistController
     }
     
     /**
-     * This method checks for the expiry of the blacklist and clears the blacklist if it has expired, and returns true if it has expired since last time, even if there were no errors since then
+     * This method checks for the expiry of the blacklist and clears the blacklist if it has
+     * expired, and returns true if it has expired since last time, even if there were no errors
+     * since then
      */
     public boolean doBlacklistExpiry()
     {
         final long blacklistResetPeriodMilliseconds =
-                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+                this.localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS,
+                        (Long)WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS.getDefaultValue());
         
         final boolean blacklistResetClientBlacklistWithEndpoints =
-                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+                this.localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS,
+                        (Boolean)WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS.getDefaultValue());
         
-        return doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+        return this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
     }
     
     /**
      * 
-     * @param blacklistResetPeriodMilliseconds The period of time between resets to the blacklist. If it is less than or equal to 0 (ie, <= 0), then no resets will ever occur
-     * @param blacklistResetClientBlacklistWithEndpoints True if the client blacklist should be reset along with endpoints
+     * @param blacklistResetPeriodMilliseconds
+     *            The period of time between resets to the blacklist. If it is less than or equal to
+     *            0 (ie, <= 0), then no resets will ever occur
+     * @param blacklistResetClientBlacklistWithEndpoints
+     *            True if the client blacklist should be reset along with endpoints
      * @return True if the blacklist had expired and was reset, and false otherwise
      */
-    public boolean doBlacklistExpiry(long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public boolean doBlacklistExpiry(final long blacklistResetPeriodMilliseconds,
+            final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         // magic values for no expiry are <= 0
         
@@ -384,10 +402,11 @@ public class BlacklistController
             if(BlacklistController._INFO)
             {
                 BlacklistController.log.info("BlacklistController: needToExpire");
-
+                
                 if(BlacklistController._TRACE)
                 {
-                    // Do not need to synchronize for debug messages, and in high load situations the
+                    // Do not need to synchronize for debug messages, and in high load situations
+                    // the
                     // trace level will not be used anyway
                     for(final String nextEndpointUrl : this.getAccumulatedBlacklistStatistics().keySet())
                     {
@@ -424,10 +443,15 @@ public class BlacklistController
      */
     public void evaluateClientBlacklist()
     {
-        this.evaluateClientBlacklist(this.localSettings.getBooleanProperty("automaticallyBlacklistClients", false),
-                this.localSettings.getIntProperty("blacklistMinimumQueriesBeforeBlacklistRules", 200),
-                this.localSettings.getFloatProperty("blacklistPercentageOfRobotTxtQueriesBeforeAutomatic", 0.75f),
-                this.localSettings.getIntProperty("blacklistClientMaxQueriesPerPeriod", 400));
+        this.evaluateClientBlacklist(this.localSettings.getBooleanProperty(
+                WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
+                (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue()), this.localSettings
+                .getIntProperty(WebappConfig.BLACKLIST_MINIMUM_QUERIES_BEFORE_BLACKLIST_RULES,
+                        (Integer)WebappConfig.BLACKLIST_MINIMUM_QUERIES_BEFORE_BLACKLIST_RULES.getDefaultValue()),
+                this.localSettings.getFloatProperty(WebappConfig.BLACKLIST_ROBOTS_TXT_PERCENTAGE,
+                        (Float)WebappConfig.BLACKLIST_ROBOTS_TXT_PERCENTAGE.getDefaultValue()), this.localSettings
+                        .getIntProperty(WebappConfig.BLACKLIST_CLIENT_MAX_QUERIES_PER_PERIOD,
+                                (Integer)WebappConfig.BLACKLIST_CLIENT_MAX_QUERIES_PER_PERIOD.getDefaultValue()));
     }
     
     /**
@@ -447,8 +471,7 @@ public class BlacklistController
         {
             for(final String nextKey : this.getCurrentQueryDebugInformation().keySet())
             {
-                final Collection<QueryDebug> nextClientQueryList =
-                        this.getCurrentQueryDebugInformation().get(nextKey);
+                final Collection<QueryDebug> nextClientQueryList = this.getCurrentQueryDebugInformation().get(nextKey);
                 
                 final int overallCount = nextClientQueryList.size();
                 
@@ -462,12 +485,13 @@ public class BlacklistController
                         {
                             // TODO: add this property to the QueryDebug interface to avoid
                             // lookups here
-                            final QueryType nextQueryDebugType =
-                                    this.localSettings.getQueryType(nextQueryDebugTitle);
+                            final QueryType nextQueryDebugType = this.localSettings.getQueryType(nextQueryDebugTitle);
                             
                             if(nextQueryDebugType == null)
                             {
-                                BlacklistController.log.warn("Could not find query, assuming it is in robots.txt nextQueryDebugType="+nextQueryDebugType);
+                                BlacklistController.log
+                                        .warn("Could not find query, assuming it is in robots.txt nextQueryDebugType="
+                                                + nextQueryDebugType);
                                 robotsTxtCount++;
                                 break;
                             }
@@ -476,8 +500,8 @@ public class BlacklistController
                                 if(BlacklistController._TRACE)
                                 {
                                     BlacklistController.log
-                                            .trace("BlacklistController: found query in robots.txt client="
-                                                    + nextKey + " nextQueryDebugTitle=" + nextQueryDebugTitle);
+                                            .trace("BlacklistController: found query in robots.txt client=" + nextKey
+                                                    + " nextQueryDebugTitle=" + nextQueryDebugTitle);
                                 }
                                 
                                 robotsTxtCount++;
@@ -530,9 +554,9 @@ public class BlacklistController
                             this.permanentServletLifetimeIPBlacklist.add(nextKey);
                             this.permanentServletLifetimeIPBlacklistEvidence.put(nextKey, nextClientQueryList);
                             
-                            
-//                            BlacklistController.log
-//                                    .warn("Did not properly add ip to the permanent blacklist: nextKey=" + nextKey);
+                            // BlacklistController.log
+                            // .warn("Did not properly add ip to the permanent blacklist: nextKey="
+                            // + nextKey);
                         }
                     }
                 }
@@ -571,7 +595,8 @@ public class BlacklistController
             return null;
         }
         
-        // try to avoid always returning the same alternative by randomising the list structure prior to checking it here
+        // try to avoid always returning the same alternative by randomising the list structure
+        // prior to checking it here
         urlList = ListUtils.randomiseListLayout(urlList);
         
         for(final String nextEndpoint : urlList)
@@ -605,7 +630,8 @@ public class BlacklistController
             {
                 if(this.currentIPBlacklist == null)
                 {
-                    this.currentIPBlacklist = this.localSettings.getStringProperties("blacklistBaseClientIPAddresses");
+                    this.currentIPBlacklist =
+                            this.localSettings.getStringProperties(WebappConfig.BLACKLIST_BASE_CLIENT_IP_ADDRESSES);
                 }
             }
         }
@@ -621,7 +647,8 @@ public class BlacklistController
             {
                 if(this.currentIPWhitelist == null)
                 {
-                    this.currentIPWhitelist = this.localSettings.getStringProperties("whitelistBaseClientIPAddresses");
+                    this.currentIPWhitelist =
+                            this.localSettings.getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES);
                 }
             }
         }
@@ -637,12 +664,15 @@ public class BlacklistController
     public Collection<String> getEndpointUrlsInBlacklist()
     {
         final long blacklistResetPeriodMilliseconds =
-                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+                this.localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS,
+                        (Long)WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS.getDefaultValue());
         
         final boolean blacklistResetClientBlacklistWithEndpoints =
-                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+                this.localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS,
+                        (Boolean)WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS.getDefaultValue());
         
-        return getEndpointUrlsInBlacklist(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+        return this.getEndpointUrlsInBlacklist(blacklistResetPeriodMilliseconds,
+                blacklistResetClientBlacklistWithEndpoints);
     }
     
     public Collection<String> getEndpointUrlsInBlacklist(final long blacklistResetPeriodMilliseconds,
@@ -715,32 +745,42 @@ public class BlacklistController
     
     /**
      * 
-     * @param nextEndpointUrl The endpoint URL to check for failures
+     * @param nextEndpointUrl
+     *            The endpoint URL to check for failures
      * @return True if the endpoint has more than blacklistMaxAccumulatedFailures (5 by default)
      */
     public boolean isEndpointBlacklisted(final String nextEndpointUrl)
     {
-        final int blacklistMaxAccumulatedFailures = this.localSettings.getIntProperty(
-                "blacklistMaxAccumulatedFailures", 5);
+        final int blacklistMaxAccumulatedFailures =
+                this.localSettings.getIntProperty(WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES,
+                        (Integer)WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES.getDefaultValue());
         
         final long blacklistResetPeriodMilliseconds =
-                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+                this.localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS,
+                        (Long)WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS.getDefaultValue());
         
         final boolean blacklistResetClientBlacklistWithEndpoints =
-                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+                this.localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS,
+                        (Boolean)WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS.getDefaultValue());
         
-        return this.isEndpointBlacklisted(nextEndpointUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
-    }        
+        return this.isEndpointBlacklisted(nextEndpointUrl, blacklistMaxAccumulatedFailures,
+                blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+    }
     
     /**
      * 
-     * @param nextEndpointUrl The endpoint URL to check for failures
-     * @param blacklistMaxAccumulatedFailures The number of failures to accept before blacklisting an endpoint
-     * @param blacklistResetPeriodMilliseconds The minimum period between blacklist resets
-     * @param blacklistResetClientBlacklistWithEndpoints Whether to reset the client blacklist when resetting the endpoint blacklist
+     * @param nextEndpointUrl
+     *            The endpoint URL to check for failures
+     * @param blacklistMaxAccumulatedFailures
+     *            The number of failures to accept before blacklisting an endpoint
+     * @param blacklistResetPeriodMilliseconds
+     *            The minimum period between blacklist resets
+     * @param blacklistResetClientBlacklistWithEndpoints
+     *            Whether to reset the client blacklist when resetting the endpoint blacklist
      * @return True if the endpoint has more than blacklistMaxAccumulatedFailures
      */
-    public boolean isEndpointBlacklisted(final String nextEndpointUrl, int blacklistMaxAccumulatedFailures, long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public boolean isEndpointBlacklisted(final String nextEndpointUrl, final int blacklistMaxAccumulatedFailures,
+            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
         
@@ -758,30 +798,38 @@ public class BlacklistController
     
     /**
      * 
-     * @param inputUrl The full URL to check
+     * @param inputUrl
+     *            The full URL to check
      * 
      * @return True if the complete inputUrl or the protocol://host subsection are blacklisted
      */
     public boolean isUrlBlacklisted(final String inputUrl)
     {
-        final int blacklistMaxAccumulatedFailures = this.localSettings.getIntProperty(
-                "blacklistMaxAccumulatedFailures", 5);
+        final int blacklistMaxAccumulatedFailures =
+                this.localSettings.getIntProperty(WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES,
+                        (Integer)WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES.getDefaultValue());
         
         final long blacklistResetPeriodMilliseconds =
-                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+                this.localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS,
+                        (Long)WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS.getDefaultValue());
         
         final boolean blacklistResetClientBlacklistWithEndpoints =
-                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+                this.localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS,
+                        (Boolean)WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS.getDefaultValue());
         
-        return isUrlBlacklisted(inputUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
+        return this.isUrlBlacklisted(inputUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds,
+                blacklistResetClientBlacklistWithEndpoints);
     }
+    
     /**
      * 
-     * @param inputUrl The full URL to check
+     * @param inputUrl
+     *            The full URL to check
      * 
      * @return True if the complete inputUrl or the protocol://host subsection are blacklisted
      */
-    public boolean isUrlBlacklisted(final String inputUrl, int blacklistMaxAccumulatedFailures, long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public boolean isUrlBlacklisted(final String inputUrl, final int blacklistMaxAccumulatedFailures,
+            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         URL url = null;
         
@@ -795,15 +843,18 @@ public class BlacklistController
             // blacklist controller in this case
             if(BlacklistController._DEBUG)
             {
-                log.debug("isUrlBlacklisted: Endpoint was not a URL, returning false");
+                BlacklistController.log.debug("isUrlBlacklisted: Endpoint was not a URL, returning false");
             }
             
             return false;
         }
         
         // we test both the full URL and the protocol://host subsection
-        if(this.isEndpointBlacklisted(inputUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints)
-                || this.isEndpointBlacklisted(url.getProtocol() + "://" + url.getAuthority(), blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints))
+        if(this.isEndpointBlacklisted(inputUrl, blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds,
+                blacklistResetClientBlacklistWithEndpoints)
+                || this.isEndpointBlacklisted(url.getProtocol() + "://" + url.getAuthority(),
+                        blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds,
+                        blacklistResetClientBlacklistWithEndpoints))
         {
             if(BlacklistController._DEBUG)
             {
@@ -843,9 +894,8 @@ public class BlacklistController
         
         if(BlacklistController._DEBUG)
         {
-            BlacklistController.log
-                    .debug("BlacklistController.persistStatistics: start of synchronized section start=" + start
-                            + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
+            BlacklistController.log.debug("BlacklistController.persistStatistics: start of synchronized section start="
+                    + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
         }
         
         for(final HttpUrlQueryRunnable nextRunnableThread : runnableThreads)
@@ -855,9 +905,8 @@ public class BlacklistController
         
         if(BlacklistController._DEBUG)
         {
-            BlacklistController.log
-                    .debug("BlacklistController.persistStatistics: end of synchronized section start=" + start
-                            + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
+            BlacklistController.log.debug("BlacklistController.persistStatistics: end of synchronized section start="
+                    + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
         }
         
         if(BlacklistController._DEBUG)
@@ -877,16 +926,20 @@ public class BlacklistController
     public void removeEndpointsFromBlacklist(final Collection<RdfFetcherQueryRunnable> successfulQueries)
     {
         final long blacklistResetPeriodMilliseconds =
-                this.localSettings.getLongProperty("blacklistResetPeriodMilliseconds", 60000L);
+                this.localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS,
+                        (Long)WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS.getDefaultValue());
         
         final boolean blacklistResetClientBlacklistWithEndpoints =
-                this.localSettings.getBooleanProperty("blacklistResetClientBlacklistWithEndpoints", true);
+                this.localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS,
+                        (Boolean)WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS.getDefaultValue());
         
-        removeEndpointsFromBlacklist(successfulQueries, blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);        
+        this.removeEndpointsFromBlacklist(successfulQueries, blacklistResetPeriodMilliseconds,
+                blacklistResetClientBlacklistWithEndpoints);
     }
     
     /**
-     * FIXME: fix this method so that it only removes successful endpoint URLs, as the runnable may have tried alternatives that failed
+     * FIXME: fix this method so that it only removes successful endpoint URLs, as the runnable may
+     * have tried alternatives that failed
      * 
      * 
      * @param successfulQueries

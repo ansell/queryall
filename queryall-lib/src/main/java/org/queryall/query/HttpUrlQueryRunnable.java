@@ -6,6 +6,7 @@ import java.util.Map;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.SparqlProviderSchema;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
@@ -24,7 +25,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
     private static final boolean _INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
     
     public String httpOperation = "GET";
-    public int maxRowsParameter = this.getLocalSettings().getIntProperty("pageoffsetIndividualQueryLimit", 500);
+    public int maxRowsParameter = this.getLocalSettings()
+            .getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
     
     public HttpUrlQueryRunnable(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,

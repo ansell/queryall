@@ -15,9 +15,9 @@ import org.queryall.impl.querytype.NoInputQueryTypeImpl;
 public class NoInputQueryTypeImplProcessorTest extends AbstractProcessorQueryTypeTest
 {
     @Override
-    public Profile getNewTestProfile()
+    public String getNewTestProcessingTemplateString()
     {
-        return new ProfileImpl();
+        return "";
     }
     
     @Override
@@ -25,10 +25,10 @@ public class NoInputQueryTypeImplProcessorTest extends AbstractProcessorQueryTyp
     {
         return new NoInputQueryTypeImpl();
     }
-
+    
     @Override
-    public String getNewTestProcessingTemplateString()
+    public Profile getNewTestProfile()
     {
-        return "";
+        return new ProfileImpl();
     }
 }

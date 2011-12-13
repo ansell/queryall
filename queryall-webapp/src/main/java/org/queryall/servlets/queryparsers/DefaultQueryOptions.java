@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,23 +54,24 @@ public class DefaultQueryOptions
         this.localSettings = nextSettings;
         
         this.pageoffsetUrlOpeningPrefix =
-                this.localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset");
-        this.pageoffsetUrlClosingPrefix = this.localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/");
-        this.pageoffsetUrlSuffix = this.localSettings.getStringProperty("pageoffsetUrlSuffix", "");
-        this.htmlUrlPrefix = this.localSettings.getStringProperty("htmlUrlPrefix", "page/");
-        this.htmlUrlSuffix = this.localSettings.getStringProperty("htmlUrlSuffix", "");
-        this.rdfXmlUrlPrefix = this.localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
-        this.rdfXmlUrlSuffix = this.localSettings.getStringProperty("rdfXmlUrlSuffix", "");
-        this.n3UrlPrefix = this.localSettings.getStringProperty("n3UrlPrefix", "n3/");
-        this.n3UrlSuffix = this.localSettings.getStringProperty("n3UrlSuffix", "");
-        this.jsonUrlPrefix = this.localSettings.getStringProperty("jsonUrlPrefix", "json/");
-        this.jsonUrlSuffix = this.localSettings.getStringProperty("jsonUrlSuffix", "");
-        this.ntriplesUrlPrefix = this.localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
-        this.ntriplesUrlSuffix = this.localSettings.getStringProperty("ntriplesUrlSuffix", "");
-        this.nquadsUrlPrefix = this.localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
-        this.nquadsUrlSuffix = this.localSettings.getStringProperty("nquadsUrlSuffix", "");
-        this.queryplanUrlPrefix = this.localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/");
-        this.queryplanUrlSuffix = this.localSettings.getStringProperty("queryplanUrlSuffix", "");
+                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX);
+        this.pageoffsetUrlClosingPrefix =
+                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX);
+        this.pageoffsetUrlSuffix = this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX);
+        this.htmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX);
+        this.htmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX);
+        this.rdfXmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX);
+        this.rdfXmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX);
+        this.n3UrlPrefix = this.localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX);
+        this.n3UrlSuffix = this.localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX);
+        this.jsonUrlPrefix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX);
+        this.jsonUrlSuffix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX);
+        this.ntriplesUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_PREFIX);
+        this.ntriplesUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_SUFFIX);
+        this.nquadsUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_PREFIX);
+        this.nquadsUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_SUFFIX);
+        this.queryplanUrlPrefix = this.localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_PREFIX);
+        this.queryplanUrlSuffix = this.localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_SUFFIX);
         
         final String pageOffsetPatternString =
                 "^" + this.pageoffsetUrlOpeningPrefix + "(\\d+)" + this.pageoffsetUrlClosingPrefix + "(.+)"

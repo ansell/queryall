@@ -25,13 +25,14 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.servlets.utils.ServletUtils;
@@ -104,9 +105,7 @@ public class GeneralServlet extends HttpServlet
         
         if(originalAcceptHeader == null || originalAcceptHeader.equals(""))
         {
-            acceptHeader =
-                    localSettings.getStringProperty(Constants.PREFERRED_DISPLAY_CONTENT_TYPE,
-                            Constants.APPLICATION_RDF_XML);
+            acceptHeader = localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE);
         }
         else
         {
@@ -115,8 +114,8 @@ public class GeneralServlet extends HttpServlet
         
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
-                        localContentTypeNegotiator, localSettings.getStringProperty(
-                                Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML));
+                        localContentTypeNegotiator,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -129,8 +128,8 @@ public class GeneralServlet extends HttpServlet
         // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using
         // this method
         requestedContentType =
-                RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML),
+                RdfUtils.findBestContentType(requestedContentType,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases
@@ -141,7 +140,8 @@ public class GeneralServlet extends HttpServlet
         {
             ServletUtils.logRequestDetails(useDefaultProviders, serverName, queryString, requesterIpAddress, locale,
                     characterEncoding, isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
-                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"), request.getHeader("User-Agent"));
+                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"),
+                    request.getHeader("User-Agent"));
         }
         
         // allow for users to perform redirections if the query did not contain an explicit format
@@ -153,7 +153,7 @@ public class GeneralServlet extends HttpServlet
         }
         
         // TODO: avoid cast here
-        ((Settings)localSettings).configRefreshCheck(false);
+        // ((Settings)localSettings).configRefreshCheck(false);
         localBlacklistController.doBlacklistExpiry();
         
         if(localBlacklistController.isClientBlacklisted(requesterIpAddress))
@@ -162,16 +162,16 @@ public class GeneralServlet extends HttpServlet
                     + " to blacklist redirect page");
             
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setHeader("Location", localSettings.getStringProperty("blacklistRedirectPage", "/error/blacklist"));
+            response.setHeader("Location", localSettings.getStringProperty(WebappConfig.BLACKLIST_REDIRECT_PAGE));
             return;
         }
         
         // TODO: arrange to move this into the header include function
-        response.setHeader("X-Application", localSettings.getStringProperty("userAgent", "queryall") + "/"
-                + Settings.VERSION);
+        response.setHeader("X-Application", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                + PropertyUtils.VERSION);
         
         final List<Profile> includedProfiles =
-                ProfileUtils.getAndSortProfileList(localSettings.getURIProperties("activeProfiles"),
+                ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),
                         SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
         
         try
@@ -201,8 +201,8 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
-                ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType, multiProviderQueryBundles,
-                        myRepository, localSettings.getSeparator());
+                ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType,
+                        multiProviderQueryBundles, myRepository, localSettings.getSeparator());
             }
             else if(!fetchController.queryKnown())
             {
@@ -218,13 +218,13 @@ public class GeneralServlet extends HttpServlet
                     // 404 for document not found, as a query type matched somewhere without having
                     // the namespace recognised
                     // There are still no results, but this is a more specific exception
-                    responseCode = localSettings.getIntProperty("unknownNamespaceHttpResponseCode", 404);
+                    responseCode = localSettings.getIntProperty(WebappConfig.UNKNOWN_NAMESPACE_HTTP_RESPONSE_CODE);
                 }
                 else
                 {
                     // 400 for query completely unrecognised, even when not including namespace in
                     // each query type calculation
-                    responseCode = localSettings.getIntProperty("unknownQueryHttpResponseCode", 400);
+                    responseCode = localSettings.getIntProperty(WebappConfig.UNKNOWN_QUERY_HTTP_RESPONSE_CODE);
                 }
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
@@ -314,7 +314,8 @@ public class GeneralServlet extends HttpServlet
             // update a the blacklist
             localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
             
-            if(localSettings.getBooleanProperty("blacklistResetEndpointFailuresOnSuccess", true))
+            if(localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS,
+                    (Boolean)WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS.getDefaultValue()))
             {
                 localBlacklistController.removeEndpointsFromBlacklist(fetchController.getSuccessfulResults(),
                         nextTotalTime, useDefaultProviders);
@@ -323,10 +324,12 @@ public class GeneralServlet extends HttpServlet
             // Don't keep local error statistics if GeneralServlet debug level is higher than or
             // equal to info and we aren't interested in using the client IP blacklist
             // functionalities
-            if(GeneralServlet._INFO || localSettings.getBooleanProperty("automaticallyBlacklistClients", false))
+            if(GeneralServlet._INFO
+                    || localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
+                            (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue()))
             {
-                ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress, multiProviderQueryBundles,
-                        nextTotalTime);
+                ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress,
+                        multiProviderQueryBundles, nextTotalTime);
             }
         }
         catch(final QueryAllException qex)

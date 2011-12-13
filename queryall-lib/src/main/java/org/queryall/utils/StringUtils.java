@@ -21,6 +21,7 @@ import org.openrdf.model.URI;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class StringUtils
             final QueryAllConfiguration localSettings)
     {
         return StringUtils.matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(),
-                localSettings.getStringProperty("plainNamespaceAndIdentifierRegex", "^([\\w-]+):(.+)$"), nsAndId);
+                localSettings.getStringProperty(WebappConfig.PLAIN_NAMESPACE_AND_IDENTIFIER_REGEX), nsAndId);
     }
     
     public static Map<String, List<String>> getNamespaceAndIdentifierFromUri(final String nextUri,
