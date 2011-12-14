@@ -16,6 +16,7 @@
 	<!--<property name="format" value="\s+$"/> -->
 	<!--</module> -->
 	<module name="TreeWalker">
+		<property name="cacheFile" value="target/cachefile"/>
 		<!-- Start Production specific checks -->
 		<module name="FinalClass" />
 		<module name="JavadocMethod">
