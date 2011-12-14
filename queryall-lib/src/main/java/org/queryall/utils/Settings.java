@@ -508,7 +508,7 @@ public class Settings implements QueryAllConfiguration
                 else
                 {
                     Settings.log
-                            .warn("Automatically converting a property that was not a String in getStringProperties nextProperty="
+                            .warn("Automatically converting a property that was not a String in getStringProperties propertyKey="+propertyKey+" nextProperty="
                                     + nextProperty);
                     
                     results.add(nextProperty.toString());
