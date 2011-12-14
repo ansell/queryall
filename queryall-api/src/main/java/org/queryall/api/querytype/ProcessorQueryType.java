@@ -12,6 +12,11 @@ import java.util.Map;
  */
 public interface ProcessorQueryType extends QueryType
 {
+    /**
+     * Set the processing template string for this processor
+     * 
+     * @return The templated string to use for this processor
+     */
     String getProcessingTemplateString();
     
     /**
@@ -36,6 +41,11 @@ public interface ProcessorQueryType extends QueryType
      */
     Map<String, Object> processQueryVariables(Map<String, Object> queryVariables);
     
+    /**
+     * Set the processing template string for this processor
+     * 
+     * @param templateString The templated string to use for this processor
+     */
     void setProcessingTemplateString(String templateString);
     
     /**
