@@ -132,9 +132,9 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.5.1</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -289,4 +289,16 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>maenad-lib-releases</id>
+			<name>maenad-releases</name>
+			<url>http://maven.metadata.net/artifactory/libs-releases-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>maenad-lib-snapshots</id>
+			<name>maenad-snapshots</name>
+			<url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
