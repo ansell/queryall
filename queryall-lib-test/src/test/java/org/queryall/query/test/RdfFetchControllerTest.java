@@ -4,6 +4,7 @@
 package org.queryall.query.test;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -27,6 +28,7 @@ public class RdfFetchControllerTest
     private RdfFetchController testController;
     private QueryAllConfiguration testSettings;
     private BlacklistController testBlacklistController;
+    private LinkedList<QueryBundle> testQueryBundles1;
 
     /**
      * @throws java.lang.Exception
@@ -37,6 +39,11 @@ public class RdfFetchControllerTest
         testController = new RdfFetchController();
         testSettings = new Settings();
         testBlacklistController = new BlacklistController(testSettings);
+        
+        testQueryBundles1 = new LinkedList<QueryBundle>();
+        testQueryBundles1.add(new QueryBundle());
+        testQueryBundles1.add(new QueryBundle());
+        testQueryBundles1.add(new QueryBundle());
     }
     
     /**
@@ -48,6 +55,7 @@ public class RdfFetchControllerTest
         testController = null;
         testSettings = null;
         testBlacklistController = null;
+        testQueryBundles1 = null;
     }
     
     /**
@@ -111,10 +119,52 @@ public class RdfFetchControllerTest
         Assert.assertFalse(testController.anyNamespaceNotRecognised());
         Assert.assertNotNull(testController.getAllUsedProviders());
         Assert.assertEquals(0, testController.getAllUsedProviders().size());
+        Assert.assertNotNull(testController.getErrorResults());
         Assert.assertEquals(0, testController.getErrorResults().size());
+        Assert.assertNotNull(testController.getFetchThreadGroup());
         Assert.assertEquals(0, testController.getFetchThreadGroup().size());
+        Assert.assertNotNull(testController.getResults());
         Assert.assertEquals(0, testController.getResults().size());
+        Assert.assertNotNull(testController.getSuccessfulResults());
         Assert.assertEquals(0, testController.getSuccessfulResults().size());
+        Assert.assertNotNull(testController.getUncalledThreads());
+        Assert.assertEquals(0, testController.getUncalledThreads().size());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#RdfFetchController(org.queryall.api.base.QueryAllConfiguration, org.queryall.blacklist.BlacklistController, java.util.Collection)}.
+     * 
+     * Tests the initial setup from the constructor with an empty collection of query bundles
+     * 
+     * @throws QueryAllException If the constructor failed to initialise correctly using the given settings, blacklist controller and query bundles
+     */
+    @Test
+    public final void testRdfFetchControllerMultipleNullQueryBundles() throws QueryAllException
+    {
+        testController = new RdfFetchController(testSettings, testBlacklistController, testQueryBundles1);
+        
+        Assert.assertNotNull(testController.getSettings());
+        Assert.assertNotNull(testController.getBlacklistController());
+        
+        Assert.assertEquals(testSettings, testController.getSettings());
+        Assert.assertEquals(testBlacklistController, testController.getBlacklistController());
+        
+        Assert.assertNotNull(testController.getQueryBundles());
+        Assert.assertEquals(3, testController.getQueryBundles().size());
+        
+        Assert.assertFalse(testController.queryKnown());
+        Assert.assertFalse(testController.anyNamespaceNotRecognised());
+        Assert.assertNotNull(testController.getAllUsedProviders());
+        Assert.assertEquals(0, testController.getAllUsedProviders().size());
+        Assert.assertNotNull(testController.getErrorResults());
+        Assert.assertEquals(0, testController.getErrorResults().size());
+        Assert.assertNotNull(testController.getFetchThreadGroup());
+        Assert.assertEquals(0, testController.getFetchThreadGroup().size());
+        Assert.assertNotNull(testController.getResults());
+        Assert.assertEquals(0, testController.getResults().size());
+        Assert.assertNotNull(testController.getSuccessfulResults());
+        Assert.assertEquals(0, testController.getSuccessfulResults().size());
+        Assert.assertNotNull(testController.getUncalledThreads());
         Assert.assertEquals(0, testController.getUncalledThreads().size());
         
     }

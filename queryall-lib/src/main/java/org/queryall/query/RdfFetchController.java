@@ -1,6 +1,5 @@
 package org.queryall.query;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -92,8 +91,6 @@ public class RdfFetchController
         this.setSettings(settingsClass);
         this.setBlacklistController(localBlacklistController);
         this.setQueryBundles(nextQueryBundles);
-        
-        this.initialise(false);
     }
     
     /**
@@ -359,8 +356,12 @@ public class RdfFetchController
             
             boolean addToFetchQueue = false;
             
+            if(nextBundle.getOriginalProvider() == null)
+            {
+                log.error("nextBundle.getOriginalProvider() was null. not generating fetch thread for this query bundle");
+            }
             // TODO: Make this section extensible, preferably defined by the provider itself
-            if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
+            else if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
                     && nextBundle.getOriginalProvider().getEndpointMethod()
                             .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
@@ -819,7 +820,10 @@ public class RdfFetchController
         
         for(final QueryBundle nextQueryBundle : this.getQueryBundles())
         {
-            results.add(nextQueryBundle.getOriginalProvider());
+            if(nextQueryBundle.getOriginalProvider() != null)
+            {
+                results.add(nextQueryBundle.getOriginalProvider());
+            }
         }
         
         return results;
@@ -1065,7 +1069,7 @@ public class RdfFetchController
         for(final QueryBundle nextQueryBundle : this.getQueryBundles())
         {
             // if the query type for any query bundle is not a dummy query, return true
-            if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
+            if(nextQueryBundle.getQueryType() != null && !nextQueryBundle.getQueryType().getIsDummyQueryType())
             {
                 if(RdfFetchController._DEBUG)
                 {
@@ -1142,8 +1146,15 @@ public class RdfFetchController
         this.localBlacklistController = localBlacklistController;
     }
 
-    public void setQueryBundles(Collection<QueryBundle> queryBundles)
+    /**
+     * Sets the query bundles and initialises the controllers internal settings using these new query bundles
+     * 
+     * @param queryBundles The query bundles to use to set
+     * @throws QueryAllException If the query bundles were not valid in any way, or could not be used to successfully generate fetch threads
+     */
+    public void setQueryBundles(Collection<QueryBundle> queryBundles) throws QueryAllException
     {
         this.queryBundles = queryBundles;
+        initialise(false);
     }
 }
