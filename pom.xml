@@ -300,12 +300,12 @@
 	</repositories>
 	<distributionManagement>
 		<repository>
-			<id>maenad-lib-releases</id>
+			<id>maenad-releases</id>
 			<name>maenad-releases</name>
 			<url>http://maven.metadata.net/artifactory/libs-releases-local</url>
 		</repository>
 		<snapshotRepository>
-			<id>maenad-lib-snapshots</id>
+			<id>maenad-snapshots</id>
 			<name>maenad-snapshots</name>
 			<url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
 		</snapshotRepository>
