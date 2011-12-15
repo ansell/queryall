@@ -281,7 +281,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.3</version>
 						<executions>
 							<!-- Run Cobertura with ANT Run -->
 							<!-- The cobertura-maven-plugin doesn't work right. -->
