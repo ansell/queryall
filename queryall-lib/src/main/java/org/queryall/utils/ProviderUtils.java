@@ -115,8 +115,10 @@ public final class ProviderUtils
                         + nextProvider.getKey().stringValue());
             }
             
-            for(final Collection<URI> nextNamespaceUriList : namespaceUris.values())
+            for(String nextInputParameter : namespaceUris.keySet())
             {
+                Collection<URI> nextNamespaceUriList = namespaceUris.get(nextInputParameter);
+                
                 if(nextNamespaceUriList == null)
                 {
                     if(ProviderUtils._DEBUG)
@@ -131,6 +133,7 @@ public final class ProviderUtils
                             + nextNamespaceUriList);
                 }
                 boolean somethingFound = false;
+                
                 for(final URI nextNamespaceUri : nextNamespaceUriList)
                 {
                     if(ProviderUtils._TRACE)
@@ -140,9 +143,10 @@ public final class ProviderUtils
                     if(nextProvider.containsNamespaceUri(nextNamespaceUri))
                     {
                         somethingFound = true;
-                        break;
+//                        break;
                     }
                 }
+                
                 if(somethingFound)
                 {
                     anyFound = true;
@@ -152,11 +156,12 @@ public final class ProviderUtils
                     allFound = false;
                 }
             }
-            if(anyFound && namespaceMatchMethod.equals(QueryTypeSchema.getNamespaceMatchAnyUri()))
+            
+            if(anyFound && namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAny()))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }
-            else if(allFound && namespaceMatchMethod.equals(QueryTypeSchema.getNamespaceMatchAllUri()))
+            else if(allFound && namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }

@@ -1176,7 +1176,7 @@ public class RdfUtilsTest
                             nextQueryType.getIsNamespaceSpecific());
                     
                     Assert.assertEquals("Query type namespace match method was not parsed correctly",
-                            QueryTypeSchema.getNamespaceMatchAllUri(), nextQueryType.getNamespaceMatchMethod());
+                            QueryTypeSchema.getQueryNamespaceMatchAll(), nextQueryType.getNamespaceMatchMethod());
                     
                     Assert.assertTrue("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());
@@ -1279,7 +1279,7 @@ public class RdfUtilsTest
                             nextQueryType.getIsNamespaceSpecific());
                     
                     Assert.assertEquals("Query type namespace match method was not parsed correctly",
-                            QueryTypeSchema.getNamespaceMatchAnyUri(), nextQueryType.getNamespaceMatchMethod());
+                            QueryTypeSchema.getQueryNamespaceMatchAny(), nextQueryType.getNamespaceMatchMethod());
                     
                     Assert.assertFalse("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());

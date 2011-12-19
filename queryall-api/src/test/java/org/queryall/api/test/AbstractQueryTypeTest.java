@@ -138,42 +138,42 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         
         this.namespaces12345AndFalse = new HashMap<String, Collection<URI>>();
         this.namespaces12345AndFalse.put("input_1", namespace1Inner);
-        this.namespaces12345AndFalse.put("input_1", namespace2Inner);
-        this.namespaces12345AndFalse.put("input_1", namespace3Inner);
-        this.namespaces12345AndFalse.put("input_1", namespace4Inner);
-        this.namespaces12345AndFalse.put("input_1", namespace5Inner);
-        this.namespaces12345AndFalse.put("input_1", namespaceFalseInner);
+        this.namespaces12345AndFalse.put("input_2", namespace2Inner);
+        this.namespaces12345AndFalse.put("input_3", namespace3Inner);
+        this.namespaces12345AndFalse.put("input_4", namespace4Inner);
+        this.namespaces12345AndFalse.put("input_5", namespace5Inner);
+        this.namespaces12345AndFalse.put("input_6", namespaceFalseInner);
         
         this.namespaces12345 = new HashMap<String, Collection<URI>>();
         this.namespaces12345.put("input_1", namespace1Inner);
-        this.namespaces12345.put("input_1", namespace2Inner);
-        this.namespaces12345.put("input_1", namespace3Inner);
-        this.namespaces12345.put("input_1", namespace4Inner);
-        this.namespaces12345.put("input_1", namespace5Inner);
+        this.namespaces12345.put("input_2", namespace2Inner);
+        this.namespaces12345.put("input_3", namespace3Inner);
+        this.namespaces12345.put("input_4", namespace4Inner);
+        this.namespaces12345.put("input_5", namespace5Inner);
         
         this.namespaces123 = new HashMap<String, Collection<URI>>();
         this.namespaces123.put("input_1", namespace1Inner);
-        this.namespaces123.put("input_1", namespace2Inner);
-        this.namespaces123.put("input_1", namespace3Inner);
+        this.namespaces123.put("input_2", namespace2Inner);
+        this.namespaces123.put("input_3", namespace3Inner);
         
         this.namespaces1orFalse = new HashMap<String, Collection<URI>>();
         this.namespaces1orFalse.put("input_1", namespace1OrFalseInner);
         
         this.namespaces1and2orFalse = new HashMap<String, Collection<URI>>();
         this.namespaces1and2orFalse.put("input_1", namespace1Inner);
-        this.namespaces1and2orFalse.put("input_1", namespace2OrFalseInner);
+        this.namespaces1and2orFalse.put("input_2", namespace2OrFalseInner);
         
         this.namespaces12 = new HashMap<String, Collection<URI>>();
         this.namespaces12.put("input_1", namespace1Inner);
-        this.namespaces12.put("input_1", namespace2Inner);
+        this.namespaces12.put("input_2", namespace2Inner);
         
         this.namespaces34 = new HashMap<String, Collection<URI>>();
         this.namespaces34.put("input_1", namespace3Inner);
-        this.namespaces34.put("input_1", namespace4Inner);
+        this.namespaces34.put("input_2", namespace4Inner);
         
         this.namespaces45 = new HashMap<String, Collection<URI>>();
         this.namespaces45.put("input_1", namespace4Inner);
-        this.namespaces45.put("input_1", namespace5Inner);
+        this.namespaces45.put("input_2", namespace5Inner);
         
         this.queryTypePublicIdentifiers = this.getNewTestQueryType();
         this.queryTypePublicIdentifiers.addPublicIdentifierTag("input_2");

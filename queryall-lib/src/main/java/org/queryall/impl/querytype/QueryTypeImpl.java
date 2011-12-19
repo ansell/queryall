@@ -657,7 +657,12 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     @Override
     public boolean handlesNamespacesSpecifically(final Map<String, Collection<URI>> namespacesToCheck)
     {
-        if(!this.isNamespaceSpecific || this.namespacesToHandle == null || namespacesToCheck == null)
+        if(namespacesToCheck == null)
+        {
+            throw new IllegalArgumentException("Namespaces must be specified for this method");
+        }
+        
+        if(!this.isNamespaceSpecific || this.namespacesToHandle == null)
         {
             return false;
         }
@@ -679,8 +684,10 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         // check that we have a locally handled namespace URI that matches
         // one of the URI's in each of the list of namespaces to check
         
-        for(final Collection<URI> nextNamespaceToCheckList : namespacesToCheck.values())
+        for(String nextParameter : namespacesToCheck.keySet())
         {
+            Collection<URI> nextNamespaceToCheckList = namespacesToCheck.get(nextParameter);
+            
             if(nextNamespaceToCheckList == null)
             {
                 if(QueryTypeImpl._DEBUG)
