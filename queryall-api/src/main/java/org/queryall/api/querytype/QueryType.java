@@ -49,6 +49,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     /**
      * 
+     * Defaults to true
+     * 
      * @return True if this query type is able to handle all namespaces, and false otherwise.
      */
     boolean getHandleAllNamespaces();
@@ -57,6 +59,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * 
      * If this variable is false, then this query type will be excluded from use on default providers if it is namespace specific. If this query type is not namespace specific, this property has no effect.
      * 
+     * Defaults to true
+     * 
      * @return True if this query type is applicable to default providers, and false otherwise.
      */
     boolean getIncludeDefaults();
@@ -64,12 +68,16 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     /**
      * If this query type is identified as an expensive or sensitive query type, then this may be indicated using this property. This property generally indicates that the query should be restricted from robot use, according to the generally accepted robots.txt convention. 
      * 
+     * Defaults to false
+     * 
      * @return True if this query type is expensive, and should not be executed by robots.
      */
     boolean getInRobotsTxt();
     
     /**
      * If this query type represents an incomplete, dummy query, that is not useful on its own, than this may be indicated using this property. This property is used to identify whether there are any non-trivial query types matching a query. If all of the matching query types are dummy query types, than the query may return an error. In HTTP, this may correspond to a HTTP 400 error.
+     * 
+     * Defaults to false
      * 
      * @return True if this querytype is not complete on its own, and may not be executed if other non-trivial query types do not also match a given query.
      */
@@ -82,6 +90,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * 
      * If this query type is true, than one or more namespace input tags must be defined to identify the parameters that contain the namespace information.
      * 
+     * Defaults to false
+     * 
      * @return True if providers for this query type can be restricted using information from the parameters in the query.
      */
     boolean getIsNamespaceSpecific();
@@ -90,6 +100,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * If this query can be executed using different results ranges to generate new results, than this property should be true.
      * 
      * If this query is invariant across different results ranges, it should be false to avoid the insertion of the same content multiple times.
+     * 
+     * Defaults to false
      * 
      * @return True if this query can be paged using different results ranges, and false otherwise.
      */
