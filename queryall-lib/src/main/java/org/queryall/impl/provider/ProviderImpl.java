@@ -3,7 +3,6 @@ package org.queryall.impl.provider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.openrdf.OpenRDFException;

@@ -70,7 +70,7 @@ public class ListUtils
             
             int tempPosition = 0;
             
-            Iterator<T> iterator = newList.iterator();
+            final Iterator<T> iterator = newList.iterator();
             
             while(iterator.hasNext())
             {
@@ -78,7 +78,7 @@ public class ListUtils
                 {
                     return iterator.next();
                 }
-
+                
                 iterator.next();
                 tempPosition++;
             }

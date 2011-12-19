@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,7 +18,6 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
-import org.queryall.api.utils.WebappConfig;
 import org.queryall.comparators.ValueComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,22 +182,45 @@ public final class ProviderUtils
      * @param queryString
      * @param recogniseImplicitProviderInclusions
      * @param includeNonProfileMatchedProviders
+     * @param useDefaultProviders
      * @return
      */
     public static Collection<Provider> getProvidersForQuery(final Map<URI, Provider> allProviders,
             final List<Profile> sortedIncludedProfiles, final InputQueryType nextInputQueryType,
             final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
-            final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
+            final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders,
+            final boolean useDefaultProviders)
     {
+        final Collection<Provider> chosenProviders = new HashSet<Provider>();
+        
         if(!nextInputQueryType.getIsNamespaceSpecific())
         {
-            return ProviderUtils.getProvidersForQueryNonNamespaceSpecific(allProviders, nextInputQueryType, sortedIncludedProfiles, recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders);
+            chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(allProviders,
+                    nextInputQueryType, sortedIncludedProfiles, recogniseImplicitProviderInclusions,
+                    includeNonProfileMatchedProviders));
         }
         else
         {
-            return ProviderUtils.getProvidersForQueryNamespaceSpecific(allProviders, sortedIncludedProfiles, nextInputQueryType, namespacePrefixToUriMap, queryParameters, recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders);
+            chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(allProviders,
+                    sortedIncludedProfiles, nextInputQueryType, namespacePrefixToUriMap, queryParameters,
+                    recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders));
         }
+        
+        if(nextInputQueryType.getIncludeDefaults() && useDefaultProviders)
+        {
+            if(ProviderUtils._DEBUG)
+            {
+                ProviderUtils.log.debug("including defaults for nextQueryType.title=" + nextInputQueryType.getTitle()
+                        + " nextQueryType.getKey()=" + nextInputQueryType.getKey());
+            }
+            
+            chosenProviders.addAll(ProviderUtils.getDefaultProviders(allProviders, nextInputQueryType,
+                    sortedIncludedProfiles, recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders));
+        }
+        
+        return chosenProviders;
     }
+    
     /**
      * 
      * 
@@ -310,8 +331,6 @@ public final class ProviderUtils
         
         return results;
     }
-    
-    
     
     /**
      * Finds all providers for the given query type URI, taking into account profile instructions,

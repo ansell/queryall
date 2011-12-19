@@ -341,7 +341,8 @@ public class RdfFetchController
     private Collection<RdfFetcherQueryRunnable> generateFetchThreadsFromQueryBundles(
             final Collection<QueryBundle> nextQueryBundles, final int pageoffsetIndividualQueryLimit)
     {
-        final Collection<RdfFetcherQueryRunnable> results = new ArrayList<RdfFetcherQueryRunnable>(nextQueryBundles.size());
+        final Collection<RdfFetcherQueryRunnable> results =
+                new ArrayList<RdfFetcherQueryRunnable>(nextQueryBundles.size());
         
         for(final QueryBundle nextBundle : nextQueryBundles)
         {
@@ -499,6 +500,8 @@ public class RdfFetchController
     }
     
     /**
+     * TODO: Simplify this method and abstract it out into QueryTypeImpl classes
+     * 
      * @param nextQueryType
      * @param chosenProviders
      * @throws QueryAllException
@@ -539,7 +542,8 @@ public class RdfFetchController
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
-                final List<String> nextEndpointUrls = ListUtils.randomiseCollectionLayout(nextHttpProvider.getEndpointUrls());
+                final List<String> nextEndpointUrls =
+                        ListUtils.randomiseCollectionLayout(nextHttpProvider.getEndpointUrls());
                 
                 final Map<String, Map<String, String>> replacedEndpoints = new HashMap<String, Map<String, String>>();
                 
@@ -953,76 +957,19 @@ public class RdfFetchController
                 
                 final Collection<Provider> chosenProviders = new HashSet<Provider>();
                 
-                chosenProviders.addAll(ProviderUtils.getProvidersForQuery(this.getSettings()
-                        .getAllProviders(), this.sortedIncludedProfiles, nextInputQueryType, this.getSettings()
-                        .getNamespacePrefixesToUris(), this.queryParameters,
-                        this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                        this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
+                chosenProviders.addAll(ProviderUtils.getProvidersForQuery(this.getSettings().getAllProviders(),
+                        this.sortedIncludedProfiles, nextInputQueryType, this.getSettings()
+                                .getNamespacePrefixesToUris(), this.queryParameters, this.getSettings()
+                                .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS), this
+                                .getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS),
+                        this.useDefaultProviders));
                 
-                if(nextQueryType.getIncludeDefaults() && this.useDefaultProviders)
-                {
-                    if(RdfFetchController._DEBUG)
-                    {
-                        RdfFetchController.log
-                                .debug("RdfFetchController.initialise: including defaults for nextQueryType.title="
-                                        + nextQueryType.getTitle() + " nextQueryType.getKey()="
-                                        + nextQueryType.getKey());
-                    }
-                    
-                    chosenProviders.addAll(ProviderUtils.getDefaultProviders(this.getSettings().getAllProviders(),
-                            nextQueryType, this.sortedIncludedProfiles,
-                            this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                            this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
-                }
-                
-                if(RdfFetchController._DEBUG)
-                {
-                    final int QueryTypeProvidersSize = chosenProviders.size();
-                    
-                    if(QueryTypeProvidersSize > 0)
-                    {
-                        RdfFetchController.log.debug("RdfFetchController.initialise: found " + QueryTypeProvidersSize
-                                + " providers for nextQueryType.getKey()=" + nextQueryType.getKey());
-                        
-                        if(RdfFetchController._TRACE)
-                        {
-                            for(final Provider nextQueryTypeProvider : chosenProviders)
-                            {
-                                RdfFetchController.log.trace("RdfFetchController.initialise: nextQueryTypeProvider="
-                                        + nextQueryTypeProvider.getKey());
-                            }
-                        }
-                    }
-                    else if(RdfFetchController._TRACE && QueryTypeProvidersSize == 0)
-                    {
-                        RdfFetchController.log
-                                .trace("RdfFetchController.initialise: found NO suitable providers for custom type="
-                                        + nextQueryType.getKey());
-                    }
-                } // end if(_DEBUG}
-                
-                // Default to safe setting of useAllEndpointsForEachProvider=true here
                 final Collection<QueryBundle> queryBundlesForQueryType =
                         this.generateQueryBundlesForQueryTypeAndProviders(this.getSettings(), nextInputQueryType,
                                 allCustomQueries.get(nextQueryType), chosenProviders, this.getSettings()
                                         .getBooleanProperty(WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER));
                 
-                if(RdfFetchController._DEBUG)
-                {
-                    RdfFetchController.log.debug("RdfFetchController.initialise: queryBundlesForQueryType.size()="
-                            + queryBundlesForQueryType.size());
-                    
-                    if(RdfFetchController._TRACE)
-                    {
-                        for(final QueryBundle nextQueryBundleForQueryType : queryBundlesForQueryType)
-                        {
-                            RdfFetchController.log.trace("RdfFetchController.initialise: nextQueryBundleForQueryType="
-                                    + nextQueryBundleForQueryType.toString());
-                        }
-                    }
-                }
-                
-                this.getQueryBundles().addAll(queryBundlesForQueryType);
+                this.queryBundles.addAll(queryBundlesForQueryType);
                 
                 // if there are still no query bundles check for the non-namespace specific version
                 // of the query type to flag any instances of the namespace not being recognised
@@ -1052,27 +999,28 @@ public class RdfFetchController
                 {
                     RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
                 }
-            }
-            if(RdfFetchController._DEBUG)
-            {
-                if(this.getQueryBundles().size() > 0)
+                
+                if(RdfFetchController._DEBUG)
                 {
-                    for(final QueryBundle nextQueryBundleDebug : this.getQueryBundles())
+                    if(this.getQueryBundles().size() > 0)
                     {
-                        RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
-                                + nextQueryBundleDebug.toString());
+                        for(final QueryBundle nextQueryBundleDebug : this.getQueryBundles())
+                        {
+                            RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
+                                    + nextQueryBundleDebug.toString());
+                        }
                     }
+                    
+                    final long end = System.currentTimeMillis();
+                    
+                    RdfFetchController.log.debug("RdfFetchController.initialise: numberOfThreads="
+                            + this.getFetchThreadGroup().size());
+                    
+                    RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
+                            (end - start)));
                 }
-                
-                final long end = System.currentTimeMillis();
-                
-                RdfFetchController.log.debug("RdfFetchController.initialise: numberOfThreads="
-                        + this.getFetchThreadGroup().size());
-                
-                RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
-                        (end - start)));
             }
-        } // end if(queryBundles == null)
+        }
         
         if(this.fetchThreadGroup.size() == 0)
         {
@@ -1093,20 +1041,8 @@ public class RdfFetchController
             // if the query type for any query bundle is not a dummy query, return true
             if(nextQueryBundle.getQueryType() != null && !nextQueryBundle.getQueryType().getIsDummyQueryType())
             {
-                if(RdfFetchController._DEBUG)
-                {
-                    RdfFetchController.log
-                            .debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="
-                                    + nextQueryBundle.getQueryType().getKey().stringValue());
-                }
-                
                 return true;
             }
-        }
-        
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log.debug("RdfFetchController.queryKnown: returning false at end of method");
         }
         
         return false;
