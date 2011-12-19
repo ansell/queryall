@@ -182,13 +182,15 @@ public class RdfFetchController
                     final String nextResult = nextThread.getRawResult();
                     
                     final String convertedResult =
-                            (String)RuleUtils.normaliseByStage(NormalisationRuleSchema
-                                    .getRdfruleStageBeforeResultsImport(), nextResult, RuleUtils.getSortedRulesByUris(
-                                    this.getSettings().getAllNormalisationRules(), nextThread.getOriginalQueryBundle()
-                                            .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
-                                    this.sortedIncludedProfiles, this.getSettings()
-                                            .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                                    this.getSettings()
+                            (String)RuleUtils.normaliseByStage(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(),
+                                    nextResult,
+                                    RuleUtils.getSortedRulesByUris(this.getSettings().getAllNormalisationRules(),
+                                            nextThread.getOriginalQueryBundle().getProvider().getNormalisationUris(),
+                                            SortOrder.HIGHEST_ORDER_FIRST),
+                                    this.sortedIncludedProfiles,
+                                    this.getSettings().getBooleanProperty(
+                                            WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS), this.getSettings()
                                             .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                     
                     nextThread.setNormalisedResult(convertedResult);
@@ -359,7 +361,8 @@ public class RdfFetchController
             
             if(nextBundle.getOriginalProvider() == null)
             {
-                log.error("nextBundle.getOriginalProvider() was null. not generating fetch thread for this query bundle");
+                RdfFetchController.log
+                        .error("nextBundle.getOriginalProvider() was null. not generating fetch thread for this query bundle");
             }
             // TODO: Make this section extensible, preferably defined by the provider itself
             else if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
@@ -394,10 +397,8 @@ public class RdfFetchController
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
                                 ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(), nextQuery,
-                                "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider())
-                                        .getAcceptHeaderString(this.getSettings()
-                                                .getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
+                                "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(this
+                                        .getSettings().getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
                                 pageoffsetIndividualQueryLimit, this.getSettings(), this.getBlacklistController(),
                                 nextBundle);
                 
@@ -439,9 +440,8 @@ public class RdfFetchController
                 
                 nextThread =
                         new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider())
-                                        .getAcceptHeaderString(this.getSettings()
-                                                .getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
+                                ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(this
+                                        .getSettings().getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
                                 this.getSettings(), this.getBlacklistController(), nextBundle);
                 
                 addToFetchQueue = true;
@@ -512,7 +512,8 @@ public class RdfFetchController
         
         // Note: We default to converting alternate namespaces to preferred unless it is turned off
         // in the configuration. It can always be turned off for each namespace entry individually
-        // FIXME: The current processing code ignores the preferences given by namespace entries, and just uses this setting
+        // FIXME: The current processing code ignores the preferences given by namespace entries,
+        // and just uses this setting
         final boolean overallConvertAlternateToPreferredPrefix =
                 localSettings.getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED);
         
@@ -830,6 +831,11 @@ public class RdfFetchController
         return results;
     }
     
+    public BlacklistController getBlacklistController()
+    {
+        return this.localBlacklistController;
+    }
+    
     /**
      * @return the errorResults
      */
@@ -861,6 +867,11 @@ public class RdfFetchController
         return results;
     }
     
+    public QueryAllConfiguration getSettings()
+    {
+        return this.localSettings;
+    }
+    
     /**
      * @return the successfulResults
      */
@@ -877,22 +888,23 @@ public class RdfFetchController
         return this.uncalledThreads;
     }
     
-    private synchronized void initialise(boolean generateQueryBundles) throws QueryAllException
+    private synchronized void initialise(final boolean generateQueryBundles) throws QueryAllException
     {
         final long start = System.currentTimeMillis();
         
         if(generateQueryBundles)
         {
-            // overwrite any query bundles that may have been inserted previously as we were told to generate new query bundles
+            // overwrite any query bundles that may have been inserted previously as we were told to
+            // generate new query bundles
             this.queryBundles = new LinkedList<QueryBundle>();
             
             // Note: this set contains queries that matched without taking into account the
             // namespaces assigned to each query type
             // The calculation of the namespace matching is done later
             final Map<QueryType, Map<String, Collection<NamespaceEntry>>> allCustomQueries =
-                    QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles,
-                            this.getSettings().getAllQueryTypes(), this.getSettings().getNamespacePrefixesToUris(),
-                            this.getSettings().getAllNamespaceEntries(),
+                    QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles, this
+                            .getSettings().getAllQueryTypes(), this.getSettings().getNamespacePrefixesToUris(), this
+                            .getSettings().getAllNamespaceEntries(),
                             this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
                             this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES));
             
@@ -938,22 +950,22 @@ public class RdfFetchController
                     continue;
                 }
                 
-                InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
+                final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
                 
                 final Collection<Provider> chosenProviders = new HashSet<Provider>();
                 
                 if(!nextQueryType.getIsNamespaceSpecific())
                 {
-                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                            this.getSettings().getAllProviders(), nextInputQueryType, this.sortedIncludedProfiles,
-                            this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                            this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
+                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(this.getSettings()
+                            .getAllProviders(), nextInputQueryType, this.sortedIncludedProfiles, this.getSettings()
+                            .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS), this
+                            .getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
                 }
                 else
                 {
-                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(
-                            this.getSettings().getAllProviders(), this.sortedIncludedProfiles, nextInputQueryType,
-                            this.getSettings().getNamespacePrefixesToUris(), this.queryParameters,
+                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(this.getSettings()
+                            .getAllProviders(), this.sortedIncludedProfiles, nextInputQueryType, this.getSettings()
+                            .getNamespacePrefixesToUris(), this.queryParameters,
                             this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
                             this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
                 }
@@ -1003,8 +1015,8 @@ public class RdfFetchController
                 // Default to safe setting of useAllEndpointsForEachProvider=true here
                 final Collection<QueryBundle> queryBundlesForQueryType =
                         this.generateQueryBundlesForQueryTypeAndProviders(this.getSettings(), nextInputQueryType,
-                                allCustomQueries.get(nextQueryType), chosenProviders,
-                                this.getSettings().getBooleanProperty(WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER));
+                                allCustomQueries.get(nextQueryType), chosenProviders, this.getSettings()
+                                        .getBooleanProperty(WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER));
                 
                 if(RdfFetchController._DEBUG)
                 {
@@ -1027,17 +1039,18 @@ public class RdfFetchController
                 // of the query type to flag any instances of the namespace not being recognised
                 if(queryBundlesForQueryType.size() == 0)
                 {
-                    // For namespace specific query types, do a check ignoring the namespace conditions to determine whether namespace matching was the only reason that the query type did not match this provider
+                    // For namespace specific query types, do a check ignoring the namespace
+                    // conditions to determine whether namespace matching was the only reason that
+                    // the query type did not match this provider
                     if(nextQueryType.getIsNamespaceSpecific()
                             && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
                                     this.getSettings().getAllProviders(),
                                     nextInputQueryType,
                                     this.sortedIncludedProfiles,
-                                    this.getSettings()
-                                            .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                                    this.getSettings()
-                                            .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS))
-                                    .size() > 0)
+                                    this.getSettings().getBooleanProperty(
+                                            WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                                    this.getSettings().getBooleanProperty(
+                                            WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)).size() > 0)
                     {
                         this.namespaceNotRecognised = true;
                     }
@@ -1074,8 +1087,8 @@ public class RdfFetchController
         
         if(this.fetchThreadGroup.size() == 0)
         {
-            this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.getQueryBundles(),
-                    this.getSettings().getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT)));
+            this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.getQueryBundles(), this
+                    .getSettings().getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT)));
         }
     }
     
@@ -1110,6 +1123,11 @@ public class RdfFetchController
         return false;
     }
     
+    public void setBlacklistController(final BlacklistController localBlacklistController)
+    {
+        this.localBlacklistController = localBlacklistController;
+    }
+    
     /**
      * @param errorResults
      *            the errorResults to set
@@ -1129,6 +1147,27 @@ public class RdfFetchController
     }
     
     /**
+     * Sets the query bundles and initialises the controllers internal settings using these new
+     * query bundles
+     * 
+     * @param queryBundles
+     *            The query bundles to use to set
+     * @throws QueryAllException
+     *             If the query bundles were not valid in any way, or could not be used to
+     *             successfully generate fetch threads
+     */
+    public void setQueryBundles(final Collection<QueryBundle> queryBundles) throws QueryAllException
+    {
+        this.queryBundles = queryBundles;
+        this.initialise(false);
+    }
+    
+    public void setSettings(final QueryAllConfiguration localSettings)
+    {
+        this.localSettings = localSettings;
+    }
+    
+    /**
      * @param successfulResults
      *            the successfulResults to set
      */
@@ -1144,37 +1183,5 @@ public class RdfFetchController
     public void setUncalledThreads(final Collection<RdfFetcherQueryRunnable> uncalledThreads)
     {
         this.uncalledThreads = uncalledThreads;
-    }
-
-    public QueryAllConfiguration getSettings()
-    {
-        return localSettings;
-    }
-
-    public void setSettings(QueryAllConfiguration localSettings)
-    {
-        this.localSettings = localSettings;
-    }
-
-    public BlacklistController getBlacklistController()
-    {
-        return localBlacklistController;
-    }
-
-    public void setBlacklistController(BlacklistController localBlacklistController)
-    {
-        this.localBlacklistController = localBlacklistController;
-    }
-
-    /**
-     * Sets the query bundles and initialises the controllers internal settings using these new query bundles
-     * 
-     * @param queryBundles The query bundles to use to set
-     * @throws QueryAllException If the query bundles were not valid in any way, or could not be used to successfully generate fetch threads
-     */
-    public void setQueryBundles(Collection<QueryBundle> queryBundles) throws QueryAllException
-    {
-        this.queryBundles = queryBundles;
-        initialise(false);
     }
 }

@@ -338,16 +338,16 @@ public final class Constants
     
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
     
+    public static final String CLOSING_BRACE = "}";
+    
+    public static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
+    
     public static final SimpleDateFormat ISO8601UTC()
     {
         final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);
         result.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZOME));
         return result;
     }
-
-    public static final String CLOSING_BRACE = "}";
-
-    public static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
     
     private Constants()
     {

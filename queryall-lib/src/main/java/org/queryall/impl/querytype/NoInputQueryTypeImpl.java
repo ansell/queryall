@@ -13,7 +13,6 @@ import java.util.Set;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.queryall.api.querytype.InputQueryTypeSchema;
 import org.queryall.api.querytype.NoInputQueryType;
 import org.queryall.api.querytype.NoInputQueryTypeSchema;
 import org.queryall.api.querytype.QueryTypeSchema;

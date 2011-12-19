@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -394,10 +393,13 @@ public class QueryCreator
                 continue;
             }
             
-            replacedString = replacedString.replace("${" + nextAttribute + Constants.CLOSING_BRACE, attributeList.get(nextAttribute));
+            replacedString =
+                    replacedString.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
+                            attributeList.get(nextAttribute));
             
             normalisedStandardUri =
-                    normalisedStandardUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE, attributeList.get(nextAttribute));
+                    normalisedStandardUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
+                            attributeList.get(nextAttribute));
             
             if(QueryCreator._TRACE)
             {
@@ -406,7 +408,8 @@ public class QueryCreator
             }
             
             normalisedQueryUri =
-                    normalisedQueryUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE, attributeList.get(nextAttribute));
+                    normalisedQueryUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
+                            attributeList.get(nextAttribute));
             
             if(QueryCreator._TRACE)
             {
@@ -451,8 +454,8 @@ public class QueryCreator
         
         normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedStandardUri, Constants.EMPTY_STRING_LIST,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        normalisedStandardUri, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
+                        namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
@@ -1374,7 +1377,8 @@ public class QueryCreator
                     replacedString = replacedString.replace(Constants.TEMPLATE_AUTHORITY, authorityString);
                 }
                 
-                replacedString = replacedString.replace("${" + nextMatchTag + Constants.CLOSING_BRACE, inputReplaceString);
+                replacedString =
+                        replacedString.replace("${" + nextMatchTag + Constants.CLOSING_BRACE, inputReplaceString);
                 
                 replacedString =
                         replacedString.replace("${xmlEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
@@ -1403,13 +1407,15 @@ public class QueryCreator
                                 StringUtils.xmlEncodeString(StringUtils.plusPercentEncode(inputReplaceString)));
                 
                 replacedString =
-                        replacedString.replace("${xmlEncoded_ntriplesEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
+                        replacedString.replace(
+                                "${xmlEncoded_ntriplesEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString)));
                 
                 /***********************/
                 // Start lowercase region
                 replacedString =
-                        replacedString.replace("${lowercase_" + nextMatchTag + Constants.CLOSING_BRACE, inputReplaceString.toLowerCase());
+                        replacedString.replace("${lowercase_" + nextMatchTag + Constants.CLOSING_BRACE,
+                                inputReplaceString.toLowerCase());
                 replacedString =
                         replacedString.replace("${urlEncoded_lowercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.percentEncode(inputReplaceString.toLowerCase()));
@@ -1417,19 +1423,21 @@ public class QueryCreator
                         replacedString.replace("${xmlEncoded_lowercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(inputReplaceString.toLowerCase()));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag + Constants.CLOSING_BRACE, StringUtils
-                                .xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toLowerCase())));
+                        replacedString.replace("${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .percentEncode(inputReplaceString.toLowerCase())));
                 replacedString =
-                        replacedString
-                                .replace("${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag + Constants.CLOSING_BRACE, StringUtils
-                                        .xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toLowerCase())));
+                        replacedString.replace("${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .ntriplesEncode(inputReplaceString.toLowerCase())));
                 // End lowercase region
                 /***********************/
                 
                 /***********************/
                 // Start uppercase region
                 replacedString =
-                        replacedString.replace("${uppercase_" + nextMatchTag + Constants.CLOSING_BRACE, inputReplaceString.toUpperCase());
+                        replacedString.replace("${uppercase_" + nextMatchTag + Constants.CLOSING_BRACE,
+                                inputReplaceString.toUpperCase());
                 replacedString =
                         replacedString.replace("${urlEncoded_uppercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.percentEncode(inputReplaceString.toUpperCase()));
@@ -1437,12 +1445,13 @@ public class QueryCreator
                         replacedString.replace("${xmlEncoded_uppercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(inputReplaceString.toUpperCase()));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag + Constants.CLOSING_BRACE, StringUtils
-                                .xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toUpperCase())));
+                        replacedString.replace("${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .percentEncode(inputReplaceString.toUpperCase())));
                 replacedString =
-                        replacedString
-                                .replace("${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag + Constants.CLOSING_BRACE, StringUtils
-                                        .xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toUpperCase())));
+                        replacedString.replace("${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .ntriplesEncode(inputReplaceString.toUpperCase())));
                 // End uppercase region
                 /***********************/
                 
@@ -1464,47 +1473,49 @@ public class QueryCreator
         
         if(replacedString.contains(Constants.TEMPLATE_LOWERCASE_QUERY_STRING))
         {
-            replacedString = replacedString.replace(Constants.TEMPLATE_LOWERCASE_QUERY_STRING, queryString.toLowerCase());
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_LOWERCASE_QUERY_STRING, queryString.toLowerCase());
         }
         
         if(replacedString.contains(Constants.TEMPLATE_UPPERCASE_QUERY_STRING))
         {
-            replacedString = replacedString.replace(Constants.TEMPLATE_UPPERCASE_QUERY_STRING, queryString.toUpperCase());
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_UPPERCASE_QUERY_STRING, queryString.toUpperCase());
         }
         
         if(replacedString.contains(Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING))
         {
             replacedString =
-                replacedString.replace(Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING,
-                        StringUtils.ntriplesEncode(queryString));
+                    replacedString.replace(Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING,
+                            StringUtils.ntriplesEncode(queryString));
         }
         
         if(replacedString.contains(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING))
         {
             replacedString =
-                replacedString.replace(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING,
-                        StringUtils.percentEncode(queryString));
+                    replacedString.replace(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING,
+                            StringUtils.percentEncode(queryString));
         }
         
         if(replacedString.contains(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING))
         {
             replacedString =
-                replacedString.replace(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING,
-                        StringUtils.xmlEncodeString(queryString));
+                    replacedString.replace(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING,
+                            StringUtils.xmlEncodeString(queryString));
         }
         
         if(replacedString.contains(Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING))
         {
             replacedString =
-                replacedString.replace(Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING,
-                        StringUtils.xmlEncodeString(StringUtils.percentEncode(queryString)));
+                    replacedString.replace(Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING,
+                            StringUtils.xmlEncodeString(StringUtils.percentEncode(queryString)));
         }
         
         if(replacedString.contains(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING))
         {
             replacedString =
-                replacedString.replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING,
-                        StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
+                    replacedString.replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING,
+                            StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         }
         
         if(QueryCreator._DEBUG)

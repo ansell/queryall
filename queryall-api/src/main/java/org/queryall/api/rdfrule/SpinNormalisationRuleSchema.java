@@ -54,11 +54,36 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
     public static final QueryAllSchema SPIN_NORMALISATION_RULE_SCHEMA = new SpinNormalisationRuleSchema();
     
     /**
+     * @return the spinNormalisationRuleLocalImport
+     */
+    public static URI getSpinNormalisationRuleLocalImport()
+    {
+        return SpinNormalisationRuleSchema.spinNormalisationRuleLocalImport;
+    }
+    
+    /**
      * @return the spinruleTypeUri
      */
     public static URI getSpinNormalisationRuleTypeUri()
     {
         return SpinNormalisationRuleSchema.spinNormalisationRuleTypeUri;
+    }
+    
+    /**
+     * @return the spinNormalisationRuleUrlImport
+     */
+    public static URI getSpinNormalisationRuleUrlImport()
+    {
+        return SpinNormalisationRuleSchema.spinNormalisationRuleUrlImport;
+    }
+    
+    /**
+     * @param spinNormalisationRuleLocalImport
+     *            the spinNormalisationRuleLocalImport to set
+     */
+    public static void setSpinNormalisationRuleLocalImport(final URI spinNormalisationRuleLocalImport)
+    {
+        SpinNormalisationRuleSchema.spinNormalisationRuleLocalImport = spinNormalisationRuleLocalImport;
     }
     
     /**
@@ -68,6 +93,15 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
     public static void setSpinNormalisationRuleTypeUri(final URI spinNormalisationRuleTypeUri)
     {
         SpinNormalisationRuleSchema.spinNormalisationRuleTypeUri = spinNormalisationRuleTypeUri;
+    }
+    
+    /**
+     * @param spinNormalisationRuleUrlImport
+     *            the spinNormalisationRuleUrlImport to set
+     */
+    public static void setSpinNormalisationRuleUrlImport(final URI spinNormalisationRuleUrlImport)
+    {
+        SpinNormalisationRuleSchema.spinNormalisationRuleUrlImport = spinNormalisationRuleUrlImport;
     }
     
     /**
@@ -100,30 +134,27 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
             con.setAutoCommit(false);
             
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(),
-                    RDFS.LABEL,
-                    f.createLiteral("A SPIN based normalisation rule."),
-                    contextUri);
+            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), RDFS.LABEL,
+                    f.createLiteral("A SPIN based normalisation rule."), contextUri);
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), RDFS.SUBCLASSOF,
                     NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
             
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleUrlImport(), RDF.TYPE, OWL.OBJECTPROPERTY,
                     contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleUrlImport(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleUrlImport(), RDFS.RANGE, RDFS.RESOURCE,
+                    contextUri);
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleUrlImport(), RDFS.DOMAIN,
                     SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleUrlImport(),
-                    RDFS.LABEL,
-                    f.createLiteral("Defines URLs to import for SPIN Normalisation rules."),
-                    contextUri);
+            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleUrlImport(), RDFS.LABEL,
+                    f.createLiteral("Defines URLs to import for SPIN Normalisation rules."), contextUri);
             
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleLocalImport(), RDF.TYPE, OWL.OBJECTPROPERTY,
                     contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleLocalImport(), RDFS.RANGE, RDFS.RESOURCE, contextUri);
+            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleLocalImport(), RDFS.RANGE, RDFS.RESOURCE,
+                    contextUri);
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleLocalImport(), RDFS.DOMAIN,
                     SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), contextUri);
-            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleLocalImport(),
-                    RDFS.LABEL,
+            con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleLocalImport(), RDFS.LABEL,
                     f.createLiteral("Defines local Java classpath references to import for SPIN Normalisation rules."),
                     contextUri);
             
@@ -151,37 +182,5 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
         }
         
         return false;
-    }
-
-    /**
-     * @return the spinNormalisationRuleUrlImport
-     */
-    public static URI getSpinNormalisationRuleUrlImport()
-    {
-        return spinNormalisationRuleUrlImport;
-    }
-
-    /**
-     * @param spinNormalisationRuleUrlImport the spinNormalisationRuleUrlImport to set
-     */
-    public static void setSpinNormalisationRuleUrlImport(URI spinNormalisationRuleUrlImport)
-    {
-        SpinNormalisationRuleSchema.spinNormalisationRuleUrlImport = spinNormalisationRuleUrlImport;
-    }
-
-    /**
-     * @return the spinNormalisationRuleLocalImport
-     */
-    public static URI getSpinNormalisationRuleLocalImport()
-    {
-        return spinNormalisationRuleLocalImport;
-    }
-
-    /**
-     * @param spinNormalisationRuleLocalImport the spinNormalisationRuleLocalImport to set
-     */
-    public static void setSpinNormalisationRuleLocalImport(URI spinNormalisationRuleLocalImport)
-    {
-        SpinNormalisationRuleSchema.spinNormalisationRuleLocalImport = spinNormalisationRuleLocalImport;
     }
 }

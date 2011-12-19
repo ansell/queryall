@@ -266,7 +266,7 @@ public class SettingsFactory
         {
             conn = webAppConfigurationRdf.getConnection();
             
-            //final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
+            // final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
             // HACK TODO: Generalise properties to URIs instead of substrings so that arbitrary
             // properties can be set
             // http://purl.org/queryall/webapp_configuration:
@@ -302,7 +302,7 @@ public class SettingsFactory
                     
                     final TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
                     
-                    if(_DEBUG)
+                    if(SettingsFactory._DEBUG)
                     {
                         if(!tupleQueryResult.hasNext())
                         {

@@ -29,6 +29,16 @@ public interface InputQueryType extends QueryType
     Collection<String> getExpectedInputParameters();
     
     /**
+     * 
+     * @param queryParameters
+     *            A Map of named inputs from a users query. NOTE: These will not directly provide
+     * @return A list of matches based on the matching methodology for this InputQueryType
+     */
+    Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
+    
+    boolean matchesQueryParameters(Map<String, String> queryString);
+    
+    /**
      * This method parses the inputs between the afterQueryCreation and afterQueryParsing
      * normalisation stages
      * 
@@ -45,15 +55,5 @@ public interface InputQueryType extends QueryType
      * @return True if the collection of expected input parameters was reset and false otherwise.
      */
     boolean resetExpectedInputParameters();
-    
-    /**
-     * 
-     * @param queryParameters A Map of named inputs from a users query. NOTE: These will not directly provide 
-     * @return A list of matches based on the matching methodology for this InputQueryType
-     */
-    Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
-    
-    boolean matchesQueryParameters(Map<String, String> queryString);
-    
     
 }

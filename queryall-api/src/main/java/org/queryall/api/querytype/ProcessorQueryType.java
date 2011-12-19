@@ -44,7 +44,8 @@ public interface ProcessorQueryType extends QueryType
     /**
      * Set the processing template string for this processor
      * 
-     * @param templateString The templated string to use for this processor
+     * @param templateString
+     *            The templated string to use for this processor
      */
     void setProcessingTemplateString(String templateString);
     

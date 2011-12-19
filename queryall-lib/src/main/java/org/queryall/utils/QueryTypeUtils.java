@@ -56,11 +56,12 @@ public final class QueryTypeUtils
         {
             if(!(nextQuery instanceof InputQueryType))
             {
-                log.info("Found a query type that was not an input query type, ignoring it. key="+nextQuery.getKey().stringValue());
+                QueryTypeUtils.log.info("Found a query type that was not an input query type, ignoring it. key="
+                        + nextQuery.getKey().stringValue());
                 continue;
             }
             
-            InputQueryType nextInputQuery = (InputQueryType)nextQuery;
+            final InputQueryType nextInputQuery = (InputQueryType)nextQuery;
             
             if(nextInputQuery.matchesQueryParameters(queryParameters))
             {

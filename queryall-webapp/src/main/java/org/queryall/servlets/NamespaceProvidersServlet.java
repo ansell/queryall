@@ -106,7 +106,8 @@ public class NamespaceProvidersServlet extends HttpServlet
                 }
             }
             
-            // HACK: This method is hacky and breaks down when knowledge about the input parameter for each namespace is included
+            // HACK: This method is hacky and breaks down when knowledge about the input parameter
+            // for each namespace is included
             for(final URI nextNamespace : nextProvider.getNamespaces())
             {
                 if(nextNamespace != null && !providersByNamespace.containsKey(nextNamespace))
@@ -114,7 +115,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                     final Map<String, Collection<URI>> nextNamespacesList = new HashMap<String, Collection<URI>>();
                     final Collection<URI> nextNamespaces = new HashSet<URI>(4);
                     nextNamespaces.add(nextNamespace);
-                    // TODO: FIXME: HACK: 
+                    // TODO: FIXME: HACK:
                     nextNamespacesList.put("input_1", nextNamespaces);
                     
                     final Map<URI, Provider> namespaceProviders =
@@ -141,7 +142,8 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 
                                 final Map<URI, Provider> queryTypesByNamespace =
                                         ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders,
-                                                localSettings.getQueryType(nextQueryKey), nextQueryTypesByNamespacesList,
+                                                localSettings.getQueryType(nextQueryKey),
+                                                nextQueryTypesByNamespacesList,
                                                 QueryTypeSchema.getQueryNamespaceMatchAny());
                                 
                                 allQueryTypesByNamespace.put(

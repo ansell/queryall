@@ -1,6 +1,5 @@
 package org.queryall.impl.querytype;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -598,7 +597,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     @Override
     public Set<String> getNamespaceInputTags()
     {
-        if(!getIsNamespaceSpecific())
+        if(!this.getIsNamespaceSpecific())
         {
             return Collections.emptySet();
         }
@@ -617,7 +616,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     @Override
     public Set<URI> getNamespacesToHandle()
     {
-        if(!getIsNamespaceSpecific())
+        if(!this.getIsNamespaceSpecific())
         {
             return Collections.emptySet();
         }
@@ -699,9 +698,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         // check that we have a locally handled namespace URI that matches
         // one of the URI's in each of the list of namespaces to check
         
-        for(String nextParameter : namespacesToCheck.keySet())
+        for(final String nextParameter : namespacesToCheck.keySet())
         {
-            Collection<URI> nextNamespaceToCheckList = namespacesToCheck.get(nextParameter);
+            final Collection<URI> nextNamespaceToCheckList = namespacesToCheck.get(nextParameter);
             
             if(nextNamespaceToCheckList == null)
             {
