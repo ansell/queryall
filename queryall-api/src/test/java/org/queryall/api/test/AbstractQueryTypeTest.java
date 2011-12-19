@@ -179,6 +179,7 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         this.queryTypePublicIdentifiers.addPublicIdentifierTag("input_2");
         
         this.queryTypeNamespaceInputIndexes = this.getNewTestQueryType();
+        this.queryTypeNamespaceInputIndexes.setIsNamespaceSpecific(true);
         this.queryTypeNamespaceInputIndexes.addNamespaceInputTag("input_2");
         
         this.queryTypeIncludeDefaults = this.getNewTestQueryType();
@@ -975,6 +976,11 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         
         testQueryType.addNamespaceInputTag("input_5");
         
+        // verify that the returned set is empty until setIsNamespaceSpecific(true) is called
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+        
+        testQueryType.setIsNamespaceSpecific(true);
+        
         Assert.assertEquals(1, testQueryType.getNamespaceInputTags().size());
         
         Assert.assertTrue(testQueryType.resetNamespaceInputTags());
@@ -990,6 +996,11 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
         
         testQueryType.addNamespaceToHandle(this.testNamespaceUri1);
+        
+        // verify that the returned set is empty until setIsNamespaceSpecific(true) is called
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+        
+        testQueryType.setIsNamespaceSpecific(true);
         
         Assert.assertEquals(1, testQueryType.getNamespacesToHandle().size());
         
