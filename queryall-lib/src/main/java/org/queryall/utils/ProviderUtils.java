@@ -19,6 +19,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.comparators.ValueComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,6 +186,34 @@ public final class ProviderUtils
      * @param includeNonProfileMatchedProviders
      * @return
      */
+    public static Collection<Provider> getProvidersForQuery(final Map<URI, Provider> allProviders,
+            final List<Profile> sortedIncludedProfiles, final InputQueryType nextInputQueryType,
+            final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
+            final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
+    {
+        if(!nextInputQueryType.getIsNamespaceSpecific())
+        {
+            return ProviderUtils.getProvidersForQueryNonNamespaceSpecific(allProviders, nextInputQueryType, sortedIncludedProfiles, recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders);
+        }
+        else
+        {
+            return ProviderUtils.getProvidersForQueryNamespaceSpecific(allProviders, sortedIncludedProfiles, nextInputQueryType, namespacePrefixToUriMap, queryParameters, recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders);
+        }
+    }
+    /**
+     * 
+     * 
+     * NOTE: this method relies on the regular expression matching behaviour of QueryType
+     * 
+     * @param allProviders
+     * @param sortedIncludedProfiles
+     * @param nextQueryType
+     * @param namespacePrefixToUriMap
+     * @param queryString
+     * @param recogniseImplicitProviderInclusions
+     * @param includeNonProfileMatchedProviders
+     * @return
+     */
     public static Collection<Provider> getProvidersForQueryNamespaceSpecific(final Map<URI, Provider> allProviders,
             final List<Profile> sortedIncludedProfiles, final InputQueryType nextQueryType,
             final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
@@ -281,6 +310,8 @@ public final class ProviderUtils
         
         return results;
     }
+    
+    
     
     /**
      * Finds all providers for the given query type URI, taking into account profile instructions,

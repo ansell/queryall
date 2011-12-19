@@ -915,8 +915,6 @@ public class RdfFetchController
                         + " matching queries");
             }
             
-            // TODO: should we do classification in the results based on the QueryType that
-            // generated the particular subset of QueryBundles to make it easier to distinguish them
             for(final QueryType nextQueryType : allCustomQueries.keySet())
             {
                 // Non-paged queries are a special case. The caller decides whether
@@ -955,21 +953,11 @@ public class RdfFetchController
                 
                 final Collection<Provider> chosenProviders = new HashSet<Provider>();
                 
-                if(!nextQueryType.getIsNamespaceSpecific())
-                {
-                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(this.getSettings()
-                            .getAllProviders(), nextInputQueryType, this.sortedIncludedProfiles, this.getSettings()
-                            .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS), this
-                            .getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
-                }
-                else
-                {
-                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(this.getSettings()
-                            .getAllProviders(), this.sortedIncludedProfiles, nextInputQueryType, this.getSettings()
-                            .getNamespacePrefixesToUris(), this.queryParameters,
-                            this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                            this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
-                }
+                chosenProviders.addAll(ProviderUtils.getProvidersForQuery(this.getSettings()
+                        .getAllProviders(), this.sortedIncludedProfiles, nextInputQueryType, this.getSettings()
+                        .getNamespacePrefixesToUris(), this.queryParameters,
+                        this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                        this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
                 
                 if(nextQueryType.getIncludeDefaults() && this.useDefaultProviders)
                 {
