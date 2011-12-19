@@ -2,6 +2,7 @@ package org.queryall.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.servlet.ServletException;
@@ -46,7 +47,7 @@ public class IndexPageServlet extends HttpServlet
         
         try
         {
-            HtmlPageRenderer.renderIndexPage(localSettings, localVelocity, out, new LinkedList<String>(), realHostName,
+            HtmlPageRenderer.renderIndexPage(localSettings, localVelocity, out, new ArrayList<String>(0), realHostName,
                     request.getContextPath());
         }
         catch(final OpenRDFException ordfe)

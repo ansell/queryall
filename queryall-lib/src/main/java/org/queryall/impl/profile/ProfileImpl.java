@@ -1,5 +1,6 @@
 package org.queryall.impl.profile;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -179,77 +180,42 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     @Override
     public void addExcludeProvider(final URI excludeProvider)
     {
-        if(this.excludeProviders == null)
-        {
-            this.excludeProviders = new LinkedList<URI>();
-        }
-        
         this.excludeProviders.add(excludeProvider);
     }
     
     @Override
     public void addExcludeQueryType(final URI excludeQuery)
     {
-        if(this.excludeQueries == null)
-        {
-            this.excludeQueries = new LinkedList<URI>();
-        }
-        
         this.excludeQueries.add(excludeQuery);
     }
     
     @Override
     public void addExcludeRdfRule(final URI excludeRdfRule)
     {
-        if(this.excludeRdfRules == null)
-        {
-            this.excludeRdfRules = new LinkedList<URI>();
-        }
-        
         this.excludeRdfRules.add(excludeRdfRule);
     }
     
     @Override
     public void addIncludeProvider(final URI includeProvider)
     {
-        if(this.includeProviders == null)
-        {
-            this.includeProviders = new LinkedList<URI>();
-        }
-        
         this.includeProviders.add(includeProvider);
     }
     
     @Override
     public void addIncludeQueryType(final URI includeQuery)
     {
-        if(this.includeQueries == null)
-        {
-            this.includeQueries = new LinkedList<URI>();
-        }
-        
         this.includeQueries.add(includeQuery);
     }
     
     @Override
     public void addIncludeRdfRule(final URI includeRdfRule)
     {
-        if(this.includeRdfRules == null)
-        {
-            this.includeRdfRules = new LinkedList<URI>();
-        }
-        
         this.includeRdfRules.add(includeRdfRule);
     }
     
     @Override
     public void addProfileAdministrator(final URI profileAdministrator)
     {
-        if(this.profileAdministrators == null)
-        {
-            this.profileAdministrators = new LinkedList<URI>();
-        }
-        
         this.profileAdministrators.add(profileAdministrator);
     }
     

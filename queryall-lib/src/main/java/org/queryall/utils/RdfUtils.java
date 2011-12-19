@@ -2932,7 +2932,7 @@ public final class RdfUtils
             final BlacklistController localBlacklistController) throws RepositoryException, java.io.IOException,
         InterruptedException
     {
-        final Collection<String> retrievalList = new LinkedList<String>();
+        final Collection<String> retrievalList = new ArrayList<String>(1);
         retrievalList.add(retrievalUrl);
         
         RdfUtils.retrieveUrls(retrievalList, defaultResultFormat, myRepository, localSettings,
@@ -2943,7 +2943,7 @@ public final class RdfUtils
             final String defaultResultFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController) throws InterruptedException
     {
-        Collection<Statement> results = new HashSet<Statement>();
+        Collection<Statement> results = Collections.emptyList();
         
         try
         {

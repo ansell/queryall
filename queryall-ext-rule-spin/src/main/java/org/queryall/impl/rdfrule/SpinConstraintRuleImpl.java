@@ -562,7 +562,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         allowedRuleSources.addAll(this.localImports);
         
         final List<ConstraintViolation> cvs =
-                SPINConstraints.check(unionModel, new LinkedList<SPINStatistics>(), null, OntModelSpec.OWL_MEM,
+                SPINConstraints.check(unionModel, new ArrayList<SPINStatistics>(), null, OntModelSpec.OWL_MEM,
                         "http://topbraid.org/examples/kennedysSPIN", allowedRuleSources);
         
         SpinConstraintRuleImpl.log.info("Constraint violations:");

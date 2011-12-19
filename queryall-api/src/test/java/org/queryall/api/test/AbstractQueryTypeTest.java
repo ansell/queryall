@@ -3,9 +3,11 @@
  */
 package org.queryall.api.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -106,29 +108,29 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         this.testNamespaceUri5 = f.createURI("http://example.org/test/includedNamespace-5");
         this.testFalseNamespaceUri = f.createURI("http://example.org/test/excludedNamespace");
         
-        final LinkedList<URI> namespaceFalseInner = new LinkedList<URI>();
+        final List<URI> namespaceFalseInner = new ArrayList<URI>(1);
         namespaceFalseInner.add(this.testFalseNamespaceUri);
         
-        final LinkedList<URI> namespace1Inner = new LinkedList<URI>();
+        final List<URI> namespace1Inner = new ArrayList<URI>(1);
         namespace1Inner.add(this.testNamespaceUri1);
         
-        final LinkedList<URI> namespace2Inner = new LinkedList<URI>();
+        final List<URI> namespace2Inner = new ArrayList<URI>();
         namespace2Inner.add(this.testNamespaceUri2);
         
-        final LinkedList<URI> namespace3Inner = new LinkedList<URI>();
+        final List<URI> namespace3Inner = new ArrayList<URI>();
         namespace3Inner.add(this.testNamespaceUri3);
         
-        final LinkedList<URI> namespace4Inner = new LinkedList<URI>();
+        final List<URI> namespace4Inner = new ArrayList<URI>();
         namespace4Inner.add(this.testNamespaceUri4);
         
-        final LinkedList<URI> namespace5Inner = new LinkedList<URI>();
+        final List<URI> namespace5Inner = new ArrayList<URI>();
         namespace5Inner.add(this.testNamespaceUri5);
         
-        final LinkedList<URI> namespace1OrFalseInner = new LinkedList<URI>();
+        final List<URI> namespace1OrFalseInner = new ArrayList<URI>();
         namespace1OrFalseInner.add(this.testNamespaceUri1);
         namespace1OrFalseInner.add(this.testFalseNamespaceUri);
         
-        final LinkedList<URI> namespace2OrFalseInner = new LinkedList<URI>();
+        final List<URI> namespace2OrFalseInner = new ArrayList<URI>();
         namespace2OrFalseInner.add(this.testNamespaceUri2);
         namespace2OrFalseInner.add(this.testFalseNamespaceUri);
         

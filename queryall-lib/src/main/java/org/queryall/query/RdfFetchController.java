@@ -1,5 +1,6 @@
 package org.queryall.query;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -340,7 +341,7 @@ public class RdfFetchController
     private Collection<RdfFetcherQueryRunnable> generateFetchThreadsFromQueryBundles(
             final Collection<QueryBundle> nextQueryBundles, final int pageoffsetIndividualQueryLimit)
     {
-        final Collection<RdfFetcherQueryRunnable> results = new LinkedList<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> results = new ArrayList<RdfFetcherQueryRunnable>(nextQueryBundles.size());
         
         for(final QueryBundle nextBundle : nextQueryBundles)
         {
@@ -538,7 +539,7 @@ public class RdfFetchController
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
-                final List<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextHttpProvider.getEndpointUrls());
+                final List<String> nextEndpointUrls = ListUtils.randomiseCollectionLayout(nextHttpProvider.getEndpointUrls());
                 
                 final Map<String, Map<String, String>> replacedEndpoints = new HashMap<String, Map<String, String>>();
                 
@@ -675,7 +676,7 @@ public class RdfFetchController
                     RdfFetchController.log.debug("nextQueryType=" + nextQueryType.getKey().stringValue());
                 }
                 
-                for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
+                for(final String nextEndpoint : ListUtils.randomiseCollectionLayout(replacedEndpoints.keySet()))
                 {
                     final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
                     
@@ -818,7 +819,7 @@ public class RdfFetchController
     
     public Collection<Provider> getAllUsedProviders()
     {
-        final Collection<Provider> results = new LinkedList<Provider>();
+        final Collection<Provider> results = new ArrayList<Provider>(this.getQueryBundles().size());
         
         for(final QueryBundle nextQueryBundle : this.getQueryBundles())
         {
@@ -896,7 +897,7 @@ public class RdfFetchController
         {
             // overwrite any query bundles that may have been inserted previously as we were told to
             // generate new query bundles
-            this.queryBundles = new LinkedList<QueryBundle>();
+            this.queryBundles = new ArrayList<QueryBundle>(20);
             
             // Note: this set contains queries that matched without taking into account the
             // namespaces assigned to each query type

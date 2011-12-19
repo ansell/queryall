@@ -6,6 +6,7 @@ package org.queryall.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -69,13 +70,16 @@ public class ListUtils
             
             int tempPosition = 0;
             
-            for(final T nextThing : newList)
+            Iterator<T> iterator = newList.iterator();
+            
+            while(iterator.hasNext())
             {
-                if(index == tempPosition)
+                if(tempPosition == index)
                 {
-                    return nextThing;
+                    return iterator.next();
                 }
-                
+
+                iterator.next();
                 tempPosition++;
             }
         }
@@ -88,7 +92,7 @@ public class ListUtils
      * @param newList
      * @return
      */
-    public static <T> T chooseRandomItemFromCollection(final List<T> newList)
+    public static <T> T chooseRandomItemFromList(final List<T> newList)
     {
         // T result = null;
         
@@ -108,6 +112,8 @@ public class ListUtils
     }
     
     /**
+     * 
+     * NOTE: This method is hardcoded to use Locale.ENGLISH when transposing String's toLowerCase
      * 
      * @param stringCollection
      * @param searchString
@@ -175,7 +181,7 @@ public class ListUtils
      *            The collection to be randomised
      * @return A reference to the randomised list, which may be the original list
      */
-    public static <T> List<T> randomiseListLayout(final Collection<T> nextCollection)
+    public static <T> List<T> randomiseCollectionLayout(final Collection<T> nextCollection)
     {
         if(nextCollection.size() <= 1 && nextCollection instanceof List)
         {

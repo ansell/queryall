@@ -1,5 +1,6 @@
 package org.queryall.api.test;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -172,44 +173,44 @@ public abstract class AbstractProfilableTest
         this.profileExcludeFalseOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
                 .getProfileIncludeThenExcludeUri());
         
-        this.profileListEmpty = new LinkedList<Profile>();
+        this.profileListEmpty = new ArrayList<Profile>(0);
         
-        this.profileListSingleIncludeAllImplicitly = new LinkedList<Profile>();
+        this.profileListSingleIncludeAllImplicitly = new ArrayList<Profile>(1);
         this.profileListSingleIncludeAllImplicitly.add(this.profileIncludeAllImplicitly);
         
-        this.profileListSingleIncludeAllImplicitlyExcludeByDefault = new LinkedList<Profile>();
+        this.profileListSingleIncludeAllImplicitlyExcludeByDefault = new ArrayList<Profile>(1);
         this.profileListSingleIncludeAllImplicitlyExcludeByDefault
                 .add(this.profileIncludeAllImplicitlyExcludeByDefault);
         
-        this.profileListSingleExcludeImplicitly = new LinkedList<Profile>();
+        this.profileListSingleExcludeImplicitly = new ArrayList<Profile>(1);
         this.profileListSingleExcludeImplicitly.add(this.profileExcludeImplicitly);
         
-        this.profileListSingleExcludeExplicitlyAndByDefault = new LinkedList<Profile>();
+        this.profileListSingleExcludeExplicitlyAndByDefault = new ArrayList<Profile>(1);
         this.profileListSingleExcludeExplicitlyAndByDefault.add(this.profileExcludeImplicitlyAndByDefault);
         
-        this.profileListSingleIncludeTrue = new LinkedList<Profile>();
+        this.profileListSingleIncludeTrue = new ArrayList<Profile>(1);
         this.profileListSingleIncludeTrue.add(this.profileIncludeTrueOnly);
         
-        this.profileListSingleExcludeFalse = new LinkedList<Profile>();
+        this.profileListSingleExcludeFalse = new ArrayList<Profile>(1);
         this.profileListSingleExcludeFalse.add(this.profileExcludeFalseOnly);
         
-        this.profileListMultipleIncludeTrueThenExcludeFalse = new LinkedList<Profile>();
+        this.profileListMultipleIncludeTrueThenExcludeFalse = new ArrayList<Profile>(2);
         this.profileListMultipleIncludeTrueThenExcludeFalse.add(this.profileIncludeTrueOnly);
         this.profileListMultipleIncludeTrueThenExcludeFalse.add(this.profileExcludeFalseOnly);
         
-        this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly = new LinkedList<Profile>();
+        this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly = new ArrayList<Profile>(3);
         this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly.add(this.profileIncludeTrueOnly);
         this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly.add(this.profileExcludeFalseOnly);
         this.profileListMultipleIncludeTrueThenExcludeFalseThenIncludeAllImplicitly
                 .add(this.profileIncludeAllImplicitly);
         
-        this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly = new LinkedList<Profile>();
+        this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly = new ArrayList<Profile>(3);
         this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly.add(this.profileIncludeTrueOnly);
         this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly.add(this.profileExcludeFalseOnly);
         this.profileListMultipleIncludeTrueThenExcludeFalseThenExcludeAllImplicitly
                 .add(this.profileExcludeImplicitlyAndByDefault);
         
-        this.profileListMultipleExcludeFalseThenIncludeTrue = new LinkedList<Profile>();
+        this.profileListMultipleExcludeFalseThenIncludeTrue = new ArrayList<Profile>(2);
         this.profileListMultipleExcludeFalseThenIncludeTrue.add(this.profileExcludeFalseOnly);
         this.profileListMultipleExcludeFalseThenIncludeTrue.add(this.profileIncludeTrueOnly);
     }

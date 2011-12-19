@@ -1,5 +1,6 @@
 package org.queryall.impl.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -137,7 +138,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         if(this.includedInQueryTypes == null)
         {
-            this.includedInQueryTypes = new LinkedList<URI>();
+            this.includedInQueryTypes = new ArrayList<URI>();
         }
         
         this.includedInQueryTypes.add(includedInQueryType);
@@ -148,7 +149,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         if(this.namespaces == null)
         {
-            this.namespaces = new LinkedList<URI>();
+            this.namespaces = new ArrayList<URI>();
         }
         
         this.namespaces.add(namespace);
@@ -159,7 +160,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         if(this.normalisationUris == null)
         {
-            this.normalisationUris = new LinkedList<URI>();
+            this.normalisationUris = new ArrayList<URI>();
         }
         
         this.normalisationUris.add(rdfNormalisationNeeded);

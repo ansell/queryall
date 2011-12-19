@@ -169,7 +169,7 @@ public final class RuleUtils
     public static List<NormalisationRule> getSortedRulesForProviders(final Collection<Provider> providers,
             final Map<URI, NormalisationRule> allNormalisationRules, final SortOrder sortOrder)
     {
-        final List<NormalisationRule> results = new LinkedList<NormalisationRule>();
+        final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         
         for(final Provider nextProvider : providers)
         {

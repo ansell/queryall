@@ -5,6 +5,7 @@ package org.queryall.query.test;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -28,7 +29,7 @@ public class RdfFetchControllerTest
     private RdfFetchController testController;
     private QueryAllConfiguration testSettings;
     private BlacklistController testBlacklistController;
-    private LinkedList<QueryBundle> testQueryBundles1;
+    private List<QueryBundle> testQueryBundles1;
     
     /**
      * @throws java.lang.Exception
@@ -40,7 +41,7 @@ public class RdfFetchControllerTest
         this.testSettings = new Settings();
         this.testBlacklistController = new BlacklistController(this.testSettings);
         
-        this.testQueryBundles1 = new LinkedList<QueryBundle>();
+        this.testQueryBundles1 = new ArrayList<QueryBundle>(3);
         this.testQueryBundles1.add(new QueryBundle());
         this.testQueryBundles1.add(new QueryBundle());
         this.testQueryBundles1.add(new QueryBundle());

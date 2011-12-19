@@ -57,7 +57,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         final Set<String> resultsSet = new HashSet<String>();
         
-        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new LinkedList<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new ArrayList<RdfFetcherQueryRunnable>();
         
         for(final Provider nextProvider : localSettings.getAllProviders().values())
         {

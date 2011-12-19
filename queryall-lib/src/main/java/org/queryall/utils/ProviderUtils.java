@@ -3,6 +3,7 @@
  */
 package org.queryall.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -189,7 +190,7 @@ public final class ProviderUtils
             final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
-        final Collection<Provider> results = new LinkedList<Provider>();
+        final Collection<Provider> results = new ArrayList<Provider>();
         
         final Map<String, List<String>> queryStringMatches = nextQueryType.matchesForQueryParameters(queryParameters);
         
@@ -296,12 +297,12 @@ public final class ProviderUtils
             final InputQueryType nextQueryType, final List<Profile> sortedIncludedProfiles,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
-        final Collection<Provider> results = new LinkedList<Provider>();
-        
         // if we aren't specific to namespace we simply find all providers for this type of custom
         // query
         final Map<URI, Provider> relevantProviders =
                 ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey());
+        
+        final Collection<Provider> results = new ArrayList<Provider>(relevantProviders.size());
         
         for(final Provider nextAllProvider : relevantProviders.values())
         {

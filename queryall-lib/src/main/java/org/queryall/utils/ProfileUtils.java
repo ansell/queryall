@@ -3,6 +3,7 @@
  */
 package org.queryall.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -36,7 +37,7 @@ public class ProfileUtils
             final SortOrder nextSortOrder, final Map<URI, Profile> allProfiles)
     {
         // Map<URI, Profile> allProfiles = this.getAllProfiles();
-        final List<Profile> results = new LinkedList<Profile>();
+        final List<Profile> results = new ArrayList<Profile>();
         
         if(nextProfileUriList == null)
         {

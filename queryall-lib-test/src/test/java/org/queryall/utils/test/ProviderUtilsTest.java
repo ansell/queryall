@@ -5,6 +5,7 @@ package org.queryall.utils.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public class ProviderUtilsTest
         
         this.emptyProfileList = Collections.emptyList();
         
-        this.singleImplicitAllowAllProfileList = new LinkedList<Profile>();
+        this.singleImplicitAllowAllProfileList = new ArrayList<Profile>(1);
         final Profile testImplicitAllowAllProfile = new ProfileImpl();
         
         testImplicitAllowAllProfile.setAllowImplicitProviderInclusions(true);
@@ -111,16 +112,16 @@ public class ProviderUtilsTest
         this.testNamespaceUri3 = this.testValueFactory.createURI("http://example.org/ns:test-3");
         this.testNamespaceUri4 = this.testValueFactory.createURI("http://example.org/ns:test-4");
         
-        final Collection<URI> tempTestNamespace1 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace1 = new ArrayList<URI>(1);
         tempTestNamespace1.add(this.testNamespaceUri1);
         
-        final Collection<URI> tempTestNamespace2 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace2 = new ArrayList<URI>(1);
         tempTestNamespace2.add(this.testNamespaceUri2);
         
-        final Collection<URI> tempTestNamespace3 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace3 = new ArrayList<URI>(1);
         tempTestNamespace3.add(this.testNamespaceUri3);
         
-        final Collection<URI> tempTestNamespace4 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace4 = new ArrayList<URI>(1);
         tempTestNamespace4.add(this.testNamespaceUri4);
         
         this.testNamespacePrefixToUriMap = new HashMap<String, Collection<URI>>();
