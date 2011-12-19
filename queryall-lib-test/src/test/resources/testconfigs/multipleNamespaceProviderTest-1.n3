@@ -30,11 +30,11 @@
 	<http://purl.org/queryall/provider:handlesNamespace> <http://example.org/ns:test-1> , <http://example.org/ns:test-3>;
 	<http://purl.org/queryall/provider:includedInQuery> <http://example.org/query:test-2> .
 	
-<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:InputQuery> ;
+<http://example.org/query:test-1> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:NoInputQuery> ;
 	<http://purl.org/queryall/query:includeDefaults> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 
-<http://example.org/query:test-2> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:InputQuery> ;
+<http://example.org/query:test-2> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:NoInputQuery> ;
 	<http://purl.org/queryall/query:includeDefaults> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
 
-<http://example.org/query:test-3> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:InputQuery> .
+<http://example.org/query:test-3> a <http://purl.org/queryall/query:Query> , <http://purl.org/queryall/query:NoInputQuery> .
 	

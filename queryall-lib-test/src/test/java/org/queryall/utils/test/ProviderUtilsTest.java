@@ -719,7 +719,7 @@ public class ProviderUtilsTest
             final Map<URI, QueryType> testQueryTypes = RdfUtils.getQueryTypes(this.testRepository);
             
             Assert.assertEquals(8, testProviders.size());
-            Assert.assertEquals(2, testQueryTypes.size());
+            Assert.assertEquals(3, testQueryTypes.size());
             
             
             // Test query type 1, with namespace match all
