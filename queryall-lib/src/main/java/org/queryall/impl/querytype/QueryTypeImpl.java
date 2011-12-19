@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -654,7 +655,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public boolean handlesNamespacesSpecifically(final Collection<Collection<URI>> namespacesToCheck)
+    public boolean handlesNamespacesSpecifically(final Map<String, Collection<URI>> namespacesToCheck)
     {
         if(!this.isNamespaceSpecific || this.namespacesToHandle == null || namespacesToCheck == null)
         {
@@ -678,7 +679,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         // check that we have a locally handled namespace URI that matches
         // one of the URI's in each of the list of namespaces to check
         
-        for(final Collection<URI> nextNamespaceToCheckList : namespacesToCheck)
+        for(final Collection<URI> nextNamespaceToCheckList : namespacesToCheck.values())
         {
             if(nextNamespaceToCheckList == null)
             {
@@ -798,7 +799,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public boolean handlesNamespaceUris(final Collection<Collection<URI>> namespacesToCheck)
+    public boolean handlesNamespaceUris(final Map<String, Collection<URI>> namespacesToCheck)
     {
         if(this.handleAllNamespaces && this.isNamespaceSpecific)
         {

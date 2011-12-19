@@ -1008,6 +1008,7 @@ public class RdfFetchController
                 // of the query type to flag any instances of the namespace not being recognised
                 if(queryBundlesForQueryType.size() == 0)
                 {
+                    // For namespace specific query types, do a check ignoring the namespace conditions to determine whether namespace matching was the only reason that the query type did not match this provider
                     if(nextQueryType.getIsNamespaceSpecific()
                             && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
                                     this.getSettings().getAllProviders(),

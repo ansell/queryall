@@ -4,7 +4,9 @@
 package org.queryall.api.test;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -32,15 +34,15 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
     protected URI testNamespaceUri5;
     protected URI testFalseNamespaceUri;
     
-    private Collection<Collection<URI>> namespacesFalse;
-    private Collection<Collection<URI>> namespaces12345AndFalse;
-    private Collection<Collection<URI>> namespaces12345;
-    private Collection<Collection<URI>> namespaces123;
-    private Collection<Collection<URI>> namespaces1orFalse;
-    private Collection<Collection<URI>> namespaces1and2orFalse;
-    private Collection<Collection<URI>> namespaces12;
-    private Collection<Collection<URI>> namespaces34;
-    private Collection<Collection<URI>> namespaces45;
+    private Map<String, Collection<URI>> namespacesFalse;
+    private Map<String, Collection<URI>> namespaces12345AndFalse;
+    private Map<String, Collection<URI>> namespaces12345;
+    private Map<String, Collection<URI>> namespaces123;
+    private Map<String, Collection<URI>> namespaces1orFalse;
+    private Map<String, Collection<URI>> namespaces1and2orFalse;
+    private Map<String, Collection<URI>> namespaces12;
+    private Map<String, Collection<URI>> namespaces34;
+    private Map<String, Collection<URI>> namespaces45;
     
     private QueryType queryTypePublicIdentifiers;
     
@@ -130,47 +132,48 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
         namespace2OrFalseInner.add(this.testNamespaceUri2);
         namespace2OrFalseInner.add(this.testFalseNamespaceUri);
         
-        this.namespacesFalse = new LinkedList<Collection<URI>>();
-        this.namespacesFalse.add(namespaceFalseInner);
+        this.namespacesFalse = new HashMap<String, Collection<URI>>();
+        // HACK: replace this constant with something useful
+        this.namespacesFalse.put("input_1", namespaceFalseInner);
         
-        this.namespaces12345AndFalse = new LinkedList<Collection<URI>>();
-        this.namespaces12345AndFalse.add(namespace1Inner);
-        this.namespaces12345AndFalse.add(namespace2Inner);
-        this.namespaces12345AndFalse.add(namespace3Inner);
-        this.namespaces12345AndFalse.add(namespace4Inner);
-        this.namespaces12345AndFalse.add(namespace5Inner);
-        this.namespaces12345AndFalse.add(namespaceFalseInner);
+        this.namespaces12345AndFalse = new HashMap<String, Collection<URI>>();
+        this.namespaces12345AndFalse.put("input_1", namespace1Inner);
+        this.namespaces12345AndFalse.put("input_1", namespace2Inner);
+        this.namespaces12345AndFalse.put("input_1", namespace3Inner);
+        this.namespaces12345AndFalse.put("input_1", namespace4Inner);
+        this.namespaces12345AndFalse.put("input_1", namespace5Inner);
+        this.namespaces12345AndFalse.put("input_1", namespaceFalseInner);
         
-        this.namespaces12345 = new LinkedList<Collection<URI>>();
-        this.namespaces12345.add(namespace1Inner);
-        this.namespaces12345.add(namespace2Inner);
-        this.namespaces12345.add(namespace3Inner);
-        this.namespaces12345.add(namespace4Inner);
-        this.namespaces12345.add(namespace5Inner);
+        this.namespaces12345 = new HashMap<String, Collection<URI>>();
+        this.namespaces12345.put("input_1", namespace1Inner);
+        this.namespaces12345.put("input_1", namespace2Inner);
+        this.namespaces12345.put("input_1", namespace3Inner);
+        this.namespaces12345.put("input_1", namespace4Inner);
+        this.namespaces12345.put("input_1", namespace5Inner);
         
-        this.namespaces123 = new LinkedList<Collection<URI>>();
-        this.namespaces123.add(namespace1Inner);
-        this.namespaces123.add(namespace2Inner);
-        this.namespaces123.add(namespace3Inner);
+        this.namespaces123 = new HashMap<String, Collection<URI>>();
+        this.namespaces123.put("input_1", namespace1Inner);
+        this.namespaces123.put("input_1", namespace2Inner);
+        this.namespaces123.put("input_1", namespace3Inner);
         
-        this.namespaces1orFalse = new LinkedList<Collection<URI>>();
-        this.namespaces1orFalse.add(namespace1OrFalseInner);
+        this.namespaces1orFalse = new HashMap<String, Collection<URI>>();
+        this.namespaces1orFalse.put("input_1", namespace1OrFalseInner);
         
-        this.namespaces1and2orFalse = new LinkedList<Collection<URI>>();
-        this.namespaces1and2orFalse.add(namespace1Inner);
-        this.namespaces1and2orFalse.add(namespace2OrFalseInner);
+        this.namespaces1and2orFalse = new HashMap<String, Collection<URI>>();
+        this.namespaces1and2orFalse.put("input_1", namespace1Inner);
+        this.namespaces1and2orFalse.put("input_1", namespace2OrFalseInner);
         
-        this.namespaces12 = new LinkedList<Collection<URI>>();
-        this.namespaces12.add(namespace1Inner);
-        this.namespaces12.add(namespace2Inner);
+        this.namespaces12 = new HashMap<String, Collection<URI>>();
+        this.namespaces12.put("input_1", namespace1Inner);
+        this.namespaces12.put("input_1", namespace2Inner);
         
-        this.namespaces34 = new LinkedList<Collection<URI>>();
-        this.namespaces34.add(namespace3Inner);
-        this.namespaces34.add(namespace4Inner);
+        this.namespaces34 = new HashMap<String, Collection<URI>>();
+        this.namespaces34.put("input_1", namespace3Inner);
+        this.namespaces34.put("input_1", namespace4Inner);
         
-        this.namespaces45 = new LinkedList<Collection<URI>>();
-        this.namespaces45.add(namespace4Inner);
-        this.namespaces45.add(namespace5Inner);
+        this.namespaces45 = new HashMap<String, Collection<URI>>();
+        this.namespaces45.put("input_1", namespace4Inner);
+        this.namespaces45.put("input_1", namespace5Inner);
         
         this.queryTypePublicIdentifiers = this.getNewTestQueryType();
         this.queryTypePublicIdentifiers.addPublicIdentifierTag("input_2");

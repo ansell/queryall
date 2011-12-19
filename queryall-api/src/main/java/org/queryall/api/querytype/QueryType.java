@@ -50,9 +50,9 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     String getStandardUriTemplateString();
     
-    boolean handlesNamespacesSpecifically(Collection<Collection<URI>> namespacesToCheck);
+    boolean handlesNamespacesSpecifically(Map<String, Collection<URI>> namespacesToCheck);
     
-    boolean handlesNamespaceUris(Collection<Collection<URI>> namespacesToCheck);
+    boolean handlesNamespaceUris(Map<String, Collection<URI>> namespacesToCheck);
     
     boolean isInputVariableNamespace(String nextMatchTag);
     
