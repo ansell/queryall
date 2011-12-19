@@ -4,6 +4,7 @@
 package org.queryall.api.querytype;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public interface InputQueryType extends QueryType
      * 
      * @param inputParameterMap
      *            A map containing input parameter names as keys and their corresponding values as
-     *            values
+     *            Object values
      * @return A map containing the input parameters after they have been parsed for this query type
      */
     Map<String, Object> parseInputs(Map<String, Object> inputParameterMap);
@@ -44,4 +45,15 @@ public interface InputQueryType extends QueryType
      * @return True if the collection of expected input parameters was reset and false otherwise.
      */
     boolean resetExpectedInputParameters();
+    
+    /**
+     * 
+     * @param queryParameters A Map of named inputs from a users query. NOTE: These will not directly provide 
+     * @return A list of matches based on the matching methodology for this InputQueryType
+     */
+    Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters);
+    
+    boolean matchesQueryParameters(Map<String, String> queryString);
+    
+    
 }

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -55,7 +56,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * (or at least this form of it), unless handleAllNamespaces is true, in which case any
      * namespace can be present here without effect
      */
-    private Collection<URI> namespacesToHandle = new HashSet<URI>();
+    private Set<URI> namespacesToHandle = new HashSet<URI>();
     
     /**
      * if a query is not namepsace specific it can be executed across providers which do not
@@ -69,13 +70,13 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * be used to make sure that these are lowercased per a given policy (in this case the Banff
      * Manifesto)
      */
-    private Collection<String> publicIdentifierTags = new ArrayList<String>(2);
+    private Set<String> publicIdentifierTags = new HashSet<String>(2);
     
     /**
      * these are the input_NN indexes that we will use to determine which namespace providers to
      * perform this query using
      */
-    private Collection<String> namespaceInputTags = new ArrayList<String>(2);
+    private Set<String> namespaceInputTags = new HashSet<String>(2);
     
     /**
      * This is the method by which we determine whether any or all of the namespaces are required on
@@ -115,7 +116,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * custom query a typical use for this is for adding links and index triples to
      * construct,index,links etc type queries, but not to others for instance
      */
-    private Collection<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
+    private Set<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
@@ -133,7 +134,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     // default to universally available RDF/XML, and for backwards compatibility with previous
     // versions (<5) that only supported RDF/XML output
     private String outputRdfFormat = Constants.APPLICATION_RDF_XML;
-    private Collection<String> expectedInputParameters = new ArrayList<String>(5);
+    private Set<String> expectedInputParameters = new HashSet<String>();
     
     protected QueryTypeImpl()
     {
@@ -589,15 +590,22 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public Collection<URI> getLinkedQueryTypes()
+    public Set<URI> getLinkedQueryTypes()
     {
         return this.semanticallyLinkedCustomQueries;
     }
     
     @Override
-    public Collection<String> getNamespaceInputTags()
+    public Set<String> getNamespaceInputTags()
     {
-        return this.namespaceInputTags;
+        if(!getIsNamespaceSpecific())
+        {
+            return Collections.emptySet();
+        }
+        else
+        {
+            return this.namespaceInputTags;
+        }
     }
     
     @Override
@@ -607,9 +615,16 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public Collection<URI> getNamespacesToHandle()
+    public Set<URI> getNamespacesToHandle()
     {
-        return this.namespacesToHandle;
+        if(!getIsNamespaceSpecific())
+        {
+            return Collections.emptySet();
+        }
+        else
+        {
+            return this.namespacesToHandle;
+        }
     }
     
     @Override
@@ -637,7 +652,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public Collection<String> getPublicIdentifierTags()
+    public Set<String> getPublicIdentifierTags()
     {
         return this.publicIdentifierTags;
     }
@@ -867,14 +882,16 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             throw new IllegalArgumentException("Cannot have null input variables");
         }
         
+        if(!this.isNamespaceSpecific)
+        {
+            return false;
+        }
+        
         if(this.namespaceInputTags != null)
         {
-            for(final String nextNamespaceInputTag : this.getNamespaceInputTags())
+            if(this.namespaceInputTags.contains(inputVariable))
             {
-                if(inputVariable.equals(nextNamespaceInputTag))
-                {
-                    return true;
-                }
+                return true;
             }
         }
         
@@ -894,12 +911,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         if(this.publicIdentifierTags != null)
         {
-            for(final String nextPublicIdentifierTag : this.getPublicIdentifierTags())
+            if(this.getPublicIdentifierTags().contains(inputVariable))
             {
-                if(inputVariable.equals(nextPublicIdentifierTag))
-                {
-                    return true;
-                }
+                return true;
             }
         }
         
@@ -930,7 +944,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             QueryTypeImpl.log.debug("Could not clear collection");
         }
         
-        this.expectedInputParameters = new ArrayList<String>(5);
+        this.expectedInputParameters = new HashSet<String>();
         
         return true;
     }
@@ -968,7 +982,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             QueryTypeImpl.log.debug("Could not clear collection");
         }
         
-        this.namespaceInputTags = new ArrayList<String>(2);
+        this.namespaceInputTags = new HashSet<String>();
         
         return true;
     }
@@ -1011,7 +1025,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             QueryTypeImpl.log.debug("Could not clear collection");
         }
         
-        this.publicIdentifierTags = new ArrayList<String>(2);
+        this.publicIdentifierTags = new HashSet<String>();
         
         return true;
     }

@@ -14,6 +14,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
@@ -140,7 +141,7 @@ public class QueryCreator
      * @return
      * @throws QueryAllException
      */
-    public static String createQuery(final QueryType queryType, final Provider nextProvider,
+    public static String createQuery(final InputQueryType queryType, final Provider nextProvider,
             final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final boolean overallConvertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings,
@@ -185,7 +186,7 @@ public class QueryCreator
      * @return
      * @throws QueryAllException
      */
-    public static String createStaticRdfXmlString(final QueryType originalQueryType,
+    public static String createStaticRdfXmlString(final InputQueryType originalQueryType,
             final OutputQueryType includedQueryType, final Provider nextProvider,
             final Map<String, String> attributeList,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
@@ -215,7 +216,7 @@ public class QueryCreator
     }
     
     public static String doReplacementsOnString(final Map<String, String> queryParameters, final String templateString,
-            final QueryType originalQueryType, final QueryType includedQueryType, final Provider nextProvider,
+            final InputQueryType originalQueryType, final QueryType includedQueryType, final Provider nextProvider,
             final Map<String, String> attributeList,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
@@ -1229,7 +1230,7 @@ public class QueryCreator
      * @param nextProvider
      * @return
      */
-    public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
+    public static String matchAndReplaceInputVariablesForQueryType(final InputQueryType originalQueryType,
             final Map<String, String> queryParameters, final String templateString,
             final List<String> specialInstructions, final boolean convertAlternateToPreferredPrefix,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Provider nextProvider)
@@ -1534,7 +1535,7 @@ public class QueryCreator
      * @return
      * @throws QueryAllException
      */
-    public static String replaceAttributesOnEndpointUrl(final String replacementString, final QueryType queryType,
+    public static String replaceAttributesOnEndpointUrl(final String replacementString, final InputQueryType queryType,
             final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings,

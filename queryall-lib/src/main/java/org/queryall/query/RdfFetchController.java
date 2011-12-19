@@ -23,6 +23,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.provider.SparqlProviderSchema;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -502,7 +503,7 @@ public class RdfFetchController
      * @throws QueryAllException
      */
     private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
-            final QueryAllConfiguration localSettings, final QueryType nextQueryType,
+            final QueryAllConfiguration localSettings, final InputQueryType nextQueryType,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider)
         throws QueryAllException
@@ -921,19 +922,37 @@ public class RdfFetchController
                     continue;
                 }
                 
+                // Non-paged queries are a special case. The caller decides whether
+                // they want to use non-paged queries, for example, they may say no
+                // if they have decided that they need only extra results from paged
+                // queries
+                if(!(nextQueryType instanceof InputQueryType))
+                {
+                    if(RdfFetchController._INFO)
+                    {
+                        RdfFetchController.log
+                                .info("RdfFetchController: not using query as it is not an InputQueryType"
+                                        + nextQueryType.getKey());
+                    }
+                    
+                    continue;
+                }
+                
+                InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
+                
                 final Collection<Provider> chosenProviders = new HashSet<Provider>();
                 
                 if(!nextQueryType.getIsNamespaceSpecific())
                 {
                     chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                            this.getSettings().getAllProviders(), nextQueryType.getKey(), this.sortedIncludedProfiles,
+                            this.getSettings().getAllProviders(), nextInputQueryType, this.sortedIncludedProfiles,
                             this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
                             this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
                 }
                 else
                 {
                     chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(
-                            this.getSettings().getAllProviders(), this.sortedIncludedProfiles, nextQueryType,
+                            this.getSettings().getAllProviders(), this.sortedIncludedProfiles, nextInputQueryType,
                             this.getSettings().getNamespacePrefixesToUris(), this.queryParameters,
                             this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
                             this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)));
@@ -983,7 +1002,7 @@ public class RdfFetchController
                 
                 // Default to safe setting of useAllEndpointsForEachProvider=true here
                 final Collection<QueryBundle> queryBundlesForQueryType =
-                        this.generateQueryBundlesForQueryTypeAndProviders(this.getSettings(), nextQueryType,
+                        this.generateQueryBundlesForQueryTypeAndProviders(this.getSettings(), nextInputQueryType,
                                 allCustomQueries.get(nextQueryType), chosenProviders,
                                 this.getSettings().getBooleanProperty(WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER));
                 
@@ -1012,7 +1031,7 @@ public class RdfFetchController
                     if(nextQueryType.getIsNamespaceSpecific()
                             && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
                                     this.getSettings().getAllProviders(),
-                                    nextQueryType.getKey(),
+                                    nextInputQueryType,
                                     this.sortedIncludedProfiles,
                                     this.getSettings()
                                             .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),

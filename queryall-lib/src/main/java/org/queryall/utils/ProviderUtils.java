@@ -15,6 +15,7 @@ import java.util.TreeMap;
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.comparators.ValueComparator;
@@ -184,7 +185,7 @@ public final class ProviderUtils
      * @return
      */
     public static Collection<Provider> getProvidersForQueryNamespaceSpecific(final Map<URI, Provider> allProviders,
-            final List<Profile> sortedIncludedProfiles, final QueryType nextQueryType,
+            final List<Profile> sortedIncludedProfiles, final InputQueryType nextQueryType,
             final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
@@ -285,14 +286,14 @@ public final class ProviderUtils
      * but without taking into account namespace conditions
      * 
      * @param allProviders
-     * @param nextQueryTypeURI
+     * @param nextQueryType
      * @param sortedIncludedProfiles
      * @param recogniseImplicitProviderInclusions
      * @param includeNonProfileMatchedProviders
      * @return
      */
     public static Collection<Provider> getProvidersForQueryNonNamespaceSpecific(final Map<URI, Provider> allProviders,
-            final URI nextQueryTypeURI, final List<Profile> sortedIncludedProfiles,
+            final InputQueryType nextQueryType, final List<Profile> sortedIncludedProfiles,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
         final Collection<Provider> results = new LinkedList<Provider>();
@@ -300,7 +301,7 @@ public final class ProviderUtils
         // if we aren't specific to namespace we simply find all providers for this type of custom
         // query
         final Map<URI, Provider> relevantProviders =
-                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryTypeURI);
+                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey());
         
         for(final Provider nextAllProvider : relevantProviders.values())
         {
