@@ -34,7 +34,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.utils.ProviderUtils;
@@ -92,7 +92,7 @@ public class ProviderUtilsTest
         this.emptyProfileList = Collections.emptyList();
         
         this.singleImplicitAllowAllProfileList = new ArrayList<Profile>(1);
-        final Profile testImplicitAllowAllProfile = new ProfileImpl();
+        final Profile testImplicitAllowAllProfile = new DummyProfile();
         
         testImplicitAllowAllProfile.setAllowImplicitProviderInclusions(true);
         testImplicitAllowAllProfile.setAllowImplicitQueryTypeInclusions(true);

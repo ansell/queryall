@@ -12,7 +12,6 @@ import java.util.Set;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -514,8 +513,6 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         super.toRdf(myRepository, modelVersion, keyToUse);
         
         final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = myRepository.getValueFactory();
         
         try
         {

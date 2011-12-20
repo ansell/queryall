@@ -11,7 +11,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -459,8 +458,6 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         super.toRdf(myRepository, modelVersion, keyToUse);
         
         final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = myRepository.getValueFactory();
         
         try
         {

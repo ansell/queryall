@@ -87,8 +87,6 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
-        
         try
         {
             con.setAutoCommit(false);

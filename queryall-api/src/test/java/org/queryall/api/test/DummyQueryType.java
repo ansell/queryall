@@ -27,10 +27,11 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
- * Dummy class that implements the basic contracts for each of QueryType, InputQueryType, ProcessorQueryType, and OutputQueryType
+ * Dummy class that implements the basic contracts for each of QueryType, InputQueryType,
+ * ProcessorQueryType, and OutputQueryType
  * 
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class DummyQueryType implements QueryType, InputQueryType, ProcessorQueryType, OutputQueryType
 {
@@ -57,7 +58,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     private Set<String> publicIdentifierTags = new HashSet<String>();
     private String queryUriTemplateString = "";
     private String standardUriTemplateString = "";
-
+    
     /**
      * 
      */
@@ -66,16 +67,89 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         // TODO Auto-generated constructor stub
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#addUnrecognisedStatement(org.openrdf.model.Statement)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.InputQueryType#addExpectedInputParameter(java.lang.String)
      */
     @Override
-    public void addUnrecognisedStatement(Statement unrecognisedStatement)
+    public void addExpectedInputParameter(final String expectedInputParameter)
+    {
+        this.expectedInputParameters.add(expectedInputParameter);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#addLinkedQueryType(org.openrdf.model.URI)
+     */
+    @Override
+    public void addLinkedQueryType(final URI semanticallyLinkedQueryTypes)
+    {
+        this.linkedQueryTypes.add(semanticallyLinkedQueryTypes);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#addNamespaceInputTag(java.lang.String)
+     */
+    @Override
+    public void addNamespaceInputTag(final String namespaceInputTag)
+    {
+        this.namespaceInputTags.add(namespaceInputTag);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#addNamespaceToHandle(org.openrdf.model.URI)
+     */
+    @Override
+    public void addNamespaceToHandle(final URI namespaceToHandle)
+    {
+        this.namespacesToHandle.add(namespaceToHandle);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#addPublicIdentifierTag(java.lang.String)
+     */
+    @Override
+    public void addPublicIdentifierTag(final String publicIdentifierTag)
+    {
+        this.publicIdentifierTags.add(publicIdentifierTag);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.BaseQueryAllInterface#addUnrecognisedStatement(org.openrdf.model.Statement
+     * )
+     */
+    @Override
+    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
     {
         this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(final QueryType arg0)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.BaseQueryAllInterface#getCurationStatus()
      */
     @Override
@@ -84,7 +158,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return this.curationStatus;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.BaseQueryAllInterface#getDefaultNamespace()
      */
     @Override
@@ -93,7 +169,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return QueryAllNamespaces.QUERY;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.BaseQueryAllInterface#getDescription()
      */
     @Override
@@ -102,7 +180,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return this.description;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.base.BaseQueryAllInterface#getElementTypes()
      */
     @Override
@@ -115,212 +195,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return types;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#getKey()
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#getTitle()
-     */
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#getUnrecognisedStatements()
-     */
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return Collections.unmodifiableCollection(this.unrecognisedStatements);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#resetUnrecognisedStatements()
-     */
-    @Override
-    public Collection<Statement> resetUnrecognisedStatements()
-    {
-        Collection<Statement> result = this.unrecognisedStatements;
-        
-        this.unrecognisedStatements = new ArrayList<Statement>();
-        
-        return result;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#setCurationStatus(org.openrdf.model.URI)
-     */
-    @Override
-    public void setCurationStatus(URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#setDescription(java.lang.String)
-     */
-    @Override
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#setKey(java.lang.String)
-     */
-    @Override
-    public void setKey(String nextKey) throws IllegalArgumentException
-    {
-        this.key = Constants.valueFactory.createURI(nextKey);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#setKey(org.openrdf.model.URI)
-     */
-    @Override
-    public void setKey(URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#setTitle(java.lang.String)
-     */
-    @Override
-    public void setTitle(String title)
-    {
-        this.title = title;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.BaseQueryAllInterface#toRdf(org.openrdf.repository.Repository, int, org.openrdf.model.URI[])
-     */
-    @Override
-    public boolean toRdf(Repository myRepository, int modelVersion, URI... contextUris) throws OpenRDFException
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    @Override
-    public int compareTo(QueryType arg0)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.ProfilableInterface#getProfileIncludeExcludeOrder()
-     */
-    @Override
-    public URI getProfileIncludeExcludeOrder()
-    {
-        return this.profileIncludeExcludeOrder;
-    }
-    
-    /**
-     * Note: Defaults to true, or else every profile operation on this object would fail
-     */
-    @Override
-    public boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,
-            boolean includeNonProfileMatched)
-    {
-        return true;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.ProfilableInterface#setProfileIncludeExcludeOrder(org.openrdf.model.URI)
-     */
-    @Override
-    public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
-    {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.OutputQueryType#getOutputString()
-     */
-    @Override
-    public String getOutputString()
-    {
-        return this.outputString;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.OutputQueryType#setOutputString(java.lang.String)
-     */
-    @Override
-    public void setOutputString(String outputString)
-    {
-        this.outputString = outputString;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.ProcessorQueryType#getProcessingTemplateString()
-     */
-    @Override
-    public String getProcessingTemplateString()
-    {
-        return this.processingTemplateString;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.ProcessorQueryType#parseProcessorQuery(java.lang.String)
-     */
-    @Override
-    public Object parseProcessorQuery(String query)
-    {
-        return query;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.ProcessorQueryType#processQueryVariables(java.util.Map)
-     */
-    @Override
-    public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
-    {
-        return queryVariables;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.ProcessorQueryType#setProcessingTemplateString(java.lang.String)
-     */
-    @Override
-    public void setProcessingTemplateString(String templateString)
-    {
-        this.processingTemplateString = templateString;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.ProcessorQueryType#substituteQueryVariables(java.util.Map)
-     */
-    @Override
-    public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
-    {
-        return (String)processedQueryVariables.get(Constants.QUERY);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.InputQueryType#addExpectedInputParameter(java.lang.String)
-     */
-    @Override
-    public void addExpectedInputParameter(String expectedInputParameter)
-    {
-        this.expectedInputParameters.add(expectedInputParameter);
-    }
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.InputQueryType#getExpectedInputParameters()
      */
     @Override
@@ -329,34 +206,327 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return this.expectedInputParameters;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getHandleAllNamespaces()
+     */
+    @Override
+    public boolean getHandleAllNamespaces()
+    {
+        return this.handleAllNamespaces;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getIncludeDefaults()
+     */
+    @Override
+    public boolean getIncludeDefaults()
+    {
+        return this.includeDefaults;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getInRobotsTxt()
+     */
+    @Override
+    public boolean getInRobotsTxt()
+    {
+        return this.inRobotsTxt;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getIsDummyQueryType()
+     */
+    @Override
+    public boolean getIsDummyQueryType()
+    {
+        return this.isDummyQueryType;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getIsNamespaceSpecific()
+     */
+    @Override
+    public boolean getIsNamespaceSpecific()
+    {
+        return this.isNamespaceSpecific;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getIsPageable()
+     */
+    @Override
+    public boolean getIsPageable()
+    {
+        return this.isPageable;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#getKey()
+     */
+    @Override
+    public URI getKey()
+    {
+        return this.key;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getLinkedQueryTypes()
+     */
+    @Override
+    public Set<URI> getLinkedQueryTypes()
+    {
+        return this.linkedQueryTypes;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getNamespaceInputTags()
+     */
+    @Override
+    public Set<String> getNamespaceInputTags()
+    {
+        return this.namespaceInputTags;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getNamespaceMatchMethod()
+     */
+    @Override
+    public URI getNamespaceMatchMethod()
+    {
+        return this.namespaceMatchMethod;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getNamespacesToHandle()
+     */
+    @Override
+    public Set<URI> getNamespacesToHandle()
+    {
+        return this.namespacesToHandle;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.OutputQueryType#getOutputString()
+     */
+    @Override
+    public String getOutputString()
+    {
+        return this.outputString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.ProcessorQueryType#getProcessingTemplateString()
+     */
+    @Override
+    public String getProcessingTemplateString()
+    {
+        return this.processingTemplateString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.ProfilableInterface#getProfileIncludeExcludeOrder()
+     */
+    @Override
+    public URI getProfileIncludeExcludeOrder()
+    {
+        return this.profileIncludeExcludeOrder;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getPublicIdentifierTags()
+     */
+    @Override
+    public Set<String> getPublicIdentifierTags()
+    {
+        return this.publicIdentifierTags;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getQueryUriTemplateString()
+     */
+    @Override
+    public String getQueryUriTemplateString()
+    {
+        return this.queryUriTemplateString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#getStandardUriTemplateString()
+     */
+    @Override
+    public String getStandardUriTemplateString()
+    {
+        return this.standardUriTemplateString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#getTitle()
+     */
+    @Override
+    public String getTitle()
+    {
+        return this.title;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#getUnrecognisedStatements()
+     */
+    @Override
+    public Collection<Statement> getUnrecognisedStatements()
+    {
+        return Collections.unmodifiableCollection(this.unrecognisedStatements);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Map)
+     */
+    @Override
+    public boolean handlesNamespacesSpecifically(final Map<String, Collection<URI>> namespacesToCheck)
+    {
+        return true;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Map)
+     */
+    @Override
+    public boolean handlesNamespaceUris(final Map<String, Collection<URI>> namespacesToCheck)
+    {
+        return true;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#isInputVariableNamespace(java.lang.String)
+     */
+    @Override
+    public boolean isInputVariableNamespace(final String nextMatchTag)
+    {
+        return this.namespaceInputTags.contains(nextMatchTag);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.QueryType#isInputVariablePublic(java.lang.String)
+     */
+    @Override
+    public boolean isInputVariablePublic(final String inputVariableTag)
+    {
+        return this.publicIdentifierTags.contains(inputVariableTag);
+    }
+    
+    /**
+     * Note: Defaults to true, or else every profile operation on this object would fail
+     */
+    @Override
+    public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
+            final boolean includeNonProfileMatched)
+    {
+        return true;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.InputQueryType#matchesForQueryParameters(java.util.Map)
      */
     @Override
-    public Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters)
+    public Map<String, List<String>> matchesForQueryParameters(final Map<String, String> queryParameters)
     {
         return Collections.emptyMap();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.InputQueryType#matchesQueryParameters(java.util.Map)
      */
     @Override
-    public boolean matchesQueryParameters(Map<String, String> queryString)
+    public boolean matchesQueryParameters(final Map<String, String> queryString)
     {
         return false;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.InputQueryType#parseInputs(java.util.Map)
      */
     @Override
-    public Map<String, Object> parseInputs(Map<String, Object> inputParameterMap)
+    public Map<String, Object> parseInputs(final Map<String, Object> inputParameterMap)
     {
         return inputParameterMap;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.ProcessorQueryType#parseProcessorQuery(java.lang.String)
+     */
+    @Override
+    public Object parseProcessorQuery(final String query)
+    {
+        return query;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.ProcessorQueryType#processQueryVariables(java.util.Map)
+     */
+    @Override
+    public Map<String, Object> processQueryVariables(final Map<String, Object> queryVariables)
+    {
+        return queryVariables;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.InputQueryType#resetExpectedInputParameters()
      */
     @Override
@@ -367,196 +537,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return true;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#addLinkedQueryType(org.openrdf.model.URI)
-     */
-    @Override
-    public void addLinkedQueryType(URI semanticallyLinkedQueryTypes)
-    {
-        this.linkedQueryTypes.add(semanticallyLinkedQueryTypes);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#addNamespaceInputTag(java.lang.String)
-     */
-    @Override
-    public void addNamespaceInputTag(String namespaceInputTag)
-    {
-        this.namespaceInputTags.add(namespaceInputTag);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#addNamespaceToHandle(org.openrdf.model.URI)
-     */
-    @Override
-    public void addNamespaceToHandle(URI namespaceToHandle)
-    {
-        this.namespacesToHandle.add(namespaceToHandle);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#addPublicIdentifierTag(java.lang.String)
-     */
-    @Override
-    public void addPublicIdentifierTag(String publicIdentifierTag)
-    {
-        this.publicIdentifierTags.add(publicIdentifierTag);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getHandleAllNamespaces()
-     */
-    @Override
-    public boolean getHandleAllNamespaces()
-    {
-        return this.handleAllNamespaces;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getIncludeDefaults()
-     */
-    @Override
-    public boolean getIncludeDefaults()
-    {
-        return this.includeDefaults;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getInRobotsTxt()
-     */
-    @Override
-    public boolean getInRobotsTxt()
-    {
-        return this.inRobotsTxt;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getIsDummyQueryType()
-     */
-    @Override
-    public boolean getIsDummyQueryType()
-    {
-        return this.isDummyQueryType;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getIsNamespaceSpecific()
-     */
-    @Override
-    public boolean getIsNamespaceSpecific()
-    {
-        return this.isNamespaceSpecific;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getIsPageable()
-     */
-    @Override
-    public boolean getIsPageable()
-    {
-        return this.isPageable;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getLinkedQueryTypes()
-     */
-    @Override
-    public Set<URI> getLinkedQueryTypes()
-    {
-        return this.linkedQueryTypes;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getNamespaceInputTags()
-     */
-    @Override
-    public Set<String> getNamespaceInputTags()
-    {
-        return this.namespaceInputTags;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getNamespaceMatchMethod()
-     */
-    @Override
-    public URI getNamespaceMatchMethod()
-    {
-        return this.namespaceMatchMethod;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getNamespacesToHandle()
-     */
-    @Override
-    public Set<URI> getNamespacesToHandle()
-    {
-        return this.namespacesToHandle;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getPublicIdentifierTags()
-     */
-    @Override
-    public Set<String> getPublicIdentifierTags()
-    {
-        return this.publicIdentifierTags;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getQueryUriTemplateString()
-     */
-    @Override
-    public String getQueryUriTemplateString()
-    {
-        return this.queryUriTemplateString;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#getStandardUriTemplateString()
-     */
-    @Override
-    public String getStandardUriTemplateString()
-    {
-        return this.standardUriTemplateString;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Map)
-     */
-    @Override
-    public boolean handlesNamespacesSpecifically(Map<String, Collection<URI>> namespacesToCheck)
-    {
-        return true;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Map)
-     */
-    @Override
-    public boolean handlesNamespaceUris(Map<String, Collection<URI>> namespacesToCheck)
-    {
-        return true;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#isInputVariableNamespace(java.lang.String)
-     */
-    @Override
-    public boolean isInputVariableNamespace(String nextMatchTag)
-    {
-        return this.namespaceInputTags.contains(nextMatchTag);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.queryall.api.querytype.QueryType#isInputVariablePublic(java.lang.String)
-     */
-    @Override
-    public boolean isInputVariablePublic(String inputVariableTag)
-    {
-        return this.publicIdentifierTags.contains(inputVariableTag);
-    }
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#resetLinkedQueryTypes()
      */
     @Override
@@ -567,7 +550,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return true;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#resetNamespaceInputTags()
      */
     @Override
@@ -578,7 +563,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return true;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#resetNamespacesToHandle()
      */
     @Override
@@ -589,7 +576,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return true;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#resetPublicIdentifierTags()
      */
     @Override
@@ -600,85 +589,234 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
         return true;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#resetUnrecognisedStatements()
+     */
+    @Override
+    public Collection<Statement> resetUnrecognisedStatements()
+    {
+        final Collection<Statement> result = this.unrecognisedStatements;
+        
+        this.unrecognisedStatements = new ArrayList<Statement>();
+        
+        return result;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#setCurationStatus(org.openrdf.model.URI)
+     */
+    @Override
+    public void setCurationStatus(final URI curationStatus)
+    {
+        this.curationStatus = curationStatus;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#setDescription(java.lang.String)
+     */
+    @Override
+    public void setDescription(final String description)
+    {
+        this.description = description;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setHandleAllNamespaces(boolean)
      */
     @Override
-    public void setHandleAllNamespaces(boolean handleAllNamespaces)
+    public void setHandleAllNamespaces(final boolean handleAllNamespaces)
     {
         this.handleAllNamespaces = handleAllNamespaces;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setIncludeDefaults(boolean)
      */
     @Override
-    public void setIncludeDefaults(boolean includeDefaults)
+    public void setIncludeDefaults(final boolean includeDefaults)
     {
         this.includeDefaults = includeDefaults;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setInRobotsTxt(boolean)
      */
     @Override
-    public void setInRobotsTxt(boolean inRobotsTxt)
+    public void setInRobotsTxt(final boolean inRobotsTxt)
     {
         this.inRobotsTxt = inRobotsTxt;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setIsDummyQueryType(boolean)
      */
     @Override
-    public void setIsDummyQueryType(boolean isDummyQueryType)
+    public void setIsDummyQueryType(final boolean isDummyQueryType)
     {
         this.isDummyQueryType = isDummyQueryType;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setIsNamespaceSpecific(boolean)
      */
     @Override
-    public void setIsNamespaceSpecific(boolean isNamespaceSpecific)
+    public void setIsNamespaceSpecific(final boolean isNamespaceSpecific)
     {
         this.isNamespaceSpecific = isNamespaceSpecific;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setIsPageable(boolean)
      */
     @Override
-    public void setIsPageable(boolean isPageable)
+    public void setIsPageable(final boolean isPageable)
     {
         this.isPageable = isPageable;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#setKey(java.lang.String)
+     */
+    @Override
+    public void setKey(final String nextKey) throws IllegalArgumentException
+    {
+        this.key = Constants.valueFactory.createURI(nextKey);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#setKey(org.openrdf.model.URI)
+     */
+    @Override
+    public void setKey(final URI nextKey)
+    {
+        this.key = nextKey;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setNamespaceMatchMethod(org.openrdf.model.URI)
      */
     @Override
-    public void setNamespaceMatchMethod(URI namespaceMatchMethod)
+    public void setNamespaceMatchMethod(final URI namespaceMatchMethod)
     {
         this.namespaceMatchMethod = namespaceMatchMethod;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.OutputQueryType#setOutputString(java.lang.String)
+     */
+    @Override
+    public void setOutputString(final String outputString)
+    {
+        this.outputString = outputString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.querytype.ProcessorQueryType#setProcessingTemplateString(java.lang.String)
+     */
+    @Override
+    public void setProcessingTemplateString(final String templateString)
+    {
+        this.processingTemplateString = templateString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.api.base.ProfilableInterface#setProfileIncludeExcludeOrder(org.openrdf.model
+     * .URI)
+     */
+    @Override
+    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    {
+        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setQueryUriTemplateString(java.lang.String)
      */
     @Override
-    public void setQueryUriTemplateString(String queryUriTemplateString)
+    public void setQueryUriTemplateString(final String queryUriTemplateString)
     {
         this.queryUriTemplateString = queryUriTemplateString;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.querytype.QueryType#setStandardUriTemplateString(java.lang.String)
      */
     @Override
-    public void setStandardUriTemplateString(String standardUriTemplateString)
+    public void setStandardUriTemplateString(final String standardUriTemplateString)
     {
         this.standardUriTemplateString = standardUriTemplateString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#setTitle(java.lang.String)
+     */
+    @Override
+    public void setTitle(final String title)
+    {
+        this.title = title;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.querytype.ProcessorQueryType#substituteQueryVariables(java.util.Map)
+     */
+    @Override
+    public String substituteQueryVariables(final Map<String, Object> processedQueryVariables)
+    {
+        return (String)processedQueryVariables.get(Constants.QUERY);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.base.BaseQueryAllInterface#toRdf(org.openrdf.repository.Repository,
+     * int, org.openrdf.model.URI[])
+     */
+    @Override
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextUris)
+        throws OpenRDFException
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
     
 }

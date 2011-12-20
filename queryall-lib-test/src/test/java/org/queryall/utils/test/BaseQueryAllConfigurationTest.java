@@ -13,10 +13,10 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.test.AbstractQueryAllConfigurationTest;
 import org.queryall.api.test.DummyNormalisationRule;
+import org.queryall.api.test.DummyProfile;
 import org.queryall.api.test.DummyProvider;
+import org.queryall.api.test.DummyQueryType;
 import org.queryall.impl.namespace.NamespaceEntryImpl;
-import org.queryall.impl.profile.ProfileImpl;
-import org.queryall.impl.querytype.NoInputQueryTypeImpl;
 import org.queryall.impl.ruletest.StringRuleTestImpl;
 
 /**
@@ -41,8 +41,7 @@ public abstract class BaseQueryAllConfigurationTest extends AbstractQueryAllConf
     @Override
     protected final Profile getNewProfile()
     {
-        // TODO: replace this with dummy class
-        return new ProfileImpl();
+        return new DummyProfile();
     }
     
     @Override
@@ -54,8 +53,7 @@ public abstract class BaseQueryAllConfigurationTest extends AbstractQueryAllConf
     @Override
     protected final QueryType getNewQueryType()
     {
-        // TODO: replace this with dummy class
-        return new NoInputQueryTypeImpl();
+        return new DummyQueryType();
     }
     
     @Override

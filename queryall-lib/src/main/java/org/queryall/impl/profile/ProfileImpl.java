@@ -48,11 +48,11 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     
     private int order = 100;
     
-    private boolean allowImplicitQueryInclusions = false;
+    private boolean allowImplicitQueryInclusions = true;
     
-    private boolean allowImplicitProviderInclusions = false;
+    private boolean allowImplicitProviderInclusions = true;
     
-    private boolean allowImplicitRdfRuleInclusions = false;
+    private boolean allowImplicitRdfRuleInclusions = true;
     
     private URI defaultProfileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     

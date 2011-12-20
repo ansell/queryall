@@ -951,7 +951,7 @@ public class SettingsFactory
         }
         
         final long start = System.currentTimeMillis();
-        final Repository nextBaseConfigurationRepository = baseConfigurationRepository;
+        // final Repository nextBaseConfigurationRepository = baseConfigurationRepository;
         // SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType,
         // baseConfigUri);
         final String configMIMEFormat = baseConfigMimeType;
@@ -977,7 +977,7 @@ public class SettingsFactory
             
             // log.error("getWebAppConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
             
-            final ValueFactory f = currentWebAppConfigurationRepository.getValueFactory();
+            // final ValueFactory f = currentWebAppConfigurationRepository.getValueFactory();
             
             // final URI subjectConfigUri = f.createURI(baseURI);
             

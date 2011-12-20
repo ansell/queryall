@@ -6,7 +6,7 @@ package org.queryall.impl.rule.test;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.rdfrule.SparqlConstructRule;
 import org.queryall.api.test.AbstractSparqlConstructRuleTest;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.rdfrule.SparqlConstructRuleImpl;
 
 /**
@@ -20,7 +20,7 @@ public class SparqlConstructRuleImplTest extends AbstractSparqlConstructRuleTest
     @Override
     public Profile getNewTestProfile()
     {
-        return new ProfileImpl();
+        return new DummyProfile();
     }
     
     @Override
