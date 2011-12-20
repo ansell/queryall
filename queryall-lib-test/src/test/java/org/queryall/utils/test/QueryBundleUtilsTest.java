@@ -18,6 +18,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
+import org.queryall.api.test.DummyProvider;
 import org.queryall.api.test.DummyQueryType;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
@@ -42,6 +43,7 @@ public class QueryBundleUtilsTest
     private String testHostName;
     private boolean testUseAllEndpointsTrue;
     private int testPageOffset1;
+    private Collection<Provider> testChosenProvidersSingleTrivial;
     
     /**
      * @throws java.lang.Exception
@@ -49,16 +51,27 @@ public class QueryBundleUtilsTest
     @Before
     public void setUp() throws Exception
     {
-        testQueryTypeEmpty = new DummyQueryType();
-        testChosenProvidersEmpty = new ArrayList<Provider>();
-        testQueryParametersEmpty = new HashMap<String, String>();
-        testNamespaceInputVariablesEmpty = new HashMap<String, Collection<NamespaceEntry>>();
-        testSortedIncludedProfilesEmpty = new ArrayList<Profile>();
-        testSettingsEmpty = new Settings();
-        testBlacklistControllerEmpty = new BlacklistController(testSettingsEmpty);
-        testHostName = "http://test.example.org/";
-        testUseAllEndpointsTrue = true;
-        testPageOffset1 = 1;
+        this.testQueryTypeEmpty = new DummyQueryType();
+        
+        this.testChosenProvidersEmpty = new ArrayList<Provider>(0);
+        this.testChosenProvidersSingleTrivial = new ArrayList<Provider>(1);
+        // add an instance of DummyProvider which only implements the Provider interface, so should
+        // not be recognised as HttpProvider or NoCommunicationProvider, among any others
+        this.testChosenProvidersSingleTrivial.add(new DummyProvider());
+        
+        this.testQueryParametersEmpty = new HashMap<String, String>();
+        
+        this.testNamespaceInputVariablesEmpty = new HashMap<String, Collection<NamespaceEntry>>();
+        
+        this.testSortedIncludedProfilesEmpty = new ArrayList<Profile>(0);
+        
+        this.testSettingsEmpty = new Settings();
+        
+        this.testBlacklistControllerEmpty = new BlacklistController(this.testSettingsEmpty);
+        
+        this.testHostName = "http://test.example.org/";
+        this.testUseAllEndpointsTrue = true;
+        this.testPageOffset1 = 1;
     }
     
     /**
@@ -67,31 +80,60 @@ public class QueryBundleUtilsTest
     @After
     public void tearDown() throws Exception
     {
-        testQueryTypeEmpty = null;
-        testChosenProvidersEmpty = null;
-        testQueryParametersEmpty = null;
-        testNamespaceInputVariablesEmpty = null;
-        testSortedIncludedProfilesEmpty = null;
-        testSettingsEmpty = null;
-        testBlacklistControllerEmpty = null;
-        testHostName = null;
-        testUseAllEndpointsTrue = false;
-        testPageOffset1 = -1;
+        this.testQueryTypeEmpty = null;
+        this.testChosenProvidersEmpty = null;
+        this.testQueryParametersEmpty = null;
+        this.testNamespaceInputVariablesEmpty = null;
+        this.testSortedIncludedProfilesEmpty = null;
+        this.testSettingsEmpty = null;
+        this.testBlacklistControllerEmpty = null;
+        this.testHostName = null;
+        this.testUseAllEndpointsTrue = false;
+        this.testPageOffset1 = -1;
     }
     
     /**
-     * @throws QueryAllException 
-     *
+     * Tests the generateQueryBundlesForQueryTypeAndProviders method with all items in their empty
+     * or freshly initialised state
+     * 
+     * @throws QueryAllException
+     * 
      */
     @Test
-    public final void testGenerateQueryBundlesForQueryTypeAndProviders() throws QueryAllException
+    public final void testGenerateQueryBundlesAllEmpty() throws QueryAllException
     {
-        Collection<QueryBundle> results = QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty, this.testChosenProvidersEmpty,
-                this.testQueryParametersEmpty, this.testNamespaceInputVariablesEmpty, testSortedIncludedProfilesEmpty, testSettingsEmpty,
-                testBlacklistControllerEmpty, testHostName, testUseAllEndpointsTrue, testPageOffset1);
+        final Collection<QueryBundle> results =
+                QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
+                        this.testChosenProvidersEmpty, this.testQueryParametersEmpty,
+                        this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
+                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
+                        this.testUseAllEndpointsTrue, this.testPageOffset1);
         
         Assert.assertNotNull(results);
         Assert.assertEquals(0, results.size());
     }
     
+    /**
+     * Tests the generateQueryBundlesForQueryTypeAndProviders method with a single dummy provider
+     * and a single query type, with all other items in their empty state
+     * 
+     * The dummy provider and dummy query type are setup to return true to challenges related to
+     * their applicability to any query, so they will generate a single query bundle.
+     * 
+     * @throws QueryAllException
+     * 
+     */
+    @Test
+    public final void testGenerateQueryBundlesAllEmptyExceptProviders() throws QueryAllException
+    {
+        final Collection<QueryBundle> results =
+                QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
+                        this.testChosenProvidersSingleTrivial, this.testQueryParametersEmpty,
+                        this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
+                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
+                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+        
+        Assert.assertNotNull(results);
+        Assert.assertEquals(1, results.size());
+    }
 }

@@ -155,6 +155,8 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     /**
      * 
+     * Defaults to QueryTypeSchema.getQueryNamespaceMatchAny()
+     * 
      * @return A URI denoting the method that is to be used to determine if a map of namespace
      *         parameter names to collections of matching namespace URIs will be determined to match
      *         with this query type.

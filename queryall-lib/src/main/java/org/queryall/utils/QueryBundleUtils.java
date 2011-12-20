@@ -69,11 +69,13 @@ public class QueryBundleUtils
         
         for(final Provider nextProvider : chosenProviders)
         {
+            log.info("a");
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
             
             if(nextProvider instanceof HttpProvider)
             {
+                log.info("b");
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
@@ -229,10 +231,12 @@ public class QueryBundleUtils
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
+                log.info("c");
                 String nextStaticRdfXmlString = "";
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
                 {
+                    log.info("d");
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
                     final QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
@@ -273,6 +277,8 @@ public class QueryBundleUtils
                 
                 results.add(nextProviderQueryBundle);
             }
+            
+            log.info("e");
         } // end for(Provider nextProvider : QueryTypeProviders)
         
         return results;

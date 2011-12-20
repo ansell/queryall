@@ -3,7 +3,10 @@
  */
 package org.queryall.api.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,19 +16,48 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
+import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
+ * Dummy class that implements the basic contracts for each of QueryType, InputQueryType, ProcessorQueryType, and OutputQueryType
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  *
  */
 public class DummyQueryType implements QueryType, InputQueryType, ProcessorQueryType, OutputQueryType
 {
     
+    private Collection<Statement> unrecognisedStatements = new ArrayList<Statement>();
+    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
+    private String description = "";
+    private URI key;
+    private String title = "";
+    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private String outputString = "";
+    private String processingTemplateString = "";
+    private Collection<String> expectedInputParameters = new HashSet<String>();
+    private boolean handleAllNamespaces = true;
+    private boolean includeDefaults = true;
+    private boolean inRobotsTxt = false;
+    private boolean isDummyQueryType = false;
+    private boolean isNamespaceSpecific = false;
+    private boolean isPageable = false;
+    private Set<URI> linkedQueryTypes = new HashSet<URI>();
+    private Set<String> namespaceInputTags = new HashSet<String>();
+    private URI namespaceMatchMethod = QueryTypeSchema.getQueryNamespaceMatchAny();
+    private Set<URI> namespacesToHandle = new HashSet<URI>();
+    private Set<String> publicIdentifierTags = new HashSet<String>();
+    private String queryUriTemplateString = "";
+    private String standardUriTemplateString = "";
+
     /**
      * 
      */
@@ -40,8 +72,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void addUnrecognisedStatement(Statement unrecognisedStatement)
     {
-        // TODO Auto-generated method stub
-        
+        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     /* (non-Javadoc)
@@ -50,8 +81,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public URI getCurationStatus()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.curationStatus;
     }
     
     /* (non-Javadoc)
@@ -60,8 +90,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public QueryAllNamespaces getDefaultNamespace()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return QueryAllNamespaces.QUERY;
     }
     
     /* (non-Javadoc)
@@ -70,8 +99,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String getDescription()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.description;
     }
     
     /* (non-Javadoc)
@@ -80,8 +108,11 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<URI> getElementTypes()
     {
-        // TODO Auto-generated method stub
-        return null;
+        final Set<URI> types = new HashSet<URI>();
+        
+        types.add(QueryTypeSchema.getQueryTypeUri());
+        
+        return types;
     }
     
     /* (non-Javadoc)
@@ -90,8 +121,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public URI getKey()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.key;
     }
     
     /* (non-Javadoc)
@@ -100,8 +130,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String getTitle()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.title;
     }
     
     /* (non-Javadoc)
@@ -110,8 +139,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Collection<Statement> getUnrecognisedStatements()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.unmodifiableCollection(this.unrecognisedStatements);
     }
     
     /* (non-Javadoc)
@@ -120,8 +148,11 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Collection<Statement> resetUnrecognisedStatements()
     {
-        // TODO Auto-generated method stub
-        return null;
+        Collection<Statement> result = this.unrecognisedStatements;
+        
+        this.unrecognisedStatements = new ArrayList<Statement>();
+        
+        return result;
     }
     
     /* (non-Javadoc)
@@ -130,8 +161,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setCurationStatus(URI curationStatus)
     {
-        // TODO Auto-generated method stub
-        
+        this.curationStatus = curationStatus;
     }
     
     /* (non-Javadoc)
@@ -140,8 +170,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setDescription(String description)
     {
-        // TODO Auto-generated method stub
-        
+        this.description = description;
     }
     
     /* (non-Javadoc)
@@ -150,8 +179,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setKey(String nextKey) throws IllegalArgumentException
     {
-        // TODO Auto-generated method stub
-        
+        this.key = Constants.valueFactory.createURI(nextKey);
     }
     
     /* (non-Javadoc)
@@ -160,8 +188,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setKey(URI nextKey)
     {
-        // TODO Auto-generated method stub
-        
+        this.key = nextKey;
     }
     
     /* (non-Javadoc)
@@ -170,8 +197,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setTitle(String title)
     {
-        // TODO Auto-generated method stub
-        
+        this.title = title;
     }
     
     /* (non-Javadoc)
@@ -200,19 +226,17 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public URI getProfileIncludeExcludeOrder()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.profileIncludeExcludeOrder;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.api.base.ProfilableInterface#isUsedWithProfileList(java.util.List, boolean, boolean)
+    /**
+     * Note: Defaults to true, or else every profile operation on this object would fail
      */
     @Override
     public boolean isUsedWithProfileList(List<Profile> orderedProfileList, boolean allowImplicitInclusions,
             boolean includeNonProfileMatched)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
     
     /* (non-Javadoc)
@@ -221,8 +245,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder)
     {
-        // TODO Auto-generated method stub
-        
+        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
     
     /* (non-Javadoc)
@@ -231,8 +254,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String getOutputString()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.outputString;
     }
     
     /* (non-Javadoc)
@@ -241,8 +263,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setOutputString(String outputString)
     {
-        // TODO Auto-generated method stub
-        
+        this.outputString = outputString;
     }
     
     /* (non-Javadoc)
@@ -251,8 +272,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String getProcessingTemplateString()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.processingTemplateString;
     }
     
     /* (non-Javadoc)
@@ -261,8 +281,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Object parseProcessorQuery(String query)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return query;
     }
     
     /* (non-Javadoc)
@@ -271,8 +290,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Map<String, Object> processQueryVariables(Map<String, Object> queryVariables)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return queryVariables;
     }
     
     /* (non-Javadoc)
@@ -281,8 +299,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setProcessingTemplateString(String templateString)
     {
-        // TODO Auto-generated method stub
-        
+        this.processingTemplateString = templateString;
     }
     
     /* (non-Javadoc)
@@ -291,8 +308,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String substituteQueryVariables(Map<String, Object> processedQueryVariables)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return (String)processedQueryVariables.get(Constants.QUERY);
     }
     
     /* (non-Javadoc)
@@ -301,8 +317,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void addExpectedInputParameter(String expectedInputParameter)
     {
-        // TODO Auto-generated method stub
-        
+        this.expectedInputParameters.add(expectedInputParameter);
     }
     
     /* (non-Javadoc)
@@ -311,8 +326,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Collection<String> getExpectedInputParameters()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.expectedInputParameters;
     }
     
     /* (non-Javadoc)
@@ -321,8 +335,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Map<String, List<String>> matchesForQueryParameters(Map<String, String> queryParameters)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyMap();
     }
     
     /* (non-Javadoc)
@@ -331,7 +344,6 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean matchesQueryParameters(Map<String, String> queryString)
     {
-        // TODO Auto-generated method stub
         return false;
     }
     
@@ -341,8 +353,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Map<String, Object> parseInputs(Map<String, Object> inputParameterMap)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return inputParameterMap;
     }
     
     /* (non-Javadoc)
@@ -351,8 +362,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean resetExpectedInputParameters()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.expectedInputParameters = new ArrayList<String>();
+        
+        return true;
     }
     
     /* (non-Javadoc)
@@ -361,8 +373,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void addLinkedQueryType(URI semanticallyLinkedQueryTypes)
     {
-        // TODO Auto-generated method stub
-        
+        this.linkedQueryTypes.add(semanticallyLinkedQueryTypes);
     }
     
     /* (non-Javadoc)
@@ -371,8 +382,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void addNamespaceInputTag(String namespaceInputTag)
     {
-        // TODO Auto-generated method stub
-        
+        this.namespaceInputTags.add(namespaceInputTag);
     }
     
     /* (non-Javadoc)
@@ -381,8 +391,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void addNamespaceToHandle(URI namespaceToHandle)
     {
-        // TODO Auto-generated method stub
-        
+        this.namespacesToHandle.add(namespaceToHandle);
     }
     
     /* (non-Javadoc)
@@ -391,8 +400,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void addPublicIdentifierTag(String publicIdentifierTag)
     {
-        // TODO Auto-generated method stub
-        
+        this.publicIdentifierTags.add(publicIdentifierTag);
     }
     
     /* (non-Javadoc)
@@ -401,8 +409,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean getHandleAllNamespaces()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.handleAllNamespaces;
     }
     
     /* (non-Javadoc)
@@ -411,8 +418,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean getIncludeDefaults()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.includeDefaults;
     }
     
     /* (non-Javadoc)
@@ -421,8 +427,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean getInRobotsTxt()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.inRobotsTxt;
     }
     
     /* (non-Javadoc)
@@ -431,8 +436,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean getIsDummyQueryType()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.isDummyQueryType;
     }
     
     /* (non-Javadoc)
@@ -441,8 +445,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean getIsNamespaceSpecific()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.isNamespaceSpecific;
     }
     
     /* (non-Javadoc)
@@ -451,8 +454,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean getIsPageable()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.isPageable;
     }
     
     /* (non-Javadoc)
@@ -461,8 +463,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<URI> getLinkedQueryTypes()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.linkedQueryTypes;
     }
     
     /* (non-Javadoc)
@@ -471,8 +472,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<String> getNamespaceInputTags()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.namespaceInputTags;
     }
     
     /* (non-Javadoc)
@@ -481,8 +481,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public URI getNamespaceMatchMethod()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.namespaceMatchMethod;
     }
     
     /* (non-Javadoc)
@@ -491,8 +490,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<URI> getNamespacesToHandle()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.namespacesToHandle;
     }
     
     /* (non-Javadoc)
@@ -501,8 +499,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<String> getPublicIdentifierTags()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.publicIdentifierTags;
     }
     
     /* (non-Javadoc)
@@ -511,8 +508,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String getQueryUriTemplateString()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.queryUriTemplateString;
     }
     
     /* (non-Javadoc)
@@ -521,8 +517,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String getStandardUriTemplateString()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this.standardUriTemplateString;
     }
     
     /* (non-Javadoc)
@@ -531,8 +526,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean handlesNamespacesSpecifically(Map<String, Collection<URI>> namespacesToCheck)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
     
     /* (non-Javadoc)
@@ -541,8 +535,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean handlesNamespaceUris(Map<String, Collection<URI>> namespacesToCheck)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
     
     /* (non-Javadoc)
@@ -551,8 +544,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean isInputVariableNamespace(String nextMatchTag)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.namespaceInputTags.contains(nextMatchTag);
     }
     
     /* (non-Javadoc)
@@ -561,8 +553,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean isInputVariablePublic(String inputVariableTag)
     {
-        // TODO Auto-generated method stub
-        return false;
+        return this.publicIdentifierTags.contains(inputVariableTag);
     }
     
     /* (non-Javadoc)
@@ -571,8 +562,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean resetLinkedQueryTypes()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.linkedQueryTypes = new HashSet<URI>();
+        
+        return true;
     }
     
     /* (non-Javadoc)
@@ -581,8 +573,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean resetNamespaceInputTags()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.namespaceInputTags = new HashSet<String>();
+        
+        return true;
     }
     
     /* (non-Javadoc)
@@ -591,8 +584,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean resetNamespacesToHandle()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.namespacesToHandle = new HashSet<URI>();
+        
+        return true;
     }
     
     /* (non-Javadoc)
@@ -601,8 +595,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean resetPublicIdentifierTags()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.publicIdentifierTags = new HashSet<String>();
+        
+        return true;
     }
     
     /* (non-Javadoc)
@@ -611,8 +606,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setHandleAllNamespaces(boolean handleAllNamespaces)
     {
-        // TODO Auto-generated method stub
-        
+        this.handleAllNamespaces = handleAllNamespaces;
     }
     
     /* (non-Javadoc)
@@ -621,8 +615,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setIncludeDefaults(boolean includeDefaults)
     {
-        // TODO Auto-generated method stub
-        
+        this.includeDefaults = includeDefaults;
     }
     
     /* (non-Javadoc)
@@ -631,8 +624,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setInRobotsTxt(boolean inRobotsTxt)
     {
-        // TODO Auto-generated method stub
-        
+        this.inRobotsTxt = inRobotsTxt;
     }
     
     /* (non-Javadoc)
@@ -641,8 +633,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setIsDummyQueryType(boolean isDummyQueryType)
     {
-        // TODO Auto-generated method stub
-        
+        this.isDummyQueryType = isDummyQueryType;
     }
     
     /* (non-Javadoc)
@@ -651,8 +642,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setIsNamespaceSpecific(boolean isNamespaceSpecific)
     {
-        // TODO Auto-generated method stub
-        
+        this.isNamespaceSpecific = isNamespaceSpecific;
     }
     
     /* (non-Javadoc)
@@ -661,8 +651,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setIsPageable(boolean isPageable)
     {
-        // TODO Auto-generated method stub
-        
+        this.isPageable = isPageable;
     }
     
     /* (non-Javadoc)
@@ -671,8 +660,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setNamespaceMatchMethod(URI namespaceMatchMethod)
     {
-        // TODO Auto-generated method stub
-        
+        this.namespaceMatchMethod = namespaceMatchMethod;
     }
     
     /* (non-Javadoc)
@@ -681,8 +669,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setQueryUriTemplateString(String queryUriTemplateString)
     {
-        // TODO Auto-generated method stub
-        
+        this.queryUriTemplateString = queryUriTemplateString;
     }
     
     /* (non-Javadoc)
@@ -691,8 +678,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setStandardUriTemplateString(String standardUriTemplateString)
     {
-        // TODO Auto-generated method stub
-        
+        this.standardUriTemplateString = standardUriTemplateString;
     }
     
 }

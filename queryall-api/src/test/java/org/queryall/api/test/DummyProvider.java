@@ -49,7 +49,7 @@ public final class DummyProvider implements Provider
     private Set<URI> normalisations = new HashSet<URI>();
     private Set<URI> queryTypes = new HashSet<URI>();
     private String assumedContentType;
-    private URI endpointMethod;
+    private URI endpointMethod = ProviderSchema.getProviderNoCommunication();
     private URI redirectOrProxy;
     
     /**
