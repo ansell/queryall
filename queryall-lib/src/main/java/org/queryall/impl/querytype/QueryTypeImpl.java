@@ -127,11 +127,12 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     
     private String outputRdfString = "";
     
-    @SuppressWarnings("unused")
-    // private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
     private boolean isDummyQueryType = false;
-    // default to universally available RDF/XML, and for backwards compatibility with previous
-    // versions (<5) that only supported RDF/XML output
+    
+    /**
+     * Default to universally available RDF/XML, and for backwards compatibility with previous
+     * versions (<5) that only supported RDF/XML output
+     */
     private String outputRdfFormat = Constants.APPLICATION_RDF_XML;
     private Set<String> expectedInputParameters = new HashSet<String>();
     

@@ -1,7 +1,6 @@
 package org.queryall.api.test;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.After;

@@ -4,7 +4,6 @@
 package org.queryall.query.test;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.After;
@@ -81,7 +80,8 @@ public class RdfFetchControllerTest
     
     /**
      * Test method for
-     * {@link org.queryall.query.RdfFetchController#fetchRdfForQueries(java.util.Collection)}.
+     * {@link org.queryall.query.RdfFetchController#fetchRdfForQueriesWithoutNormalisation(java.util.Collection)}
+     * .
      */
     @Ignore
     @Test
