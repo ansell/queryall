@@ -575,10 +575,10 @@ public class RdfFetchController
                 
                 final Collection<QueryBundle> queryBundlesForQueryType =
                         QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(nextInputQueryType,
-                                allCustomQueries.get(nextQueryType), chosenProviders, this.getSettings()
-                                        .getBooleanProperty(WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER),
-                                this.realHostName, this.pageOffset, this.queryParameters, this.sortedIncludedProfiles,
-                                this.getSettings(), this.getBlacklistController());
+                                chosenProviders, this.queryParameters, allCustomQueries.get(nextQueryType),
+                                this.sortedIncludedProfiles, this.getSettings(), this.getBlacklistController(), this.realHostName,
+                                this.getSettings()
+                                        .getBooleanProperty(WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER), this.pageOffset);
                 
                 this.queryBundles.addAll(queryBundlesForQueryType);
                 

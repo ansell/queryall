@@ -40,24 +40,23 @@ public class QueryBundleUtils
      * 
      * @param nextQueryType
      * @param chosenProviders
-     * @param realHostName
-     *            TODO
-     * @param pageOffset
-     *            TODO
      * @param queryParameters
-     *            TODO
+     * @param namespaceInputVariables
      * @param sortedIncludedProfiles
-     *            TODO
+     * @param localSettings
      * @param localBlacklistController
-     *            TODO
+     * @param realHostName
+     * @param useAllEndpointsForEachProvider
+     * @param pageOffset
+     * @return
      * @throws QueryAllException
      */
     public static Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
-            final InputQueryType nextQueryType, final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
-            final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider,
-            final String realHostName, final int pageOffset, final Map<String, String> queryParameters,
-            final List<Profile> sortedIncludedProfiles, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController) throws QueryAllException
+            final InputQueryType nextQueryType, final Collection<Provider> chosenProviders,
+            final Map<String, String> queryParameters, final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
+            final List<Profile> sortedIncludedProfiles, final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
+            final String realHostName, final boolean useAllEndpointsForEachProvider,
+            final int pageOffset) throws QueryAllException
     {
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
@@ -68,13 +67,6 @@ public class QueryBundleUtils
         final boolean overallConvertAlternateToPreferredPrefix =
                 localSettings.getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED);
         
-        if(QueryBundleUtils._DEBUG)
-        {
-            QueryBundleUtils.log
-                    .debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: nextQueryType="
-                            + nextQueryType.getKey().stringValue() + " chosenProviders.size=" + chosenProviders.size());
-        }
-        
         for(final Provider nextProvider : chosenProviders)
         {
             final boolean noCommunicationProvider =
@@ -82,10 +74,6 @@ public class QueryBundleUtils
             
             if(nextProvider instanceof HttpProvider)
             {
-                if(QueryBundleUtils._DEBUG)
-                {
-                    QueryBundleUtils.log.debug("instanceof HttpProvider key=" + nextProvider.getKey());
-                }
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
@@ -170,13 +158,7 @@ public class QueryBundleUtils
                     // query as static includes
                     final QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
                     
-                    if(nextCustomIncludeType == null)
-                    {
-                        QueryBundleUtils.log
-                                .warn("RdfFetchController: no included queries found for nextCustomInclude="
-                                        + nextCustomInclude);
-                    }
-                    else
+                    if(nextCustomIncludeType != null)
                     {
                         // then also create the statically defined rdf/xml string to go with this
                         // query based on the current attributes, we assume that both queries have
@@ -203,14 +185,6 @@ public class QueryBundleUtils
                                                             .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
                                                     overallConvertAlternateToPreferredPrefix, localSettings);
                         }
-                        else
-                        {
-                            QueryBundleUtils.log
-                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                            + nextCustomIncludeType.getKey()
-                                            + " types="
-                                            + nextCustomIncludeType.getElementTypes());
-                        }
                     }
                 }
                 
@@ -222,27 +196,12 @@ public class QueryBundleUtils
                 nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
                 nextProviderQueryBundle.setQueryallSettings(localSettings);
                 
-                if(QueryBundleUtils._DEBUG)
-                {
-                    QueryBundleUtils.log.debug("nextQueryType=" + nextQueryType.getKey().stringValue());
-                }
-                
                 for(final String nextEndpoint : ListUtils.randomiseCollectionLayout(replacedEndpoints.keySet()))
                 {
                     final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
                     
-                    if(QueryBundleUtils._DEBUG)
-                    {
-                        QueryBundleUtils.log.debug("nextEndpoint=" + nextEndpoint);
-                    }
-                    
                     for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
                     {
-                        if(QueryBundleUtils._DEBUG)
-                        {
-                            QueryBundleUtils.log.debug("nextReplacedEndpoint=" + nextReplacedEndpoint);
-                        }
-                        
                         if(nextReplacedEndpoint == null)
                         {
                             QueryBundleUtils.log.error("nextReplacedEndpoint was null nextEndpoint=" + nextEndpoint
@@ -253,11 +212,6 @@ public class QueryBundleUtils
                         // Then test whether the endpoint is blacklisted before accepting it
                         if(noCommunicationProvider || !localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
                         {
-                            if(QueryBundleUtils._DEBUG)
-                            {
-                                QueryBundleUtils.log.debug("not blacklisted");
-                            }
-                            
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
                             if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0
@@ -267,17 +221,6 @@ public class QueryBundleUtils
                                 nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
                                         originalEndpointEntries.get(nextReplacedEndpoint));
                             }
-                            else
-                            {
-                                QueryBundleUtils.log
-                                        .warn("Not adding an endpoint because we are not told to attempt to use all endpoints, and we have already chosen one");
-                            }
-                        }
-                        else
-                        {
-                            QueryBundleUtils.log
-                                    .warn("Not including provider because it is not no-communication and is a blacklisted url nextProvider.getKey()="
-                                            + nextProvider.getKey());
                         }
                     }
                     
@@ -286,11 +229,6 @@ public class QueryBundleUtils
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                if(QueryBundleUtils._DEBUG)
-                {
-                    QueryBundleUtils.log.debug("endpoint method = noCommunication key=" + nextProvider.getKey());
-                }
-                
                 String nextStaticRdfXmlString = "";
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
@@ -299,13 +237,7 @@ public class QueryBundleUtils
                     // query as static includes
                     final QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
                     
-                    if(nextCustomIncludeType == null)
-                    {
-                        QueryBundleUtils.log
-                                .warn("Attempted to include an unknown include type using the URI nextCustomInclude="
-                                        + nextCustomInclude.stringValue());
-                    }
-                    else
+                    if(nextCustomIncludeType != null)
                     {
                         final Map<String, String> attributeList =
                                 QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider, queryParameters,
@@ -328,14 +260,6 @@ public class QueryBundleUtils
                                                             .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
                                                     overallConvertAlternateToPreferredPrefix, localSettings);
                         }
-                        else
-                        {
-                            QueryBundleUtils.log
-                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                            + nextCustomIncludeType.getKey()
-                                            + " types="
-                                            + nextCustomIncludeType.getElementTypes());
-                        }
                     }
                 }
                 
@@ -349,20 +273,7 @@ public class QueryBundleUtils
                 
                 results.add(nextProviderQueryBundle);
             }
-            else
-            {
-                QueryBundleUtils.log.warn("Unrecognised provider endpoint method type nextProvider.getKey()="
-                        + nextProvider.getKey() + " nextProvider.getClass().getName()="
-                        + nextProvider.getClass().getName() + " endpointMethod=" + nextProvider.getEndpointMethod());
-            }
         } // end for(Provider nextProvider : QueryTypeProviders)
-        
-        if(QueryBundleUtils._DEBUG)
-        {
-            QueryBundleUtils.log
-                    .debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: results.size()="
-                            + results.size());
-        }
         
         return results;
     }
