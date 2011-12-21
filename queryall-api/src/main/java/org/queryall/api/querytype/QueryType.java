@@ -7,6 +7,7 @@ import java.util.Set;
 import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.ProfilableInterface;
+import org.queryall.api.utils.NamespaceMatch;
 
 /**
  * The base type for queries, containing a variety of links to other query types, namespace
@@ -155,13 +156,13 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     /**
      * 
-     * Defaults to QueryTypeSchema.getQueryNamespaceMatchAny()
+     * Defaults to NamespaceMatch.ANY_MATCHED
      * 
-     * @return A URI denoting the method that is to be used to determine if a map of namespace
-     *         parameter names to collections of matching namespace URIs will be determined to match
-     *         with this query type.
+     * @return A value from NamespaceMatch denoting the method that is to be used to determine if a
+     *         map of namespace parameter names to collections of matching namespace URIs will be
+     *         determined to match with this query type.
      */
-    URI getNamespaceMatchMethod();
+    NamespaceMatch getNamespaceMatchMethod();
     
     /**
      * 
@@ -263,7 +264,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     void setIsPageable(boolean isPageable);
     
-    void setNamespaceMatchMethod(URI namespaceMatchMethod);
+    void setNamespaceMatchMethod(NamespaceMatch namespaceMatchMethod);
     
     void setQueryUriTemplateString(String queryUriTemplateString);
     

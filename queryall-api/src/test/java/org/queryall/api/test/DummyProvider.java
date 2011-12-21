@@ -19,6 +19,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,6 @@ public final class DummyProvider implements Provider
     private String description = "";
     private URI curationStatus = null;
     private Set<Statement> unrecognisedStatements = new HashSet<Statement>();
-    private Set<URI> includedInQueryTypes = new HashSet<URI>();
     private Set<URI> namespaces = new HashSet<URI>();
     private boolean isDefault = false;
     private Set<URI> normalisations = new HashSet<URI>();
@@ -63,7 +63,7 @@ public final class DummyProvider implements Provider
     @Override
     public void addIncludedInQueryType(final URI includedInQueryType)
     {
-        this.includedInQueryTypes.add(includedInQueryType);
+        this.queryTypes.add(includedInQueryType);
     }
     
     @Override
@@ -308,7 +308,7 @@ public final class DummyProvider implements Provider
     @Override
     public Collection<URI> getIncludedInQueryTypes()
     {
-        return this.includedInQueryTypes;
+        return this.queryTypes;
     }
     
     @Override
@@ -373,7 +373,7 @@ public final class DummyProvider implements Provider
         result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
         result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
         result = prime * result + ((this.endpointMethod == null) ? 0 : this.endpointMethod.hashCode());
-        result = prime * result + ((this.includedInQueryTypes == null) ? 0 : this.includedInQueryTypes.hashCode());
+        result = prime * result + ((this.queryTypes == null) ? 0 : this.queryTypes.hashCode());
         result = prime * result + (this.isDefault ? 1231 : 1237);
         result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
         result = prime * result + ((this.namespaces == null) ? 0 : this.namespaces.hashCode());
@@ -381,7 +381,6 @@ public final class DummyProvider implements Provider
         result =
                 prime * result
                         + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
-        result = prime * result + ((this.queryTypes == null) ? 0 : this.queryTypes.hashCode());
         result = prime * result + ((this.redirectOrProxy == null) ? 0 : this.redirectOrProxy.hashCode());
         result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
         result = prime * result + ((this.unrecognisedStatements == null) ? 0 : this.unrecognisedStatements.hashCode());
@@ -400,7 +399,8 @@ public final class DummyProvider implements Provider
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
-        return true;
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+                includeNonProfileMatched);
     }
     
     @Override
@@ -418,18 +418,7 @@ public final class DummyProvider implements Provider
     @Override
     public boolean resetIncludedInQueryTypes()
     {
-        try
-        {
-            this.includedInQueryTypes.clear();
-            
-            return true;
-        }
-        catch(final UnsupportedOperationException uoe)
-        {
-            DummyProvider.log.debug("Could not clear collection");
-        }
-        
-        this.includedInQueryTypes = new HashSet<URI>();
+        this.queryTypes = new HashSet<URI>();
         
         return true;
     }
@@ -437,17 +426,6 @@ public final class DummyProvider implements Provider
     @Override
     public boolean resetNamespaces()
     {
-        try
-        {
-            this.namespaces.clear();
-            
-            return true;
-        }
-        catch(final UnsupportedOperationException uoe)
-        {
-            DummyProvider.log.debug("Could not clear collection");
-        }
-        
         this.namespaces = new HashSet<URI>();
         
         return true;
@@ -456,17 +434,6 @@ public final class DummyProvider implements Provider
     @Override
     public boolean resetNormalisationUris()
     {
-        try
-        {
-            this.normalisations.clear();
-            
-            return true;
-        }
-        catch(final UnsupportedOperationException uoe)
-        {
-            DummyProvider.log.debug("Could not clear collection");
-        }
-        
         this.normalisations = new HashSet<URI>();
         
         return true;

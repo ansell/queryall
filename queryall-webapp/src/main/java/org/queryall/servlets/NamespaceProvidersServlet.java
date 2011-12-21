@@ -24,9 +24,9 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProviderUtils;
 import org.slf4j.Logger;
@@ -120,7 +120,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                     
                     final Map<URI, Provider> namespaceProviders =
                             ProviderUtils.getProvidersForNamespaceUris(allProviders, nextNamespacesList,
-                                    QueryTypeSchema.getQueryNamespaceMatchAny());
+                                    NamespaceMatch.ANY_MATCHED);
                     
                     providersByNamespace.put(nextNamespace, namespaceProviders.values());
                     
@@ -143,8 +143,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 final Map<URI, Provider> queryTypesByNamespace =
                                         ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders,
                                                 localSettings.getQueryType(nextQueryKey),
-                                                nextQueryTypesByNamespacesList,
-                                                QueryTypeSchema.getQueryNamespaceMatchAny());
+                                                nextQueryTypesByNamespacesList, NamespaceMatch.ANY_MATCHED);
                                 
                                 allQueryTypesByNamespace.put(
                                         nextQueryKey.stringValue() + " " + nextNamespace.stringValue(),

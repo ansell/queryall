@@ -17,7 +17,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.comparators.ValueComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +88,7 @@ public final class ProviderUtils
      * @return
      */
     public static Map<URI, Provider> getProvidersForNamespaceUris(final Map<URI, Provider> allProviders,
-            final Map<String, Collection<URI>> namespaceUris, final URI namespaceMatchMethod)
+            final Map<String, Collection<URI>> namespaceUris, final NamespaceMatch namespaceMatchMethod)
     {
         if((namespaceUris == null) || (namespaceUris.size() == 0))
         {
@@ -158,11 +158,11 @@ public final class ProviderUtils
                 }
             }
             
-            if(anyFound && namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAny()))
+            if(anyFound && namespaceMatchMethod.equals(NamespaceMatch.ANY_MATCHED))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }
-            else if(allFound && namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
+            else if(allFound && namespaceMatchMethod.equals(NamespaceMatch.ALL_MATCHED))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }
@@ -431,7 +431,8 @@ public final class ProviderUtils
      * @return
      */
     public static Map<URI, Provider> getProvidersForQueryTypeForNamespaceUris(final Map<URI, Provider> allProviders,
-            final QueryType queryType, final Map<String, Collection<URI>> namespaceUris, final URI namespaceMatchMethod)
+            final QueryType queryType, final Map<String, Collection<URI>> namespaceUris,
+            final NamespaceMatch namespaceMatchMethod)
     {
         if(ProviderUtils._TRACE)
         {

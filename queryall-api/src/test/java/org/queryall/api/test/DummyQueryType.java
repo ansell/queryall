@@ -24,6 +24,8 @@ import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.NamespaceMatch;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
@@ -53,7 +55,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     private boolean isPageable = false;
     private Set<URI> linkedQueryTypes = new HashSet<URI>();
     private Set<String> namespaceInputTags = new HashSet<String>();
-    private URI namespaceMatchMethod = QueryTypeSchema.getQueryNamespaceMatchAny();
+    private NamespaceMatch namespaceMatchMethod = NamespaceMatch.ANY_MATCHED;
     private Set<URI> namespacesToHandle = new HashSet<URI>();
     private Set<String> publicIdentifierTags = new HashSet<String>();
     private String queryUriTemplateString = "";
@@ -302,7 +304,14 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<String> getNamespaceInputTags()
     {
-        return this.namespaceInputTags;
+        if(this.getIsNamespaceSpecific())
+        {
+            return this.namespaceInputTags;
+        }
+        else
+        {
+            return Collections.emptySet();
+        }
     }
     
     /*
@@ -311,7 +320,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#getNamespaceMatchMethod()
      */
     @Override
-    public URI getNamespaceMatchMethod()
+    public NamespaceMatch getNamespaceMatchMethod()
     {
         return this.namespaceMatchMethod;
     }
@@ -423,7 +432,18 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean handlesNamespacesSpecifically(final Map<String, Collection<URI>> namespacesToCheck)
     {
-        return true;
+        if(namespacesToCheck == null)
+        {
+            throw new IllegalArgumentException("Namespaces must be specified for this method");
+        }
+        
+        if(!this.getIsNamespaceSpecific() || this.getNamespacesToHandle() == null)
+        {
+            return false;
+        }
+        
+        return NamespaceMatch.matchNamespaces(namespacesToCheck, this.getNamespacesToHandle(),
+                this.getNamespaceMatchMethod());
     }
     
     /*
@@ -434,7 +454,14 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public boolean handlesNamespaceUris(final Map<String, Collection<URI>> namespacesToCheck)
     {
-        return true;
+        if(this.handleAllNamespaces && this.isNamespaceSpecific)
+        {
+            return true;
+        }
+        else
+        {
+            return this.handlesNamespacesSpecifically(namespacesToCheck);
+        }
     }
     
     /*
@@ -466,7 +493,8 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
-        return true;
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+                includeNonProfileMatched);
     }
     
     /*
@@ -717,10 +745,10 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     /*
      * (non-Javadoc)
      * 
-     * @see org.queryall.api.querytype.QueryType#setNamespaceMatchMethod(org.openrdf.model.URI)
+     * @see org.queryall.api.querytype.QueryType#setNamespaceMatchMethod(NamespaceMatch)
      */
     @Override
-    public void setNamespaceMatchMethod(final URI namespaceMatchMethod)
+    public void setNamespaceMatchMethod(final NamespaceMatch namespaceMatchMethod)
     {
         this.namespaceMatchMethod = namespaceMatchMethod;
     }

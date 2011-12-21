@@ -31,10 +31,10 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 import org.queryall.api.test.DummyProfile;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.utils.ProviderUtils;
@@ -405,49 +405,49 @@ public class ProviderUtilsTest
             
             Map<URI, Provider> allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces1,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(5, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces12,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(2, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces123,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(1, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces23,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(3, allNamespaceMatchProviders.size());
             
             Map<URI, Provider> anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces1,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(5, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces12,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(8, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces123,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(8, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces23,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(6, anyNamespaceMatchProviders.size());
             
@@ -737,57 +737,49 @@ public class ProviderUtilsTest
             // Test query type 1, with namespace match all
             Map<URI, Provider> allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces1,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces1, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(3, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces12,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces12, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(2, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces123,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces123, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(1, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces23,
-                            QueryTypeSchema.getQueryNamespaceMatchAll());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces23, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(2, allNamespaceMatchProviders.size());
             
             Map<URI, Provider> anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces1,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces1, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(3, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces12,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces12, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(4, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces123,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces123, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(4, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
-                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces23,
-                            QueryTypeSchema.getQueryNamespaceMatchAny());
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces23, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(3, anyNamespaceMatchProviders.size());
             

@@ -20,7 +20,7 @@ import org.queryall.api.rdfrule.NormalisationRule;
 public enum ProfileMatch
 {
     SPECIFIC_INCLUDE, SPECIFIC_EXCLUDE, IMPLICIT_INCLUDE, NO_MATCH;
-
+    
     public static boolean isUsedWithProfileList(final ProfilableInterface profilableObject,
             final List<Profile> nextSortedProfileList, final boolean recogniseImplicitInclusions,
             final boolean includeNonProfileMatched)
@@ -55,7 +55,7 @@ public enum ProfileMatch
         
         return returnValue;
     }
-
+    
     /**
      * This method implements the main logic with reference to include/exclude decisions based on a
      * given includeExcludeOrder and the default profile include exclude order which overrides the
@@ -98,7 +98,7 @@ public enum ProfileMatch
     {
         if(includeList == null || excludeList == null)
         {
-            throw new IllegalArgumentException("Profile.usedWithList: includeList or excludeList was null");
+            throw new IllegalArgumentException("usedWithIncludeExcludeList: includeList or excludeList was null");
         }
         
         final boolean includeFound = includeList.contains(nextUri);
@@ -142,11 +142,11 @@ public enum ProfileMatch
         }
         else
         {
-            throw new IllegalArgumentException("Profile.usedWithList: nextIncludeExcludeOrder not recognised ("
+            throw new IllegalArgumentException("usedWithIncludeExcludeList: nextIncludeExcludeOrder not recognised ("
                     + nextIncludeExcludeOrder + ")");
         }
     }
-
+    
     public static ProfileMatch usedWithProfilable(final Profile profile, final ProfilableInterface profilableObject)
     {
         Collection<URI> includeList = null;
@@ -173,13 +173,12 @@ public enum ProfileMatch
         }
         else
         {
-            throw new RuntimeException(
-                    "ProfileImpl.usedWithProfilable: Did not recognise the type for object profilableObject="
-                            + profilableObject.toString());
+            throw new RuntimeException("usedWithProfilable: Did not recognise the type for object profilableObject="
+                    + profilableObject.getClass().getName());
         }
         
         final ProfileMatch trueResult =
-                usedWithIncludeExcludeList(profilableObject.getKey(),
+                ProfileMatch.usedWithIncludeExcludeList(profilableObject.getKey(),
                         profilableObject.getProfileIncludeExcludeOrder(), includeList, excludeList,
                         profile.getDefaultProfileIncludeExcludeOrder());
         

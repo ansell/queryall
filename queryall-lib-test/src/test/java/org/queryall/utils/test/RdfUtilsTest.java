@@ -47,7 +47,6 @@ import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
@@ -65,6 +64,7 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.SparqlRuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.utils.RdfUtils;
 
@@ -1176,7 +1176,7 @@ public class RdfUtilsTest
                             nextQueryType.getIsNamespaceSpecific());
                     
                     Assert.assertEquals("Query type namespace match method was not parsed correctly",
-                            QueryTypeSchema.getQueryNamespaceMatchAll(), nextQueryType.getNamespaceMatchMethod());
+                            NamespaceMatch.ALL_MATCHED, nextQueryType.getNamespaceMatchMethod());
                     
                     Assert.assertTrue("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());
@@ -1279,7 +1279,7 @@ public class RdfUtilsTest
                             nextQueryType.getIsNamespaceSpecific());
                     
                     Assert.assertEquals("Query type namespace match method was not parsed correctly",
-                            QueryTypeSchema.getQueryNamespaceMatchAny(), nextQueryType.getNamespaceMatchMethod());
+                            NamespaceMatch.ANY_MATCHED, nextQueryType.getNamespaceMatchMethod());
                     
                     Assert.assertFalse("Query type include defaults was not parsed correctly",
                             nextQueryType.getIncludeDefaults());
