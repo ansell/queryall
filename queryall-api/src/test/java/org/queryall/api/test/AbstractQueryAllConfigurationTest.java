@@ -951,6 +951,170 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
+    public void testResetNamespaceEntries()
+    {
+        Assert.assertNotNull(this.testConfiguration.getAllNamespaceEntries());
+        Assert.assertEquals(0, this.testConfiguration.getAllNamespaceEntries().size());
+        
+        final NamespaceEntry testNamespaceEntry1 = this.getNewNamespaceEntry();
+        testNamespaceEntry1.setKey("http://test.example.org/namespaceentry/1");
+        
+        final NamespaceEntry testNamespaceEntry2 = this.getNewNamespaceEntry();
+        testNamespaceEntry2.setKey("http://test.example.org/namespaceentry/2");
+        
+        this.testConfiguration.addNamespaceEntry(testNamespaceEntry1);
+        Assert.assertEquals(1, this.testConfiguration.getAllNamespaceEntries().size());
+        this.testConfiguration.addNamespaceEntry(testNamespaceEntry2);
+        Assert.assertEquals(2, this.testConfiguration.getAllNamespaceEntries().size());
+        
+        Assert.assertTrue(this.testConfiguration.resetNamespaceEntries());
+        
+        Assert.assertNotNull(this.testConfiguration.getAllNamespaceEntries());
+        Assert.assertEquals(0, this.testConfiguration.getAllNamespaceEntries().size());
+    }
+    
+    @Test
+    public void testResetNormalisationRules()
+    {
+        Assert.assertNotNull(this.testConfiguration.getAllNormalisationRules());
+        Assert.assertEquals(0, this.testConfiguration.getAllNormalisationRules().size());
+        
+        final NormalisationRule testNormalisationRule1 = this.getNewNormalisationRule();
+        testNormalisationRule1.setKey("http://test.example.org/normalisationrule/1");
+        
+        final NormalisationRule testNormalisationRule2 = this.getNewNormalisationRule();
+        testNormalisationRule2.setKey("http://test.example.org/normalisationrule/2");
+        
+        this.testConfiguration.addNormalisationRule(testNormalisationRule1);
+        Assert.assertEquals(1, this.testConfiguration.getAllNormalisationRules().size());
+        this.testConfiguration.addNormalisationRule(testNormalisationRule2);
+        Assert.assertEquals(2, this.testConfiguration.getAllNormalisationRules().size());
+        
+        Assert.assertTrue(this.testConfiguration.resetNormalisationRules());
+        
+        Assert.assertNotNull(this.testConfiguration.getAllNormalisationRules());
+        Assert.assertEquals(0, this.testConfiguration.getAllNormalisationRules().size());
+    }
+    
+    @Test
+    public void testResetProfiles()
+    {
+        Assert.assertNotNull(this.testConfiguration.getAllProfiles());
+        Assert.assertEquals(0, this.testConfiguration.getAllProfiles().size());
+        
+        final Profile testProfile1 = this.getNewProfile();
+        testProfile1.setKey("http://test.example.org/profile/1");
+        
+        final Profile testProfile2 = this.getNewProfile();
+        testProfile2.setKey("http://test.example.org/profile/2");
+        
+        this.testConfiguration.addProfile(testProfile1);
+        Assert.assertEquals(1, this.testConfiguration.getAllProfiles().size());
+        this.testConfiguration.addProfile(testProfile2);
+        Assert.assertEquals(2, this.testConfiguration.getAllProfiles().size());
+        
+        Assert.assertTrue(this.testConfiguration.resetProfiles());
+        
+        Assert.assertNotNull(this.testConfiguration.getAllProfiles());
+        Assert.assertEquals(0, this.testConfiguration.getAllProfiles().size());
+    }
+    
+    @Test
+    public void testResetProperties()
+    {
+        final Collection<URI> testUris = new ArrayList<URI>(3);
+        
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/2"));
+        testUris.add(this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/3"));
+        
+        this.testConfiguration.setURICollectionProperty(WebappConfig._TEST_URI_COLLECTION_PROPERTY, testUris);
+        
+        final Collection<URI> uriProperties =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(uriProperties);
+        Assert.assertEquals(3, uriProperties.size());
+        
+        Assert.assertTrue(this.testConfiguration.resetProperties());
+        
+        final Collection<URI> uriProperties2 =
+                this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
+        
+        Assert.assertNotNull(uriProperties2);
+        Assert.assertEquals(0, uriProperties2.size());
+    }
+    
+    @Test
+    public void testResetProviders()
+    {
+        Assert.assertNotNull(this.testConfiguration.getAllProviders());
+        Assert.assertEquals(0, this.testConfiguration.getAllProviders().size());
+        
+        final Provider testProvider1 = this.getNewProvider();
+        testProvider1.setKey("http://test.example.org/provider/1");
+        
+        final Provider testProvider2 = this.getNewProvider();
+        testProvider2.setKey("http://test.example.org/provider/2");
+        
+        this.testConfiguration.addProvider(testProvider1);
+        Assert.assertEquals(1, this.testConfiguration.getAllProviders().size());
+        this.testConfiguration.addProvider(testProvider2);
+        Assert.assertEquals(2, this.testConfiguration.getAllProviders().size());
+        
+        Assert.assertTrue(this.testConfiguration.resetProviders());
+        
+        Assert.assertNotNull(this.testConfiguration.getAllProviders());
+        Assert.assertEquals(0, this.testConfiguration.getAllProviders().size());
+    }
+    
+    @Test
+    public void testResetQueryTypes()
+    {
+        Assert.assertNotNull(this.testConfiguration.getAllQueryTypes());
+        Assert.assertEquals(0, this.testConfiguration.getAllQueryTypes().size());
+        
+        final QueryType testQueryType1 = this.getNewQueryType();
+        testQueryType1.setKey("http://test.example.org/querytype/1");
+        
+        final QueryType testQueryType2 = this.getNewQueryType();
+        testQueryType2.setKey("http://test.example.org/querytype/2");
+        
+        this.testConfiguration.addQueryType(testQueryType1);
+        Assert.assertEquals(1, this.testConfiguration.getAllQueryTypes().size());
+        this.testConfiguration.addQueryType(testQueryType2);
+        Assert.assertEquals(2, this.testConfiguration.getAllQueryTypes().size());
+        
+        Assert.assertTrue(this.testConfiguration.resetQueryTypes());
+        
+        Assert.assertNotNull(this.testConfiguration.getAllQueryTypes());
+        Assert.assertEquals(0, this.testConfiguration.getAllQueryTypes().size());
+    }
+    
+    @Test
+    public void testResetRuleTests()
+    {
+        Assert.assertNotNull(this.testConfiguration.getAllRuleTests());
+        Assert.assertEquals(0, this.testConfiguration.getAllRuleTests().size());
+        
+        final RuleTest testRuleTest1 = this.getNewRuleTest();
+        testRuleTest1.setKey("http://test.example.org/ruletest/1");
+        
+        final RuleTest testRuleTest2 = this.getNewRuleTest();
+        testRuleTest2.setKey("http://test.example.org/ruletest/2");
+        
+        this.testConfiguration.addRuleTest(testRuleTest1);
+        Assert.assertEquals(1, this.testConfiguration.getAllRuleTests().size());
+        this.testConfiguration.addRuleTest(testRuleTest2);
+        Assert.assertEquals(2, this.testConfiguration.getAllRuleTests().size());
+        
+        Assert.assertTrue(this.testConfiguration.resetRuleTests());
+        
+        Assert.assertNotNull(this.testConfiguration.getAllRuleTests());
+        Assert.assertEquals(0, this.testConfiguration.getAllRuleTests().size());
+    }
+    
+    @Test
     public void testSetPropertyStringBoolean()
     {
         // check both the explicit and implicit default versions using both true and false
