@@ -213,12 +213,7 @@ public class RdfFetchController
                         queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                     }
                     
-                    // TODO: expand to include details of the actual endpoint
                     nextThread.setResultDebugString("SUCCESS: queryKey=" + queryKey);
-                    // nextThread.setResultDebugString("SUCCESS: endpoint="
-                    // + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " queryKey=" +
-                    // queryKey);
-                    // + " query=" + nextThread.getOriginalQueryBundle().getQuery());
                     
                     this.getSuccessfulResults().add(nextThread);
                 }
@@ -285,21 +280,21 @@ public class RdfFetchController
                                 // + nextEndpoint
                                 // + " query="
                                 // + nextQuery
-                                + " provider=" + nextBundle.getOriginalProvider().getKey());
+                                + " provider=" + nextBundle.getProvider().getKey());
             }
             
             RdfFetcherQueryRunnable nextThread = null;
             
             boolean addToFetchQueue = false;
             
-            if(nextBundle.getOriginalProvider() == null)
+            if(nextBundle.getProvider() == null)
             {
                 RdfFetchController.log
                         .error("nextBundle.getOriginalProvider() was null. not generating fetch thread for this query bundle");
             }
             // TODO: Make this section extensible, preferably defined by the provider itself
-            else if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
-                    && nextBundle.getOriginalProvider().getEndpointMethod()
+            else if(nextBundle.getProvider() instanceof HttpSparqlProvider
+                    && nextBundle.getProvider().getEndpointMethod()
                             .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
                 // randomly choose one of the alternatives, the others will be resolved if necessary
@@ -312,7 +307,7 @@ public class RdfFetchController
                 if(nextEndpoint == null)
                 {
                     RdfFetchController.log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="
-                            + nextBundle.getOriginalProvider().getKey());
+                            + nextBundle.getProvider().getKey());
                     continue;
                 }
                 
@@ -323,14 +318,14 @@ public class RdfFetchController
                 if(nextQuery == null)
                 {
                     RdfFetchController.log.error("nextQuery was retrieved as null nextBundle.getOriginalProvider()="
-                            + nextBundle.getOriginalProvider().getKey());
+                            + nextBundle.getProvider().getKey());
                     continue;
                 }
                 
                 nextThread =
                         new RdfFetcherSparqlQueryRunnable(nextEndpoint,
-                                ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(), nextQuery,
-                                "off", ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(this
+                                ((SparqlProvider)nextBundle.getProvider()).getSparqlGraphUri(), nextQuery,
+                                "off", ((HttpProvider)nextBundle.getProvider()).getAcceptHeaderString(this
                                         .getSettings().getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
                                 pageoffsetIndividualQueryLimit, this.getSettings(), this.getBlacklistController(),
                                 nextBundle);
@@ -341,11 +336,11 @@ public class RdfFetchController
                 {
                     RdfFetchController.log
                             .trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP POST SPARQL query thread on nextEndpoint="
-                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getOriginalProvider().getKey());
+                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getProvider().getKey());
                 }
             }
-            else if(nextBundle.getOriginalProvider() instanceof HttpProvider
-                    && nextBundle.getOriginalProvider().getEndpointMethod()
+            else if(nextBundle.getProvider() instanceof HttpProvider
+                    && nextBundle.getProvider().getEndpointMethod()
                             .equals(HttpProviderSchema.getProviderHttpGetUrl()))
             {
                 // randomly choose one of the alternatives, the others will be resolved if necessary
@@ -358,7 +353,7 @@ public class RdfFetchController
                 if(nextEndpoint == null)
                 {
                     RdfFetchController.log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="
-                            + nextBundle.getOriginalProvider().getKey());
+                            + nextBundle.getProvider().getKey());
                     continue;
                 }
                 
@@ -373,7 +368,7 @@ public class RdfFetchController
                 
                 nextThread =
                         new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider()).getAcceptHeaderString(this
+                                ((HttpProvider)nextBundle.getProvider()).getAcceptHeaderString(this
                                         .getSettings().getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
                                 this.getSettings(), this.getBlacklistController(), nextBundle);
                 
@@ -383,11 +378,11 @@ public class RdfFetchController
                 {
                     RdfFetchController.log
                             .trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP GET query thread on nextEndpoint="
-                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getOriginalProvider().getKey());
+                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getProvider().getKey());
                 }
             }
-            else if(nextBundle.getOriginalProvider() instanceof NoCommunicationProvider
-                    && nextBundle.getOriginalProvider().getEndpointMethod()
+            else if(nextBundle.getProvider() instanceof NoCommunicationProvider
+                    && nextBundle.getProvider().getEndpointMethod()
                             .equals(ProviderSchema.getProviderNoCommunication()))
             {
                 if(RdfFetchController._TRACE)
@@ -404,8 +399,8 @@ public class RdfFetchController
                 
                 RdfFetchController.log
                         .warn("RdfFetchController.generateFetchThreadsFromQueryBundles: endpointMethod did not match any known values. Not adding endpointMethod="
-                                + nextBundle.getOriginalProvider().getEndpointMethod().stringValue()
-                                + " providerConfig=" + nextBundle.getOriginalProvider().getKey().stringValue());
+                                + nextBundle.getProvider().getEndpointMethod().stringValue()
+                                + " providerConfig=" + nextBundle.getProvider().getKey().stringValue());
             }
             
             if(addToFetchQueue)
@@ -436,9 +431,9 @@ public class RdfFetchController
         
         for(final QueryBundle nextQueryBundle : this.getQueryBundles())
         {
-            if(nextQueryBundle.getOriginalProvider() != null)
+            if(nextQueryBundle.getProvider() != null)
             {
-                results.add(nextQueryBundle.getOriginalProvider());
+                results.add(nextQueryBundle.getProvider());
             }
         }
         

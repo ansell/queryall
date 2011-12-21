@@ -161,7 +161,7 @@ public class QueryBundleUtilsTest
         Assert.assertEquals(this.testSettingsEmpty, result.getQueryallSettings());
         
         Assert.assertEquals(this.testQueryTypeEmpty, result.getQueryType());
-        Assert.assertEquals(this.testProviderTrivial1, result.getOriginalProvider());
+        Assert.assertEquals(this.testProviderTrivial1, result.getProvider());
         Assert.assertEquals(this.testSortedIncludedProfilesEmpty, result.getRelevantProfiles());
         
         Assert.assertFalse(result.getRedirectRequired());
@@ -204,7 +204,7 @@ public class QueryBundleUtilsTest
         Assert.assertEquals(this.testSettingsEmpty, result.getQueryallSettings());
         
         Assert.assertEquals(this.testQueryTypeEmpty, result.getQueryType());
-        Assert.assertEquals(this.testProviderTrivial1, result.getOriginalProvider());
+        Assert.assertEquals(this.testProviderTrivial1, result.getProvider());
         Assert.assertEquals(this.testSortedIncludedProfilesSingleAllInclude, result.getRelevantProfiles());
         
         Assert.assertEquals(1, result.getRelevantProfiles().size());

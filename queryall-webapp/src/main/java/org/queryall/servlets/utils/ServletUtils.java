@@ -297,7 +297,7 @@ public class ServletUtils
                                         .findBestContentType(((RdfOutputQueryType)nextPotentialQueryBundle
                                                 .getQueryType()).getOutputRdfFormat(), Constants.APPLICATION_RDF_XML,
                                                 Constants.APPLICATION_RDF_XML)), nextPotentialQueryBundle
-                                        .getOriginalProvider().getKey());
+                                        .getProvider().getKey());
                     }
                     else if(nextPotentialQueryBundle.getQueryType() != null
                             && nextPotentialQueryBundle.getQueryType() instanceof OutputQueryType)
@@ -305,7 +305,7 @@ public class ServletUtils
                         myRepositoryConnection.add(new java.io.StringReader(nextStaticString),
                                 localSettings.getDefaultHostAddress() + queryString, RdfUtils
                                         .getWriterFormat(Constants.APPLICATION_RDF_XML), nextPotentialQueryBundle
-                                        .getOriginalProvider().getKey());
+                                        .getProvider().getKey());
                     }
                     else if(nextPotentialQueryBundle.getQueryType() != null)
                     {
@@ -354,7 +354,7 @@ public class ServletUtils
                             + "pageoffset"
                             + pageOffset
                             + separator
-                            + StringUtils.percentEncode(nextScheduledQueryBundle.getOriginalProvider().getKey()
+                            + StringUtils.percentEncode(nextScheduledQueryBundle.getProvider().getKey()
                                     .stringValue().toLowerCase())
                             + separator
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
