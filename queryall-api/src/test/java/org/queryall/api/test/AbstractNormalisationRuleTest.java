@@ -14,10 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.sail.memory.model.MemValueFactory;
-import org.queryall.api.profile.Profile;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.utils.Constants;
 import org.queryall.exception.InvalidStageException;
 
 /**
@@ -46,14 +45,6 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
     }
     
     /**
-     * Create a new profile instance with default properties
-     * 
-     * @return A new profile instance with default properties
-     */
-    @Override
-    public abstract Profile getNewTestProfile();
-    
-    /**
      * Create a new instance of the NormalisationRule implementation being tested
      * 
      * @return a new instance of the implemented NormalisationRule
@@ -69,7 +60,7 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
     {
         super.setUp();
         
-        final ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.valueFactory;
         
         // this.testTrueSparqlNormalisationRuleUri =
         // f.createURI("http://example.org/test/includedNormalisationRule");
