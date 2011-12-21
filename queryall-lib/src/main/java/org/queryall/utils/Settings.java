@@ -54,13 +54,13 @@ public class Settings implements QueryAllConfiguration
             new ConcurrentHashMap<WebappConfig, Collection<Object>>();
     private Pattern cachedTagPattern;
     private String cachedSeparator;
+    private long lastInitialised = System.currentTimeMillis();
     
     /**
      * 
      */
     public Settings()
     {
-        // TODO Auto-generated constructor stub
     }
     
     @Override
@@ -339,6 +339,12 @@ public class Settings implements QueryAllConfiguration
         }
         
         return defaultValue;
+    }
+    
+    @Override
+    public long getLastInitialised()
+    {
+        return this.lastInitialised;
     }
     
     @Override
@@ -644,6 +650,94 @@ public class Settings implements QueryAllConfiguration
         }
         
         return defaultValue;
+    }
+    
+    @Override
+    public boolean resetNamespaceEntries()
+    {
+        synchronized(this.namespaceEntries)
+        {
+            this.namespaceEntries.clear();
+        }
+        
+        synchronized(this.namespacePrefixesToUris)
+        {
+            this.namespacePrefixesToUris.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNormalisationRules()
+    {
+        synchronized(this.normalisationRules)
+        {
+            this.normalisationRules.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetProfiles()
+    {
+        synchronized(this.profiles)
+        {
+            this.profiles.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetProperties()
+    {
+        synchronized(this.properties)
+        {
+            this.properties.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetProviders()
+    {
+        synchronized(this.providers)
+        {
+            this.providers.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetQueryTypes()
+    {
+        synchronized(this.queryTypes)
+        {
+            this.queryTypes.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetRuleTests()
+    {
+        synchronized(this.ruleTests)
+        {
+            this.ruleTests.clear();
+        }
+        
+        return true;
+    }
+    
+    @Override
+    public void setLastInitialised(final long lastInitialised)
+    {
+        this.lastInitialised = lastInitialised;
     }
     
     /**

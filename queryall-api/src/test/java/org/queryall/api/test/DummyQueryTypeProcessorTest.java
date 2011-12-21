@@ -14,9 +14,9 @@ public class DummyQueryTypeProcessorTest extends AbstractProcessorQueryTypeTest
 {
     
     @Override
-    public Profile getNewTestProfile()
+    public String getNewTestProcessingTemplateString()
     {
-        return new DummyProfile();
+        return "";
     }
     
     @Override
@@ -24,11 +24,11 @@ public class DummyQueryTypeProcessorTest extends AbstractProcessorQueryTypeTest
     {
         return new DummyQueryType();
     }
-
+    
     @Override
-    public String getNewTestProcessingTemplateString()
+    public Profile getNewTestProfile()
     {
-        return "";
+        return new DummyProfile();
     }
     
 }

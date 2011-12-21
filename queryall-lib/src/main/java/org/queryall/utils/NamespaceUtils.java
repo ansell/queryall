@@ -25,20 +25,12 @@ public class NamespaceUtils
         
         if(results == null)
         {
-            return null;
+            return Collections.emptyList();
         }
         else
         {
             return Collections.unmodifiableCollection(results);
         }
-    }
-    
-    /**
-	 * 
-	 */
-    public NamespaceUtils()
-    {
-        // TODO Auto-generated constructor stub
     }
     
 }

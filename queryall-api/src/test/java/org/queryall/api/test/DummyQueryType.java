@@ -830,7 +830,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String substituteQueryVariables(final Map<String, Object> processedQueryVariables)
     {
-        return getProcessingTemplateString();
+        return this.getProcessingTemplateString();
     }
     
     /*

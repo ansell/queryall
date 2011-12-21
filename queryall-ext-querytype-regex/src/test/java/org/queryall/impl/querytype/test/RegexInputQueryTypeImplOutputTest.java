@@ -15,14 +15,14 @@ import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 public class RegexInputQueryTypeImplOutputTest extends AbstractOutputQueryTypeTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new DummyProfile();
-    }
-    
-    @Override
     public OutputQueryType getNewTestOutputQueryType()
     {
         return new RegexInputQueryTypeImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new DummyProfile();
     }
 }

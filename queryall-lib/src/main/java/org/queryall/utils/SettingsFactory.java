@@ -58,6 +58,10 @@ public class SettingsFactory
     private static final boolean _DEBUG = SettingsFactory.log.isDebugEnabled();
     private static final boolean _INFO = SettingsFactory.log.isInfoEnabled();
     
+    /**
+     * The current version of the RDF configuration API that we support for pulling in and
+     * serialising settings.
+     */
     public static final int CONFIG_API_VERSION = 5;
     
     /**
@@ -210,24 +214,6 @@ public class SettingsFactory
     {
         final long currentTimestamp = System.currentTimeMillis();
         
-        // if(_DEBUG)
-        // {
-        // log.debug("configRefreshCheck: before check Settings.PERIODIC_CONFIGURATION_REFRESH="
-        // + getBooleanProperty("enablePeriodicConfigurationRefresh", true)
-        // + " Settings.PERIODIC_REFRESH_MILLISECONDS="
-        // + getLongProperty("periodicConfigurationMilliseconds", 60000L)
-        // + " currentTimestamp - initialisedTimestamp=" + (currentTimestamp - initialisedTimestamp)
-        // + " ");
-        // }
-        
-        // TODO: reenable this function
-        // if(tryToForceRefresh && !isManualRefreshAllowed())
-        // {
-        // log
-        // .error("configRefreshCheck: attempted to force refresh outside of manual refresh time and ability guidelines");
-        // return false;
-        // }
-        
         final boolean enablePeriodicConfigurationRefresh =
                 nextSettings.getBooleanProperty(WebappConfig.ENABLE_PERIODIC_CONFIGURATION_REFRESH);
         final long periodicConfigurationMilliseconds =
@@ -241,15 +227,21 @@ public class SettingsFactory
                     + periodicConfigurationMilliseconds);
         }
         
-        if(tryToForceRefresh || (enablePeriodicConfigurationRefresh
-        // TODO: reenable initialisedTimestamp
-        // && ((currentTimestamp - initialisedTimestamp) > periodicConfigurationMilliseconds)
-                ))
+        if(tryToForceRefresh
+                || (enablePeriodicConfigurationRefresh && ((currentTimestamp - nextSettings.getLastInitialised()) > periodicConfigurationMilliseconds)))
         {
             synchronized(nextSettings)
             {
-                // TODO: reenable this section
+                // TODO: HACK Should be retrieving the same base config location as the one which
+                // created this settings object originally
+                SettingsFactory.initialise(nextSettings, SettingsFactory.getDefaultBaseConfigLocationProperty(),
+                        SettingsFactory.getDefaultBaseConfigMimeFormatProperty(),
+                        SettingsFactory.getDefaultBaseConfigUriProperty());
+                
+                nextSettings.setLastInitialised(System.currentTimeMillis());
             }
+            
+            return true;
         }
         if(SettingsFactory._DEBUG)
         {
@@ -366,56 +358,23 @@ public class SettingsFactory
                 SettingsFactory.getDefaultBaseConfigUriProperty());
     };
     
+    /**
+     * Wrapper for the initialise method that uses the Settings class as the QueryAllConfiguration
+     * implementation
+     * 
+     * @param baseConfigLocation
+     * @param baseConfigMimeType
+     * @param baseConfigUri
+     * @return
+     */
     public static QueryAllConfiguration generateSettings(final String baseConfigLocation,
             final String baseConfigMimeType, final String baseConfigUri)
     {
-        Repository baseConfigurationRdf;
-        Repository webAppConfigurationRdf;
-        Repository serverConfigurationRdf;
-        try
-        {
-            baseConfigurationRdf =
-                    SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
-            
-            final URI realBaseConfigUri = baseConfigurationRdf.getValueFactory().createURI(baseConfigUri);
-            final Collection<Value> webappConfigLocations =
-                    SettingsFactory.getWebappConfigLocations(baseConfigurationRdf, realBaseConfigUri);
-            
-            final Collection<URI> webappConfigUris =
-                    SettingsFactory.getWebappConfigUris(baseConfigurationRdf, realBaseConfigUri);
-            
-            webAppConfigurationRdf =
-                    SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation,
-                            baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
-            
-            final QueryAllConfiguration result = new Settings();
-            
-            SettingsFactory.extractProperties(result, webAppConfigurationRdf, webappConfigUris);
-            
-            final Collection<String> configLocations =
-                    SettingsFactory.getConfigLocations(webAppConfigurationRdf, webappConfigUris);
-            final Collection<String> backupConfigLocations =
-                    SettingsFactory.getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
-            
-            serverConfigurationRdf = SettingsFactory.getServerConfigurationRdf(configLocations, backupConfigLocations);
-            
-            SettingsFactory.addNamespaceEntries(serverConfigurationRdf, result);
-            SettingsFactory.addNormalisationRules(serverConfigurationRdf, result);
-            SettingsFactory.addRuleTests(serverConfigurationRdf, result);
-            SettingsFactory.addProviders(serverConfigurationRdf, result);
-            SettingsFactory.addProfiles(serverConfigurationRdf, result);
-            SettingsFactory.addQueryTypes(serverConfigurationRdf, result);
-            
-            return result;
-        }
-        catch(final InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch(final OpenRDFException e)
-        {
-            throw new RuntimeException(e);
-        }
+        final QueryAllConfiguration result = new Settings();
+        
+        SettingsFactory.initialise(result, baseConfigLocation, baseConfigMimeType, baseConfigUri);
+        
+        return result;
     }
     
     public static Collection<String> getBackupConfigLocations(final Repository webAppConfigurationRdf,
@@ -1185,6 +1144,101 @@ public class SettingsFactory
         }
         
         return results;
+    }
+    
+    public static void initialise(final QueryAllConfiguration nextSettings, final String baseConfigLocation,
+            final String baseConfigMimeType, final String baseConfigUri)
+    {
+        Repository baseConfigurationRdf;
+        Repository webAppConfigurationRdf;
+        Repository serverConfigurationRdf;
+        try
+        {
+            baseConfigurationRdf =
+                    SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
+            
+            final URI realBaseConfigUri = baseConfigurationRdf.getValueFactory().createURI(baseConfigUri);
+            final Collection<Value> webappConfigLocations =
+                    SettingsFactory.getWebappConfigLocations(baseConfigurationRdf, realBaseConfigUri);
+            
+            final Collection<URI> webappConfigUris =
+                    SettingsFactory.getWebappConfigUris(baseConfigurationRdf, realBaseConfigUri);
+            
+            webAppConfigurationRdf =
+                    SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation,
+                            baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
+            
+            final Collection<String> configLocations =
+                    SettingsFactory.getConfigLocations(webAppConfigurationRdf, webappConfigUris);
+            final Collection<String> backupConfigLocations =
+                    SettingsFactory.getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
+            
+            serverConfigurationRdf = SettingsFactory.getServerConfigurationRdf(configLocations, backupConfigLocations);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset properties on nextSettings");
+            }
+            
+            nextSettings.resetProperties();
+            SettingsFactory.extractProperties(nextSettings, webAppConfigurationRdf, webappConfigUris);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset namespace entries on nextSettings");
+            }
+            
+            nextSettings.resetNamespaceEntries();
+            SettingsFactory.addNamespaceEntries(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset query types on nextSettings");
+            }
+            
+            nextSettings.resetQueryTypes();
+            SettingsFactory.addQueryTypes(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset providers on nextSettings");
+            }
+            
+            nextSettings.resetProviders();
+            SettingsFactory.addProviders(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset normalisation rules on nextSettings");
+            }
+            
+            nextSettings.resetNormalisationRules();
+            SettingsFactory.addNormalisationRules(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset profiles on nextSettings");
+            }
+            
+            nextSettings.resetProfiles();
+            SettingsFactory.addProfiles(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory._INFO)
+            {
+                SettingsFactory.log.info("About to reset rule tests on nextSettings");
+            }
+            
+            nextSettings.resetRuleTests();
+            SettingsFactory.addRuleTests(serverConfigurationRdf, nextSettings);
+        }
+        catch(final InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch(final OpenRDFException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
     
     /**

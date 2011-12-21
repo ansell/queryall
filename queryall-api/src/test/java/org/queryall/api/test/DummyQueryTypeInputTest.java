@@ -14,15 +14,15 @@ public class DummyQueryTypeInputTest extends AbstractInputQueryTypeTest
 {
     
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new DummyProfile();
-    }
-    
-    @Override
     public InputQueryType getNewTestInputQueryType()
     {
         return new DummyQueryType();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new DummyProfile();
     }
     
 }

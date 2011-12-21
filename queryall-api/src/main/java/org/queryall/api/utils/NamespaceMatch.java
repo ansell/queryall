@@ -21,6 +21,8 @@ public enum NamespaceMatch
     ALL_MATCHED(QueryTypeSchema.getQueryNamespaceMatchAll());
     
     /**
+     * FIXME: Synchronise this method with ProviderUtils.getProvidersForNamespaceUris
+     * 
      * @param namespacesToCheck
      * @param namespacesToHandle
      *            TODO

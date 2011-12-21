@@ -15,14 +15,14 @@ import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 public class RdfInputQueryTypeImplOutputTest extends AbstractOutputQueryTypeTest
 {
     @Override
-    public Profile getNewTestProfile()
-    {
-        return new DummyProfile();
-    }
-    
-    @Override
     public OutputQueryType getNewTestOutputQueryType()
     {
         return new RdfInputQueryTypeImpl();
+    }
+    
+    @Override
+    public Profile getNewTestProfile()
+    {
+        return new DummyProfile();
     }
 }

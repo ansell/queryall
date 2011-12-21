@@ -39,6 +39,7 @@ import org.queryall.servlets.utils.ServletUtils;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public class GeneralServlet extends HttpServlet
                 new DefaultQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
         // TODO: should this be configurable or should it be removed?
-        final boolean useDefaultProviders = true;
+        // final boolean useDefaultProviders = true;
         // TODO FIXME: The content type negotiator does not work with locales yet
         // String preferredLocale = QueryallLanguageNegotiator.getResponseLanguage(locale,
         // userAgentHeader);
@@ -138,22 +139,20 @@ public class GeneralServlet extends HttpServlet
         
         if(GeneralServlet._INFO)
         {
-            ServletUtils.logRequestDetails(useDefaultProviders, serverName, queryString, requesterIpAddress, locale,
-                    characterEncoding, isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
-                    requestQueryOptions.containsExplicitPageOffsetValue(), request.getHeader("Accept"),
-                    request.getHeader("User-Agent"));
+            ServletUtils.logRequestDetails(serverName, queryString, requesterIpAddress, locale, characterEncoding,
+                    isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
+                    requestQueryOptions.containsExplicitPageOffsetValue(), acceptHeader, userAgentHeader);
         }
         
         // allow for users to perform redirections if the query did not contain an explicit format
         if(ServletUtils.checkExplicitRedirect(response, localSettings, requestQueryOptions, contextPath,
                 requestedContentType))
         {
-            // no more code necessary here
+            // no more code necessary here if the redirect was performed
             return;
         }
         
-        // TODO: avoid cast here
-        // ((Settings)localSettings).configRefreshCheck(false);
+        SettingsFactory.configRefreshCheck(localSettings, false);
         localBlacklistController.doBlacklistExpiry();
         
         if(localBlacklistController.isClientBlacklisted(requesterIpAddress))
@@ -178,7 +177,7 @@ public class GeneralServlet extends HttpServlet
         {
             final RdfFetchController fetchController =
                     new RdfFetchController(localSettings, localBlacklistController, queryParameters, includedProfiles,
-                            useDefaultProviders, realHostName, pageOffset);
+                            realHostName, pageOffset);
             
             final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
             
@@ -258,7 +257,10 @@ public class GeneralServlet extends HttpServlet
                                     ListUtils.chooseRandomItemFromCollection(nextScheduledQueryBundle
                                             .getAlternativeEndpointsAndQueries().keySet());
                             
-                            GeneralServlet.log.info("Sending redirect to url=" + randomlyChosenRedirect);
+                            if(GeneralServlet._INFO)
+                            {
+                                GeneralServlet.log.info("Sending redirect to url=" + randomlyChosenRedirect);
+                            }
                             
                             response.sendRedirect(randomlyChosenRedirect);
                             
@@ -303,22 +305,22 @@ public class GeneralServlet extends HttpServlet
             {
                 GeneralServlet.log.info("GeneralServlet: query complete requesterIpAddress=" + requesterIpAddress
                         + " queryString=" + queryString + " pageOffset=" + pageOffset + " totalTime=" + nextTotalTime);
-                // GeneralServlet.log.info("GeneralServlet: finished returning information to client requesterIpAddress="
-                // + requesterIpAddress + " queryString=" + queryString + " pageOffset=" +
-                // pageOffset
-                // + " totalTime=" + nextTotalTime);
             }
             
             // Housekeeping
             
-            // update a the blacklist
+            // update the blacklist
             localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
             
-            if(localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS,
-                    (Boolean)WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS.getDefaultValue()))
+            final boolean resetClientBlacklistFailuresOnSuccess =
+                    localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS);
+            final boolean resetClientBlacklistWithEndpoints =
+                    localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS);
+            
+            if(resetClientBlacklistFailuresOnSuccess)
             {
                 localBlacklistController.removeEndpointsFromBlacklist(fetchController.getSuccessfulResults(),
-                        nextTotalTime, useDefaultProviders);
+                        nextTotalTime, resetClientBlacklistWithEndpoints);
             }
             
             // Don't keep local error statistics if GeneralServlet debug level is higher than or

@@ -296,8 +296,8 @@ public class ServletUtils
                                 localSettings.getDefaultHostAddress() + queryString, RdfUtils.getWriterFormat(RdfUtils
                                         .findBestContentType(((RdfOutputQueryType)nextPotentialQueryBundle
                                                 .getQueryType()).getOutputRdfFormat(), Constants.APPLICATION_RDF_XML,
-                                                Constants.APPLICATION_RDF_XML)), nextPotentialQueryBundle
-                                        .getProvider().getKey());
+                                                Constants.APPLICATION_RDF_XML)), nextPotentialQueryBundle.getProvider()
+                                        .getKey());
                     }
                     else if(nextPotentialQueryBundle.getQueryType() != null
                             && nextPotentialQueryBundle.getQueryType() instanceof OutputQueryType)
@@ -354,8 +354,8 @@ public class ServletUtils
                             + "pageoffset"
                             + pageOffset
                             + separator
-                            + StringUtils.percentEncode(nextScheduledQueryBundle.getProvider().getKey()
-                                    .stringValue().toLowerCase())
+                            + StringUtils.percentEncode(nextScheduledQueryBundle.getProvider().getKey().stringValue()
+                                    .toLowerCase())
                             + separator
                             + StringUtils.percentEncode(nextScheduledQueryBundle.getQueryType().getKey().stringValue()
                                     .toLowerCase()) + separator),
@@ -619,7 +619,6 @@ public class ServletUtils
     /**
      * Encapsulates the basic logging details for a single request
      * 
-     * @param useDefaultProviders
      * @param serverName
      * @param queryString
      * @param requesterIpAddress
@@ -636,18 +635,17 @@ public class ServletUtils
      * @param userAgentHeader
      *            TODO
      */
-    public static void logRequestDetails(final boolean useDefaultProviders, final String serverName,
-            final String queryString, final String requesterIpAddress, final String locale,
-            final String characterEncoding, final boolean isPretendQuery, final int pageOffset,
-            final String originalRequestedContentType, final String requestedContentType,
-            final boolean containsExplicitPageOffset, final String acceptHeader, final String userAgentHeader)
+    public static void logRequestDetails(final String serverName, final String queryString,
+            final String requesterIpAddress, final String locale, final String characterEncoding,
+            final boolean isPretendQuery, final int pageOffset, final String originalRequestedContentType,
+            final String requestedContentType, final boolean containsExplicitPageOffset, final String acceptHeader,
+            final String userAgentHeader)
     {
         if(GeneralServlet._INFO)
         {
             GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
                     + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
-                    + containsExplicitPageOffset + " pageOffset=" + pageOffset + " isPretendQuery=" + isPretendQuery
-                    + " useDefaultProviders=" + useDefaultProviders);
+                    + containsExplicitPageOffset + " pageOffset=" + pageOffset + " isPretendQuery=" + isPretendQuery);
             GeneralServlet.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
                     + acceptHeader + " userAgent=" + userAgentHeader);
             GeneralServlet.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
