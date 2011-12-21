@@ -44,11 +44,11 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setQueryStartTime(new Date());
             
-            String tempRawResult = fetcher.getDocumentFromUrl(this.getEndpointUrl(), "", this.getAcceptHeader());
+            String tempRawResult = fetcher.getDocumentFromUrl(this.getOriginalEndpointUrl(), "", this.getAcceptHeader());
             
             if(fetcher.getLastWasError())
             {
-                RdfFetcherUriQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
+                RdfFetcherUriQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
                 
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
@@ -58,10 +58,10 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    if(!alternateEndpoint.equals(this.getEndpointUrl()))
+                    if(!alternateEndpoint.equals(this.getOriginalEndpointUrl()))
                     {
                         RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint="
-                                + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
+                                + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
@@ -76,10 +76,17 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                         if(!fetcher.getLastWasError())
                         {
                             // break on the first alternate that wasn't an error
+                            this.setActualEndpointUrl(alternateEndpoint);
+                            this.setActualQuery(alternateQuery);
                             break;
                         }
                     }
                 }
+            }
+            else
+            {
+                this.setActualEndpointUrl(this.getOriginalEndpointUrl());
+                this.setActualQuery(this.getOriginalQuery());
             }
             
             if(!fetcher.getLastWasError())

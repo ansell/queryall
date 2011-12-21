@@ -54,12 +54,12 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryStartTime(new Date());
             
             String tempRawResult =
-                    fetcher.submitSparqlQuery(this.getEndpointUrl(), "", this.getQuery(), "", this.maxRowsParameter,
+                    fetcher.submitSparqlQuery(this.getOriginalEndpointUrl(), "", this.getOriginalQuery(), "", this.maxRowsParameter,
                             this.getAcceptHeader());
             
             if(fetcher.getLastWasError())
             {
-                RdfFetcherSparqlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getEndpointUrl());
+                RdfFetcherSparqlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
                 
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
@@ -69,10 +69,10 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
-                    if(!alternateEndpoint.equals(this.getEndpointUrl()))
+                    if(!alternateEndpoint.equals(this.getOriginalEndpointUrl()))
                     {
                         RdfFetcherSparqlQueryRunnable.log.error("Trying to fetch from alternate endpoint="
-                                + alternateEndpoint + " originalEndpoint=" + this.getEndpointUrl());
+                                + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
@@ -87,11 +87,19 @@ public class RdfFetcherSparqlQueryRunnable extends RdfFetcherQueryRunnable
                         
                         if(!fetcher.getLastWasError())
                         {
+                            log.error("Found a success with alternateEndpoint="+alternateEndpoint+" alternateQuery="+alternateQuery);
                             // break on the first alternate that wasn't an error
+                            this.setActualEndpointUrl(alternateEndpoint);
+                            this.setActualQuery(alternateQuery);
                             break;
                         }
                     }
                 }
+            }
+            else
+            {
+                this.setActualEndpointUrl(this.getOriginalEndpointUrl());
+                this.setActualQuery(this.getOriginalQuery());
             }
             
             if(!fetcher.getLastWasError())

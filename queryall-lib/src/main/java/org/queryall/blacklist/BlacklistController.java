@@ -109,35 +109,34 @@ public class BlacklistController
             {
                 BlacklistController.log
                         .debug("BlacklistController.accumulateBlacklist: going to accumulate entry for endpointUrl="
-                                + nextQueryObject.getEndpointUrl());
+                                + nextQueryObject.getActualEndpointUrl());
             }
             
-            // FIXME: Need to know when this is null and not setup properly
-            if(nextQueryObject.getEndpointUrl() != null)
+            if(nextQueryObject.getActualEndpointUrl() != null)
             {
-                if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getEndpointUrl()))
+                if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getActualEndpointUrl()))
                 {
                     final BlacklistEntry previousCount =
-                            this.getAccumulatedBlacklistStatistics().get(nextQueryObject.getEndpointUrl());
+                            this.getAccumulatedBlacklistStatistics().get(nextQueryObject.getActualEndpointUrl());
                     
                     if(BlacklistController._DEBUG)
                     {
                         BlacklistController.log.debug("BlacklistController.accumulateBlacklist: There were "
                                 + previousCount + " previous instances on blacklist for endpointUrl="
-                                + nextQueryObject.getEndpointUrl());
+                                + nextQueryObject.getActualEndpointUrl());
                     }
                     
                     previousCount.addErrorMessageForRunnable(nextQueryObject);
                     
-                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), previousCount);
+                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getActualEndpointUrl(), previousCount);
                 }
                 else
                 {
                     final BlacklistEntry newFailureCount = new BlacklistEntry();
-                    newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
+                    newFailureCount.endpointUrl = nextQueryObject.getActualEndpointUrl();
                     newFailureCount.addErrorMessageForRunnable(nextQueryObject);
                     
-                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), newFailureCount);
+                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getActualEndpointUrl(), newFailureCount);
                 }
                 
                 this.allCurrentBadQueries.add(nextQueryObject);
@@ -954,7 +953,7 @@ public class BlacklistController
         for(final RdfFetcherQueryRunnable nextQueryObject : successfulQueries)
         {
             // only deal with it if it was blacklisted
-            this.accumulatedBlacklistStatistics.remove(nextQueryObject.getEndpointUrl());
+            this.accumulatedBlacklistStatistics.remove(nextQueryObject.getActualEndpointUrl());
         }
     }
     

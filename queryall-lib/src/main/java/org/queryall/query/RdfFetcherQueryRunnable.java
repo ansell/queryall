@@ -21,8 +21,10 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     @SuppressWarnings("unused")
     private static final boolean _INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
     
-    private String endpointUrl = "";
-    private String query = "";
+    private String originalEndpointUrl = "";
+    private String originalQuery = "";
+    private String actualEndpointUrl;
+    private String actualQuery;
     private String debug = "";
     private String acceptHeader = "";
     private String returnedContentType = null;
@@ -47,8 +49,8 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController)
     {
-        this.setEndpointUrl(nextEndpointUrl);
-        this.setQuery(nextQuery);
+        this.setOriginalEndpointUrl(nextEndpointUrl);
+        this.setOriginalQuery(nextQuery);
         this.setDebug(nextDebug);
         this.setAcceptHeader(nextAcceptHeader);
         this.setSettings(localSettings);
@@ -69,6 +71,22 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     public String getAcceptHeader()
     {
         return this.acceptHeader;
+    }
+    
+    /**
+     * @return the actualEndpointUrl
+     */
+    public String getActualEndpointUrl()
+    {
+        return this.actualEndpointUrl;
+    }
+    
+    /**
+     * @return the actualQuery
+     */
+    public String getActualQuery()
+    {
+        return this.actualQuery;
     }
     
     /**
@@ -95,11 +113,6 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
         return this.debug;
     }
     
-    public String getEndpointUrl()
-    {
-        return this.endpointUrl;
-    }
-    
     /**
      * @return the lastException
      */
@@ -121,10 +134,14 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
      */
     public String getNormalisedResult()
     {
-        if(this.normalisedResult == null || this.normalisedResult.trim().length() == 0)
+        if(this.normalisedResult == null || this.normalisedResult.length() == 0)
         {
-            RdfFetcherQueryRunnable.log
-                    .debug("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
+            if(RdfFetcherQueryRunnable._DEBUG)
+            {
+                RdfFetcherQueryRunnable.log
+                        .debug("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
+            }
+            
             return this.rawResult;
         }
         else
@@ -133,17 +150,22 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
         }
     }
     
+    public String getOriginalEndpointUrl()
+    {
+        return this.originalEndpointUrl;
+    }
+    
+    public String getOriginalQuery()
+    {
+        return this.originalQuery;
+    }
+    
     /**
      * @return the originalQueryBundle
      */
     public QueryBundle getOriginalQueryBundle()
     {
         return this.originalQueryBundle;
-    }
-    
-    public String getQuery()
-    {
-        return this.query;
     }
     
     /**
@@ -225,6 +247,24 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     }
     
     /**
+     * @param actualEndpointUrl
+     *            the actualEndpointUrl to set
+     */
+    public void setActualEndpointUrl(final String actualEndpointUrl)
+    {
+        this.actualEndpointUrl = actualEndpointUrl;
+    }
+    
+    /**
+     * @param actualQuery
+     *            the actualQuery to set
+     */
+    public void setActualQuery(final String actualQuery)
+    {
+        this.actualQuery = actualQuery;
+    }
+    
+    /**
      * @param localBlacklistController
      *            the localBlacklistController to set
      */
@@ -252,15 +292,6 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     }
     
     /**
-     * @param endpointUrl
-     *            the endpointUrl to set
-     */
-    public void setEndpointUrl(final String endpointUrl)
-    {
-        this.endpointUrl = endpointUrl;
-    }
-    
-    /**
      * @param lastException
      *            the lastException to set
      */
@@ -279,21 +310,30 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     }
     
     /**
-     * @param originalQueryBundle
-     *            the originalQueryBundle to set
+     * @param endpointUrl
+     *            the endpointUrl to set
      */
-    public void setOriginalQueryBundle(final QueryBundle originalQueryBundle)
+    public void setOriginalEndpointUrl(final String endpointUrl)
     {
-        this.originalQueryBundle = originalQueryBundle;
+        this.originalEndpointUrl = endpointUrl;
     }
     
     /**
      * @param query
      *            the query to set
      */
-    public void setQuery(final String query)
+    public void setOriginalQuery(final String query)
     {
-        this.query = query;
+        this.originalQuery = query;
+    }
+    
+    /**
+     * @param originalQueryBundle
+     *            the originalQueryBundle to set
+     */
+    public void setOriginalQueryBundle(final QueryBundle originalQueryBundle)
+    {
+        this.originalQueryBundle = originalQueryBundle;
     }
     
     /**
@@ -380,22 +420,16 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     @Override
     public String toString()
     {
-        return "endpointUrl=" + this.getEndpointUrl() + " query=" + this.getQuery();
+        return "originalendpointUrl=" + this.getOriginalEndpointUrl() + "actualendpointurl="+this.getActualEndpointUrl()+" query=" + this.getOriginalQuery();
     }
     
-    public boolean wasEmptySuccessQuery()
+    public boolean wasCompletedSuccessfulQuery()
     {
-        return this.getWasSuccessful() && !this.getRawResult().trim().equals("")
-                && this.getNormalisedResult().trim().equals("");
+        return this.getCompleted() && this.getWasSuccessful();
     }
     
     public boolean wasError()
     {
         return this.getCompleted() && this.getLastException() != null;
-    }
-    
-    public boolean wasSuccessfulQuery()
-    {
-        return this.getWasSuccessful();
     }
 }

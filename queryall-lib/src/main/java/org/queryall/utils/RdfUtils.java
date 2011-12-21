@@ -2749,8 +2749,8 @@ public final class RdfUtils
         }
         catch(final org.openrdf.rio.RDFParseException rdfpe)
         {
-            RdfUtils.log.error("insertResultIntoRepository: RDFParseException result: nextResult.endpointUrl="
-                    + nextResult.getEndpointUrl() + " message=" + rdfpe.getMessage());
+            RdfUtils.log.error("insertResultIntoRepository: RDFParseException result: nextResult.actualendpointUrl="
+                    + nextResult.getActualEndpointUrl() + " message=" + rdfpe.getMessage());
             
             if(RdfUtils._TRACE)
             {

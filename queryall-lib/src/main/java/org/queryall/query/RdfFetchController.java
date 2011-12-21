@@ -151,8 +151,8 @@ public class RdfFetchController
                 {
                     if(nextThread.getLastException() != null)
                     {
-                        RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: endpoint="
-                                + nextThread.getEndpointUrl() + " message="
+                        RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: originalendpoint="+nextThread.getOriginalEndpointUrl()+" actualendpoint="
+                                + nextThread.getActualEndpointUrl() + " message="
                                 + nextThread.getLastException().getMessage());
                         
                         URI queryKey = null;
@@ -163,8 +163,8 @@ public class RdfFetchController
                             queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
                         }
                         
-                        nextThread.setResultDebugString("FAILURE: endpoint=" + nextThread.getEndpointUrl()
-                                + " querykey=" + queryKey + " query=" + nextThread.getQuery() + " message="
+                        nextThread.setResultDebugString("FAILURE: originalendpoint=" + nextThread.getOriginalEndpointUrl()+" actualendpoint="+nextThread.getActualEndpointUrl()
+                                + " querykey=" + queryKey + " query=" + nextThread.getOriginalQuery() + " message="
                                 + nextThread.getLastException().getMessage());
                         
                     }
@@ -219,7 +219,7 @@ public class RdfFetchController
             {
                 // this.uncalledThreads.add(nextThread);
                 RdfFetchController.log.error("Thread wasn't completed after fetchRdfForQueries completed endpointUrl="
-                        + nextThread.getEndpointUrl());
+                        + nextThread.getOriginalEndpointUrl());
             }
         }
     }
