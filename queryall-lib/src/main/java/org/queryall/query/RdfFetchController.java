@@ -63,7 +63,7 @@ public class RdfFetchController
     private boolean useDefaultProviders = true;
     private String realHostName;
     private int pageOffset;
-    private boolean includeNonPagedQueries = true;
+    private boolean excludeNonPagedQueries = false;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     private boolean namespaceNotRecognised = false;
@@ -132,7 +132,7 @@ public class RdfFetchController
             this.pageOffset = nextPageOffset;
         }
         
-        this.includeNonPagedQueries = (this.pageOffset == 1);
+        this.setExcludeNonPagedQueries((this.pageOffset > 1));
         
         this.initialise(true);
     }
@@ -529,7 +529,7 @@ public class RdfFetchController
                 // they want to use non-paged queries, for example, they may say no
                 // if they have decided that they need only extra results from paged
                 // queries
-                if(!this.includeNonPagedQueries && !nextQueryType.getIsPageable())
+                if(this.getExcludeNonPagedQueries() && !nextQueryType.getIsPageable())
                 {
                     if(RdfFetchController._INFO)
                     {
@@ -541,10 +541,6 @@ public class RdfFetchController
                     continue;
                 }
                 
-                // Non-paged queries are a special case. The caller decides whether
-                // they want to use non-paged queries, for example, they may say no
-                // if they have decided that they need only extra results from paged
-                // queries
                 if(!(nextQueryType instanceof InputQueryType))
                 {
                     if(RdfFetchController._INFO)
@@ -723,5 +719,21 @@ public class RdfFetchController
     public void setUncalledThreads(final Collection<RdfFetcherQueryRunnable> uncalledThreads)
     {
         this.uncalledThreads = uncalledThreads;
+    }
+
+    /**
+     * @return the excludeNonPagedQueries
+     */
+    public boolean getExcludeNonPagedQueries()
+    {
+        return excludeNonPagedQueries;
+    }
+
+    /**
+     * @param excludeNonPagedQueries the excludeNonPagedQueries to set
+     */
+    public void setExcludeNonPagedQueries(boolean excludeNonPagedQueries)
+    {
+        this.excludeNonPagedQueries = excludeNonPagedQueries;
     }
 }
