@@ -555,14 +555,12 @@ public class RdfFetchController
                 
                 final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
                 
-                final Collection<Provider> chosenProviders = new HashSet<Provider>();
-                
-                chosenProviders.addAll(ProviderUtils.getProvidersForQuery(this.getSettings().getAllProviders(),
-                        this.sortedIncludedProfiles, nextInputQueryType, this.getSettings()
-                                .getNamespacePrefixesToUris(), this.queryParameters, this.getSettings()
+                final Collection<Provider> chosenProviders = ProviderUtils.getProvidersForQuery(nextInputQueryType,
+                        this.queryParameters, this.getSettings().getAllProviders(), this.sortedIncludedProfiles, this.getSettings()
+                                        .getNamespacePrefixesToUris(), this.getSettings()
                                 .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS), this
                                 .getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS),
-                        this.useDefaultProviders));
+                        this.useDefaultProviders);
                 
                 final Collection<QueryBundle> queryBundlesForQueryType =
                         QueryBundleUtils
@@ -601,34 +599,6 @@ public class RdfFetchController
                     }
                 }
             } // end for(QueryType nextQueryType : allCustomQueries)
-            
-            if(RdfFetchController._INFO)
-            {
-                if(this.getQueryBundles().size() == 0)
-                {
-                    RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
-                }
-                
-                if(RdfFetchController._DEBUG)
-                {
-                    if(this.getQueryBundles().size() > 0)
-                    {
-                        for(final QueryBundle nextQueryBundleDebug : this.getQueryBundles())
-                        {
-                            RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
-                                    + nextQueryBundleDebug.toString());
-                        }
-                    }
-                    
-                    final long end = System.currentTimeMillis();
-                    
-                    RdfFetchController.log.debug("RdfFetchController.initialise: numberOfThreads="
-                            + this.getFetchThreadGroup().size());
-                    
-                    RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
-                            (end - start)));
-                }
-            }
         }
         
         // replace the fetch thread group if we were instructed to generate the query bundles or the
@@ -637,6 +607,34 @@ public class RdfFetchController
         {
             this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.getQueryBundles(), this
                     .getSettings().getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT)));
+        }
+        
+        if(RdfFetchController._INFO)
+        {
+            if(this.getQueryBundles().size() == 0)
+            {
+                RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
+            }
+            
+            if(RdfFetchController._DEBUG)
+            {
+                if(this.getQueryBundles().size() > 0)
+                {
+                    for(final QueryBundle nextQueryBundleDebug : this.getQueryBundles())
+                    {
+                        RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
+                                + nextQueryBundleDebug.toString());
+                    }
+                }
+                
+                final long end = System.currentTimeMillis();
+                
+                RdfFetchController.log.debug("RdfFetchController.initialise: numberOfThreads="
+                        + this.getFetchThreadGroup().size());
+                
+                RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
+                        (end - start)));
+            }
         }
     }
     

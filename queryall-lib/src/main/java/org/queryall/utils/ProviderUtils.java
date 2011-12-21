@@ -174,20 +174,20 @@ public final class ProviderUtils
      * 
      * 
      * NOTE: this method relies on the regular expression matching behaviour of QueryType
-     * 
      * @param allProviders
      * @param sortedIncludedProfiles
-     * @param nextQueryType
      * @param namespacePrefixToUriMap
-     * @param queryString
      * @param recogniseImplicitProviderInclusions
      * @param includeNonProfileMatchedProviders
      * @param useDefaultProviders
+     * @param nextQueryType
+     * @param queryString
+     * 
      * @return
      */
-    public static Collection<Provider> getProvidersForQuery(final Map<URI, Provider> allProviders,
-            final List<Profile> sortedIncludedProfiles, final InputQueryType nextInputQueryType,
-            final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
+    public static Collection<Provider> getProvidersForQuery(final InputQueryType nextInputQueryType,
+            final Map<String, String> queryParameters, final Map<URI, Provider> allProviders,
+            final List<Profile> sortedIncludedProfiles, final Map<String, Collection<URI>> namespacePrefixToUriMap,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders,
             final boolean useDefaultProviders)
     {
