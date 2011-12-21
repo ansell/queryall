@@ -10,29 +10,29 @@ package org.queryall.api.utils;
  */
 public enum QueryAllNamespaces
 {
-    NAMESPACEENTRY("queryall.namespaceNamespaceEntries", "ns", "Namespace Entries"),
+    NAMESPACEENTRY("queryall.namespace.NamespaceEntries", "ns", "Namespace Entries"),
     
-    PROFILE("queryall.namespaceProfiles", "profile", "Profiles"),
+    PROFILE("queryall.namespace.Profiles", "profile", "Profiles"),
     
-    PROJECT("queryall.namespaceProjects", "project", "Projects"),
+    PROJECT("queryall.namespace.Projects", "project", "Projects"),
     
-    PROVENANCE("queryall.namespaceProvenanceRecords", "provenance", "Provenance Records"),
+    PROVENANCE("queryall.namespace.ProvenanceRecords", "provenance", "Provenance Records"),
     
-    PROVIDER("queryall.namespaceProviders", "provider", "Providers"),
+    PROVIDER("queryall.namespace.Providers", "provider", "Providers"),
     
-    QUERY("queryall.namespaceQueryTypes", "query", "Query Types"),
+    QUERY("queryall.namespace.QueryTypes", "query", "Query Types"),
     
-    QUERYBUNDLE("queryall.namespaceQueryBundles", "querybundle", "Query Bundles"),
+    QUERYBUNDLE("queryall.namespace.QueryBundles", "querybundle", "Query Bundles"),
     
-    RDFRULE("queryall.namespaceNormalisationRules", "rdfrule", "RDF Normalisation Rules"),
+    RDFRULE("queryall.namespace.NormalisationRules", "rdfrule", "RDF Normalisation Rules"),
     
-    RULETEST("queryall.namespaceRuleTests", "ruletest", "Rule Tests"),
+    RULETEST("queryall.namespace.RuleTests", "ruletest", "Rule Tests"),
     
-    STATISTICS("queryall.namespaceStatistics", "statistics", "Statistics"),
+    STATISTICS("queryall.namespace.Statistics", "statistics", "Statistics"),
     
-    TEMPLATES("queryall.namespaceTemplates", "template", "Templates"),
+    TEMPLATES("queryall.namespace.Templates", "template", "Templates"),
     
-    WEBAPPCONFIG("queryall.namespaceWebApplicationConfiguration", "webapp_configuration",
+    WEBAPPCONFIG("queryall.namespace.WebApplicationConfiguration", "webapp_configuration",
             "Web Application Configurations");
     
     /**
