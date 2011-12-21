@@ -1,9 +1,9 @@
 package org.queryall.query;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.openrdf.OpenRDFException;
@@ -54,7 +54,7 @@ public class QueryBundle
     private QueryType customQueryType;
     private boolean redirectRequired = false;
     
-    private Collection<Profile> relevantProfiles = new HashSet<Profile>();
+    private List<Profile> relevantProfiles = new ArrayList<Profile>();
     private Map<String, String> alternativeEndpointsAndQueries = new HashMap<String, String>();
     private QueryAllConfiguration localSettings;
     
@@ -216,7 +216,7 @@ public class QueryBundle
     /**
      * @return the relevantProfiles
      */
-    public Collection<Profile> getRelevantProfiles()
+    public List<Profile> getRelevantProfiles()
     {
         return this.relevantProfiles;
     }
@@ -279,7 +279,7 @@ public class QueryBundle
      * @param relevantProfiles
      *            the relevantProfiles to set
      */
-    public void setRelevantProfiles(final Collection<Profile> relevantProfiles)
+    public void setRelevantProfiles(final List<Profile> relevantProfiles)
     {
         this.relevantProfiles = relevantProfiles;
     }

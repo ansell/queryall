@@ -13,6 +13,7 @@ import java.util.Map;
 import org.openrdf.model.URI;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,16 @@ public final class QueryTypeUtils
         
         for(final QueryType nextQuery : allQueryTypes.values())
         {
-            if(nextQuery.matchesQueryParameters(queryParameters))
+            if(!(nextQuery instanceof InputQueryType))
+            {
+                QueryTypeUtils.log.info("Found a query type that was not an input query type, ignoring it. key="
+                        + nextQuery.getKey().stringValue());
+                continue;
+            }
+            
+            final InputQueryType nextInputQuery = (InputQueryType)nextQuery;
+            
+            if(nextInputQuery.matchesQueryParameters(queryParameters))
             {
                 if(QueryTypeUtils._TRACE)
                 {
@@ -76,7 +86,7 @@ public final class QueryTypeUtils
                     if(nextQuery.getIsNamespaceSpecific())
                     {
                         final Map<String, Collection<URI>> namespaceMatches =
-                                QueryTypeUtils.namespacesMatchesForQueryParameters(nextQuery, queryParameters,
+                                QueryTypeUtils.namespacesMatchesForQueryParameters(nextInputQuery, queryParameters,
                                         namespacePrefixesToUris);
                         
                         actualNamespaceEntries =
@@ -118,7 +128,7 @@ public final class QueryTypeUtils
         return results;
     }
     
-    public static Map<String, Collection<URI>> namespacesMatchesForQueryParameters(final QueryType nextQueryType,
+    public static Map<String, Collection<URI>> namespacesMatchesForQueryParameters(final InputQueryType nextQueryType,
             final Map<String, String> nextQueryParameters, final Map<String, Collection<URI>> namespacePrefixMap)
     {
         final Map<String, Collection<URI>> results = new HashMap<String, Collection<URI>>();

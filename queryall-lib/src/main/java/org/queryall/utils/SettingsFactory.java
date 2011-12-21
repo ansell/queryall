@@ -266,7 +266,7 @@ public class SettingsFactory
         {
             conn = webAppConfigurationRdf.getConnection();
             
-            final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
+            // final Collection<String> propertyBaseUriQueries = new ArrayList<String>();
             // HACK TODO: Generalise properties to URIs instead of substrings so that arbitrary
             // properties can be set
             // http://purl.org/queryall/webapp_configuration:
@@ -302,9 +302,12 @@ public class SettingsFactory
                     
                     final TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
                     
-                    if(!tupleQueryResult.hasNext())
+                    if(SettingsFactory._DEBUG)
                     {
-                        SettingsFactory.log.error("Could not find any properties for query=" + propertyBaseUriQueries);
+                        if(!tupleQueryResult.hasNext())
+                        {
+                            SettingsFactory.log.debug("Could not find any properties for nextQuery=" + nextQuery);
+                        }
                     }
                     
                     // for each result, insert the property into the nextSettings object using the
@@ -948,7 +951,7 @@ public class SettingsFactory
         }
         
         final long start = System.currentTimeMillis();
-        final Repository nextBaseConfigurationRepository = baseConfigurationRepository;
+        // final Repository nextBaseConfigurationRepository = baseConfigurationRepository;
         // SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType,
         // baseConfigUri);
         final String configMIMEFormat = baseConfigMimeType;
@@ -974,7 +977,7 @@ public class SettingsFactory
             
             // log.error("getWebAppConfigurationRdf: Settings.WEBAPP_CONFIG_LOCATION_LIST.size()="+Settings.WEBAPP_CONFIG_LOCATION_LIST);
             
-            final ValueFactory f = currentWebAppConfigurationRepository.getValueFactory();
+            // final ValueFactory f = currentWebAppConfigurationRepository.getValueFactory();
             
             // final URI subjectConfigUri = f.createURI(baseURI);
             
@@ -1245,74 +1248,5 @@ public class SettingsFactory
         }
         
         return new HashSet<Statement>();
-    }
-    
-    private Collection<Value> getValueProperties(final String key, final Repository webappConfig,
-            final Collection<URI> webappConfigUriList)
-    {
-        if(SettingsFactory._TRACE)
-        {
-            SettingsFactory.log.trace("getValueCollectionPropertiesFromConfig: key=" + key);
-        }
-        
-        final Collection<Value> results = new HashSet<Value>();
-        
-        try
-        {
-            final ValueFactory f = webappConfig.getValueFactory();
-            
-            // XXX: in future should reform this to accept a full URI as the key
-            // so properties outside of the queryall vocabulary can be used for
-            // properties
-            final URI propertyUri = f.createURI(QueryAllNamespaces.WEBAPPCONFIG.getBaseURI(), key);
-            
-            // if(_TRACE)
-            // {
-            // log.trace("getValueCollectionPropertiesFromConfig: getWebappConfigUriList().size()="
-            // + getWebappConfigUriList().size());
-            // }
-            
-            for(final URI nextConfigUri : webappConfigUriList)
-            {
-                // final URI configUri = f.createURI(nextConfigUri);
-                
-                if(SettingsFactory._TRACE)
-                {
-                    SettingsFactory.log.trace("getValueCollectionPropertiesFromConfig: configUri="
-                            + nextConfigUri.stringValue() + " propertyUri=" + propertyUri.stringValue());
-                }
-                
-                results.addAll(this.getValueProperties(nextConfigUri, propertyUri, webappConfig));
-            }
-        }
-        catch(final InterruptedException ex)
-        {
-            SettingsFactory.log.error("getValueCollectionPropertiesFromConfig: InterruptedException", ex);
-        }
-        
-        return results;
-    }
-    
-    private Collection<Value> getValueProperties(final URI subjectUri, final URI propertyUri,
-            final Repository webappConfig) throws InterruptedException
-    {
-        Collection<Value> results = new ArrayList<Value>();
-        
-        if(SettingsFactory._TRACE)
-        {
-            SettingsFactory.log.trace("getValueCollectionPropertiesFromConfig: subjectUri=" + subjectUri.stringValue()
-                    + " propertyUri=" + propertyUri.stringValue());
-        }
-        
-        try
-        {
-            results = RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(webappConfig, propertyUri, subjectUri);
-        }
-        catch(final OpenRDFException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        
-        return results;
     }
 }

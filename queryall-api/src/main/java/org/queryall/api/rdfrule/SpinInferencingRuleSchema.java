@@ -100,6 +100,8 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
                     contextUri);
             con.add(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri(), RDFS.SUBCLASSOF,
                     TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
+            con.add(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri(), RDFS.SUBCLASSOF,
+                    SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

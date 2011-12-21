@@ -114,16 +114,6 @@ public class QueryTypeSchema extends QueryAllSchema
     
     public static final QueryAllSchema QUERY_TYPE_SCHEMA = new QueryTypeSchema();
     
-    public static URI getNamespaceMatchAllUri()
-    {
-        return QueryTypeSchema.getQueryNamespaceMatchAll();
-    }
-    
-    public static URI getNamespaceMatchAnyUri()
-    {
-        return QueryTypeSchema.getQueryNamespaceMatchAny();
-    }
-    
     /**
      * @return the queryHandleAllNamespaces
      */

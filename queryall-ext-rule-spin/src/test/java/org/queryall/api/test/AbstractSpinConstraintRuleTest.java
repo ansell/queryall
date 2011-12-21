@@ -3,14 +3,21 @@
  */
 package org.queryall.api.test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+import org.openrdf.OpenRDFException;
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ValueFactoryImpl;
+import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -19,6 +26,16 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.SpinConstraintRule;
 import org.queryall.api.rdfrule.SpinNormalisationRule;
+import org.queryall.exception.QueryAllException;
+import org.queryall.impl.rdfrule.SpinUtils;
+
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.vocabulary.OWL2;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * Abstract unit test for SpinConstraintRule API.
@@ -50,6 +67,9 @@ public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormali
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    private OntModel testOntologyModel;
+    private List<Statement> testSesameStatements;
     
     @Override
     public final Set<URI> getExpectedValidStages()
@@ -107,6 +127,59 @@ public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormali
         this.testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
         this.testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
         
+        final Model testModel = ModelFactory.createDefaultModel(ReificationStyle.Minimal);
+        
+        this.testOntologyModel = ModelFactory.createOntologyModel(SpinUtils.getOntModelSpec(), testModel);
+        
+        final List<com.hp.hpl.jena.rdf.model.Statement> jenaStatements =
+                new ArrayList<com.hp.hpl.jena.rdf.model.Statement>(3);
+        
+        final com.hp.hpl.jena.rdf.model.Statement testJenaStatement1 =
+                ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/1"),
+                        ResourceFactory.createProperty("http://other.example.org/test/property/a1"),
+                        ResourceFactory.createTypedLiteral(42));
+        final com.hp.hpl.jena.rdf.model.Statement testJenaStatement2 =
+                ResourceFactory.createStatement(ResourceFactory.createResource("http://my.example.org/test/uri/1"),
+                        RDF.type, ResourceFactory.createResource("http://my.example.org/test/uri/testType"));
+        final com.hp.hpl.jena.rdf.model.Statement testJenaStatement3 =
+                ResourceFactory.createStatement(
+                        ResourceFactory.createResource("http://my.example.org/test/uri/testType"),
+                        OWL2.equivalentClass,
+                        ResourceFactory.createResource("http://vocab.org/test/equivalentToRuleType1"));
+        
+        jenaStatements.add(testJenaStatement1);
+        jenaStatements.add(testJenaStatement2);
+        jenaStatements.add(testJenaStatement3);
+        
+        this.testOntologyModel.add(jenaStatements);
+        
+        this.testRepository = new SailRepository(new MemoryStore());
+        this.testRepository.initialize();
+        
+        final org.openrdf.model.Statement testSesameStatement1 =
+                this.testValueFactory.createStatement(
+                        this.testValueFactory.createURI("http://my.example.org/test/uri/1"),
+                        this.testValueFactory.createURI("http://other.example.org/test/property/a1"),
+                        this.testValueFactory.createLiteral(42));
+        final org.openrdf.model.Statement testSesameStatement2 =
+                this.testValueFactory.createStatement(
+                        this.testValueFactory.createURI("http://my.example.org/test/uri/1"),
+                        org.openrdf.model.vocabulary.RDF.TYPE,
+                        this.testValueFactory.createURI("http://my.example.org/test/uri/testType"));
+        final org.openrdf.model.Statement testSesameStatement3 =
+                this.testValueFactory.createStatement(
+                        this.testValueFactory.createURI("http://my.example.org/test/uri/testType"),
+                        OWL.EQUIVALENTCLASS,
+                        this.testValueFactory.createURI("http://vocab.org/test/equivalentToRuleType1"));
+        
+        this.testSesameStatements = new ArrayList<org.openrdf.model.Statement>(3);
+        
+        this.testSesameStatements.add(testSesameStatement1);
+        this.testSesameStatements.add(testSesameStatement2);
+        this.testSesameStatements.add(testSesameStatement3);
+        
+        this.testRepositoryConnection.add(this.testSesameStatements);
+        this.testRepositoryConnection.commit();
     }
     
     /**
@@ -143,6 +216,38 @@ public abstract class AbstractSpinConstraintRuleTest extends AbstractSpinNormali
         this.testFinalUriAEOBase = null;
         this.testStartingUriPOBase = null;
         this.testFinalUriPOBase = null;
+    }
+    
+    @Test
+    public void testVerifySpinConstraintsByClasspathRef() throws OpenRDFException, QueryAllException
+    {
+        Assert.assertEquals(3, this.testRepositoryConnection.size());
+        
+        final SpinConstraintRule spinNormalisationRuleImpl = this.getNewTestSpinConstraintRule();
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/localimport/1");
+        
+        // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
+        spinNormalisationRuleImpl.addLocalImport("/test/owlrl-all");
+        
+        final boolean results = spinNormalisationRuleImpl.stageAfterResultsImport(this.testRepository);
+        
+        Assert.assertTrue(results);
+    }
+    
+    @Test
+    public void testVerifySpinConstraintsByURL() throws OpenRDFException, QueryAllException
+    {
+        Assert.assertEquals(3, this.testRepositoryConnection.size());
+        
+        final SpinConstraintRule spinNormalisationRuleImpl = this.getNewTestSpinConstraintRule();
+        spinNormalisationRuleImpl.setKey("http://test.queryall.org/spin/test/urlimport/1");
+        
+        // spinNormalisationRuleImpl.setSpinModuleRegistry(testSpinModuleRegistry1);
+        spinNormalisationRuleImpl.addUrlImport(this.testValueFactory.createURI("http://topbraid.org/spin/owlrl-all"));
+        
+        final boolean results = spinNormalisationRuleImpl.stageAfterResultsImport(this.testRepository);
+        
+        Assert.assertTrue(results);
     }
     
 }

@@ -29,6 +29,7 @@ public interface BaseQueryAllInterface
     void addUnrecognisedStatement(Statement unrecognisedStatement);
     
     /**
+     * Defaults to ProjectSchema.getProjectNotCuratedUri()
      * 
      * @return A URI indicating the current curation status for this item.
      */

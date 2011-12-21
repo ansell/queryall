@@ -4,6 +4,8 @@
 package org.queryall.api.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.openrdf.model.URI;
@@ -67,6 +69,8 @@ public final class Constants
     public static final String STATISTICS_ITEM_USERHOSTADDRESS = "userhostaddress";;
     
     public static final String TEMPLATE_DEFAULT_SEPARATOR = "${defaultSeparator}";
+    public static final String TEMPLATE_SEPARATOR = "${separator}";
+    public static final String TEMPLATE_AUTHORITY = "${authority}";
     public static final String TEMPLATE_ENDPOINT_SPECIFIC_QUERY_URI = "${endpointSpecificQueryUri}";
     public static final String TEMPLATE_ENDPOINT_SPECIFIC_URI = "${endpointSpecificUri}";
     public static final String TEMPLATE_GRAPH_END = "${graphEnd}";
@@ -333,6 +337,10 @@ public final class Constants
     public static final String APPLICATION_TRIX = "application/trix";
     
     public static final String APPLICATION_XHTML_XML = "application/xhtml+xml";
+    
+    public static final String CLOSING_BRACE = "}";
+    
+    public static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
     
     public static final SimpleDateFormat ISO8601UTC()
     {
