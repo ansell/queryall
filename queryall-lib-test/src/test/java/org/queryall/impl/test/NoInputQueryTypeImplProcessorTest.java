@@ -6,7 +6,7 @@ package org.queryall.impl.test;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.test.AbstractProcessorQueryTypeTest;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.querytype.NoInputQueryTypeImpl;
 
 /**
@@ -29,6 +29,6 @@ public class NoInputQueryTypeImplProcessorTest extends AbstractProcessorQueryTyp
     @Override
     public Profile getNewTestProfile()
     {
-        return new ProfileImpl();
+        return new DummyProfile();
     }
 }

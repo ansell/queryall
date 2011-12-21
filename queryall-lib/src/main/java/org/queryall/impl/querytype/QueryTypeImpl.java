@@ -1,10 +1,11 @@
 package org.queryall.impl.querytype;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
@@ -27,9 +28,10 @@ import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.NamespaceMatch;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -54,7 +56,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * (or at least this form of it), unless handleAllNamespaces is true, in which case any
      * namespace can be present here without effect
      */
-    private Collection<URI> namespacesToHandle = new HashSet<URI>();
+    private Set<URI> namespacesToHandle = new HashSet<URI>();
     
     /**
      * if a query is not namepsace specific it can be executed across providers which do not
@@ -68,13 +70,13 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * be used to make sure that these are lowercased per a given policy (in this case the Banff
      * Manifesto)
      */
-    private Collection<String> publicIdentifierTags = new ArrayList<String>(2);
+    private Set<String> publicIdentifierTags = new HashSet<String>(2);
     
     /**
      * these are the input_NN indexes that we will use to determine which namespace providers to
      * perform this query using
      */
-    private Collection<String> namespaceInputTags = new ArrayList<String>(2);
+    private Set<String> namespaceInputTags = new HashSet<String>(2);
     
     /**
      * This is the method by which we determine whether any or all of the namespaces are required on
@@ -85,11 +87,13 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * example, if we match inputs 1 and 2 as namespaceInputIndexes, and we have the the
      * namespaceMatchMethod set to QueryType.queryNamespaceMatchAll.stringValue(), and we do not
      * handle all namespaces and inputs 1 and 2 both exist in namespacesToHandle then we will
-     * satisfy the initial test for query usability Possible values are
-     * QueryType.queryNamespaceMatchAll.stringValue() and
-     * QueryType.queryNamespaceMatchAny.stringValue()
+     * satisfy the initial test for query usability
+     * 
+     * <br />
+     * 
+     * Possible values are defined in NamespaceMatch
      **/
-    private URI namespaceMatchMethod = QueryTypeSchema.getQueryNamespaceMatchAny();
+    private NamespaceMatch namespaceMatchMethod = NamespaceMatch.ANY_MATCHED;
     
     /**
      * if we are told we can include defaults, even if we are known to be namespace specific we can
@@ -114,7 +118,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      * custom query a typical use for this is for adding links and index triples to
      * construct,index,links etc type queries, but not to others for instance
      */
-    private Collection<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
+    private Set<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
@@ -126,13 +130,14 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     
     private String outputRdfString = "";
     
-    @SuppressWarnings("unused")
-    // private Collection<ProvenanceRecord> relatedProvenance = new HashSet<ProvenanceRecord>();
     private boolean isDummyQueryType = false;
-    // default to universally available RDF/XML, and for backwards compatibility with previous
-    // versions (<5) that only supported RDF/XML output
+    
+    /**
+     * Default to universally available RDF/XML, and for backwards compatibility with previous
+     * versions (<5) that only supported RDF/XML output
+     */
     private String outputRdfFormat = Constants.APPLICATION_RDF_XML;
-    private Collection<String> expectedInputParameters = new ArrayList<String>(5);
+    private Set<String> expectedInputParameters = new HashSet<String>();
     
     protected QueryTypeImpl()
     {
@@ -193,7 +198,17 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceMatchMethod()))
             {
-                this.setNamespaceMatchMethod((URI)nextStatement.getObject());
+                final NamespaceMatch match = NamespaceMatch.valueOf((URI)nextStatement.getObject());
+                
+                if(match != null)
+                {
+                    this.setNamespaceMatchMethod(match);
+                }
+                else
+                {
+                    QueryTypeImpl.log.error("Found an unrecognised NamespaceMatch method value="
+                            + nextStatement.getObject().stringValue());
+                }
             }
             else if(nextStatement.getPredicate().equals(QueryTypeSchema.getQueryNamespaceSpecific()))
             {
@@ -588,27 +603,41 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public Collection<URI> getLinkedQueryTypes()
+    public Set<URI> getLinkedQueryTypes()
     {
         return this.semanticallyLinkedCustomQueries;
     }
     
     @Override
-    public Collection<String> getNamespaceInputTags()
+    public Set<String> getNamespaceInputTags()
     {
-        return this.namespaceInputTags;
+        if(!this.getIsNamespaceSpecific())
+        {
+            return Collections.emptySet();
+        }
+        else
+        {
+            return this.namespaceInputTags;
+        }
     }
     
     @Override
-    public URI getNamespaceMatchMethod()
+    public NamespaceMatch getNamespaceMatchMethod()
     {
         return this.namespaceMatchMethod;
     }
     
     @Override
-    public Collection<URI> getNamespacesToHandle()
+    public Set<URI> getNamespacesToHandle()
     {
-        return this.namespacesToHandle;
+        if(!this.getIsNamespaceSpecific())
+        {
+            return Collections.emptySet();
+        }
+        else
+        {
+            return this.namespacesToHandle;
+        }
     }
     
     @Override
@@ -636,7 +665,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public Collection<String> getPublicIdentifierTags()
+    public Set<String> getPublicIdentifierTags()
     {
         return this.publicIdentifierTags;
     }
@@ -654,151 +683,23 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public boolean handlesNamespacesSpecifically(final Collection<Collection<URI>> namespacesToCheck)
+    public boolean handlesNamespacesSpecifically(final Map<String, Collection<URI>> namespacesToCheck)
     {
-        if(!this.isNamespaceSpecific || this.namespacesToHandle == null || namespacesToCheck == null)
+        if(namespacesToCheck == null)
+        {
+            throw new IllegalArgumentException("Namespaces must be specified for this method");
+        }
+        
+        if(!this.isNamespaceSpecific || this.namespacesToHandle == null)
         {
             return false;
         }
         
-        if(QueryTypeImpl._DEBUG)
-        {
-            QueryTypeImpl.log
-                    .debug("QueryType.handlesNamespacesSpecifically: starting to compute match for this.getKey()="
-                            + this.getKey() + " namespacesToHandle=" + this.namespacesToHandle + " namespacesToCheck="
-                            + namespacesToCheck);
-        }
-        
-        // Starting presumptions like this make the algorithm implementation simpler
-        boolean anyMatched = false;
-        
-        boolean allMatched = true;
-        
-        // for each of the namespaces to check (represented by one or more URI's),
-        // check that we have a locally handled namespace URI that matches
-        // one of the URI's in each of the list of namespaces to check
-        
-        for(final Collection<URI> nextNamespaceToCheckList : namespacesToCheck)
-        {
-            if(nextNamespaceToCheckList == null)
-            {
-                if(QueryTypeImpl._DEBUG)
-                {
-                    QueryTypeImpl.log
-                            .debug("QueryType.handlesNamespacesSpecifically: nextNamespaceToCheckList was null");
-                }
-                
-                continue;
-            }
-            
-            boolean matchFound = false;
-            
-            for(final URI nextLocalNamespace : this.namespacesToHandle)
-            {
-                if(nextLocalNamespace == null)
-                {
-                    if(QueryTypeImpl._DEBUG)
-                    {
-                        QueryTypeImpl.log
-                                .debug("QueryType.handlesNamespacesSpecifically: nextLocalNamespace was null or empty string");
-                    }
-                    
-                    continue;
-                }
-                
-                for(final URI nextNamespaceToCheck : nextNamespaceToCheckList)
-                {
-                    if(nextNamespaceToCheck.equals(nextLocalNamespace))
-                    {
-                        if(QueryTypeImpl._DEBUG)
-                        {
-                            QueryTypeImpl.log
-                                    .debug("QueryType.handlesNamespacesSpecifically: found match nextNamespaceToCheck="
-                                            + nextNamespaceToCheck + " this.getKey()=" + this.getKey());
-                        }
-                        
-                        matchFound = true;
-                        break;
-                    }
-                }
-            }
-            
-            if(matchFound)
-            {
-                anyMatched = true;
-                
-                if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAny()))
-                {
-                    if(QueryTypeImpl._DEBUG)
-                    {
-                        QueryTypeImpl.log
-                                .debug("QueryType.handlesNamespacesSpecifically: any match confirmed this.getKey()="
-                                        + this.getKey());
-                    }
-                    
-                    break;
-                }
-            }
-            else
-            {
-                allMatched = false;
-                
-                if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
-                {
-                    if(QueryTypeImpl._DEBUG)
-                    {
-                        QueryTypeImpl.log
-                                .debug("QueryType.handlesNamespacesSpecifically: all match disproved this.getKey()="
-                                        + this.getKey());
-                    }
-                    
-                    break;
-                }
-            }
-        }
-        
-        if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAny()))
-        {
-            if(QueryTypeImpl._DEBUG)
-            {
-                if(anyMatched)
-                {
-                    QueryTypeImpl.log.debug("QueryType.handlesNamespacesSpecifically: any match return value true");
-                }
-                else
-                {
-                    QueryTypeImpl.log.debug("QueryType.handlesNamespacesSpecifically: any match return value false");
-                }
-            }
-            
-            return anyMatched;
-        }
-        else if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
-        {
-            if(QueryTypeImpl._DEBUG)
-            {
-                if(allMatched)
-                {
-                    QueryTypeImpl.log.debug("QueryType.handlesNamespacesSpecifically: all match return value true");
-                }
-                else
-                {
-                    QueryTypeImpl.log.debug("QueryType.handlesNamespacesSpecifically: all match return value false");
-                }
-            }
-            
-            return allMatched;
-        }
-        else
-        {
-            QueryTypeImpl.log.error("Could not recognise the namespaceMatchMethod=" + this.namespaceMatchMethod);
-            
-            throw new RuntimeException("Could not recognise the namespaceMatchMethod=" + this.namespaceMatchMethod);
-        }
+        return NamespaceMatch.matchNamespaces(namespacesToCheck, this.namespacesToHandle, this.namespaceMatchMethod);
     }
     
     @Override
-    public boolean handlesNamespaceUris(final Collection<Collection<URI>> namespacesToCheck)
+    public boolean handlesNamespaceUris(final Map<String, Collection<URI>> namespacesToCheck)
     {
         if(this.handleAllNamespaces && this.isNamespaceSpecific)
         {
@@ -859,14 +760,16 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             throw new IllegalArgumentException("Cannot have null input variables");
         }
         
+        if(!this.isNamespaceSpecific)
+        {
+            return false;
+        }
+        
         if(this.namespaceInputTags != null)
         {
-            for(final String nextNamespaceInputTag : this.getNamespaceInputTags())
+            if(this.namespaceInputTags.contains(inputVariable))
             {
-                if(inputVariable.equals(nextNamespaceInputTag))
-                {
-                    return true;
-                }
+                return true;
             }
         }
         
@@ -886,12 +789,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         if(this.publicIdentifierTags != null)
         {
-            for(final String nextPublicIdentifierTag : this.getPublicIdentifierTags())
+            if(this.getPublicIdentifierTags().contains(inputVariable))
             {
-                if(inputVariable.equals(nextPublicIdentifierTag))
-                {
-                    return true;
-                }
+                return true;
             }
         }
         
@@ -904,7 +804,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
-        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
                 includeNonProfileMatched);
     }
     
@@ -922,7 +822,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             QueryTypeImpl.log.debug("Could not clear collection");
         }
         
-        this.expectedInputParameters = new ArrayList<String>(5);
+        this.expectedInputParameters = new HashSet<String>();
         
         return true;
     }
@@ -960,7 +860,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             QueryTypeImpl.log.debug("Could not clear collection");
         }
         
-        this.namespaceInputTags = new ArrayList<String>(2);
+        this.namespaceInputTags = new HashSet<String>();
         
         return true;
     }
@@ -1003,7 +903,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             QueryTypeImpl.log.debug("Could not clear collection");
         }
         
-        this.publicIdentifierTags = new ArrayList<String>(2);
+        this.publicIdentifierTags = new HashSet<String>();
         
         return true;
     }
@@ -1045,7 +945,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public void setNamespaceMatchMethod(final URI namespaceMatchMethod)
+    public void setNamespaceMatchMethod(final NamespaceMatch namespaceMatchMethod)
     {
         this.namespaceMatchMethod = namespaceMatchMethod;
     }
@@ -1160,7 +1060,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                 + "namespaceMatchMethod_span\">All namespaces must match?:</span><input type=\"checkbox\" name=\""
                 + prefix + "namespaceMatchMethod\" value=\"namespaceMatchMethod\" ");
         
-        if(this.namespaceMatchMethod.equals(QueryTypeSchema.getQueryNamespaceMatchAll()))
+        if(this.namespaceMatchMethod.equals(NamespaceMatch.ALL_MATCHED))
         {
             sb.append(" checked=\"checked\" ");
         }
@@ -1226,7 +1126,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             
             final Literal handleAllNamespacesLiteral = f.createLiteral(this.handleAllNamespaces);
             final Literal isNamespaceSpecificLiteral = f.createLiteral(this.isNamespaceSpecific);
-            final URI namespaceMatchMethodLiteral = this.namespaceMatchMethod;
+            final URI namespaceMatchMethodLiteral = this.namespaceMatchMethod.getNamespaceMatchUri();
             final Literal includeDefaultsLiteral = f.createLiteral(this.includeDefaults);
             final Literal templateStringLiteral = f.createLiteral(this.templateString);
             final Literal queryUriTemplateStringLiteral = f.createLiteral(this.queryUriTemplateString);

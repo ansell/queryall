@@ -100,6 +100,8 @@ public class SpinConstraintRuleSchema extends QueryAllSchema
                     contextUri);
             con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDFS.SUBCLASSOF,
                     ValidatingRuleSchema.getValidatingRuleTypeUri(), contextUri);
+            con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDFS.SUBCLASSOF,
+                    SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), contextUri);
             
             // If everything went as planned, we can commit the result
             con.commit();

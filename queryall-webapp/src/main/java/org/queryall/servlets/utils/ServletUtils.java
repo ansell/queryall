@@ -26,6 +26,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.RdfOutputQueryType;
@@ -426,7 +427,7 @@ public class ServletUtils
                 // If we didn't understand the query
                 final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
-                if(nextIncludeType instanceof OutputQueryType)
+                if(nextIncludeType instanceof InputQueryType && nextIncludeType instanceof OutputQueryType)
                 {
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
@@ -439,7 +440,7 @@ public class ServletUtils
                     String nextBackupString =
                             QueryCreator
                                     .createStaticRdfXmlString(
-                                            nextIncludeType,
+                                            (InputQueryType)nextIncludeType,
                                             (OutputQueryType)nextIncludeType,
                                             null,
                                             attributeList,

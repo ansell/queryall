@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         final Set<String> resultsSet = new HashSet<String>();
         
-        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new LinkedList<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new ArrayList<RdfFetcherQueryRunnable>();
         
         for(final Provider nextProvider : localSettings.getAllProviders().values())
         {
@@ -156,7 +155,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         try
         {
-            new RdfFetchController().fetchRdfForQueries(sparqlThreads);
+            new RdfFetchController().fetchRdfForQueriesWithoutNormalisation(sparqlThreads);
         }
         catch(final InterruptedException e)
         {

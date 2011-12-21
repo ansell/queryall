@@ -12,13 +12,14 @@ import java.util.Set;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
 import org.slf4j.Logger;
@@ -75,9 +76,17 @@ public final class DummyNormalisationRule implements NormalisationRule
      * @throws InvalidStageException
      */
     @Override
-    public void addStage(final URI nextStage) throws InvalidStageException
+    public void addStage(final URI stage) throws InvalidStageException
     {
-        this.stages.add(nextStage);
+        if(this.validInStage(stage))
+        {
+            this.stages.add(stage);
+        }
+        else
+        {
+            throw new InvalidStageException("Attempted to add a stage that was not in the list of valid stages", this,
+                    stage);
+        }
     }
     
     @Override
@@ -368,23 +377,13 @@ public final class DummyNormalisationRule implements NormalisationRule
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
-        return true;
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+                includeNonProfileMatched);
     }
     
     @Override
     public boolean resetRelatedNamespaces()
     {
-        try
-        {
-            this.relatedNamespaces.clear();
-            
-            return true;
-        }
-        catch(final UnsupportedOperationException uoe)
-        {
-            DummyNormalisationRule.log.debug("Could not clear collection");
-        }
-        
         this.relatedNamespaces = new HashSet<URI>();
         
         return true;
@@ -393,17 +392,6 @@ public final class DummyNormalisationRule implements NormalisationRule
     @Override
     public boolean resetStages()
     {
-        try
-        {
-            this.stages.clear();
-            
-            return true;
-        }
-        catch(final UnsupportedOperationException uoe)
-        {
-            DummyNormalisationRule.log.debug("Could not clear collection");
-        }
-        
         this.stages = new HashSet<URI>();
         
         return true;
@@ -434,7 +422,7 @@ public final class DummyNormalisationRule implements NormalisationRule
     @Override
     public void setKey(final String nextKey) throws IllegalArgumentException
     {
-        this.setKey(new ValueFactoryImpl().createURI(nextKey));
+        this.setKey(Constants.valueFactory.createURI(nextKey));
     }
     
     @Override

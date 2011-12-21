@@ -6,7 +6,7 @@ package org.queryall.impl.rule.test;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.rdfrule.SparqlAskRule;
 import org.queryall.api.test.AbstractSparqlAskRuleTest;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.rdfrule.SparqlAskRuleImpl;
 
 /**
@@ -20,7 +20,7 @@ public class SparqlAskRuleImplTest extends AbstractSparqlAskRuleTest
     @Override
     public Profile getNewTestProfile()
     {
-        return new ProfileImpl();
+        return new DummyProfile();
     }
     
     @Override

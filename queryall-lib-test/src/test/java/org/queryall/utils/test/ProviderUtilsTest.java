@@ -5,10 +5,10 @@ package org.queryall.utils.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +29,12 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.impl.querytype.RdfInputQueryTypeImpl;
 import org.queryall.impl.querytype.RegexInputQueryTypeImpl;
 import org.queryall.utils.ProviderUtils;
@@ -52,10 +53,10 @@ public class ProviderUtilsTest
     
     private List<Profile> emptyProfileList;
     private List<Profile> singleImplicitAllowAllProfileList;
-    private Collection<Collection<URI>> testNamespaces1;
-    private Collection<Collection<URI>> testNamespaces12;
-    private Collection<Collection<URI>> testNamespaces123;
-    private Collection<Collection<URI>> testNamespaces23;
+    private Map<String, Collection<URI>> testNamespaces1;
+    private Map<String, Collection<URI>> testNamespaces12;
+    private Map<String, Collection<URI>> testNamespaces123;
+    private Map<String, Collection<URI>> testNamespaces23;
     private URI testQueryUri1;
     private URI testNamespaceUri1;
     private URI testNamespaceUri2;
@@ -90,8 +91,8 @@ public class ProviderUtilsTest
         
         this.emptyProfileList = Collections.emptyList();
         
-        this.singleImplicitAllowAllProfileList = new LinkedList<Profile>();
-        final Profile testImplicitAllowAllProfile = new ProfileImpl();
+        this.singleImplicitAllowAllProfileList = new ArrayList<Profile>(1);
+        final Profile testImplicitAllowAllProfile = new DummyProfile();
         
         testImplicitAllowAllProfile.setAllowImplicitProviderInclusions(true);
         testImplicitAllowAllProfile.setAllowImplicitQueryTypeInclusions(true);
@@ -103,23 +104,23 @@ public class ProviderUtilsTest
         
         this.testQueryUri1 = this.testValueFactory.createURI("http://example.org/query:test-1");
         this.testQueryUri2 = this.testValueFactory.createURI("http://example.org/query:test-2");
-        this.testQueryUriFalse = this.testValueFactory.createURI("http://example.org/query:false");
+        this.testQueryUriFalse = this.testValueFactory.createURI("http://example.org/query:test-3");
         
         this.testNamespaceUri1 = this.testValueFactory.createURI("http://example.org/ns:test-1");
         this.testNamespaceUri2 = this.testValueFactory.createURI("http://example.org/ns:test-2");
         this.testNamespaceUri3 = this.testValueFactory.createURI("http://example.org/ns:test-3");
         this.testNamespaceUri4 = this.testValueFactory.createURI("http://example.org/ns:test-4");
         
-        final Collection<URI> tempTestNamespace1 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace1 = new ArrayList<URI>(1);
         tempTestNamespace1.add(this.testNamespaceUri1);
         
-        final Collection<URI> tempTestNamespace2 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace2 = new ArrayList<URI>(1);
         tempTestNamespace2.add(this.testNamespaceUri2);
         
-        final Collection<URI> tempTestNamespace3 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace3 = new ArrayList<URI>(1);
         tempTestNamespace3.add(this.testNamespaceUri3);
         
-        final Collection<URI> tempTestNamespace4 = new LinkedList<URI>();
+        final Collection<URI> tempTestNamespace4 = new ArrayList<URI>(1);
         tempTestNamespace4.add(this.testNamespaceUri4);
         
         this.testNamespacePrefixToUriMap = new HashMap<String, Collection<URI>>();
@@ -128,22 +129,22 @@ public class ProviderUtilsTest
         this.testNamespacePrefixToUriMap.put("test-3", tempTestNamespace3);
         this.testNamespacePrefixToUriMap.put("test-4", tempTestNamespace4);
         
-        this.testNamespaces1 = new LinkedList<Collection<URI>>();
-        this.testNamespaces12 = new LinkedList<Collection<URI>>();
-        this.testNamespaces123 = new LinkedList<Collection<URI>>();
-        this.testNamespaces23 = new LinkedList<Collection<URI>>();
+        this.testNamespaces1 = new HashMap<String, Collection<URI>>();
+        this.testNamespaces12 = new HashMap<String, Collection<URI>>();
+        this.testNamespaces123 = new HashMap<String, Collection<URI>>();
+        this.testNamespaces23 = new HashMap<String, Collection<URI>>();
         
-        this.testNamespaces1.add(tempTestNamespace1);
+        this.testNamespaces1.put("input_1", tempTestNamespace1);
         
-        this.testNamespaces12.add(tempTestNamespace1);
-        this.testNamespaces12.add(tempTestNamespace2);
+        this.testNamespaces12.put("input_1", tempTestNamespace1);
+        this.testNamespaces12.put("input_2", tempTestNamespace2);
         
-        this.testNamespaces123.add(tempTestNamespace1);
-        this.testNamespaces123.add(tempTestNamespace2);
-        this.testNamespaces123.add(tempTestNamespace3);
+        this.testNamespaces123.put("input_1", tempTestNamespace1);
+        this.testNamespaces123.put("input_2", tempTestNamespace2);
+        this.testNamespaces123.put("input_3", tempTestNamespace3);
         
-        this.testNamespaces23.add(tempTestNamespace2);
-        this.testNamespaces23.add(tempTestNamespace3);
+        this.testNamespaces23.put("input_1", tempTestNamespace2);
+        this.testNamespaces23.put("input_2", tempTestNamespace3);
         
         this.testRegexInputQueryTypeNamespaceSpecificHandleAll = new RegexInputQueryTypeImpl();
         this.testRegexInputQueryTypeNamespaceSpecificHandleAll.setKey(this.testQueryUri1);
@@ -404,49 +405,49 @@ public class ProviderUtilsTest
             
             Map<URI, Provider> allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces1,
-                            QueryTypeSchema.getNamespaceMatchAllUri());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(5, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces12,
-                            QueryTypeSchema.getNamespaceMatchAllUri());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(2, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces123,
-                            QueryTypeSchema.getNamespaceMatchAllUri());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(1, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces23,
-                            QueryTypeSchema.getNamespaceMatchAllUri());
+                            NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(3, allNamespaceMatchProviders.size());
             
             Map<URI, Provider> anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces1,
-                            QueryTypeSchema.getNamespaceMatchAnyUri());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(5, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces12,
-                            QueryTypeSchema.getNamespaceMatchAnyUri());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(8, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces123,
-                            QueryTypeSchema.getNamespaceMatchAnyUri());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(8, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
                     ProviderUtils.getProvidersForNamespaceUris(testProviders, this.testNamespaces23,
-                            QueryTypeSchema.getNamespaceMatchAnyUri());
+                            NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(6, anyNamespaceMatchProviders.size());
             
@@ -534,102 +535,118 @@ public class ProviderUtilsTest
             this.testRepositoryConnection.commit();
             
             final Map<URI, Provider> testNonNamespaceSpecificProviders = RdfUtils.getProviders(this.testRepository);
+            final Map<URI, QueryType> testQueryTypes = RdfUtils.getQueryTypes(this.testRepository);
             
             Assert.assertEquals(8, testNonNamespaceSpecificProviders.keySet().size());
+            Assert.assertEquals(3, testQueryTypes.keySet().size());
             
             Collection<Provider> noProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.emptyProfileList, true, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1), this.emptyProfileList, true, true);
             
             Assert.assertEquals(4, noProfileTrueResults.size());
             
             noProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.emptyProfileList, true, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1), this.emptyProfileList, true, false);
             
             Assert.assertEquals(0, noProfileTrueResults.size());
             
             noProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.emptyProfileList, false, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1), this.emptyProfileList, false, true);
             
             Assert.assertEquals(4, noProfileTrueResults.size());
             
             noProfileTrueResults =
-                    ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.emptyProfileList, false, false);
+                    ProviderUtils
+                            .getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
+                                    (InputQueryType)testQueryTypes.get(this.testQueryUri1), this.emptyProfileList,
+                                    false, false);
             
             Assert.assertEquals(0, noProfileTrueResults.size());
             
             Collection<Provider> implicitProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.singleImplicitAllowAllProfileList, true, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1),
+                            this.singleImplicitAllowAllProfileList, true, true);
             
             Assert.assertEquals(4, implicitProfileTrueResults.size());
             
             implicitProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.singleImplicitAllowAllProfileList, true, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1),
+                            this.singleImplicitAllowAllProfileList, true, false);
             
             Assert.assertEquals(4, implicitProfileTrueResults.size());
             
             implicitProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.singleImplicitAllowAllProfileList, false, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1),
+                            this.singleImplicitAllowAllProfileList, false, true);
             
             Assert.assertEquals(4, implicitProfileTrueResults.size());
             
             implicitProfileTrueResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUri1, this.singleImplicitAllowAllProfileList, false, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUri1),
+                            this.singleImplicitAllowAllProfileList, false, false);
             
             Assert.assertEquals(0, implicitProfileTrueResults.size());
             
             Collection<Provider> noProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.emptyProfileList, true, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse), this.emptyProfileList, true,
+                            true);
             
             Assert.assertEquals(0, noProfileFalseResults.size());
             
             noProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.emptyProfileList, true, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse), this.emptyProfileList, true,
+                            false);
             
             Assert.assertEquals(0, noProfileFalseResults.size());
             
             noProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.emptyProfileList, false, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse), this.emptyProfileList, false,
+                            true);
             
             Assert.assertEquals(0, noProfileFalseResults.size());
             
             noProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.emptyProfileList, false, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse), this.emptyProfileList, false,
+                            false);
             
             Assert.assertEquals(0, noProfileFalseResults.size());
             
             Collection<Provider> implicitProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.singleImplicitAllowAllProfileList, true, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse),
+                            this.singleImplicitAllowAllProfileList, true, true);
             
             Assert.assertEquals(0, implicitProfileFalseResults.size());
             
             implicitProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.singleImplicitAllowAllProfileList, true, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse),
+                            this.singleImplicitAllowAllProfileList, true, false);
             
             Assert.assertEquals(0, implicitProfileFalseResults.size());
             
             implicitProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.singleImplicitAllowAllProfileList, false, true);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse),
+                            this.singleImplicitAllowAllProfileList, false, true);
             
             Assert.assertEquals(0, implicitProfileFalseResults.size());
             
             implicitProfileFalseResults =
                     ProviderUtils.getProvidersForQueryNonNamespaceSpecific(testNonNamespaceSpecificProviders,
-                            this.testQueryUriFalse, this.singleImplicitAllowAllProfileList, false, false);
+                            (InputQueryType)testQueryTypes.get(this.testQueryUriFalse),
+                            this.singleImplicitAllowAllProfileList, false, false);
             
             Assert.assertEquals(0, implicitProfileFalseResults.size());
         }
@@ -695,7 +712,7 @@ public class ProviderUtilsTest
     
     /**
      * Test method for
-     * {@link org.queryall.utils.ProviderUtils#getProvidersForQueryTypeForNamespaceUris(java.util.Map, org.openrdf.model.URI, java.util.Collection, org.openrdf.model.URI)}
+     * {@link org.queryall.utils.ProviderUtils#getProvidersForQueryTypeForNamespaceUris(java.util.Map, QueryType, java.util.Collection, org.openrdf.model.URI)}
      * .
      */
     @Test
@@ -712,54 +729,57 @@ public class ProviderUtilsTest
             this.testRepositoryConnection.commit();
             
             final Map<URI, Provider> testProviders = RdfUtils.getProviders(this.testRepository);
+            final Map<URI, QueryType> testQueryTypes = RdfUtils.getQueryTypes(this.testRepository);
             
             Assert.assertEquals(8, testProviders.size());
+            Assert.assertEquals(3, testQueryTypes.size());
             
+            // Test query type 1, with namespace match all
             Map<URI, Provider> allNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces1, QueryTypeSchema.getNamespaceMatchAllUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces1, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(3, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces12, QueryTypeSchema.getNamespaceMatchAllUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces12, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(2, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces123, QueryTypeSchema.getNamespaceMatchAllUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces123, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(1, allNamespaceMatchProviders.size());
             
             allNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces23, QueryTypeSchema.getNamespaceMatchAllUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces23, NamespaceMatch.ALL_MATCHED);
             
             Assert.assertEquals(2, allNamespaceMatchProviders.size());
             
             Map<URI, Provider> anyNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces1, QueryTypeSchema.getNamespaceMatchAnyUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces1, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(3, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces12, QueryTypeSchema.getNamespaceMatchAnyUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces12, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(4, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces123, QueryTypeSchema.getNamespaceMatchAnyUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces123, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(4, anyNamespaceMatchProviders.size());
             
             anyNamespaceMatchProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders, this.testQueryUri1,
-                            this.testNamespaces23, QueryTypeSchema.getNamespaceMatchAnyUri());
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(testProviders,
+                            testQueryTypes.get(this.testQueryUri1), this.testNamespaces23, NamespaceMatch.ANY_MATCHED);
             
             Assert.assertEquals(3, anyNamespaceMatchProviders.size());
             

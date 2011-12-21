@@ -155,6 +155,11 @@ public class Settings implements QueryAllConfiguration
     @Override
     public Collection<Object> clearProperty(final WebappConfig propertyKey)
     {
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("clearProperty propertyKey=" + propertyKey);
+        }
+        
         return this.properties.remove(propertyKey);
     }
     
@@ -508,8 +513,8 @@ public class Settings implements QueryAllConfiguration
                 else
                 {
                     Settings.log
-                            .warn("Automatically converting a property that was not a String in getStringProperties nextProperty="
-                                    + nextProperty);
+                            .warn("Automatically converting a property that was not a String in getStringProperties propertyKey="
+                                    + propertyKey + " nextProperty=" + nextProperty);
                     
                     results.add(nextProperty.toString());
                 }
@@ -542,7 +547,10 @@ public class Settings implements QueryAllConfiguration
             }
             else if(properties.size() == 0)
             {
-                Settings.log.error("No property value found for propertyKey=" + propertyKey);
+                if(Settings._DEBUG)
+                {
+                    Settings.log.debug("No property value found for propertyKey=" + propertyKey);
+                }
             }
             else
             {
@@ -597,8 +605,8 @@ public class Settings implements QueryAllConfiguration
                 }
                 else
                 {
-                    Settings.log.warn("Found a property that was not a URI in getURIProperties nextProperty="
-                            + nextProperty);
+                    Settings.log.warn("Found a property that was not a URI in getURIProperties propertyKey="
+                            + propertyKey + " nextProperty=" + nextProperty);
                 }
             }
             
@@ -623,13 +631,19 @@ public class Settings implements QueryAllConfiguration
         {
             return uriProperties.iterator().next();
         }
+        else if(uriProperties.size() == 0)
+        {
+            if(Settings._DEBUG)
+            {
+                Settings.log.debug("No property value found for propertyKey=" + propertyKey);
+            }
+        }
         else
         {
-            Settings.log.warn("Did not find a unique property for propertyKey=" + propertyKey
-                    + " returning defaultValue=" + defaultValue);
-            
-            return defaultValue;
+            Settings.log.warn("More than one property value for propertyKey=" + propertyKey);
         }
+        
+        return defaultValue;
     }
     
     /**
@@ -646,21 +660,29 @@ public class Settings implements QueryAllConfiguration
     private void setObjectCollectionPropertyHelper(final WebappConfig propertyKey,
             final Collection<Object> propertyValue, final boolean overwrite)
     {
-        Settings.log.info("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
-                + propertyValue.toString());
-        // final Collection<Object> nextList = new ArrayList<Object>(5);
-        // nextList.add(propertyValue);
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
+                    + propertyValue.toString());
+        }
         
         final Collection<Object> ifAbsent = this.properties.putIfAbsent(propertyKey, propertyValue);
         
-        Settings.log.info("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="
-                + this.properties.get(propertyKey));
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="
+                    + this.properties.get(propertyKey));
+        }
         
         // if there were properties previously, than synchronise access to the properties object and
         // add the list, any other additions to this property should wait to synchronise here
         if(ifAbsent != null)
         {
-            Settings.log.info("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
+            if(Settings._TRACE)
+            {
+                Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
+            }
+            
             synchronized(this.properties)
             {
                 // do this to make sure that it is writeable, they could have sent us a collection
@@ -671,8 +693,13 @@ public class Settings implements QueryAllConfiguration
                 {
                     nextList.addAll(ifAbsent);
                 }
-                Settings.log.info("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="
-                        + nextList);
+                
+                if(Settings._TRACE)
+                {
+                    Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="
+                            + nextList);
+                }
+                
                 this.properties.put(propertyKey, nextList);
             }
         }
@@ -692,29 +719,44 @@ public class Settings implements QueryAllConfiguration
     private void setObjectPropertyHelper(final WebappConfig propertyKey, final Object propertyValue,
             final boolean overwrite)
     {
-        Settings.log.info("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
-                + propertyValue.toString());
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
+                    + propertyValue.toString());
+        }
+        
         final Collection<Object> nextList = new ArrayList<Object>(5);
         nextList.add(propertyValue);
         
         final Collection<Object> ifAbsent = this.properties.putIfAbsent(propertyKey, nextList);
         
-        Settings.log.info("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="
-                + this.properties.get(propertyKey));
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="
+                    + this.properties.get(propertyKey));
+        }
         
         // if there were properties previously, than synchronise access to the properties object and
         // add the list, any other additions to this property should wait to synchronise here
         if(ifAbsent != null)
         {
-            Settings.log.info("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
+            if(Settings._TRACE)
+            {
+                Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
+            }
+            
             synchronized(this.properties)
             {
                 if(!overwrite)
                 {
                     nextList.addAll(ifAbsent);
                 }
-                Settings.log.info("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="
-                        + nextList);
+                if(Settings._TRACE)
+                {
+                    Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="
+                            + nextList);
+                }
+                
                 this.properties.put(propertyKey, nextList);
             }
         }
@@ -728,8 +770,11 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final boolean propertyValue)
     {
-        Settings.log.info("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
-                + Boolean.valueOf(propertyValue).toString());
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
+                    + Boolean.valueOf(propertyValue).toString());
+        }
         
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
@@ -747,8 +792,11 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final float propertyValue)
     {
-        Settings.log.info("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
-                + Float.valueOf(propertyValue).toString());
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
+                    + Float.valueOf(propertyValue).toString());
+        }
         
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
@@ -766,8 +814,11 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final int propertyValue)
     {
-        Settings.log.info("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
-                + Integer.valueOf(propertyValue).toString());
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
+                    + Integer.valueOf(propertyValue).toString());
+        }
         
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
@@ -785,8 +836,11 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final long propertyValue)
     {
-        Settings.log.info("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
-                + Long.valueOf(propertyValue).toString());
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
+                    + Long.valueOf(propertyValue).toString());
+        }
         
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
@@ -810,8 +864,11 @@ public class Settings implements QueryAllConfiguration
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
         
-        Settings.log.info("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
-                + String.valueOf(propertyValue));
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
+                    + String.valueOf(propertyValue));
+        }
         
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
@@ -835,8 +892,12 @@ public class Settings implements QueryAllConfiguration
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
         
-        Settings.log.info("setProperty(String,URI) propertyKey=" + propertyKey + " propertyValue="
-                + propertyValue.stringValue());
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,URI) propertyKey=" + propertyKey + " propertyValue="
+                    + propertyValue.stringValue());
+        }
+        
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
@@ -846,15 +907,20 @@ public class Settings implements QueryAllConfiguration
         {
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
+        
         this.setObjectPropertyHelper(propertyKey, propertyValue, overwrite);
     }
     
     @Override
     public void setProperty(final WebappConfig propertyKey, final Value propertyValue)
     {
-        Settings.log.info("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue=" + propertyValue
-                + " propertyValue.stringValue()=" + propertyValue.stringValue()
-                + " propertyValue.getClass().getName()=" + propertyValue.getClass().getName());
+        if(Settings._DEBUG)
+        {
+            Settings.log.debug("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue="
+                    + propertyValue + " propertyValue.stringValue()=" + propertyValue.stringValue()
+                    + " propertyValue.getClass().getName()=" + propertyValue.getClass().getName());
+        }
+        
         this.setProperty(propertyKey, propertyValue, propertyKey.overwrite());
     }
     
@@ -876,7 +942,11 @@ public class Settings implements QueryAllConfiguration
             final Literal literalValue = (Literal)propertyValue;
             final URI datatype = literalValue.getDatatype();
             
-            Settings.log.info("literalValue.getDatatype()=" + datatype);
+            if(Settings._TRACE)
+            {
+                Settings.log.trace("literalValue.getDatatype()=" + datatype);
+            }
+            
             if(datatype == null)
             {
                 // resort to setting it as a String as it didn't have type information attached
@@ -887,75 +957,110 @@ public class Settings implements QueryAllConfiguration
                 
                 if(datatype.equals(Constants.XSD_BOOLEAN))
                 {
-                    Settings.log.info("boolean datatype");
+                    if(Settings._TRACE)
+                    {
+                        Settings.log.trace("boolean datatype");
+                    }
+                    
                     try
                     {
                         final boolean booleanFromValue = RdfUtils.getBooleanFromValue(literalValue);
                         
-                        Settings.log.info("booleanFromValue=" + booleanFromValue);
+                        if(Settings._TRACE)
+                        {
+                            Settings.log.trace("booleanFromValue=" + booleanFromValue);
+                        }
+                        
                         this.setProperty(propertyKey, booleanFromValue);
                         
                         return;
                     }
                     catch(final QueryAllRuntimeException rex)
                     {
-                        Settings.log.info("Could not parse boolean value=" + literalValue);
+                        Settings.log.warn("Could not parse boolean propertyKey=" + propertyKey + " value="
+                                + literalValue);
                     }
                 }
                 else if(datatype.equals(Constants.XSD_INT) || datatype.equals(Constants.XSD_INTEGER))
                 {
-                    Settings.log.info("int or integer datatype");
+                    if(Settings._TRACE)
+                    {
+                        Settings.log.trace("int or integer datatype");
+                    }
+                    
                     try
                     {
                         final int intFromValue = RdfUtils.getIntegerFromValue(literalValue);
                         
-                        Settings.log.info("intFromValue=" + intFromValue);
+                        if(Settings._TRACE)
+                        {
+                            Settings.log.trace("intFromValue=" + intFromValue);
+                        }
+                        
                         this.setProperty(propertyKey, intFromValue);
                         
                         return;
                     }
                     catch(final NumberFormatException nfe)
                     {
-                        Settings.log.info("Could not parse int value=" + literalValue);
+                        Settings.log.warn("Could not parse int propertyKey=" + propertyKey + " value=" + literalValue);
                     }
                 }
                 else if(datatype.equals(Constants.XSD_LONG))
                 {
-                    Settings.log.info("long datatype");
+                    if(Settings._TRACE)
+                    {
+                        Settings.log.trace("long datatype");
+                    }
+                    
                     try
                     {
                         final long longFromValue = RdfUtils.getLongFromValue(literalValue);
                         
-                        Settings.log.info("longFromValue=" + longFromValue);
+                        if(Settings._TRACE)
+                        {
+                            Settings.log.trace("longFromValue=" + longFromValue);
+                        }
+                        
                         this.setProperty(propertyKey, longFromValue);
                         
                         return;
                     }
                     catch(final NumberFormatException nfe)
                     {
-                        Settings.log.info("Could not parse long value=" + literalValue);
+                        Settings.log.warn("Could not parse long propertyKey=" + propertyKey + " value=" + literalValue);
                     }
                 }
                 else if(datatype.equals(Constants.XSD_FLOAT))
                 {
-                    Settings.log.info("float datatype");
+                    if(Settings._TRACE)
+                    {
+                        Settings.log.trace("float datatype");
+                    }
+                    
                     try
                     {
                         final float floatFromValue = RdfUtils.getFloatFromValue(literalValue);
                         
-                        Settings.log.info("floatFromValue=" + floatFromValue);
+                        if(Settings._TRACE)
+                        {
+                            Settings.log.trace("floatFromValue=" + floatFromValue);
+                        }
+                        
                         this.setProperty(propertyKey, floatFromValue);
                         
                         return;
                     }
                     catch(final NumberFormatException nfe)
                     {
-                        Settings.log.info("Could not parse float value=" + literalValue);
+                        Settings.log
+                                .warn("Could not parse float propertyKey=" + propertyKey + " value=" + literalValue);
                     }
                 }
                 else
                 {
-                    Settings.log.info("unrecognised datatype");
+                    Settings.log.warn("unrecognised datatype, parsing as string, propertyKey=" + propertyKey
+                            + " value=" + propertyValue.stringValue());
                     // resort to setting it as a String
                     this.setProperty(propertyKey, propertyValue.stringValue());
                 }
@@ -973,8 +1078,11 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setStringCollectionProperty(final WebappConfig propertyKey, final Collection<String> propertyValues)
     {
-        Settings.log.info("setProperty(String,Collection<String>) propertyKey=" + propertyKey + " propertyValue="
-                + propertyValues.toString());
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("setProperty(String,Collection<String>) propertyKey=" + propertyKey + " propertyValue="
+                    + propertyValues.toString());
+        }
         
         final Collection<Object> newPropertyValues = new ArrayList<Object>(propertyValues);
         
@@ -990,8 +1098,12 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setURICollectionProperty(final WebappConfig propertyKey, final Collection<URI> propertyValues)
     {
-        Settings.log.info("setProperty(String,Collection<URI>) propertyKey=" + propertyKey + " propertyValue="
-                + propertyValues.toString());
+        if(Settings._TRACE)
+        {
+            Settings.log.trace("setProperty(String,Collection<URI>) propertyKey=" + propertyKey + " propertyValue="
+                    + propertyValues.toString());
+        }
+        
         final Collection<Object> newPropertyValues = new ArrayList<Object>(propertyValues);
         
         this.setObjectCollectionPropertyHelper(propertyKey, newPropertyValues, true);

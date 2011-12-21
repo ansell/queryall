@@ -1,8 +1,8 @@
 package org.queryall.impl.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.openrdf.OpenRDFException;
@@ -20,9 +20,9 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -137,7 +137,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         if(this.includedInQueryTypes == null)
         {
-            this.includedInQueryTypes = new LinkedList<URI>();
+            this.includedInQueryTypes = new ArrayList<URI>();
         }
         
         this.includedInQueryTypes.add(includedInQueryType);
@@ -148,7 +148,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         if(this.namespaces == null)
         {
-            this.namespaces = new LinkedList<URI>();
+            this.namespaces = new ArrayList<URI>();
         }
         
         this.namespaces.add(namespace);
@@ -159,7 +159,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     {
         if(this.normalisationUris == null)
         {
-            this.normalisationUris = new LinkedList<URI>();
+            this.normalisationUris = new ArrayList<URI>();
         }
         
         this.normalisationUris.add(rdfNormalisationNeeded);
@@ -396,7 +396,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
-        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
                 includeNonProfileMatched);
     }
     

@@ -22,10 +22,10 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.utils.ProfileUtils;
 import org.queryall.utils.RdfUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -353,7 +353,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     public final boolean isUsedWithProfileList(final List<Profile> orderedProfileList,
             final boolean allowImplicitInclusions, final boolean includeNonProfileMatched)
     {
-        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
                 includeNonProfileMatched);
     }
     

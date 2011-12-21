@@ -207,7 +207,7 @@ public class SpinUtilsTest
     {
         final OntModel nextModel = SpinUtils.loadModelFromUrl("http://purl.org/queryall/rdfrule:NormalisationRule");
         
-        Assert.assertEquals("QueryAll Schema was not loaded correctly in SpinUtils", 397, nextModel.size());
+        Assert.assertEquals("QueryAll Schema was not loaded correctly in SpinUtils", 410, nextModel.size());
     }
     
 }

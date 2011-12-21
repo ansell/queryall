@@ -65,6 +65,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     void addProfileAdministrator(org.openrdf.model.URI profileAdministrator);
     
     /**
+     * Defaults to true
      * 
      * @return True if this profile is set to allow implicit provider inclusions and false if this
      *         profile should be ignored if a provider is implicitly includable.
@@ -72,6 +73,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     boolean getAllowImplicitProviderInclusions();
     
     /**
+     * Defaults to true
      * 
      * @return True if this profile is set to allow implicit query type inclusions and false if this
      *         profile should be ignored if a query type is implicitly includable.
@@ -79,6 +81,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     boolean getAllowImplicitQueryTypeInclusions();
     
     /**
+     * Defaults to true
      * 
      * @return True if this profile is set to allow implicit normalisation rule inclusions and false
      *         if this profile should be ignored if a normalisation rule is implicitly includable.
@@ -86,6 +89,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     boolean getAllowImplicitRdfRuleInclusions();
     
     /**
+     * Defaults to ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()
      * 
      * @return A URI indicating what the default behaviour should be when processing items that do
      *         not explicitly defing their include or exclude behaviour.
@@ -129,6 +133,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
     Collection<org.openrdf.model.URI> getIncludeRdfRules();
     
     /**
+     * Defaults to 100
      * 
      * @return An integer indicating the order that this profile should be processed in. Profiles
      *         are processed from Low orders to High orders until an explicit or acceptable implicit

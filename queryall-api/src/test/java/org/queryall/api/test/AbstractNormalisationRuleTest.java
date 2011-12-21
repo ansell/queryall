@@ -84,7 +84,8 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
         Assert.assertNotNull("Expected valid stages was null", this.validStages);
         
         // make sure that we have reasonable sizes for the relevant sets
-        Assert.assertTrue(this.validStages.size() > 0);
+        // validStages could be 0 if an implementation doesn't commit to any stages
+        // Assert.assertTrue(this.validStages.size() > 0);
         Assert.assertTrue(this.validStages.size() <= 7);
         Assert.assertEquals(7, NormalisationRuleSchema.getAllStages().size());
         
@@ -222,7 +223,9 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
     {
         final NormalisationRule normalisationRule = this.getNewTestRule();
         
-        Assert.assertTrue("Normalisation Rule should not have an empty valid stages list", this.validStages.size() > 0);
+        Assert.assertFalse(
+                "Normalisation Rule should not have a valid stages list size greater than 7 as there are only 7 stages currently in the model",
+                this.validStages.size() > 7);
         
         for(final URI nextValidStage : this.validStages)
         {

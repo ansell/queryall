@@ -6,7 +6,7 @@ package org.queryall.impl.rdfrule;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.rdfrule.SpinInferencingRule;
 import org.queryall.api.test.AbstractSpinInferencingRuleTest;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class SpinInferencingRuleImplTest extends AbstractSpinInferencingRuleTest
     @Override
     public Profile getNewTestProfile()
     {
-        return new ProfileImpl();
+        return new DummyProfile();
     }
     
     @Override

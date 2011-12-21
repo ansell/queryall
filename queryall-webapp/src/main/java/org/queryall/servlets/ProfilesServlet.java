@@ -70,7 +70,7 @@ public class ProfilesServlet extends HttpServlet
         out.write("<br />Number of rdf normalisation rules = " + allRdfRules.size() + "<br />\n");
         out.write("<br />Number of profiles = " + allProfiles.size() + "<br />\n");
         
-        out.write("<br />Enabled profiles: (" + localSettings.getStringProperties(WebappConfig.ACTIVE_PROFILES).size()
+        out.write("<br />Enabled profiles: (" + localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES).size()
                 + ")<br />\n");
         
         out.write("<ul>\n");
@@ -200,7 +200,7 @@ public class ProfilesServlet extends HttpServlet
             final List<Profile> nextProfileAsList = new ArrayList<Profile>(1);
             nextProfileAsList.add(nextProfile);
             
-            if(localSettings.getStringProperties(WebappConfig.ACTIVE_PROFILES).contains(nextProfile.getKey()))
+            if(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES).contains(nextProfile.getKey()))
             {
                 out.write("<div style=\"display:block;\">\n");
                 out.write("Profile:" + nextProfile.getKey() + "\n");

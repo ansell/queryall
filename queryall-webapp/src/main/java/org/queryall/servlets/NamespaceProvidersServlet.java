@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,9 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.utils.ProviderUtils;
 import org.slf4j.Logger;
@@ -105,18 +106,21 @@ public class NamespaceProvidersServlet extends HttpServlet
                 }
             }
             
+            // HACK: This method is hacky and breaks down when knowledge about the input parameter
+            // for each namespace is included
             for(final URI nextNamespace : nextProvider.getNamespaces())
             {
                 if(nextNamespace != null && !providersByNamespace.containsKey(nextNamespace))
                 {
-                    final Collection<Collection<URI>> nextNamespacesList = new HashSet<Collection<URI>>();
+                    final Map<String, Collection<URI>> nextNamespacesList = new HashMap<String, Collection<URI>>();
                     final Collection<URI> nextNamespaces = new HashSet<URI>(4);
                     nextNamespaces.add(nextNamespace);
-                    nextNamespacesList.add(nextNamespaces);
+                    // TODO: FIXME: HACK:
+                    nextNamespacesList.put("input_1", nextNamespaces);
                     
                     final Map<URI, Provider> namespaceProviders =
                             ProviderUtils.getProvidersForNamespaceUris(allProviders, nextNamespacesList,
-                                    QueryTypeSchema.getQueryNamespaceMatchAny());
+                                    NamespaceMatch.ANY_MATCHED);
                     
                     providersByNamespace.put(nextNamespace, namespaceProviders.values());
                     
@@ -129,16 +133,17 @@ public class NamespaceProvidersServlet extends HttpServlet
                             if(!allQueryTypesByNamespace.containsKey(nextQueryKey.stringValue() + " "
                                     + nextNamespace.stringValue()))
                             {
-                                final Collection<Collection<URI>> nextQueryTypesByNamespacesList =
-                                        new HashSet<Collection<URI>>();
+                                final Map<String, Collection<URI>> nextQueryTypesByNamespacesList =
+                                        new HashMap<String, Collection<URI>>();
                                 final Collection<URI> nextQueryTypesByNamespaces = new HashSet<URI>(4);
                                 nextQueryTypesByNamespaces.add(nextNamespace);
-                                nextQueryTypesByNamespacesList.add(nextQueryTypesByNamespaces);
+                                // TODO: FIXME: HACK:
+                                nextQueryTypesByNamespacesList.put("input_1", nextQueryTypesByNamespaces);
                                 
                                 final Map<URI, Provider> queryTypesByNamespace =
                                         ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders,
-                                                nextQueryKey, nextQueryTypesByNamespacesList,
-                                                QueryTypeSchema.getQueryNamespaceMatchAny());
+                                                localSettings.getQueryType(nextQueryKey),
+                                                nextQueryTypesByNamespacesList, NamespaceMatch.ANY_MATCHED);
                                 
                                 allQueryTypesByNamespace.put(
                                         nextQueryKey.stringValue() + " " + nextNamespace.stringValue(),

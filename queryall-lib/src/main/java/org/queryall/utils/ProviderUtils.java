@@ -3,10 +3,11 @@
  */
 package org.queryall.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,8 +15,9 @@ import java.util.TreeMap;
 import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.comparators.ValueComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +88,7 @@ public final class ProviderUtils
      * @return
      */
     public static Map<URI, Provider> getProvidersForNamespaceUris(final Map<URI, Provider> allProviders,
-            final Collection<Collection<URI>> namespaceUris, final URI namespaceMatchMethod)
+            final Map<String, Collection<URI>> namespaceUris, final NamespaceMatch namespaceMatchMethod)
     {
         if((namespaceUris == null) || (namespaceUris.size() == 0))
         {
@@ -114,8 +116,10 @@ public final class ProviderUtils
                         + nextProvider.getKey().stringValue());
             }
             
-            for(final Collection<URI> nextNamespaceUriList : namespaceUris)
+            for(final String nextInputParameter : namespaceUris.keySet())
             {
+                final Collection<URI> nextNamespaceUriList = namespaceUris.get(nextInputParameter);
+                
                 if(nextNamespaceUriList == null)
                 {
                     if(ProviderUtils._DEBUG)
@@ -130,6 +134,7 @@ public final class ProviderUtils
                             + nextNamespaceUriList);
                 }
                 boolean somethingFound = false;
+                
                 for(final URI nextNamespaceUri : nextNamespaceUriList)
                 {
                     if(ProviderUtils._TRACE)
@@ -139,9 +144,10 @@ public final class ProviderUtils
                     if(nextProvider.containsNamespaceUri(nextNamespaceUri))
                     {
                         somethingFound = true;
-                        break;
+                        // break;
                     }
                 }
+                
                 if(somethingFound)
                 {
                     anyFound = true;
@@ -151,11 +157,12 @@ public final class ProviderUtils
                     allFound = false;
                 }
             }
-            if(anyFound && namespaceMatchMethod.equals(QueryTypeSchema.getNamespaceMatchAnyUri()))
+            
+            if(anyFound && namespaceMatchMethod.equals(NamespaceMatch.ANY_MATCHED))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }
-            else if(allFound && namespaceMatchMethod.equals(QueryTypeSchema.getNamespaceMatchAllUri()))
+            else if(allFound && namespaceMatchMethod.equals(NamespaceMatch.ALL_MATCHED))
             {
                 results.put(nextProvider.getKey(), nextProvider);
             }
@@ -175,18 +182,69 @@ public final class ProviderUtils
      * @param queryString
      * @param recogniseImplicitProviderInclusions
      * @param includeNonProfileMatchedProviders
+     * @param useDefaultProviders
+     * @return
+     */
+    public static Collection<Provider> getProvidersForQuery(final Map<URI, Provider> allProviders,
+            final List<Profile> sortedIncludedProfiles, final InputQueryType nextInputQueryType,
+            final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
+            final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders,
+            final boolean useDefaultProviders)
+    {
+        final Collection<Provider> chosenProviders = new HashSet<Provider>();
+        
+        if(!nextInputQueryType.getIsNamespaceSpecific())
+        {
+            chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(allProviders,
+                    nextInputQueryType, sortedIncludedProfiles, recogniseImplicitProviderInclusions,
+                    includeNonProfileMatchedProviders));
+        }
+        else
+        {
+            chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(allProviders,
+                    sortedIncludedProfiles, nextInputQueryType, namespacePrefixToUriMap, queryParameters,
+                    recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders));
+        }
+        
+        if(nextInputQueryType.getIncludeDefaults() && useDefaultProviders)
+        {
+            if(ProviderUtils._DEBUG)
+            {
+                ProviderUtils.log.debug("including defaults for nextQueryType.title=" + nextInputQueryType.getTitle()
+                        + " nextQueryType.getKey()=" + nextInputQueryType.getKey());
+            }
+            
+            chosenProviders.addAll(ProviderUtils.getDefaultProviders(allProviders, nextInputQueryType,
+                    sortedIncludedProfiles, recogniseImplicitProviderInclusions, includeNonProfileMatchedProviders));
+        }
+        
+        return chosenProviders;
+    }
+    
+    /**
+     * 
+     * 
+     * NOTE: this method relies on the regular expression matching behaviour of QueryType
+     * 
+     * @param allProviders
+     * @param sortedIncludedProfiles
+     * @param nextQueryType
+     * @param namespacePrefixToUriMap
+     * @param queryString
+     * @param recogniseImplicitProviderInclusions
+     * @param includeNonProfileMatchedProviders
      * @return
      */
     public static Collection<Provider> getProvidersForQueryNamespaceSpecific(final Map<URI, Provider> allProviders,
-            final List<Profile> sortedIncludedProfiles, final QueryType nextQueryType,
+            final List<Profile> sortedIncludedProfiles, final InputQueryType nextQueryType,
             final Map<String, Collection<URI>> namespacePrefixToUriMap, final Map<String, String> queryParameters,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
-        final Collection<Provider> results = new LinkedList<Provider>();
+        final Collection<Provider> results = new ArrayList<Provider>();
         
         final Map<String, List<String>> queryStringMatches = nextQueryType.matchesForQueryParameters(queryParameters);
         
-        final Collection<Collection<URI>> nextQueryNamespaceUris = new HashSet<Collection<URI>>();
+        final Map<String, Collection<URI>> nextQueryNamespaceUris = new HashMap<String, Collection<URI>>();
         
         for(final String nextNamespaceInputTag : nextQueryType.getNamespaceInputTags())
         {
@@ -201,7 +259,7 @@ public final class ProviderUtils
                     
                     if(nextUriFromTitleNamespaceList != null)
                     {
-                        nextQueryNamespaceUris.add(nextUriFromTitleNamespaceList);
+                        nextQueryNamespaceUris.put(nextInputNamespace, nextUriFromTitleNamespaceList);
                     }
                     else if(ProviderUtils._DEBUG)
                     {
@@ -242,7 +300,7 @@ public final class ProviderUtils
             }
             
             final Map<URI, Provider> namespaceSpecificProviders =
-                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryType.getKey(),
+                    ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders, nextQueryType,
                             nextQueryNamespaceUris, nextQueryType.getNamespaceMatchMethod());
             
             for(final Provider nextNamespaceSpecificProvider : namespaceSpecificProviders.values())
@@ -276,32 +334,32 @@ public final class ProviderUtils
     
     /**
      * Finds all providers for the given query type URI, taking into account profile instructions,
-     * but without taking into account
+     * but without taking into account namespace conditions
      * 
      * @param allProviders
-     * @param nextQueryTypeURI
+     * @param nextQueryType
      * @param sortedIncludedProfiles
      * @param recogniseImplicitProviderInclusions
      * @param includeNonProfileMatchedProviders
      * @return
      */
     public static Collection<Provider> getProvidersForQueryNonNamespaceSpecific(final Map<URI, Provider> allProviders,
-            final URI nextQueryTypeURI, final List<Profile> sortedIncludedProfiles,
+            final InputQueryType nextQueryType, final List<Profile> sortedIncludedProfiles,
             final boolean recogniseImplicitProviderInclusions, final boolean includeNonProfileMatchedProviders)
     {
-        final Collection<Provider> results = new LinkedList<Provider>();
-        
         // if we aren't specific to namespace we simply find all providers for this type of custom
         // query
         final Map<URI, Provider> relevantProviders =
-                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryTypeURI);
+                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey());
+        
+        final Collection<Provider> results = new ArrayList<Provider>(relevantProviders.size());
         
         for(final Provider nextAllProvider : relevantProviders.values())
         {
-            if(ProviderUtils._DEBUG)
+            if(ProviderUtils._TRACE)
             {
                 ProviderUtils.log
-                        .debug("getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="
+                        .trace("getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="
                                 + nextAllProvider.toString());
             }
             
@@ -363,11 +421,18 @@ public final class ProviderUtils
      * @param allProviders
      * @param queryType
      * @param namespaceUris
+     *            A Map of collections of URIs, where the inner collections all matched to a single
+     *            input parameter, so that the algorithm can distinguish cases where more than one
+     *            parameter was matched
      * @param namespaceMatchMethod
+     *            The URI defining the method of matching namespaces. This can override the setting
+     *            in the query type to examine other possible match scenarios, or it can be derived
+     *            from the query type to match the query type creators intention.
      * @return
      */
     public static Map<URI, Provider> getProvidersForQueryTypeForNamespaceUris(final Map<URI, Provider> allProviders,
-            final URI queryType, final Collection<Collection<URI>> namespaceUris, final URI namespaceMatchMethod)
+            final QueryType queryType, final Map<String, Collection<URI>> namespaceUris,
+            final NamespaceMatch namespaceMatchMethod)
     {
         if(ProviderUtils._TRACE)
         {
@@ -384,7 +449,8 @@ public final class ProviderUtils
                     + " namespaceProviders=" + namespaceProviders);
         }
         
-        final Map<URI, Provider> results = ProviderUtils.getProvidersForQueryType(namespaceProviders, queryType);
+        final Map<URI, Provider> results =
+                ProviderUtils.getProvidersForQueryType(namespaceProviders, queryType.getKey());
         
         if(ProviderUtils._TRACE)
         {

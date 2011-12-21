@@ -92,10 +92,10 @@ public class BlacklistController
     {
         this.localSettings = queryAllConfiguration;
         this.currentIPBlacklist =
-                Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
+                Collections.synchronizedList(new ArrayList<String>(queryAllConfiguration
                         .getStringProperties(WebappConfig.BLACKLIST_BASE_CLIENT_IP_ADDRESSES)));
         this.currentIPWhitelist =
-                Collections.synchronizedCollection(new ArrayList<String>(queryAllConfiguration
+                Collections.synchronizedList(new ArrayList<String>(queryAllConfiguration
                         .getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES)));
     }
     

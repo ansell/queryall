@@ -230,4 +230,176 @@
 	</dependencies>
 	<description>Created to separate the tests from the multiple modules that they rely on.</description>
 	<inceptionYear>2011</inceptionYear>
+	<profiles>
+		<profile>
+			<!-- Source for the cobertura profile: https://intellectualcramps.wordpress.com/2011/06/07/enable-code-coverage-for-integration-and-unit-tests-using-cobertura-and-maven/ -->
+			<id>cobertura</id>
+			<dependencies>
+				<dependency>
+					<groupId>net.sourceforge.cobertura</groupId>
+					<artifactId>cobertura</artifactId>
+					<optional>true</optional>
+					<version>1.9.4.1</version>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>cobertura-jar</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>cobertura</classifier>
+									<classesDirectory>${basedir}/target/generated-classes/cobertura</classesDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-install-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>cobertura-install</id>
+								<phase>install</phase>
+								<goals>
+									<goal>install</goal>
+								</goals>
+								<configuration>
+									<classifier>cobertura</classifier>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<!-- Run Cobertura with ANT Run -->
+							<!-- The cobertura-maven-plugin doesn't work right. -->
+							<execution>
+								<id>cobertura-instrument Classes</id>
+								<phase>process-classes</phase>
+								<configuration>
+									<tasks>
+										<taskdef classpathref="maven.runtime.classpath"
+											resource="tasks.properties" />
+										<taskdef classpathref="maven.runtime.classpath"
+											resource="net/sf/antcontrib/antcontrib.properties" />
+
+										<!-- Start instrument Classes -->
+										<echo message="Executing cobertura instrument Classes" />
+										<mkdir dir="${project.build.directory}/cobertura" />
+										<mkdir
+											dir="${project.build.directory}/generated-classes/cobertura" />
+										<cobertura-instrument
+											datafile="${project.build.directory}/cobertura/cobertura.ser"
+											todir="${project.build.directory}/generated-classes/cobertura">
+											<fileset dir="${project.build.directory}/classes">
+												<include name="**/*.class" />
+												<!-- Maybe some excludes of generated Classes -->
+											</fileset>
+										</cobertura-instrument>
+										<!-- Copy remaining Files (e.g.: package-info.class). -->
+										<copy todir="${project.build.directory}/generated-classes/cobertura"
+											overwrite="false">
+											<fileset dir="${project.build.directory}/classes" />
+										</copy>
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>cobertura create report</id>
+								<phase>verify</phase><!-- or phase 'pre-site' -->
+								<configuration>
+									<tasks>
+										<taskdef classpathref="maven.runtime.classpath"
+											resource="tasks.properties" />
+										<taskdef classpathref="maven.runtime.classpath"
+											resource="net/sf/antcontrib/antcontrib.properties" />
+										<available
+											file="${project.build.directory}/cobertura/cobertura.ser"
+											property="ser.file.exists" />
+										<if>
+											<equals arg1="${ser.file.exists}" arg2="true" />
+											<then>
+												<echo message="Executing cobertura report" />
+												<mkdir dir="${project.build.directory}/site/cobertura" />
+												<cobertura-report format="xml"
+													destdir="${project.build.directory}/site/coberturaXml"
+													datafile="${project.build.directory}/cobertura/cobertura.ser" />
+												<cobertura-report format="html"
+													destdir="${project.build.directory}/site/cobertura"
+													datafile="${project.build.directory}/cobertura/cobertura.ser"
+													srcdir="${project.build.directory}/cobertura/sources">
+													<!-- e.g.: Generated JaxB Files -->
+													<fileset dir="${project.build.directory}/generated-sources/xjc" />
+													<!-- Default source directory -->
+													<fileset dir="${project.build.sourceDirectory}" />
+												</cobertura-report>
+											</then>
+											<else>
+												<echo message="No SER file found." />
+											</else>
+										</if>
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>ant-contrib</groupId>
+								<artifactId>ant-contrib</artifactId>
+								<version>20020829</version>
+							</dependency>
+							<dependency>
+								<groupId>net.sourceforge.cobertura</groupId>
+								<artifactId>cobertura</artifactId>
+								<version>1.9.4.1</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<forkMode>always</forkMode>
+							<argLine>-Xms500M -Xmx500M -Xmn250M</argLine>
+							<excludes>
+								<exclude>**/Abstract*Test.java</exclude>
+								<exclude>**/*OneTimeTest.java</exclude>
+								<exclude>**/All*Tests.java</exclude>
+							</excludes>
+							<classesDirectory>${project.build.directory}/generated-classes/cobertura</classesDirectory>
+							<systemPropertyVariables>
+								<net.sourceforge.cobertura.datafile>${project.build.directory}/cobertura/cobertura.ser</net.sourceforge.cobertura.datafile>
+							</systemPropertyVariables>
+							<additionalClasspathElements>
+								<additionalClasspathElement>${settings.localRepository}/net/sourceforge/cobertura/cobertura/1.9.4.1/cobertura-1.9.4.1.jar</additionalClasspathElement>
+							</additionalClasspathElements>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>net.sourceforge.cobertura</groupId>
+								<artifactId>cobertura</artifactId>
+								<version>1.9.4.1</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

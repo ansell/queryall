@@ -4,8 +4,9 @@
 package org.queryall.impl.rule.test;
 
 import org.queryall.api.profile.Profile;
+import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.test.AbstractPrefixMappingNormalisationRuleTest;
-import org.queryall.impl.profile.ProfileImpl;
+import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.rdfrule.PrefixMappingNormalisationRuleImpl;
 
 /**
@@ -16,7 +17,7 @@ public class PrefixMappingNormalisationRuleImplTest extends AbstractPrefixMappin
 {
     
     @Override
-    public org.queryall.api.rdfrule.PrefixMappingNormalisationRule getNewTestMappingRule()
+    public PrefixMappingNormalisationRule getNewTestMappingRule()
     {
         return new PrefixMappingNormalisationRuleImpl();
     }
@@ -24,7 +25,7 @@ public class PrefixMappingNormalisationRuleImplTest extends AbstractPrefixMappin
     @Override
     public Profile getNewTestProfile()
     {
-        return new ProfileImpl();
+        return new DummyProfile();
     }
     
 }

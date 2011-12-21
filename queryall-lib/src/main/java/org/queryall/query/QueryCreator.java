@@ -2,11 +2,9 @@ package org.queryall.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +13,7 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
 import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
@@ -59,8 +58,6 @@ public class QueryCreator
     private static final List<String> inputXmlEncodeduppercaseInstructions = new ArrayList<String>(2);
     private static final List<String> inputUrlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
     private static final List<String> inputXmlEncodedprivateuppercaseInstructions = new ArrayList<String>(2);
-    
-    private static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
     
     static
     {
@@ -143,7 +140,7 @@ public class QueryCreator
      * @return
      * @throws QueryAllException
      */
-    public static String createQuery(final QueryType queryType, final Provider nextProvider,
+    public static String createQuery(final InputQueryType queryType, final Provider nextProvider,
             final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final boolean overallConvertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings,
@@ -188,7 +185,7 @@ public class QueryCreator
      * @return
      * @throws QueryAllException
      */
-    public static String createStaticRdfXmlString(final QueryType originalQueryType,
+    public static String createStaticRdfXmlString(final InputQueryType originalQueryType,
             final OutputQueryType includedQueryType, final Provider nextProvider,
             final Map<String, String> attributeList,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
@@ -218,7 +215,7 @@ public class QueryCreator
     }
     
     public static String doReplacementsOnString(final Map<String, String> queryParameters, final String templateString,
-            final QueryType originalQueryType, final QueryType includedQueryType, final Provider nextProvider,
+            final InputQueryType originalQueryType, final QueryType includedQueryType, final Provider nextProvider,
             final Map<String, String> attributeList,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
@@ -396,10 +393,13 @@ public class QueryCreator
                 continue;
             }
             
-            replacedString = replacedString.replace("${" + nextAttribute + "}", attributeList.get(nextAttribute));
+            replacedString =
+                    replacedString.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
+                            attributeList.get(nextAttribute));
             
             normalisedStandardUri =
-                    normalisedStandardUri.replace("${" + nextAttribute + "}", attributeList.get(nextAttribute));
+                    normalisedStandardUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
+                            attributeList.get(nextAttribute));
             
             if(QueryCreator._TRACE)
             {
@@ -408,7 +408,8 @@ public class QueryCreator
             }
             
             normalisedQueryUri =
-                    normalisedQueryUri.replace("${" + nextAttribute + "}", attributeList.get(nextAttribute));
+                    normalisedQueryUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
+                            attributeList.get(nextAttribute));
             
             if(QueryCreator._TRACE)
             {
@@ -448,13 +449,13 @@ public class QueryCreator
         
         replacedString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        replacedString, QueryCreator.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
+                        replacedString, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
                         namespaceInputVariables, nextProvider);
         
         normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedStandardUri, QueryCreator.EMPTY_STRING_LIST,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        normalisedStandardUri, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
+                        namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
@@ -468,7 +469,7 @@ public class QueryCreator
         
         normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
-                        normalisedQueryUri, QueryCreator.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
+                        normalisedQueryUri, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
                         namespaceInputVariables, nextProvider);
         
         inputUrlEncoded_normalisedQueryUri =
@@ -1221,17 +1222,18 @@ public class QueryCreator
     }
     
     /**
+     * Replaces input variables on the given template, including the query string.
+     * 
      * @param originalQueryType
+     * @param queryParameters
      * @param templateString
      * @param specialInstructions
      * @param convertAlternateToPreferredPrefix
-     *            TODO
      * @param namespaceInputVariables
-     *            TODO
-     * @param queryString
+     * @param nextProvider
      * @return
      */
-    public static String matchAndReplaceInputVariablesForQueryType(final QueryType originalQueryType,
+    public static String matchAndReplaceInputVariablesForQueryType(final InputQueryType originalQueryType,
             final Map<String, String> queryParameters, final String templateString,
             final List<String> specialInstructions, final boolean convertAlternateToPreferredPrefix,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Provider nextProvider)
@@ -1275,7 +1277,7 @@ public class QueryCreator
                     QueryCreator.log.debug("isNamespace and namespaceInputVariables.containsKey(nextMatchTag)");
                     
                     boolean foundANamespace = false;
-                    // TODO: What happens if there could be more than one match here, as we aren't
+                    // FIXME: What happens if there could be more than one match here, as we aren't
                     // ordering the NamespaceEntries... could have irregular behaviour
                     // Currently, the first namespace to match will set the separatorString and
                     // authorityString to match its definition and then break the loop
@@ -1317,12 +1319,12 @@ public class QueryCreator
                                     + allMatches.get(nextMatchTag));
                     QueryCreator.log
                             .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: indexOf matchString="
-                                    + replacedString.indexOf("${" + nextMatchTag + "}"));
+                                    + replacedString.indexOf("${" + nextMatchTag + Constants.CLOSING_BRACE));
                 }
                 
                 // in some cases we want to specially encode user input without
                 // having said this specifically in the template, this is where it
-                // happens, in the order that the list has been constructed in
+                // happens, *in the order* that the list has been constructed in
                 for(final String specialInstruction : specialInstructions)
                 {
                     if(specialInstruction.equals(Constants.INPUT_URL_ENCODED))
@@ -1365,81 +1367,91 @@ public class QueryCreator
                     }
                 }
                 
-                // TODO: test this
-                replacedString = replacedString.replace("${separator}", separatorString);
+                if(replacedString.contains(Constants.TEMPLATE_SEPARATOR))
+                {
+                    replacedString = replacedString.replace(Constants.TEMPLATE_SEPARATOR, separatorString);
+                }
                 
-                // TODO: test this
-                replacedString = replacedString.replace("${authority}", authorityString);
-                
-                replacedString = replacedString.replace("${" + nextMatchTag + "}", inputReplaceString);
+                if(replacedString.contains(Constants.TEMPLATE_AUTHORITY))
+                {
+                    replacedString = replacedString.replace(Constants.TEMPLATE_AUTHORITY, authorityString);
+                }
                 
                 replacedString =
-                        replacedString.replace("${xmlEncoded_" + nextMatchTag + "}",
+                        replacedString.replace("${" + nextMatchTag + Constants.CLOSING_BRACE, inputReplaceString);
+                
+                replacedString =
+                        replacedString.replace("${xmlEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(inputReplaceString));
                 
                 replacedString =
-                        replacedString.replace("${urlEncoded_" + nextMatchTag + "}",
+                        replacedString.replace("${urlEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.percentEncode(inputReplaceString));
                 
                 replacedString =
-                        replacedString.replace("${plusUrlEncoded_" + nextMatchTag + "}",
+                        replacedString.replace("${plusUrlEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.plusPercentEncode(inputReplaceString));
                 
                 // replacedString = replacedString.replace(plusSpaceEncodedMatchString,
                 // plusSpaceEncodedReplaceString);
                 
                 replacedString =
-                        replacedString.replace("${ntriplesEncoded_" + nextMatchTag + "}",
+                        replacedString.replace("${ntriplesEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.ntriplesEncode(inputReplaceString));
                 
                 replacedString =
-                        replacedString.replace("${xmlEncoded_urlEncoded_" + nextMatchTag + "}",
+                        replacedString.replace("${xmlEncoded_urlEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(StringUtils.percentEncode(inputReplaceString)));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_plusUrlEncoded_" + nextMatchTag + "}",
+                        replacedString.replace("${xmlEncoded_plusUrlEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(StringUtils.plusPercentEncode(inputReplaceString)));
                 
                 replacedString =
-                        replacedString.replace("${xmlEncoded_ntriplesEncoded_" + nextMatchTag + "}",
+                        replacedString.replace(
+                                "${xmlEncoded_ntriplesEncoded_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString)));
                 
                 /***********************/
                 // Start lowercase region
                 replacedString =
-                        replacedString.replace("${lowercase_" + nextMatchTag + "}", inputReplaceString.toLowerCase());
+                        replacedString.replace("${lowercase_" + nextMatchTag + Constants.CLOSING_BRACE,
+                                inputReplaceString.toLowerCase());
                 replacedString =
-                        replacedString.replace("${urlEncoded_lowercase_" + nextMatchTag + "}",
+                        replacedString.replace("${urlEncoded_lowercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.percentEncode(inputReplaceString.toLowerCase()));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_lowercase_" + nextMatchTag + "}",
+                        replacedString.replace("${xmlEncoded_lowercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(inputReplaceString.toLowerCase()));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag + "}", StringUtils
-                                .xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toLowerCase())));
+                        replacedString.replace("${xmlEncoded_urlEncoded_lowercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .percentEncode(inputReplaceString.toLowerCase())));
                 replacedString =
-                        replacedString
-                                .replace("${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag + "}", StringUtils
-                                        .xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toLowerCase())));
+                        replacedString.replace("${xmlEncoded_ntriplesEncoded_lowercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .ntriplesEncode(inputReplaceString.toLowerCase())));
                 // End lowercase region
                 /***********************/
                 
                 /***********************/
                 // Start uppercase region
                 replacedString =
-                        replacedString.replace("${uppercase_" + nextMatchTag + "}", inputReplaceString.toUpperCase());
+                        replacedString.replace("${uppercase_" + nextMatchTag + Constants.CLOSING_BRACE,
+                                inputReplaceString.toUpperCase());
                 replacedString =
-                        replacedString.replace("${urlEncoded_uppercase_" + nextMatchTag + "}",
+                        replacedString.replace("${urlEncoded_uppercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.percentEncode(inputReplaceString.toUpperCase()));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_uppercase_" + nextMatchTag + "}",
+                        replacedString.replace("${xmlEncoded_uppercase_" + nextMatchTag + Constants.CLOSING_BRACE,
                                 StringUtils.xmlEncodeString(inputReplaceString.toUpperCase()));
                 replacedString =
-                        replacedString.replace("${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag + "}", StringUtils
-                                .xmlEncodeString(StringUtils.percentEncode(inputReplaceString.toUpperCase())));
+                        replacedString.replace("${xmlEncoded_urlEncoded_uppercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .percentEncode(inputReplaceString.toUpperCase())));
                 replacedString =
-                        replacedString
-                                .replace("${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag + "}", StringUtils
-                                        .xmlEncodeString(StringUtils.ntriplesEncode(inputReplaceString.toUpperCase())));
+                        replacedString.replace("${xmlEncoded_ntriplesEncoded_uppercase_" + nextMatchTag
+                                + Constants.CLOSING_BRACE, StringUtils.xmlEncodeString(StringUtils
+                                .ntriplesEncode(inputReplaceString.toUpperCase())));
                 // End uppercase region
                 /***********************/
                 
@@ -1454,24 +1466,57 @@ public class QueryCreator
         final String queryString = queryParameters.get(Constants.QUERY);
         
         // lastly put in the actual query string if they want us to do that
-        replacedString = replacedString.replace(Constants.TEMPLATE_QUERY_STRING, queryString);
-        replacedString = replacedString.replace(Constants.TEMPLATE_LOWERCASE_QUERY_STRING, queryString.toLowerCase());
-        replacedString = replacedString.replace(Constants.TEMPLATE_UPPERCASE_QUERY_STRING, queryString.toUpperCase());
-        replacedString =
-                replacedString.replace(Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING,
-                        StringUtils.ntriplesEncode(queryString));
-        replacedString =
-                replacedString.replace(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING,
-                        StringUtils.percentEncode(queryString));
-        replacedString =
-                replacedString.replace(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING,
-                        StringUtils.xmlEncodeString(queryString));
-        replacedString =
-                replacedString.replace(Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING,
-                        StringUtils.xmlEncodeString(StringUtils.percentEncode(queryString)));
-        replacedString =
-                replacedString.replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING,
-                        StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
+        if(replacedString.contains(Constants.TEMPLATE_QUERY_STRING))
+        {
+            replacedString = replacedString.replace(Constants.TEMPLATE_QUERY_STRING, queryString);
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_LOWERCASE_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_LOWERCASE_QUERY_STRING, queryString.toLowerCase());
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_UPPERCASE_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_UPPERCASE_QUERY_STRING, queryString.toUpperCase());
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_NTRIPLES_ENCODED_QUERY_STRING,
+                            StringUtils.ntriplesEncode(queryString));
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_URL_ENCODED_QUERY_STRING,
+                            StringUtils.percentEncode(queryString));
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_XML_ENCODED_QUERY_STRING,
+                            StringUtils.xmlEncodeString(queryString));
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_XML_ENCODED_URL_ENCODED_QUERY_STRING,
+                            StringUtils.xmlEncodeString(StringUtils.percentEncode(queryString)));
+        }
+        
+        if(replacedString.contains(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING))
+        {
+            replacedString =
+                    replacedString.replace(Constants.TEMPLATE_XML_ENCODED_NTRIPLES_ENCODED_QUERY_STRING,
+                            StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
+        }
         
         if(QueryCreator._DEBUG)
         {
@@ -1501,7 +1546,7 @@ public class QueryCreator
      * @return
      * @throws QueryAllException
      */
-    public static String replaceAttributesOnEndpointUrl(final String replacementString, final QueryType queryType,
+    public static String replaceAttributesOnEndpointUrl(final String replacementString, final InputQueryType queryType,
             final Provider nextProvider, final Map<String, String> attributeList, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules,
             final boolean convertAlternateToPreferredPrefix, final QueryAllConfiguration localSettings,
@@ -1568,22 +1613,6 @@ public class QueryCreator
         }
         
         return inputString;
-    }
-    
-    public static String testReplaceMethod(final String inputString, final QueryAllConfiguration localSettings)
-    {
-        final Map<String, String> myTestMap = new TreeMap<String, String>();
-        
-        myTestMap.put("${input_1}", "MyInput1");
-        myTestMap.put("${inputUrlEncoded_privatelowercase_input_1}", "myinput1");
-        myTestMap.put("${input_2}", "YourInput2");
-        myTestMap.put("${inputUrlEncoded_privatelowercase_input_2}", "yourinput2");
-        
-        final String returnString = QueryCreator.replaceTags(inputString, myTestMap, localSettings.getTagPattern());
-        
-        // log.warn("QueryCreator.testReplaceMethod returnString="+returnString);
-        
-        return returnString;
     }
     
 }

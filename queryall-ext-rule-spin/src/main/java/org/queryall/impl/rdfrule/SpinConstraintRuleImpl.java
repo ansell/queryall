@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +11,6 @@ import org.openrdf.OpenRDFException;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -461,8 +459,6 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = myRepository.getValueFactory();
-        
         try
         {
             if(SpinConstraintRuleImpl._DEBUG)
@@ -562,7 +558,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         allowedRuleSources.addAll(this.localImports);
         
         final List<ConstraintViolation> cvs =
-                SPINConstraints.check(unionModel, new LinkedList<SPINStatistics>(), null, OntModelSpec.OWL_MEM,
+                SPINConstraints.check(unionModel, new ArrayList<SPINStatistics>(), null, OntModelSpec.OWL_MEM,
                         "http://topbraid.org/examples/kennedysSPIN", allowedRuleSources);
         
         SpinConstraintRuleImpl.log.info("Constraint violations:");
