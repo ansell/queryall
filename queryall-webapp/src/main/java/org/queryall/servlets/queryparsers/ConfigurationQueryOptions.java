@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 public class ConfigurationQueryOptions
 {
     public static final Logger log = LoggerFactory.getLogger(ConfigurationQueryOptions.class);
-    public static final boolean _TRACE = ConfigurationQueryOptions.log.isTraceEnabled();
-    public static final boolean _DEBUG = ConfigurationQueryOptions.log.isDebugEnabled();
-    public static final boolean _INFO = ConfigurationQueryOptions.log.isInfoEnabled();
+    public static final boolean TRACE = ConfigurationQueryOptions.log.isTraceEnabled();
+    public static final boolean DEBUG = ConfigurationQueryOptions.log.isDebugEnabled();
+    public static final boolean INFO = ConfigurationQueryOptions.log.isInfoEnabled();
     
     // private Settings localSettings = localSettings;
     
@@ -66,13 +66,13 @@ public class ConfigurationQueryOptions
         {
             if(requestString.startsWith(contextPath))
             {
-                if(ConfigurationQueryOptions._DEBUG)
+                if(ConfigurationQueryOptions.DEBUG)
                 {
                     ConfigurationQueryOptions.log.debug("requestUri before removing contextPath requestString="
                             + requestString);
                 }
                 requestString = requestString.substring(contextPath.length());
-                if(ConfigurationQueryOptions._DEBUG)
+                if(ConfigurationQueryOptions.DEBUG)
                 {
                     ConfigurationQueryOptions.log.debug("removed contextPath from requestUri contextPath="
                             + contextPath + " requestString=" + requestString);
@@ -82,12 +82,12 @@ public class ConfigurationQueryOptions
         
         if(requestString.startsWith("/"))
         {
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = requestString.substring(1);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -230,14 +230,14 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_HTML;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix,
                             adminConfigurationHtmlSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
             }
@@ -247,14 +247,14 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_RDF_XML;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix,
                             adminConfigurationRdfxmlSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
             }
@@ -263,13 +263,13 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_RDF_N3;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
             }
@@ -278,14 +278,14 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_JSON;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationJsonPrefix,
                             adminConfigurationJsonSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
             }
@@ -295,14 +295,14 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_PLAIN;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix,
                             adminConfigurationNTriplesSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
             }
@@ -312,14 +312,14 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_X_NQUADS;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix,
                             adminConfigurationNQuadsSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
             }
@@ -334,7 +334,7 @@ public class ConfigurationQueryOptions
         
         if(this.matchesPrefixAndSuffix(requestString, adminUrlPrefix, ""))
         {
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("found admin prefix");
             }
@@ -343,7 +343,7 @@ public class ConfigurationQueryOptions
             
             requestString = this.takeOffPrefixAndSuffix(requestString, adminUrlPrefix, "");
         }
-        else if(ConfigurationQueryOptions._DEBUG)
+        else if(ConfigurationQueryOptions.DEBUG)
         {
             ConfigurationQueryOptions.log.debug("did not find admin prefix");
         }
@@ -366,7 +366,7 @@ public class ConfigurationQueryOptions
                 "^" + adminConfigurationApiOpeningPrefix + "(\\d+)" + adminConfigurationApiClosingPrefix + "(.*)"
                         + adminConfigurationApiSuffix + "$";
         
-        if(ConfigurationQueryOptions._DEBUG)
+        if(ConfigurationQueryOptions.DEBUG)
         {
             ConfigurationQueryOptions.log.debug("apiVersionPatternString=" + apiVersionPatternString);
             ConfigurationQueryOptions.log.debug("requestString=" + requestString);
@@ -406,7 +406,7 @@ public class ConfigurationQueryOptions
         
         requestString = matcher.group(2);
         
-        if(ConfigurationQueryOptions._DEBUG)
+        if(ConfigurationQueryOptions.DEBUG)
         {
             ConfigurationQueryOptions.log.debug("apiVersion=" + this._apiVersion);
             ConfigurationQueryOptions.log.debug("requestString=" + requestString);
@@ -434,12 +434,12 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_HTML;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
             }
@@ -448,12 +448,12 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_RDF_XML;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
             }
@@ -462,12 +462,12 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_RDF_N3;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
             }
@@ -476,12 +476,12 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_JSON;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
             }
@@ -490,12 +490,12 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_PLAIN;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
             }
@@ -504,12 +504,12 @@ public class ConfigurationQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_X_NQUADS;
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix);
-            if(ConfigurationQueryOptions._DEBUG)
+            if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
             }

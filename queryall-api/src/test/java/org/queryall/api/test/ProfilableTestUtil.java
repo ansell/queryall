@@ -12,7 +12,7 @@ import org.queryall.api.profile.Profile;
  */
 public final class ProfilableTestUtil
 {
-    protected final static void testIsUsedWithProfileList(final ProfilableInterface profilableObject,
+    protected static void testIsUsedWithProfileList(final ProfilableInterface profilableObject,
             final List<Profile> profileList, final boolean test1Result, final boolean test2Result,
             final boolean test3Result, final boolean test4Result)
     {

@@ -7,7 +7,7 @@ import org.openrdf.model.URI;
 import org.queryall.api.base.BaseQueryAllInterface;
 
 /**
- * Parses RDF configurations to create instances of the BaseQueryAllInterface interface
+ * Parses RDF configurations to create instances of the BaseQueryAllInterface interface.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

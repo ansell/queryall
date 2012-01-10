@@ -30,19 +30,19 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class NormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(NormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = NormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = NormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = NormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = NormalisationRuleSchema.LOG.isInfoEnabled();
     
-    private static final Set<URI> ALL_STAGES;
+    private static Set<URI> allStages;
     
     private static URI normalisationRuleTypeUri;
     
-    public static URI version2NormalisationRuleTypeUri;
+    private static URI version2NormalisationRuleTypeUri;
     
     private static URI rdfruleDescription;
     
@@ -70,13 +70,13 @@ public class NormalisationRuleSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         NormalisationRuleSchema.setNormalisationRuleTypeUri(f.createURI(baseUri, "NormalisationRule"));
         
-        NormalisationRuleSchema.version2NormalisationRuleTypeUri = f.createURI(baseUri, "RdfRule");
+        NormalisationRuleSchema.setVersion2NormalisationRuleTypeUri(f.createURI(baseUri, "RdfRule"));
         
         NormalisationRuleSchema.setRdfruleDescription(f.createURI(baseUri, "description"));
         NormalisationRuleSchema.setRdfruleOrder(f.createURI(baseUri, "order"));
@@ -99,22 +99,25 @@ public class NormalisationRuleSchema extends QueryAllSchema
         
         NormalisationRuleSchema.setRdfruleTypeValidForStage(f.createURI(baseUri, "typeValidForStage"));
         
-        ALL_STAGES = new LinkedHashSet<URI>(7);
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        NormalisationRuleSchema.ALL_STAGES.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        NormalisationRuleSchema.allStages = new LinkedHashSet<URI>(7);
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        NormalisationRuleSchema.allStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
         
     }
     
+    /**
+     * A pre-instantiated schema object for NormalisationRuleSchema.
+     */
     public static final QueryAllSchema NORMALISATION_RULE_SCHEMA = new NormalisationRuleSchema();
     
     public static Set<URI> getAllStages()
     {
-        return NormalisationRuleSchema.ALL_STAGES;
+        return NormalisationRuleSchema.allStages;
     }
     
     /**
@@ -221,125 +224,135 @@ public class NormalisationRuleSchema extends QueryAllSchema
         return NormalisationRuleSchema.rdfruleTypeValidForStage;
     }
     
+    public static URI getVersion2NormalisationRuleTypeUri()
+    {
+        return NormalisationRuleSchema.version2NormalisationRuleTypeUri;
+    }
+    
     /**
-     * @param normalisationRuleTypeUri
+     * @param nextNormalisationRuleTypeUri
      *            the normalisationRuleTypeUri to set
      */
-    public static void setNormalisationRuleTypeUri(final URI normalisationRuleTypeUri)
+    public static void setNormalisationRuleTypeUri(final URI nextNormalisationRuleTypeUri)
     {
-        NormalisationRuleSchema.normalisationRuleTypeUri = normalisationRuleTypeUri;
+        NormalisationRuleSchema.normalisationRuleTypeUri = nextNormalisationRuleTypeUri;
     }
     
     /**
-     * @param rdfruleDescription
+     * @param nextRdfruleDescription
      *            the rdfruleDescription to set
      */
-    public static void setRdfruleDescription(final URI rdfruleDescription)
+    public static void setRdfruleDescription(final URI nextRdfruleDescription)
     {
-        NormalisationRuleSchema.rdfruleDescription = rdfruleDescription;
+        NormalisationRuleSchema.rdfruleDescription = nextRdfruleDescription;
     }
     
     /**
-     * @param rdfruleHasRelatedNamespace
+     * @param nextRdfruleHasRelatedNamespace
      *            the rdfruleHasRelatedNamespace to set
      */
-    public static void setRdfruleHasRelatedNamespace(final URI rdfruleHasRelatedNamespace)
+    public static void setRdfruleHasRelatedNamespace(final URI nextRdfruleHasRelatedNamespace)
     {
-        NormalisationRuleSchema.rdfruleHasRelatedNamespace = rdfruleHasRelatedNamespace;
+        NormalisationRuleSchema.rdfruleHasRelatedNamespace = nextRdfruleHasRelatedNamespace;
     }
     
     /**
-     * @param rdfruleOrder
+     * @param nextRdfruleOrder
      *            the rdfruleOrder to set
      */
-    public static void setRdfruleOrder(final URI rdfruleOrder)
+    public static void setRdfruleOrder(final URI nextRdfruleOrder)
     {
-        NormalisationRuleSchema.rdfruleOrder = rdfruleOrder;
+        NormalisationRuleSchema.rdfruleOrder = nextRdfruleOrder;
     }
     
     /**
-     * @param rdfruleStage
+     * @param nextRdfruleStage
      *            the rdfruleStage to set
      */
-    public static void setRdfruleStage(final URI rdfruleStage)
+    public static void setRdfruleStage(final URI nextRdfruleStage)
     {
-        NormalisationRuleSchema.rdfruleStage = rdfruleStage;
+        NormalisationRuleSchema.rdfruleStage = nextRdfruleStage;
     }
     
     /**
-     * @param rdfruleStageAfterQueryCreation
+     * @param nextRdfruleStageAfterQueryCreation
      *            the rdfruleStageAfterQueryCreation to set
      */
-    public static void setRdfruleStageAfterQueryCreation(final URI rdfruleStageAfterQueryCreation)
+    public static void setRdfruleStageAfterQueryCreation(final URI nextRdfruleStageAfterQueryCreation)
     {
-        NormalisationRuleSchema.rdfruleStageAfterQueryCreation = rdfruleStageAfterQueryCreation;
+        NormalisationRuleSchema.rdfruleStageAfterQueryCreation = nextRdfruleStageAfterQueryCreation;
     }
     
     /**
-     * @param rdfruleStageAfterQueryParsing
+     * @param nextRdfruleStageAfterQueryParsing
      *            the rdfruleStageAfterQueryParsing to set
      */
-    public static void setRdfruleStageAfterQueryParsing(final URI rdfruleStageAfterQueryParsing)
+    public static void setRdfruleStageAfterQueryParsing(final URI nextRdfruleStageAfterQueryParsing)
     {
-        NormalisationRuleSchema.rdfruleStageAfterQueryParsing = rdfruleStageAfterQueryParsing;
+        NormalisationRuleSchema.rdfruleStageAfterQueryParsing = nextRdfruleStageAfterQueryParsing;
     }
     
     /**
-     * @param rdfruleStageAfterResultsImport
+     * @param nextRdfruleStageAfterResultsImport
      *            the rdfruleStageAfterResultsImport to set
      */
-    public static void setRdfruleStageAfterResultsImport(final URI rdfruleStageAfterResultsImport)
+    public static void setRdfruleStageAfterResultsImport(final URI nextRdfruleStageAfterResultsImport)
     {
-        NormalisationRuleSchema.rdfruleStageAfterResultsImport = rdfruleStageAfterResultsImport;
+        NormalisationRuleSchema.rdfruleStageAfterResultsImport = nextRdfruleStageAfterResultsImport;
     }
     
     /**
-     * @param rdfruleStageAfterResultsToDocument
+     * @param nextRdfruleStageAfterResultsToDocument
      *            the rdfruleStageAfterResultsToDocument to set
      */
-    public static void setRdfruleStageAfterResultsToDocument(final URI rdfruleStageAfterResultsToDocument)
+    public static void setRdfruleStageAfterResultsToDocument(final URI nextRdfruleStageAfterResultsToDocument)
     {
-        NormalisationRuleSchema.rdfruleStageAfterResultsToDocument = rdfruleStageAfterResultsToDocument;
+        NormalisationRuleSchema.rdfruleStageAfterResultsToDocument = nextRdfruleStageAfterResultsToDocument;
     }
     
     /**
-     * @param rdfruleStageAfterResultsToPool
+     * @param nextRdfruleStageAfterResultsToPool
      *            the rdfruleStageAfterResultsToPool to set
      */
-    public static void setRdfruleStageAfterResultsToPool(final URI rdfruleStageAfterResultsToPool)
+    public static void setRdfruleStageAfterResultsToPool(final URI nextRdfruleStageAfterResultsToPool)
     {
-        NormalisationRuleSchema.rdfruleStageAfterResultsToPool = rdfruleStageAfterResultsToPool;
+        NormalisationRuleSchema.rdfruleStageAfterResultsToPool = nextRdfruleStageAfterResultsToPool;
     }
     
     /**
-     * @param rdfruleStageBeforeResultsImport
+     * @param nextRdfruleStageBeforeResultsImport
      *            the rdfruleStageBeforeResultsImport to set
      */
-    public static void setRdfruleStageBeforeResultsImport(final URI rdfruleStageBeforeResultsImport)
+    public static void setRdfruleStageBeforeResultsImport(final URI nextRdfruleStageBeforeResultsImport)
     {
-        NormalisationRuleSchema.rdfruleStageBeforeResultsImport = rdfruleStageBeforeResultsImport;
+        NormalisationRuleSchema.rdfruleStageBeforeResultsImport = nextRdfruleStageBeforeResultsImport;
     }
     
     /**
-     * @param rdfruleStageQueryVariables
+     * @param nextRdfruleStageQueryVariables
      *            the rdfruleStageQueryVariables to set
      */
-    public static void setRdfruleStageQueryVariables(final URI rdfruleStageQueryVariables)
+    public static void setRdfruleStageQueryVariables(final URI nextRdfruleStageQueryVariables)
     {
-        NormalisationRuleSchema.rdfruleStageQueryVariables = rdfruleStageQueryVariables;
+        NormalisationRuleSchema.rdfruleStageQueryVariables = nextRdfruleStageQueryVariables;
     }
     
     /**
-     * @param rdfruleTypeValidForStage
+     * @param nextRdfruleTypeValidForStage
      *            the rdfruleTypeValidForStage to set
      */
-    public static void setRdfruleTypeValidForStage(final URI rdfruleTypeValidForStage)
+    public static void setRdfruleTypeValidForStage(final URI nextRdfruleTypeValidForStage)
     {
-        NormalisationRuleSchema.rdfruleTypeValidForStage = rdfruleTypeValidForStage;
+        NormalisationRuleSchema.rdfruleTypeValidForStage = nextRdfruleTypeValidForStage;
+    }
+    
+    private static void setVersion2NormalisationRuleTypeUri(final URI nextVersion2NormalisationRuleTypeUri)
+    {
+        NormalisationRuleSchema.version2NormalisationRuleTypeUri = nextVersion2NormalisationRuleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public NormalisationRuleSchema()
     {
@@ -361,7 +374,7 @@ public class NormalisationRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -418,7 +431,7 @@ public class NormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            NormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            NormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

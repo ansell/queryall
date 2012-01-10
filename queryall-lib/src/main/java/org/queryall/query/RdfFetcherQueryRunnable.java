@@ -15,11 +15,11 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherQueryRunnable.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfFetcherQueryRunnable.log.isTraceEnabled();
+    private static final boolean TRACE = RdfFetcherQueryRunnable.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfFetcherQueryRunnable.log.isDebugEnabled();
+    private static final boolean DEBUG = RdfFetcherQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
+    private static final boolean INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
     
     private String originalEndpointUrl = "";
     private String originalQuery = "";
@@ -136,7 +136,7 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     {
         if(this.normalisedResult == null || this.normalisedResult.length() == 0)
         {
-            if(RdfFetcherQueryRunnable._DEBUG)
+            if(RdfFetcherQueryRunnable.DEBUG)
             {
                 RdfFetcherQueryRunnable.log
                         .debug("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
@@ -420,7 +420,8 @@ public abstract class RdfFetcherQueryRunnable extends Thread implements Callable
     @Override
     public String toString()
     {
-        return "originalendpointUrl=" + this.getOriginalEndpointUrl() + "actualendpointurl="+this.getActualEndpointUrl()+" query=" + this.getOriginalQuery();
+        return "originalendpointUrl=" + this.getOriginalEndpointUrl() + "actualendpointurl="
+                + this.getActualEndpointUrl() + " query=" + this.getOriginalQuery();
     }
     
     public boolean wasCompletedSuccessfulQuery()

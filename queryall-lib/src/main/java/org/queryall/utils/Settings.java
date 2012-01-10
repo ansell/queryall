@@ -36,9 +36,9 @@ import org.slf4j.LoggerFactory;
 public class Settings implements QueryAllConfiguration
 {
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
-    private static final boolean _TRACE = Settings.log.isTraceEnabled();
-    private static final boolean _DEBUG = Settings.log.isDebugEnabled();
-    private static final boolean _INFO = Settings.log.isInfoEnabled();
+    private static final boolean TRACE = Settings.log.isTraceEnabled();
+    private static final boolean DEBUG = Settings.log.isDebugEnabled();
+    private static final boolean INFO = Settings.log.isInfoEnabled();
     
     private ConcurrentHashMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
     private ConcurrentHashMap<URI, NormalisationRule> normalisationRules =
@@ -155,7 +155,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public Collection<Object> clearProperty(final WebappConfig propertyKey)
     {
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("clearProperty propertyKey=" + propertyKey);
         }
@@ -553,7 +553,7 @@ public class Settings implements QueryAllConfiguration
             }
             else if(properties.size() == 0)
             {
-                if(Settings._DEBUG)
+                if(Settings.DEBUG)
                 {
                     Settings.log.debug("No property value found for propertyKey=" + propertyKey);
                 }
@@ -639,7 +639,7 @@ public class Settings implements QueryAllConfiguration
         }
         else if(uriProperties.size() == 0)
         {
-            if(Settings._DEBUG)
+            if(Settings.DEBUG)
             {
                 Settings.log.debug("No property value found for propertyKey=" + propertyKey);
             }
@@ -754,7 +754,7 @@ public class Settings implements QueryAllConfiguration
     private void setObjectCollectionPropertyHelper(final WebappConfig propertyKey,
             final Collection<Object> propertyValue, final boolean overwrite)
     {
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValue.toString());
@@ -762,7 +762,7 @@ public class Settings implements QueryAllConfiguration
         
         final Collection<Object> ifAbsent = this.properties.putIfAbsent(propertyKey, propertyValue);
         
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="
                     + this.properties.get(propertyKey));
@@ -772,7 +772,7 @@ public class Settings implements QueryAllConfiguration
         // add the list, any other additions to this property should wait to synchronise here
         if(ifAbsent != null)
         {
-            if(Settings._TRACE)
+            if(Settings.TRACE)
             {
                 Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
             }
@@ -788,7 +788,7 @@ public class Settings implements QueryAllConfiguration
                     nextList.addAll(ifAbsent);
                 }
                 
-                if(Settings._TRACE)
+                if(Settings.TRACE)
                 {
                     Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="
                             + nextList);
@@ -813,7 +813,7 @@ public class Settings implements QueryAllConfiguration
     private void setObjectPropertyHelper(final WebappConfig propertyKey, final Object propertyValue,
             final boolean overwrite)
     {
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("setObjectPropertyHelper(String,Object) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValue.toString());
@@ -824,7 +824,7 @@ public class Settings implements QueryAllConfiguration
         
         final Collection<Object> ifAbsent = this.properties.putIfAbsent(propertyKey, nextList);
         
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("setObjectPropertyHelper(String,Object) this.properties.get(propertyKey)="
                     + this.properties.get(propertyKey));
@@ -834,7 +834,7 @@ public class Settings implements QueryAllConfiguration
         // add the list, any other additions to this property should wait to synchronise here
         if(ifAbsent != null)
         {
-            if(Settings._TRACE)
+            if(Settings.TRACE)
             {
                 Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null");
             }
@@ -845,7 +845,7 @@ public class Settings implements QueryAllConfiguration
                 {
                     nextList.addAll(ifAbsent);
                 }
-                if(Settings._TRACE)
+                if(Settings.TRACE)
                 {
                     Settings.log.trace("setObjectPropertyHelper(String,Object) ifAbsent not equal to null nextList="
                             + nextList);
@@ -864,7 +864,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final boolean propertyValue)
     {
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
                     + Boolean.valueOf(propertyValue).toString());
@@ -886,7 +886,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final float propertyValue)
     {
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
                     + Float.valueOf(propertyValue).toString());
@@ -908,7 +908,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final int propertyValue)
     {
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
                     + Integer.valueOf(propertyValue).toString());
@@ -930,7 +930,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final long propertyValue)
     {
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
                     + Long.valueOf(propertyValue).toString());
@@ -958,7 +958,7 @@ public class Settings implements QueryAllConfiguration
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
         
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
                     + String.valueOf(propertyValue));
@@ -986,7 +986,7 @@ public class Settings implements QueryAllConfiguration
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
         
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,URI) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValue.stringValue());
@@ -1008,7 +1008,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final Value propertyValue)
     {
-        if(Settings._DEBUG)
+        if(Settings.DEBUG)
         {
             Settings.log.debug("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValue + " propertyValue.stringValue()=" + propertyValue.stringValue()
@@ -1036,7 +1036,7 @@ public class Settings implements QueryAllConfiguration
             final Literal literalValue = (Literal)propertyValue;
             final URI datatype = literalValue.getDatatype();
             
-            if(Settings._TRACE)
+            if(Settings.TRACE)
             {
                 Settings.log.trace("literalValue.getDatatype()=" + datatype);
             }
@@ -1051,7 +1051,7 @@ public class Settings implements QueryAllConfiguration
                 
                 if(datatype.equals(Constants.XSD_BOOLEAN))
                 {
-                    if(Settings._TRACE)
+                    if(Settings.TRACE)
                     {
                         Settings.log.trace("boolean datatype");
                     }
@@ -1060,7 +1060,7 @@ public class Settings implements QueryAllConfiguration
                     {
                         final boolean booleanFromValue = RdfUtils.getBooleanFromValue(literalValue);
                         
-                        if(Settings._TRACE)
+                        if(Settings.TRACE)
                         {
                             Settings.log.trace("booleanFromValue=" + booleanFromValue);
                         }
@@ -1077,7 +1077,7 @@ public class Settings implements QueryAllConfiguration
                 }
                 else if(datatype.equals(Constants.XSD_INT) || datatype.equals(Constants.XSD_INTEGER))
                 {
-                    if(Settings._TRACE)
+                    if(Settings.TRACE)
                     {
                         Settings.log.trace("int or integer datatype");
                     }
@@ -1086,7 +1086,7 @@ public class Settings implements QueryAllConfiguration
                     {
                         final int intFromValue = RdfUtils.getIntegerFromValue(literalValue);
                         
-                        if(Settings._TRACE)
+                        if(Settings.TRACE)
                         {
                             Settings.log.trace("intFromValue=" + intFromValue);
                         }
@@ -1102,7 +1102,7 @@ public class Settings implements QueryAllConfiguration
                 }
                 else if(datatype.equals(Constants.XSD_LONG))
                 {
-                    if(Settings._TRACE)
+                    if(Settings.TRACE)
                     {
                         Settings.log.trace("long datatype");
                     }
@@ -1111,7 +1111,7 @@ public class Settings implements QueryAllConfiguration
                     {
                         final long longFromValue = RdfUtils.getLongFromValue(literalValue);
                         
-                        if(Settings._TRACE)
+                        if(Settings.TRACE)
                         {
                             Settings.log.trace("longFromValue=" + longFromValue);
                         }
@@ -1127,7 +1127,7 @@ public class Settings implements QueryAllConfiguration
                 }
                 else if(datatype.equals(Constants.XSD_FLOAT))
                 {
-                    if(Settings._TRACE)
+                    if(Settings.TRACE)
                     {
                         Settings.log.trace("float datatype");
                     }
@@ -1136,7 +1136,7 @@ public class Settings implements QueryAllConfiguration
                     {
                         final float floatFromValue = RdfUtils.getFloatFromValue(literalValue);
                         
-                        if(Settings._TRACE)
+                        if(Settings.TRACE)
                         {
                             Settings.log.trace("floatFromValue=" + floatFromValue);
                         }
@@ -1172,7 +1172,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setStringCollectionProperty(final WebappConfig propertyKey, final Collection<String> propertyValues)
     {
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("setProperty(String,Collection<String>) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValues.toString());
@@ -1192,7 +1192,7 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setURICollectionProperty(final WebappConfig propertyKey, final Collection<URI> propertyValues)
     {
-        if(Settings._TRACE)
+        if(Settings.TRACE)
         {
             Settings.log.trace("setProperty(String,Collection<URI>) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValues.toString());

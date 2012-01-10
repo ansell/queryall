@@ -151,9 +151,9 @@ public class ContentTypeNegotiator
     private static final Logger log = LoggerFactory.getLogger(ContentTypeNegotiator.class);
     
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ContentTypeNegotiator.log.isTraceEnabled();
-    private static final boolean _DEBUG = ContentTypeNegotiator.log.isDebugEnabled();
-    private static final boolean _INFO = ContentTypeNegotiator.log.isInfoEnabled();
+    private static final boolean TRACE = ContentTypeNegotiator.log.isTraceEnabled();
+    private static final boolean DEBUG = ContentTypeNegotiator.log.isDebugEnabled();
+    private static final boolean INFO = ContentTypeNegotiator.log.isInfoEnabled();
     
     private Collection<VariantSpec> variantSpecs = new HashSet<VariantSpec>();
     
@@ -203,7 +203,7 @@ public class ContentTypeNegotiator
             userAgent = "";
         }
         
-        if(ContentTypeNegotiator._DEBUG)
+        if(ContentTypeNegotiator.DEBUG)
         {
             ContentTypeNegotiator.log.debug("ContentTypeNegotiator: getBestMatch accept=" + accept + " userAgent="
                     + userAgent);
@@ -221,14 +221,14 @@ public class ContentTypeNegotiator
             }
         }
         
-        if(ContentTypeNegotiator._DEBUG)
+        if(ContentTypeNegotiator.DEBUG)
         {
             ContentTypeNegotiator.log.debug("ContentTypeNegotiator: getBestMatch overriddenAccept=" + overriddenAccept);
         }
         
         final MediaRangeSpec result = new Negotiation(this.toAcceptRanges(overriddenAccept)).negotiate();
         
-        if(ContentTypeNegotiator._INFO)
+        if(ContentTypeNegotiator.INFO)
         {
             ContentTypeNegotiator.log.info("ContentTypeNegotiator: getBestMatch result=" + result);
         }

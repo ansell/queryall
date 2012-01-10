@@ -21,11 +21,11 @@ public class ListUtils
 {
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ListUtils.log.isTraceEnabled();
+    private static final boolean TRACE = ListUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ListUtils.log.isDebugEnabled();
+    private static final boolean DEBUG = ListUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ListUtils.log.isInfoEnabled();
+    private static final boolean INFO = ListUtils.log.isInfoEnabled();
     
     /**
      * A prng that can be used in this class to generate random numbers

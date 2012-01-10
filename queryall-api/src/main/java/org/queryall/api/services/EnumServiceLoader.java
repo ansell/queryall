@@ -15,10 +15,10 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
 {
     private static final Logger log = LoggerFactory.getLogger(EnumServiceLoader.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = EnumServiceLoader.log.isTraceEnabled();
-    private static final boolean _DEBUG = EnumServiceLoader.log.isDebugEnabled();
+    private static final boolean TRACE = EnumServiceLoader.log.isTraceEnabled();
+    private static final boolean DEBUG = EnumServiceLoader.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = EnumServiceLoader.log.isInfoEnabled();
+    private static final boolean INFO = EnumServiceLoader.log.isInfoEnabled();
     
     private static EnumServiceLoader defaultRegistry;
     
@@ -41,7 +41,7 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     @Override
     public Collection<QueryAllEnum> getAll()
     {
-        if(EnumServiceLoader._DEBUG)
+        if(EnumServiceLoader.DEBUG)
         {
             for(final String nextKey : this.services.keySet())
             {

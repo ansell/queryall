@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RdfProviderSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfProviderSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RdfProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RdfProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RdfProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = RdfProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerRdfProviderUri;
     
@@ -42,6 +42,9 @@ public class RdfProviderSchema extends QueryAllSchema
         RdfProviderSchema.setProviderRdfProviderUri(f.createURI(baseUri, "RdfProvider"));
     }
     
+    /**
+     * The pre-initialised schema object for RdfProviderSchema.
+     */
     public static final QueryAllSchema RDF_PROVIDER_SCHEMA = new RdfProviderSchema();
     
     /**
@@ -53,16 +56,16 @@ public class RdfProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param providerRdfProviderUri
+     * @param nextProviderRdfProviderUri
      *            the providerRdfProviderUri to set
      */
-    public static void setProviderRdfProviderUri(final URI providerRdfProviderUri)
+    public static void setProviderRdfProviderUri(final URI nextProviderRdfProviderUri)
     {
-        RdfProviderSchema.providerRdfProviderUri = providerRdfProviderUri;
+        RdfProviderSchema.providerRdfProviderUri = nextProviderRdfProviderUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RdfProviderSchema()
     {
@@ -110,7 +113,7 @@ public class RdfProviderSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RdfProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            RdfProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

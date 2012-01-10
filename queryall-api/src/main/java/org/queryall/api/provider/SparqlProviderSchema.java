@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SparqlProviderSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlProviderSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SparqlProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SparqlProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SparqlProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SparqlProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SparqlProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = SparqlProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerSparqlTypeUri;
     private static URI providerSparqlRequiresGraphURI;
@@ -42,7 +42,7 @@ public class SparqlProviderSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
@@ -55,6 +55,9 @@ public class SparqlProviderSchema extends QueryAllSchema
         
     }
     
+    /**
+     * The preinitialized schema object for SparqlProviderSchema.
+     */
     public static final QueryAllSchema SPARQL_PROVIDER_SCHEMA = new SparqlProviderSchema();
     
     /**
@@ -98,52 +101,52 @@ public class SparqlProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param providerHttpGetSparql
+     * @param nextProviderHttpGetSparql
      *            the providerHttpGetSparql to set
      */
-    public static void setProviderHttpGetSparql(final URI providerHttpGetSparql)
+    public static void setProviderHttpGetSparql(final URI nextProviderHttpGetSparql)
     {
-        SparqlProviderSchema.providerHttpGetSparql = providerHttpGetSparql;
+        SparqlProviderSchema.providerHttpGetSparql = nextProviderHttpGetSparql;
     }
     
     /**
-     * @param providerHttpPostSparql
+     * @param nextProviderHttpPostSparql
      *            the providerHttpPostSparql to set
      */
-    public static void setProviderHttpPostSparql(final URI providerHttpPostSparql)
+    public static void setProviderHttpPostSparql(final URI nextProviderHttpPostSparql)
     {
-        SparqlProviderSchema.providerHttpPostSparql = providerHttpPostSparql;
+        SparqlProviderSchema.providerHttpPostSparql = nextProviderHttpPostSparql;
     }
     
     /**
-     * @param providerSparqlGraphUri
+     * @param nextProviderSparqlGraphUri
      *            the providerSparqlGraphUri to set
      */
-    public static void setProviderSparqlGraphUri(final URI providerSparqlGraphUri)
+    public static void setProviderSparqlGraphUri(final URI nextProviderSparqlGraphUri)
     {
-        SparqlProviderSchema.providerSparqlGraphUri = providerSparqlGraphUri;
+        SparqlProviderSchema.providerSparqlGraphUri = nextProviderSparqlGraphUri;
     }
     
     /**
-     * @param providerSparqlRequiresGraphURI
+     * @param nextProviderSparqlRequiresGraphURI
      *            the providerSparqlRequiresGraphURI to set
      */
-    public static void setProviderSparqlRequiresGraphURI(final URI providerSparqlRequiresGraphURI)
+    public static void setProviderSparqlRequiresGraphURI(final URI nextProviderSparqlRequiresGraphURI)
     {
-        SparqlProviderSchema.providerSparqlRequiresGraphURI = providerSparqlRequiresGraphURI;
+        SparqlProviderSchema.providerSparqlRequiresGraphURI = nextProviderSparqlRequiresGraphURI;
     }
     
     /**
-     * @param providerSparqlTypeUri
+     * @param nextProviderSparqlTypeUri
      *            the providerSparqlTypeUri to set
      */
-    public static void setProviderSparqlTypeUri(final URI providerSparqlTypeUri)
+    public static void setProviderSparqlTypeUri(final URI nextProviderSparqlTypeUri)
     {
-        SparqlProviderSchema.providerSparqlTypeUri = providerSparqlTypeUri;
+        SparqlProviderSchema.providerSparqlTypeUri = nextProviderSparqlTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SparqlProviderSchema()
     {
@@ -165,7 +168,7 @@ public class SparqlProviderSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -206,7 +209,7 @@ public class SparqlProviderSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SparqlProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            SparqlProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

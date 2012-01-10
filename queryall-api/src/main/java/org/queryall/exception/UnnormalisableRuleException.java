@@ -6,7 +6,8 @@ package org.queryall.exception;
 import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
- * An exception that is thrown when an unknown NormalisationRule is encountered during normalisation
+ * An exception that is thrown when an unknown NormalisationRule is encountered during
+ * normalisation.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -80,12 +81,12 @@ public class UnnormalisableRuleException extends QueryAllRuntimeException
     }
     
     /**
-     * @param ruleCause
+     * @param nextRuleCause
      *            the ruleCause to set
      */
-    public void setRuleCause(final NormalisationRule ruleCause)
+    public void setRuleCause(final NormalisationRule nextRuleCause)
     {
-        this.ruleCause = ruleCause;
+        this.ruleCause = nextRuleCause;
     }
     
 }

@@ -44,10 +44,10 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
-    private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
+    private static final boolean TRACE = QueryTypeImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
+    private static final boolean INFO = QueryTypeImpl.log.isInfoEnabled();
     
     private boolean handleAllNamespaces = true;
     
@@ -153,7 +153,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(QueryTypeImpl._DEBUG)
+            if(QueryTypeImpl.DEBUG)
             {
                 QueryTypeImpl.log.debug("QueryType: nextStatement: " + nextStatement.toString());
             }
@@ -161,7 +161,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri()))
             {
-                if(QueryTypeImpl._TRACE)
+                if(QueryTypeImpl.TRACE)
                 {
                     QueryTypeImpl.log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
                 }
@@ -271,7 +271,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         // this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
-        if(QueryTypeImpl._DEBUG)
+        if(QueryTypeImpl.DEBUG)
         {
             QueryTypeImpl.log.debug("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
@@ -1117,7 +1117,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

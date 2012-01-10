@@ -234,7 +234,7 @@ public class StatisticsHelper
     // +localSettings.getStringPropertyFromConfig("separator")
     // +RdfUtils.percentEncode(keyToUse);
     //
-    // if(_INFO)
+    // if(INFO)
     // {
     // log.info("GeneralServlet: statistics key="+key);
     // }

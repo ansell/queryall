@@ -15,10 +15,10 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherUriQueryRunnable.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
-    private static final boolean _DEBUG = RdfFetcherUriQueryRunnable.log.isDebugEnabled();
+    private static final boolean TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfFetcherUriQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfFetcherUriQueryRunnable.log.isInfoEnabled();
+    private static final boolean INFO = RdfFetcherUriQueryRunnable.log.isInfoEnabled();
     
     public RdfFetcherUriQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,
@@ -44,7 +44,8 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             
             this.setQueryStartTime(new Date());
             
-            String tempRawResult = fetcher.getDocumentFromUrl(this.getOriginalEndpointUrl(), "", this.getAcceptHeader());
+            String tempRawResult =
+                    fetcher.getDocumentFromUrl(this.getOriginalEndpointUrl(), "", this.getAcceptHeader());
             
             if(fetcher.getLastWasError())
             {
@@ -65,7 +66,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        if(RdfFetcherUriQueryRunnable._DEBUG)
+                        if(RdfFetcherUriQueryRunnable.DEBUG)
                         {
                             RdfFetcherUriQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
                         }

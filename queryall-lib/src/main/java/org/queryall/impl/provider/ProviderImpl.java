@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class);
-    private static final boolean _TRACE = ProviderImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
+    private static final boolean TRACE = ProviderImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
+    private static final boolean INFO = ProviderImpl.log.isInfoEnabled();
     
     private Collection<URI> namespaces = new HashSet<URI>();
     
@@ -71,7 +71,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProviderImpl._TRACE)
+            if(ProviderImpl.TRACE)
             {
                 ProviderImpl.log.trace("Provider: nextStatement: " + nextStatement.toString());
             }
@@ -79,7 +79,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProviderSchema.getProviderTypeUri()))
             {
-                if(ProviderImpl._TRACE)
+                if(ProviderImpl.TRACE)
                 {
                     ProviderImpl.log.trace("Provider: found valid type predicate for URI: " + keyToUse);
                 }
@@ -125,7 +125,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             }
         }
         
-        if(ProviderImpl._DEBUG)
+        if(ProviderImpl.DEBUG)
         {
             ProviderImpl.log.debug("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
@@ -594,11 +594,11 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(ProviderImpl._TRACE)
+            if(ProviderImpl.TRACE)
             {
                 ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + contextKey);
             }

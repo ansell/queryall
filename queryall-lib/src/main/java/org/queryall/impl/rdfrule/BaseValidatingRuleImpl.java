@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements ValidatingRule
 {
     private static final Logger log = LoggerFactory.getLogger(BaseValidatingRuleImpl.class);
-    private static final boolean _TRACE = BaseValidatingRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = BaseValidatingRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = BaseValidatingRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = BaseValidatingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = BaseValidatingRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = BaseValidatingRuleImpl.log.isInfoEnabled();
     
     /**
      * 
@@ -55,7 +55,7 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ValidatingRuleSchema.getValidatingRuleTypeUri()))
             {
-                if(BaseValidatingRuleImpl._DEBUG)
+                if(BaseValidatingRuleImpl.DEBUG)
                 {
                     BaseValidatingRuleImpl.log.debug("Found validating rule schema type URI");
                 }
@@ -82,7 +82,7 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
     {
         if(!this.validInStage(stage))
         {
-            if(BaseValidatingRuleImpl._TRACE)
+            if(BaseValidatingRuleImpl.TRACE)
             {
                 BaseValidatingRuleImpl.log
                         .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
@@ -94,7 +94,7 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
         
         if(!this.usedInStage(stage))
         {
-            if(BaseValidatingRuleImpl._DEBUG)
+            if(BaseValidatingRuleImpl.DEBUG)
             {
                 BaseValidatingRuleImpl.log
                         .debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="

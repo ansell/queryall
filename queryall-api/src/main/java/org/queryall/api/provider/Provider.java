@@ -32,7 +32,7 @@ public interface Provider extends BaseQueryAllInterface, Comparable<Provider>, P
     void addNamespace(URI namespace);
     
     /**
-     * Adds the normalisation to this current collection of normalisations
+     * Adds the normalisation to this current collection of normalisations.
      * 
      * @param rdfNormalisationNeeded
      *            The URI of a normalisation rule that is needed by this provider

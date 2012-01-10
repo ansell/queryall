@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RdfOutputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfOutputQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RdfOutputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfOutputQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RdfOutputQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfOutputQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RdfOutputQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfOutputQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = RdfOutputQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI rdfOutputQueryTypeUri;
     private static URI queryOLDOutputRdfXmlString;
@@ -41,7 +41,7 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
@@ -51,6 +51,9 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
         RdfOutputQueryTypeSchema.setQueryOutputRdfFormat(f.createURI(baseUri, "outputRdfFormat"));
     }
     
+    /**
+     * A pre-instantiated schema object for RdfOutputQueryTypeSchema.
+     */
     public static final QueryAllSchema RDF_OUTPUT_QUERY_TYPE_SCHEMA = new RdfOutputQueryTypeSchema();
     
     /**
@@ -108,7 +111,7 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RdfOutputQueryTypeSchema()
     {
@@ -130,7 +133,7 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -179,7 +182,7 @@ public class RdfOutputQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RdfOutputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            RdfOutputQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

@@ -33,9 +33,9 @@ public class RuleTesterServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = 7617736644136389429L;
     public static final Logger log = LoggerFactory.getLogger(RuleTesterServlet.class);
-    public static final boolean _TRACE = RuleTesterServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = RuleTesterServlet.log.isDebugEnabled();
-    public static final boolean _INFO = RuleTesterServlet.log.isInfoEnabled();
+    public static final boolean TRACE = RuleTesterServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = RuleTesterServlet.log.isDebugEnabled();
+    public static final boolean INFO = RuleTesterServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,

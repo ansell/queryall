@@ -27,13 +27,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class QueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = QueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = QueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = QueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI queryTypeUri;
     
@@ -81,7 +81,7 @@ public class QueryTypeSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
@@ -112,6 +112,9 @@ public class QueryTypeSchema extends QueryAllSchema
         
     }
     
+    /**
+     * The pre-instantiated schema object for QueryTypeSchema.
+     */
     public static final QueryAllSchema QUERY_TYPE_SCHEMA = new QueryTypeSchema();
     
     /**
@@ -296,210 +299,210 @@ public class QueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * @param queryHandleAllNamespaces
+     * @param nextQueryHandleAllNamespaces
      *            the queryHandleAllNamespaces to set
      */
-    public static void setQueryHandleAllNamespaces(final URI queryHandleAllNamespaces)
+    public static void setQueryHandleAllNamespaces(final URI nextQueryHandleAllNamespaces)
     {
-        QueryTypeSchema.queryHandleAllNamespaces = queryHandleAllNamespaces;
+        QueryTypeSchema.queryHandleAllNamespaces = nextQueryHandleAllNamespaces;
     }
     
     /**
-     * @param queryIncludeDefaults
+     * @param nextQueryIncludeDefaults
      *            the queryIncludeDefaults to set
      */
-    public static void setQueryIncludeDefaults(final URI queryIncludeDefaults)
+    public static void setQueryIncludeDefaults(final URI nextQueryIncludeDefaults)
     {
-        QueryTypeSchema.queryIncludeDefaults = queryIncludeDefaults;
+        QueryTypeSchema.queryIncludeDefaults = nextQueryIncludeDefaults;
     }
     
     /**
-     * @param queryIncludeQueryType
+     * @param nextQueryIncludeQueryType
      *            the queryIncludeQueryType to set
      */
-    public static void setQueryIncludeQueryType(final URI queryIncludeQueryType)
+    public static void setQueryIncludeQueryType(final URI nextQueryIncludeQueryType)
     {
-        QueryTypeSchema.queryIncludeQueryType = queryIncludeQueryType;
+        QueryTypeSchema.queryIncludeQueryType = nextQueryIncludeQueryType;
     }
     
     /**
-     * @param queryInRobotsTxt
+     * @param nextQueryInRobotsTxt
      *            the queryInRobotsTxt to set
      */
-    public static void setQueryInRobotsTxt(final URI queryInRobotsTxt)
+    public static void setQueryInRobotsTxt(final URI nextQueryInRobotsTxt)
     {
-        QueryTypeSchema.queryInRobotsTxt = queryInRobotsTxt;
+        QueryTypeSchema.queryInRobotsTxt = nextQueryInRobotsTxt;
     }
     
     /**
-     * @param queryIsDummyQueryType
+     * @param nextQueryIsDummyQueryType
      *            the queryIsDummyQueryType to set
      */
-    public static void setQueryIsDummyQueryType(final URI queryIsDummyQueryType)
+    public static void setQueryIsDummyQueryType(final URI nextQueryIsDummyQueryType)
     {
-        QueryTypeSchema.queryIsDummyQueryType = queryIsDummyQueryType;
+        QueryTypeSchema.queryIsDummyQueryType = nextQueryIsDummyQueryType;
     }
     
     /**
-     * @param queryIsPageable
+     * @param nextQueryIsPageable
      *            the queryIsPageable to set
      */
-    public static void setQueryIsPageable(final URI queryIsPageable)
+    public static void setQueryIsPageable(final URI nextQueryIsPageable)
     {
-        QueryTypeSchema.queryIsPageable = queryIsPageable;
+        QueryTypeSchema.queryIsPageable = nextQueryIsPageable;
     }
     
     /**
-     * @param queryNamespaceInputIndex
+     * @param nextQueryNamespaceInputIndex
      *            the queryNamespaceInputIndex to set
      */
-    public static void setQueryNamespaceInputIndex(final URI queryNamespaceInputIndex)
+    public static void setQueryNamespaceInputIndex(final URI nextQueryNamespaceInputIndex)
     {
-        QueryTypeSchema.queryNamespaceInputIndex = queryNamespaceInputIndex;
+        QueryTypeSchema.queryNamespaceInputIndex = nextQueryNamespaceInputIndex;
     }
     
-    private static void setQueryNamespaceInputTag(final URI queryNamespaceInputTag)
+    private static void setQueryNamespaceInputTag(final URI nextQueryNamespaceInputTag)
     {
-        QueryTypeSchema.queryNamespaceInputTag = queryNamespaceInputTag;
+        QueryTypeSchema.queryNamespaceInputTag = nextQueryNamespaceInputTag;
     }
     
     /**
-     * @param queryNamespaceMatchAll
+     * @param nextQueryNamespaceMatchAll
      *            the queryNamespaceMatchAll to set
      */
-    public static void setQueryNamespaceMatchAll(final URI queryNamespaceMatchAll)
+    public static void setQueryNamespaceMatchAll(final URI nextQueryNamespaceMatchAll)
     {
-        QueryTypeSchema.queryNamespaceMatchAll = queryNamespaceMatchAll;
+        QueryTypeSchema.queryNamespaceMatchAll = nextQueryNamespaceMatchAll;
     }
     
     /**
-     * @param queryNamespaceMatchAny
+     * @param nextQueryNamespaceMatchAny
      *            the queryNamespaceMatchAny to set
      */
-    public static void setQueryNamespaceMatchAny(final URI queryNamespaceMatchAny)
+    public static void setQueryNamespaceMatchAny(final URI nextQueryNamespaceMatchAny)
     {
-        QueryTypeSchema.queryNamespaceMatchAny = queryNamespaceMatchAny;
+        QueryTypeSchema.queryNamespaceMatchAny = nextQueryNamespaceMatchAny;
     }
     
     /**
-     * @param queryNamespaceMatchMethod
+     * @param nextQueryNamespaceMatchMethod
      *            the queryNamespaceMatchMethod to set
      */
-    public static void setQueryNamespaceMatchMethod(final URI queryNamespaceMatchMethod)
+    public static void setQueryNamespaceMatchMethod(final URI nextQueryNamespaceMatchMethod)
     {
-        QueryTypeSchema.queryNamespaceMatchMethod = queryNamespaceMatchMethod;
+        QueryTypeSchema.queryNamespaceMatchMethod = nextQueryNamespaceMatchMethod;
     }
     
     /**
-     * @param queryNamespaceSpecific
+     * @param nextQueryNamespaceSpecific
      *            the queryNamespaceSpecific to set
      */
-    public static void setQueryNamespaceSpecific(final URI queryNamespaceSpecific)
+    public static void setQueryNamespaceSpecific(final URI nextQueryNamespaceSpecific)
     {
-        QueryTypeSchema.queryNamespaceSpecific = queryNamespaceSpecific;
+        QueryTypeSchema.queryNamespaceSpecific = nextQueryNamespaceSpecific;
     }
     
     /**
-     * @param queryNamespaceToHandle
+     * @param nextQueryNamespaceToHandle
      *            the queryNamespaceToHandle to set
      */
-    public static void setQueryNamespaceToHandle(final URI queryNamespaceToHandle)
+    public static void setQueryNamespaceToHandle(final URI nextQueryNamespaceToHandle)
     {
-        QueryTypeSchema.queryNamespaceToHandle = queryNamespaceToHandle;
+        QueryTypeSchema.queryNamespaceToHandle = nextQueryNamespaceToHandle;
     }
     
     /**
-     * @param queryParameterTemplateTerm
+     * @param nextQueryParameterTemplateTerm
      *            the queryParameterTemplateTerm to set
      */
-    public static void setQueryParameterTemplateTerm(final URI queryParameterTemplateTerm)
+    public static void setQueryParameterTemplateTerm(final URI nextQueryParameterTemplateTerm)
     {
-        QueryTypeSchema.queryParameterTemplateTerm = queryParameterTemplateTerm;
+        QueryTypeSchema.queryParameterTemplateTerm = nextQueryParameterTemplateTerm;
     }
     
     /**
-     * @param queryPublicIdentifierIndex
+     * @param nextQueryPublicIdentifierIndex
      *            the queryPublicIdentifierIndex to set
      */
-    public static void setQueryPublicIdentifierIndex(final URI queryPublicIdentifierIndex)
+    public static void setQueryPublicIdentifierIndex(final URI nextQueryPublicIdentifierIndex)
     {
-        QueryTypeSchema.queryPublicIdentifierIndex = queryPublicIdentifierIndex;
+        QueryTypeSchema.queryPublicIdentifierIndex = nextQueryPublicIdentifierIndex;
     }
     
     /**
-     * @param queryPublicIdentifierTag
+     * @param nextQueryPublicIdentifierTag
      *            the queryPublicIdentifierTag to set
      */
-    public static void setQueryPublicIdentifierTag(final URI queryPublicIdentifierTag)
+    public static void setQueryPublicIdentifierTag(final URI nextQueryPublicIdentifierTag)
     {
-        QueryTypeSchema.queryPublicIdentifierTag = queryPublicIdentifierTag;
+        QueryTypeSchema.queryPublicIdentifierTag = nextQueryPublicIdentifierTag;
     }
     
     /**
-     * @param queryQueryUriTemplateString
+     * @param nextQueryQueryUriTemplateString
      *            the queryQueryUriTemplateString to set
      */
-    public static void setQueryQueryUriTemplateString(final URI queryQueryUriTemplateString)
+    public static void setQueryQueryUriTemplateString(final URI nextQueryQueryUriTemplateString)
     {
-        QueryTypeSchema.queryQueryUriTemplateString = queryQueryUriTemplateString;
+        QueryTypeSchema.queryQueryUriTemplateString = nextQueryQueryUriTemplateString;
     }
     
     /**
-     * @param queryStandardUriTemplateString
+     * @param nextQueryStandardUriTemplateString
      *            the queryStandardUriTemplateString to set
      */
-    public static void setQueryStandardUriTemplateString(final URI queryStandardUriTemplateString)
+    public static void setQueryStandardUriTemplateString(final URI nextQueryStandardUriTemplateString)
     {
-        QueryTypeSchema.queryStandardUriTemplateString = queryStandardUriTemplateString;
+        QueryTypeSchema.queryStandardUriTemplateString = nextQueryStandardUriTemplateString;
     }
     
     /**
-     * @param queryStaticOutputTemplateTerm
+     * @param nextQueryStaticOutputTemplateTerm
      *            the queryStaticOutputTemplateTerm to set
      */
-    public static void setQueryStaticOutputTemplateTerm(final URI queryStaticOutputTemplateTerm)
+    public static void setQueryStaticOutputTemplateTerm(final URI nextQueryStaticOutputTemplateTerm)
     {
-        QueryTypeSchema.queryStaticOutputTemplateTerm = queryStaticOutputTemplateTerm;
+        QueryTypeSchema.queryStaticOutputTemplateTerm = nextQueryStaticOutputTemplateTerm;
     }
     
     /**
-     * @param queryTemplateString
+     * @param nextQueryTemplateString
      *            the queryTemplateString to set
      */
-    public static void setQueryTemplateString(final URI queryTemplateString)
+    public static void setQueryTemplateString(final URI nextQueryTemplateString)
     {
-        QueryTypeSchema.queryTemplateString = queryTemplateString;
+        QueryTypeSchema.queryTemplateString = nextQueryTemplateString;
     }
     
     /**
-     * @param queryTemplateTerm
+     * @param nextQueryTemplateTerm
      *            the queryTemplateTerm to set
      */
-    public static void setQueryTemplateTerm(final URI queryTemplateTerm)
+    public static void setQueryTemplateTerm(final URI nextQueryTemplateTerm)
     {
-        QueryTypeSchema.queryTemplateTerm = queryTemplateTerm;
+        QueryTypeSchema.queryTemplateTerm = nextQueryTemplateTerm;
     }
     
     /**
-     * @param queryTitle
+     * @param nextQueryTitle
      *            the queryTitle to set
      */
-    public static void setQueryTitle(final URI queryTitle)
+    public static void setQueryTitle(final URI nextQueryTitle)
     {
-        QueryTypeSchema.queryTitle = queryTitle;
+        QueryTypeSchema.queryTitle = nextQueryTitle;
     }
     
     /**
-     * @param queryTypeUri
+     * @param nextQueryTypeUri
      *            the queryTypeUri to set
      */
-    public static void setQueryTypeUri(final URI queryTypeUri)
+    public static void setQueryTypeUri(final URI nextQueryTypeUri)
     {
-        QueryTypeSchema.queryTypeUri = queryTypeUri;
+        QueryTypeSchema.queryTypeUri = nextQueryTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public QueryTypeSchema()
     {
@@ -521,7 +524,7 @@ public class QueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -650,7 +653,7 @@ public class QueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            QueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            QueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

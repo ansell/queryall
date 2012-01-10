@@ -9,7 +9,7 @@ import org.openrdf.repository.Repository;
 
 /**
  * 
- * Used to indicate that a class provides a schema for QueryAll objects
+ * Used to indicate that a class provides a schema for QueryAll objects.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  * 
@@ -78,9 +78,9 @@ public abstract class QueryAllSchema
     public abstract boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException;
     
-    protected final void setName(final String name)
+    protected final void setName(final String nextName)
     {
-        this.name = name;
+        this.name = nextName;
     }
     
     @Override

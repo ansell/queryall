@@ -18,11 +18,11 @@ public class Schema
 {
     private static final Logger log = LoggerFactory.getLogger(Schema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = Schema.log.isTraceEnabled();
+    private static final boolean TRACE = Schema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = Schema.log.isDebugEnabled();
+    private static final boolean DEBUG = Schema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = Schema.log.isInfoEnabled();
+    private static final boolean INFO = Schema.log.isInfoEnabled();
     
     /**
      * 

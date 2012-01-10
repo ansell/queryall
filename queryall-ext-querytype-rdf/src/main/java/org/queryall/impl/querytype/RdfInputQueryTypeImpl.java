@@ -51,10 +51,10 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
         SparqlProcessorQueryType, RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeImpl.class);
-    private static final boolean _TRACE = RdfInputQueryTypeImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = RdfInputQueryTypeImpl.log.isDebugEnabled();
+    private static final boolean TRACE = RdfInputQueryTypeImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfInputQueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfInputQueryTypeImpl.log.isInfoEnabled();
+    private static final boolean INFO = RdfInputQueryTypeImpl.log.isInfoEnabled();
     
     private static final Set<URI> RDF_INPUT_QUERY_TYPE_IMPL_TYPES = new HashSet<URI>();
     
@@ -104,7 +104,7 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
                                     SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri()) || nextStatement
                             .getObject().equals(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri())))
             {
-                if(RdfInputQueryTypeImpl._TRACE)
+                if(RdfInputQueryTypeImpl.TRACE)
                 {
                     RdfInputQueryTypeImpl.log.trace("RdfInputQueryTypeImpl: found valid type predicate for URI: "
                             + keyToUse);
@@ -221,7 +221,7 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
                 }
             }
             
-            if(RdfInputQueryTypeImpl._DEBUG)
+            if(RdfInputQueryTypeImpl.DEBUG)
             {
                 RdfInputQueryTypeImpl.log.debug("RdfInputQueryTypeImpl: found " + selectBindings
                         + " results sets with a total of " + actualBindings + " bound values");
@@ -351,7 +351,7 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

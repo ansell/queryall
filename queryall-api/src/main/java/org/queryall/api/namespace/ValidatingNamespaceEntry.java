@@ -18,7 +18,7 @@ public interface ValidatingNamespaceEntry extends NamespaceEntry
     
     /**
      * Defines whether validation is possible for this namespace entry, so that validation is not
-     * always on for all ValidatingNamespaceEntry objects
+     * always on for all ValidatingNamespaceEntry objects.
      * 
      * @param validationPossible
      *            True if validation is possible for this namespace entry.
@@ -26,7 +26,7 @@ public interface ValidatingNamespaceEntry extends NamespaceEntry
     void setValidationPossible(boolean validationPossible);
     
     /**
-     * Validates the given identifier based on the validation method of this object
+     * Validates the given identifier based on the validation method of this object.
      * 
      * @param identifier
      *            A string representing an identifier that is thought to be in this namespace

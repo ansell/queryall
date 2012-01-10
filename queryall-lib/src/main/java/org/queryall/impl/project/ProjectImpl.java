@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
 public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProjectImpl.class);
-    private static final boolean _TRACE = ProjectImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProjectImpl.log.isDebugEnabled();
+    private static final boolean TRACE = ProjectImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = ProjectImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProjectImpl.log.isInfoEnabled();
+    private static final boolean INFO = ProjectImpl.log.isInfoEnabled();
     
     public static Set<URI> myTypes()
     {
@@ -53,7 +53,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProjectImpl._DEBUG)
+            if(ProjectImpl.DEBUG)
             {
                 ProjectImpl.log.debug("Project: nextStatement: " + nextStatement.toString());
             }
@@ -61,7 +61,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProjectSchema.getProjectTypeUri()))
             {
-                if(ProjectImpl._TRACE)
+                if(ProjectImpl.TRACE)
                 {
                     ProjectImpl.log.trace("Project: found valid type predicate for URI: " + keyToUse);
                 }
@@ -205,13 +205,13 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
             final URI projectInstanceUri = this.getKey();
             
-            if(ProjectImpl._DEBUG)
+            if(ProjectImpl.DEBUG)
             {
                 ProjectImpl.log.debug("Project.toRdf: keyToUse=" + contextKey);
             }
@@ -236,7 +236,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
             
             final Literal descriptionLiteral = f.createLiteral(this.getDescription());
             
-            if(ProjectImpl._TRACE)
+            if(ProjectImpl.TRACE)
             {
                 ProjectImpl.log.trace("Project.toRdf: about to add URI's to connection");
             }

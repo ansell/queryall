@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 public final class ProviderUtils
 {
     private static final Logger log = LoggerFactory.getLogger(ProviderUtils.class);
-    private static final boolean _TRACE = ProviderUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProviderUtils.log.isDebugEnabled();
+    private static final boolean TRACE = ProviderUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = ProviderUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProviderUtils.log.isInfoEnabled();
+    private static final boolean INFO = ProviderUtils.log.isInfoEnabled();
     
     /**
      * If the given QueryType includes defaults, this method returns a collection of Providers from
@@ -182,7 +182,7 @@ public final class ProviderUtils
         
         if(nextInputQueryType.getIncludeDefaults())
         {
-            if(ProviderUtils._DEBUG)
+            if(ProviderUtils.DEBUG)
             {
                 ProviderUtils.log.debug("including defaults for nextQueryType.title=" + nextInputQueryType.getTitle()
                         + " nextQueryType.getKey()=" + nextInputQueryType.getKey());
@@ -257,7 +257,7 @@ public final class ProviderUtils
                     {
                         nextQueryNamespaceUris.put(nextInputNamespace, nextUriFromTitleNamespaceList);
                     }
-                    else if(ProviderUtils._DEBUG)
+                    else if(ProviderUtils.DEBUG)
                     {
                         ProviderUtils.log
                                 .debug("getProvidersForQueryNamespaceSpecific: did not find any namespace URIs for nextTitle="
@@ -322,7 +322,7 @@ public final class ProviderUtils
         
         for(final Provider nextAllProvider : relevantProviders.values())
         {
-            if(ProviderUtils._TRACE)
+            if(ProviderUtils.TRACE)
             {
                 ProviderUtils.log
                         .trace("getProvidersForQueryNonNamespaceSpecific: !nextQueryType.isNamespaceSpecific nextAllProvider="
@@ -332,7 +332,7 @@ public final class ProviderUtils
             if(nextAllProvider.isUsedWithProfileList(sortedIncludedProfiles, recogniseImplicitProviderInclusions,
                     includeNonProfileMatchedProviders))
             {
-                if(ProviderUtils._DEBUG)
+                if(ProviderUtils.DEBUG)
                 {
                     ProviderUtils.log
                             .debug("getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
@@ -365,12 +365,12 @@ public final class ProviderUtils
             }
         }
         
-        if(ProviderUtils._DEBUG)
+        if(ProviderUtils.DEBUG)
         {
             ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size() + " providers for querytype="
                     + nextQueryType.stringValue());
             
-            if(ProviderUtils._TRACE)
+            if(ProviderUtils.TRACE)
             {
                 for(final Provider nextResult : results.values())
                 {

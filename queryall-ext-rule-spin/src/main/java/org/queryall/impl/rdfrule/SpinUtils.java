@@ -44,11 +44,11 @@ public class SpinUtils
 {
     private static final Logger log = LoggerFactory.getLogger(SpinUtils.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SpinUtils.log.isTraceEnabled();
+    private static final boolean TRACE = SpinUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SpinUtils.log.isDebugEnabled();
+    private static final boolean DEBUG = SpinUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinUtils.log.isInfoEnabled();
+    private static final boolean INFO = SpinUtils.log.isInfoEnabled();
     private static LocationMapper lMap;
     private static FileManager fileManager;
     private static OntModelSpec myOntModelSpec;

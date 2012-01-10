@@ -31,11 +31,11 @@ public class ProviderSchema extends QueryAllSchema
 {
     private static final Logger log = LoggerFactory.getLogger(ProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = ProviderSchema.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = ProviderSchema.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = ProviderSchema.log.isInfoEnabled();
     
     private static URI providerNoCommunication;
     
@@ -63,7 +63,7 @@ public class ProviderSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
@@ -191,115 +191,115 @@ public class ProviderSchema extends QueryAllSchema
     // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
     /**
-     * @param providerAssumedContentType
+     * @param nextProviderAssumedContentType
      *            the providerAssumedContentType to set
      */
-    public static void setProviderAssumedContentType(final URI providerAssumedContentType)
+    public static void setProviderAssumedContentType(final URI nextProviderAssumedContentType)
     {
-        ProviderSchema.providerAssumedContentType = providerAssumedContentType;
+        ProviderSchema.providerAssumedContentType = nextProviderAssumedContentType;
     }
     
     /**
-     * @param providerHandledNamespace
+     * @param nextProviderHandledNamespace
      *            the providerHandledNamespace to set
      */
-    public static void setProviderHandlesNamespace(final URI providerHandledNamespace)
+    public static void setProviderHandlesNamespace(final URI nextProviderHandledNamespace)
     {
-        ProviderSchema.providerHandlesNamespace = providerHandledNamespace;
+        ProviderSchema.providerHandlesNamespace = nextProviderHandledNamespace;
     }
     
     /**
-     * @param providerIncludedInQuery
+     * @param nextProviderIncludedInQuery
      *            the providerIncludedInQuery to set
      */
-    public static void setProviderIncludedInQuery(final URI providerIncludedInQuery)
+    public static void setProviderIncludedInQuery(final URI nextProviderIncludedInQuery)
     {
-        ProviderSchema.providerIncludedInQuery = providerIncludedInQuery;
+        ProviderSchema.providerIncludedInQuery = nextProviderIncludedInQuery;
     }
     
     /**
-     * @param providerIsDefaultSource
+     * @param nextProviderIsDefaultSource
      *            the providerIsDefaultSource to set
      */
-    public static void setProviderIsDefaultSource(final URI providerIsDefaultSource)
+    public static void setProviderIsDefaultSource(final URI nextProviderIsDefaultSource)
     {
-        ProviderSchema.providerIsDefaultSource = providerIsDefaultSource;
+        ProviderSchema.providerIsDefaultSource = nextProviderIsDefaultSource;
     }
     
     /**
-     * @param providerNeedsRdfNormalisation
+     * @param nextProviderNeedsRdfNormalisation
      *            the providerNeedsRdfNormalisation to set
      */
-    public static void setProviderNeedsRdfNormalisation(final URI providerNeedsRdfNormalisation)
+    public static void setProviderNeedsRdfNormalisation(final URI nextProviderNeedsRdfNormalisation)
     {
-        ProviderSchema.providerNeedsRdfNormalisation = providerNeedsRdfNormalisation;
+        ProviderSchema.providerNeedsRdfNormalisation = nextProviderNeedsRdfNormalisation;
     }
     
     /**
-     * @param providerNoCommunication
+     * @param nextProviderNoCommunication
      *            the providerNoCommunication to set
      */
-    public static void setProviderNoCommunication(final URI providerNoCommunication)
+    public static void setProviderNoCommunication(final URI nextProviderNoCommunication)
     {
-        ProviderSchema.providerNoCommunication = providerNoCommunication;
+        ProviderSchema.providerNoCommunication = nextProviderNoCommunication;
     }
     
     /**
-     * @param providerProxy
+     * @param nextProviderProxy
      *            the providerProxy to set
      */
-    public static void setProviderProxy(final URI providerProxy)
+    public static void setProviderProxy(final URI nextProviderProxy)
     {
-        ProviderSchema.providerProxy = providerProxy;
+        ProviderSchema.providerProxy = nextProviderProxy;
     }
     
     /**
-     * @param providerRedirect
+     * @param nextProviderRedirect
      *            the providerRedirect to set
      */
-    public static void setProviderRedirect(final URI providerRedirect)
+    public static void setProviderRedirect(final URI nextProviderRedirect)
     {
-        ProviderSchema.providerRedirect = providerRedirect;
+        ProviderSchema.providerRedirect = nextProviderRedirect;
     }
     
     /**
-     * @param providerResolutionMethod
+     * @param nextProviderResolutionMethod
      *            the providerResolutionMethod to set
      */
-    public static void setProviderResolutionMethod(final URI providerResolutionMethod)
+    public static void setProviderResolutionMethod(final URI nextProviderResolutionMethod)
     {
-        ProviderSchema.providerResolutionMethod = providerResolutionMethod;
+        ProviderSchema.providerResolutionMethod = nextProviderResolutionMethod;
     }
     
     /**
-     * @param providerResolutionStrategy
+     * @param nextProviderResolutionStrategy
      *            the providerResolutionStrategy to set
      */
-    public static void setProviderResolutionStrategy(final URI providerResolutionStrategy)
+    public static void setProviderResolutionStrategy(final URI nextProviderResolutionStrategy)
     {
-        ProviderSchema.providerResolutionStrategy = providerResolutionStrategy;
+        ProviderSchema.providerResolutionStrategy = nextProviderResolutionStrategy;
     }
     
     /**
-     * @param providerTitle
+     * @param nextProviderTitle
      *            the providerTitle to set
      */
-    public static void setProviderTitle(final URI providerTitle)
+    public static void setProviderTitle(final URI nextProviderTitle)
     {
-        ProviderSchema.providerTitle = providerTitle;
+        ProviderSchema.providerTitle = nextProviderTitle;
     }
     
     /**
-     * @param providerTypeUri
+     * @param nextProviderTypeUri
      *            the providerTypeUri to set
      */
-    public static void setProviderTypeUri(final URI providerTypeUri)
+    public static void setProviderTypeUri(final URI nextProviderTypeUri)
     {
-        ProviderSchema.providerTypeUri = providerTypeUri;
+        ProviderSchema.providerTypeUri = nextProviderTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public ProviderSchema()
     {
@@ -321,7 +321,7 @@ public class ProviderSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

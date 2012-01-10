@@ -42,9 +42,9 @@ public class NamespaceProvidersServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -7006535158409121292L;
     public static final Logger log = LoggerFactory.getLogger(NamespaceProvidersServlet.class);
-    public static final boolean _TRACE = NamespaceProvidersServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = NamespaceProvidersServlet.log.isDebugEnabled();
-    public static final boolean _INFO = NamespaceProvidersServlet.log.isInfoEnabled();
+    public static final boolean TRACE = NamespaceProvidersServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = NamespaceProvidersServlet.log.isDebugEnabled();
+    public static final boolean INFO = NamespaceProvidersServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,

@@ -19,10 +19,10 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
 {
     private static final Logger log = LoggerFactory.getLogger(HttpUrlQueryRunnable.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = HttpUrlQueryRunnable.log.isTraceEnabled();
-    private static final boolean _DEBUG = HttpUrlQueryRunnable.log.isDebugEnabled();
+    private static final boolean TRACE = HttpUrlQueryRunnable.log.isTraceEnabled();
+    private static final boolean DEBUG = HttpUrlQueryRunnable.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
+    private static final boolean INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
     
     public String httpOperation = "GET";
     public int maxRowsParameter = this.getLocalSettings()
@@ -52,7 +52,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             final RdfFetcher fetcher = new RdfFetcher(this.getLocalSettings(), this.getBlacklistController());
             
-            if(HttpUrlQueryRunnable._DEBUG)
+            if(HttpUrlQueryRunnable.DEBUG)
             {
                 HttpUrlQueryRunnable.log.debug("HttpUrlQueryRunnable.run: about to fetch endpoint="
                         + this.getOriginalEndpointUrl());
@@ -80,7 +80,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                         HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
                                 + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
-                        if(HttpUrlQueryRunnable._DEBUG)
+                        if(HttpUrlQueryRunnable.DEBUG)
                         {
                             HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
                         }
@@ -108,7 +108,8 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                     || this.httpOperation.equals(HttpProviderSchema.getProviderHttpGetUrl().stringValue()))
             {
                 tempRawResult =
-                        fetcher.getDocumentFromUrl(this.getOriginalEndpointUrl(), this.getOriginalQuery(), this.getAcceptHeader());
+                        fetcher.getDocumentFromUrl(this.getOriginalEndpointUrl(), this.getOriginalQuery(),
+                                this.getAcceptHeader());
                 
                 if(fetcher.getLastWasError())
                 {
@@ -127,7 +128,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        if(HttpUrlQueryRunnable._DEBUG)
+                        if(HttpUrlQueryRunnable.DEBUG)
                         {
                             HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
                         }

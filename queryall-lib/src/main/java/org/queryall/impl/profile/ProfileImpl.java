@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable<Profile>, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
-    private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProfileImpl.log.isDebugEnabled();
+    private static final boolean TRACE = ProfileImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = ProfileImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProfileImpl.log.isInfoEnabled();
+    private static final boolean INFO = ProfileImpl.log.isInfoEnabled();
     
     private static final Set<URI> PROFILE_IMPL_TYPES = new HashSet<URI>();
     
@@ -85,7 +85,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProfileImpl._DEBUG)
+            if(ProfileImpl.DEBUG)
             {
                 ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
             }
@@ -93,7 +93,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProfileSchema.getProfileTypeUri()))
             {
-                if(ProfileImpl._TRACE)
+                if(ProfileImpl.TRACE)
                 {
                     ProfileImpl.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
                 }
@@ -169,7 +169,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                             + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().stringValue());
         }
         
-        if(ProfileImpl._TRACE)
+        if(ProfileImpl.TRACE)
         {
             ProfileImpl.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
         }
@@ -699,7 +699,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -794,7 +794,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 
                 for(final URI nextIncludeQuery : this.includeQueries)
                 {
-                    if(ProfileImpl._TRACE)
+                    if(ProfileImpl.TRACE)
                     {
                         ProfileImpl.log.trace("Profile.toRdf: nextIncludeQuery=" + nextIncludeQuery);
                     }
@@ -809,7 +809,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 
                 for(final URI nextExcludeQuery : this.excludeQueries)
                 {
-                    if(ProfileImpl._TRACE)
+                    if(ProfileImpl.TRACE)
                     {
                         ProfileImpl.log.trace("Profile.toRdf: nextExcludeQuery=" + nextExcludeQuery);
                     }

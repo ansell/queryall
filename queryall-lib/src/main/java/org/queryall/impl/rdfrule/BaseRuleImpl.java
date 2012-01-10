@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseRuleImpl extends BaseQueryAllImpl implements NormalisationRule
 {
     private static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
-    private static final boolean _TRACE = BaseRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = BaseRuleImpl.log.isDebugEnabled();
-    private static final boolean _INFO = BaseRuleImpl.log.isInfoEnabled();
+    private static final boolean TRACE = BaseRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = BaseRuleImpl.log.isDebugEnabled();
+    private static final boolean INFO = BaseRuleImpl.log.isInfoEnabled();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     
@@ -71,7 +71,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            // if(NormalisationRuleImpl._DEBUG)
+            // if(NormalisationRuleImpl.DEBUG)
             // {
             // NormalisationRuleImpl.log.debug("NormalisationRule: nextStatement: " +
             // nextStatement.toString());
@@ -80,7 +80,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(NormalisationRuleSchema.getNormalisationRuleTypeUri()))
             {
-                if(BaseRuleImpl._TRACE)
+                if(BaseRuleImpl.TRACE)
                 {
                     BaseRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: " + keyToUse);
                 }
@@ -122,7 +122,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             }
         }
         
-        // if(NormalisationRuleImpl._DEBUG)
+        // if(NormalisationRuleImpl.DEBUG)
         // {
         // NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
         // + this.toString());
@@ -433,11 +433,11 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(BaseRuleImpl._DEBUG)
+            if(BaseRuleImpl.DEBUG)
             {
                 BaseRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + contextKey);
             }
@@ -450,7 +450,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             
             if(modelVersion <= 2)
             {
-                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.version2NormalisationRuleTypeUri, contextKey);
+                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.getVersion2NormalisationRuleTypeUri(), contextKey);
             }
             else
             {

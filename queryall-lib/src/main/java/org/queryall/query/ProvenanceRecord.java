@@ -43,10 +43,10 @@ import org.slf4j.LoggerFactory;
 public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProvenanceRecord.class);
-    private static final boolean _TRACE = ProvenanceRecord.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProvenanceRecord.log.isDebugEnabled();
+    private static final boolean TRACE = ProvenanceRecord.log.isTraceEnabled();
+    private static final boolean DEBUG = ProvenanceRecord.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProvenanceRecord.log.isInfoEnabled();
+    private static final boolean INFO = ProvenanceRecord.log.isInfoEnabled();
     
     public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
         throws OpenRDFException
@@ -106,7 +106,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.PROVENANCE.getBaseURI();
         
@@ -312,7 +312,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProvenanceRecord._DEBUG)
+            if(ProvenanceRecord.DEBUG)
             {
                 ProvenanceRecord.log.debug("ProvenanceRecord: nextStatement: " + nextStatement.toString());
             }
@@ -320,7 +320,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProvenanceRecord.provenanceTypeUri))
             {
-                if(ProvenanceRecord._TRACE)
+                if(ProvenanceRecord.TRACE)
                 {
                     ProvenanceRecord.log.trace("ProvenanceRecord: found valid type predicate for URI: " + keyToUse);
                 }
@@ -357,7 +357,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
             }
         }
         
-        if(ProvenanceRecord._DEBUG)
+        if(ProvenanceRecord.DEBUG)
         {
             ProvenanceRecord.log.debug("ProvenanceRecord.fromRdf: would have returned... keyToUse=" + keyToUse
                     + " result=" + this.toString());
@@ -402,7 +402,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
             return false;
         }
         
-        if(ProvenanceRecord._DEBUG)
+        if(ProvenanceRecord.DEBUG)
         {
             ProvenanceRecord.log.debug("ProvenanceRecord.relatedToElementTypes: this.getKey()=" + this.getKey());
         }
@@ -489,7 +489,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

@@ -35,10 +35,10 @@ import org.slf4j.LoggerFactory;
 public class QueryCreator
 {
     private static final Logger log = LoggerFactory.getLogger(QueryCreator.class);
-    private static final boolean _TRACE = QueryCreator.log.isTraceEnabled();
-    private static final boolean _DEBUG = QueryCreator.log.isDebugEnabled();
+    private static final boolean TRACE = QueryCreator.log.isTraceEnabled();
+    private static final boolean DEBUG = QueryCreator.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryCreator.log.isInfoEnabled();
+    private static final boolean INFO = QueryCreator.log.isInfoEnabled();
     
     private static final List<String> inputUrlEncodeInstructions = new ArrayList<String>(1);
     private static final List<String> inputPlusUrlEncodeInstructions = new ArrayList<String>(1);
@@ -222,7 +222,7 @@ public class QueryCreator
             final boolean includeNonProfileMatchedRdfRules, final boolean overallConvertAlternateToPreferredPrefix,
             final QueryAllConfiguration localSettings) throws QueryAllException
     {
-        if(QueryCreator._TRACE)
+        if(QueryCreator.TRACE)
         {
             QueryCreator.log.trace("QueryCreator.doReplacementsOnString: queryString=" + queryParameters
                     + " templateString=" + templateString + " normalisationUrisNeeded=" + nextProvider);
@@ -230,7 +230,7 @@ public class QueryCreator
         
         if(!(localSettings.getTagPattern().matcher(templateString).matches()))
         {
-            if(QueryCreator._TRACE)
+            if(QueryCreator.TRACE)
             {
                 QueryCreator.log.trace("tag pattern " + ((Settings)localSettings).getTagPattern().toString()
                         + " does not match template string");
@@ -261,7 +261,7 @@ public class QueryCreator
             normalisedQueryUri = includedQueryType.getQueryUriTemplateString();
         }
         
-        if(QueryCreator._TRACE)
+        if(QueryCreator.TRACE)
         {
             QueryCreator.log.trace("QueryCreator.createQuery: initial value of replacedString=" + replacedString);
             QueryCreator.log.trace("QueryCreator.createQuery: initial value of normalisedStandardUri="
@@ -401,7 +401,7 @@ public class QueryCreator
                     normalisedStandardUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
                             attributeList.get(nextAttribute));
             
-            if(QueryCreator._TRACE)
+            if(QueryCreator.TRACE)
             {
                 QueryCreator.log.trace("QueryCreator.createQuery: in replace loop ${" + nextAttribute + "}="
                         + attributeList.get(nextAttribute) + " normalisedStandardUri=" + normalisedStandardUri);
@@ -411,7 +411,7 @@ public class QueryCreator
                     normalisedQueryUri.replace("${" + nextAttribute + Constants.CLOSING_BRACE,
                             attributeList.get(nextAttribute));
             
-            if(QueryCreator._TRACE)
+            if(QueryCreator.TRACE)
             {
                 QueryCreator.log.trace("QueryCreator.createQuery: in replace loop ${" + nextAttribute + "}="
                         + attributeList.get(nextAttribute) + " normalisedQueryUri=" + normalisedQueryUri);
@@ -580,7 +580,7 @@ public class QueryCreator
                         QueryCreator.inputXmlEncodedprivateuppercaseInstructions,
                         overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
         
-        if(QueryCreator._TRACE)
+        if(QueryCreator.TRACE)
         {
             QueryCreator.log.trace("QueryCreator.createQuery: after match replacements replacedString="
                     + replacedString);
@@ -745,7 +745,7 @@ public class QueryCreator
                         Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATEUPPERCASE_NORMALISED_QUERY_URI,
                         StringUtils.xmlEncodeString(inputUrlEncoded_privateuppercase_normalisedQueryUri));
         
-        if(QueryCreator._TRACE)
+        if(QueryCreator.TRACE)
         {
             QueryCreator.log.trace("QueryCreator.createQuery: before regex loop started replacedString="
                     + replacedString);
@@ -884,7 +884,7 @@ public class QueryCreator
                                 (String)nextTransformingRule
                                         .stageQueryVariables(inputXmlEncoded_privateuppercase_endpointSpecificQueryUri);
                         
-                        if(QueryCreator._TRACE)
+                        if(QueryCreator.TRACE)
                         {
                             QueryCreator.log.trace("QueryCreator.createQuery: in regex loop endpointSpecificUri="
                                     + endpointSpecificUri);
@@ -1104,7 +1104,7 @@ public class QueryCreator
                         Constants.TEMPLATE_XML_ENCODED_INPUT_URL_ENCODED_PRIVATELOWERCASE_ENDPOINT_SPECIFIC_QUERY_URI,
                         StringUtils.xmlEncodeString(inputUrlEncoded_privatelowercase_endpointSpecificQueryUri));
         
-        if(QueryCreator._DEBUG)
+        if(QueryCreator.DEBUG)
         {
             final long end = System.currentTimeMillis();
             
@@ -1130,7 +1130,7 @@ public class QueryCreator
             final Provider nextProvider, final Map<String, String> queryParameters, final String nextEndpoint,
             final String realHostName, final int pageOffset, final QueryAllConfiguration localSettings)
     {
-        if(QueryCreator._TRACE)
+        if(QueryCreator.TRACE)
         {
             QueryCreator.log.trace("QueryCreator.getAttributeListFor: called with nextProvider=" + nextProvider
                     + " queryParameters=" + queryParameters + " nextEndpoint=" + nextEndpoint + " realHostName="
@@ -1210,7 +1210,7 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_QUERY_STRING,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(queryParameters.get(Constants.QUERY))));
         
-        if(QueryCreator._DEBUG)
+        if(QueryCreator.DEBUG)
         {
             final long end = System.currentTimeMillis();
             
@@ -1238,7 +1238,7 @@ public class QueryCreator
             final List<String> specialInstructions, final boolean convertAlternateToPreferredPrefix,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Provider nextProvider)
     {
-        if(QueryCreator._DEBUG)
+        if(QueryCreator.DEBUG)
         {
             QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: templateString="
                     + templateString + " convertAlternateToPreferredPrefix=" + convertAlternateToPreferredPrefix
@@ -1310,7 +1310,7 @@ public class QueryCreator
                                 + nextProvider.getKey() + " inputReplaceString=" + inputReplaceString);
                     }
                 }
-                if(QueryCreator._TRACE)
+                if(QueryCreator.TRACE)
                 {
                     QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: nextMatchTag="
                             + nextMatchTag);
@@ -1455,7 +1455,7 @@ public class QueryCreator
                 // End uppercase region
                 /***********************/
                 
-                if(QueryCreator._TRACE)
+                if(QueryCreator.TRACE)
                 {
                     QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
                             + replacedString);
@@ -1518,7 +1518,7 @@ public class QueryCreator
                             StringUtils.xmlEncodeString(StringUtils.ntriplesEncode(queryString)));
         }
         
-        if(QueryCreator._DEBUG)
+        if(QueryCreator.DEBUG)
         {
             final long end = System.currentTimeMillis();
             

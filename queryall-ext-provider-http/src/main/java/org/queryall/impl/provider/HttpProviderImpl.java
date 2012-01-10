@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory;
 public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvider
 {
     private static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
-    private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
+    private static final boolean TRACE = HttpProviderImpl.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = HttpProviderImpl.log.isDebugEnabled();
+    private static final boolean DEBUG = HttpProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = HttpProviderImpl.log.isInfoEnabled();
+    private static final boolean INFO = HttpProviderImpl.log.isInfoEnabled();
     
     private Collection<String> endpointUrls = new HashSet<String>();
     
@@ -58,7 +58,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(HttpProviderImpl._TRACE)
+            if(HttpProviderImpl.TRACE)
             {
                 HttpProviderImpl.log.trace("HttpProvider: nextStatement: " + nextStatement.toString());
             }
@@ -66,7 +66,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(HttpProviderSchema.getProviderHttpTypeUri()))
             {
-                if(HttpProviderImpl._TRACE)
+                if(HttpProviderImpl.TRACE)
                 {
                     HttpProviderImpl.log.trace("HttpProvider: found valid type predicate for URI: " + keyToUse);
                 }
@@ -84,7 +84,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
             }
             else
             {
-                if(HttpProviderImpl._TRACE)
+                if(HttpProviderImpl.TRACE)
                 {
                     HttpProviderImpl.log.trace("HttpProvider: unrecognisedStatement nextStatement: "
                             + nextStatement.toString());
@@ -163,13 +163,13 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
             con.setAutoCommit(false);
             
-            if(HttpProviderImpl._TRACE)
+            if(HttpProviderImpl.TRACE)
             {
                 HttpProviderImpl.log.trace("Provider.toRdf: keyToUse=" + keyToUse);
             }

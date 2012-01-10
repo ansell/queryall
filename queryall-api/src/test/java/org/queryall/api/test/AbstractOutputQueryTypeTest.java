@@ -11,7 +11,7 @@ public abstract class AbstractOutputQueryTypeTest extends AbstractQueryTypeTest
     
     /**
      * This method needs to be overriden to return a new instance of the implemented OutputQueryType
-     * for each call
+     * for each call.
      * 
      * @return A new instance of the OutputQueryType implemented class
      */

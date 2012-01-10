@@ -99,9 +99,9 @@ import org.slf4j.LoggerFactory;
 public final class RdfUtils
 {
     private static final Logger log = LoggerFactory.getLogger(RdfUtils.class);
-    private static final boolean _TRACE = RdfUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = RdfUtils.log.isDebugEnabled();
-    private static final boolean _INFO = RdfUtils.log.isInfoEnabled();
+    private static final boolean TRACE = RdfUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfUtils.log.isDebugEnabled();
+    private static final boolean INFO = RdfUtils.log.isInfoEnabled();
     
     /**
      * Performs the ASK queries until one returns false, or they are all executed.
@@ -125,7 +125,7 @@ public final class RdfUtils
             
             for(final String nextAskQuery : sparqlAskQueries)
             {
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("chooseStatementsFromRepository nextAskQuery=" + nextAskQuery);
                 }
@@ -213,7 +213,7 @@ public final class RdfUtils
             {
                 for(final String nextConstructQuery : sparqlConstructQueries)
                 {
-                    if(RdfUtils._DEBUG)
+                    if(RdfUtils.DEBUG)
                     {
                         RdfUtils.log.debug("chooseStatementsFromRepository nextConstructQueries=" + nextConstructQuery);
                     }
@@ -229,7 +229,7 @@ public final class RdfUtils
                         {
                             final Statement nextStatement = graphResult.next();
                             
-                            if(RdfUtils._TRACE)
+                            if(RdfUtils.TRACE)
                             {
                                 RdfUtils.log.trace("adding statement: " + nextStatement);
                             }
@@ -238,7 +238,7 @@ public final class RdfUtils
                             selectedStatements++;
                         }
                         
-                        if(RdfUtils._DEBUG)
+                        if(RdfUtils.DEBUG)
                         {
                             RdfUtils.log.debug("SparqlNormalisationRuleImpl: selected " + selectedStatements
                                     + " statements for results");
@@ -283,7 +283,7 @@ public final class RdfUtils
         try
         {
             mySourceConnection = source.getConnection();
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("copyAllStatementsToRepository: mySourceConnection.size()="
                         + mySourceConnection.size());
@@ -292,7 +292,7 @@ public final class RdfUtils
             myDestinationConnection.add(mySourceConnection.getStatements(null, null, null, true));
             
             myDestinationConnection.commit();
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("copyAllStatementsToRepository: myDestinationConnection.size()="
                         + myDestinationConnection.size());
@@ -366,7 +366,7 @@ public final class RdfUtils
                 "CONSTRUCT { ?subjectUri ?predicateUri ?normalisedObjectUri . " + addObjectConstructBuilder.toString()
                         + " } WHERE { " + addObjectTemplateWhere + " } ";
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("addObjectTemplate=" + addObjectTemplate);
         }
@@ -379,7 +379,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addObjectQueries);
         
-        if(RdfUtils._TRACE)
+        if(RdfUtils.TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -398,7 +398,7 @@ public final class RdfUtils
                         + deleteObjectConstructBuilder.toString()
                         + " filter(isIRI(?objectUri) && strStarts(str(?objectUri), \"" + inputUriPrefix + "\")) . }";
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("deleteObjectTemplate=" + deleteObjectTemplate);
         }
@@ -411,7 +411,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteObjectQueries);
         
-        if(RdfUtils._TRACE)
+        if(RdfUtils.TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -442,7 +442,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addSubjectQueries);
         
-        if(RdfUtils._TRACE)
+        if(RdfUtils.TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -459,7 +459,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deleteSubjectQueries);
         
-        if(RdfUtils._TRACE)
+        if(RdfUtils.TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -491,7 +491,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples(), addPredicateQueries);
         
-        if(RdfUtils._TRACE)
+        if(RdfUtils.TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -508,7 +508,7 @@ public final class RdfUtils
                 RdfUtils.doSparqlConstructWorkBasedOnMode(output,
                         SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches(), deletePredicateQueries);
         
-        if(RdfUtils._TRACE)
+        if(RdfUtils.TRACE)
         {
             RdfUtils.toOutputStream(output, System.err);
         }
@@ -533,7 +533,7 @@ public final class RdfUtils
     {
         if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyDeleteMatches()))
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("doWorkBasedOnMode: only delete matches");
             }
@@ -541,7 +541,7 @@ public final class RdfUtils
         }
         else if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeOnlyIncludeMatches()))
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("doWorkBasedOnMode: only include matches");
             }
@@ -549,7 +549,7 @@ public final class RdfUtils
         }
         else if(nextMode.equals(SparqlConstructRuleSchema.getSparqlRuleModeAddAllMatchingTriples()))
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("doWorkBasedOnMode: add all matches");
             }
@@ -957,7 +957,7 @@ public final class RdfUtils
     {
         final Collection<String> results = new HashSet<String>();
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getDistinctObjectsFromRepository: entering method");
             // RdfUtils.log.debug(nextRepository);
@@ -976,7 +976,7 @@ public final class RdfUtils
         // if((nextInputPredicate == null)
         // || nextInputPredicate.trim().equals(""))
         // {
-        // if(RdfUtils._DEBUG)
+        // if(RdfUtils.DEBUG)
         // {
         // RdfUtils.log
         // .debug("getDistinctObjectsFromRepository: nextInputPredicate was null or empty");
@@ -1002,7 +1002,7 @@ public final class RdfUtils
                     final BindingSet bindingSet = queryResult.next();
                     final Value valueOfObject = bindingSet.getValue("object");
                     
-                    if(RdfUtils._DEBUG)
+                    if(RdfUtils.DEBUG)
                     {
                         RdfUtils.log.debug("Utilities: found object: valueOfObject=" + valueOfObject);
                     }
@@ -1059,7 +1059,7 @@ public final class RdfUtils
     {
         final Collection<String> results = new HashSet<String>();
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getDistinctSubjectsFromRepository: entering method");
             // RdfUtils.log.debug(nextRepository);
@@ -1078,7 +1078,7 @@ public final class RdfUtils
         // if((nextInputPredicate == null)
         // || nextInputPredicate.trim().equals(""))
         // {
-        // if(RdfUtils._DEBUG)
+        // if(RdfUtils.DEBUG)
         // {
         // RdfUtils.log
         // .debug("getDistinctSubjectsFromRepository: nextInputPredicate was null or empty");
@@ -1103,7 +1103,7 @@ public final class RdfUtils
                     final BindingSet bindingSet = queryResult.next();
                     final Value valueOfSubject = bindingSet.getValue("subject");
                     
-                    if(RdfUtils._DEBUG)
+                    if(RdfUtils.DEBUG)
                     {
                         RdfUtils.log.debug("Utilities: found subject: valueOfSubject=" + valueOfSubject);
                     }
@@ -1203,7 +1203,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getNamespaceEntries: started parsing namespace entrys");
             }
@@ -1250,7 +1250,7 @@ public final class RdfUtils
                 final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums =
                         NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getNamespaceEntries: matchingNamespaceEntryEnums="
                             + matchingNamespaceEntryEnums);
@@ -1291,12 +1291,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getNamespaceEntries", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getNamespaceEntries: finished parsing namespace entrys");
             }
@@ -1333,7 +1333,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getNormalisationRules: started parsing normalisation rules");
             }
@@ -1380,7 +1380,7 @@ public final class RdfUtils
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
                         NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getQueryTypes: matchingNormalisationRuleEnums="
                             + matchingNormalisationRuleEnums);
@@ -1421,12 +1421,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getNormalisationRules", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
             }
@@ -1467,7 +1467,7 @@ public final class RdfUtils
     {
         final Collection<String> results = new HashSet<String>();
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getObjectUrisFromRepositoryByPredicateUris: entering method");
             // RdfUtils.log.debug(nextRepository);
@@ -1478,13 +1478,13 @@ public final class RdfUtils
         
         try
         {
-            final ValueFactory f = Constants.valueFactory;
+            final ValueFactory f = Constants.VALUE_FACTORY;
             
             for(final String nextInputPredicate : predicateUris)
             {
                 if((nextInputPredicate == null) || nextInputPredicate.trim().equals(""))
                 {
-                    if(RdfUtils._DEBUG)
+                    if(RdfUtils.DEBUG)
                     {
                         RdfUtils.log
                                 .debug("getObjectUrisFromRepositoryByPredicateUris: nextInputPredicate was null or empty");
@@ -1510,7 +1510,7 @@ public final class RdfUtils
                             final BindingSet bindingSet = queryResult.next();
                             final Value valueOfObject = bindingSet.getValue("object");
                             
-                            if(RdfUtils._DEBUG)
+                            if(RdfUtils.DEBUG)
                             {
                                 RdfUtils.log.debug("Utilities: found object: valueOfObject=" + valueOfObject);
                             }
@@ -1560,7 +1560,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProfiles: started parsing profiles");
             }
@@ -1605,7 +1605,7 @@ public final class RdfUtils
                 
                 final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
                 }
@@ -1643,12 +1643,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getProfiles", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProfiles: finished parsing profiles");
             }
@@ -1685,7 +1685,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProjects: started parsing projects");
             }
@@ -1730,7 +1730,7 @@ public final class RdfUtils
                 
                 final Collection<ProjectEnum> matchingProjectEnums = ProjectEnum.byTypeUris(nextProjectUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
                 }
@@ -1768,12 +1768,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getProjects", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProjects: finished parsing projects");
             }
@@ -1810,7 +1810,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProviders: started parsing providers");
             }
@@ -1820,7 +1820,7 @@ public final class RdfUtils
             // their customised type URIs
             final URI providerUri = ProviderSchema.getProviderTypeUri();
             
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProviders: providerUri=" + providerUri.stringValue());
             }
@@ -1832,7 +1832,7 @@ public final class RdfUtils
             final List<Statement> allDeclaredProviderSubjects =
                     con.getStatements(null, RDF.TYPE, providerUri, true).asList();
             
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProviders: allDeclaredProviderSubjects.size()="
                         + allDeclaredProviderSubjects.size());
@@ -1845,7 +1845,7 @@ public final class RdfUtils
             
             for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
             {
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProviders: nextDeclaredProviderSubject.getSubject()="
                             + nextDeclaredProviderSubject.getSubject().stringValue());
@@ -1873,7 +1873,7 @@ public final class RdfUtils
                 
                 final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
                 }
@@ -1911,12 +1911,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getProviders", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getProviders: finished parsing providers");
             }
@@ -1953,7 +1953,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getQueryTypes: started parsing query types");
             }
@@ -2000,7 +2000,7 @@ public final class RdfUtils
                 
                 final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
                 }
@@ -2038,12 +2038,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getQueryTypes", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getQueryTypes: finished parsing query types");
             }
@@ -2196,7 +2196,7 @@ public final class RdfUtils
         
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getRuleTests: started parsing ruleTests");
             }
@@ -2241,7 +2241,7 @@ public final class RdfUtils
                 
                 final Collection<RuleTestEnum> matchingRuleTestEnums = RuleTestEnum.byTypeUris(nextRuleTestUris);
                 
-                if(RdfUtils._DEBUG)
+                if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
                 }
@@ -2279,12 +2279,12 @@ public final class RdfUtils
                 }
             }
             
-            if(RdfUtils._INFO)
+            if(RdfUtils.INFO)
             {
                 final long end = System.currentTimeMillis();
                 RdfUtils.log.info(String.format("%s: timing=%10d", "getRuleTests", (end - start)));
             }
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getRuleTests: finished parsing rule tests");
             }
@@ -2331,7 +2331,7 @@ public final class RdfUtils
         
         if(!rdfOkay && isInsert)
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("getSparulQueryForObject: could not convert to RDF");
             }
@@ -2351,7 +2351,7 @@ public final class RdfUtils
             
             RdfUtils.log.debug("getSparulQueryForObject: insertTriples.toString()=" + insertTriples.toString());
         }
-        else if(RdfUtils._DEBUG)
+        else if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getSparulQueryForObject: isInsert was false");
         }
@@ -2386,7 +2386,7 @@ public final class RdfUtils
             sparqlInsertQuery += " WHERE { <" + rdfObject.getKey() + "> ?p ?o . } ";
         }
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getInsertQueryForObject: sparqlInsertQuery=" + sparqlInsertQuery);
         }
@@ -2398,7 +2398,7 @@ public final class RdfUtils
             final Collection<URI> predicateUris) throws OpenRDFException
     {
         final Collection<Statement> results = new HashSet<Statement>();
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
             // RdfUtils.log.debug(nextRepository);
@@ -2445,7 +2445,7 @@ public final class RdfUtils
         throws OpenRDFException
     {
         final Collection<Statement> results = new HashSet<Statement>();
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
             // RdfUtils.log.debug(nextRepository);
@@ -2539,7 +2539,7 @@ public final class RdfUtils
     {
         final Collection<Value> results = new HashSet<Value>();
         
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: entering method");
             // RdfUtils.log.debug(nextRepository);
@@ -2561,7 +2561,7 @@ public final class RdfUtils
                     final GraphQuery tupleQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
                     final GraphQueryResult queryResult = tupleQuery.evaluate();
                     
-                    if(RdfUtils._DEBUG)
+                    if(RdfUtils.DEBUG)
                     {
                         RdfUtils.log.debug("queryString=" + queryString);
                     }
@@ -2572,7 +2572,7 @@ public final class RdfUtils
                         {
                             final Statement nextStatement = queryResult.next();
                             
-                            if(RdfUtils._DEBUG)
+                            if(RdfUtils.DEBUG)
                             {
                                 RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: nextStatement="
                                         + nextStatement);
@@ -2580,7 +2580,7 @@ public final class RdfUtils
                             
                             results.add(nextStatement.getObject());
                             
-                            // if(RdfUtils._DEBUG)
+                            // if(RdfUtils.DEBUG)
                             // {
                             // RdfUtils.log
                             // .debug("Utilities: found object: valueOfObject="
@@ -2661,7 +2661,7 @@ public final class RdfUtils
             final Repository myRepository, final String assumedResponseContentType, final String defaultHostAddress)
         throws RepositoryException, java.io.IOException
     {
-        if(RdfUtils._DEBUG)
+        if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
         }
@@ -2674,7 +2674,7 @@ public final class RdfUtils
             
             RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
             
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("insertResultIntoRepository: nextReaderFormat for returnedContentType="
                         + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
@@ -2714,19 +2714,19 @@ public final class RdfUtils
                                     + nextResult.getReturnedMIMEType());
                 }
             }
-            else if(RdfUtils._DEBUG)
+            else if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("insertResultIntoRepository: readerFormat matched for returnedMIMEType="
                         + nextResult.getReturnedMIMEType());
             }
             
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("insertResultIntoRepository: nextResult.normalisedResult.length()="
                         + nextResult.getNormalisedResult().length());
             }
             
-            if(RdfUtils._TRACE)
+            if(RdfUtils.TRACE)
             {
                 RdfUtils.log.trace("insertResultIntoRepository: nextResult.normalisedResult="
                         + nextResult.getNormalisedResult());
@@ -2741,7 +2741,7 @@ public final class RdfUtils
                 myRepositoryConnection.commit();
             }
             
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log.debug("insertResultIntoRepository: myRepositoryConnection.size()="
                         + myRepositoryConnection.size());
@@ -2752,7 +2752,7 @@ public final class RdfUtils
             RdfUtils.log.error("insertResultIntoRepository: RDFParseException result: nextResult.actualendpointUrl="
                     + nextResult.getActualEndpointUrl() + " message=" + rdfpe.getMessage());
             
-            if(RdfUtils._TRACE)
+            if(RdfUtils.TRACE)
             {
                 RdfUtils.log.debug("insertResultIntoRepository: RDFParseException result: normalisedResult="
                         + nextResult.getNormalisedResult());
@@ -2791,7 +2791,7 @@ public final class RdfUtils
     {
         try
         {
-            if(RdfUtils._DEBUG)
+            if(RdfUtils.DEBUG)
             {
                 RdfUtils.log
                         .debug("SparqlNormalisationRuleImpl: removing statements according to sparqlConstructQueryTarget="
@@ -2815,7 +2815,7 @@ public final class RdfUtils
                         {
                             final Statement nextStatement = graphResult.next();
                             
-                            if(RdfUtils._TRACE)
+                            if(RdfUtils.TRACE)
                             {
                                 RdfUtils.log.trace("removing statement: " + nextStatement);
                             }
@@ -2825,7 +2825,7 @@ public final class RdfUtils
                         }
                         
                         removeConnection.commit();
-                        if(RdfUtils._DEBUG)
+                        if(RdfUtils.DEBUG)
                         {
                             RdfUtils.log
                                     .debug("SparqlNormalisationRuleImpl: removed " + deletedStatements + " results");

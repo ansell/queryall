@@ -15,9 +15,9 @@ import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 public class QueryallContentNegotiator
 {
     public static final Logger log = LoggerFactory.getLogger(QueryallContentNegotiator.class);
-    public static final boolean _TRACE = QueryallContentNegotiator.log.isTraceEnabled();
-    public static final boolean _DEBUG = QueryallContentNegotiator.log.isDebugEnabled();
-    public static final boolean _INFO = QueryallContentNegotiator.log.isInfoEnabled();
+    public static final boolean TRACE = QueryallContentNegotiator.log.isTraceEnabled();
+    public static final boolean DEBUG = QueryallContentNegotiator.log.isDebugEnabled();
+    public static final boolean INFO = QueryallContentNegotiator.log.isInfoEnabled();
     
     public static ContentTypeNegotiator getContentNegotiator(final String preferredDisplayContentType)
     {
@@ -148,7 +148,7 @@ public class QueryallContentNegotiator
     public static String getResponseContentType(final String acceptHeader, final String userAgent,
             final ContentTypeNegotiator negotiator, final String fallback)
     {
-        if(QueryallContentNegotiator._DEBUG)
+        if(QueryallContentNegotiator.DEBUG)
         {
             QueryallContentNegotiator.log.debug("QueryallContentNegotiator: acceptHeader=" + acceptHeader
                     + " userAgent=" + userAgent);
@@ -158,7 +158,7 @@ public class QueryallContentNegotiator
         
         if(bestMatch == null)
         {
-            if(QueryallContentNegotiator._TRACE)
+            if(QueryallContentNegotiator.TRACE)
             {
                 QueryallContentNegotiator.log
                         .trace("QueryallContentNegotiator: bestMatch not found, returning fallback instead");

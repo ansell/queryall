@@ -56,9 +56,9 @@ public class GeneralServlet extends HttpServlet
     private static final long serialVersionUID = 997653377781136004L;
     
     public static final Logger log = LoggerFactory.getLogger(GeneralServlet.class);
-    public static final boolean _TRACE = GeneralServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = GeneralServlet.log.isDebugEnabled();
-    public static final boolean _INFO = GeneralServlet.log.isInfoEnabled();
+    public static final boolean TRACE = GeneralServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = GeneralServlet.log.isDebugEnabled();
+    public static final boolean INFO = GeneralServlet.log.isInfoEnabled();
     
     public static void doGetRequest(final HttpServletRequest request, final HttpServletResponse response,
             final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
@@ -137,7 +137,7 @@ public class GeneralServlet extends HttpServlet
         // due to the above method
         writerFormat = RdfUtils.getWriterFormat(requestedContentType);
         
-        if(GeneralServlet._INFO)
+        if(GeneralServlet.INFO)
         {
             ServletUtils.logRequestDetails(serverName, queryString, requesterIpAddress, locale, characterEncoding,
                     isPretendQuery, pageOffset, originalRequestedContentType, requestedContentType,
@@ -193,7 +193,7 @@ public class GeneralServlet extends HttpServlet
             
             if(isPretendQuery)
             {
-                if(GeneralServlet._DEBUG)
+                if(GeneralServlet.DEBUG)
                 {
                     GeneralServlet.log.debug("GeneralServlet: Found pretend query");
                 }
@@ -205,7 +205,7 @@ public class GeneralServlet extends HttpServlet
             }
             else if(!fetchController.queryKnown())
             {
-                if(GeneralServlet._DEBUG)
+                if(GeneralServlet.DEBUG)
                 {
                     GeneralServlet.log.debug("GeneralServlet: starting !fetchController.queryKnown() section");
                 }
@@ -233,7 +233,7 @@ public class GeneralServlet extends HttpServlet
             }
             else
             {
-                if(GeneralServlet._DEBUG)
+                if(GeneralServlet.DEBUG)
                 {
                     GeneralServlet.log
                             .debug("GeneralServlet: starting fetchController.queryKnown() and not pretend query section");
@@ -257,7 +257,7 @@ public class GeneralServlet extends HttpServlet
                                     ListUtils.chooseRandomItemFromCollection(nextScheduledQueryBundle
                                             .getAlternativeEndpointsAndQueries().keySet());
                             
-                            if(GeneralServlet._INFO)
+                            if(GeneralServlet.INFO)
                             {
                                 GeneralServlet.log.info("Sending redirect to url=" + randomlyChosenRedirect);
                             }
@@ -301,7 +301,7 @@ public class GeneralServlet extends HttpServlet
             
             final long nextTotalTime = System.currentTimeMillis() - queryStartTime;
             
-            if(GeneralServlet._INFO)
+            if(GeneralServlet.INFO)
             {
                 GeneralServlet.log.info("GeneralServlet: query complete requesterIpAddress=" + requesterIpAddress
                         + " queryString=" + queryString + " pageOffset=" + pageOffset + " totalTime=" + nextTotalTime);
@@ -326,7 +326,7 @@ public class GeneralServlet extends HttpServlet
             // Don't keep local error statistics if GeneralServlet debug level is higher than or
             // equal to info and we aren't interested in using the client IP blacklist
             // functionalities
-            if(GeneralServlet._INFO
+            if(GeneralServlet.INFO
                     || localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
                             (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue()))
             {

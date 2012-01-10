@@ -15,7 +15,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 
 /**
- * Abstract unit test for Profilable API
+ * Abstract unit test for Profilable API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -57,19 +57,19 @@ public abstract class AbstractProfilableTest
     
     /**
      * This method must be overridden to return a new instance of the implemented
-     * ProfilableInterface for each successive invocation
+     * ProfilableInterface for each successive invocation.
      */
     public abstract ProfilableInterface getNewTestProfilable();
     
     /**
      * This method must be overridden to return a new instance of the implemented Profile class for
-     * each successive invocation
+     * each successive invocation.
      */
     public abstract Profile getNewTestProfile();
     
     /**
      * This method is necessary to ensure that the profile exclude instruction matches the type of
-     * the object being checked
+     * the object being checked.
      * 
      * @param profilable
      * @param uriToExclude
@@ -78,7 +78,7 @@ public abstract class AbstractProfilableTest
     
     /**
      * This method is necessary to ensure that the profile include instruction matches the type of
-     * the object being checked
+     * the object being checked.
      * 
      * @param profilable
      * @param uriToInclude
@@ -88,7 +88,7 @@ public abstract class AbstractProfilableTest
     /**
      * This method performs the following actions: - Creates new Providers for the Provider type
      * fields using multiple calls to getNewTestProvider - Create org.openrdf.model.URI instances
-     * for the test URIs - Add testTrue*'s using the relevant methods from the API
+     * for the test URIs - Add testTrue*'s using the relevant methods from the API.
      */
     @Before
     public void setUp() throws Exception

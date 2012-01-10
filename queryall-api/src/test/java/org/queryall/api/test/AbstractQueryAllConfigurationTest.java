@@ -28,7 +28,7 @@ public abstract class AbstractQueryAllConfigurationTest
     private ValueFactory testValueFactory;
     
     /**
-     * Override this in subtests to modify the expected default host address
+     * Override this in subtests to modify the expected default host address.
      * 
      * @return http://bio2rdf.org/ by default
      */
@@ -39,7 +39,7 @@ public abstract class AbstractQueryAllConfigurationTest
     
     /**
      * Override this to return something other than ":" which is the default separator in the
-     * absence of any configuration files
+     * absence of any configuration files.
      * 
      * @return ":" by default, this can be overriden in subtests to return a different expected
      *         value
@@ -60,7 +60,7 @@ public abstract class AbstractQueryAllConfigurationTest
     /**
      * This method is used to create new instances of the QueryAllConfiguration implementation for
      * each test, to enable the test to be abstract and separate from the implementations of this
-     * class
+     * class.
      * 
      * @return A new instance of the QueryAllConfiguration implementation for this class
      */
@@ -366,9 +366,9 @@ public abstract class AbstractQueryAllConfigurationTest
     
     /**
      * Test that the default host address is set in the absence of any values being set in a
-     * configuration file
+     * configuration file.
      * 
-     * By default it tests for http://bio2rdf.org/ but this can be overridden in subtests if needed
+     * By default it tests for http://bio2rdf.org/ but this can be overridden in subtests if needed.
      */
     @Test
     public void testGetDefaultHostAddress()
@@ -510,7 +510,16 @@ public abstract class AbstractQueryAllConfigurationTest
             // before the first 5 are processed, we expect (i+1)*2 (one preferred and one alternate
             // for each of the first 5) elements, and after that, it should stay at size 10 (all
             // preferred and alternates)
-            final int expectedPrefixMapSize = i < 5 ? (i + 1) * 2 : 10;
+            int expectedPrefixMapSize = 0;
+            
+            if(i < 5)
+            {
+                expectedPrefixMapSize = (i + 1) * 2;
+            }
+            else
+            {
+                expectedPrefixMapSize = 10;
+            }
             
             Assert.assertEquals(expectedPrefixMapSize, this.testConfiguration.getNamespacePrefixesToUris().size());
         }
@@ -555,7 +564,16 @@ public abstract class AbstractQueryAllConfigurationTest
             
             // before the first 5 are processed, we expect i+1 elements, and after that, it should
             // stay at size 5
-            final int expectedPrefixMapSize = i < 5 ? i + 1 : 5;
+            int expectedPrefixMapSize = 0;
+            
+            if(i < 5)
+            {
+                expectedPrefixMapSize = i + 1;
+            }
+            else
+            {
+                expectedPrefixMapSize = 5;
+            }
             
             Assert.assertEquals(expectedPrefixMapSize, this.testConfiguration.getNamespacePrefixesToUris().size());
         }
@@ -642,12 +660,6 @@ public abstract class AbstractQueryAllConfigurationTest
         Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("abc").matches());
         Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123abc").matches());
         Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123-abc").matches());
-        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123_abc").matches());
-        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("123_abc").matches());
-        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("somethingrandom-plus_one_123")
-                .matches());
-        Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("somethingrandom-plus_one_123")
-                .matches());
         Assert.assertTrue(this.testConfiguration.getPlainNamespacePattern().matcher("somethingrandom-plus_one_123")
                 .matches());
     }
@@ -830,7 +842,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     /**
-     * Tests the default tag pattern to make sure it works for our desired purposes
+     * Tests the default tag pattern to make sure it works for our desired purposes.
      */
     @Test
     public void testGetTagPattern()

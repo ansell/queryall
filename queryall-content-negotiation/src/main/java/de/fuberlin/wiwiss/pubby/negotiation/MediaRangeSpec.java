@@ -15,10 +15,10 @@ public class MediaRangeSpec
     
     private static final Logger log = LoggerFactory.getLogger(MediaRangeSpec.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = MediaRangeSpec.log.isTraceEnabled();
-    private static final boolean _DEBUG = MediaRangeSpec.log.isDebugEnabled();
+    private static final boolean TRACE = MediaRangeSpec.log.isTraceEnabled();
+    private static final boolean DEBUG = MediaRangeSpec.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = MediaRangeSpec.log.isInfoEnabled();
+    private static final boolean INFO = MediaRangeSpec.log.isInfoEnabled();
     
     private final static Pattern tokenPattern;
     private final static Pattern parameterPattern;
@@ -57,7 +57,7 @@ public class MediaRangeSpec
      */
     public static List<MediaRangeSpec> parseAccept(final String s)
     {
-        if(MediaRangeSpec._DEBUG)
+        if(MediaRangeSpec.DEBUG)
         {
             MediaRangeSpec.log.debug("MediaRangeSpec: about to parse accept string s=" + s);
         }

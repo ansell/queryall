@@ -43,15 +43,14 @@ import org.queryall.exception.UnsupportedQueryTypeException;
 import org.queryall.exception.UnsupportedRuleTestException;
 
 /**
- * Provides helper methods to interact with the various dynamic services in QueryAll
- * 
+ * Provides helper methods to interact with the various dynamic services in QueryAll.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ServiceUtils
+public final class ServiceUtils
 {
     /**
-     * Creates a namespace entry parser for the given namespace entry enum
+     * Creates a namespace entry parser for the given namespace entry enum.
      * 
      * @param namespaceEntry
      * @return
@@ -71,7 +70,7 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a normalisation rule parser for the given normalisation rule enum
+     * Creates a normalisation rule parser for the given normalisation rule enum.
      * 
      * @param normalisationRule
      * @return
@@ -92,7 +91,7 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a profile parser for the given profile enum
+     * Creates a profile parser for the given profile enum.
      * 
      * @param profile
      * @return
@@ -111,7 +110,7 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a project parser for the given project enum
+     * Creates a project parser for the given project enum.
      * 
      * @param project
      * @return
@@ -130,7 +129,7 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a provider parser for the given provider enum
+     * Creates a provider parser for the given provider enum.
      * 
      * @param provider
      * @return
@@ -149,7 +148,7 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a query type parser for the given query type enum
+     * Creates a query type parser for the given query type enum.
      * 
      * @param queryType
      * @return
@@ -169,7 +168,7 @@ public class ServiceUtils
     }
     
     /**
-     * Creates a rule test parser for the given rule test enum
+     * Creates a rule test parser for the given rule test enum.
      * 
      * @param ruleTest
      * @return

@@ -14,6 +14,8 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 
 /**
+ * Abstract unit test for the RuleTest API.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractRuleTestTest
@@ -23,7 +25,7 @@ public abstract class AbstractRuleTestTest
     private URI testRdfRuleUri2;
     
     /**
-     * Returns a new instance of the RuleTest Implementation for each call
+     * Returns a new instance of the RuleTest Implementation for each call.
      * 
      * @return
      */

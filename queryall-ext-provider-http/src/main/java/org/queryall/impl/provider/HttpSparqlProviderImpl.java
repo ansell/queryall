@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;
 public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSparqlProvider
 {
     private static final Logger log = LoggerFactory.getLogger(HttpSparqlProviderImpl.class);
-    private static final boolean _TRACE = HttpSparqlProviderImpl.log.isTraceEnabled();
+    private static final boolean TRACE = HttpSparqlProviderImpl.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = HttpSparqlProviderImpl.log.isDebugEnabled();
+    private static final boolean DEBUG = HttpSparqlProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = HttpSparqlProviderImpl.log.isInfoEnabled();
+    private static final boolean INFO = HttpSparqlProviderImpl.log.isInfoEnabled();
     
     private static final Set<URI> HTTP_SPARQL_PROVIDER_IMPL_TYPES = new HashSet<URI>();
     
@@ -56,7 +56,7 @@ public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSpar
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(HttpSparqlProviderImpl._TRACE)
+            if(HttpSparqlProviderImpl.TRACE)
             {
                 HttpSparqlProviderImpl.log.trace("HttpSparqlProviderImpl: nextStatement: " + nextStatement.toString());
             }
@@ -64,7 +64,7 @@ public class HttpSparqlProviderImpl extends HttpProviderImpl implements HttpSpar
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(HttpProviderSchema.getProviderHttpTypeUri()))
             {
-                if(HttpSparqlProviderImpl._TRACE)
+                if(HttpSparqlProviderImpl.TRACE)
                 {
                     HttpSparqlProviderImpl.log.trace("HttpSparqlProviderImpl: found valid type predicate for URI: "
                             + keyToUse);

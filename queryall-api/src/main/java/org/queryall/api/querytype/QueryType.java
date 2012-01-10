@@ -60,7 +60,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     /**
      * 
-     * Defaults to true
+     * Defaults to true.
      * 
      * @return True if this query type is able to handle all namespaces, and false otherwise.
      */
@@ -72,7 +72,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * providers if it is namespace specific. If this query type is not namespace specific, this
      * property has no effect.
      * 
-     * Defaults to true
+     * Defaults to true.
      * 
      * @return True if this query type is applicable to default providers, and false otherwise.
      */
@@ -83,7 +83,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * indicated using this property. This property generally indicates that the query should be
      * restricted from robot use, according to the generally accepted robots.txt convention.
      * 
-     * Defaults to false
+     * Defaults to false.
      * 
      * @return True if this query type is expensive, and should not be executed by robots.
      */
@@ -96,7 +96,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * dummy query types, than the query may return an error. In HTTP, this may correspond to a HTTP
      * 400 error.
      * 
-     * Defaults to false
+     * Defaults to false.
      * 
      * @return True if this querytype is not complete on its own, and may not be executed if other
      *         non-trivial query types do not also match a given query.
@@ -114,7 +114,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * If this query type is true, than one or more namespace input tags must be defined to identify
      * the parameters that contain the namespace information.
      * 
-     * Defaults to false
+     * Defaults to false.
      * 
      * @return True if providers for this query type can be restricted using information from the
      *         parameters in the query.
@@ -128,7 +128,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
      * If this query is invariant across different results ranges, it should be false to avoid the
      * insertion of the same content multiple times.
      * 
-     * Defaults to false
+     * Defaults to false.
      * 
      * @return True if this query can be paged using different results ranges, and false otherwise.
      */
@@ -156,7 +156,7 @@ public interface QueryType extends BaseQueryAllInterface, Comparable<QueryType>,
     
     /**
      * 
-     * Defaults to NamespaceMatch.ANY_MATCHED
+     * Defaults to NamespaceMatch.ANY_MATCHED.
      * 
      * @return A value from NamespaceMatch denoting the method that is to be used to determine if a
      *         map of namespace parameter names to collections of matching namespace URIs will be

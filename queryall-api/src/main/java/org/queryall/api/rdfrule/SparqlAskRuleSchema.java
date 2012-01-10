@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SparqlAskRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlAskRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SparqlAskRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SparqlAskRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SparqlAskRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SparqlAskRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SparqlAskRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlAskRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = SparqlAskRuleSchema.LOG.isInfoEnabled();
     
     private static URI sparqlAskRuleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         SparqlAskRuleSchema.setSparqlAskRuleTypeUri(f.createURI(baseUri, "SparqlAskRule"));
     }
     
+    /**
+     * A pre-instantiated schema object for SparqlAskRuleSchema.
+     */
     public static final QueryAllSchema SPARQL_ASK_RULE_SCHEMA = new SparqlAskRuleSchema();
     
     /**
@@ -65,7 +68,7 @@ public class SparqlAskRuleSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SparqlAskRuleSchema()
     {
@@ -116,7 +119,7 @@ public class SparqlAskRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SparqlAskRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            SparqlAskRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

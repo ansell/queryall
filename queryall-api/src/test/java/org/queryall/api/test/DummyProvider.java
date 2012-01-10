@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class DummyProvider implements Provider
 {
-    private static final Logger log = LoggerFactory.getLogger(DummyProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DummyProvider.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = DummyProvider.log.isTraceEnabled();
+    private static final boolean TRACE = DummyProvider.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = DummyProvider.log.isDebugEnabled();
+    private static final boolean DEBUG = DummyProvider.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = DummyProvider.log.isInfoEnabled();
+    private static final boolean INFO = DummyProvider.LOG.isInfoEnabled();
     
     private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
     private String title = "";
@@ -388,7 +388,7 @@ public final class DummyProvider implements Provider
     }
     
     /**
-     * NOTE: This is a dummy class, always returns true
+     * NOTE: This is a dummy class, always returns true.
      * 
      * @param orderedProfileList
      * @param allowImplicitInclusions
@@ -450,27 +450,27 @@ public final class DummyProvider implements Provider
     }
     
     @Override
-    public void setAssumedContentType(final String assumedContentType)
+    public void setAssumedContentType(final String nextAssumedContentType)
     {
-        this.assumedContentType = assumedContentType;
+        this.assumedContentType = nextAssumedContentType;
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
+    public void setCurationStatus(final URI nextCurationStatus)
     {
-        this.curationStatus = curationStatus;
+        this.curationStatus = nextCurationStatus;
     }
     
     @Override
-    public void setDescription(final String description)
+    public void setDescription(final String nextDescription)
     {
-        this.description = description;
+        this.description = nextDescription;
     }
     
     @Override
-    public void setEndpointMethod(final URI endpointMethod)
+    public void setEndpointMethod(final URI nextEndpointMethod)
     {
-        this.endpointMethod = endpointMethod;
+        this.endpointMethod = nextEndpointMethod;
     }
     
     @Override
@@ -499,21 +499,21 @@ public final class DummyProvider implements Provider
      * .URI)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final URI nextProfileIncludeExcludeOrder)
     {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+        this.profileIncludeExcludeOrder = nextProfileIncludeExcludeOrder;
     }
     
     @Override
-    public void setRedirectOrProxy(final URI redirectOrProxy)
+    public void setRedirectOrProxy(final URI nextRedirectOrProxy)
     {
-        this.redirectOrProxy = redirectOrProxy;
+        this.redirectOrProxy = nextRedirectOrProxy;
     }
     
     @Override
-    public void setTitle(final String title)
+    public void setTitle(final String nextTitle)
     {
-        this.title = title;
+        this.title = nextTitle;
     }
     
     /**

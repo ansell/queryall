@@ -7,7 +7,7 @@ import org.queryall.api.profile.Profile;
 
 /**
  * This interface provides the basis for profiles to be used to include or exclude objects. All
- * profilable objects are also BaseQueryAllInterface objects
+ * profilable objects are also BaseQueryAllInterface objects.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -22,7 +22,7 @@ public interface ProfilableInterface extends BaseQueryAllInterface
     /**
      * This method determines whether this class should be included or excluded, based on the
      * pre-ordered profile list and the parameters which indicate whether implicit inclusions are
-     * allowed and whether this method will match if no profiles match at all
+     * allowed and whether this method will match if no profiles match at all.
      * 
      * @param orderedProfileList
      *            a pre sorted list of profiles that will be used in sequence to determine whether

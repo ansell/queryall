@@ -26,10 +26,10 @@ public class NamespaceEntryEnum extends QueryAllEnum
 {
     private static final Logger log = LoggerFactory.getLogger(NamespaceEntryEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NamespaceEntryEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = NamespaceEntryEnum.log.isDebugEnabled();
+    private static final boolean TRACE = NamespaceEntryEnum.log.isTraceEnabled();
+    private static final boolean DEBUG = NamespaceEntryEnum.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NamespaceEntryEnum.log.isInfoEnabled();
+    private static final boolean INFO = NamespaceEntryEnum.log.isInfoEnabled();
     
     protected static final Set<NamespaceEntryEnum> ALL_NAMESPACE_ENTRIES = new HashSet<NamespaceEntryEnum>();
     
@@ -37,7 +37,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     {
         if(nextTypeUris.size() == 0)
         {
-            if(NamespaceEntryEnum._DEBUG)
+            if(NamespaceEntryEnum.DEBUG)
             {
                 NamespaceEntryEnum.log.debug("found an empty URI set for nextNamespaceEntryUris=" + nextTypeUris);
             }
@@ -51,7 +51,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
         {
             if(nextEnum.matchForTypeUris(nextTypeUris))
             {
-                if(NamespaceEntryEnum._DEBUG)
+                if(NamespaceEntryEnum.DEBUG)
                 {
                     NamespaceEntryEnum.log.debug("found a matching URI set for nextNamespaceEntryUris=" + nextTypeUris);
                 }
@@ -59,7 +59,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
             }
         }
         
-        if(NamespaceEntryEnum._DEBUG)
+        if(NamespaceEntryEnum.DEBUG)
         {
             NamespaceEntryEnum.log.debug("returning results.size()=" + results.size() + " for nextNamespaceEntryUris="
                     + nextTypeUris);
@@ -75,7 +75,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     {
         if(NamespaceEntryEnum.valueOf(nextNamespaceEntry.getName()) != null)
         {
-            if(NamespaceEntryEnum._DEBUG)
+            if(NamespaceEntryEnum.DEBUG)
             {
                 NamespaceEntryEnum.log.debug("Cannot register this namespace entry again name="
                         + nextNamespaceEntry.getName());
@@ -108,7 +108,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     }
     
     /**
-     * Returns all known/registered namespace entrys.
+     * Returns all known/registered namespace entries.
      */
     public static Collection<NamespaceEntryEnum> values()
     {
@@ -116,7 +116,7 @@ public class NamespaceEntryEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new NamespaceEntry enum using the given name, which must be unique
+     * Create a new NamespaceEntry enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs

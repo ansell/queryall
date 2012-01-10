@@ -34,9 +34,9 @@ public class ServerStatsServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -4816515030121762308L;
     public static final Logger log = LoggerFactory.getLogger(ServerStatsServlet.class);
-    public static final boolean _TRACE = ServerStatsServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ServerStatsServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ServerStatsServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ServerStatsServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ServerStatsServlet.log.isDebugEnabled();
+    public static final boolean INFO = ServerStatsServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -153,7 +153,7 @@ public class ServerStatsServlet extends HttpServlet
                 overallQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
                 nextQueryTimes.add(nextQueryDebug.getTotalTimeMilliseconds());
                 
-                if(ServerStatsServlet._DEBUG)
+                if(ServerStatsServlet.DEBUG)
                 {
                     out.write(nextQueryDebug.toString() + "<br />\n");
                 }

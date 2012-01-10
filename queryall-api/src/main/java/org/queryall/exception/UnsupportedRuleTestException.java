@@ -6,17 +6,17 @@ package org.queryall.exception;
 import org.queryall.api.ruletest.RuleTestEnum;
 
 /**
- * An exception that is thrown when an unknown RuleTest is encountered
+ * An exception that is thrown when an unknown RuleTest is encountered.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class UnsupportedRuleTestException extends QueryAllException
 {
-    
     /**
      * 
      */
     private static final long serialVersionUID = 9132659393857953163L;
+    
     private RuleTestEnum ruleTestCause;
     
     /**
@@ -80,12 +80,12 @@ public class UnsupportedRuleTestException extends QueryAllException
     }
     
     /**
-     * @param ruleTestCause
+     * @param nextRuleTestCause
      *            the ruleTestCause to set
      */
-    public void setRuleTestCause(final RuleTestEnum ruleTestCause)
+    public void setRuleTestCause(final RuleTestEnum nextRuleTestCause)
     {
-        this.ruleTestCause = ruleTestCause;
+        this.ruleTestCause = nextRuleTestCause;
     }
     
 }

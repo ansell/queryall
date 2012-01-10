@@ -17,35 +17,126 @@ import org.openrdf.sail.memory.model.MemValueFactory;
  */
 public final class Constants
 {
-    public static final ValueFactory valueFactory = new MemValueFactory();
+    /**
+     * A shared value factory to use for creating URIs when there is no repository available.
+     */
+    public static final ValueFactory VALUE_FACTORY = new MemValueFactory();
     
+    /**
+     * The constant for the MIME type "application/rdf+xml".
+     */
     public static final String APPLICATION_RDF_XML = "application/rdf+xml";
     
+    /**
+     * The constant for "current".
+     */
     public static final String CURRENT = "current";
+    
+    /**
+     * The constant for the Z time date format, aka, UTC.
+     */
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    
+    /**
+     * The constant for the Dublin Core Elements 1.1 base namespace,
+     * "http://purl.org/dc/elements/1.1/".
+     */
     public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
+    
+    /**
+     * The constant for the SKOS namespace, "http://www.w3.org/2004/02/skos/core#".
+     */
     public static final String SKOS_NAMESPACE = "http://www.w3.org/2004/02/skos/core#";
+    
+    /**
+     * The constant for the XSD namespace, "http://www.w3.org/2001/XMLSchema#".
+     */
     public static final String XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema#";
     
+    /**
+     * The constant for the template encoding instruction "inputNTriplesEncoded".
+     */
     public static final String INPUT_NTRIPLES_ENCODED = "inputNTriplesEncoded";
+    
+    /**
+     * The constant for the template encoding instruction "inputPlusUrlEncoded".
+     */
     public static final String INPUT_PLUS_URL_ENCODED = "inputPlusUrlEncoded";
+    
+    /**
+     * The constant for the template encoding instruction "inputUrlEncoded".
+     */
     public static final String INPUT_URL_ENCODED = "inputUrlEncoded";
+    
+    /**
+     * The constant for the template encoding instruction "inputXmlEncoded".
+     */
     public static final String INPUT_XML_ENCODED = "inputXmlEncoded";
+    
+    /**
+     * The constant for the template encoding instruction "lowercase".
+     */
     public static final String LOWERCASE = "lowercase";
+    
+    /**
+     * The constant for the template encoding instruction "ntriplesEncoded".
+     */
     public static final String NTRIPLES_ENCODED = "ntriplesEncoded";
+    
+    /**
+     * The constant for the template encoding instruction "plusUrlEncoded".
+     */
     public static final String PLUS_URL_ENCODED = "plusUrlEncoded";
     
+    /**
+     * The constant for the template encoding instruction "privatelowercase".
+     */
     public static final String PRIVATE_LOWERCASE = "privatelowercase";
+    
+    /**
+     * The constant for the template encoding instruction "privateuppercase".
+     */
     public static final String PRIVATE_UPPERCASE = "privateuppercase";
     
-    public static final URI DC_TITLE = Constants.valueFactory.createURI(Constants.DC_NAMESPACE, "title");
-    public static final URI SKOS_ALTLABEL = Constants.valueFactory.createURI(Constants.SKOS_NAMESPACE, "altLabel");
-    public static final URI SKOS_PREFLABEL = Constants.valueFactory.createURI(Constants.SKOS_NAMESPACE, "prefLabel");
-    public static final URI XSD_BOOLEAN = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "boolean");
-    public static final URI XSD_FLOAT = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "float");
-    public static final URI XSD_INT = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "int");
-    public static final URI XSD_INTEGER = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "integer");;
-    public static final URI XSD_LONG = Constants.valueFactory.createURI(Constants.XSD_NAMESPACE, "long");
+    /**
+     * The constant for the Title property from the Dublin Core Elements namespace.
+     */
+    public static final URI DC_TITLE = Constants.VALUE_FACTORY.createURI(Constants.DC_NAMESPACE, "title");
+    
+    /**
+     * The constant for the Alternate Label property from the SKOS namespace.
+     */
+    public static final URI SKOS_ALTLABEL = Constants.VALUE_FACTORY.createURI(Constants.SKOS_NAMESPACE, "altLabel");
+    
+    /**
+     * The constant for the Preferred Label property from the SKOS namespace.
+     */
+    public static final URI SKOS_PREFLABEL = Constants.VALUE_FACTORY.createURI(Constants.SKOS_NAMESPACE, "prefLabel");
+    
+    /**
+     * The constant for the Boolean property from the XML Schema namespace.
+     */
+    public static final URI XSD_BOOLEAN = Constants.VALUE_FACTORY.createURI(Constants.XSD_NAMESPACE, "boolean");
+    
+    /**
+     * The constant for the Float property from the XML Schema namespace.
+     */
+    public static final URI XSD_FLOAT = Constants.VALUE_FACTORY.createURI(Constants.XSD_NAMESPACE, "float");
+    
+    /**
+     * The constant for the Int property from the XML Schema namespace.
+     */
+    public static final URI XSD_INT = Constants.VALUE_FACTORY.createURI(Constants.XSD_NAMESPACE, "int");
+    
+    /**
+     * The constant for the Integer property from the XML Schema namespace.
+     */
+    public static final URI XSD_INTEGER = Constants.VALUE_FACTORY.createURI(Constants.XSD_NAMESPACE, "integer");
+    
+    /**
+     * The constant for the Long property from the XML Schema namespace.
+     */
+    public static final URI XSD_LONG = Constants.VALUE_FACTORY.createURI(Constants.XSD_NAMESPACE, "long");
     
     public static final String STATISTICS_ITEM_CONFIGLOCATIONS = "configlocations";
     public static final String STATISTICS_ITEM_CONFIGVERSION = "configversion";
@@ -342,7 +433,14 @@ public final class Constants
     
     public static final List<String> EMPTY_STRING_LIST = Collections.emptyList();
     
-    public static final SimpleDateFormat ISO8601UTC()
+    public static final String COIN_BASE_URI = "http://purl.org/court/def/2009/coin#";
+    
+    /**
+     * 
+     * @return A new SimpleDataFormat object that formats dates using the Z timezone and the ISO8601
+     *         conventions.
+     */
+    public static SimpleDateFormat ISO8601UTC()
     {
         final SimpleDateFormat result = new SimpleDateFormat(Constants.DATE_FORMAT);
         result.setTimeZone(TimeZone.getTimeZone(Constants.TIME_ZOME));

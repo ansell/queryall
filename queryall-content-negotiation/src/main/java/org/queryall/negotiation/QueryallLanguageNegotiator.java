@@ -12,10 +12,10 @@ import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
 public class QueryallLanguageNegotiator
 {
     private static final Logger log = LoggerFactory.getLogger(QueryallLanguageNegotiator.class);
-    private static final boolean _TRACE = QueryallLanguageNegotiator.log.isTraceEnabled();
-    private static final boolean _DEBUG = QueryallLanguageNegotiator.log.isDebugEnabled();
+    private static final boolean TRACE = QueryallLanguageNegotiator.log.isTraceEnabled();
+    private static final boolean DEBUG = QueryallLanguageNegotiator.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryallLanguageNegotiator.log.isInfoEnabled();
+    private static final boolean INFO = QueryallLanguageNegotiator.log.isInfoEnabled();
     
     // private static ContentTypeNegotiator contentNegotiator;
     
@@ -41,7 +41,7 @@ public class QueryallLanguageNegotiator
     public static String getResponseLanguage(final String acceptHeader, final String userAgent,
             final String preferredDisplayLanguage)
     {
-        if(QueryallLanguageNegotiator._DEBUG)
+        if(QueryallLanguageNegotiator.DEBUG)
         {
             QueryallLanguageNegotiator.log.debug("QueryallLanguageNegotiator: acceptHeader=" + acceptHeader
                     + " userAgent=" + userAgent);
@@ -53,7 +53,7 @@ public class QueryallLanguageNegotiator
         
         if(bestMatch == null)
         {
-            if(QueryallLanguageNegotiator._TRACE)
+            if(QueryallLanguageNegotiator.TRACE)
             {
                 QueryallLanguageNegotiator.log
                         .trace("QueryallLanguageNegotiator: bestMatch not found, returning en instead");
@@ -62,7 +62,7 @@ public class QueryallLanguageNegotiator
             return preferredDisplayLanguage;
         }
         
-        if(QueryallLanguageNegotiator._TRACE)
+        if(QueryallLanguageNegotiator.TRACE)
         {
             QueryallLanguageNegotiator.log.trace("QueryallLanguageNegotiator: bestMatch found, returning "
                     + bestMatch.getMediaType());

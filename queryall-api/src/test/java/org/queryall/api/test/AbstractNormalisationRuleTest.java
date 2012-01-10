@@ -20,7 +20,7 @@ import org.queryall.api.utils.Constants;
 import org.queryall.exception.InvalidStageException;
 
 /**
- * Abstract unit test for NormalisationRule API
+ * Abstract unit test for NormalisationRule API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -45,7 +45,7 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
     }
     
     /**
-     * Create a new instance of the NormalisationRule implementation being tested
+     * Create a new instance of the NormalisationRule implementation being tested.
      * 
      * @return a new instance of the implemented NormalisationRule
      */
@@ -60,7 +60,7 @@ public abstract class AbstractNormalisationRuleTest extends AbstractProfilableNo
     {
         super.setUp();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         // this.testTrueSparqlNormalisationRuleUri =
         // f.createURI("http://example.org/test/includedNormalisationRule");

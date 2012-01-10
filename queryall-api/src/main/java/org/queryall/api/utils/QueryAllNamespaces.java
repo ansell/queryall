@@ -4,34 +4,70 @@
 package org.queryall.api.utils;
 
 /**
- * Generates the namespace ontology URIs based on calls to PropertyUtils
+ * Generates the namespace ontology URIs based on calls to PropertyUtils.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public enum QueryAllNamespaces
 {
+    /**
+     * The namespace for namespace entries.
+     */
     NAMESPACEENTRY("queryall.namespace.NamespaceEntries", "ns", "Namespace Entries"),
     
+    /**
+     * The namespace for profiles.
+     */
     PROFILE("queryall.namespace.Profiles", "profile", "Profiles"),
     
+    /**
+     * The namespace for projects.
+     */
     PROJECT("queryall.namespace.Projects", "project", "Projects"),
     
+    /**
+     * The namespace for provenance records.
+     */
     PROVENANCE("queryall.namespace.ProvenanceRecords", "provenance", "Provenance Records"),
     
+    /**
+     * The namespace for providers.
+     */
     PROVIDER("queryall.namespace.Providers", "provider", "Providers"),
     
+    /**
+     * The namespace for query types.
+     */
     QUERY("queryall.namespace.QueryTypes", "query", "Query Types"),
     
+    /**
+     * The namespace for query bundles.
+     */
     QUERYBUNDLE("queryall.namespace.QueryBundles", "querybundle", "Query Bundles"),
     
+    /**
+     * The namespace for normalisation rules.
+     */
     RDFRULE("queryall.namespace.NormalisationRules", "rdfrule", "RDF Normalisation Rules"),
     
+    /**
+     * The namespace for rule tests.
+     */
     RULETEST("queryall.namespace.RuleTests", "ruletest", "Rule Tests"),
     
+    /**
+     * The namespace for statistics.
+     */
     STATISTICS("queryall.namespace.Statistics", "statistics", "Statistics"),
     
+    /**
+     * The namespace for templates.
+     */
     TEMPLATES("queryall.namespace.Templates", "template", "Templates"),
     
+    /**
+     * The namespace for web application configurations.
+     */
     WEBAPPCONFIG("queryall.namespace.WebApplicationConfiguration", "webapp_configuration",
             "Web Application Configurations");
     
@@ -97,10 +133,10 @@ public enum QueryAllNamespaces
     
     private String baseUri;
     
-    QueryAllNamespaces(final String nextKey, final String defaultValue, final String nextDescription)
+    QueryAllNamespaces(final String nextKey, final String nextDefaultValue, final String nextDescription)
     {
-        this.defaultValue = defaultValue;
-        this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, defaultValue);
+        this.defaultValue = nextDefaultValue;
+        this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, nextDefaultValue);
         this.description = nextDescription;
     }
     

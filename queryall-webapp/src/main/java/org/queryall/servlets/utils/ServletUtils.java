@@ -82,12 +82,12 @@ public class ServletUtils
                 ServletUtils.getRedirectString(redirectString, localSettings, requestQueryOptions,
                         requestedContentType, ignoreContextPath, contextPath);
                 
-                if(GeneralServlet._INFO)
+                if(GeneralServlet.INFO)
                 {
                     GeneralServlet.log.info("Sending redirect using redirectCode=" + redirectCode
                             + " to redirectString=" + redirectString.toString());
                 }
-                if(GeneralServlet._DEBUG)
+                if(GeneralServlet.DEBUG)
                 {
                     GeneralServlet.log.debug("contextPath=" + contextPath);
                 }
@@ -201,7 +201,7 @@ public class ServletUtils
             // Attempt to fetch information as needed
             fetchController.fetchRdfForQueries();
             
-            if(GeneralServlet._INFO)
+            if(GeneralServlet.INFO)
             {
                 if(requestedContentType.equals(Constants.APPLICATION_RDF_XML)
                         || requestedContentType.equals(Constants.TEXT_HTML))
@@ -216,7 +216,7 @@ public class ServletUtils
             
             for(final RdfFetcherQueryRunnable nextResult : fetchController.getResults())
             {
-                if(GeneralServlet._INFO)
+                if(GeneralServlet.INFO)
                 {
                     if(requestedContentType.equals(Constants.APPLICATION_RDF_XML)
                             || requestedContentType.equals(Constants.TEXT_HTML))
@@ -232,7 +232,7 @@ public class ServletUtils
                     }
                 }
                 
-                if(GeneralServlet._TRACE)
+                if(GeneralServlet.TRACE)
                 {
                     GeneralServlet.log.trace("GeneralServlet: normalised result string : "
                             + nextResult.getNormalisedResult());
@@ -255,7 +255,7 @@ public class ServletUtils
                                         .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
                                 localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                 
-                if(GeneralServlet._DEBUG)
+                if(GeneralServlet.DEBUG)
                 {
                     final RepositoryConnection tempRepositoryConnection = tempRepository.getConnection();
                     
@@ -272,7 +272,7 @@ public class ServletUtils
             {
                 String nextStaticString = nextPotentialQueryBundle.getStaticRdfXmlString();
                 
-                if(GeneralServlet._TRACE)
+                if(GeneralServlet.TRACE)
                 {
                     GeneralServlet.log
                             .trace("GeneralServlet: Adding static RDF/XML string nextPotentialQueryBundle.getQueryType().getKey()="
@@ -363,7 +363,7 @@ public class ServletUtils
                     SettingsFactory.CONFIG_API_VERSION);
         }
         
-        if(GeneralServlet._TRACE)
+        if(GeneralServlet.TRACE)
         {
             GeneralServlet.log.trace("GeneralServlet: Finished with pretend query bundle rdf generation");
         }
@@ -416,7 +416,7 @@ public class ServletUtils
             
             for(final URI nextStaticQueryTypeForUnknown : staticQueryTypesForUnknown)
             {
-                if(GeneralServlet._DEBUG)
+                if(GeneralServlet.DEBUG)
                 {
                     GeneralServlet.log.debug("GeneralServlet: nextStaticQueryTypeForUnknown="
                             + nextStaticQueryTypeForUnknown);
@@ -492,7 +492,7 @@ public class ServletUtils
                 }
             }
             
-            if(GeneralServlet._TRACE)
+            if(GeneralServlet.TRACE)
             {
                 GeneralServlet.log.trace("GeneralServlet: ending !fetchController.queryKnown() section");
             }
@@ -641,7 +641,7 @@ public class ServletUtils
             final String requestedContentType, final boolean containsExplicitPageOffset, final String acceptHeader,
             final String userAgentHeader)
     {
-        if(GeneralServlet._INFO)
+        if(GeneralServlet.INFO)
         {
             GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
                     + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
@@ -688,7 +688,7 @@ public class ServletUtils
         // TODO: Make this process generic to allow output to arbitrary formats
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
-            if(GeneralServlet._DEBUG)
+            if(GeneralServlet.DEBUG)
             {
                 GeneralServlet.log.debug("GeneralServlet: about to call html rendering method");
                 GeneralServlet.log
@@ -712,7 +712,7 @@ public class ServletUtils
         }
         else
         {
-            if(GeneralServlet._DEBUG)
+            if(GeneralServlet.DEBUG)
             {
                 GeneralServlet.log.debug("GeneralServlet: about to call rdf rendering method");
                 GeneralServlet.log

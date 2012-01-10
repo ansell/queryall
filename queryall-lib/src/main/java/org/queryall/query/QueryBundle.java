@@ -34,10 +34,10 @@ public class QueryBundle
 {
     private static final Logger log = LoggerFactory.getLogger(QueryBundle.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryBundle.log.isTraceEnabled();
+    private static final boolean TRACE = QueryBundle.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryBundle.log.isDebugEnabled();
-    private static final boolean _INFO = QueryBundle.log.isInfoEnabled();
+    private static final boolean DEBUG = QueryBundle.log.isDebugEnabled();
+    private static final boolean INFO = QueryBundle.log.isInfoEnabled();
     
     // This query is specifically tailored for the provider with respect to the URI
     // (de)normalisation rules
@@ -71,7 +71,7 @@ public class QueryBundle
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERYBUNDLE.getBaseURI();
         
@@ -286,7 +286,7 @@ public class QueryBundle
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -401,7 +401,7 @@ public class QueryBundle
             }
         }
         
-        if(QueryBundle._INFO)
+        if(QueryBundle.INFO)
         {
             QueryBundle.log.info("QueryBundle: toRdf returning false");
         }

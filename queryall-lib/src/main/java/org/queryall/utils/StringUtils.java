@@ -31,14 +31,14 @@ import org.slf4j.LoggerFactory;
 public class StringUtils
 {
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
-    private static final boolean _TRACE = StringUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = StringUtils.log.isDebugEnabled();
+    private static final boolean TRACE = StringUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = StringUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = StringUtils.log.isInfoEnabled();
+    private static final boolean INFO = StringUtils.log.isInfoEnabled();
     
     public static URI createURI(final String stringForm)
     {
-        return Constants.valueFactory.createURI(stringForm);
+        return Constants.VALUE_FACTORY.createURI(stringForm);
     }
     
     public static Map<String, List<String>> getNamespaceAndIdentifier(final String nsAndId,
@@ -133,7 +133,7 @@ public class StringUtils
         {
             for(int i = 0; i < matcher.groupCount(); i++)
             {
-                if(StringUtils._TRACE)
+                if(StringUtils.TRACE)
                 {
                     StringUtils.log.trace("RdfUtils.matchesForRegexOnString: Found the text \"" + matcher.group(i + 1)
                             + "\" starting at " + "index=" + matcher.start(i + 1) + " and ending at index="
@@ -151,13 +151,13 @@ public class StringUtils
         
         if(!found)
         {
-            if(StringUtils._DEBUG)
+            if(StringUtils.DEBUG)
             {
                 StringUtils.log.debug("RdfUtils.matchesForRegexOnString: could not find a match for queryString="
                         + nextQueryString);
             }
         }
-        else if(StringUtils._DEBUG)
+        else if(StringUtils.DEBUG)
         {
             StringUtils.log.debug("RdfUtils.matchesForRegexOnString: found " + results.size()
                     + " matches for queryString=" + nextQueryString);
@@ -193,7 +193,7 @@ public class StringUtils
                 hash = "0" + hash;
             }
             
-            if(StringUtils._DEBUG)
+            if(StringUtils.DEBUG)
             {
                 StringUtils.log.debug("RdfUtils.md5: inputString=" + inputString + " hash=" + hash);
             }
@@ -314,7 +314,7 @@ public class StringUtils
                 }
             }
             
-            if(StringUtils._TRACE)
+            if(StringUtils.TRACE)
             {
                 StringUtils.log.trace("RdfUtils.replaceAll: replacing from " + (bufferPosition + 1) + " to "
                         + (bufferPosition + 1 + offset) + " with (" + replacement + ")");
@@ -351,7 +351,7 @@ public class StringUtils
             
             for(int i = 0; i < matcher.groupCount(); i++)
             {
-                if(StringUtils._TRACE)
+                if(StringUtils.TRACE)
                 {
                     StringUtils.log.trace("RdfUtils.replaceMatchesForRegexOnString: nextRegex=" + nextRegex
                             + " Found the text \"" + matcher.group(i + 1) + "\" starting at " + "index="
@@ -361,7 +361,7 @@ public class StringUtils
                 // buffer.replace(matcher.start(i+1), matcher.end(i+1), replaceString);
                 buffer.replace(matcher.start(i + 1), matcher.end(i + 1), matcher.group(i + 1));
                 
-                if(StringUtils._TRACE)
+                if(StringUtils.TRACE)
                 {
                     StringUtils.log.trace("Buffer after replacement=" + buffer.toString());
                 }
