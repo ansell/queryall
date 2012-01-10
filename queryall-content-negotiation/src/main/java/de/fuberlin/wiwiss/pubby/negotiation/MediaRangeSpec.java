@@ -10,20 +10,21 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MediaRangeSpec
+public final class MediaRangeSpec
 {
     
-    private static final Logger log = LoggerFactory.getLogger(MediaRangeSpec.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MediaRangeSpec.class);
     @SuppressWarnings("unused")
-    private static final boolean TRACE = MediaRangeSpec.log.isTraceEnabled();
-    private static final boolean DEBUG = MediaRangeSpec.log.isDebugEnabled();
+    private static final boolean TRACE = MediaRangeSpec.LOG.isTraceEnabled();
+    private static final boolean DEBUG = MediaRangeSpec.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean INFO = MediaRangeSpec.log.isInfoEnabled();
+    private static final boolean INFO = MediaRangeSpec.LOG.isInfoEnabled();
     
-    private final static Pattern tokenPattern;
-    private final static Pattern parameterPattern;
-    private final static Pattern mediaRangePattern;
-    private final static Pattern qValuePattern;
+    private static Pattern tokenPattern;
+    private static Pattern parameterPattern;
+    private static Pattern mediaRangePattern;
+    private static Pattern qValuePattern;
+    
     static
     {
         // See RFC 2616, section 2.2
@@ -39,10 +40,10 @@ public class MediaRangeSpec
         final String regex =
                 "(" + token + ")/(" + token + ")" + "((?:\\s*" + parameter + ")*)" + "(?:\\s*" + quality + ")?"
                         + "((?:\\s*" + parameter + ")*)";
-        tokenPattern = Pattern.compile(token);
-        parameterPattern = Pattern.compile(parameter);
-        mediaRangePattern = Pattern.compile(regex);
-        qValuePattern = Pattern.compile(qualityValue);
+        MediaRangeSpec.tokenPattern = Pattern.compile(token);
+        MediaRangeSpec.parameterPattern = Pattern.compile(parameter);
+        MediaRangeSpec.mediaRangePattern = Pattern.compile(regex);
+        MediaRangeSpec.qValuePattern = Pattern.compile(qualityValue);
     }
     
     private static String escape(final String s)
@@ -51,7 +52,7 @@ public class MediaRangeSpec
     }
     
     /**
-     * Parses an HTTP Accept header into a List of MediaRangeSpecs
+     * Parses an HTTP Accept header into a List of MediaRangeSpecs.
      * 
      * @return A List of MediaRangeSpecs
      */
@@ -59,7 +60,7 @@ public class MediaRangeSpec
     {
         if(MediaRangeSpec.DEBUG)
         {
-            MediaRangeSpec.log.debug("MediaRangeSpec: about to parse accept string s=" + s);
+            MediaRangeSpec.LOG.debug("MediaRangeSpec: about to parse accept string s=" + s);
         }
         
         final List<MediaRangeSpec> result = new ArrayList<MediaRangeSpec>();
@@ -109,7 +110,7 @@ public class MediaRangeSpec
             }
             catch(final NumberFormatException ex)
             {
-                // quality stays at default value
+                ;// quality stays at default value
             }
         }
         return new MediaRangeSpec(type, subtype, parameterNames, parameterValues, quality);
@@ -140,15 +141,15 @@ public class MediaRangeSpec
     private final String mediaType;
     private final double quality;
     
-    private MediaRangeSpec(final String type, final String subtype, final List<String> parameterNames,
-            final List<String> parameterValues, final double quality)
+    private MediaRangeSpec(final String nextType, final String nextSubtype, final List<String> nextParameterNames,
+            final List<String> nextParameterValues, final double nextQuality)
     {
-        this.type = type;
-        this.subtype = subtype;
-        this.parameterNames = Collections.unmodifiableList(parameterNames);
-        this.parameterValues = parameterValues;
+        this.type = nextType;
+        this.subtype = nextSubtype;
+        this.parameterNames = Collections.unmodifiableList(nextParameterNames);
+        this.parameterValues = nextParameterValues;
         this.mediaType = this.buildMediaType();
-        this.quality = quality;
+        this.quality = nextQuality;
     }
     
     private String buildMediaType()

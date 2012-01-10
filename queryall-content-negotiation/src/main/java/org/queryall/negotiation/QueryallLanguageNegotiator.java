@@ -1,21 +1,21 @@
 package org.queryall.negotiation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryallLanguageNegotiator
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryallLanguageNegotiator.class);
-    private static final boolean TRACE = QueryallLanguageNegotiator.log.isTraceEnabled();
-    private static final boolean DEBUG = QueryallLanguageNegotiator.log.isDebugEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(QueryallLanguageNegotiator.class);
+    private static final boolean TRACE = QueryallLanguageNegotiator.LOG.isTraceEnabled();
+    private static final boolean DEBUG = QueryallLanguageNegotiator.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean INFO = QueryallLanguageNegotiator.log.isInfoEnabled();
+    private static final boolean INFO = QueryallLanguageNegotiator.LOG.isInfoEnabled();
     
     // private static ContentTypeNegotiator contentNegotiator;
     
@@ -43,7 +43,7 @@ public class QueryallLanguageNegotiator
     {
         if(QueryallLanguageNegotiator.DEBUG)
         {
-            QueryallLanguageNegotiator.log.debug("QueryallLanguageNegotiator: acceptHeader=" + acceptHeader
+            QueryallLanguageNegotiator.LOG.debug("QueryallLanguageNegotiator: acceptHeader=" + acceptHeader
                     + " userAgent=" + userAgent);
         }
         
@@ -55,7 +55,7 @@ public class QueryallLanguageNegotiator
         {
             if(QueryallLanguageNegotiator.TRACE)
             {
-                QueryallLanguageNegotiator.log
+                QueryallLanguageNegotiator.LOG
                         .trace("QueryallLanguageNegotiator: bestMatch not found, returning en instead");
             }
             
@@ -64,7 +64,7 @@ public class QueryallLanguageNegotiator
         
         if(QueryallLanguageNegotiator.TRACE)
         {
-            QueryallLanguageNegotiator.log.trace("QueryallLanguageNegotiator: bestMatch found, returning "
+            QueryallLanguageNegotiator.LOG.trace("QueryallLanguageNegotiator: bestMatch found, returning "
                     + bestMatch.getMediaType());
         }
         

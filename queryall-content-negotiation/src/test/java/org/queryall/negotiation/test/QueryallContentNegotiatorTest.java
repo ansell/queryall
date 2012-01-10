@@ -3,13 +3,13 @@
  */
 package org.queryall.negotiation.test;
 
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.queryall.negotiation.QueryallContentNegotiator;
-
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -372,7 +372,7 @@ public class QueryallContentNegotiatorTest
     }
     
     /**
-     * Tests the behaviour of the QueryallContentNegotiator against a Chrome default accept header:
+     * Tests the behaviour of the QueryallContentNegotiator against a Chrome default accept header.
      * 
      * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
      * 
@@ -394,7 +394,7 @@ public class QueryallContentNegotiatorTest
     
     /**
      * Tests the behaviour of the QueryallContentNegotiator against the current Firefox default
-     * accept header:
+     * accept header.
      * 
      * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
      * 
@@ -410,7 +410,7 @@ public class QueryallContentNegotiatorTest
     }
     
     /**
-     * Tests the behaviour of the QueryallContentNegotiator against an IE default accept header:
+     * Tests the behaviour of the QueryallContentNegotiator against an IE default accept header.
      * 
      * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
      * 
@@ -432,7 +432,7 @@ public class QueryallContentNegotiatorTest
     }
     
     /**
-     * Test the behaviour of the QueryallContentNegotiator against a Jena default accept header
+     * Test the behaviour of the QueryallContentNegotiator against a Jena default accept header.
      * 
      * http://richard.cyganiak.de/blog/2008/03/what-is-your-rdf-browsers-accept-header/
      * 
@@ -448,7 +448,7 @@ public class QueryallContentNegotiatorTest
     
     /**
      * Test the behaviour of the QueryallContentNegotiator against a OpenLink RDF Browser default
-     * accept header
+     * accept header.
      * 
      * http://richard.cyganiak.de/blog/2008/03/what-is-your-rdf-browsers-accept-header/
      * 
@@ -464,7 +464,7 @@ public class QueryallContentNegotiatorTest
     
     /**
      * Tests the behaviour of the QueryallContentNegotiator against the current Opera default accept
-     * header:
+     * header.
      * 
      * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
      * 
@@ -482,7 +482,7 @@ public class QueryallContentNegotiatorTest
     }
     
     /**
-     * Tests the behaviour of the QueryallContentNegotiator against a Safari default accept header:
+     * Tests the behaviour of the QueryallContentNegotiator against a Safari default accept header.
      * 
      * http://my.opera.com/karlcow/blog/2011/03/03/wrong-to-be-right-with-xhtml
      * 
@@ -503,7 +503,7 @@ public class QueryallContentNegotiatorTest
     
     /**
      * Test the behaviour of the QueryallContentNegotiator against a OpenLink RDF Browser default
-     * accept header
+     * accept header.
      * 
      * http://richard.cyganiak.de/blog/2008/03/what-is-your-rdf-browsers-accept-header/
      * 
@@ -521,7 +521,7 @@ public class QueryallContentNegotiatorTest
      * {@link org.queryall.negotiation.QueryallContentNegotiator#getResponseContentType(java.lang.String, java.lang.String, de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator, java.lang.String)}
      * .
      * 
-     * Test that * / * accept headers always return the defined preferred content type
+     * Test that * / * accept headers always return the defined preferred content type.
      */
     @Test
     public void testGetResponseContentTypeStarSlashStar()
@@ -593,7 +593,8 @@ public class QueryallContentNegotiatorTest
     }
     
     /**
-     * Test the behaviour of the QueryallContentNegotiator against a Tabulator default accept header
+     * Test the behaviour of the QueryallContentNegotiator against a Tabulator default accept
+     * header.
      * 
      * http://richard.cyganiak.de/blog/2008/03/what-is-your-rdf-browsers-accept-header/
      * 
@@ -611,7 +612,7 @@ public class QueryallContentNegotiatorTest
      * Test to verify that our strategy returns text/html to any common HTML browser.
      * 
      * Also tests other possibilities, including application/xml which is troublesome for
-     * application/rdf+xml versus application/xhtml+xml
+     * application/rdf+xml versus application/xhtml+xml.
      */
     private void testHtmlBrowserDefaults(final String browserName, final String typicalUserAgent,
             final String defaultAcceptHeader)

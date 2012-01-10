@@ -1,23 +1,23 @@
 package org.queryall.negotiation;
 
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
+import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
+
 import java.util.regex.Pattern;
 
 import org.queryall.api.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
-import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
-
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class QueryallContentNegotiator
 {
-    public static final Logger log = LoggerFactory.getLogger(QueryallContentNegotiator.class);
-    public static final boolean TRACE = QueryallContentNegotiator.log.isTraceEnabled();
-    public static final boolean DEBUG = QueryallContentNegotiator.log.isDebugEnabled();
-    public static final boolean INFO = QueryallContentNegotiator.log.isInfoEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(QueryallContentNegotiator.class);
+    private static final boolean TRACE = QueryallContentNegotiator.LOG.isTraceEnabled();
+    private static final boolean DEBUG = QueryallContentNegotiator.LOG.isDebugEnabled();
+    private static final boolean INFO = QueryallContentNegotiator.LOG.isInfoEnabled();
     
     public static ContentTypeNegotiator getContentNegotiator(final String preferredDisplayContentType)
     {
@@ -150,7 +150,7 @@ public class QueryallContentNegotiator
     {
         if(QueryallContentNegotiator.DEBUG)
         {
-            QueryallContentNegotiator.log.debug("QueryallContentNegotiator: acceptHeader=" + acceptHeader
+            QueryallContentNegotiator.LOG.debug("QueryallContentNegotiator: acceptHeader=" + acceptHeader
                     + " userAgent=" + userAgent);
         }
         
@@ -160,7 +160,7 @@ public class QueryallContentNegotiator
         {
             if(QueryallContentNegotiator.TRACE)
             {
-                QueryallContentNegotiator.log
+                QueryallContentNegotiator.LOG
                         .trace("QueryallContentNegotiator: bestMatch not found, returning fallback instead");
             }
             
