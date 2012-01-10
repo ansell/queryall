@@ -29,9 +29,8 @@
 		<module name="JavadocStyle">
 			<property name="scope" value="public" />
 		</module>
-<!-- 		<module name="MagicNumber">
-			<property name="ignoreNumbers" value="-1, 0, 1, 2, 3" />
-		</module> -->
+		<!-- <module name="MagicNumber"> <property name="ignoreNumbers" value="-1, 
+			0, 1, 2, 3" /> </module> -->
 		<!-- End Production specific checks -->
 		<property name="tabWidth" value="4" />
 		<module name="AvoidStarImport" />
@@ -39,12 +38,13 @@
 		<module name="AvoidInlineConditionals" />
 		<!--<module name="ClassTypeParameterName"/> -->
 		<module name="ConstantName" />
+		<!-- <module name="DesignForExtension"/> -->
 		<module name="EmptyBlock" />
 		<module name="EmptyForIteratorPad" />
 		<module name="EqualsHashCode" />
 		<module name="EqualsAvoidNull" />
-		<!-- <module name="ExplicitInitialization" /> -->		
- 		<module name="FinalClass" />
+		<!-- <module name="ExplicitInitialization" /> -->
+		<module name="FinalClass" />
 		<module name="HiddenField" />
 		<module name="IllegalCatch" />
 		<module name="IllegalImport" />
@@ -78,7 +78,7 @@
 		<module name="MissingSwitchDefault" />
 		<!--<module name="MissingDeprecated"/> -->
 		<module name="MissingOverride">
-			<property name="javaFiveCompatibility" value="false"/>
+			<property name="javaFiveCompatibility" value="false" />
 		</module>
 		<module name="ModifiedControlVariable" />
 		<module name="ModifierOrder" />
@@ -95,7 +95,7 @@
 			<property name="tokens" value="DOT" />
 			<property name="allowLineBreaks" value="true" />
 		</module>
-		<module name="OneStatementPerLine"/>
+		<module name="OneStatementPerLine" />
 		<!--<module name="OuterTypeNumber"/> -->
 		<module name="OperatorWrap">
 			<property name="option" value="nl" />

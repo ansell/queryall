@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class HttpProviderSchema extends QueryAllSchema
 {
-    static final Logger log = LoggerFactory.getLogger(HttpProviderSchema.class);
+    static final Logger LOG = LoggerFactory.getLogger(HttpProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean TRACE = HttpProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = HttpProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean DEBUG = HttpProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = HttpProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean INFO = HttpProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = HttpProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerHttpProviderUri;
     private static URI providerHttpGetUrl;
@@ -202,7 +202,7 @@ public class HttpProviderSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            HttpProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            HttpProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
