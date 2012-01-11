@@ -17,6 +17,7 @@ import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
@@ -54,7 +55,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     
     private boolean allowImplicitRdfRuleInclusions = true;
     
-    private URI defaultProfileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude defaultProfileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     private Collection<URI> profileAdministrators = new HashSet<URI>();
     
@@ -111,11 +112,14 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri()))
             {
-                this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                final ProfileIncludeExclude profileIncludeExclude =
+                        ProfileIncludeExclude.valueOf((URI)nextStatement.getObject());
                 
-                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileSchema.getProfileIncludeThenExcludeUri())
-                        || this.getDefaultProfileIncludeExcludeOrder().equals(
-                                ProfileSchema.getProfileExcludeThenIncludeUri()))
+                this.setDefaultProfileIncludeExcludeOrder(profileIncludeExclude);
+                
+                // check that one of the valid defaults was chosen, ie, not undefined
+                if(profileIncludeExclude == ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE
+                        || profileIncludeExclude == ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE)
                 {
                     defaultProfileIncludeExcludeOrderValidationFailed = false;
                 }
@@ -166,7 +170,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         {
             ProfileImpl.log
                     .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().stringValue());
+                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().getUri().stringValue());
         }
         
         if(ProfileImpl.TRACE)
@@ -414,7 +418,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     }
     
     @Override
-    public URI getDefaultProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getDefaultProfileIncludeExcludeOrder()
     {
         return this.defaultProfileIncludeExcludeOrder;
     }
@@ -658,7 +662,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     }
     
     @Override
-    public void setDefaultProfileIncludeExcludeOrder(final URI defaultProfileIncludeExcludeOrder)
+    public void setDefaultProfileIncludeExcludeOrder(final ProfileIncludeExclude defaultProfileIncludeExcludeOrder)
     {
         this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
     }
@@ -721,7 +725,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             final Literal allowImplicitProviderInclusionsLiteral =
                     f.createLiteral(this.allowImplicitProviderInclusions);
             final Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(this.allowImplicitRdfRuleInclusions);
-            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder;
+            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder.getUri();
             
             // log.info("About to add to the repository");
             

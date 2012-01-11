@@ -16,7 +16,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
@@ -25,6 +24,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.NamespaceMatch;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 
@@ -43,7 +43,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     private String description = "";
     private URI key;
     private String title = "";
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private String outputString = "";
     private String processingTemplateString = "";
     private Collection<String> expectedInputParameters = new HashSet<String>();
@@ -364,7 +364,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.base.ProfilableInterface#getProfileIncludeExcludeOrder()
      */
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -784,7 +784,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * .URI)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(final URI nextProfileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude nextProfileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = nextProfileIncludeExcludeOrder;
     }

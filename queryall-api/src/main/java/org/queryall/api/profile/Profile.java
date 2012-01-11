@@ -3,6 +3,7 @@ package org.queryall.api.profile;
 import java.util.Collection;
 
 import org.queryall.api.base.BaseQueryAllInterface;
+import org.queryall.api.utils.ProfileIncludeExclude;
 
 /**
  * Profiles define which query types, providers, and normalisation rules, are acceptable. They can
@@ -94,7 +95,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
      * @return A URI indicating what the default behaviour should be when processing items that do
      *         not explicitly defing their include or exclude behaviour.
      */
-    org.openrdf.model.URI getDefaultProfileIncludeExcludeOrder();
+    ProfileIncludeExclude getDefaultProfileIncludeExcludeOrder();
     
     /**
      * 
@@ -219,7 +220,7 @@ public interface Profile extends BaseQueryAllInterface, Comparable<Profile>
      *            A URI indicating what the default include or exclude behaviour should be for
      *            providers that do not define their own behaviour.
      */
-    void setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI defaultProfileIncludeExcludeOrder);
+    void setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude defaultProfileIncludeExcludeOrder);
     
     /**
      * 

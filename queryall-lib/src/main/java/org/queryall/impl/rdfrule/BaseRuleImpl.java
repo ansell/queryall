@@ -22,6 +22,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
@@ -41,7 +42,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     private static final boolean DEBUG = BaseRuleImpl.log.isDebugEnabled();
     private static final boolean INFO = BaseRuleImpl.log.isInfoEnabled();
     
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     private Collection<URI> relatedNamespaces = new HashSet<URI>(10);
     
@@ -114,7 +115,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
-                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder(ProfileIncludeExclude.valueOf((URI)nextStatement.getObject()));
             }
             else
             {
@@ -297,7 +298,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public final URI getProfileIncludeExcludeOrder()
+    public final ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -412,7 +413,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public final void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public final void setProfileIncludeExcludeOrder(final ProfileIncludeExclude profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
@@ -444,7 +445,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             
             final URI keyUri = this.getKey();
             final Literal orderLiteral = f.createLiteral(this.getOrder());
-            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
+            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder().getUri();
             
             con.setAutoCommit(false);
             

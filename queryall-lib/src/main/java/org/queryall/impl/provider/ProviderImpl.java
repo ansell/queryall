@@ -20,6 +20,7 @@ import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
@@ -49,7 +50,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     
     private boolean isDefaultSourceVar = false;
     
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue()
     // and Provider.providerNoCommunication.stringValue()
@@ -109,7 +110,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
-                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder(ProfileIncludeExclude.valueOf((URI)nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderResolutionMethod()))
             {
@@ -362,7 +363,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -498,7 +499,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     }
     
     @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
@@ -611,7 +612,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             final Literal isDefaultSourceLiteral = f.createLiteral(this.getIsDefaultSourceVar());
             final Literal assumedContentTypeLiteral = f.createLiteral(this.getAssumedContentType());
             
-            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
+            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder().getUri();
             
             con.setAutoCommit(false);
             

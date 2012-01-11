@@ -12,7 +12,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.utils.ProfileIncludeExclude;
 
 /**
  * Abstract unit test for Profilable API.
@@ -103,74 +103,68 @@ public abstract class AbstractProfilableTest
         this.testFalseProviderUri = f.createURI("http://example.org/test/excludedProvider");
         
         this.providerNonDefault = this.getNewTestProfilable();
-        this.providerNonDefault
-                .setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerNonDefault.setProfileIncludeExcludeOrder(ProfileIncludeExclude.UNDEFINED);
         
         this.providerSpecificDefault = this.getNewTestProfilable();
-        this.providerSpecificDefault.setProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerSpecificDefault.setProfileIncludeExcludeOrder(ProfileIncludeExclude.UNDEFINED);
         
         this.providerTrueUri = this.getNewTestProfilable();
-        this.providerTrueUri.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerTrueUri.setProfileIncludeExcludeOrder(ProfileIncludeExclude.UNDEFINED);
         this.providerTrueUri.setKey(this.testTrueProviderUri);
         
         this.providerFalseUri = this.getNewTestProfilable();
-        this.providerFalseUri.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerFalseUri.setProfileIncludeExcludeOrder(ProfileIncludeExclude.UNDEFINED);
         this.providerFalseUri.setKey(this.testFalseProviderUri);
         
         this.providerIncludeImplicitly = this.getNewTestProfilable();
-        this.providerIncludeImplicitly.setProfileIncludeExcludeOrder(ProfileSchema.getProfileExcludeThenIncludeUri());
+        this.providerIncludeImplicitly.setProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
         
         this.providerExcludeImplicitly = this.getNewTestProfilable();
-        this.providerExcludeImplicitly.setProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeThenExcludeUri());
+        this.providerExcludeImplicitly.setProfileIncludeExcludeOrder(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE);
         
         this.providerIncludeExcludeOrderUndefined = this.getNewTestProfilable();
-        this.providerIncludeExcludeOrderUndefined.setProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileIncludeExcludeOrderUndefinedUri());
+        this.providerIncludeExcludeOrderUndefined.setProfileIncludeExcludeOrder(ProfileIncludeExclude.UNDEFINED);
         
         this.profileIncludeAllImplicitly = this.getNewTestProfile();
         this.profileIncludeAllImplicitly.setAllowImplicitProviderInclusions(true);
         this.profileIncludeAllImplicitly.setAllowImplicitQueryTypeInclusions(true);
         this.profileIncludeAllImplicitly.setAllowImplicitRdfRuleInclusions(true);
-        this.profileIncludeAllImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileExcludeThenIncludeUri());
+        this.profileIncludeAllImplicitly
+                .setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
         
         this.profileIncludeAllImplicitlyExcludeByDefault = this.getNewTestProfile();
         this.profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitProviderInclusions(true);
         this.profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitQueryTypeInclusions(true);
         this.profileIncludeAllImplicitlyExcludeByDefault.setAllowImplicitRdfRuleInclusions(true);
-        this.profileIncludeAllImplicitlyExcludeByDefault.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileIncludeThenExcludeUri());
+        this.profileIncludeAllImplicitlyExcludeByDefault
+                .setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE);
         
         this.profileExcludeImplicitly = this.getNewTestProfile();
         this.profileExcludeImplicitly.setAllowImplicitProviderInclusions(false);
         this.profileExcludeImplicitly.setAllowImplicitQueryTypeInclusions(false);
         this.profileExcludeImplicitly.setAllowImplicitRdfRuleInclusions(false);
-        this.profileExcludeImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileExcludeThenIncludeUri());
+        this.profileExcludeImplicitly.setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
         
         this.profileExcludeImplicitlyAndByDefault = this.getNewTestProfile();
         this.profileExcludeImplicitlyAndByDefault.setAllowImplicitProviderInclusions(false);
         this.profileExcludeImplicitlyAndByDefault.setAllowImplicitQueryTypeInclusions(false);
         this.profileExcludeImplicitlyAndByDefault.setAllowImplicitRdfRuleInclusions(false);
-        this.profileExcludeImplicitlyAndByDefault.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileIncludeThenExcludeUri());
+        this.profileExcludeImplicitlyAndByDefault
+                .setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE);
         
         this.profileIncludeTrueOnly = this.getNewTestProfile();
         this.includeTrueUri(this.profileIncludeTrueOnly, this.testTrueProviderUri);
         this.profileIncludeTrueOnly.setAllowImplicitProviderInclusions(false);
         this.profileIncludeTrueOnly.setAllowImplicitQueryTypeInclusions(false);
         this.profileIncludeTrueOnly.setAllowImplicitRdfRuleInclusions(false);
-        this.profileIncludeTrueOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileIncludeThenExcludeUri());
+        this.profileIncludeTrueOnly.setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE);
         
         this.profileExcludeFalseOnly = this.getNewTestProfile();
         this.includeFalseUri(this.profileExcludeFalseOnly, this.testFalseProviderUri);
         this.profileExcludeFalseOnly.setAllowImplicitProviderInclusions(false);
         this.profileExcludeFalseOnly.setAllowImplicitQueryTypeInclusions(false);
         this.profileExcludeFalseOnly.setAllowImplicitRdfRuleInclusions(false);
-        this.profileExcludeFalseOnly.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileIncludeThenExcludeUri());
+        this.profileExcludeFalseOnly.setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE);
         
         this.profileListEmpty = new ArrayList<Profile>(0);
         

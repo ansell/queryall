@@ -110,9 +110,9 @@ public enum ProfileMatch
      *             includeOrExclude or excludeOrInclude and nextDefaultProfileIncludeExcludeOrder
      *             does not help resolve the nextIncludeExcludeOrder
      */
-    public static ProfileMatch usedWithIncludeExcludeList(final URI nextUri, final URI nextIncludeExcludeOrder,
-            final Collection<URI> includeList, final Collection<URI> excludeList,
-            final URI nextDefaultProfileIncludeExcludeOrder)
+    public static ProfileMatch usedWithIncludeExcludeList(final URI nextUri,
+            final ProfileIncludeExclude nextIncludeExcludeOrder, final Collection<URI> includeList,
+            final Collection<URI> excludeList, final ProfileIncludeExclude nextDefaultProfileIncludeExcludeOrder)
     {
         if(includeList == null || excludeList == null)
         {
@@ -124,15 +124,14 @@ public enum ProfileMatch
         
         ProfileMatch result;
         
-        URI actualIncludeExcludeOrder = nextIncludeExcludeOrder;
+        ProfileIncludeExclude actualIncludeExcludeOrder = nextIncludeExcludeOrder;
         
-        if(actualIncludeExcludeOrder == null
-                || actualIncludeExcludeOrder.equals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()))
+        if(ProfileIncludeExclude.UNDEFINED == actualIncludeExcludeOrder)
         {
             actualIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
         }
         
-        if(nextIncludeExcludeOrder.equals(ProfileSchema.getProfileExcludeThenIncludeUri()))
+        if(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == actualIncludeExcludeOrder)
         {
             if(excludeFound)
             {
@@ -147,7 +146,7 @@ public enum ProfileMatch
                 result = IMPLICIT_INCLUDE;
             }
         }
-        else if(nextIncludeExcludeOrder.equals(ProfileSchema.getProfileIncludeThenExcludeUri()))
+        else if(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE == actualIncludeExcludeOrder)
         {
             if(includeFound)
             {
@@ -165,7 +164,8 @@ public enum ProfileMatch
         else
         {
             throw new IllegalArgumentException("usedWithIncludeExcludeList: nextIncludeExcludeOrder not recognised ("
-                    + nextIncludeExcludeOrder + ")");
+                    + nextIncludeExcludeOrder + ") nextDefaultProfileIncludeExcludeOrder ("
+                    + nextDefaultProfileIncludeExcludeOrder + ")");
         }
         
         return result;

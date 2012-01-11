@@ -22,6 +22,7 @@ import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.test.DummyProfile;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.test.DummyQueryType;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
@@ -74,8 +75,8 @@ public class QueryBundleUtilsTest
         this.testProfileSingleAllInclude = new DummyProfile();
         // By default this property is undefined to make it easier to layer profiles, but we want it
         // defined here to make sure that all settings are set to include
-        this.testProfileSingleAllInclude.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileExcludeThenIncludeUri());
+        this.testProfileSingleAllInclude
+                .setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
         this.testSortedIncludedProfilesSingleAllInclude.add(this.testProfileSingleAllInclude);
         
         this.testQueryParametersEmpty = new HashMap<String, String>();

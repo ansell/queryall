@@ -15,10 +15,10 @@ import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
@@ -43,7 +43,7 @@ public final class DummyNormalisationRule implements NormalisationRule
     private Set<URI> validStages = new HashSet<URI>();
     private Set<URI> stages = new HashSet<URI>();
     private Set<URI> relatedNamespaces = new HashSet<URI>();
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private String title = "";
     private URI key = null;
     private String description = "";
@@ -284,7 +284,7 @@ public final class DummyNormalisationRule implements NormalisationRule
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -436,7 +436,7 @@ public final class DummyNormalisationRule implements NormalisationRule
      * .URI)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(final URI nextProfileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude nextProfileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = nextProfileIncludeExcludeOrder;
     }

@@ -16,9 +16,9 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.repository.Repository;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public final class DummyProvider implements Provider
     @SuppressWarnings("unused")
     private static final boolean INFO = DummyProvider.LOG.isInfoEnabled();
     
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private String title = "";
     private URI key = null;
     private String description = "";
@@ -336,7 +336,7 @@ public final class DummyProvider implements Provider
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -499,7 +499,7 @@ public final class DummyProvider implements Provider
      * .URI)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(final URI nextProfileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude nextProfileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = nextProfileIncludeExcludeOrder;
     }
