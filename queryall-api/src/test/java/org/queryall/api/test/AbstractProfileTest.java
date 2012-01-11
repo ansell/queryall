@@ -223,7 +223,7 @@ public abstract class AbstractProfileTest
     @Test
     public final void testGetDefaultProfileIncludeExcludeOrder()
     {
-        Assert.assertEquals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(),
+        Assert.assertEquals(ProfileIncludeExclude.UNDEFINED,
                 this.testProfile1.getDefaultProfileIncludeExcludeOrder());
     }
     

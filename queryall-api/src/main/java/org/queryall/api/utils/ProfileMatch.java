@@ -65,11 +65,8 @@ public enum ProfileMatch
         }
         
         final boolean returnValue =
-                (profilableObject.getProfileIncludeExcludeOrder().equals(
-                        ProfileSchema.getProfileExcludeThenIncludeUri()) || profilableObject
-                        .getProfileIncludeExcludeOrder().equals(
-                                ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()))
-                        && includeNonProfileMatched;
+                includeNonProfileMatched && (ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == profilableObject.getProfileIncludeExcludeOrder() || ProfileIncludeExclude.UNDEFINED == profilableObject
+                        .getProfileIncludeExcludeOrder());
         
         return returnValue;
     }

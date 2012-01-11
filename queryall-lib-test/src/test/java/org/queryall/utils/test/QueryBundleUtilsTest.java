@@ -214,7 +214,7 @@ public class QueryBundleUtilsTest
         Assert.assertEquals(true, nextProfile.getAllowImplicitProviderInclusions());
         Assert.assertEquals(true, nextProfile.getAllowImplicitQueryTypeInclusions());
         Assert.assertEquals(true, nextProfile.getAllowImplicitRdfRuleInclusions());
-        Assert.assertEquals(ProfileSchema.getProfileExcludeThenIncludeUri(),
+        Assert.assertEquals(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                 nextProfile.getDefaultProfileIncludeExcludeOrder());
         Assert.assertEquals(0, nextProfile.getExcludeProviders().size());
         Assert.assertEquals(0, nextProfile.getExcludeQueryTypes().size());
