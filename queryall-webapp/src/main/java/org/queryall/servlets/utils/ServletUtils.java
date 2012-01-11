@@ -424,6 +424,11 @@ public class ServletUtils
                 
                 final QueryType nextIncludeType = localSettings.getAllQueryTypes().get(nextStaticQueryTypeForUnknown);
                 
+                if(nextIncludeType == null)
+                {
+                    throw new QueryAllException("Could not find query type for static unknown query type nextStaticQueryTypeForUnknown="+nextStaticQueryTypeForUnknown.stringValue()+" fetchController.anyNamespaceNotRecognised()="+fetchController.anyNamespaceNotRecognised());
+                }
+                
                 // If we didn't understand the query
                 final Map<String, Collection<NamespaceEntry>> emptyNamespaceEntryMap = Collections.emptyMap();
                 
