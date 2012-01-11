@@ -3,13 +3,13 @@
  */
 package org.queryall.negotiation.test;
 
-import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.queryall.negotiation.QueryallContentNegotiator;
+
+import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
