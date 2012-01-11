@@ -78,7 +78,7 @@ public class SettingsFactory
         
         if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addNamespaceEntries: found " + results.size() + " namespaces");
         }
         
         for(final URI nextNamespaceEntryUri : results.keySet())
@@ -103,7 +103,7 @@ public class SettingsFactory
         
         if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addNormalisationRules: found " + results.size() + " normalisation rules");
         }
         
         for(final URI nextNormalisationRuleUri : results.keySet())
@@ -127,7 +127,7 @@ public class SettingsFactory
         
         if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addProfiles: found " + results.size() + " profiles");
         }
         
         for(final URI nextProfileUri : results.keySet())
@@ -151,7 +151,7 @@ public class SettingsFactory
         
         if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addProviders: found " + results.size() + " providers");
         }
         
         for(final URI nextProviderUri : results.keySet())
@@ -175,7 +175,7 @@ public class SettingsFactory
         
         if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addQueryTypes: found " + results.size() + " query types");
         }
         
         for(final URI nextQueryTypeUri : results.keySet())
@@ -199,7 +199,7 @@ public class SettingsFactory
         
         if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addRuleTests: found " + results.size() + " rule tests");
         }
         
         for(final URI nextRuleTestUri : results.keySet())
