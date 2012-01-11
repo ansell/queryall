@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openrdf.OpenRDFException;
@@ -2508,6 +2511,17 @@ public final class RdfUtils
             RdfUtils.log.error("UTF-8 is not supported by this java vm!!!", uee);
             throw new RuntimeException("UTF-8 is not supported by this java vm!!!", uee);
         }
+    }
+    
+    public static Value getValueFromDateTime(final Date nextDate) throws DatatypeConfigurationException
+    {
+        final GregorianCalendar gregCal = new GregorianCalendar();
+        gregCal.setTime(nextDate);
+        XMLGregorianCalendar XMLGregCal;
+        XMLGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregCal).normalize();
+        final Value valueTyped = Constants.VALUE_FACTORY.createLiteral(XMLGregCal);
+        
+        return valueTyped;
     }
     
     /**
