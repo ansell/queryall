@@ -41,10 +41,10 @@ public class NamespaceProvidersServlet extends HttpServlet
 	 * 
 	 */
     private static final long serialVersionUID = -7006535158409121292L;
-    public static final Logger log = LoggerFactory.getLogger(NamespaceProvidersServlet.class);
-    public static final boolean TRACE = NamespaceProvidersServlet.log.isTraceEnabled();
-    public static final boolean DEBUG = NamespaceProvidersServlet.log.isDebugEnabled();
-    public static final boolean INFO = NamespaceProvidersServlet.log.isInfoEnabled();
+    public static final Logger LOG = LoggerFactory.getLogger(NamespaceProvidersServlet.class);
+    public static final boolean TRACE = NamespaceProvidersServlet.LOG.isTraceEnabled();
+    public static final boolean DEBUG = NamespaceProvidersServlet.LOG.isDebugEnabled();
+    public static final boolean INFO = NamespaceProvidersServlet.LOG.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -140,9 +140,23 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 // TODO: FIXME: HACK:
                                 nextQueryTypesByNamespacesList.put("input_1", nextQueryTypesByNamespaces);
                                 
+                                final QueryType queryType = localSettings.getQueryType(nextQueryKey);
+                                
+                                if(queryType == null)
+                                {
+                                    NamespaceProvidersServlet.LOG
+                                            .error("Could not find query type for URI nextNamespaceProvider="
+                                                    + nextNamespaceProvider.getKey().stringValue() + " nextQueryKey="
+                                                    + nextQueryKey);
+                                    out.write("Could not find query type for URI nextNamespaceProvider="
+                                            + nextNamespaceProvider.getKey().stringValue() + " nextQueryKey="
+                                            + nextQueryKey + " <br/> \n");
+                                    
+                                    continue;
+                                }
+                                
                                 final Map<URI, Provider> queryTypesByNamespace =
-                                        ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders,
-                                                localSettings.getQueryType(nextQueryKey),
+                                        ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders, queryType,
                                                 nextQueryTypesByNamespacesList, NamespaceMatch.ANY_MATCHED);
                                 
                                 allQueryTypesByNamespace.put(
@@ -157,7 +171,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                 
                 if(!allNamespaceEntries.containsKey(nextNamespace))
                 {
-                    NamespaceProvidersServlet.log
+                    NamespaceProvidersServlet.LOG
                             .error("Namespace is defined on a provider but not in the namespace entries list nextProvider="
                                     + nextProvider.getKey().stringValue()
                                     + " nextNamespace="
@@ -172,7 +186,7 @@ public class NamespaceProvidersServlet extends HttpServlet
         {
             if(!providersByNamespace.containsKey(nextNamespaceEntry))
             {
-                NamespaceProvidersServlet.log
+                NamespaceProvidersServlet.LOG
                         .warn("Namespace entry is defined but it does not have any linked providers nextNamespaceEntry="
                                 + nextNamespaceEntry.stringValue());
             }
@@ -230,7 +244,7 @@ public class NamespaceProvidersServlet extends HttpServlet
             if(providersForNextNamespace.size() == 0)
             {
                 out.write("NO Providers known for this namespace");
-                NamespaceProvidersServlet.log.info("No providers known for namespace="
+                NamespaceProvidersServlet.LOG.info("No providers known for namespace="
                         + nextUniqueNamespace.stringValue());
             }
             else
@@ -309,7 +323,7 @@ public class NamespaceProvidersServlet extends HttpServlet
             }
         }
         
-        if(NamespaceProvidersServlet.log.isDebugEnabled())
+        if(NamespaceProvidersServlet.LOG.isDebugEnabled())
         {
             out.write("<h2>Consistency analysis:</h2>");
             for(final URI nextUniqueNamespace : providersByNamespace.keySet())
@@ -324,7 +338,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                     
                     if(queryTypesForNamespace.size() > 0)
                     {
-                        if(NamespaceProvidersServlet.log.isDebugEnabled())
+                        if(NamespaceProvidersServlet.LOG.isDebugEnabled())
                         {
                             out.write("<span class='info'>Provider found for namespace and query : nextUniqueQueryTitle="
                                     + nextUniqueQueryTitle
@@ -343,7 +357,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 {
                                     for(final String nextEndpointUrl : nextHttpProvider.getEndpointUrls())
                                     {
-                                        if(NamespaceProvidersServlet.log.isDebugEnabled())
+                                        if(NamespaceProvidersServlet.LOG.isDebugEnabled())
                                         {
                                             out.write("<li><span class='debug'><a href='" + nextEndpointUrl + "'>"
                                                     + nextEndpointUrl);
@@ -366,14 +380,14 @@ public class NamespaceProvidersServlet extends HttpServlet
                             else if(nextQueryNamespaceProvider.getEndpointMethod().equals(
                                     ProviderSchema.getProviderNoCommunication()))
                             {
-                                if(NamespaceProvidersServlet.log.isDebugEnabled())
+                                if(NamespaceProvidersServlet.LOG.isDebugEnabled())
                                 {
                                     out.write("<li><span class='debug'>No communication required</span></li><br />\n");
                                 }
                             }
                             else
                             {
-                                if(NamespaceProvidersServlet.log.isDebugEnabled())
+                                if(NamespaceProvidersServlet.LOG.isDebugEnabled())
                                 {
                                     out.write("<li><span class='debug'>No endpoint URL's found for a particular provider</span></li><br />\n");
                                 }
