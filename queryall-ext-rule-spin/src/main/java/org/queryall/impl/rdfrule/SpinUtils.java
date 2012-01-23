@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import org.openjena.sesamejena.SesameJena;
 import org.openrdf.OpenRDFException;
+import org.openrdf.model.Graph;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -153,14 +155,7 @@ public class SpinUtils
             }
         }
         
-        final ByteArrayOutputStream internalOutputStream = new ByteArrayOutputStream();
-        
-        // write out the triples from the model into the output stream
-        inputModel.write(internalOutputStream, "N-TRIPLE");
-        
-        // use the resulting byte[] as input to an InputStream
-        final InputStream bufferedInputStream =
-                new BufferedInputStream(new ByteArrayInputStream(internalOutputStream.toByteArray()));
+        Graph createGraph = SesameJena.createGraph(outputRepository.getValueFactory(), inputModel);
         
         RepositoryConnection connection = null;
         
@@ -168,7 +163,9 @@ public class SpinUtils
         {
             connection = outputRepository.getConnection();
             
-            connection.add(bufferedInputStream, "http://spin.example.org/", RDFFormat.NTRIPLES, contexts);
+            connection.setAutoCommit(false);
+            
+            connection.add(createGraph, contexts);
             
             connection.commit();
         }
