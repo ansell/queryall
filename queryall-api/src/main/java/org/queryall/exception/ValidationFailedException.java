@@ -6,7 +6,7 @@ package org.queryall.exception;
 import org.queryall.api.rdfrule.ValidatingRule;
 
 /**
- * Validation exception thrown when a normalisation rule failed
+ * Validation exception thrown when a normalisation rule failed.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -79,12 +79,12 @@ public class ValidationFailedException extends QueryAllException
     }
     
     /**
-     * @param validationRuleCause
+     * @param nextValidationRuleCause
      *            the validationRuleCause to set
      */
-    public void setValidationRuleCause(final ValidatingRule validationRuleCause)
+    public void setValidationRuleCause(final ValidatingRule nextValidationRuleCause)
     {
-        this.validationRuleCause = validationRuleCause;
+        this.validationRuleCause = nextValidationRuleCause;
     }
     
 }

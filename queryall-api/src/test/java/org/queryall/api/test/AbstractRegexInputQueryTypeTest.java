@@ -14,7 +14,7 @@ import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.RegexInputQueryType;
 
 /**
- * Abstract unit test for InputQueryType API
+ * Abstract unit test for RegexInputQueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -32,7 +32,7 @@ public abstract class AbstractRegexInputQueryTypeTest extends AbstractInputQuery
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the RegexInputQueryType implementation
      */

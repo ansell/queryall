@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
  */
 public class ProfileEnum extends QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(ProfileEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProfileEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProfileEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProfileEnum.log.isDebugEnabled();
+    private static final boolean TRACE = ProfileEnum.LOG.isTraceEnabled();
+    private static final boolean DEBUG = ProfileEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProfileEnum.log.isInfoEnabled();
+    private static final boolean INFO = ProfileEnum.LOG.isInfoEnabled();
     
     protected static final Set<ProfileEnum> ALL_PROFILES = new HashSet<ProfileEnum>();
     
@@ -37,9 +37,9 @@ public class ProfileEnum extends QueryAllEnum
     {
         if(nextTypeUris.size() == 0)
         {
-            if(ProfileEnum._DEBUG)
+            if(ProfileEnum.DEBUG)
             {
-                ProfileEnum.log.debug("found an empty URI set for nextProfileUris=" + nextTypeUris);
+                ProfileEnum.LOG.debug("found an empty URI set for nextProfileUris=" + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -51,18 +51,18 @@ public class ProfileEnum extends QueryAllEnum
         {
             if(nextEnum.matchForTypeUris(nextTypeUris))
             {
-                if(ProfileEnum._DEBUG)
+                if(ProfileEnum.DEBUG)
                 {
-                    ProfileEnum.log.debug("found a matching URI set for nextProfileUris=" + nextTypeUris);
+                    ProfileEnum.LOG.debug("found a matching URI set for nextProfileUris=" + nextTypeUris);
                 }
                 
                 results.add(nextEnum);
             }
         }
         
-        if(ProfileEnum._DEBUG)
+        if(ProfileEnum.DEBUG)
         {
-            ProfileEnum.log
+            ProfileEnum.LOG
                     .debug("returning results.size()=" + results.size() + " for nextProfileUris=" + nextTypeUris);
         }
         
@@ -76,9 +76,9 @@ public class ProfileEnum extends QueryAllEnum
     {
         if(ProfileEnum.valueOf(nextProfile.getName()) != null)
         {
-            if(ProfileEnum._DEBUG)
+            if(ProfileEnum.DEBUG)
             {
-                ProfileEnum.log.debug("Cannot register this profile again name=" + nextProfile.getName());
+                ProfileEnum.LOG.debug("Cannot register this profile again name=" + nextProfile.getName());
             }
         }
         else
@@ -116,7 +116,7 @@ public class ProfileEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new Profile enum using the given name, which must be unique
+     * Create a new Profile enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs

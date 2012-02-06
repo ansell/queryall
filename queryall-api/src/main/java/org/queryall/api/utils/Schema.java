@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
  */
 public class Schema
 {
-    private static final Logger log = LoggerFactory.getLogger(Schema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Schema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = Schema.log.isTraceEnabled();
+    private static final boolean TRACE = Schema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = Schema.log.isDebugEnabled();
+    private static final boolean DEBUG = Schema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = Schema.log.isInfoEnabled();
+    private static final boolean INFO = Schema.LOG.isInfoEnabled();
     
     /**
      * 
@@ -45,7 +45,7 @@ public class Schema
             }
             catch(final OpenRDFException e)
             {
-                Schema.log.error("Failed to generate schema for nextSchema=" + nextSchema.getName());
+                Schema.LOG.error("Failed to generate schema for nextSchema=" + nextSchema.getName());
                 // rethrow the exception
                 throw e;
             }

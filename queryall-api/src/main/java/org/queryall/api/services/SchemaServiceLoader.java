@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
  */
 public class SchemaServiceLoader extends AbstractServiceLoader<String, QueryAllSchema>
 {
-    private static final Logger log = LoggerFactory.getLogger(SchemaServiceLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchemaServiceLoader.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SchemaServiceLoader.log.isTraceEnabled();
-    private static final boolean _DEBUG = SchemaServiceLoader.log.isDebugEnabled();
+    private static final boolean TRACE = SchemaServiceLoader.LOG.isTraceEnabled();
+    private static final boolean DEBUG = SchemaServiceLoader.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SchemaServiceLoader.log.isInfoEnabled();
+    private static final boolean INFO = SchemaServiceLoader.LOG.isInfoEnabled();
     
     private static SchemaServiceLoader defaultRegistry;
     
@@ -42,11 +42,11 @@ public class SchemaServiceLoader extends AbstractServiceLoader<String, QueryAllS
     @Override
     public Collection<QueryAllSchema> getAll()
     {
-        if(SchemaServiceLoader._DEBUG)
+        if(SchemaServiceLoader.DEBUG)
         {
             for(final String nextKey : this.services.keySet())
             {
-                SchemaServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+                SchemaServiceLoader.LOG.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
             }
         }
         

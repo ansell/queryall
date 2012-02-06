@@ -7,7 +7,7 @@ import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 
 /**
- * An exception that is thrown when an unknown RuleTest is encountered
+ * An exception that is thrown when an unknown RuleTest is encountered.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -93,21 +93,21 @@ public class UntestableRuleException extends QueryAllException
     }
     
     /**
-     * @param ruleCause
+     * @param nextRuleCause
      *            the ruleCause to set
      */
-    public void setRuleCause(final NormalisationRule ruleCause)
+    public void setRuleCause(final NormalisationRule nextRuleCause)
     {
-        this.ruleCause = ruleCause;
+        this.ruleCause = nextRuleCause;
     }
     
     /**
-     * @param ruleTestCause
+     * @param nextRuleTestCause
      *            the ruleTestCause to set
      */
-    public void setRuleTestCause(final RuleTest ruleTestCause)
+    public void setRuleTestCause(final RuleTest nextRuleTestCause)
     {
-        this.ruleTestCause = ruleTestCause;
+        this.ruleTestCause = nextRuleTestCause;
     }
     
 }

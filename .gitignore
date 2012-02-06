@@ -2,6 +2,7 @@
 .classpath
 .project
 .settings
+.checkstyle
 *~
 /queryall-webapp/pom.xml.versionsBackup
 /queryall-reasoner/pom.xml.versionsBackup

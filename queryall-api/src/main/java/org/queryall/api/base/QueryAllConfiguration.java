@@ -62,6 +62,8 @@ public interface QueryAllConfiguration
     
     int getIntProperty(WebappConfig key, int defaultValue);
     
+    long getLastInitialised();
+    
     long getLongProperty(WebappConfig key);
     
     long getLongProperty(WebappConfig key, long defaultValue);
@@ -99,6 +101,22 @@ public interface QueryAllConfiguration
     URI getURIProperty(WebappConfig key);
     
     URI getURIProperty(WebappConfig key, URI defaultValue);
+    
+    boolean resetNamespaceEntries();
+    
+    boolean resetNormalisationRules();
+    
+    boolean resetProfiles();
+    
+    boolean resetProperties();
+    
+    boolean resetProviders();
+    
+    boolean resetQueryTypes();
+    
+    boolean resetRuleTests();
+    
+    void setLastInitialised(long lastInitialised);
     
     void setProperty(WebappConfig propertyKey, boolean propertyValue);
     

@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class NamespaceEntrySchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(NamespaceEntrySchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NamespaceEntrySchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NamespaceEntrySchema.log.isTraceEnabled();
+    private static final boolean TRACE = NamespaceEntrySchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = NamespaceEntrySchema.log.isDebugEnabled();
+    private static final boolean DEBUG = NamespaceEntrySchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NamespaceEntrySchema.log.isInfoEnabled();
+    private static final boolean INFO = NamespaceEntrySchema.LOG.isInfoEnabled();
     
     private static URI namespaceTypeUri;
     private static URI namespaceAuthority;
@@ -46,7 +46,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         NamespaceEntrySchema.setNamespaceTypeUri(f.createURI(QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(),
                 "Namespace"));
@@ -142,88 +142,89 @@ public class NamespaceEntrySchema extends QueryAllSchema
     }
     
     /**
-     * @param namespaceAlternativePrefix
+     * @param nextNamespaceAlternativePrefix
      *            the namespaceAlternativePrefix to set
      */
-    public static void setNamespaceAlternativePrefix(final URI namespaceAlternativePrefix)
+    public static void setNamespaceAlternativePrefix(final URI nextNamespaceAlternativePrefix)
     {
-        NamespaceEntrySchema.namespaceAlternativePrefix = namespaceAlternativePrefix;
+        NamespaceEntrySchema.namespaceAlternativePrefix = nextNamespaceAlternativePrefix;
     }
     
     /**
-     * @param namespaceAuthority
+     * @param nextNamespaceAuthority
      *            the namespaceAuthority to set
      */
-    public static void setNamespaceAuthority(final URI namespaceAuthority)
+    public static void setNamespaceAuthority(final URI nextNamespaceAuthority)
     {
-        NamespaceEntrySchema.namespaceAuthority = namespaceAuthority;
+        NamespaceEntrySchema.namespaceAuthority = nextNamespaceAuthority;
     }
     
     /**
-     * @param namespaceConvertQueriesToPreferredPrefix
+     * @param nextNamespaceConvertQueriesToPreferredPrefix
      *            the namespaceConvertQueriesToPreferredPrefix to set
      */
-    public static void setNamespaceConvertQueriesToPreferredPrefix(final URI namespaceConvertQueriesToPreferredPrefix)
+    public static void setNamespaceConvertQueriesToPreferredPrefix(
+            final URI nextNamespaceConvertQueriesToPreferredPrefix)
     {
-        NamespaceEntrySchema.namespaceConvertQueriesToPreferredPrefix = namespaceConvertQueriesToPreferredPrefix;
+        NamespaceEntrySchema.namespaceConvertQueriesToPreferredPrefix = nextNamespaceConvertQueriesToPreferredPrefix;
     }
     
     /**
-     * @param namespaceDescription
+     * @param nextNamespaceDescription
      *            the namespaceDescription to set
      */
-    public static void setNamespaceDescription(final URI namespaceDescription)
+    public static void setNamespaceDescription(final URI nextNamespaceDescription)
     {
-        NamespaceEntrySchema.namespaceDescription = namespaceDescription;
+        NamespaceEntrySchema.namespaceDescription = nextNamespaceDescription;
     }
     
     /**
-     * @param namespacePreferredPrefix
+     * @param nextNamespacePreferredPrefix
      *            the namespacePreferredPrefix to set
      */
-    public static void setNamespacePreferredPrefix(final URI namespacePreferredPrefix)
+    public static void setNamespacePreferredPrefix(final URI nextNamespacePreferredPrefix)
     {
-        NamespaceEntrySchema.namespacePreferredPrefix = namespacePreferredPrefix;
+        NamespaceEntrySchema.namespacePreferredPrefix = nextNamespacePreferredPrefix;
     }
     
     /**
-     * @param namespaceSeparator
+     * @param nextNamespaceSeparator
      *            the namespaceSeparator to set
      */
-    public static void setNamespaceSeparator(final URI namespaceSeparator)
+    public static void setNamespaceSeparator(final URI nextNamespaceSeparator)
     {
-        NamespaceEntrySchema.namespaceSeparator = namespaceSeparator;
+        NamespaceEntrySchema.namespaceSeparator = nextNamespaceSeparator;
     }
     
     /**
-     * @param namespaceTypeUri
+     * @param nextNamespaceTypeUri
      *            the namespaceTypeUri to set
      */
-    public static void setNamespaceTypeUri(final URI namespaceTypeUri)
+    public static void setNamespaceTypeUri(final URI nextNamespaceTypeUri)
     {
-        NamespaceEntrySchema.namespaceTypeUri = namespaceTypeUri;
+        NamespaceEntrySchema.namespaceTypeUri = nextNamespaceTypeUri;
     }
     
     /**
-     * @param namespaceUriTemplate
+     * @param nextNamespaceUriTemplate
      *            the namespaceUriTemplate to set
      */
-    public static void setNamespaceUriTemplate(final URI namespaceUriTemplate)
+    public static void setNamespaceUriTemplate(final URI nextNamespaceUriTemplate)
     {
-        NamespaceEntrySchema.namespaceUriTemplate = namespaceUriTemplate;
+        NamespaceEntrySchema.namespaceUriTemplate = nextNamespaceUriTemplate;
     }
     
     /**
-     * @param oldNamespaceTitle
+     * @param nextOldNamespaceTitle
      *            the oldNamespaceTitle to set
      */
-    public static void setOldNamespaceTitle(final URI oldNamespaceTitle)
+    public static void setOldNamespaceTitle(final URI nextOldNamespaceTitle)
     {
-        NamespaceEntrySchema.oldNamespaceTitle = oldNamespaceTitle;
+        NamespaceEntrySchema.oldNamespaceTitle = nextOldNamespaceTitle;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public NamespaceEntrySchema()
     {
@@ -245,7 +246,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -253,7 +254,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
             
             con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDFS.SUBCLASSOF,
-                    f.createURI("http://purl.org/court/def/2009/coin#", "URISpace"), contexts);
+                    f.createURI(Constants.COIN_BASE_URI, "URISpace"), contexts);
             
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(NamespaceEntrySchema.getNamespacePreferredPrefix(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE,
@@ -299,7 +300,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
             
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.SUBPROPERTYOF,
-                    f.createURI("http://purl.org/court/def/2009/coin#", "uriTemplate"), contexts);
+                    f.createURI(Constants.COIN_BASE_URI, "uriTemplate"), contexts);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(NamespaceEntrySchema.getNamespaceUriTemplate(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contexts);
@@ -310,7 +311,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
             
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.SUBPROPERTYOF,
-                    f.createURI("http://purl.org/court/def/2009/coin#", "fragmentSeparator"), contexts);
+                    f.createURI(Constants.COIN_BASE_URI, "fragmentSeparator"), contexts);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(NamespaceEntrySchema.getNamespaceSeparator(), RDFS.DOMAIN,
                     NamespaceEntrySchema.getNamespaceTypeUri(), contexts);
@@ -339,7 +340,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
                 con.rollback();
             }
             
-            NamespaceEntrySchema.log.error("RepositoryException: " + re.getMessage());
+            NamespaceEntrySchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

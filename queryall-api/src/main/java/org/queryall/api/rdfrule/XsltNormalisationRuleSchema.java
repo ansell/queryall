@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class XsltNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XsltNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = XsltNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = XsltNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = XsltNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = XsltNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = XsltNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = XsltNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI xsltRuleTypeUri;
     
@@ -40,7 +40,7 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -49,6 +49,9 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
         
     }
     
+    /**
+     * A pre-instantiated schema object for XsltNormalisationRuleSchema.
+     */
     public static final QueryAllSchema XSLT_NORMALISATION_RULE_SCHEMA = new XsltNormalisationRuleSchema();
     
     /**
@@ -68,25 +71,25 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param xsltRuleStylesheetUri
+     * @param nextXsltRuleStylesheetUri
      *            the xsltRuleStylesheetUri to set
      */
-    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
+    public static void setXsltRuleStylesheetUri(final URI nextXsltRuleStylesheetUri)
     {
-        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
+        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = nextXsltRuleStylesheetUri;
     }
     
     /**
-     * @param xsltRuleTypeUri
+     * @param nextXsltRuleTypeUri
      *            the xsltRuleTypeUri to set
      */
-    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
+    public static void setXsltRuleTypeUri(final URI nextXsltRuleTypeUri)
     {
-        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
+        XsltNormalisationRuleSchema.xsltRuleTypeUri = nextXsltRuleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public XsltNormalisationRuleSchema()
     {
@@ -143,7 +146,7 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            XsltNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            XsltNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

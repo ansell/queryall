@@ -36,10 +36,10 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(NamespaceEntryImpl.class);
-    private static final boolean _TRACE = NamespaceEntryImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = NamespaceEntryImpl.log.isDebugEnabled();
+    private static final boolean TRACE = NamespaceEntryImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = NamespaceEntryImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NamespaceEntryImpl.log.isInfoEnabled();
+    private static final boolean INFO = NamespaceEntryImpl.log.isInfoEnabled();
     
     private static final Set<URI> NAMESPACE_ENTRY_IMPL_TYPES = new HashSet<URI>();
     
@@ -93,7 +93,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(NamespaceEntryImpl._DEBUG)
+            if(NamespaceEntryImpl.DEBUG)
             {
                 NamespaceEntryImpl.log.debug("NamespaceEntry: nextStatement: " + nextStatement.toString());
             }
@@ -105,7 +105,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
                             .getObject().equals(
                                     RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri())))
             {
-                if(NamespaceEntryImpl._TRACE)
+                if(NamespaceEntryImpl.TRACE)
                 {
                     NamespaceEntryImpl.log.trace("NamespaceEntry: found valid type predicate for URI: " + keyToUse);
                 }
@@ -162,7 +162,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             }
         }
         
-        if(NamespaceEntryImpl._TRACE)
+        if(NamespaceEntryImpl.TRACE)
         {
             NamespaceEntryImpl.log.trace("NamespaceEntry.fromRdf: would have returned... result=" + this.toString());
         }
@@ -486,13 +486,13 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
             final URI namespaceInstanceUri = this.getKey();
             
-            if(NamespaceEntryImpl._DEBUG)
+            if(NamespaceEntryImpl.DEBUG)
             {
                 NamespaceEntryImpl.log.debug("NamespaceEntry.toRdf: about create instance URI");
                 // log.debug("NamespaceEntry.toRdf: keyToUse="+keyToUse);
@@ -516,7 +516,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             final Literal uriTemplateLiteral = f.createLiteral(this.getUriTemplate());
             final Literal separatorLiteral = f.createLiteral(this.getSeparator());
             
-            if(NamespaceEntryImpl._TRACE)
+            if(NamespaceEntryImpl.TRACE)
             {
                 NamespaceEntryImpl.log.trace("NamespaceEntry.toRdf: about to add URI's to connection");
             }

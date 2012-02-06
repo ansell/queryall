@@ -67,20 +67,20 @@ public class InvalidStageException extends QueryAllException
     }
     
     /**
-     * @param invalidStageCause
+     * @param nextInvalidStageCause
      *            the invalidStageCause to set
      */
-    public void setInvalidStageCause(final URI invalidStageCause)
+    public void setInvalidStageCause(final URI nextInvalidStageCause)
     {
-        this.invalidStageCause = invalidStageCause;
+        this.invalidStageCause = nextInvalidStageCause;
     }
     
     /**
-     * @param ruleCause
+     * @param nextRuleCause
      *            the ruleCause to set
      */
-    public void setRuleCause(final NormalisationRule ruleCause)
+    public void setRuleCause(final NormalisationRule nextRuleCause)
     {
-        this.ruleCause = ruleCause;
+        this.ruleCause = nextRuleCause;
     }
 }

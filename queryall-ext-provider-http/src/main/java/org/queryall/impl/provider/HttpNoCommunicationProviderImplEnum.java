@@ -16,6 +16,9 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class HttpNoCommunicationProviderImplEnum extends ProviderEnum
 {
+    /**
+     * A pre-instantiated instance of HttpNoCommunicationProviderImplEnum.
+     */
     public static final ProviderEnum HTTP_NO_COMMUNICATION_PROVIDER_IMPL_ENUM =
             new HttpNoCommunicationProviderImplEnum();
     

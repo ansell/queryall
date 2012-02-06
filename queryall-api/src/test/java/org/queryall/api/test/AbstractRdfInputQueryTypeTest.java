@@ -16,7 +16,7 @@ import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.utils.Constants;
 
 /**
- * Abstract unit test for InputQueryType API
+ * Abstract unit test for InputQueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -35,7 +35,7 @@ public abstract class AbstractRdfInputQueryTypeTest extends AbstractInputQueryTy
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the RdfInputQueryType implementation
      */

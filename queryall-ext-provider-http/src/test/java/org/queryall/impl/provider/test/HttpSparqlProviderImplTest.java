@@ -11,7 +11,7 @@ import org.queryall.impl.provider.HttpSparqlProviderImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
- * queryall-api-tests.jar
+ * queryall-api-tests.jar.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

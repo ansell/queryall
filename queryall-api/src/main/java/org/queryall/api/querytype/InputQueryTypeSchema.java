@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class InputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(InputQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = InputQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = InputQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = InputQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = InputQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = InputQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = InputQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI queryExpectedInputParameters;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
         InputQueryTypeSchema.setQueryExpectedInputParameters(f.createURI(baseUri, "expectedInputParameters"));
     }
     
+    /**
+     * The pre-instantiated schema object for InputQueryTypeSchema.
+     */
     public static final QueryAllSchema INPUT_QUERY_TYPE_SCHEMA = new InputQueryTypeSchema();
     
     public static URI getQueryExpectedInputParameters()
@@ -58,7 +61,7 @@ public class InputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public InputQueryTypeSchema()
     {
@@ -80,7 +83,7 @@ public class InputQueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -111,7 +114,7 @@ public class InputQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            InputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            InputQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

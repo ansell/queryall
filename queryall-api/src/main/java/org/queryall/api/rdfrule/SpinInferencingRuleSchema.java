@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SpinInferencingRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpinInferencingRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SpinInferencingRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SpinInferencingRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SpinInferencingRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SpinInferencingRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinInferencingRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = SpinInferencingRuleSchema.LOG.isInfoEnabled();
     
     private static URI spinInferencingRuleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         SpinInferencingRuleSchema.setSpinInferencingRuleTypeUri(f.createURI(baseUri, "SpinInferencingRule"));
     }
     
+    /**
+     * A pre-instantiated schema object for SpinInferencingRuleSchema.
+     */
     public static final QueryAllSchema SPIN_INFERENCING_RULE_SCHEMA = new SpinInferencingRuleSchema();
     
     /**
@@ -56,16 +59,16 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param spinInferencingRuleTypeUri
+     * @param nextSpinInferencingRuleTypeUri
      *            the spinruleTypeUri to set
      */
-    public static void setSpinInferencingRuleTypeUri(final URI spinInferencingRuleTypeUri)
+    public static void setSpinInferencingRuleTypeUri(final URI nextSpinInferencingRuleTypeUri)
     {
-        SpinInferencingRuleSchema.spinInferencingRuleTypeUri = spinInferencingRuleTypeUri;
+        SpinInferencingRuleSchema.spinInferencingRuleTypeUri = nextSpinInferencingRuleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SpinInferencingRuleSchema()
     {
@@ -116,7 +119,7 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SpinInferencingRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            SpinInferencingRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

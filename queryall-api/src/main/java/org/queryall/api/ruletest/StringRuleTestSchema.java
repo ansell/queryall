@@ -25,13 +25,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class StringRuleTestSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(StringRuleTestSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StringRuleTestSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = StringRuleTestSchema.log.isTraceEnabled();
+    private static final boolean TRACE = StringRuleTestSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = StringRuleTestSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = StringRuleTestSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = StringRuleTestSchema.log.isInfoEnabled();
+    private static final boolean INFO = StringRuleTestSchema.LOG.isInfoEnabled();
     
     private static URI ruletestInputTestString;
     
@@ -41,7 +41,7 @@ public class StringRuleTestSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
         
@@ -50,6 +50,9 @@ public class StringRuleTestSchema extends QueryAllSchema
         StringRuleTestSchema.setRuletestOutputTestString(f.createURI(baseUri, "outputTestString"));
     }
     
+    /**
+     * The pre-instantiated schema object for StringRuleTestSchema.
+     */
     public static final QueryAllSchema STRING_RULE_TEST_SCHEMA = new StringRuleTestSchema();
     
     /**
@@ -77,34 +80,34 @@ public class StringRuleTestSchema extends QueryAllSchema
     }
     
     /**
-     * @param ruletestInputTestString
+     * @param nextRuletestInputTestString
      *            the ruletestInputTestString to set
      */
-    public static void setRuletestInputTestString(final URI ruletestInputTestString)
+    public static void setRuletestInputTestString(final URI nextRuletestInputTestString)
     {
-        StringRuleTestSchema.ruletestInputTestString = ruletestInputTestString;
+        StringRuleTestSchema.ruletestInputTestString = nextRuletestInputTestString;
     }
     
     /**
-     * @param ruletestOutputTestString
+     * @param nextRuletestOutputTestString
      *            the ruletestOutputTestString to set
      */
-    public static void setRuletestOutputTestString(final URI ruletestOutputTestString)
+    public static void setRuletestOutputTestString(final URI nextRuletestOutputTestString)
     {
-        StringRuleTestSchema.ruletestOutputTestString = ruletestOutputTestString;
+        StringRuleTestSchema.ruletestOutputTestString = nextRuletestOutputTestString;
     }
     
     /**
-     * @param ruletestTypeUri
+     * @param nextStringRuletestTypeUri
      *            the ruletestTypeUri to set
      */
-    public static void setStringRuleTestTypeUri(final URI ruletestTypeUri)
+    public static void setStringRuleTestTypeUri(final URI nextStringRuletestTypeUri)
     {
-        StringRuleTestSchema.stringRuletestTypeUri = ruletestTypeUri;
+        StringRuleTestSchema.stringRuletestTypeUri = nextStringRuletestTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public StringRuleTestSchema()
     {
@@ -126,7 +129,7 @@ public class StringRuleTestSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -161,7 +164,7 @@ public class StringRuleTestSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            StringRuleTestSchema.log.error("RepositoryException: " + re.getMessage());
+            StringRuleTestSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

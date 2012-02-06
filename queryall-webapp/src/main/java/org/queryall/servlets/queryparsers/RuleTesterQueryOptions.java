@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 public class RuleTesterQueryOptions
 {
     public static final Logger log = LoggerFactory.getLogger(RuleTesterQueryOptions.class);
-    public static final boolean _TRACE = RuleTesterQueryOptions.log.isTraceEnabled();
-    public static final boolean _DEBUG = RuleTesterQueryOptions.log.isDebugEnabled();
-    public static final boolean _INFO = RuleTesterQueryOptions.log.isInfoEnabled();
+    public static final boolean TRACE = RuleTesterQueryOptions.log.isTraceEnabled();
+    public static final boolean DEBUG = RuleTesterQueryOptions.log.isDebugEnabled();
+    public static final boolean INFO = RuleTesterQueryOptions.log.isInfoEnabled();
     
     private boolean _hasTestUri = false;
     private String _testUri = "";

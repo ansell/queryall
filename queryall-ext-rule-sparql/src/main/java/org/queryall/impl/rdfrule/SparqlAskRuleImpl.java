@@ -35,10 +35,10 @@ import org.slf4j.LoggerFactory;
 public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlAskRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlAskRuleImpl.class);
-    private static final boolean _TRACE = SparqlAskRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SparqlAskRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = SparqlAskRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = SparqlAskRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlAskRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = SparqlAskRuleImpl.log.isInfoEnabled();
     
     private List<String> sparqlWherePatterns = new ArrayList<String>(2);
     
@@ -79,7 +79,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            // if(SparqlNormalisationRuleImpl._DEBUG)
+            // if(SparqlNormalisationRuleImpl.DEBUG)
             // {
             // SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
             // + nextStatement.toString());
@@ -89,7 +89,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
                     && (nextStatement.getObject().equals(SparqlAskRuleSchema.getSparqlAskRuleTypeUri()) || nextStatement
                             .getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri())))
             {
-                if(SparqlAskRuleImpl._TRACE)
+                if(SparqlAskRuleImpl.TRACE)
                 {
                     SparqlAskRuleImpl.log.trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: "
                             + keyToUse);
@@ -109,7 +109,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             }
             else
             {
-                if(SparqlAskRuleImpl._DEBUG)
+                if(SparqlAskRuleImpl.DEBUG)
                 {
                     SparqlAskRuleImpl.log.debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
                             + nextStatement.toString());
@@ -118,7 +118,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             }
         }
         
-        if(SparqlAskRuleImpl._DEBUG)
+        if(SparqlAskRuleImpl.DEBUG)
         {
             SparqlAskRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
@@ -325,7 +325,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
         
         try
         {
-            if(SparqlAskRuleImpl._DEBUG)
+            if(SparqlAskRuleImpl.DEBUG)
             {
                 SparqlAskRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }

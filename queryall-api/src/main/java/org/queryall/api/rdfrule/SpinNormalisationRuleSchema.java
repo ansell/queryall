@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SpinNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpinNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SpinNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SpinNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SpinNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SpinNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = SpinNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI spinNormalisationRuleTypeUri;
     private static URI spinNormalisationRuleUrlImport;
@@ -40,7 +40,7 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -51,6 +51,9 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
         SpinNormalisationRuleSchema.setSpinNormalisationRuleLocalImport(f.createURI(baseUri, "spinLocalImport"));
     }
     
+    /**
+     * A pre-instantiated schema object for SpinNormalisationRuleSchema.
+     */
     public static final QueryAllSchema SPIN_NORMALISATION_RULE_SCHEMA = new SpinNormalisationRuleSchema();
     
     /**
@@ -78,34 +81,34 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param spinNormalisationRuleLocalImport
+     * @param nextSpinNormalisationRuleLocalImport
      *            the spinNormalisationRuleLocalImport to set
      */
-    public static void setSpinNormalisationRuleLocalImport(final URI spinNormalisationRuleLocalImport)
+    public static void setSpinNormalisationRuleLocalImport(final URI nextSpinNormalisationRuleLocalImport)
     {
-        SpinNormalisationRuleSchema.spinNormalisationRuleLocalImport = spinNormalisationRuleLocalImport;
+        SpinNormalisationRuleSchema.spinNormalisationRuleLocalImport = nextSpinNormalisationRuleLocalImport;
     }
     
     /**
-     * @param spinNormalisationRuleTypeUri
+     * @param nextSpinNormalisationRuleTypeUri
      *            the spinruleTypeUri to set
      */
-    public static void setSpinNormalisationRuleTypeUri(final URI spinNormalisationRuleTypeUri)
+    public static void setSpinNormalisationRuleTypeUri(final URI nextSpinNormalisationRuleTypeUri)
     {
-        SpinNormalisationRuleSchema.spinNormalisationRuleTypeUri = spinNormalisationRuleTypeUri;
+        SpinNormalisationRuleSchema.spinNormalisationRuleTypeUri = nextSpinNormalisationRuleTypeUri;
     }
     
     /**
-     * @param spinNormalisationRuleUrlImport
+     * @param nextSpinNormalisationRuleUrlImport
      *            the spinNormalisationRuleUrlImport to set
      */
-    public static void setSpinNormalisationRuleUrlImport(final URI spinNormalisationRuleUrlImport)
+    public static void setSpinNormalisationRuleUrlImport(final URI nextSpinNormalisationRuleUrlImport)
     {
-        SpinNormalisationRuleSchema.spinNormalisationRuleUrlImport = spinNormalisationRuleUrlImport;
+        SpinNormalisationRuleSchema.spinNormalisationRuleUrlImport = nextSpinNormalisationRuleUrlImport;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SpinNormalisationRuleSchema()
     {
@@ -171,7 +174,7 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SpinNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            SpinNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

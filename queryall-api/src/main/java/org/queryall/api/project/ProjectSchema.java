@@ -25,13 +25,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class ProjectSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(ProjectSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProjectSchema.log.isTraceEnabled();
+    private static final boolean TRACE = ProjectSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ProjectSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = ProjectSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProjectSchema.log.isInfoEnabled();
+    private static final boolean INFO = ProjectSchema.LOG.isInfoEnabled();
     
     private static URI projectTypeUri;
     
@@ -51,7 +51,7 @@ public class ProjectSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.PROJECT.getBaseURI();
         
@@ -67,6 +67,9 @@ public class ProjectSchema extends QueryAllSchema
         
     }
     
+    /**
+     * A pre-instantiated schema object for ProjectSchema.
+     */
     public static final QueryAllSchema PROJECT_SCHEMA = new ProjectSchema();
     
     /**
@@ -134,79 +137,79 @@ public class ProjectSchema extends QueryAllSchema
     }
     
     /**
-     * @param projectAdminCuratedUri
+     * @param nextProjectAdminCuratedUri
      *            the projectAdminCuratedUri to set
      */
-    public static void setProjectAdminCuratedUri(final URI projectAdminCuratedUri)
+    public static void setProjectAdminCuratedUri(final URI nextProjectAdminCuratedUri)
     {
-        ProjectSchema.projectAdminCuratedUri = projectAdminCuratedUri;
+        ProjectSchema.projectAdminCuratedUri = nextProjectAdminCuratedUri;
     }
     
     /**
-     * @param projectAuthority
+     * @param nextProjectAuthority
      *            the projectAuthority to set
      */
-    public static void setProjectAuthority(final URI projectAuthority)
+    public static void setProjectAuthority(final URI nextProjectAuthority)
     {
-        ProjectSchema.projectAuthority = projectAuthority;
+        ProjectSchema.projectAuthority = nextProjectAuthority;
     }
     
     /**
-     * @param projectCurationStatusUri
+     * @param nextProjectCurationStatusUri
      *            the projectCurationStatusUri to set
      */
-    public static void setProjectCurationStatusUri(final URI projectCurationStatusUri)
+    public static void setProjectCurationStatusUri(final URI nextProjectCurationStatusUri)
     {
-        ProjectSchema.projectCurationStatusUri = projectCurationStatusUri;
+        ProjectSchema.projectCurationStatusUri = nextProjectCurationStatusUri;
     }
     
     /**
-     * @param projectDescription
+     * @param nextProjectDescription
      *            the projectDescription to set
      */
-    public static void setProjectDescription(final URI projectDescription)
+    public static void setProjectDescription(final URI nextProjectDescription)
     {
-        ProjectSchema.projectDescription = projectDescription;
+        ProjectSchema.projectDescription = nextProjectDescription;
     }
     
     /**
-     * @param projectNotCuratedUri
+     * @param nextProjectNotCuratedUri
      *            the projectNotCuratedUri to set
      */
-    public static void setProjectNotCuratedUri(final URI projectNotCuratedUri)
+    public static void setProjectNotCuratedUri(final URI nextProjectNotCuratedUri)
     {
-        ProjectSchema.projectNotCuratedUri = projectNotCuratedUri;
+        ProjectSchema.projectNotCuratedUri = nextProjectNotCuratedUri;
     }
     
     /**
-     * @param projectTitle
+     * @param nextProjectTitle
      *            the projectTitle to set
      */
-    public static void setProjectTitle(final URI projectTitle)
+    public static void setProjectTitle(final URI nextProjectTitle)
     {
-        ProjectSchema.projectTitle = projectTitle;
+        ProjectSchema.projectTitle = nextProjectTitle;
     }
     
     /**
-     * @param projectTypeUri
+     * @param nextProjectTypeUri
      *            the projectTypeUri to set
      */
-    public static void setProjectTypeUri(final URI projectTypeUri)
+    public static void setProjectTypeUri(final URI nextProjectTypeUri)
     {
-        ProjectSchema.projectTypeUri = projectTypeUri;
+        ProjectSchema.projectTypeUri = nextProjectTypeUri;
     }
     
     /**
-     * @param projectUserCuratedUri
+     * @param nextProjectUserCuratedUri
      *            the projectUserCuratedUri to set
      */
-    public static void setProjectUserCuratedUri(final URI projectUserCuratedUri)
+    public static void setProjectUserCuratedUri(final URI nextProjectUserCuratedUri)
     {
-        ProjectSchema.projectUserCuratedUri = projectUserCuratedUri;
+        ProjectSchema.projectUserCuratedUri = nextProjectUserCuratedUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public ProjectSchema()
     {
@@ -228,7 +231,7 @@ public class ProjectSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -287,7 +290,7 @@ public class ProjectSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            ProjectSchema.log.error("RepositoryException: " + re.getMessage());
+            ProjectSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

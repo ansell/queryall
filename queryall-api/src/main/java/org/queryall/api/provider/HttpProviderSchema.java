@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class HttpProviderSchema extends QueryAllSchema
 {
-    static final Logger log = LoggerFactory.getLogger(HttpProviderSchema.class);
+    static final Logger LOG = LoggerFactory.getLogger(HttpProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = HttpProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = HttpProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = HttpProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = HttpProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = HttpProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = HttpProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerHttpProviderUri;
     private static URI providerHttpGetUrl;
@@ -93,52 +93,52 @@ public class HttpProviderSchema extends QueryAllSchema
     }
     
     /**
-     * @param providerAcceptHeader
+     * @param nextProviderAcceptHeader
      *            the providerAcceptHeader to set
      */
-    public static void setProviderAcceptHeader(final URI providerAcceptHeader)
+    public static void setProviderAcceptHeader(final URI nextProviderAcceptHeader)
     {
-        HttpProviderSchema.providerAcceptHeader = providerAcceptHeader;
+        HttpProviderSchema.providerAcceptHeader = nextProviderAcceptHeader;
     }
     
     /**
-     * @param providerEndpointUrl
+     * @param nextProviderEndpointUrl
      *            the providerEndpointUrl to set
      */
-    public static void setProviderEndpointUrl(final URI providerEndpointUrl)
+    public static void setProviderEndpointUrl(final URI nextProviderEndpointUrl)
     {
-        HttpProviderSchema.providerEndpointUrl = providerEndpointUrl;
+        HttpProviderSchema.providerEndpointUrl = nextProviderEndpointUrl;
     }
     
     /**
-     * @param providerHttpGetUrl
+     * @param nextProviderHttpGetUrl
      *            the providerHttpGetUrl to set
      */
-    public static void setProviderHttpGetUrl(final URI providerHttpGetUrl)
+    public static void setProviderHttpGetUrl(final URI nextProviderHttpGetUrl)
     {
-        HttpProviderSchema.providerHttpGetUrl = providerHttpGetUrl;
+        HttpProviderSchema.providerHttpGetUrl = nextProviderHttpGetUrl;
     }
     
     /**
-     * @param providerHttpPostUrl
+     * @param nextProviderHttpPostUrl
      *            the providerHttpPostUrl to set
      */
-    public static void setProviderHttpPostUrl(final URI providerHttpPostUrl)
+    public static void setProviderHttpPostUrl(final URI nextProviderHttpPostUrl)
     {
-        HttpProviderSchema.providerHttpPostUrl = providerHttpPostUrl;
+        HttpProviderSchema.providerHttpPostUrl = nextProviderHttpPostUrl;
     }
     
     /**
-     * @param providerHttpProviderUri
+     * @param nextProviderHttpProviderUri
      *            the providerHttpProviderUri to set
      */
-    public static void setProviderHttpProviderUri(final URI providerHttpProviderUri)
+    public static void setProviderHttpProviderUri(final URI nextProviderHttpProviderUri)
     {
-        HttpProviderSchema.providerHttpProviderUri = providerHttpProviderUri;
+        HttpProviderSchema.providerHttpProviderUri = nextProviderHttpProviderUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public HttpProviderSchema()
     {
@@ -202,7 +202,7 @@ public class HttpProviderSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            HttpProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            HttpProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

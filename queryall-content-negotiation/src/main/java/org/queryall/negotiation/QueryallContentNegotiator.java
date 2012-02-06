@@ -14,10 +14,10 @@ import de.fuberlin.wiwiss.pubby.negotiation.MediaRangeSpec;
  */
 public class QueryallContentNegotiator
 {
-    public static final Logger log = LoggerFactory.getLogger(QueryallContentNegotiator.class);
-    public static final boolean _TRACE = QueryallContentNegotiator.log.isTraceEnabled();
-    public static final boolean _DEBUG = QueryallContentNegotiator.log.isDebugEnabled();
-    public static final boolean _INFO = QueryallContentNegotiator.log.isInfoEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(QueryallContentNegotiator.class);
+    private static final boolean TRACE = QueryallContentNegotiator.LOG.isTraceEnabled();
+    private static final boolean DEBUG = QueryallContentNegotiator.LOG.isDebugEnabled();
+    private static final boolean INFO = QueryallContentNegotiator.LOG.isInfoEnabled();
     
     public static ContentTypeNegotiator getContentNegotiator(final String preferredDisplayContentType)
     {
@@ -148,9 +148,9 @@ public class QueryallContentNegotiator
     public static String getResponseContentType(final String acceptHeader, final String userAgent,
             final ContentTypeNegotiator negotiator, final String fallback)
     {
-        if(QueryallContentNegotiator._DEBUG)
+        if(QueryallContentNegotiator.DEBUG)
         {
-            QueryallContentNegotiator.log.debug("QueryallContentNegotiator: acceptHeader=" + acceptHeader
+            QueryallContentNegotiator.LOG.debug("QueryallContentNegotiator: acceptHeader=" + acceptHeader
                     + " userAgent=" + userAgent);
         }
         
@@ -158,9 +158,9 @@ public class QueryallContentNegotiator
         
         if(bestMatch == null)
         {
-            if(QueryallContentNegotiator._TRACE)
+            if(QueryallContentNegotiator.TRACE)
             {
-                QueryallContentNegotiator.log
+                QueryallContentNegotiator.LOG
                         .trace("QueryallContentNegotiator: bestMatch not found, returning fallback instead");
             }
             

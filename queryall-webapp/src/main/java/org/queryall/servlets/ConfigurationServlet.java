@@ -52,9 +52,9 @@ public class ConfigurationServlet extends HttpServlet
     private static final long serialVersionUID = 3372992659745059491L;
     
     public static final Logger log = LoggerFactory.getLogger(ConfigurationServlet.class);
-    public static final boolean _TRACE = ConfigurationServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ConfigurationServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ConfigurationServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ConfigurationServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ConfigurationServlet.log.isDebugEnabled();
+    public static final boolean INFO = ConfigurationServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -70,7 +70,7 @@ public class ConfigurationServlet extends HttpServlet
         final VelocityEngine localVelocityEngine =
                 (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
         
-        if(ConfigurationServlet._INFO)
+        if(ConfigurationServlet.INFO)
         {
             ConfigurationServlet.log.info("request.getRequestURI()=" + request.getRequestURI());
             ConfigurationServlet.log.info("ConfigurationServlet: acceptHeader=" + request.getHeader("Accept")
@@ -139,7 +139,7 @@ public class ConfigurationServlet extends HttpServlet
             requestedContentType = explicitUrlContentType;
         }
         
-        if(ConfigurationServlet._INFO)
+        if(ConfigurationServlet.INFO)
         {
             ConfigurationServlet.log.info("requestedContentType=" + requestedContentType);
         }
@@ -197,7 +197,7 @@ public class ConfigurationServlet extends HttpServlet
         
         final String queryStringURI = localSettings.getDefaultHostAddress() + queryString;
         
-        if(ConfigurationServlet._INFO)
+        if(ConfigurationServlet.INFO)
         {
             ConfigurationServlet.log.info("queryStringUri=" + queryStringURI);
         }
@@ -206,7 +206,7 @@ public class ConfigurationServlet extends HttpServlet
         {
             targetOnlyQueryString = true;
             
-            if(ConfigurationServlet._INFO)
+            if(ConfigurationServlet.INFO)
             {
                 ConfigurationServlet.log.info("requested plain namespace and identifier from configuration");
             }
@@ -648,7 +648,7 @@ public class ConfigurationServlet extends HttpServlet
             
             if(requestedContentType.equals("text/html"))
             {
-                if(ConfigurationServlet._INFO)
+                if(ConfigurationServlet.INFO)
                 {
                     ConfigurationServlet.log.info("about to call html rendering method");
                 }
@@ -670,7 +670,7 @@ public class ConfigurationServlet extends HttpServlet
             }
             else
             {
-                if(ConfigurationServlet._INFO)
+                if(ConfigurationServlet.INFO)
                 {
                     ConfigurationServlet.log.info("about to call rdf rendering method");
                 }
@@ -683,7 +683,7 @@ public class ConfigurationServlet extends HttpServlet
             ConfigurationServlet.log.error("ConfigurationServlet: error", ordfe);
         }
         
-        if(ConfigurationServlet._INFO)
+        if(ConfigurationServlet.INFO)
         {
             ConfigurationServlet.log.info("about to call out.write");
         }
@@ -694,13 +694,13 @@ public class ConfigurationServlet extends HttpServlet
             // out.write(stBuff.toString());
         }
         
-        if(ConfigurationServlet._INFO)
+        if(ConfigurationServlet.INFO)
         {
             ConfigurationServlet.log.info("about to call out.flush");
         }
         out.flush();
         
-        if(ConfigurationServlet._INFO)
+        if(ConfigurationServlet.INFO)
         {
             ConfigurationServlet.log.info("finished");
         }

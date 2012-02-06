@@ -13,13 +13,16 @@ import org.queryall.exception.InvalidStageException;
  */
 public final class NormalisationRuleTestUtil
 {
-    protected final static void testIsUsedInStage(final NormalisationRule rule, final URI stage,
-            final boolean expectedResult) throws InvalidStageException
+    private static final String FAILED_TESTING_STAGE = "Failed testing stage=";
+    
+    protected static void testIsUsedInStage(final NormalisationRule rule, final URI stage, final boolean expectedResult)
+        throws InvalidStageException
     {
-        Assert.assertEquals("Failed testing stage=" + stage, expectedResult, rule.usedInStage(stage));
+        Assert.assertEquals(NormalisationRuleTestUtil.FAILED_TESTING_STAGE + stage, expectedResult,
+                rule.usedInStage(stage));
     }
     
-    protected final static void testIsUsedInStages(final NormalisationRule rule, final Collection<URI> stages,
+    protected static void testIsUsedInStages(final NormalisationRule rule, final Collection<URI> stages,
             final boolean expectedResult) throws InvalidStageException
     {
         for(final URI nextStage : stages)
@@ -28,13 +31,14 @@ public final class NormalisationRuleTestUtil
         }
     }
     
-    protected final static void testIsValidInStage(final NormalisationRule rule, final URI stage,
-            final boolean expectedResult) throws InvalidStageException
+    protected static void testIsValidInStage(final NormalisationRule rule, final URI stage, final boolean expectedResult)
+        throws InvalidStageException
     {
-        Assert.assertEquals("Failed testing stage=" + stage, expectedResult, rule.validInStage(stage));
+        Assert.assertEquals(NormalisationRuleTestUtil.FAILED_TESTING_STAGE + stage, expectedResult,
+                rule.validInStage(stage));
     }
     
-    protected final static void testIsValidInStages(final NormalisationRule rule, final Collection<URI> stages,
+    protected static void testIsValidInStages(final NormalisationRule rule, final Collection<URI> stages,
             final boolean expectedResult) throws InvalidStageException
     {
         for(final URI nextStage : stages)

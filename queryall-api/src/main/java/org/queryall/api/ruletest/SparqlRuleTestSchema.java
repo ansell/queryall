@@ -25,13 +25,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SparqlRuleTestSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SparqlRuleTestSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SparqlRuleTestSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SparqlRuleTestSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SparqlRuleTestSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SparqlRuleTestSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlRuleTestSchema.log.isInfoEnabled();
+    private static final boolean INFO = SparqlRuleTestSchema.LOG.isInfoEnabled();
     
     private static URI sparqlRuletestSparqlAskPattern;
     
@@ -43,7 +43,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
         
@@ -54,6 +54,9 @@ public class SparqlRuleTestSchema extends QueryAllSchema
         SparqlRuleTestSchema.setSparqlRuletestInputMimeType(f.createURI(baseUri, "inputMimeType"));
     }
     
+    /**
+     * A pre-instantiated schema object for SparqlRuleTestSchema.
+     */
     public static final QueryAllSchema SPARQL_RULE_TEST_SCHEMA = new SparqlRuleTestSchema();
     
     /**
@@ -142,7 +145,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SparqlRuleTestSchema()
     {
@@ -164,7 +167,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -219,7 +222,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SparqlRuleTestSchema.log.error("RepositoryException: " + re.getMessage());
+            SparqlRuleTestSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

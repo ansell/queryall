@@ -22,9 +22,9 @@ public class ProfileUtils
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileUtils.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProfileUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProfileUtils.log.isDebugEnabled();
-    private static final boolean _INFO = ProfileUtils.log.isInfoEnabled();
+    private static final boolean TRACE = ProfileUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = ProfileUtils.log.isDebugEnabled();
+    private static final boolean INFO = ProfileUtils.log.isInfoEnabled();
     
     public static List<Profile> getAndSortProfileList(final Collection<URI> nextProfileUriList,
             final SortOrder nextSortOrder, final Map<URI, Profile> allProfiles)

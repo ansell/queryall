@@ -4,35 +4,71 @@
 package org.queryall.api.utils;
 
 /**
- * Generates the namespace ontology URIs based on calls to PropertyUtils
+ * Generates the namespace ontology URIs based on calls to PropertyUtils.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public enum QueryAllNamespaces
 {
-    NAMESPACEENTRY("queryall.namespaceNamespaceEntries", "ns", "Namespace Entries"),
+    /**
+     * The namespace for namespace entries.
+     */
+    NAMESPACEENTRY("queryall.namespace.NamespaceEntries", "ns", "Namespace Entries"),
     
-    PROFILE("queryall.namespaceProfiles", "profile", "Profiles"),
+    /**
+     * The namespace for profiles.
+     */
+    PROFILE("queryall.namespace.Profiles", "profile", "Profiles"),
     
-    PROJECT("queryall.namespaceProjects", "project", "Projects"),
+    /**
+     * The namespace for projects.
+     */
+    PROJECT("queryall.namespace.Projects", "project", "Projects"),
     
-    PROVENANCE("queryall.namespaceProvenanceRecords", "provenance", "Provenance Records"),
+    /**
+     * The namespace for provenance records.
+     */
+    PROVENANCE("queryall.namespace.ProvenanceRecords", "provenance", "Provenance Records"),
     
-    PROVIDER("queryall.namespaceProviders", "provider", "Providers"),
+    /**
+     * The namespace for providers.
+     */
+    PROVIDER("queryall.namespace.Providers", "provider", "Providers"),
     
-    QUERY("queryall.namespaceQueryTypes", "query", "Query Types"),
+    /**
+     * The namespace for query types.
+     */
+    QUERY("queryall.namespace.QueryTypes", "query", "Query Types"),
     
-    QUERYBUNDLE("queryall.namespaceQueryBundles", "querybundle", "Query Bundles"),
+    /**
+     * The namespace for query bundles.
+     */
+    QUERYBUNDLE("queryall.namespace.QueryBundles", "querybundle", "Query Bundles"),
     
-    RDFRULE("queryall.namespaceNormalisationRules", "rdfrule", "RDF Normalisation Rules"),
+    /**
+     * The namespace for normalisation rules.
+     */
+    RDFRULE("queryall.namespace.NormalisationRules", "rdfrule", "RDF Normalisation Rules"),
     
-    RULETEST("queryall.namespaceRuleTests", "ruletest", "Rule Tests"),
+    /**
+     * The namespace for rule tests.
+     */
+    RULETEST("queryall.namespace.RuleTests", "ruletest", "Rule Tests"),
     
-    STATISTICS("queryall.namespaceStatistics", "statistics", "Statistics"),
+    /**
+     * The namespace for statistics.
+     */
+    STATISTICS("queryall.namespace.Statistics", "statistics", "Statistics"),
     
-    TEMPLATES("queryall.namespaceTemplates", "template", "Templates"),
+    /**
+     * The namespace for templates.
+     */
+    TEMPLATES("queryall.namespace.Templates", "template", "Templates"),
     
-    WEBAPPCONFIG("queryall.namespaceWebApplicationConfiguration", "webapp_configuration",
+    /**
+     * The namespace for web application configurations.
+     */
+    WEBAPPCONFIG("queryall.namespace.WebApplicationConfiguration", "webapp_configuration",
             "Web Application Configurations");
     
     /**
@@ -97,10 +133,10 @@ public enum QueryAllNamespaces
     
     private String baseUri;
     
-    QueryAllNamespaces(final String nextKey, final String defaultValue, final String nextDescription)
+    QueryAllNamespaces(final String nextKey, final String nextDefaultValue, final String nextDescription)
     {
-        this.defaultValue = defaultValue;
-        this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, defaultValue);
+        this.defaultValue = nextDefaultValue;
+        this.namespace = PropertyUtils.getSystemOrPropertyString(nextKey, nextDefaultValue);
         this.description = nextDescription;
     }
     

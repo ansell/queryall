@@ -20,10 +20,10 @@ public class RegexTransformingRuleImplEnum extends NormalisationRuleEnum
 {
     private static final Logger log = LoggerFactory.getLogger(RegexTransformingRuleImplEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RegexTransformingRuleImplEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = RegexTransformingRuleImplEnum.log.isDebugEnabled();
+    private static final boolean TRACE = RegexTransformingRuleImplEnum.log.isTraceEnabled();
+    private static final boolean DEBUG = RegexTransformingRuleImplEnum.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RegexTransformingRuleImplEnum.log.isInfoEnabled();
+    private static final boolean INFO = RegexTransformingRuleImplEnum.log.isInfoEnabled();
     
     public static final NormalisationRuleEnum REGEX_TRANSFORMING_RULE_IMPL_ENUM = new RegexTransformingRuleImplEnum();
     
@@ -36,7 +36,7 @@ public class RegexTransformingRuleImplEnum extends NormalisationRuleEnum
     {
         this(RegexTransformingRuleImpl.class.getName(), RegexTransformingRuleImpl.myTypes());
         
-        if(RegexTransformingRuleImplEnum._DEBUG)
+        if(RegexTransformingRuleImplEnum.DEBUG)
         {
             RegexTransformingRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum() registered");
         }
@@ -50,7 +50,7 @@ public class RegexTransformingRuleImplEnum extends NormalisationRuleEnum
     {
         super(nextName, nextTypeURIs);
         
-        if(RegexTransformingRuleImplEnum._DEBUG)
+        if(RegexTransformingRuleImplEnum.DEBUG)
         {
             RegexTransformingRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum(String, List<URI>) registered");
         }

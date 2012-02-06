@@ -38,9 +38,9 @@ public class ProvidersIPListServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -7006535158409121292L;
     public static final Logger log = LoggerFactory.getLogger(ProvidersIPListServlet.class);
-    public static final boolean _TRACE = ProvidersIPListServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ProvidersIPListServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ProvidersIPListServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ProvidersIPListServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ProvidersIPListServlet.log.isDebugEnabled();
+    public static final boolean INFO = ProvidersIPListServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,

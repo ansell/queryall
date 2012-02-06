@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 public final class RuleUtils
 {
     private static final Logger log = LoggerFactory.getLogger(RuleUtils.class);
-    private static final boolean _TRACE = RuleUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
-    private static final boolean _INFO = RuleUtils.log.isInfoEnabled();
+    private static final boolean TRACE = RuleUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = RuleUtils.log.isDebugEnabled();
+    private static final boolean INFO = RuleUtils.log.isInfoEnabled();
     
     /**
      * 
@@ -61,7 +61,7 @@ public final class RuleUtils
             }
             else
             {
-                if(RuleUtils._DEBUG)
+                if(RuleUtils.DEBUG)
                 {
                     RuleUtils.log.debug("Could not find requested Normalisation Rule nextProviderNormalisationRule="
                             + nextProviderNormalisationRule.stringValue());
@@ -69,7 +69,7 @@ public final class RuleUtils
             }
         }
         
-        if(RuleUtils._TRACE)
+        if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("Settings: rule sorting started");
         }
@@ -77,14 +77,14 @@ public final class RuleUtils
         {
             Collections.sort(results);
             
-            if(RuleUtils._DEBUG)
+            if(RuleUtils.DEBUG)
             {
                 int testOrder = -1;
                 for(final NormalisationRule nextRule : results)
                 {
                     if(testOrder == -1)
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule sorting verification starting at nextRule.getOrder()="
                                     + nextRule.getOrder());
@@ -98,7 +98,7 @@ public final class RuleUtils
                     }
                     else if(testOrder < nextRule.getOrder())
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule verification stepping from testOrder=" + testOrder
                                     + " to nextRule.getOrder()=" + nextRule.getOrder());
@@ -106,13 +106,13 @@ public final class RuleUtils
                         testOrder = nextRule.getOrder();
                     }
                 }
-            } // end if(_TRACE)
+            } // end if(TRACE)
         }
         else if(sortOrder == SortOrder.HIGHEST_ORDER_FIRST)
         {
             Collections.sort(results, Collections.reverseOrder());
             
-            if(RuleUtils._DEBUG)
+            if(RuleUtils.DEBUG)
             {
                 int testOrder = -1;
                 
@@ -120,7 +120,7 @@ public final class RuleUtils
                 {
                     if(testOrder == -1)
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule sorting verification starting at nextRule.getOrder()="
                                     + nextRule.getOrder());
@@ -134,7 +134,7 @@ public final class RuleUtils
                     }
                     else if(testOrder > nextRule.getOrder())
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule verification stepping from testOrder=" + testOrder
                                     + " to nextRule.getOrder()=" + nextRule.getOrder());
@@ -142,14 +142,14 @@ public final class RuleUtils
                         testOrder = nextRule.getOrder();
                     }
                 }
-            } // end if(_TRACE)
+            } // end if(TRACE)
         }
         else
         {
             RuleUtils.log.error("Settings: sortOrder was not recognised sortOrder=" + sortOrder);
         }
         
-        if(RuleUtils._TRACE)
+        if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("Settings: rule sorting finished");
         }
@@ -209,7 +209,7 @@ public final class RuleUtils
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
         throws QueryAllException, UnnormalisableRuleException, ValidationFailedException
     {
-        if(RuleUtils._TRACE)
+        if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("normaliseByStage: before applying normalisation rules");
         }
@@ -222,7 +222,7 @@ public final class RuleUtils
             if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
                     includeNonProfileMatchedRdfRules) && nextRule.usedInStage(stage))
             {
-                if(RuleUtils._TRACE)
+                if(RuleUtils.TRACE)
                 {
                     RuleUtils.log.trace("normaliseByStage: nextRule.order=" + nextRule.getOrder());
                 }
@@ -257,13 +257,13 @@ public final class RuleUtils
             }
         }
         
-        if(RuleUtils._DEBUG)
+        if(RuleUtils.DEBUG)
         {
             final long end = System.currentTimeMillis();
             
             RuleUtils.log.debug(String.format("%s: timing=%10d", "normaliseByStage", (end - start)));
             
-            if(RuleUtils._TRACE)
+            if(RuleUtils.TRACE)
             {
                 RuleUtils.log.trace("normaliseByStage: after applying normalisation rules");
             }
@@ -396,7 +396,7 @@ public final class RuleUtils
             
             if(allPassed && nextInputTestResult.equals(nextTestOutputString))
             {
-                if(RuleUtils._DEBUG)
+                if(RuleUtils.DEBUG)
                 {
                     RuleUtils.log.debug("TEST-PASS input test pass: nextTestInputString=" + nextTestInputString
                             + " nextInputTestResult=" + nextInputTestResult);
@@ -406,7 +406,7 @@ public final class RuleUtils
             {
                 allPassed = false;
                 
-                if(RuleUtils._INFO)
+                if(RuleUtils.INFO)
                 {
                     RuleUtils.log
                             .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
@@ -456,7 +456,7 @@ public final class RuleUtils
             
             if(allPassed && nextOutputTestResult.equals(nextTestInputString))
             {
-                if(RuleUtils._DEBUG)
+                if(RuleUtils.DEBUG)
                 {
                     RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString=" + nextTestInputString
                             + " actual output :: nextOutputTestResult=" + nextOutputTestResult
@@ -467,7 +467,7 @@ public final class RuleUtils
             {
                 allPassed = false;
                 
-                if(RuleUtils._INFO)
+                if(RuleUtils.INFO)
                 {
                     RuleUtils.log
                             .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="

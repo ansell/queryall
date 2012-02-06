@@ -26,20 +26,20 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RegexValidatingNamespaceEntrySchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RegexValidatingNamespaceEntrySchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RegexValidatingNamespaceEntrySchema.log.isTraceEnabled();
+    private static final boolean TRACE = RegexValidatingNamespaceEntrySchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RegexValidatingNamespaceEntrySchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RegexValidatingNamespaceEntrySchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RegexValidatingNamespaceEntrySchema.log.isInfoEnabled();
+    private static final boolean INFO = RegexValidatingNamespaceEntrySchema.LOG.isInfoEnabled();
     
     private static URI regexValidatingNamespaceTypeUri;
     private static URI namespaceIdentifierRegex;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         RegexValidatingNamespaceEntrySchema.setRegexValidatingNamespaceTypeUri(f.createURI(
                 QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "RegexValidatingNamespace"));
@@ -47,6 +47,9 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
                 QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "identifierRegex"));
     }
     
+    /**
+     * A pre-instantiated schema object for RegexValidatingNamespaceEntrySchema.
+     */
     public static final QueryAllSchema REGEX_VALIDATING_NAMESPACE_ENTRY_SCHEMA =
             new RegexValidatingNamespaceEntrySchema();
     
@@ -67,12 +70,12 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
     }
     
     /**
-     * @param namespaceIdentifierRegex
+     * @param nextNamespaceIdentifierRegex
      *            the namespaceIdentifierRegex to set
      */
-    public static void setNamespaceIdentifierRegex(final URI namespaceIdentifierRegex)
+    public static void setNamespaceIdentifierRegex(final URI nextNamespaceIdentifierRegex)
     {
-        RegexValidatingNamespaceEntrySchema.namespaceIdentifierRegex = namespaceIdentifierRegex;
+        RegexValidatingNamespaceEntrySchema.namespaceIdentifierRegex = nextNamespaceIdentifierRegex;
     }
     
     /**
@@ -85,7 +88,7 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RegexValidatingNamespaceEntrySchema()
     {
@@ -107,7 +110,7 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -141,7 +144,7 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RegexValidatingNamespaceEntrySchema.log.error("RepositoryException: " + re.getMessage());
+            RegexValidatingNamespaceEntrySchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

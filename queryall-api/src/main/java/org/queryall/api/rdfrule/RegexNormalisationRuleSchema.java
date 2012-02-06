@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RegexNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RegexNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RegexNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RegexNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RegexNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RegexNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RegexNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RegexNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = RegexNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI regexruleTypeUri;
     
@@ -46,7 +46,7 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -57,6 +57,9 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
         RegexNormalisationRuleSchema.setRegexRuleOutputReplaceRegex(f.createURI(baseUri, "outputReplaceRegex"));
     }
     
+    /**
+     * The pre-instantiated schema object for RegexNormalisationRuleSchema.
+     */
     public static final QueryAllSchema REGEX_NORMALISATION_RULE_SCHEMA = new RegexNormalisationRuleSchema();
     
     /**
@@ -136,16 +139,16 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param regexruleTypeUri
+     * @param nextRegexruleTypeUri
      *            the regexruleTypeUri to set
      */
-    public static void setRegexRuleTypeUri(final URI regexruleTypeUri)
+    public static void setRegexRuleTypeUri(final URI nextRegexruleTypeUri)
     {
-        RegexNormalisationRuleSchema.regexruleTypeUri = regexruleTypeUri;
+        RegexNormalisationRuleSchema.regexruleTypeUri = nextRegexruleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RegexNormalisationRuleSchema()
     {
@@ -167,7 +170,7 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -241,7 +244,7 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RegexNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            RegexNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

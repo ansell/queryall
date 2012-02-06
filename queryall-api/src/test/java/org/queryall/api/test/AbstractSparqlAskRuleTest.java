@@ -185,7 +185,7 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
     }
     
     /**
-     * Tests the SparqlAskRule interface using a match that should be positive
+     * Tests the SparqlAskRule interface using a match that should be positive.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException
@@ -232,7 +232,7 @@ public abstract class AbstractSparqlAskRuleTest extends AbstractSparqlNormalisat
     }
     
     /**
-     * Tests the SparqlAskRule interface using a match that should be positive
+     * Tests the SparqlAskRule interface using a match that should be positive.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException

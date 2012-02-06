@@ -42,9 +42,9 @@ public class BlacklistController
     }
     
     private static final Logger log = LoggerFactory.getLogger(BlacklistController.class);
-    private static final boolean _TRACE = BlacklistController.log.isTraceEnabled();
-    private static final boolean _DEBUG = BlacklistController.log.isDebugEnabled();
-    private static final boolean _INFO = BlacklistController.log.isInfoEnabled();
+    private static final boolean TRACE = BlacklistController.log.isTraceEnabled();
+    private static final boolean DEBUG = BlacklistController.log.isDebugEnabled();
+    private static final boolean INFO = BlacklistController.log.isInfoEnabled();
     
     /**
      * @return the defaultController
@@ -105,39 +105,38 @@ public class BlacklistController
         
         for(final RdfFetcherQueryRunnable nextQueryObject : temporaryEndpointBlacklist)
         {
-            if(BlacklistController._DEBUG)
+            if(BlacklistController.DEBUG)
             {
                 BlacklistController.log
                         .debug("BlacklistController.accumulateBlacklist: going to accumulate entry for endpointUrl="
-                                + nextQueryObject.getEndpointUrl());
+                                + nextQueryObject.getActualEndpointUrl());
             }
             
-            // FIXME: Need to know when this is null and not setup properly
-            if(nextQueryObject.getEndpointUrl() != null)
+            if(nextQueryObject.getActualEndpointUrl() != null)
             {
-                if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getEndpointUrl()))
+                if(this.accumulatedBlacklistStatistics.containsKey(nextQueryObject.getActualEndpointUrl()))
                 {
                     final BlacklistEntry previousCount =
-                            this.getAccumulatedBlacklistStatistics().get(nextQueryObject.getEndpointUrl());
+                            this.getAccumulatedBlacklistStatistics().get(nextQueryObject.getActualEndpointUrl());
                     
-                    if(BlacklistController._DEBUG)
+                    if(BlacklistController.DEBUG)
                     {
                         BlacklistController.log.debug("BlacklistController.accumulateBlacklist: There were "
                                 + previousCount + " previous instances on blacklist for endpointUrl="
-                                + nextQueryObject.getEndpointUrl());
+                                + nextQueryObject.getActualEndpointUrl());
                     }
                     
                     previousCount.addErrorMessageForRunnable(nextQueryObject);
                     
-                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), previousCount);
+                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getActualEndpointUrl(), previousCount);
                 }
                 else
                 {
                     final BlacklistEntry newFailureCount = new BlacklistEntry();
-                    newFailureCount.endpointUrl = nextQueryObject.getEndpointUrl();
+                    newFailureCount.endpointUrl = nextQueryObject.getActualEndpointUrl();
                     newFailureCount.addErrorMessageForRunnable(nextQueryObject);
                     
-                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getEndpointUrl(), newFailureCount);
+                    this.accumulatedBlacklistStatistics.put(nextQueryObject.getActualEndpointUrl(), newFailureCount);
                 }
                 
                 this.allCurrentBadQueries.add(nextQueryObject);
@@ -224,7 +223,7 @@ public class BlacklistController
     {
         if(automaticallyBlacklistClients)
         {
-            if(BlacklistController._DEBUG)
+            if(BlacklistController.DEBUG)
             {
                 BlacklistController.log
                         .debug("BlacklistController.accumulateQueryDebug: going to accumulate entry for clientIPAddress="
@@ -290,7 +289,7 @@ public class BlacklistController
         
         synchronized(this)
         {
-            if(BlacklistController._DEBUG)
+            if(BlacklistController.DEBUG)
             {
                 BlacklistController.log
                         .debug("BlacklistController.clearStatisticsUploadList: start of synchronized section start="
@@ -319,7 +318,7 @@ public class BlacklistController
                 {
                     BlacklistController.log
                             .error("BlacklistController: found error while clearing completed statistics threads");
-                    if(BlacklistController._DEBUG)
+                    if(BlacklistController.DEBUG)
                     {
                         BlacklistController.log.debug(nextThread.getLastException().getMessage());
                     }
@@ -329,7 +328,7 @@ public class BlacklistController
                 numberRemoved++;
             }
             
-            if(BlacklistController._DEBUG)
+            if(BlacklistController.DEBUG)
             {
                 BlacklistController.log
                         .debug("BlacklistController.clearStatisticsUploadList: end of synchronized section start="
@@ -338,7 +337,7 @@ public class BlacklistController
             }
         }
         
-        if(BlacklistController._DEBUG)
+        if(BlacklistController.DEBUG)
         {
             final long end = System.currentTimeMillis();
             
@@ -346,7 +345,7 @@ public class BlacklistController
                     "BlacklistController.clearStatisticsUploadList", (end - start)));
         }
         
-        if(BlacklistController._TRACE)
+        if(BlacklistController.TRACE)
         {
             BlacklistController.log.trace("BlacklistController.clearStatisticsUploadList: returning...");
         }
@@ -399,11 +398,11 @@ public class BlacklistController
         
         if((differenceMilliseconds - blacklistResetPeriodMilliseconds) >= 0)
         {
-            if(BlacklistController._INFO)
+            if(BlacklistController.INFO)
             {
                 BlacklistController.log.info("BlacklistController: needToExpire");
                 
-                if(BlacklistController._TRACE)
+                if(BlacklistController.TRACE)
                 {
                     // Do not need to synchronize for debug messages, and in high load situations
                     // the
@@ -497,7 +496,7 @@ public class BlacklistController
                             }
                             else if(nextQueryDebugType.getInRobotsTxt())
                             {
-                                if(BlacklistController._TRACE)
+                                if(BlacklistController.TRACE)
                                 {
                                     BlacklistController.log
                                             .trace("BlacklistController: found query in robots.txt client=" + nextKey
@@ -512,7 +511,7 @@ public class BlacklistController
                     
                     final double robotsPercentage = robotsTxtCount * 1.0 / overallCount;
                     
-                    if(BlacklistController._TRACE)
+                    if(BlacklistController.TRACE)
                     {
                         BlacklistController.log.trace("BlacklistController: results client=" + nextKey
                                 + " robotsTxtCount=" + robotsTxtCount + " overallCount=" + overallCount
@@ -841,7 +840,7 @@ public class BlacklistController
         {
             // ignore it, the endpoint doesn't always have to be a URL, we just won't consult the
             // blacklist controller in this case
-            if(BlacklistController._DEBUG)
+            if(BlacklistController.DEBUG)
             {
                 BlacklistController.log.debug("isUrlBlacklisted: Endpoint was not a URL, returning false");
             }
@@ -856,7 +855,7 @@ public class BlacklistController
                         blacklistMaxAccumulatedFailures, blacklistResetPeriodMilliseconds,
                         blacklistResetClientBlacklistWithEndpoints))
         {
-            if(BlacklistController._DEBUG)
+            if(BlacklistController.DEBUG)
             {
                 BlacklistController.log.debug("BlacklistController.isUrlBlacklisted: found blacklisted URL inputUrl="
                         + url + " simple form=" + url.getProtocol() + "://" + url.getAuthority());
@@ -892,7 +891,7 @@ public class BlacklistController
             }
         }
         
-        if(BlacklistController._DEBUG)
+        if(BlacklistController.DEBUG)
         {
             BlacklistController.log.debug("BlacklistController.persistStatistics: start of synchronized section start="
                     + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
@@ -903,13 +902,13 @@ public class BlacklistController
             this.internalStatisticsUploadList.add(nextRunnableThread);
         }
         
-        if(BlacklistController._DEBUG)
+        if(BlacklistController.DEBUG)
         {
             BlacklistController.log.debug("BlacklistController.persistStatistics: end of synchronized section start="
                     + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
         }
         
-        if(BlacklistController._DEBUG)
+        if(BlacklistController.DEBUG)
         {
             final long end = System.currentTimeMillis();
             
@@ -917,7 +916,7 @@ public class BlacklistController
                     (end - start)));
         }
         
-        if(BlacklistController._TRACE)
+        if(BlacklistController.TRACE)
         {
             BlacklistController.log.trace("BlacklistController.persistStatistics: returning...");
         }
@@ -954,7 +953,7 @@ public class BlacklistController
         for(final RdfFetcherQueryRunnable nextQueryObject : successfulQueries)
         {
             // only deal with it if it was blacklisted
-            this.accumulatedBlacklistStatistics.remove(nextQueryObject.getEndpointUrl());
+            this.accumulatedBlacklistStatistics.remove(nextQueryObject.getActualEndpointUrl());
         }
     }
     

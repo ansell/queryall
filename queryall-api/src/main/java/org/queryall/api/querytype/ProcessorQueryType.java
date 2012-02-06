@@ -6,14 +6,14 @@ package org.queryall.api.querytype;
 import java.util.Map;
 
 /**
- * A Query Type that processes a query using some mechanism
+ * A Query Type that processes a query using some mechanism.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface ProcessorQueryType extends QueryType
 {
     /**
-     * Set the processing template string for this processor
+     * Set the processing template string for this processor.
      * 
      * @return The templated string to use for this processor
      */
@@ -42,7 +42,7 @@ public interface ProcessorQueryType extends QueryType
     Map<String, Object> processQueryVariables(Map<String, Object> queryVariables);
     
     /**
-     * Set the processing template string for this processor
+     * Set the processing template string for this processor.
      * 
      * @param templateString
      *            The templated string to use for this processor
@@ -51,7 +51,7 @@ public interface ProcessorQueryType extends QueryType
     
     /**
      * Substitutes the given processed query variables into the processing template that is returned
-     * from getProcessingTemplateString()
+     * from getProcessingTemplateString().
      * 
      * @param processedQueryVariables
      * @return The query template with the given variables substituted into the query

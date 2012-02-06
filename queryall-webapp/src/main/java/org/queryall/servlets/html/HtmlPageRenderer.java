@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
 public class HtmlPageRenderer
 {
     private static final Logger log = LoggerFactory.getLogger(HtmlPageRenderer.class);
-    private static final boolean _TRACE = HtmlPageRenderer.log.isTraceEnabled();
-    private static final boolean _DEBUG = HtmlPageRenderer.log.isDebugEnabled();
-    private static final boolean _INFO = HtmlPageRenderer.log.isInfoEnabled();
+    private static final boolean TRACE = HtmlPageRenderer.log.isTraceEnabled();
+    private static final boolean DEBUG = HtmlPageRenderer.log.isDebugEnabled();
+    private static final boolean INFO = HtmlPageRenderer.log.isInfoEnabled();
     
     public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
             final RdfFetchController fetchController, final Repository nextRepository, final java.io.Writer nextWriter,
@@ -82,21 +82,21 @@ public class HtmlPageRenderer
             realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderHtml: about to create VelocityHelper class");
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderHtml: finished creating VelocityHelper class");
         }
         
         final Context velocityContext = new VelocityContext();
         
-        velocityContext.put("debug_level_info", HtmlPageRenderer._INFO);
-        velocityContext.put("debug_level_debug", HtmlPageRenderer._DEBUG);
-        velocityContext.put("debug_level_trace", HtmlPageRenderer._TRACE);
+        velocityContext.put("debug_level_info", HtmlPageRenderer.INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer.DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer.TRACE);
         
         velocityContext.put("project_name", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
         velocityContext.put("project_base_url", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URI));
@@ -337,7 +337,7 @@ public class HtmlPageRenderer
         // the @ character needs to be escaped, and in Javascript strings the single apostrophe '
         // needs to be escaped.
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderHtml: about to render XHTML to nextWriter=" + nextWriter);
         }
@@ -346,7 +346,7 @@ public class HtmlPageRenderer
         {
             if(fetchController == null || fetchController.queryKnown())
             {
-                if(HtmlPageRenderer._DEBUG)
+                if(HtmlPageRenderer.DEBUG)
                 {
                     HtmlPageRenderer.log.debug("renderHtml: fetchController.queryKnown(), using results template");
                 }
@@ -358,7 +358,7 @@ public class HtmlPageRenderer
             }
             else
             {
-                if(HtmlPageRenderer._DEBUG)
+                if(HtmlPageRenderer.DEBUG)
                 {
                     HtmlPageRenderer.log.debug("renderHtml: !fetchController.queryKnown(), using error template");
                 }
@@ -388,7 +388,7 @@ public class HtmlPageRenderer
             }
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderHtml: finished rendering XHTML");
         }
@@ -427,7 +427,7 @@ public class HtmlPageRenderer
             realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderIndexPage: about to create VelocityHelper class");
         }
@@ -442,9 +442,9 @@ public class HtmlPageRenderer
                 Integer.toString(localSettings.getAllRuleTests().size()));
         velocityContext.put("statistics_querytypes", Integer.toString(localSettings.getAllQueryTypes().size()));
         
-        velocityContext.put("debug_level_info", HtmlPageRenderer._INFO);
-        velocityContext.put("debug_level_debug", HtmlPageRenderer._DEBUG);
-        velocityContext.put("debug_level_trace", HtmlPageRenderer._TRACE);
+        velocityContext.put("debug_level_info", HtmlPageRenderer.INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer.DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer.TRACE);
         
         velocityContext.put("title", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
         
@@ -494,7 +494,7 @@ public class HtmlPageRenderer
             }
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderIndexPage: finished rendering XHTML");
         }

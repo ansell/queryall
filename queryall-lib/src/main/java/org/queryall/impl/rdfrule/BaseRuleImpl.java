@@ -22,6 +22,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
@@ -37,11 +38,11 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseRuleImpl extends BaseQueryAllImpl implements NormalisationRule
 {
     private static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
-    private static final boolean _TRACE = BaseRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = BaseRuleImpl.log.isDebugEnabled();
-    private static final boolean _INFO = BaseRuleImpl.log.isInfoEnabled();
+    private static final boolean TRACE = BaseRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = BaseRuleImpl.log.isDebugEnabled();
+    private static final boolean INFO = BaseRuleImpl.log.isInfoEnabled();
     
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     private Collection<URI> relatedNamespaces = new HashSet<URI>(10);
     
@@ -71,7 +72,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            // if(NormalisationRuleImpl._DEBUG)
+            // if(NormalisationRuleImpl.DEBUG)
             // {
             // NormalisationRuleImpl.log.debug("NormalisationRule: nextStatement: " +
             // nextStatement.toString());
@@ -80,7 +81,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(NormalisationRuleSchema.getNormalisationRuleTypeUri()))
             {
-                if(BaseRuleImpl._TRACE)
+                if(BaseRuleImpl.TRACE)
                 {
                     BaseRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: " + keyToUse);
                 }
@@ -114,7 +115,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
-                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder(ProfileIncludeExclude.valueOf((URI)nextStatement.getObject()));
             }
             else
             {
@@ -122,7 +123,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             }
         }
         
-        // if(NormalisationRuleImpl._DEBUG)
+        // if(NormalisationRuleImpl.DEBUG)
         // {
         // NormalisationRuleImpl.log.debug("NormalisationRuleImpl.fromRdf: would have returned... result="
         // + this.toString());
@@ -297,7 +298,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public final URI getProfileIncludeExcludeOrder()
+    public final ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -412,7 +413,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public final void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public final void setProfileIncludeExcludeOrder(final ProfileIncludeExclude profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
@@ -433,24 +434,24 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(BaseRuleImpl._DEBUG)
+            if(BaseRuleImpl.DEBUG)
             {
                 BaseRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + contextKey);
             }
             
             final URI keyUri = this.getKey();
             final Literal orderLiteral = f.createLiteral(this.getOrder());
-            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
+            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder().getUri();
             
             con.setAutoCommit(false);
             
             if(modelVersion <= 2)
             {
-                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.version2NormalisationRuleTypeUri, contextKey);
+                con.add(keyUri, RDF.TYPE, NormalisationRuleSchema.getVersion2NormalisationRuleTypeUri(), contextKey);
             }
             else
             {

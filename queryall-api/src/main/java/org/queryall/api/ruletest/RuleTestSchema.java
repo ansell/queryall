@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RuleTestSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RuleTestSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RuleTestSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RuleTestSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RuleTestSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RuleTestSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RuleTestSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RuleTestSchema.log.isInfoEnabled();
+    private static final boolean INFO = RuleTestSchema.LOG.isInfoEnabled();
     
     private static URI ruletestTypeUri;
     
@@ -42,7 +42,7 @@ public class RuleTestSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
         
@@ -51,6 +51,9 @@ public class RuleTestSchema extends QueryAllSchema
         RuleTestSchema.setRuletestTestsStage(f.createURI(baseUri, "testsStages"));
     }
     
+    /**
+     * The pre-instantiated schema object for RuleTestSchema.
+     */
     public static final QueryAllSchema RULE_TEST_SCHEMA = new RuleTestSchema();
     
     /**
@@ -78,34 +81,34 @@ public class RuleTestSchema extends QueryAllSchema
     }
     
     /**
-     * @param ruletestHasRuleUri
+     * @param nextRuletestHasRuleUri
      *            the ruletestHasRuleUri to set
      */
-    public static void setRuletestHasRuleUri(final URI ruletestHasRuleUri)
+    public static void setRuletestHasRuleUri(final URI nextRuletestHasRuleUri)
     {
-        RuleTestSchema.ruletestHasRuleUri = ruletestHasRuleUri;
+        RuleTestSchema.ruletestHasRuleUri = nextRuletestHasRuleUri;
     }
     
     /**
-     * @param ruletestTestsStage
+     * @param nextRuletestTestsStage
      *            the ruletestTestsStage to set
      */
-    public static void setRuletestTestsStage(final URI ruletestTestsStage)
+    public static void setRuletestTestsStage(final URI nextRuletestTestsStage)
     {
-        RuleTestSchema.ruletestTestsStage = ruletestTestsStage;
+        RuleTestSchema.ruletestTestsStage = nextRuletestTestsStage;
     }
     
     /**
-     * @param ruletestTypeUri
+     * @param nextRuletestTypeUri
      *            the ruletestTypeUri to set
      */
-    public static void setRuletestTypeUri(final URI ruletestTypeUri)
+    public static void setRuletestTypeUri(final URI nextRuletestTypeUri)
     {
-        RuleTestSchema.ruletestTypeUri = ruletestTypeUri;
+        RuleTestSchema.ruletestTypeUri = nextRuletestTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RuleTestSchema()
     {
@@ -127,7 +130,7 @@ public class RuleTestSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -161,7 +164,7 @@ public class RuleTestSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RuleTestSchema.log.error("RepositoryException: " + re.getMessage());
+            RuleTestSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

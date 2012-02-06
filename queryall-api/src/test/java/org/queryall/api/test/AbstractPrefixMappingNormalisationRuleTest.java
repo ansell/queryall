@@ -40,10 +40,10 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unused")
 public abstract class AbstractPrefixMappingNormalisationRuleTest extends AbstractNormalisationRuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
-    private static final boolean _TRACE = AbstractPrefixMappingNormalisationRuleTest.log.isTraceEnabled();
-    private static final boolean _DEBUG = AbstractPrefixMappingNormalisationRuleTest.log.isDebugEnabled();
-    private static final boolean _INFO = AbstractPrefixMappingNormalisationRuleTest.log.isInfoEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
+    private static final boolean TRACE = AbstractPrefixMappingNormalisationRuleTest.LOG.isTraceEnabled();
+    private static final boolean DEBUG = AbstractPrefixMappingNormalisationRuleTest.LOG.isDebugEnabled();
+    private static final boolean INFO = AbstractPrefixMappingNormalisationRuleTest.LOG.isInfoEnabled();
     
     private URI testPrefixMappingNormalisationRuleUri1;
     private URI testPrefixMappingNormalisationRuleUri2;
@@ -158,7 +158,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     }
     
     /**
-     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
+     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException
@@ -230,7 +230,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     }
     
     /**
-     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
+     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException
@@ -308,7 +308,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         for(final Statement nextOutputStatement : this.testRepositoryConnection.getStatements(null, null, null, false)
                 .asList())
         {
-            AbstractPrefixMappingNormalisationRuleTest.log.info(nextOutputStatement.toString());
+            AbstractPrefixMappingNormalisationRuleTest.LOG.info(nextOutputStatement.toString());
         }
         
         Assert.assertTrue("The test output statement was not in the resulting repository",

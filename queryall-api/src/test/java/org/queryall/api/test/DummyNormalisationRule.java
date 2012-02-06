@@ -15,10 +15,10 @@ import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
@@ -31,19 +31,19 @@ import org.slf4j.LoggerFactory;
  */
 public final class DummyNormalisationRule implements NormalisationRule
 {
-    private static final Logger log = LoggerFactory.getLogger(DummyNormalisationRule.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DummyNormalisationRule.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = DummyNormalisationRule.log.isTraceEnabled();
+    private static final boolean TRACE = DummyNormalisationRule.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = DummyNormalisationRule.log.isDebugEnabled();
+    private static final boolean DEBUG = DummyNormalisationRule.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = DummyNormalisationRule.log.isInfoEnabled();
+    private static final boolean INFO = DummyNormalisationRule.LOG.isInfoEnabled();
     
     private int order = 0;
     private Set<URI> validStages = new HashSet<URI>();
     private Set<URI> stages = new HashSet<URI>();
     private Set<URI> relatedNamespaces = new HashSet<URI>();
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private String title = "";
     private URI key = null;
     private String description = "";
@@ -69,12 +69,6 @@ public final class DummyNormalisationRule implements NormalisationRule
         this.relatedNamespaces.add(nextRelatedNamespace);
     }
     
-    /**
-     * NOTE: This is a dummy class, there are no InvalidStageExceptions thrown
-     * 
-     * @param nextStage
-     * @throws InvalidStageException
-     */
     @Override
     public void addStage(final URI stage) throws InvalidStageException
     {
@@ -290,7 +284,7 @@ public final class DummyNormalisationRule implements NormalisationRule
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -365,14 +359,6 @@ public final class DummyNormalisationRule implements NormalisationRule
         return result;
     }
     
-    /**
-     * NOTE: This is a dummy class, always returns true
-     * 
-     * @param orderedProfileList
-     * @param allowImplicitInclusions
-     * @param includeNonProfileMatched
-     * @return
-     */
     @Override
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
@@ -408,21 +394,21 @@ public final class DummyNormalisationRule implements NormalisationRule
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
+    public void setCurationStatus(final URI nextCurationStatus)
     {
-        this.curationStatus = curationStatus;
+        this.curationStatus = nextCurationStatus;
     }
     
     @Override
-    public void setDescription(final String description)
+    public void setDescription(final String nextDescription)
     {
-        this.description = description;
+        this.description = nextDescription;
     }
     
     @Override
     public void setKey(final String nextKey) throws IllegalArgumentException
     {
-        this.setKey(Constants.valueFactory.createURI(nextKey));
+        this.setKey(Constants.VALUE_FACTORY.createURI(nextKey));
     }
     
     @Override
@@ -437,9 +423,9 @@ public final class DummyNormalisationRule implements NormalisationRule
      * @see org.queryall.api.rdfrule.NormalisationRule#setOrder(int)
      */
     @Override
-    public void setOrder(final int order)
+    public void setOrder(final int nextOrder)
     {
-        this.order = order;
+        this.order = nextOrder;
     }
     
     /*
@@ -450,15 +436,15 @@ public final class DummyNormalisationRule implements NormalisationRule
      * .URI)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude nextProfileIncludeExcludeOrder)
     {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+        this.profileIncludeExcludeOrder = nextProfileIncludeExcludeOrder;
     }
     
     @Override
-    public void setTitle(final String title)
+    public void setTitle(final String nextTitle)
     {
-        this.title = title;
+        this.title = nextTitle;
     }
     
     /**

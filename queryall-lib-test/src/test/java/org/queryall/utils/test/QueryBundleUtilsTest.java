@@ -22,6 +22,7 @@ import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.test.DummyProfile;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.test.DummyQueryType;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
@@ -74,8 +75,8 @@ public class QueryBundleUtilsTest
         this.testProfileSingleAllInclude = new DummyProfile();
         // By default this property is undefined to make it easier to layer profiles, but we want it
         // defined here to make sure that all settings are set to include
-        this.testProfileSingleAllInclude.setDefaultProfileIncludeExcludeOrder(ProfileSchema
-                .getProfileExcludeThenIncludeUri());
+        this.testProfileSingleAllInclude
+                .setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
         this.testSortedIncludedProfilesSingleAllInclude.add(this.testProfileSingleAllInclude);
         
         this.testQueryParametersEmpty = new HashMap<String, String>();
@@ -161,7 +162,7 @@ public class QueryBundleUtilsTest
         Assert.assertEquals(this.testSettingsEmpty, result.getQueryallSettings());
         
         Assert.assertEquals(this.testQueryTypeEmpty, result.getQueryType());
-        Assert.assertEquals(this.testProviderTrivial1, result.getOriginalProvider());
+        Assert.assertEquals(this.testProviderTrivial1, result.getProvider());
         Assert.assertEquals(this.testSortedIncludedProfilesEmpty, result.getRelevantProfiles());
         
         Assert.assertFalse(result.getRedirectRequired());
@@ -204,7 +205,7 @@ public class QueryBundleUtilsTest
         Assert.assertEquals(this.testSettingsEmpty, result.getQueryallSettings());
         
         Assert.assertEquals(this.testQueryTypeEmpty, result.getQueryType());
-        Assert.assertEquals(this.testProviderTrivial1, result.getOriginalProvider());
+        Assert.assertEquals(this.testProviderTrivial1, result.getProvider());
         Assert.assertEquals(this.testSortedIncludedProfilesSingleAllInclude, result.getRelevantProfiles());
         
         Assert.assertEquals(1, result.getRelevantProfiles().size());
@@ -213,7 +214,7 @@ public class QueryBundleUtilsTest
         Assert.assertEquals(true, nextProfile.getAllowImplicitProviderInclusions());
         Assert.assertEquals(true, nextProfile.getAllowImplicitQueryTypeInclusions());
         Assert.assertEquals(true, nextProfile.getAllowImplicitRdfRuleInclusions());
-        Assert.assertEquals(ProfileSchema.getProfileExcludeThenIncludeUri(),
+        Assert.assertEquals(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                 nextProfile.getDefaultProfileIncludeExcludeOrder());
         Assert.assertEquals(0, nextProfile.getExcludeProviders().size());
         Assert.assertEquals(0, nextProfile.getExcludeQueryTypes().size());

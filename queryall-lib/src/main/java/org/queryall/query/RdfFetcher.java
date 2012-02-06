@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 public class RdfFetcher
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcher.class);
-    private static final boolean _TRACE = RdfFetcher.log.isTraceEnabled();
-    private static final boolean _DEBUG = RdfFetcher.log.isDebugEnabled();
-    private static final boolean _INFO = RdfFetcher.log.isInfoEnabled();
+    private static final boolean TRACE = RdfFetcher.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfFetcher.log.isDebugEnabled();
+    private static final boolean INFO = RdfFetcher.log.isInfoEnabled();
     
     public static String SPARQL_QUERY_OPERATION = "SPARQL_QUERY_OPERATION";
     public static String RDF_XML_FETCH_OPERATION = "RDF_XML_FETCH_OPERATION";
@@ -51,7 +51,7 @@ public class RdfFetcher
     public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
         throws MalformedURLException, QueryAllException
     {
-        if(RdfFetcher._DEBUG)
+        if(RdfFetcher.DEBUG)
         {
             RdfFetcher.log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
                     + " Settings.getStringPropertyFromConfig(\"connectTimeout\")="
@@ -78,7 +78,7 @@ public class RdfFetcher
         
         try
         {
-            if(RdfFetcher._TRACE)
+            if(RdfFetcher.TRACE)
             {
                 // TODO: do the blocking and querying based on the Ips and not the hostname
                 final InetAddress[] allIpsForEndpoint = InetAddress.getAllByName(url.getHost());
@@ -161,7 +161,7 @@ public class RdfFetcher
             
             while((line = inputStream.readLine()) != null)
             {
-                if(RdfFetcher._TRACE)
+                if(RdfFetcher.TRACE)
                 {
                     RdfFetcher.log
                             .trace("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
@@ -174,7 +174,7 @@ public class RdfFetcher
         }
         catch(final java.net.UnknownHostException uhe)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Unknown Host Exception occurred endpointUrl="
                         + endpointUrl);
@@ -186,7 +186,7 @@ public class RdfFetcher
         }
         catch(final java.net.NoRouteToHostException nrthe)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: No Route To Host Exception occurred endpointUrl="
                         + endpointUrl);
@@ -198,7 +198,7 @@ public class RdfFetcher
         }
         catch(final java.net.PortUnreachableException pue)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Port Unreachable Exception occurred endpointUrl="
                         + endpointUrl);
@@ -210,7 +210,7 @@ public class RdfFetcher
         }
         catch(final java.net.ConnectException ce)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Connect Exception occurred endpointUrl="
                         + endpointUrl);
@@ -222,7 +222,7 @@ public class RdfFetcher
         }
         catch(final java.net.SocketTimeoutException ste)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Socket Timeout Exception occurred endpointUrl="
                         + endpointUrl);
@@ -234,7 +234,7 @@ public class RdfFetcher
         }
         catch(final java.net.SocketException se)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Socket Exception occurred endpointUrl="
                         + endpointUrl);
@@ -246,7 +246,7 @@ public class RdfFetcher
         }
         catch(final java.io.IOException ioe)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Input Output Exception occurred endpointUrl="
                         + endpointUrl);
@@ -284,7 +284,7 @@ public class RdfFetcher
             
             final long end = System.currentTimeMillis();
             
-            if(RdfFetcher._DEBUG)
+            if(RdfFetcher.DEBUG)
             {
                 RdfFetcher.log.debug(String.format("%s: timing=%10d", "RdfFetcher.getDocumentFromUrl.end",
                         (end - start)));
@@ -315,7 +315,7 @@ public class RdfFetcher
                     RdfFetcher.log.error("Found an endpoint that responded with 406 to acceptHeader=" + acceptHeader);
                 }
                 
-                if(RdfFetcher._DEBUG)
+                if(RdfFetcher.DEBUG)
                 {
                     final long errorend = System.currentTimeMillis();
                     
@@ -325,7 +325,7 @@ public class RdfFetcher
             }
         }
         
-        if(RdfFetcher._TRACE)
+        if(RdfFetcher.TRACE)
         {
             RdfFetcher.log.trace("RdfFetcher.getDocumentFromUrl: results.toString()=" + results.toString());
         }
@@ -401,7 +401,7 @@ public class RdfFetcher
             final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException,
         QueryAllException
     {
-        if(RdfFetcher._DEBUG)
+        if(RdfFetcher.DEBUG)
         {
             RdfFetcher.log.debug("RdfFetcher.submitSparqlQuery: endpointUrl=" + endpointUrl + " query=" + query);
         }
@@ -433,14 +433,14 @@ public class RdfFetcher
             postQuery += "query=" + StringUtils.percentEncode(query);
         }
         
-        if(RdfFetcher._TRACE)
+        if(RdfFetcher.TRACE)
         {
             RdfFetcher.log.trace("RdfFetcher.submitSparqlQuery: postQuery=" + postQuery);
         }
         
         final String results = this.getDocumentFromUrl(endpointUrl, postQuery, acceptHeader);
         
-        if(RdfFetcher._DEBUG)
+        if(RdfFetcher.DEBUG)
         {
             final long end = System.currentTimeMillis();
             

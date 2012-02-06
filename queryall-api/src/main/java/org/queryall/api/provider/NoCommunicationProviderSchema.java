@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class NoCommunicationProviderSchema extends QueryAllSchema
 {
-    static final Logger log = LoggerFactory.getLogger(NoCommunicationProviderSchema.class);
+    static final Logger LOG = LoggerFactory.getLogger(NoCommunicationProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NoCommunicationProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = NoCommunicationProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = NoCommunicationProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = NoCommunicationProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NoCommunicationProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = NoCommunicationProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerNoCommunicationProviderUri;
     
@@ -43,6 +43,9 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
                 "NoCommunicationProvider"));
     }
     
+    /**
+     * A pre-instantiated schema object for NoCommunicationProviderSchema.
+     */
     public static final QueryAllSchema NO_COMMUNICATION_PROVIDER_SCHEMA = new NoCommunicationProviderSchema();
     
     /**
@@ -63,7 +66,7 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public NoCommunicationProviderSchema()
     {
@@ -112,7 +115,7 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            NoCommunicationProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            NoCommunicationProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

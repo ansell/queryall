@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestImpl.class);
-    private static final boolean _TRACE = SparqlRuleTestImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SparqlRuleTestImpl.log.isDebugEnabled();
+    private static final boolean TRACE = SparqlRuleTestImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = SparqlRuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlRuleTestImpl.log.isInfoEnabled();
+    private static final boolean INFO = SparqlRuleTestImpl.log.isInfoEnabled();
     
     private static final Set<URI> SPARQL_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
     
@@ -68,7 +68,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(SparqlRuleTestImpl._DEBUG)
+            if(SparqlRuleTestImpl.DEBUG)
             {
                 SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
@@ -76,7 +76,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SparqlRuleTestSchema.getSparqlRuleTestTypeUri()))
             {
-                if(SparqlRuleTestImpl._TRACE)
+                if(SparqlRuleTestImpl.TRACE)
                 {
                     SparqlRuleTestImpl.log.trace("SparqlRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
@@ -101,7 +101,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             }
             else
             {
-                if(SparqlRuleTestImpl._DEBUG)
+                if(SparqlRuleTestImpl.DEBUG)
                 {
                     SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: found unexpected Statement nextStatement: "
                             + nextStatement.toString());
@@ -110,7 +110,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             }
         }
         
-        if(SparqlRuleTestImpl._TRACE)
+        if(SparqlRuleTestImpl.TRACE)
         {
             SparqlRuleTestImpl.log
                     .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
@@ -180,7 +180,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

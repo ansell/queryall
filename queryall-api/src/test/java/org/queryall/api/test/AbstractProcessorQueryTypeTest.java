@@ -14,7 +14,7 @@ import org.queryall.api.querytype.ProcessorQueryType;
 import org.queryall.api.querytype.QueryType;
 
 /**
- * Abstract unit test for ProcessorQueryType API
+ * Abstract unit test for ProcessorQueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -25,7 +25,7 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
     
     /**
      * This method must be overridden to return a new String for each invocation representing a
-     * valid processing template string for this processor query type
+     * valid processing template string for this processor query type.
      * 
      * @return A new valid processing template string to match this processor query type
      */
@@ -33,7 +33,7 @@ public abstract class AbstractProcessorQueryTypeTest extends AbstractQueryTypeTe
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the QueryType implementation
      */

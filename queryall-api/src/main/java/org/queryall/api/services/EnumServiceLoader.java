@@ -13,12 +13,12 @@ import org.slf4j.LoggerFactory;
  */
 public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnum>
 {
-    private static final Logger log = LoggerFactory.getLogger(EnumServiceLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EnumServiceLoader.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = EnumServiceLoader.log.isTraceEnabled();
-    private static final boolean _DEBUG = EnumServiceLoader.log.isDebugEnabled();
+    private static final boolean TRACE = EnumServiceLoader.LOG.isTraceEnabled();
+    private static final boolean DEBUG = EnumServiceLoader.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = EnumServiceLoader.log.isInfoEnabled();
+    private static final boolean INFO = EnumServiceLoader.LOG.isInfoEnabled();
     
     private static EnumServiceLoader defaultRegistry;
     
@@ -41,11 +41,11 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     @Override
     public Collection<QueryAllEnum> getAll()
     {
-        if(EnumServiceLoader._DEBUG)
+        if(EnumServiceLoader.DEBUG)
         {
             for(final String nextKey : this.services.keySet())
             {
-                EnumServiceLoader.log.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+                EnumServiceLoader.LOG.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
             }
         }
         
