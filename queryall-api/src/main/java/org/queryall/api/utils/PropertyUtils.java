@@ -14,22 +14,22 @@ import org.slf4j.LoggerFactory;
  */
 public final class PropertyUtils
 {
-    private static final Logger log = LoggerFactory.getLogger(PropertyUtils.class);
-    private static final boolean _TRACE = PropertyUtils.log.isTraceEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(PropertyUtils.class);
+    private static final boolean TRACE = PropertyUtils.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = PropertyUtils.log.isDebugEnabled();
+    private static final boolean DEBUG = PropertyUtils.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = PropertyUtils.log.isInfoEnabled();
+    private static final boolean INFO = PropertyUtils.LOG.isInfoEnabled();
     
     /**
      * This matches the queryall.properties file where the generally static API specific section of
-     * the configuration settings are stored
+     * the configuration settings are stored.
      */
     public static final String DEFAULT_PROPERTIES_BUNDLE_NAME = "queryall";
     
     /**
      * Checks for the configured version first in the system vm properties, then in the localisation
-     * properties file, by default, "queryall.properties", Uses the key "queryall.Version"
+     * properties file, by default, "queryall.properties", Uses the key "queryall.Version".
      * 
      * The version defaults to "0.0.1"
      */
@@ -37,7 +37,7 @@ public final class PropertyUtils
     
     /**
      * Checks for the key first in the system vm properties, then in the localisation properties
-     * file, by default, "queryall.properties", then uses the defaultValue if the location is still
+     * file, by default, "queryall.properties", then uses the defaultValue if the location is still.
      * unknown
      * 
      * @param key
@@ -59,9 +59,9 @@ public final class PropertyUtils
             }
             catch(final MissingResourceException mre)
             {
-                if(PropertyUtils._TRACE)
+                if(PropertyUtils.TRACE)
                 {
-                    PropertyUtils.log.trace(mre.getMessage(), mre);
+                    PropertyUtils.LOG.trace(mre.getMessage(), mre);
                 }
             }
         }
@@ -77,7 +77,7 @@ public final class PropertyUtils
     }
     
     /**
-     * Private constructor
+     * Private constructor.
      */
     private PropertyUtils()
     {

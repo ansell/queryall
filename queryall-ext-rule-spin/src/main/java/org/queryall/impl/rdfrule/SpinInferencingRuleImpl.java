@@ -50,10 +50,10 @@ import com.hp.hpl.jena.shared.ReificationStyle;
 public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements SpinInferencingRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SpinInferencingRuleImpl.class);
-    private static final boolean _TRACE = SpinInferencingRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SpinInferencingRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = SpinInferencingRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = SpinInferencingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinInferencingRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = SpinInferencingRuleImpl.log.isInfoEnabled();
     
     private static final Set<URI> SPIN_INFERENCING_RULE_IMPL_TYPES = new HashSet<URI>(8);
     private static final Set<URI> SPIN_INFERENCING_RULE_IMPL_VALID_STAGES = new HashSet<URI>(8);
@@ -112,7 +112,7 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri()))
             {
-                if(SpinInferencingRuleImpl._TRACE)
+                if(SpinInferencingRuleImpl.TRACE)
                 {
                     SpinInferencingRuleImpl.log
                             .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
@@ -123,7 +123,7 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
             }
             else
             {
-                if(SpinInferencingRuleImpl._DEBUG)
+                if(SpinInferencingRuleImpl.DEBUG)
                 {
                     SpinInferencingRuleImpl.log
                             .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
@@ -133,7 +133,7 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
             }
         }
         
-        if(SpinInferencingRuleImpl._DEBUG)
+        if(SpinInferencingRuleImpl.DEBUG)
         {
             SpinInferencingRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
@@ -516,7 +516,7 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
         
         try
         {
-            if(SpinInferencingRuleImpl._DEBUG)
+            if(SpinInferencingRuleImpl.DEBUG)
             {
                 SpinInferencingRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }

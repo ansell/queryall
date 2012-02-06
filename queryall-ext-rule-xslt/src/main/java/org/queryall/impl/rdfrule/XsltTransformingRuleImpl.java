@@ -41,10 +41,10 @@ import org.slf4j.LoggerFactory;
 public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implements XsltNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(XsltTransformingRuleImpl.class);
-    private static final boolean _TRACE = XsltTransformingRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = XsltTransformingRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = XsltTransformingRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = XsltTransformingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = XsltTransformingRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = XsltTransformingRuleImpl.log.isInfoEnabled();
     
     // public static final NormalisationRuleEnum XSLT_NORMALISATION_RULE_IMPL_ENUM =
     // NormalisationRuleEnum.register(XsltNormalisationRuleImpl.class.getName(),
@@ -142,7 +142,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(XsltTransformingRuleImpl._DEBUG)
+            if(XsltTransformingRuleImpl.DEBUG)
             {
                 XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl: nextStatement: "
                         + nextStatement.toString());
@@ -151,7 +151,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(XsltNormalisationRuleSchema.getXsltRuleTypeUri()))
             {
-                if(XsltTransformingRuleImpl._TRACE)
+                if(XsltTransformingRuleImpl.TRACE)
                 {
                     XsltTransformingRuleImpl.log
                             .trace("XsltNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
@@ -165,7 +165,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             }
             else
             {
-                if(XsltTransformingRuleImpl._TRACE)
+                if(XsltTransformingRuleImpl.TRACE)
                 {
                     XsltTransformingRuleImpl.log
                             .trace("XsltNormalisationRuleImpl: unrecognisedStatement nextStatement: "
@@ -175,7 +175,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             }
         }
         
-        if(XsltTransformingRuleImpl._DEBUG)
+        if(XsltTransformingRuleImpl.DEBUG)
         {
             XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
@@ -369,7 +369,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         
         try
         {
-            if(XsltTransformingRuleImpl._DEBUG)
+            if(XsltTransformingRuleImpl.DEBUG)
             {
                 XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }

@@ -9,13 +9,15 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 
 /**
+ * Abstract unit test for the StringRuleTest API.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractStringRuleTestTest extends AbstractRuleTestTest
 {
     
     /**
-     * Returns a new instance of the RuleTest Implementation for each call
+     * Returns a new instance of the RuleTest Implementation for each call.
      * 
      * @return
      */
@@ -26,7 +28,7 @@ public abstract class AbstractStringRuleTestTest extends AbstractRuleTestTest
     }
     
     /**
-     * Returns a new instance of the StringRuleTest Implementation for each call
+     * Returns a new instance of the StringRuleTest Implementation for each call.
      * 
      * @return
      */

@@ -12,6 +12,7 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
+import org.queryall.api.utils.ProfileIncludeExclude;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -222,7 +223,7 @@ public abstract class AbstractProfileTest
     @Test
     public final void testGetDefaultProfileIncludeExcludeOrder()
     {
-        Assert.assertEquals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(),
+        Assert.assertEquals(ProfileIncludeExclude.UNDEFINED,
                 this.testProfile1.getDefaultProfileIncludeExcludeOrder());
     }
     
@@ -522,17 +523,16 @@ public abstract class AbstractProfileTest
     @Test
     public final void testSetDefaultProfileIncludeExcludeOrder()
     {
-        Assert.assertEquals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri(),
+        Assert.assertEquals(ProfileIncludeExclude.UNDEFINED, this.testProfile1.getDefaultProfileIncludeExcludeOrder());
+        
+        this.testProfile1.setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
+        
+        Assert.assertEquals(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                 this.testProfile1.getDefaultProfileIncludeExcludeOrder());
         
-        this.testProfile1.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileExcludeThenIncludeUri());
+        this.testProfile2.setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE);
         
-        Assert.assertEquals(ProfileSchema.getProfileExcludeThenIncludeUri(),
-                this.testProfile1.getDefaultProfileIncludeExcludeOrder());
-        
-        this.testProfile2.setDefaultProfileIncludeExcludeOrder(ProfileSchema.getProfileIncludeThenExcludeUri());
-        
-        Assert.assertEquals(ProfileSchema.getProfileIncludeThenExcludeUri(),
+        Assert.assertEquals(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE,
                 this.testProfile2.getDefaultProfileIncludeExcludeOrder());
     }
     

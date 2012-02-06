@@ -26,20 +26,20 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RdfInputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfInputQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RdfInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfInputQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RdfInputQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfInputQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RdfInputQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfInputQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = RdfInputQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI rdfInputQueryTypeUri;
     private static URI querySparqlInputSelect;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
@@ -47,6 +47,9 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
         RdfInputQueryTypeSchema.setQuerySparqlInputSelect(f.createURI(baseUri, "sparqlInputSelect"));
     }
     
+    /**
+     * A pre-instantiated schema object for RdfInputQueryTypeSchema.
+     */
     public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new RdfInputQueryTypeSchema();
     
     public static URI getQuerySparqlInputSelect()
@@ -77,7 +80,7 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RdfInputQueryTypeSchema()
     {
@@ -99,7 +102,7 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -136,7 +139,7 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RdfInputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            RdfInputQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

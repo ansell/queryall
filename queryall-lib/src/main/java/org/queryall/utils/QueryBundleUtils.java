@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 public class QueryBundleUtils
 {
     private static final Logger log = LoggerFactory.getLogger(QueryBundleUtils.class);
-    private static final boolean _TRACE = QueryBundleUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = QueryBundleUtils.log.isDebugEnabled();
-    private static final boolean _INFO = QueryBundleUtils.log.isInfoEnabled();
+    private static final boolean TRACE = QueryBundleUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = QueryBundleUtils.log.isDebugEnabled();
+    private static final boolean INFO = QueryBundleUtils.log.isInfoEnabled();
     
     /**
      * TODO: Simplify this method and abstract it out into Provider classes

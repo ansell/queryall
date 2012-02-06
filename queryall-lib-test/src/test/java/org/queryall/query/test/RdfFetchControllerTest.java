@@ -208,7 +208,7 @@ public class RdfFetchControllerTest
     
     /**
      * Test method for
-     * {@link org.queryall.query.RdfFetchController#RdfFetchController(org.queryall.api.base.QueryAllConfiguration, org.queryall.blacklist.BlacklistController, java.util.Map, java.util.List, boolean, java.lang.String, int)}
+     * {@link org.queryall.query.RdfFetchController#RdfFetchController(org.queryall.api.base.QueryAllConfiguration, org.queryall.blacklist.BlacklistController, java.util.Map, java.util.List, java.lang.String, int)}
      * .
      * 
      * @throws QueryAllException

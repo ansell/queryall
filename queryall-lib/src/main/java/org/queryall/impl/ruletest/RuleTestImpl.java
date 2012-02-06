@@ -28,10 +28,10 @@ import org.slf4j.LoggerFactory;
 public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(RuleTestImpl.class);
-    private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = RuleTestImpl.log.isDebugEnabled();
+    private static final boolean TRACE = RuleTestImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = RuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
+    private static final boolean INFO = RuleTestImpl.log.isInfoEnabled();
     
     private Collection<URI> rdfRuleUris = new HashSet<URI>();
     
@@ -51,7 +51,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(RuleTestImpl._DEBUG)
+            if(RuleTestImpl.DEBUG)
             {
                 RuleTestImpl.log.debug("RuleTest: nextStatement: " + nextStatement.toString());
             }
@@ -59,7 +59,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(RuleTestSchema.getRuletestTypeUri()))
             {
-                if(RuleTestImpl._TRACE)
+                if(RuleTestImpl.TRACE)
                 {
                     RuleTestImpl.log.trace("RuleTest: found valid type predicate for URI: " + keyToUse);
                 }
@@ -84,7 +84,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
             }
         }
         
-        if(RuleTestImpl._TRACE)
+        if(RuleTestImpl.TRACE)
         {
             RuleTestImpl.log.trace("RuleTest.fromRdf: would have returned... result=" + this.toString());
         }

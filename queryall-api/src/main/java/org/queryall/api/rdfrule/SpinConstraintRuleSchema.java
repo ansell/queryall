@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SpinConstraintRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpinConstraintRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SpinConstraintRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SpinConstraintRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SpinConstraintRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SpinConstraintRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinConstraintRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = SpinConstraintRuleSchema.LOG.isInfoEnabled();
     
     private static URI spinConstraintRuleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         SpinConstraintRuleSchema.setSpinConstraintRuleTypeUri(f.createURI(baseUri, "SpinConstraintRule"));
     }
     
+    /**
+     * A pre-instantiated schema object for SpinConstraintRuleSchema.
+     */
     public static final QueryAllSchema SPIN_CONSTRAINT_RULE_SCHEMA = new SpinConstraintRuleSchema();
     
     /**
@@ -56,16 +59,16 @@ public class SpinConstraintRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param spinConstraintRuleTypeUri
+     * @param nextSpinConstraintRuleTypeUri
      *            the spinruleTypeUri to set
      */
-    public static void setSpinConstraintRuleTypeUri(final URI spinConstraintRuleTypeUri)
+    public static void setSpinConstraintRuleTypeUri(final URI nextSpinConstraintRuleTypeUri)
     {
-        SpinConstraintRuleSchema.spinConstraintRuleTypeUri = spinConstraintRuleTypeUri;
+        SpinConstraintRuleSchema.spinConstraintRuleTypeUri = nextSpinConstraintRuleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SpinConstraintRuleSchema()
     {
@@ -116,7 +119,7 @@ public class SpinConstraintRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SpinConstraintRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            SpinConstraintRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

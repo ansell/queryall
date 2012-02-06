@@ -15,11 +15,11 @@ public class MathsUtils
 {
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = MathsUtils.log.isTraceEnabled();
+    private static final boolean TRACE = MathsUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = MathsUtils.log.isDebugEnabled();
+    private static final boolean DEBUG = MathsUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = MathsUtils.log.isInfoEnabled();
+    private static final boolean INFO = MathsUtils.log.isInfoEnabled();
     
     /**
      * @param inputValues

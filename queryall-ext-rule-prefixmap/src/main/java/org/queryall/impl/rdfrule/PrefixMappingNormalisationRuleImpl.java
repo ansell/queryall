@@ -30,10 +30,10 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         PrefixMappingNormalisationRule
 {
     private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleImpl.class);
-    private static final boolean _TRACE = PrefixMappingNormalisationRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = PrefixMappingNormalisationRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = PrefixMappingNormalisationRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = PrefixMappingNormalisationRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = PrefixMappingNormalisationRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = PrefixMappingNormalisationRuleImpl.log.isInfoEnabled();
     
     private static final Set<URI> PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES = new HashSet<URI>(6);
     private static final Set<URI> PREFIX_MAPPING_NORMALISATION_RULE_IMPL_VALID_STAGES = new HashSet<URI>(10);
@@ -94,7 +94,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(PrefixMappingNormalisationRuleImpl._TRACE)
+            if(PrefixMappingNormalisationRuleImpl.TRACE)
             {
                 PrefixMappingNormalisationRuleImpl.log.trace("PrefixMappingNormalisationRuleImpl: nextStatement: "
                         + nextStatement.toString());
@@ -104,7 +104,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
                     && nextStatement.getObject().equals(
                             PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri()))
             {
-                if(PrefixMappingNormalisationRuleImpl._TRACE)
+                if(PrefixMappingNormalisationRuleImpl.TRACE)
                 {
                     PrefixMappingNormalisationRuleImpl.log
                             .trace("PrefixMappingNormalisationRuleImpl: found valid type predicate for URI: "
@@ -138,7 +138,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             }
             else
             {
-                if(PrefixMappingNormalisationRuleImpl._TRACE)
+                if(PrefixMappingNormalisationRuleImpl.TRACE)
                 {
                     PrefixMappingNormalisationRuleImpl.log
                             .trace("PrefixMappingNormalisationRuleImpl: unrecognisedStatement nextStatement: "
@@ -148,7 +148,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             }
         }
         
-        if(PrefixMappingNormalisationRuleImpl._TRACE)
+        if(PrefixMappingNormalisationRuleImpl.TRACE)
         {
             PrefixMappingNormalisationRuleImpl.log
                     .trace("PrefixMappingNormalisationRuleImpl.fromRdf: would have returned... result="
@@ -369,11 +369,11 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(PrefixMappingNormalisationRuleImpl._DEBUG)
+            if(PrefixMappingNormalisationRuleImpl.DEBUG)
             {
                 PrefixMappingNormalisationRuleImpl.log.debug("PrefixMappingNormalisationRuleImpl.toRdf: keyToUse="
                         + keyToUse);

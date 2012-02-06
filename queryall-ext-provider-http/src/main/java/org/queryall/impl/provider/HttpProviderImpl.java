@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvider
 {
-    private static final Logger log = LoggerFactory.getLogger(HttpProviderImpl.class);
-    private static final boolean _TRACE = HttpProviderImpl.log.isTraceEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(HttpProviderImpl.class);
+    private static final boolean TRACE = HttpProviderImpl.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = HttpProviderImpl.log.isDebugEnabled();
+    private static final boolean DEBUG = HttpProviderImpl.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = HttpProviderImpl.log.isInfoEnabled();
+    private static final boolean INFO = HttpProviderImpl.LOG.isInfoEnabled();
     
     private Collection<String> endpointUrls = new HashSet<String>();
     
@@ -58,17 +58,17 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(HttpProviderImpl._TRACE)
+            if(HttpProviderImpl.TRACE)
             {
-                HttpProviderImpl.log.trace("HttpProvider: nextStatement: " + nextStatement.toString());
+                HttpProviderImpl.LOG.trace("HttpProvider: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(HttpProviderSchema.getProviderHttpTypeUri()))
             {
-                if(HttpProviderImpl._TRACE)
+                if(HttpProviderImpl.TRACE)
                 {
-                    HttpProviderImpl.log.trace("HttpProvider: found valid type predicate for URI: " + keyToUse);
+                    HttpProviderImpl.LOG.trace("HttpProvider: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 // resultIsValid = true;
@@ -84,9 +84,9 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
             }
             else
             {
-                if(HttpProviderImpl._TRACE)
+                if(HttpProviderImpl.TRACE)
                 {
-                    HttpProviderImpl.log.trace("HttpProvider: unrecognisedStatement nextStatement: "
+                    HttpProviderImpl.LOG.trace("HttpProvider: unrecognisedStatement nextStatement: "
                             + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
@@ -109,7 +109,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @Override
     public String getAcceptHeaderString(final String defaultAcceptHeader)
     {
-        if(this.acceptHeaderString != null && !this.acceptHeaderString.trim().equals(""))
+        if(this.acceptHeaderString != null && !(this.acceptHeaderString.trim().length() == 0))
         {
             return this.acceptHeaderString;
         }
@@ -150,9 +150,9 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     }
     
     @Override
-    public void setAcceptHeaderString(final String acceptHeaderString)
+    public void setAcceptHeaderString(final String nextAcceptHeaderString)
     {
-        this.acceptHeaderString = acceptHeaderString;
+        this.acceptHeaderString = nextAcceptHeaderString;
     }
     
     @Override
@@ -163,15 +163,15 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
             con.setAutoCommit(false);
             
-            if(HttpProviderImpl._TRACE)
+            if(HttpProviderImpl.TRACE)
             {
-                HttpProviderImpl.log.trace("Provider.toRdf: keyToUse=" + keyToUse);
+                HttpProviderImpl.LOG.trace("Provider.toRdf: keyToUse=" + keyToUse);
             }
             
             // create some resources and literals to make statements out of
@@ -216,14 +216,14 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            HttpProviderImpl.log.error("RepositoryException: " + re.getMessage());
+            HttpProviderImpl.LOG.error("RepositoryException: " + re.getMessage());
         }
         catch(final Exception ex)
         {
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            HttpProviderImpl.log.error("Exception.. this.getKey()=" + this.getKey().stringValue(), ex);
+            HttpProviderImpl.LOG.error("Exception.. this.getKey()=" + this.getKey().stringValue(), ex);
         }
         finally
         {

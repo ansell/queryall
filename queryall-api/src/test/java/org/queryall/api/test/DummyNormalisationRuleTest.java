@@ -12,7 +12,7 @@ import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
  * Test the DummyNormalisationRule interface is implemented according to the NormalisationRule
- * contract using AbstractNormalisationRuleTest
+ * contract using AbstractNormalisationRuleTest.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  * 

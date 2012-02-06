@@ -9,7 +9,7 @@ import org.queryall.exception.QueryAllException;
 import org.queryall.exception.ValidationFailedException;
 
 /**
- * Represents a rule that returns true or false depending on whether the validation conditions pass
+ * Represents a rule that returns true or false depending on whether the validation conditions pass.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

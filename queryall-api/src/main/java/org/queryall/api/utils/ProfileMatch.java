@@ -19,7 +19,25 @@ import org.queryall.api.rdfrule.NormalisationRule;
  */
 public enum ProfileMatch
 {
-    SPECIFIC_INCLUDE, SPECIFIC_EXCLUDE, IMPLICIT_INCLUDE, NO_MATCH;
+    /**
+     * The Profile specifically includes this Profilable object.
+     */
+    SPECIFIC_INCLUDE,
+    
+    /**
+     * The Profile specifically excludes this Profilable object.
+     */
+    SPECIFIC_EXCLUDE,
+    
+    /**
+     * The Profile could implicitly include this Profilable object.
+     */
+    IMPLICIT_INCLUDE,
+    
+    /**
+     * The Profile does not specifically match or implicitly include this Profilable object.
+     */
+    NO_MATCH;
     
     public static boolean isUsedWithProfileList(final ProfilableInterface profilableObject,
             final List<Profile> nextSortedProfileList, final boolean recogniseImplicitInclusions,
@@ -28,6 +46,7 @@ public enum ProfileMatch
         for(final Profile nextProfile : nextSortedProfileList)
         {
             final ProfileMatch trueResult = ProfileMatch.usedWithProfilable(nextProfile, profilableObject);
+            
             if(trueResult == IMPLICIT_INCLUDE)
             {
                 if(recogniseImplicitInclusions)
@@ -43,15 +62,11 @@ public enum ProfileMatch
             {
                 return false;
             }
-            
         }
         
         final boolean returnValue =
-                (profilableObject.getProfileIncludeExcludeOrder().equals(
-                        ProfileSchema.getProfileExcludeThenIncludeUri()) || profilableObject
-                        .getProfileIncludeExcludeOrder().equals(
-                                ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()))
-                        && includeNonProfileMatched;
+                includeNonProfileMatched && (ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == profilableObject.getProfileIncludeExcludeOrder() || ProfileIncludeExclude.UNDEFINED == profilableObject
+                        .getProfileIncludeExcludeOrder());
         
         return returnValue;
     }
@@ -92,9 +107,9 @@ public enum ProfileMatch
      *             includeOrExclude or excludeOrInclude and nextDefaultProfileIncludeExcludeOrder
      *             does not help resolve the nextIncludeExcludeOrder
      */
-    public static final ProfileMatch usedWithIncludeExcludeList(final URI nextUri, URI nextIncludeExcludeOrder,
-            final Collection<URI> includeList, final Collection<URI> excludeList,
-            final URI nextDefaultProfileIncludeExcludeOrder)
+    public static ProfileMatch usedWithIncludeExcludeList(final URI nextUri,
+            final ProfileIncludeExclude nextIncludeExcludeOrder, final Collection<URI> includeList,
+            final Collection<URI> excludeList, final ProfileIncludeExclude nextDefaultProfileIncludeExcludeOrder)
     {
         if(includeList == null || excludeList == null)
         {
@@ -104,47 +119,53 @@ public enum ProfileMatch
         final boolean includeFound = includeList.contains(nextUri);
         final boolean excludeFound = excludeList.contains(nextUri);
         
-        if(nextIncludeExcludeOrder == null
-                || nextIncludeExcludeOrder.equals(ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri()))
+        ProfileMatch result;
+        
+        ProfileIncludeExclude actualIncludeExcludeOrder = nextIncludeExcludeOrder;
+        
+        if(ProfileIncludeExclude.UNDEFINED == actualIncludeExcludeOrder)
         {
-            nextIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
+            actualIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
         }
         
-        if(nextIncludeExcludeOrder.equals(ProfileSchema.getProfileExcludeThenIncludeUri()))
+        if(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == actualIncludeExcludeOrder)
         {
             if(excludeFound)
             {
-                return SPECIFIC_EXCLUDE;
+                result = SPECIFIC_EXCLUDE;
             }
             else if(includeFound)
             {
-                return SPECIFIC_INCLUDE;
+                result = SPECIFIC_INCLUDE;
             }
             else
             {
-                return IMPLICIT_INCLUDE;
+                result = IMPLICIT_INCLUDE;
             }
         }
-        else if(nextIncludeExcludeOrder.equals(ProfileSchema.getProfileIncludeThenExcludeUri()))
+        else if(ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE == actualIncludeExcludeOrder)
         {
             if(includeFound)
             {
-                return SPECIFIC_INCLUDE;
+                result = SPECIFIC_INCLUDE;
             }
             else if(excludeFound)
             {
-                return SPECIFIC_EXCLUDE;
+                result = SPECIFIC_EXCLUDE;
             }
             else
             {
-                return NO_MATCH;
+                result = NO_MATCH;
             }
         }
         else
         {
             throw new IllegalArgumentException("usedWithIncludeExcludeList: nextIncludeExcludeOrder not recognised ("
-                    + nextIncludeExcludeOrder + ")");
+                    + nextIncludeExcludeOrder + ") nextDefaultProfileIncludeExcludeOrder ("
+                    + nextDefaultProfileIncludeExcludeOrder + ")");
         }
+        
+        return result;
     }
     
     public static ProfileMatch usedWithProfilable(final Profile profile, final ProfilableInterface profilableObject)

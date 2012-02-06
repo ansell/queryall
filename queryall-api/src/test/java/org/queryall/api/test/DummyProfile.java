@@ -17,6 +17,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
@@ -34,7 +35,7 @@ public class DummyProfile implements Profile
     private boolean allowImplicitProviderInclusions = true;
     private boolean allowImplicitQueryTypeInclusions = true;
     private boolean allowImplicitRdfRuleInclusions = true;
-    private URI defaultProfileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();;
+    private ProfileIncludeExclude defaultProfileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private Collection<URI> excludeProviders = new ArrayList<URI>();
     private Collection<URI> excludeQueryTypes = new ArrayList<URI>();
     private Collection<URI> excludeRdfRules = new ArrayList<URI>();
@@ -244,7 +245,7 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.profile.Profile#getDefaultProfileIncludeExcludeOrder()
      */
     @Override
-    public URI getDefaultProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getDefaultProfileIncludeExcludeOrder()
     {
         return this.defaultProfileIncludeExcludeOrder;
     }
@@ -508,9 +509,9 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.profile.Profile#setAllowImplicitProviderInclusions(boolean)
      */
     @Override
-    public void setAllowImplicitProviderInclusions(final boolean allowImplicitProviderInclusions)
+    public void setAllowImplicitProviderInclusions(final boolean nextAllowImplicitProviderInclusions)
     {
-        this.allowImplicitProviderInclusions = allowImplicitProviderInclusions;
+        this.allowImplicitProviderInclusions = nextAllowImplicitProviderInclusions;
     }
     
     /*
@@ -530,9 +531,9 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.profile.Profile#setAllowImplicitRdfRuleInclusions(boolean)
      */
     @Override
-    public void setAllowImplicitRdfRuleInclusions(final boolean allowImplicitRdfRuleInclusions)
+    public void setAllowImplicitRdfRuleInclusions(final boolean nextAllowImplicitRdfRuleInclusions)
     {
-        this.allowImplicitRdfRuleInclusions = allowImplicitRdfRuleInclusions;
+        this.allowImplicitRdfRuleInclusions = nextAllowImplicitRdfRuleInclusions;
     }
     
     /*
@@ -541,9 +542,9 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.base.BaseQueryAllInterface#setCurationStatus(org.openrdf.model.URI)
      */
     @Override
-    public void setCurationStatus(final URI curationStatus)
+    public void setCurationStatus(final URI nextCurationStatus)
     {
-        this.curationStatus = curationStatus;
+        this.curationStatus = nextCurationStatus;
     }
     
     /*
@@ -553,9 +554,9 @@ public class DummyProfile implements Profile
      * org.queryall.api.profile.Profile#setDefaultProfileIncludeExcludeOrder(org.openrdf.model.URI)
      */
     @Override
-    public void setDefaultProfileIncludeExcludeOrder(final URI defaultProfileIncludeExcludeOrder)
+    public void setDefaultProfileIncludeExcludeOrder(final ProfileIncludeExclude nextDefaultProfileIncludeExcludeOrder)
     {
-        this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
+        this.defaultProfileIncludeExcludeOrder = nextDefaultProfileIncludeExcludeOrder;
     }
     
     /*
@@ -564,9 +565,9 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.base.BaseQueryAllInterface#setDescription(java.lang.String)
      */
     @Override
-    public void setDescription(final String description)
+    public void setDescription(final String nextDescription)
     {
-        this.description = description;
+        this.description = nextDescription;
     }
     
     /*
@@ -577,7 +578,7 @@ public class DummyProfile implements Profile
     @Override
     public void setKey(final String nextKey) throws IllegalArgumentException
     {
-        this.key = Constants.valueFactory.createURI(nextKey);
+        this.key = Constants.VALUE_FACTORY.createURI(nextKey);
     }
     
     /*
@@ -597,9 +598,9 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.profile.Profile#setOrder(int)
      */
     @Override
-    public void setOrder(final int order)
+    public void setOrder(final int nextOrder)
     {
-        this.order = order;
+        this.order = nextOrder;
     }
     
     /*
@@ -608,9 +609,9 @@ public class DummyProfile implements Profile
      * @see org.queryall.api.base.BaseQueryAllInterface#setTitle(java.lang.String)
      */
     @Override
-    public void setTitle(final String title)
+    public void setTitle(final String nextTitle)
     {
-        this.title = title;
+        this.title = nextTitle;
     }
     
     /*

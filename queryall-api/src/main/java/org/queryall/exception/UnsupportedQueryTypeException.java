@@ -6,7 +6,7 @@ package org.queryall.exception;
 import org.queryall.api.querytype.QueryTypeEnum;
 
 /**
- * An exception that is thrown when an unknown QueryType is encountered
+ * An exception that is thrown when an unknown QueryType is encountered.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -80,12 +80,12 @@ public class UnsupportedQueryTypeException extends QueryAllException
     }
     
     /**
-     * @param queryTypeCause
+     * @param nextQueryTypeCause
      *            the queryTypeCause to set
      */
-    public void setQueryTypeCause(final QueryTypeEnum queryTypeCause)
+    public void setQueryTypeCause(final QueryTypeEnum nextQueryTypeCause)
     {
-        this.queryTypeCause = queryTypeCause;
+        this.queryTypeCause = nextQueryTypeCause;
     }
     
 }

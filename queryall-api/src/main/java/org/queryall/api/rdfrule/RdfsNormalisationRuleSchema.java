@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RdfsNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfsNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RdfsNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfsNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RdfsNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfsNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RdfsNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfsNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = RdfsNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI rdfsruleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         RdfsNormalisationRuleSchema.setRdfsRuleTypeUri(f.createURI(baseUri, "RdfsValidatingRule"));
     }
     
+    /**
+     * The pre-instantiated schema object for RdfsNormalisationRuleSchema.
+     */
     public static final QueryAllSchema RDFS_NORMALISATION_RULE_SCHEMA = new RdfsNormalisationRuleSchema();
     
     /**
@@ -56,16 +59,16 @@ public class RdfsNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param rdfsruleTypeUri
+     * @param nextRdfsruleTypeUri
      *            the rdfsruleTypeUri to set
      */
-    public static void setRdfsRuleTypeUri(final URI rdfsruleTypeUri)
+    public static void setRdfsRuleTypeUri(final URI nextRdfsruleTypeUri)
     {
-        RdfsNormalisationRuleSchema.rdfsruleTypeUri = rdfsruleTypeUri;
+        RdfsNormalisationRuleSchema.rdfsruleTypeUri = nextRdfsruleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RdfsNormalisationRuleSchema()
     {
@@ -87,7 +90,7 @@ public class RdfsNormalisationRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -114,7 +117,7 @@ public class RdfsNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RdfsNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            RdfsNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
  */
 public class NormalisationRuleEnum extends QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(NormalisationRuleEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NormalisationRuleEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NormalisationRuleEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = NormalisationRuleEnum.log.isDebugEnabled();
+    private static final boolean TRACE = NormalisationRuleEnum.LOG.isTraceEnabled();
+    private static final boolean DEBUG = NormalisationRuleEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NormalisationRuleEnum.log.isInfoEnabled();
+    private static final boolean INFO = NormalisationRuleEnum.LOG.isInfoEnabled();
     
     protected static final Set<NormalisationRuleEnum> ALL_NORMALISATION_RULES = new HashSet<NormalisationRuleEnum>();
     
@@ -37,9 +37,9 @@ public class NormalisationRuleEnum extends QueryAllEnum
     {
         if(nextTypeUris.size() == 0)
         {
-            if(NormalisationRuleEnum._DEBUG)
+            if(NormalisationRuleEnum.DEBUG)
             {
-                NormalisationRuleEnum.log.debug("found an empty URI set for nextNormalisationRuleUris=" + nextTypeUris);
+                NormalisationRuleEnum.LOG.debug("found an empty URI set for nextNormalisationRuleUris=" + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -52,18 +52,18 @@ public class NormalisationRuleEnum extends QueryAllEnum
         {
             if(nextEnum.matchForTypeUris(nextTypeUris))
             {
-                if(NormalisationRuleEnum._DEBUG)
+                if(NormalisationRuleEnum.DEBUG)
                 {
-                    NormalisationRuleEnum.log.debug("found an matching URI set for nextNormalisationRuleUris="
+                    NormalisationRuleEnum.LOG.debug("found an matching URI set for nextNormalisationRuleUris="
                             + nextTypeUris);
                 }
                 results.add(nextEnum);
             }
         }
         
-        if(NormalisationRuleEnum._DEBUG)
+        if(NormalisationRuleEnum.DEBUG)
         {
-            NormalisationRuleEnum.log.debug("returning results.size()=" + results.size()
+            NormalisationRuleEnum.LOG.debug("returning results.size()=" + results.size()
                     + " for nextNormalisationRuleUris=" + nextTypeUris);
         }
         
@@ -77,9 +77,9 @@ public class NormalisationRuleEnum extends QueryAllEnum
     {
         if(NormalisationRuleEnum.valueOf(nextRdfRule.getName()) != null)
         {
-            if(NormalisationRuleEnum._DEBUG)
+            if(NormalisationRuleEnum.DEBUG)
             {
-                NormalisationRuleEnum.log.debug("Cannot register this normalisation rule again name="
+                NormalisationRuleEnum.LOG.debug("Cannot register this normalisation rule again name="
                         + nextRdfRule.getName());
             }
         }
@@ -118,7 +118,7 @@ public class NormalisationRuleEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new RdfRule enum using the given name, which must be unique
+     * Create a new RdfRule enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs

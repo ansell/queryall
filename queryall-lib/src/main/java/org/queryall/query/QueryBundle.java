@@ -34,10 +34,10 @@ public class QueryBundle
 {
     private static final Logger log = LoggerFactory.getLogger(QueryBundle.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryBundle.log.isTraceEnabled();
+    private static final boolean TRACE = QueryBundle.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryBundle.log.isDebugEnabled();
-    private static final boolean _INFO = QueryBundle.log.isInfoEnabled();
+    private static final boolean DEBUG = QueryBundle.log.isDebugEnabled();
+    private static final boolean INFO = QueryBundle.log.isInfoEnabled();
     
     // This query is specifically tailored for the provider with respect to the URI
     // (de)normalisation rules
@@ -71,7 +71,7 @@ public class QueryBundle
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERYBUNDLE.getBaseURI();
         
@@ -182,14 +182,9 @@ public class QueryBundle
     /**
      * @return the originalProvider
      */
-    public Provider getOriginalProvider()
-    {
-        return this.originalProvider;
-    }
-    
     public Provider getProvider()
     {
-        return this.getOriginalProvider();
+        return this.originalProvider;
     }
     
     /**
@@ -291,7 +286,7 @@ public class QueryBundle
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -323,7 +318,7 @@ public class QueryBundle
             
             con.add(queryBundleInstanceUri, QueryBundle.queryBundleQueryTypeUri, queryTypeUri, keyToUse);
             
-            final URI originalProviderUri = this.getOriginalProvider().getKey();
+            final URI originalProviderUri = this.getProvider().getKey();
             
             con.add(queryBundleInstanceUri, QueryBundle.queryBundleProviderUri, originalProviderUri, keyToUse);
             
@@ -363,10 +358,10 @@ public class QueryBundle
             
             // log.info("QueryBundle: About to add provider configuration RDF to the repository");
             
-            this.getOriginalProvider().toRdf(myRepository, modelVersion, keyToUse);
+            this.getProvider().toRdf(myRepository, modelVersion, keyToUse);
             
             for(final NormalisationRule nextRelevantRdfRule : RuleUtils.getSortedRulesByUris(this.getQueryallSettings()
-                    .getAllNormalisationRules(), this.getOriginalProvider().getNormalisationUris(),
+                    .getAllNormalisationRules(), this.getProvider().getNormalisationUris(),
                     SortOrder.LOWEST_ORDER_FIRST))
             {
                 nextRelevantRdfRule.toRdf(myRepository, modelVersion, keyToUse);
@@ -406,7 +401,7 @@ public class QueryBundle
             }
         }
         
-        if(QueryBundle._INFO)
+        if(QueryBundle.INFO)
         {
             QueryBundle.log.info("QueryBundle: toRdf returning false");
         }
@@ -432,13 +427,13 @@ public class QueryBundle
         // sb.append("query=" + this.getQuery() + "\n");
         // sb.append("staticRdfXmlString=" + this.getStaticRdfXmlString() + "\n");
         
-        if(this.getOriginalProvider() == null)
+        if(this.getProvider() == null)
         {
             sb.append("originalProvider=null\n");
         }
         else
         {
-            sb.append("originalProvider.getKey()=" + this.getOriginalProvider().getKey() + "\n");
+            sb.append("originalProvider.getKey()=" + this.getProvider().getKey() + "\n");
         }
         
         return sb.toString();

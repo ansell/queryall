@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlProcessorQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SparqlProcessorQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SparqlProcessorQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SparqlProcessorQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SparqlProcessorQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SparqlProcessorQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlProcessorQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = SparqlProcessorQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI sparqlProcessorQueryTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
         SparqlProcessorQueryTypeSchema.setSparqlProcessorQueryTypeUri(f.createURI(baseUri, "SparqlProcessorQuery"));
     }
     
+    /**
+     * A pre-instantiated schema object for SparqlProcessorQueryTypeSchema.
+     */
     public static final QueryAllSchema SPARQL_PROCESSOR_QUERY_TYPE_SCHEMA = new SparqlProcessorQueryTypeSchema();
     
     /**
@@ -65,7 +68,7 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SparqlProcessorQueryTypeSchema()
     {
@@ -111,7 +114,7 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SparqlProcessorQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            SparqlProcessorQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

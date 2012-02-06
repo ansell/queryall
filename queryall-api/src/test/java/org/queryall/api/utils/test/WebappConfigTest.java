@@ -20,6 +20,11 @@ import org.queryall.api.utils.WebappConfig;
  */
 public class WebappConfigTest
 {
+    /**
+     * NOTE: This property needs to be updated if any new properties are added
+     */
+    private static final int EXPECTED_CONFIG_SIZE = 114;
+    
     private ValueFactory testValueFactory;
     
     /**
@@ -38,6 +43,21 @@ public class WebappConfigTest
     public void tearDown() throws Exception
     {
         this.testValueFactory = null;
+    }
+    
+    @Test
+    public final void testAllEnumPropertiesNotNull()
+    {
+        Assert.assertEquals("EXPECTED_CONFIG_SIZE did not match the actual size. Did you add a property recently?",
+                WebappConfigTest.EXPECTED_CONFIG_SIZE, WebappConfig.values().length);
+        
+        for(final WebappConfig nextEnum : WebappConfig.values())
+        {
+            Assert.assertNotNull(nextEnum.getDefaultValue());
+            Assert.assertNotNull(nextEnum.getUri());
+            Assert.assertNotNull(nextEnum.getKey());
+            Assert.assertNotNull(nextEnum.getNamespace());
+        }
     }
     
     /**
@@ -186,6 +206,13 @@ public class WebappConfigTest
         Assert.assertTrue(WebappConfig.USER_AGENT.overwrite());
         Assert.assertTrue(WebappConfig.DEFAULT_SEPARATOR.overwrite());
         
+    }
+    
+    @Test
+    public final void testSize()
+    {
+        Assert.assertEquals("EXPECTED_CONFIG_SIZE did not match the actual size. Did you add a property recently?",
+                WebappConfigTest.EXPECTED_CONFIG_SIZE, WebappConfig.values().length);
     }
     
     /**

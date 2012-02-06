@@ -15,7 +15,7 @@ import org.queryall.api.provider.ProviderParser;
 public class HttpNoCommunicationProviderImplFactory implements ProviderFactory
 {
     /**
-     * Returns the enumeration from the enumeration that matches this factory
+     * Returns the enumeration from the enumeration that matches this factory.
      */
     @Override
     public ProviderEnum getEnum()
@@ -24,7 +24,7 @@ public class HttpNoCommunicationProviderImplFactory implements ProviderFactory
     }
     
     /**
-     * Returns the parser from the enumeration that matches this factory
+     * Returns the parser from the enumeration that matches this factory.
      */
     @Override
     public ProviderParser getParser()

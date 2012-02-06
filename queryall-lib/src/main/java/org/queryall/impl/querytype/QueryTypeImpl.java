@@ -29,6 +29,7 @@ import org.queryall.api.querytype.RdfOutputQueryType;
 import org.queryall.api.querytype.RdfOutputQueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.NamespaceMatch;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
@@ -44,10 +45,10 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         RdfOutputQueryType, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
-    private static final boolean _TRACE = QueryTypeImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = QueryTypeImpl.log.isDebugEnabled();
+    private static final boolean TRACE = QueryTypeImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = QueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryTypeImpl.log.isInfoEnabled();
+    private static final boolean INFO = QueryTypeImpl.log.isInfoEnabled();
     
     private boolean handleAllNamespaces = true;
     
@@ -120,7 +121,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
      */
     private Set<URI> semanticallyLinkedCustomQueries = new HashSet<URI>();
     
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     private String templateString = "";
     
@@ -153,7 +154,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(QueryTypeImpl._DEBUG)
+            if(QueryTypeImpl.DEBUG)
             {
                 QueryTypeImpl.log.debug("QueryType: nextStatement: " + nextStatement.toString());
             }
@@ -161,7 +162,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri()))
             {
-                if(QueryTypeImpl._TRACE)
+                if(QueryTypeImpl.TRACE)
                 {
                     QueryTypeImpl.log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
                 }
@@ -261,7 +262,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
-                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder(ProfileIncludeExclude.valueOf((URI)nextStatement.getObject()));
             }
             else
             {
@@ -271,7 +272,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         // this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
-        if(QueryTypeImpl._DEBUG)
+        if(QueryTypeImpl.DEBUG)
         {
             QueryTypeImpl.log.debug("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
@@ -659,7 +660,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -969,7 +970,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     }
     
     @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
@@ -1117,7 +1118,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -1135,7 +1136,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             final Literal inRobotsTxtLiteral = f.createLiteral(this.inRobotsTxt);
             final Literal isPageableLiteral = f.createLiteral(this.isPageable);
             final Literal isDummyQueryTypeLiteral = f.createLiteral(this.isDummyQueryType);
-            final URI profileIncludeExcludeOrderLiteral = this.profileIncludeExcludeOrder;
+            final URI profileIncludeExcludeOrderLiteral = this.profileIncludeExcludeOrder.getUri();
             
             final Literal outputRdfStringLiteral = f.createLiteral(this.outputRdfString);
             final Literal outputRdfFormatLiteral = f.createLiteral(this.outputRdfFormat);

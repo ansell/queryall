@@ -25,20 +25,20 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class ValidatingNamespaceEntrySchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(ValidatingNamespaceEntrySchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValidatingNamespaceEntrySchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ValidatingNamespaceEntrySchema.log.isTraceEnabled();
+    private static final boolean TRACE = ValidatingNamespaceEntrySchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ValidatingNamespaceEntrySchema.log.isDebugEnabled();
+    private static final boolean DEBUG = ValidatingNamespaceEntrySchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ValidatingNamespaceEntrySchema.log.isInfoEnabled();
+    private static final boolean INFO = ValidatingNamespaceEntrySchema.LOG.isInfoEnabled();
     
     private static URI validatingNamespaceTypeUri;
     private static URI namespaceValidationPossible;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         ValidatingNamespaceEntrySchema.setValidatingNamespaceTypeUri(f.createURI(
                 QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "ValidatingNamespace"));
@@ -46,6 +46,9 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
                 QueryAllNamespaces.NAMESPACEENTRY.getBaseURI(), "validationPossible"));
     }
     
+    /**
+     * A pre-instantiated schema object for ValidatingNamespaceEntrySchema.
+     */
     public static final QueryAllSchema VALIDATING_NAMESPACE_ENTRY_SCHEMA = new ValidatingNamespaceEntrySchema();
     
     /**
@@ -83,7 +86,7 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public ValidatingNamespaceEntrySchema()
     {
@@ -105,7 +108,7 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -136,7 +139,7 @@ public class ValidatingNamespaceEntrySchema extends QueryAllSchema
                 con.rollback();
             }
             
-            ValidatingNamespaceEntrySchema.log.error("RepositoryException: " + re.getMessage());
+            ValidatingNamespaceEntrySchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

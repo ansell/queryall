@@ -40,7 +40,7 @@ public interface InputQueryType extends QueryType
     
     /**
      * This method parses the inputs between the afterQueryCreation and afterQueryParsing
-     * normalisation stages
+     * normalisation stages.
      * 
      * @param inputParameterMap
      *            A map containing input parameter names as keys and their corresponding values as
@@ -50,7 +50,7 @@ public interface InputQueryType extends QueryType
     Map<String, Object> parseInputs(Map<String, Object> inputParameterMap);
     
     /**
-     * Resets the list of expected input parameters
+     * Resets the list of expected input parameters.
      * 
      * @return True if the collection of expected input parameters was reset and false otherwise.
      */

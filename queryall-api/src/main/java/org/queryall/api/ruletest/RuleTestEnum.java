@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory;
  */
 public class RuleTestEnum extends QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(RuleTestEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RuleTestEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RuleTestEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = RuleTestEnum.log.isDebugEnabled();
+    private static final boolean TRACE = RuleTestEnum.LOG.isTraceEnabled();
+    private static final boolean DEBUG = RuleTestEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RuleTestEnum.log.isInfoEnabled();
+    private static final boolean INFO = RuleTestEnum.LOG.isInfoEnabled();
     
     protected static final Set<RuleTestEnum> ALL_RULE_TESTS = new HashSet<RuleTestEnum>();
     
@@ -37,9 +37,9 @@ public class RuleTestEnum extends QueryAllEnum
     {
         if(nextTypeUris.size() == 0)
         {
-            if(RuleTestEnum._DEBUG)
+            if(RuleTestEnum.DEBUG)
             {
-                RuleTestEnum.log.debug("found an empty URI set for nextRuleTestUris=" + nextTypeUris);
+                RuleTestEnum.LOG.debug("found an empty URI set for nextRuleTestUris=" + nextTypeUris);
             }
             
             return Collections.emptyList();
@@ -51,18 +51,18 @@ public class RuleTestEnum extends QueryAllEnum
         {
             if(nextEnum.matchForTypeUris(nextTypeUris))
             {
-                if(RuleTestEnum._DEBUG)
+                if(RuleTestEnum.DEBUG)
                 {
-                    RuleTestEnum.log.debug("found an matching URI set for nextRuleTestUris=" + nextTypeUris);
+                    RuleTestEnum.LOG.debug("found an matching URI set for nextRuleTestUris=" + nextTypeUris);
                 }
                 
                 results.add(nextEnum);
             }
         }
         
-        if(RuleTestEnum._DEBUG)
+        if(RuleTestEnum.DEBUG)
         {
-            RuleTestEnum.log.debug("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
+            RuleTestEnum.LOG.debug("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
                     + nextTypeUris);
         }
         
@@ -76,9 +76,9 @@ public class RuleTestEnum extends QueryAllEnum
     {
         if(RuleTestEnum.valueOf(nextRuleTest.getName()) != null)
         {
-            if(RuleTestEnum._DEBUG)
+            if(RuleTestEnum.DEBUG)
             {
-                RuleTestEnum.log.debug("Cannot register this rule test again name=" + nextRuleTest.getName());
+                RuleTestEnum.LOG.debug("Cannot register this rule test again name=" + nextRuleTest.getName());
             }
         }
         else
@@ -116,7 +116,7 @@ public class RuleTestEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new RuleTest enum using the given name, which must be unique
+     * Create a new RuleTest enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs

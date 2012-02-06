@@ -74,30 +74,30 @@ public abstract class AbstractSpinNormalisationRuleTest extends AbstractNormalis
     }
     
     /**
-     * @param testRepository
+     * @param nextTestRepository
      *            the testRepository to set
      */
-    private void setTestRepository(final Repository testRepository)
+    private void setTestRepository(final Repository nextTestRepository)
     {
-        this.testRepository = testRepository;
+        this.testRepository = nextTestRepository;
     }
     
     /**
-     * @param testRepositoryConnection
+     * @param nextTestRepositoryConnection
      *            the testRepositoryConnection to set
      */
-    private void setTestRepositoryConnection(final RepositoryConnection testRepositoryConnection)
+    private void setTestRepositoryConnection(final RepositoryConnection nextTestRepositoryConnection)
     {
-        this.testRepositoryConnection = testRepositoryConnection;
+        this.testRepositoryConnection = nextTestRepositoryConnection;
     }
     
     /**
-     * @param testValueFactory
+     * @param nextTestValueFactory
      *            the testValueFactory to set
      */
-    private void setTestValueFactory(final ValueFactory testValueFactory)
+    private void setTestValueFactory(final ValueFactory nextTestValueFactory)
     {
-        this.testValueFactory = testValueFactory;
+        this.testValueFactory = nextTestValueFactory;
     }
     
     /**

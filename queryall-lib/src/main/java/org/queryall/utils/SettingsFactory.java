@@ -54,10 +54,14 @@ import org.slf4j.LoggerFactory;
 public class SettingsFactory
 {
     private static final Logger log = LoggerFactory.getLogger(SettingsFactory.class);
-    private static final boolean _TRACE = SettingsFactory.log.isTraceEnabled();
-    private static final boolean _DEBUG = SettingsFactory.log.isDebugEnabled();
-    private static final boolean _INFO = SettingsFactory.log.isInfoEnabled();
+    private static final boolean TRACE = SettingsFactory.log.isTraceEnabled();
+    private static final boolean DEBUG = SettingsFactory.log.isDebugEnabled();
+    private static final boolean INFO = SettingsFactory.log.isInfoEnabled();
     
+    /**
+     * The current version of the RDF configuration API that we support for pulling in and
+     * serialising settings.
+     */
     public static final int CONFIG_API_VERSION = 5;
     
     /**
@@ -72,9 +76,9 @@ public class SettingsFactory
     {
         final Map<URI, NamespaceEntry> results = RdfUtils.getNamespaceEntries(serverConfigurationRdf);
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addNamespaceEntries: found " + results.size() + " namespaces");
         }
         
         for(final URI nextNamespaceEntryUri : results.keySet())
@@ -97,9 +101,9 @@ public class SettingsFactory
     {
         final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(serverConfigurationRdf);
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addNormalisationRules: found " + results.size() + " normalisation rules");
         }
         
         for(final URI nextNormalisationRuleUri : results.keySet())
@@ -121,9 +125,9 @@ public class SettingsFactory
     {
         final Map<URI, Profile> results = RdfUtils.getProfiles(serverConfigurationRdf);
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addProfiles: found " + results.size() + " profiles");
         }
         
         for(final URI nextProfileUri : results.keySet())
@@ -145,9 +149,9 @@ public class SettingsFactory
     {
         final Map<URI, Provider> results = RdfUtils.getProviders(serverConfigurationRdf);
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addProviders: found " + results.size() + " providers");
         }
         
         for(final URI nextProviderUri : results.keySet())
@@ -169,9 +173,9 @@ public class SettingsFactory
     {
         final Map<URI, QueryType> results = RdfUtils.getQueryTypes(serverConfigurationRdf);
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addQueryTypes: found " + results.size() + " query types");
         }
         
         for(final URI nextQueryTypeUri : results.keySet())
@@ -193,9 +197,9 @@ public class SettingsFactory
     {
         final Map<URI, RuleTest> results = RdfUtils.getRuleTests(serverConfigurationRdf);
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
-            SettingsFactory.log.info("getAllNamespaceEntries: found " + results.size() + " namespaces");
+            SettingsFactory.log.info("addRuleTests: found " + results.size() + " rule tests");
         }
         
         for(final URI nextRuleTestUri : results.keySet())
@@ -210,30 +214,12 @@ public class SettingsFactory
     {
         final long currentTimestamp = System.currentTimeMillis();
         
-        // if(_DEBUG)
-        // {
-        // log.debug("configRefreshCheck: before check Settings.PERIODIC_CONFIGURATION_REFRESH="
-        // + getBooleanProperty("enablePeriodicConfigurationRefresh", true)
-        // + " Settings.PERIODIC_REFRESH_MILLISECONDS="
-        // + getLongProperty("periodicConfigurationMilliseconds", 60000L)
-        // + " currentTimestamp - initialisedTimestamp=" + (currentTimestamp - initialisedTimestamp)
-        // + " ");
-        // }
-        
-        // TODO: reenable this function
-        // if(tryToForceRefresh && !isManualRefreshAllowed())
-        // {
-        // log
-        // .error("configRefreshCheck: attempted to force refresh outside of manual refresh time and ability guidelines");
-        // return false;
-        // }
-        
         final boolean enablePeriodicConfigurationRefresh =
                 nextSettings.getBooleanProperty(WebappConfig.ENABLE_PERIODIC_CONFIGURATION_REFRESH);
         final long periodicConfigurationMilliseconds =
                 nextSettings.getLongProperty(WebappConfig.PERIODIC_CONFIGURATION_REFRESH_MILLISECONDS);
         
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
             SettingsFactory.log.debug("configRefreshCheck: enablePeriodicConfigurationRefresh="
                     + enablePeriodicConfigurationRefresh);
@@ -241,17 +227,23 @@ public class SettingsFactory
                     + periodicConfigurationMilliseconds);
         }
         
-        if(tryToForceRefresh || (enablePeriodicConfigurationRefresh
-        // TODO: reenable initialisedTimestamp
-        // && ((currentTimestamp - initialisedTimestamp) > periodicConfigurationMilliseconds)
-                ))
+        if(tryToForceRefresh
+                || (enablePeriodicConfigurationRefresh && ((currentTimestamp - nextSettings.getLastInitialised()) > periodicConfigurationMilliseconds)))
         {
             synchronized(nextSettings)
             {
-                // TODO: reenable this section
+                // TODO: HACK Should be retrieving the same base config location as the one which
+                // created this settings object originally
+                SettingsFactory.initialise(nextSettings, SettingsFactory.getDefaultBaseConfigLocationProperty(),
+                        SettingsFactory.getDefaultBaseConfigMimeFormatProperty(),
+                        SettingsFactory.getDefaultBaseConfigUriProperty());
+                
+                nextSettings.setLastInitialised(System.currentTimeMillis());
             }
+            
+            return true;
         }
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
             SettingsFactory.log.debug("configRefreshCheck: returning false");
         }
@@ -302,7 +294,7 @@ public class SettingsFactory
                     
                     final TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
                     
-                    if(SettingsFactory._DEBUG)
+                    if(SettingsFactory.DEBUG)
                     {
                         if(!tupleQueryResult.hasNext())
                         {
@@ -366,56 +358,23 @@ public class SettingsFactory
                 SettingsFactory.getDefaultBaseConfigUriProperty());
     };
     
+    /**
+     * Wrapper for the initialise method that uses the Settings class as the QueryAllConfiguration
+     * implementation
+     * 
+     * @param baseConfigLocation
+     * @param baseConfigMimeType
+     * @param baseConfigUri
+     * @return
+     */
     public static QueryAllConfiguration generateSettings(final String baseConfigLocation,
             final String baseConfigMimeType, final String baseConfigUri)
     {
-        Repository baseConfigurationRdf;
-        Repository webAppConfigurationRdf;
-        Repository serverConfigurationRdf;
-        try
-        {
-            baseConfigurationRdf =
-                    SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
-            
-            final URI realBaseConfigUri = baseConfigurationRdf.getValueFactory().createURI(baseConfigUri);
-            final Collection<Value> webappConfigLocations =
-                    SettingsFactory.getWebappConfigLocations(baseConfigurationRdf, realBaseConfigUri);
-            
-            final Collection<URI> webappConfigUris =
-                    SettingsFactory.getWebappConfigUris(baseConfigurationRdf, realBaseConfigUri);
-            
-            webAppConfigurationRdf =
-                    SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation,
-                            baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
-            
-            final QueryAllConfiguration result = new Settings();
-            
-            SettingsFactory.extractProperties(result, webAppConfigurationRdf, webappConfigUris);
-            
-            final Collection<String> configLocations =
-                    SettingsFactory.getConfigLocations(webAppConfigurationRdf, webappConfigUris);
-            final Collection<String> backupConfigLocations =
-                    SettingsFactory.getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
-            
-            serverConfigurationRdf = SettingsFactory.getServerConfigurationRdf(configLocations, backupConfigLocations);
-            
-            SettingsFactory.addNamespaceEntries(serverConfigurationRdf, result);
-            SettingsFactory.addNormalisationRules(serverConfigurationRdf, result);
-            SettingsFactory.addRuleTests(serverConfigurationRdf, result);
-            SettingsFactory.addProviders(serverConfigurationRdf, result);
-            SettingsFactory.addProfiles(serverConfigurationRdf, result);
-            SettingsFactory.addQueryTypes(serverConfigurationRdf, result);
-            
-            return result;
-        }
-        catch(final InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch(final OpenRDFException e)
-        {
-            throw new RuntimeException(e);
-        }
+        final QueryAllConfiguration result = new Settings();
+        
+        SettingsFactory.initialise(result, baseConfigLocation, baseConfigMimeType, baseConfigUri);
+        
+        return result;
     }
     
     public static Collection<String> getBackupConfigLocations(final Repository webAppConfigurationRdf,
@@ -449,12 +408,12 @@ public class SettingsFactory
     private static Repository getBaseConfigurationRdf(final String baseConfigLocation, final String baseConfigMimeType,
             final String baseConfigUri) throws java.lang.InterruptedException
     {
-        if(SettingsFactory._TRACE)
+        if(SettingsFactory.TRACE)
         {
             SettingsFactory.log.trace("getBaseConfigurationRdf: entering method");
         }
         
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
             SettingsFactory.log.debug("getBaseConfigurationRdf: constructing a new repository");
         }
@@ -469,7 +428,7 @@ public class SettingsFactory
             currentBaseConfigurationRepository = new SailRepository(new MemoryStore());
             currentBaseConfigurationRepository.initialize();
             
-            if(SettingsFactory._DEBUG)
+            if(SettingsFactory.DEBUG)
             {
                 SettingsFactory.log.debug("getBaseConfigurationRdf: temp repository initialised");
             }
@@ -489,14 +448,14 @@ public class SettingsFactory
             
             try
             {
-                if(SettingsFactory._INFO)
+                if(SettingsFactory.INFO)
                 {
                     SettingsFactory.log.info("getBaseConfigurationRdf: getting configuration from file: nextLocation="
                             + nextLocation + " nextInputStream=" + nextInputStream);
                 }
                 
                 myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                if(SettingsFactory._INFO)
+                if(SettingsFactory.INFO)
                 {
                     SettingsFactory.log
                             .info("getBaseConfigurationRdf: finished getting configuration from file: nextLocation="
@@ -547,19 +506,19 @@ public class SettingsFactory
                     "getBaseConfigurationRdf: failed to initialise the webapp configuration repository. Caught OpenRDFException");
         }
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
             final long end = System.currentTimeMillis();
             SettingsFactory.log.info(String.format("%s: timing=%10d", "getBaseConfigurationRdf", (end - start)));
             
         }
         
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
             SettingsFactory.log.debug("getBaseConfigurationRdf: finished parsing configuration files");
         }
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
             try
             {
@@ -574,7 +533,7 @@ public class SettingsFactory
             }
         }
         
-        if(SettingsFactory._TRACE)
+        if(SettingsFactory.TRACE)
         {
             try
             {
@@ -702,7 +661,7 @@ public class SettingsFactory
                         // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
                         final URL url = new URL(nextLocation);
                         
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log
                                     .info("getServerConfigurationRdf: getting configuration from URL: nextLocation="
@@ -711,7 +670,7 @@ public class SettingsFactory
                         
                         myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
                         
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log
                                     .info("getServerConfigurationRdf: finished getting configuration from URL: url="
@@ -720,7 +679,7 @@ public class SettingsFactory
                     }
                     else
                     {
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log.info("Settings: getting configuration from file: nextLocation="
                                     + nextLocation);
@@ -728,7 +687,7 @@ public class SettingsFactory
                         final InputStream nextInputStream = SettingsFactory.class.getResourceAsStream(nextLocation);
                         
                         myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log
                                     .info("Settings: finished getting configuration from file: nextLocation="
@@ -804,7 +763,7 @@ public class SettingsFactory
                             // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
                             final URL url = new URL(nextLocation);
                             
-                            if(SettingsFactory._INFO)
+                            if(SettingsFactory.INFO)
                             {
                                 SettingsFactory.log
                                         .info("getServerConfigurationRdf: getting backup configuration from URL: nextLocation="
@@ -813,7 +772,7 @@ public class SettingsFactory
                             
                             myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
                             
-                            if(SettingsFactory._INFO)
+                            if(SettingsFactory.INFO)
                             {
                                 SettingsFactory.log
                                         .info("getServerConfigurationRdf: finished getting backup configuration from URL: url="
@@ -822,7 +781,7 @@ public class SettingsFactory
                         }
                         else
                         {
-                            if(SettingsFactory._INFO)
+                            if(SettingsFactory.INFO)
                             {
                                 SettingsFactory.log
                                         .info("Settings: getting backup configuration from file: nextLocation="
@@ -832,7 +791,7 @@ public class SettingsFactory
                             
                             myRepositoryConnection.add(nextInputStream, baseURI,
                                     RDFFormat.forMIMEType(configMIMEFormat));
-                            if(SettingsFactory._INFO)
+                            if(SettingsFactory.INFO)
                             {
                                 SettingsFactory.log
                                         .info("Settings: finished getting backup configuration from file: nextLocation="
@@ -883,18 +842,18 @@ public class SettingsFactory
             }
         } // end if(backupNeeded)
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
             final long end = System.currentTimeMillis();
             SettingsFactory.log.info(String.format("%s: timing=%10d", "getServerConfigurationRdf", (end - start)));
             
         }
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
             SettingsFactory.log.debug("getServerConfigurationRdf: finished parsing configuration files");
         }
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
             try
             {
@@ -940,9 +899,9 @@ public class SettingsFactory
             final Collection<Value> webappConfigFiles, final Collection<URI> activeWebappConfigs)
         throws java.lang.InterruptedException
     {
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
-            if(SettingsFactory._TRACE)
+            if(SettingsFactory.TRACE)
             {
                 SettingsFactory.log.trace("getWebAppConfigurationRdf: entering");
             }
@@ -970,7 +929,7 @@ public class SettingsFactory
             
             finalRepositoryConnection = currentWebAppConfigurationRepository.getConnection();
             
-            if(SettingsFactory._DEBUG)
+            if(SettingsFactory.DEBUG)
             {
                 SettingsFactory.log.debug("getWebAppConfigurationRdf: temp repository initialised");
             }
@@ -981,7 +940,7 @@ public class SettingsFactory
             
             // final URI subjectConfigUri = f.createURI(baseURI);
             
-            if(SettingsFactory._DEBUG)
+            if(SettingsFactory.DEBUG)
             {
                 SettingsFactory.log.debug("webappConfigFiles.size()=" + webappConfigFiles.size());
                 SettingsFactory.log.debug("activeWebappConfigs.size()=" + activeWebappConfigs.size());
@@ -1008,7 +967,7 @@ public class SettingsFactory
                         // URL("http://quebec.bio2rdf.org/n3/provider:mirroredgeneid");
                         final URL url = new URL(nextLocation);
                         
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log
                                     .info("getWebAppConfigurationRdf: getting configuration from URL: nextLocation="
@@ -1019,7 +978,7 @@ public class SettingsFactory
                         myRepositoryConnection.add(url, nextConfigFile.stringValue(),
                                 RDFFormat.forMIMEType(configMIMEFormat));
                         
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log
                                     .info("getWebAppConfigurationRdf: finished getting configuration from URL: url="
@@ -1029,7 +988,7 @@ public class SettingsFactory
                     }
                     else
                     {
-                        if(SettingsFactory._INFO)
+                        if(SettingsFactory.INFO)
                         {
                             SettingsFactory.log
                                     .info("getWebAppConfigurationRdf: getting configuration from file: nextLocation="
@@ -1041,7 +1000,7 @@ public class SettingsFactory
                         {
                             myRepositoryConnection.add(nextInputStream, nextConfigFile.stringValue(),
                                     RDFFormat.forMIMEType(configMIMEFormat));
-                            if(SettingsFactory._INFO)
+                            if(SettingsFactory.INFO)
                             {
                                 SettingsFactory.log
                                         .info("getWebAppConfigurationRdf: finished getting configuration from file: nextLocation="
@@ -1132,19 +1091,19 @@ public class SettingsFactory
             }
         }
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
             final long end = System.currentTimeMillis();
             SettingsFactory.log.info(String.format("%s: timing=%10d", "getWebAppConfigurationRdf", (end - start)));
             
         }
         
-        if(SettingsFactory._DEBUG)
+        if(SettingsFactory.DEBUG)
         {
             SettingsFactory.log.debug("getWebAppConfigurationRdf: finished parsing configuration files");
         }
         
-        if(SettingsFactory._INFO)
+        if(SettingsFactory.INFO)
         {
             try
             {
@@ -1187,6 +1146,101 @@ public class SettingsFactory
         return results;
     }
     
+    public static void initialise(final QueryAllConfiguration nextSettings, final String baseConfigLocation,
+            final String baseConfigMimeType, final String baseConfigUri)
+    {
+        Repository baseConfigurationRdf;
+        Repository webAppConfigurationRdf;
+        Repository serverConfigurationRdf;
+        try
+        {
+            baseConfigurationRdf =
+                    SettingsFactory.getBaseConfigurationRdf(baseConfigLocation, baseConfigMimeType, baseConfigUri);
+            
+            final URI realBaseConfigUri = baseConfigurationRdf.getValueFactory().createURI(baseConfigUri);
+            final Collection<Value> webappConfigLocations =
+                    SettingsFactory.getWebappConfigLocations(baseConfigurationRdf, realBaseConfigUri);
+            
+            final Collection<URI> webappConfigUris =
+                    SettingsFactory.getWebappConfigUris(baseConfigurationRdf, realBaseConfigUri);
+            
+            webAppConfigurationRdf =
+                    SettingsFactory.getWebAppConfigurationRdf(baseConfigurationRdf, baseConfigLocation,
+                            baseConfigMimeType, baseConfigUri, webappConfigLocations, webappConfigUris);
+            
+            final Collection<String> configLocations =
+                    SettingsFactory.getConfigLocations(webAppConfigurationRdf, webappConfigUris);
+            final Collection<String> backupConfigLocations =
+                    SettingsFactory.getBackupConfigLocations(webAppConfigurationRdf, webappConfigUris);
+            
+            serverConfigurationRdf = SettingsFactory.getServerConfigurationRdf(configLocations, backupConfigLocations);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset properties on nextSettings");
+            }
+            
+            nextSettings.resetProperties();
+            SettingsFactory.extractProperties(nextSettings, webAppConfigurationRdf, webappConfigUris);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset namespace entries on nextSettings");
+            }
+            
+            nextSettings.resetNamespaceEntries();
+            SettingsFactory.addNamespaceEntries(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset query types on nextSettings");
+            }
+            
+            nextSettings.resetQueryTypes();
+            SettingsFactory.addQueryTypes(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset providers on nextSettings");
+            }
+            
+            nextSettings.resetProviders();
+            SettingsFactory.addProviders(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset normalisation rules on nextSettings");
+            }
+            
+            nextSettings.resetNormalisationRules();
+            SettingsFactory.addNormalisationRules(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset profiles on nextSettings");
+            }
+            
+            nextSettings.resetProfiles();
+            SettingsFactory.addProfiles(serverConfigurationRdf, nextSettings);
+            
+            if(SettingsFactory.INFO)
+            {
+                SettingsFactory.log.info("About to reset rule tests on nextSettings");
+            }
+            
+            nextSettings.resetRuleTests();
+            SettingsFactory.addRuleTests(serverConfigurationRdf, nextSettings);
+        }
+        catch(final InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+        catch(final OpenRDFException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+    
     /**
      * 
      */
@@ -1198,7 +1252,7 @@ public class SettingsFactory
     public Collection<Statement> getStatementProperties(final String key, final Collection<URI> webappConfigUris,
             final Repository webappConfig)
     {
-        if(SettingsFactory._TRACE)
+        if(SettingsFactory.TRACE)
         {
             SettingsFactory.log.trace("getStatementPropertiesFromConfig: key=" + key);
         }
@@ -1230,7 +1284,7 @@ public class SettingsFactory
     private Collection<Statement> getStatementProperties(final URI subjectUri, final URI propertyUri,
             final Repository nextRepository)
     {
-        if(SettingsFactory._TRACE)
+        if(SettingsFactory.TRACE)
         {
             SettingsFactory.log.trace("getStatementCollectionPropertiesFromConfig: subjectUri="
                     + subjectUri.stringValue() + " propertyUri=" + propertyUri.stringValue() + " nextRepository="

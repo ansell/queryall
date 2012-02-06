@@ -6,7 +6,7 @@ package org.queryall.exception;
 import org.queryall.api.namespace.NamespaceEntryEnum;
 
 /**
- * An exception that is thrown when an unknown NamespaceEntry is encountered
+ * An exception that is thrown when an unknown NamespaceEntry is encountered.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -81,12 +81,12 @@ public class UnsupportedNamespaceEntryException extends QueryAllException
     }
     
     /**
-     * @param namespaceEntryCause
+     * @param nextNamespaceEntryCause
      *            the namespaceEntryCause to set
      */
-    public void setNamespaceEntryCause(final NamespaceEntryEnum namespaceEntryCause)
+    public void setNamespaceEntryCause(final NamespaceEntryEnum nextNamespaceEntryCause)
     {
-        this.namespaceEntryCause = namespaceEntryCause;
+        this.namespaceEntryCause = nextNamespaceEntryCause;
     }
     
 }

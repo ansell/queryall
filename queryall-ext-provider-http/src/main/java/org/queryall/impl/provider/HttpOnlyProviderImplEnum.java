@@ -16,6 +16,9 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class HttpOnlyProviderImplEnum extends ProviderEnum
 {
+    /**
+     * A pre-instantiated instance of HttpOnlyProviderImplEnum.
+     */
     public static final ProviderEnum HTTP_ONLY_PROVIDER_IMPL_ENUM = new HttpOnlyProviderImplEnum();
     
     // static

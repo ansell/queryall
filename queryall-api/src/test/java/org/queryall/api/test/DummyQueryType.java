@@ -16,7 +16,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.repository.Repository;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.OutputQueryType;
@@ -25,12 +24,13 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.NamespaceMatch;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
  * Dummy class that implements the basic contracts for each of QueryType, InputQueryType,
- * ProcessorQueryType, and OutputQueryType
+ * ProcessorQueryType, and OutputQueryType.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  * 
@@ -43,7 +43,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     private String description = "";
     private URI key;
     private String title = "";
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private String outputString = "";
     private String processingTemplateString = "";
     private Collection<String> expectedInputParameters = new HashSet<String>();
@@ -364,7 +364,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.base.ProfilableInterface#getProfileIncludeExcludeOrder()
      */
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -487,7 +487,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     }
     
     /**
-     * Note: Defaults to true, or else every profile operation on this object would fail
+     * Note: Defaults to true, or else every profile operation on this object would fail.
      */
     @Override
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
@@ -638,9 +638,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.base.BaseQueryAllInterface#setCurationStatus(org.openrdf.model.URI)
      */
     @Override
-    public void setCurationStatus(final URI curationStatus)
+    public void setCurationStatus(final URI nextCurationStatus)
     {
-        this.curationStatus = curationStatus;
+        this.curationStatus = nextCurationStatus;
     }
     
     /*
@@ -649,9 +649,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.base.BaseQueryAllInterface#setDescription(java.lang.String)
      */
     @Override
-    public void setDescription(final String description)
+    public void setDescription(final String nextDescription)
     {
-        this.description = description;
+        this.description = nextDescription;
     }
     
     /*
@@ -660,9 +660,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setHandleAllNamespaces(boolean)
      */
     @Override
-    public void setHandleAllNamespaces(final boolean handleAllNamespaces)
+    public void setHandleAllNamespaces(final boolean nextHandleAllNamespaces)
     {
-        this.handleAllNamespaces = handleAllNamespaces;
+        this.handleAllNamespaces = nextHandleAllNamespaces;
     }
     
     /*
@@ -671,9 +671,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setIncludeDefaults(boolean)
      */
     @Override
-    public void setIncludeDefaults(final boolean includeDefaults)
+    public void setIncludeDefaults(final boolean nextIncludeDefaults)
     {
-        this.includeDefaults = includeDefaults;
+        this.includeDefaults = nextIncludeDefaults;
     }
     
     /*
@@ -682,9 +682,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setInRobotsTxt(boolean)
      */
     @Override
-    public void setInRobotsTxt(final boolean inRobotsTxt)
+    public void setInRobotsTxt(final boolean nextInRobotsTxt)
     {
-        this.inRobotsTxt = inRobotsTxt;
+        this.inRobotsTxt = nextInRobotsTxt;
     }
     
     /*
@@ -693,9 +693,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setIsDummyQueryType(boolean)
      */
     @Override
-    public void setIsDummyQueryType(final boolean isDummyQueryType)
+    public void setIsDummyQueryType(final boolean nextIsDummyQueryType)
     {
-        this.isDummyQueryType = isDummyQueryType;
+        this.isDummyQueryType = nextIsDummyQueryType;
     }
     
     /*
@@ -704,9 +704,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setIsNamespaceSpecific(boolean)
      */
     @Override
-    public void setIsNamespaceSpecific(final boolean isNamespaceSpecific)
+    public void setIsNamespaceSpecific(final boolean nextIsNamespaceSpecific)
     {
-        this.isNamespaceSpecific = isNamespaceSpecific;
+        this.isNamespaceSpecific = nextIsNamespaceSpecific;
     }
     
     /*
@@ -715,9 +715,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setIsPageable(boolean)
      */
     @Override
-    public void setIsPageable(final boolean isPageable)
+    public void setIsPageable(final boolean nextIsPageable)
     {
-        this.isPageable = isPageable;
+        this.isPageable = nextIsPageable;
     }
     
     /*
@@ -728,7 +728,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public void setKey(final String nextKey) throws IllegalArgumentException
     {
-        this.key = Constants.valueFactory.createURI(nextKey);
+        this.key = Constants.VALUE_FACTORY.createURI(nextKey);
     }
     
     /*
@@ -748,9 +748,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setNamespaceMatchMethod(NamespaceMatch)
      */
     @Override
-    public void setNamespaceMatchMethod(final NamespaceMatch namespaceMatchMethod)
+    public void setNamespaceMatchMethod(final NamespaceMatch nextNamespaceMatchMethod)
     {
-        this.namespaceMatchMethod = namespaceMatchMethod;
+        this.namespaceMatchMethod = nextNamespaceMatchMethod;
     }
     
     /*
@@ -759,9 +759,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.OutputQueryType#setOutputString(java.lang.String)
      */
     @Override
-    public void setOutputString(final String outputString)
+    public void setOutputString(final String nextOutputString)
     {
-        this.outputString = outputString;
+        this.outputString = nextOutputString;
     }
     
     /*
@@ -784,9 +784,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * .URI)
      */
     @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude nextProfileIncludeExcludeOrder)
     {
-        this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
+        this.profileIncludeExcludeOrder = nextProfileIncludeExcludeOrder;
     }
     
     /*
@@ -795,9 +795,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setQueryUriTemplateString(java.lang.String)
      */
     @Override
-    public void setQueryUriTemplateString(final String queryUriTemplateString)
+    public void setQueryUriTemplateString(final String nextQueryUriTemplateString)
     {
-        this.queryUriTemplateString = queryUriTemplateString;
+        this.queryUriTemplateString = nextQueryUriTemplateString;
     }
     
     /*
@@ -806,9 +806,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.querytype.QueryType#setStandardUriTemplateString(java.lang.String)
      */
     @Override
-    public void setStandardUriTemplateString(final String standardUriTemplateString)
+    public void setStandardUriTemplateString(final String nextStandardUriTemplateString)
     {
-        this.standardUriTemplateString = standardUriTemplateString;
+        this.standardUriTemplateString = nextStandardUriTemplateString;
     }
     
     /*
@@ -817,9 +817,9 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
      * @see org.queryall.api.base.BaseQueryAllInterface#setTitle(java.lang.String)
      */
     @Override
-    public void setTitle(final String title)
+    public void setTitle(final String nextTitle)
     {
-        this.title = title;
+        this.title = nextTitle;
     }
     
     /*
@@ -830,7 +830,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public String substituteQueryVariables(final Map<String, Object> processedQueryVariables)
     {
-        return (String)processedQueryVariables.get(Constants.QUERY);
+        return this.getProcessingTemplateString();
     }
     
     /*

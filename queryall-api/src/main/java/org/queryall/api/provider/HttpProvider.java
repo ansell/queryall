@@ -53,7 +53,7 @@ public interface HttpProvider extends Provider
     boolean isHttpGetUrl();
     
     /**
-     * Resets the endpoint URL list
+     * Resets the endpoint URL list.
      * 
      * @return True if the endpointUrl list was successfully reset, and false otherwise
      */

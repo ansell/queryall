@@ -8,7 +8,7 @@ import org.queryall.api.provider.Provider;
 
 /**
  * Test the DummyProvider interface is implemented according to the Provider contract using
- * AbstractProviderTest
+ * AbstractProviderTest.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  * 

@@ -23,19 +23,19 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class RegexInputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RegexInputQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RegexInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RegexInputQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RegexInputQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RegexInputQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RegexInputQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RegexInputQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = RegexInputQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI regexQueryTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
@@ -46,6 +46,9 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
     
     static URI queryInputRegex;
     
+    /**
+     * The pre-instantiated schema object for RegexInputQueryTypeSchema.
+     */
     public static final QueryAllSchema REGEX_INPUT_QUERY_TYPE_SCHEMA = new RegexInputQueryTypeSchema();
     
     /**
@@ -62,21 +65,21 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * @param queryInputRegex
+     * @param nextQueryInputRegex
      *            the queryInputRegex to set
      */
-    public static void setQueryInputRegex(final URI queryInputRegex)
+    public static void setQueryInputRegex(final URI nextQueryInputRegex)
     {
-        RegexInputQueryTypeSchema.queryInputRegex = queryInputRegex;
+        RegexInputQueryTypeSchema.queryInputRegex = nextQueryInputRegex;
     }
     
-    private static void setRegexQueryTypeUri(final URI regexQueryTypeUri)
+    private static void setRegexQueryTypeUri(final URI nextRegexQueryTypeUri)
     {
-        RegexInputQueryTypeSchema.regexQueryTypeUri = regexQueryTypeUri;
+        RegexInputQueryTypeSchema.regexQueryTypeUri = nextRegexQueryTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public RegexInputQueryTypeSchema()
     {
@@ -98,7 +101,7 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -132,7 +135,7 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            RegexInputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            RegexInputQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 public final class QueryTypeUtils
 {
     private static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
-    private static final boolean _TRACE = QueryTypeUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = QueryTypeUtils.log.isDebugEnabled();
+    private static final boolean TRACE = QueryTypeUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = QueryTypeUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryTypeUtils.log.isInfoEnabled();
+    private static final boolean INFO = QueryTypeUtils.log.isInfoEnabled();
     
     public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(
             final Map<String, String> queryParameters, final List<Profile> profileList,
@@ -35,11 +35,11 @@ public final class QueryTypeUtils
             final Map<URI, NamespaceEntry> allNamespaceEntries, final boolean recogniseImplicitQueryInclusions,
             final boolean includeNonProfileMatchedQueries)
     {
-        if(QueryTypeUtils._DEBUG)
+        if(QueryTypeUtils.DEBUG)
         {
             QueryTypeUtils.log.debug("profileList.size()=" + profileList.size());
             
-            if(QueryTypeUtils._TRACE)
+            if(QueryTypeUtils.TRACE)
             {
                 for(final Profile nextProfile : profileList)
                 {
@@ -65,7 +65,7 @@ public final class QueryTypeUtils
             
             if(nextInputQuery.matchesQueryParameters(queryParameters))
             {
-                if(QueryTypeUtils._TRACE)
+                if(QueryTypeUtils.TRACE)
                 {
                     QueryTypeUtils.log.trace("tentative, pre-profile-check match for" + " nextQuery.getKey()="
                             + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
@@ -73,7 +73,7 @@ public final class QueryTypeUtils
                 if(nextQuery.isUsedWithProfileList(profileList, recogniseImplicitQueryInclusions,
                         includeNonProfileMatchedQueries))
                 {
-                    if(QueryTypeUtils._DEBUG)
+                    if(QueryTypeUtils.DEBUG)
                     {
                         QueryTypeUtils.log.debug("profileList suitable for" + " nextQuery.getKey()="
                                 + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
@@ -107,7 +107,7 @@ public final class QueryTypeUtils
                     }
                     else
                     {
-                        if(QueryTypeUtils._DEBUG)
+                        if(QueryTypeUtils.DEBUG)
                         {
                             QueryTypeUtils.log
                                     .debug("query type is not namespace specific, creating an empty namespace parameter map");
@@ -118,7 +118,7 @@ public final class QueryTypeUtils
                     
                     results.put(nextQuery, actualNamespaceEntries);
                 }
-                else if(QueryTypeUtils._TRACE)
+                else if(QueryTypeUtils.TRACE)
                 {
                     QueryTypeUtils.log.trace("profileList not suitable for" + " nextQuery.getKey()="
                             + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
@@ -147,7 +147,7 @@ public final class QueryTypeUtils
                 {
                     if(namespacePrefixMap.containsKey(nextNamespaceParameterMatch))
                     {
-                        if(QueryTypeUtils._TRACE)
+                        if(QueryTypeUtils.TRACE)
                         {
                             QueryTypeUtils.log.trace("Found a namespace for nextNamespaceParameter="
                                     + nextNamespaceParameter + " nextNamespaceParameterMatch="

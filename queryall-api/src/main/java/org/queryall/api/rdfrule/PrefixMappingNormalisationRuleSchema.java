@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrefixMappingNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = PrefixMappingNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = PrefixMappingNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = PrefixMappingNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = PrefixMappingNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = PrefixMappingNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = PrefixMappingNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI simplePrefixMappingTypeUri;
     private static URI subjectMappingPredicateUri;
@@ -43,7 +43,7 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -59,6 +59,9 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
                 .createURI(baseUri, "objectMappingPredicate"));
     }
     
+    /**
+     * The pre-instantiated schema object for PrefixMappingNormalisationRuleSchema.
+     */
     public static final QueryAllSchema PREFIX_MAPPING_NORMALISATION_RULE_SCHEMA =
             new PrefixMappingNormalisationRuleSchema();
     
@@ -125,12 +128,12 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param simplePrefixMappingTypeUri
+     * @param nextSimplePrefixMappingTypeUri
      *            the simplePrefixMappingTypeUri to set
      */
-    public static void setSimplePrefixMappingTypeUri(final URI simplePrefixMappingTypeUri)
+    public static void setSimplePrefixMappingTypeUri(final URI nextSimplePrefixMappingTypeUri)
     {
-        PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri = simplePrefixMappingTypeUri;
+        PrefixMappingNormalisationRuleSchema.simplePrefixMappingTypeUri = nextSimplePrefixMappingTypeUri;
     }
     
     public static void setSubjectMappingPredicateUri(final URI nextMappingPredicateUri)
@@ -139,7 +142,7 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public PrefixMappingNormalisationRuleSchema()
     {
@@ -161,7 +164,7 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -189,7 +192,7 @@ public class PrefixMappingNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            PrefixMappingNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            PrefixMappingNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

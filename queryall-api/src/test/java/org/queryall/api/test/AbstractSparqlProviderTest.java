@@ -11,7 +11,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.SparqlProvider;
 
 /**
- * Abstract unit test for SparqlProvider API
+ * Abstract unit test for SparqlProvider API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -42,7 +42,7 @@ public abstract class AbstractSparqlProviderTest extends AbstractProviderTest
     /**
      * This method performs the following actions: - Creates new Providers for the Provider type
      * fields using multiple calls to getNewTestProvider - Create org.openrdf.model.URI instances
-     * for the test URIs - Add testTrue*'s using the relevant methods from the API
+     * for the test URIs - Add testTrue*'s using the relevant methods from the API.
      */
     @Override
     @Before
@@ -106,9 +106,9 @@ public abstract class AbstractSparqlProviderTest extends AbstractProviderTest
     @Test
     public void testSparqlProviderUseSparqlGraph()
     {
-        Assert.assertTrue(this.providerDoesUseSparqlGraphWithGraphUri.getUseSparqlGraph() == true);
-        Assert.assertTrue(this.providerDoesUseSparqlGraphWithoutGraphUri.getUseSparqlGraph() == true);
-        Assert.assertTrue(this.providerDoesNotUseSparqlGraphWithUri.getUseSparqlGraph() == false);
-        Assert.assertTrue(this.providerDoesNotUseSparqlGraphWithoutUri.getUseSparqlGraph() == false);
+        Assert.assertTrue(this.providerDoesUseSparqlGraphWithGraphUri.getUseSparqlGraph());
+        Assert.assertTrue(this.providerDoesUseSparqlGraphWithoutGraphUri.getUseSparqlGraph());
+        Assert.assertFalse(this.providerDoesNotUseSparqlGraphWithUri.getUseSparqlGraph());
+        Assert.assertFalse(this.providerDoesNotUseSparqlGraphWithoutUri.getUseSparqlGraph());
     }
 }

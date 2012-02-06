@@ -6,7 +6,7 @@ package org.queryall.exception;
 import org.queryall.api.provider.ProviderEnum;
 
 /**
- * An exception that is thrown when an unknown Provider is encountered
+ * An exception that is thrown when an unknown Provider is encountered.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -80,12 +80,12 @@ public class UnsupportedProviderException extends QueryAllException
     }
     
     /**
-     * @param providerCause
+     * @param nextProviderCause
      *            the providerCause to set
      */
-    public void setProviderCause(final ProviderEnum providerCause)
+    public void setProviderCause(final ProviderEnum nextProviderCause)
     {
-        this.providerCause = providerCause;
+        this.providerCause = nextProviderCause;
     }
     
 }

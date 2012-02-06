@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
 {
     private static final Logger log = LoggerFactory.getLogger(BaseQueryAllImpl.class);
-    private static final boolean _TRACE = BaseQueryAllImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = BaseQueryAllImpl.log.isDebugEnabled();
-    private static final boolean _INFO = BaseQueryAllImpl.log.isInfoEnabled();
+    private static final boolean TRACE = BaseQueryAllImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = BaseQueryAllImpl.log.isDebugEnabled();
+    private static final boolean INFO = BaseQueryAllImpl.log.isInfoEnabled();
     
     private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     private URI key = null;
@@ -265,11 +265,11 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(BaseQueryAllImpl._DEBUG)
+            if(BaseQueryAllImpl.DEBUG)
             {
                 BaseQueryAllImpl.log.debug("toRdf: contextKey=" + contextKey);
             }

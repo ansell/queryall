@@ -24,10 +24,10 @@ public class VoidUtility
 {
     private static final Logger log = LoggerFactory.getLogger(VoidUtility.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = VoidUtility.log.isTraceEnabled();
-    private static final boolean _DEBUG = VoidUtility.log.isDebugEnabled();
+    private static final boolean TRACE = VoidUtility.log.isTraceEnabled();
+    private static final boolean DEBUG = VoidUtility.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = VoidUtility.log.isInfoEnabled();
+    private static final boolean INFO = VoidUtility.log.isInfoEnabled();
     
     public static void testMethod(final Repository nextRepository) throws OpenRDFException
     {
@@ -88,7 +88,7 @@ public class VoidUtility
      */
     public void parseFromVoidRepository(final Repository nextRepository) throws OpenRDFException
     {
-        if(VoidUtility._DEBUG)
+        if(VoidUtility.DEBUG)
         {
             VoidUtility.log.debug("VoidUtility.parseFromVoidRepository: entering method");
             // VoidUtility.log.debug(nextRepository);
@@ -143,7 +143,7 @@ public class VoidUtility
                 //
                 // for(Statement nextStatement : allStatements)
                 // {
-                // if(VoidUtility._DEBUG)
+                // if(VoidUtility.DEBUG)
                 // {
                 // VoidUtility.log
                 // .debug("VoidUtility.parseFromVoidRepository: found statement: nextStatement="
@@ -157,7 +157,7 @@ public class VoidUtility
                 {
                     final Statement nextStatement = graphQueryResult.next();
                     
-                    if(VoidUtility._DEBUG)
+                    if(VoidUtility.DEBUG)
                     {
                         VoidUtility.log.debug("VoidUtility.parseFromVoidRepository: found statement: nextStatement="
                                 + nextStatement);

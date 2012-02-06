@@ -26,19 +26,19 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class TransformingRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(TransformingRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TransformingRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = TransformingRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = TransformingRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = TransformingRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = TransformingRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = TransformingRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = TransformingRuleSchema.LOG.isInfoEnabled();
     
     private static URI transformingRuleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -46,6 +46,9 @@ public class TransformingRuleSchema extends QueryAllSchema
         
     }
     
+    /**
+     * A pre-instantiated schema object for TransformingRuleSchema.
+     */
     public static final QueryAllSchema TRANSFORMING_RULE_SCHEMA = new TransformingRuleSchema();
     
     /**
@@ -57,16 +60,16 @@ public class TransformingRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param transformingRuleTypeUri
+     * @param nextTransformingRuleTypeUri
      *            the normalisationRuleTypeUri to set
      */
-    public static void setTransformingRuleTypeUri(final URI transformingRuleTypeUri)
+    public static void setTransformingRuleTypeUri(final URI nextTransformingRuleTypeUri)
     {
-        TransformingRuleSchema.transformingRuleTypeUri = transformingRuleTypeUri;
+        TransformingRuleSchema.transformingRuleTypeUri = nextTransformingRuleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public TransformingRuleSchema()
     {
@@ -88,7 +91,7 @@ public class TransformingRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -116,7 +119,7 @@ public class TransformingRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            TransformingRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            TransformingRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

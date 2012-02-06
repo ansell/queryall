@@ -172,7 +172,7 @@ public abstract class AbstractSparqlConstructRuleTest extends AbstractSparqlNorm
     }
     
     /**
-     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
+     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException

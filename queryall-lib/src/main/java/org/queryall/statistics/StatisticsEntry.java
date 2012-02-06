@@ -33,10 +33,10 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class);
     @SuppressWarnings("unused")
-    private static final boolean _INFO = StatisticsEntry.log.isInfoEnabled();
-    private static final boolean _DEBUG = StatisticsEntry.log.isDebugEnabled();
+    private static final boolean INFO = StatisticsEntry.log.isInfoEnabled();
+    private static final boolean DEBUG = StatisticsEntry.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = StatisticsEntry.log.isTraceEnabled();
+    private static final boolean TRACE = StatisticsEntry.log.isTraceEnabled();
     
     public static final int IMPLEMENTED_STATISTICS_VERSION = 1;
     
@@ -77,7 +77,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.STATISTICS.getBaseURI();
         
@@ -715,7 +715,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
          * 
          *                             sparqlInsertQuery += " { " + insertTriplesContent + " } ";
          * 
-         *                             if(StatisticsEntry._DEBUG) {
+         *                             if(StatisticsEntry.DEBUG) {
          *                             StatisticsEntry.log.debug("StatisticsEntry: sparqlInsertQuery="
          *                             + sparqlInsertQuery); }
          * 
@@ -730,7 +730,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
          *                             .equals(HttpProviderSchema.getProviderHttpPostUrl())) { final
          *                             String postInformation = this.toPostArray();
          * 
-         *                             if(StatisticsEntry._DEBUG) {
+         *                             if(StatisticsEntry.DEBUG) {
          *                             StatisticsEntry.log.debug("StatisticsEntry: postInformation="
          *                             + postInformation); }
          * 
@@ -1239,7 +1239,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
         {
             connection = myRepository.getConnection();
             
-            final ValueFactory f = Constants.valueFactory;
+            final ValueFactory f = Constants.VALUE_FACTORY;
             
             if((contextUris == null))
             {

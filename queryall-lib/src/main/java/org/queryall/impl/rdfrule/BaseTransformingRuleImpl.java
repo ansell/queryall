@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements TransformingRule
 {
     private static final Logger log = LoggerFactory.getLogger(BaseTransformingRuleImpl.class);
-    private static final boolean _TRACE = BaseTransformingRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = BaseTransformingRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = BaseTransformingRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = BaseTransformingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = BaseTransformingRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = BaseTransformingRuleImpl.log.isInfoEnabled();
     
     /**
      * 
@@ -55,7 +55,7 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(TransformingRuleSchema.getTransformingRuleTypeUri()))
             {
-                if(BaseTransformingRuleImpl._DEBUG)
+                if(BaseTransformingRuleImpl.DEBUG)
                 {
                     BaseTransformingRuleImpl.log.debug("Found transforming rule schema type URI");
                 }
@@ -81,7 +81,7 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
     {
         if(!this.validInStage(stage))
         {
-            if(BaseTransformingRuleImpl._TRACE)
+            if(BaseTransformingRuleImpl.TRACE)
             {
                 BaseTransformingRuleImpl.log
                         .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
@@ -93,7 +93,7 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
         
         if(!this.usedInStage(stage))
         {
-            if(BaseTransformingRuleImpl._DEBUG)
+            if(BaseTransformingRuleImpl.DEBUG)
             {
                 BaseTransformingRuleImpl.log
                         .debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="

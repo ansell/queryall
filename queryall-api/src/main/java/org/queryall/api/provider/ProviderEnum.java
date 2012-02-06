@@ -24,31 +24,31 @@ import org.slf4j.LoggerFactory;
  */
 public class ProviderEnum extends QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(ProviderEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProviderEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProviderEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProviderEnum.log.isDebugEnabled();
+    private static final boolean TRACE = ProviderEnum.LOG.isTraceEnabled();
+    private static final boolean DEBUG = ProviderEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProviderEnum.log.isInfoEnabled();
+    private static final boolean INFO = ProviderEnum.LOG.isInfoEnabled();
     
     protected static final Set<ProviderEnum> ALL_PROVIDERS = new HashSet<ProviderEnum>();
     
-    public final static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
+    public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
         if(nextTypeUris.size() == 0)
         {
-            if(ProviderEnum._DEBUG)
+            if(ProviderEnum.DEBUG)
             {
-                ProviderEnum.log.debug("found an empty URI set for nextProviderUris=" + nextTypeUris);
+                ProviderEnum.LOG.debug("found an empty URI set for nextProviderUris=" + nextTypeUris);
             }
             return Collections.emptyList();
         }
         else
         {
-            if(ProviderEnum._DEBUG)
+            if(ProviderEnum.DEBUG)
             {
-                ProviderEnum.log.debug("found a URI set for nextProviderUris.size()=" + nextTypeUris.size());
-                ProviderEnum.log.debug("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
+                ProviderEnum.LOG.debug("found a URI set for nextProviderUris.size()=" + nextTypeUris.size());
+                ProviderEnum.LOG.debug("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
             }
         }
         
@@ -58,17 +58,17 @@ public class ProviderEnum extends QueryAllEnum
         {
             if(nextEnum.matchForTypeUris(nextTypeUris))
             {
-                if(ProviderEnum._DEBUG)
+                if(ProviderEnum.DEBUG)
                 {
-                    ProviderEnum.log.debug("found an matching URI set for nextProviderUris=" + nextTypeUris);
+                    ProviderEnum.LOG.debug("found an matching URI set for nextProviderUris=" + nextTypeUris);
                 }
                 results.add(nextEnum);
             }
         }
         
-        if(ProviderEnum._DEBUG)
+        if(ProviderEnum.DEBUG)
         {
-            ProviderEnum.log.debug("returning results.size()=" + results.size() + " for nextProviderUris="
+            ProviderEnum.LOG.debug("returning results.size()=" + results.size() + " for nextProviderUris="
                     + nextTypeUris);
         }
         
@@ -82,9 +82,9 @@ public class ProviderEnum extends QueryAllEnum
     {
         if(ProviderEnum.valueOf(nextProvider.getName()) != null)
         {
-            if(ProviderEnum._DEBUG)
+            if(ProviderEnum.DEBUG)
             {
-                ProviderEnum.log.debug("Cannot register this provider again name=" + nextProvider.getName());
+                ProviderEnum.LOG.debug("Cannot register this provider again name=" + nextProvider.getName());
             }
         }
         else
@@ -122,7 +122,7 @@ public class ProviderEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new Provider enum using the given name, which must be unique
+     * Create a new Provider enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs
@@ -135,7 +135,7 @@ public class ProviderEnum extends QueryAllEnum
     
     /**
      * For Providers, we require that all of the given URIs exactly match the declared type URIs, to
-     * prevent basic HTTP Providers from being parsed as any of the specialised HTTP Providers
+     * prevent basic HTTP Providers from being parsed as any of the specialised HTTP Providers.
      */
     @Override
     protected boolean matchForTypeUris(final Set<URI> nextTypeURIs)

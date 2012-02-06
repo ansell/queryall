@@ -26,19 +26,19 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class ValidatingRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(ValidatingRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ValidatingRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ValidatingRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = ValidatingRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ValidatingRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = ValidatingRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ValidatingRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = ValidatingRuleSchema.LOG.isInfoEnabled();
     
     private static URI validatingRuleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -46,6 +46,9 @@ public class ValidatingRuleSchema extends QueryAllSchema
         
     }
     
+    /**
+     * A pre-instantiated schema object for ValidatingRuleSchema.
+     */
     public static final QueryAllSchema VALIDATING_RULE_SCHEMA = new ValidatingRuleSchema();
     
     /**
@@ -57,16 +60,16 @@ public class ValidatingRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param validatingRuleTypeUri
+     * @param nextValidatingRuleTypeUri
      *            the normalisationRuleTypeUri to set
      */
-    public static void setValidatingRuleTypeUri(final URI validatingRuleTypeUri)
+    public static void setValidatingRuleTypeUri(final URI nextValidatingRuleTypeUri)
     {
-        ValidatingRuleSchema.validatingRuleTypeUri = validatingRuleTypeUri;
+        ValidatingRuleSchema.validatingRuleTypeUri = nextValidatingRuleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public ValidatingRuleSchema()
     {
@@ -88,7 +91,7 @@ public class ValidatingRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -116,7 +119,7 @@ public class ValidatingRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            ValidatingRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            ValidatingRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

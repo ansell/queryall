@@ -20,10 +20,10 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
 {
     private static final Logger log = LoggerFactory.getLogger(PrefixMappingNormalisationRuleImplEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = PrefixMappingNormalisationRuleImplEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = PrefixMappingNormalisationRuleImplEnum.log.isDebugEnabled();
+    private static final boolean TRACE = PrefixMappingNormalisationRuleImplEnum.log.isTraceEnabled();
+    private static final boolean DEBUG = PrefixMappingNormalisationRuleImplEnum.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = PrefixMappingNormalisationRuleImplEnum.log.isInfoEnabled();
+    private static final boolean INFO = PrefixMappingNormalisationRuleImplEnum.log.isInfoEnabled();
     
     public static final NormalisationRuleEnum SIMPLE_PREFIX_MAPPING_NORMALISATION_RULE_IMPL_ENUM =
             new PrefixMappingNormalisationRuleImplEnum();
@@ -37,7 +37,7 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
     {
         this(PrefixMappingNormalisationRuleImpl.class.getName(), PrefixMappingNormalisationRuleImpl.myTypes());
         
-        if(PrefixMappingNormalisationRuleImplEnum._DEBUG)
+        if(PrefixMappingNormalisationRuleImplEnum.DEBUG)
         {
             PrefixMappingNormalisationRuleImplEnum.log.debug("PrefixMappingNormalisationRuleImplEnum() registered");
         }
@@ -51,7 +51,7 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
     {
         super(nextName, nextTypeURIs);
         
-        if(PrefixMappingNormalisationRuleImplEnum._DEBUG)
+        if(PrefixMappingNormalisationRuleImplEnum.DEBUG)
         {
             PrefixMappingNormalisationRuleImplEnum.log
                     .debug("PrefixMappingNormalisationRuleImplEnum(String, List<URI>) registered");

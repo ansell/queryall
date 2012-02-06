@@ -20,10 +20,10 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
 {
     private static final Logger log = LoggerFactory.getLogger(NoCommunicationProviderImplEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NoCommunicationProviderImplEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = NoCommunicationProviderImplEnum.log.isDebugEnabled();
+    private static final boolean TRACE = NoCommunicationProviderImplEnum.log.isTraceEnabled();
+    private static final boolean DEBUG = NoCommunicationProviderImplEnum.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NoCommunicationProviderImplEnum.log.isInfoEnabled();
+    private static final boolean INFO = NoCommunicationProviderImplEnum.log.isInfoEnabled();
     
     public static final ProviderEnum NO_COMMUNICATION_PROVIDER_IMPL_ENUM = new NoCommunicationProviderImplEnum();
     
@@ -36,7 +36,7 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     {
         this(NoCommunicationProviderImpl.class.getName(), NoCommunicationProviderImpl.noCommunicationTypes());
         
-        if(NoCommunicationProviderImplEnum._DEBUG)
+        if(NoCommunicationProviderImplEnum.DEBUG)
         {
             NoCommunicationProviderImplEnum.log.debug("NoCommunicationProviderImplEnum() registered");
         }
@@ -50,7 +50,7 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     {
         super(nextName, nextTypeURIs);
         
-        if(NoCommunicationProviderImplEnum._DEBUG)
+        if(NoCommunicationProviderImplEnum.DEBUG)
         {
             NoCommunicationProviderImplEnum.log.debug("NoCommunicationProviderImplEnum(String, List<URI>) registered");
         }

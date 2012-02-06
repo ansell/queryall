@@ -34,9 +34,9 @@ public class ProfilesServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = 3461270431775779321L;
     public static final Logger log = LoggerFactory.getLogger(ProfilesServlet.class);
-    public static final boolean _TRACE = ProfilesServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ProfilesServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ProfilesServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ProfilesServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ProfilesServlet.log.isDebugEnabled();
+    public static final boolean INFO = ProfilesServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,

@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
 public class VelocityHelper
 {
     private static final Logger log = LoggerFactory.getLogger(VelocityHelper.class);
-    private static final boolean _TRACE = VelocityHelper.log.isTraceEnabled();
+    private static final boolean TRACE = VelocityHelper.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = VelocityHelper.log.isDebugEnabled();
+    private static final boolean DEBUG = VelocityHelper.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = VelocityHelper.log.isInfoEnabled();
+    private static final boolean INFO = VelocityHelper.log.isInfoEnabled();
     
     public static VelocityEngine createVelocityEngine()
     {
-        if(VelocityHelper._TRACE)
+        if(VelocityHelper.TRACE)
         {
             VelocityHelper.log.trace("VelocityHelper.createVelocityEngine: entering...");
         }
@@ -57,14 +57,14 @@ public class VelocityHelper
                     "org.apache.velocity.app.event.implement.EscapeHtmlReference");
             engineProperties.setProperty("eventhandler.escape.html.match", "/xmlEncoded.*/");
             
-            if(VelocityHelper._TRACE)
+            if(VelocityHelper.TRACE)
             {
                 VelocityHelper.log.trace("VelocityHelper.createVelocityEngine: about to create velocity engine");
             }
             
             result = new VelocityEngine(engineProperties);
             
-            if(VelocityHelper._TRACE)
+            if(VelocityHelper.TRACE)
             {
                 VelocityHelper.log.trace("VelocityHelper.createVelocityEngine: created basic engine");
             }
@@ -87,12 +87,12 @@ public class VelocityHelper
     {
         try
         {
-            if(VelocityHelper._TRACE)
+            if(VelocityHelper.TRACE)
             {
                 VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to get velocity engine");
             }
             
-            if(VelocityHelper._TRACE)
+            if(VelocityHelper.TRACE)
             {
                 VelocityHelper.log.trace("VelocityHelper.renderXHTML: about to mergeTemplate");
             }

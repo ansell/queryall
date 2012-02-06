@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class OwlNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(OwlNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OwlNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = OwlNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = OwlNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = OwlNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = OwlNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = OwlNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = OwlNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI owlruleTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
         OwlNormalisationRuleSchema.setOwlRuleTypeUri(f.createURI(baseUri, "OwlValidatingRule"));
     }
     
+    /**
+     * A pre-instantiated schema object for OwlNormalisationRuleSchema.
+     */
     public static final QueryAllSchema OWL_NORMALISATION_RULE_SCHEMA = new OwlNormalisationRuleSchema();
     
     /**
@@ -56,16 +59,16 @@ public class OwlNormalisationRuleSchema extends QueryAllSchema
     }
     
     /**
-     * @param owlruleTypeUri
+     * @param nextOwlruleTypeUri
      *            the owlruleTypeUri to set
      */
-    public static void setOwlRuleTypeUri(final URI owlruleTypeUri)
+    public static void setOwlRuleTypeUri(final URI nextOwlruleTypeUri)
     {
-        OwlNormalisationRuleSchema.owlruleTypeUri = owlruleTypeUri;
+        OwlNormalisationRuleSchema.owlruleTypeUri = nextOwlruleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public OwlNormalisationRuleSchema()
     {
@@ -87,7 +90,7 @@ public class OwlNormalisationRuleSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -114,7 +117,7 @@ public class OwlNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            OwlNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            OwlNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

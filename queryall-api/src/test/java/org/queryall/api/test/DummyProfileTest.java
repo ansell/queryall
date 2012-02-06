@@ -7,7 +7,7 @@ import org.queryall.api.profile.Profile;
 
 /**
  * Test the DummyProfile interface is implemented according to the Profile contract using
- * AbstractProfileTest
+ * AbstractProfileTest.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  * 

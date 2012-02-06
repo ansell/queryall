@@ -86,7 +86,7 @@ public class PropertyUtilsTest
     }
     
     /**
-     * Checks that the Property Utils bundle has not been changed without an explicit update here
+     * Checks that the Property Utils bundle has not been changed without an explicit update here.
      */
     @Test
     public final void testPropertyUtilsBundle()

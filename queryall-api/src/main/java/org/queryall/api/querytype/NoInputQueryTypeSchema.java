@@ -26,25 +26,28 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class NoInputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(NoInputQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NoInputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NoInputQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = NoInputQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = NoInputQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = NoInputQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NoInputQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = NoInputQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI noInputQueryTypeUri;
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
         NoInputQueryTypeSchema.setNoInputQueryTypeUri(f.createURI(baseUri, "NoInputQuery"));
     }
     
+    /**
+     * A pre-instantiated schema object for NoInputQueryTypeSchema.
+     */
     public static final QueryAllSchema RDF_INPUT_QUERY_TYPE_SCHEMA = new NoInputQueryTypeSchema();
     
     /**
@@ -65,7 +68,7 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public NoInputQueryTypeSchema()
     {
@@ -109,7 +112,7 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            NoInputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            NoInputQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

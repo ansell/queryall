@@ -16,21 +16,28 @@ import org.queryall.api.querytype.QueryTypeSchema;
  */
 public enum NamespaceMatch
 {
+    /**
+     * Specifies that at least one namespace in the given set needs to match to be successful.
+     */
     ANY_MATCHED(QueryTypeSchema.getQueryNamespaceMatchAny()),
     
+    /**
+     * Specifies that all namespaces in the given set need to match to be successful.
+     */
     ALL_MATCHED(QueryTypeSchema.getQueryNamespaceMatchAll());
     
     /**
+     * FIXME: Synchronise this method with ProviderUtils.getProvidersForNamespaceUris.
+     * 
      * @param namespacesToCheck
      * @param namespacesToHandle
      *            TODO
      * @param namespaceMatchMethod
      *            TODO
      * @return
-     * @throws RuntimeException
      */
     public static boolean matchNamespaces(final Map<String, Collection<URI>> namespacesToCheck,
-            final Set<URI> namespacesToHandle, final NamespaceMatch namespaceMatchMethod) throws RuntimeException
+            final Set<URI> namespacesToHandle, final NamespaceMatch namespaceMatchMethod)
     {
         // Start off presuming that anyMatched is false so any matches will flip it to true
         boolean anyMatched = false;
@@ -131,9 +138,9 @@ public enum NamespaceMatch
     
     private URI namespaceMatchUri = QueryTypeSchema.getQueryNamespaceMatchAny();
     
-    NamespaceMatch(final URI namespaceMatchUri)
+    NamespaceMatch(final URI nextNamespaceMatchUri)
     {
-        this.namespaceMatchUri = namespaceMatchUri;
+        this.namespaceMatchUri = nextNamespaceMatchUri;
     }
     
     /**

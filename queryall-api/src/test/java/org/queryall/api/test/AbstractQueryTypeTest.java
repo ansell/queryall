@@ -20,7 +20,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.utils.NamespaceMatch;
 
 /**
- * Abstract unit test for QueryType API
+ * Abstract unit test for QueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -81,7 +81,7 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the QueryType implementation
      */
@@ -374,7 +374,7 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
      * {@link org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Collection)}
      * .
      * 
-     * This test requires the namespaces to be specifically declared for the test to succeed
+     * This test requires the namespaces to be specifically declared for the test to succeed.
      */
     @Test
     public void testHandlesNamespacesSpecifically()
@@ -660,7 +660,8 @@ public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeT
      * Test method for
      * {@link org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Collection)} .
      * 
-     * This test does not require the namespaces to be specifically declared for the test to succeed
+     * This test does not require the namespaces to be specifically declared for the test to
+     * succeed.
      */
     @Test
     public void testHandlesNamespaceUris()

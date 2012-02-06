@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 
 public abstract class QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QueryAllEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryAllEnum.log.isTraceEnabled();
+    private static final boolean TRACE = QueryAllEnum.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryAllEnum.log.isDebugEnabled();
+    private static final boolean DEBUG = QueryAllEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryAllEnum.log.isInfoEnabled();
+    private static final boolean INFO = QueryAllEnum.LOG.isInfoEnabled();
     
     private Set<URI> typeURIs;
     private String name;
@@ -155,27 +155,27 @@ public abstract class QueryAllEnum
     /**
      * The name can only be set using the constructor.
      * 
-     * @param name
+     * @param nextName
      *            the name to set
      */
-    protected final void setName(final String name)
+    protected final void setName(final String nextName)
     {
-        this.name = name;
+        this.name = nextName;
     }
     
     /**
      * The type can only be set using the constructor.
      * 
-     * @param typeURIs
+     * @param nextTypeURIs
      *            the typeURIs to set
      */
-    protected final void setTypeURIs(final Set<URI> typeURIs)
+    protected final void setTypeURIs(final Set<URI> nextTypeURIs)
     {
-        this.typeURIs = typeURIs;
+        this.typeURIs = nextTypeURIs;
     }
     
     /**
-     * Returns a string including the name and the list of type URIs
+     * Returns a string including the name and the list of type URIs.
      */
     @Override
     public String toString()

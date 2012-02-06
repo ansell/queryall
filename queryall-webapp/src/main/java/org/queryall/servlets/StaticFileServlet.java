@@ -32,9 +32,9 @@ public class StaticFileServlet extends HttpServlet
     private static final int BUFSIZE = 2048;
     
     public static final Logger log = LoggerFactory.getLogger(StaticFileServlet.class);
-    public static final boolean _TRACE = StaticFileServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = StaticFileServlet.log.isDebugEnabled();
-    public static final boolean _INFO = StaticFileServlet.log.isInfoEnabled();
+    public static final boolean TRACE = StaticFileServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = StaticFileServlet.log.isDebugEnabled();
+    public static final boolean INFO = StaticFileServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -46,7 +46,7 @@ public class StaticFileServlet extends HttpServlet
         final String filename =
                 "/static/" + (String)request.getAttribute("org.queryall.servlets.StaticFileServlet.filename");
         
-        if(StaticFileServlet._DEBUG)
+        if(StaticFileServlet.DEBUG)
         {
             StaticFileServlet.log.debug("filename=" + filename);
         }
@@ -65,7 +65,7 @@ public class StaticFileServlet extends HttpServlet
                                 + filename);
                 throw new ServletException("Could not find the requested static resource");
             }
-            else if(StaticFileServlet._DEBUG)
+            else if(StaticFileServlet.DEBUG)
             {
                 StaticFileServlet.log.debug("fileResource.toString()=" + fileResource.toString());
                 StaticFileServlet.log.debug("fileResource.toURI()=" + fileResource.toURI());
@@ -81,7 +81,7 @@ public class StaticFileServlet extends HttpServlet
                 final ServletContext context = this.getServletConfig().getServletContext();
                 final String mimetype = context.getMimeType(filename);
                 
-                if(StaticFileServlet._DEBUG)
+                if(StaticFileServlet.DEBUG)
                 {
                     StaticFileServlet.log.debug("this.getClass().getResource(filename).toURI()="
                             + this.getClass().getResource(filename).toURI().toString());

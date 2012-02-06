@@ -6,7 +6,7 @@ package org.queryall.exception;
 import org.queryall.api.project.ProjectEnum;
 
 /**
- * An exception that is thrown when an unknown Project is encountered
+ * An exception that is thrown when an unknown Project is encountered.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -80,12 +80,12 @@ public class UnsupportedProjectException extends QueryAllException
     }
     
     /**
-     * @param projectCause
+     * @param nextProjectCause
      *            the projectCause to set
      */
-    public void setProjectCause(final ProjectEnum projectCause)
+    public void setProjectCause(final ProjectEnum nextProjectCause)
     {
-        this.projectCause = projectCause;
+        this.projectCause = nextProjectCause;
     }
     
 }

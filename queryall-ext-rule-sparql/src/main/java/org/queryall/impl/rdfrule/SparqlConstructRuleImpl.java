@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements SparqlConstructRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlConstructRuleImpl.class);
-    private static final boolean _TRACE = SparqlConstructRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SparqlConstructRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = SparqlConstructRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = SparqlConstructRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlConstructRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = SparqlConstructRuleImpl.log.isInfoEnabled();
     
     private String sparqlConstructQueryTarget = "";
     
@@ -100,7 +100,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            // if(SparqlNormalisationRuleImpl._DEBUG)
+            // if(SparqlNormalisationRuleImpl.DEBUG)
             // {
             // SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
             // + nextStatement.toString());
@@ -110,7 +110,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
                     && (nextStatement.getObject().equals(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri()))
                     || nextStatement.getObject().equals(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri()))
             {
-                if(SparqlConstructRuleImpl._TRACE)
+                if(SparqlConstructRuleImpl.TRACE)
                 {
                     SparqlConstructRuleImpl.log
                             .trace("SparqlNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
@@ -154,7 +154,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             }
             else
             {
-                if(SparqlConstructRuleImpl._DEBUG)
+                if(SparqlConstructRuleImpl.DEBUG)
                 {
                     SparqlConstructRuleImpl.log
                             .debug("SparqlNormalisationRuleImpl: unrecognisedStatement nextStatement: "
@@ -164,7 +164,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             }
         }
         
-        if(SparqlConstructRuleImpl._DEBUG)
+        if(SparqlConstructRuleImpl.DEBUG)
         {
             SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
@@ -411,7 +411,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
         
         try
         {
-            if(SparqlConstructRuleImpl._DEBUG)
+            if(SparqlConstructRuleImpl.DEBUG)
             {
                 SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }

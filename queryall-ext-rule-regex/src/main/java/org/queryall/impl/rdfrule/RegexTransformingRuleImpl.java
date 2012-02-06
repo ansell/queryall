@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
 public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implements RegexNormalisationRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(RegexTransformingRuleImpl.class);
-    private static final boolean _TRACE = RegexTransformingRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = RegexTransformingRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = RegexTransformingRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = RegexTransformingRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RegexTransformingRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = RegexTransformingRuleImpl.log.isInfoEnabled();
     
     private static final Set<URI> REGEX_TRANSFORMING_RULE_IMPL_TYPES = new HashSet<URI>(6);
     private static final Set<URI> REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES = new HashSet<URI>(10);
@@ -88,7 +88,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(RegexTransformingRuleImpl._TRACE)
+            if(RegexTransformingRuleImpl.TRACE)
             {
                 RegexTransformingRuleImpl.log.trace("RegexNormalisationRuleImpl: nextStatement: "
                         + nextStatement.toString());
@@ -98,7 +98,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
                     && (nextStatement.getObject().equals(RegexNormalisationRuleSchema.getRegexRuleTypeUri()) || nextStatement
                             .getObject().equals(RegexNormalisationRuleSchema.getRegexRuleTypeUri())))
             {
-                if(RegexTransformingRuleImpl._TRACE)
+                if(RegexTransformingRuleImpl.TRACE)
                 {
                     RegexTransformingRuleImpl.log
                             .trace("RegexNormalisationRuleImpl: found valid type predicate for URI: " + keyToUse);
@@ -124,7 +124,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
             }
             else
             {
-                if(RegexTransformingRuleImpl._TRACE)
+                if(RegexTransformingRuleImpl.TRACE)
                 {
                     RegexTransformingRuleImpl.log
                             .trace("RegexNormalisationRuleImpl: unrecognisedStatement nextStatement: "
@@ -134,7 +134,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
             }
         }
         
-        if(RegexTransformingRuleImpl._TRACE)
+        if(RegexTransformingRuleImpl.TRACE)
         {
             RegexTransformingRuleImpl.log.trace("RegexNormalisationRuleImpl.fromRdf: would have returned... result="
                     + this.toString());
@@ -157,7 +157,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
         {
             if((matchRegex == null) || (replaceRegex == null))
             {
-                if(RegexTransformingRuleImpl._TRACE)
+                if(RegexTransformingRuleImpl.TRACE)
                 {
                     RegexTransformingRuleImpl.log
                             .trace("RegexNormalisationRuleImpl.applyRegex: something was null matchRegex=" + matchRegex
@@ -167,7 +167,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
                 return inputText;
             }
             
-            if(RegexTransformingRuleImpl._DEBUG)
+            if(RegexTransformingRuleImpl.DEBUG)
             {
                 RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
                         + ", replaceRegex=" + replaceRegex);
@@ -175,7 +175,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
             
             if(matchRegex.trim().equals(""))
             {
-                if(RegexTransformingRuleImpl._DEBUG)
+                if(RegexTransformingRuleImpl.DEBUG)
                 {
                     RegexTransformingRuleImpl.log
                             .debug("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
@@ -187,14 +187,14 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
             String debugInputText = "";
             
             // only take a copy of the string if we need it for debugging
-            if(RegexTransformingRuleImpl._DEBUG)
+            if(RegexTransformingRuleImpl.DEBUG)
             {
                 debugInputText = inputText;
             }
             
             inputText = inputText.replaceAll(matchRegex, replaceRegex);
             
-            if(RegexTransformingRuleImpl._DEBUG)
+            if(RegexTransformingRuleImpl.DEBUG)
             {
                 RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex start input="
                         + debugInputText);
@@ -470,11 +470,11 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(RegexTransformingRuleImpl._DEBUG)
+            if(RegexTransformingRuleImpl.DEBUG)
             {
                 RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }

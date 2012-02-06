@@ -24,9 +24,9 @@ public class IndexPageServlet extends HttpServlet
 {
     private static final long serialVersionUID = -6472769738354082954L;
     public static final Logger log = LoggerFactory.getLogger(IndexPageServlet.class);
-    public static final boolean _TRACE = IndexPageServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = IndexPageServlet.log.isDebugEnabled();
-    public static final boolean _INFO = IndexPageServlet.log.isInfoEnabled();
+    public static final boolean TRACE = IndexPageServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = IndexPageServlet.log.isDebugEnabled();
+    public static final boolean INFO = IndexPageServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,

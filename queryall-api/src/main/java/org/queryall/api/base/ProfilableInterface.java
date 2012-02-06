@@ -2,12 +2,12 @@ package org.queryall.api.base;
 
 import java.util.List;
 
-import org.openrdf.model.URI;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.utils.ProfileIncludeExclude;
 
 /**
  * This interface provides the basis for profiles to be used to include or exclude objects. All
- * profilable objects are also BaseQueryAllInterface objects
+ * profilable objects are also BaseQueryAllInterface objects.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -17,12 +17,12 @@ public interface ProfilableInterface extends BaseQueryAllInterface
      * @return A URI indicating whether this object should have include or exclude instructions
      *         processed first
      */
-    URI getProfileIncludeExcludeOrder();
+    ProfileIncludeExclude getProfileIncludeExcludeOrder();
     
     /**
      * This method determines whether this class should be included or excluded, based on the
      * pre-ordered profile list and the parameters which indicate whether implicit inclusions are
-     * allowed and whether this method will match if no profiles match at all
+     * allowed and whether this method will match if no profiles match at all.
      * 
      * @param orderedProfileList
      *            a pre sorted list of profiles that will be used in sequence to determine whether
@@ -45,6 +45,6 @@ public interface ProfilableInterface extends BaseQueryAllInterface
      *            A URI indicating whether this object should have include or exclude instructions
      *            processed first
      */
-    void setProfileIncludeExcludeOrder(URI profileIncludeExcludeOrder);
+    void setProfileIncludeExcludeOrder(ProfileIncludeExclude profileIncludeExcludeOrder);
     
 }

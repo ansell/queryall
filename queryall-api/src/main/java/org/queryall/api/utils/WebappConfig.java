@@ -5,7 +5,6 @@ import java.util.Collections;
 import org.openrdf.model.URI;
 
 /**
- * TODO: Create test for WebappConfig
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  * 
@@ -13,78 +12,78 @@ import org.openrdf.model.URI;
 public enum WebappConfig
 {
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to false
+     * Defaults to false.
      */
     _TEST_BOOLEAN_PROPERTY("http://test.example.org/", "_testBooleanProperty", false),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to 2.5f
+     * Defaults to 2.5f.
      */
     _TEST_FLOAT_PROPERTY("http://test.example.org/", "_testFloatProperty", 2.5f),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to 2
+     * Defaults to 2.
      */
     _TEST_INT_PROPERTY("http://test.example.org/", "_testIntProperty", 2),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to 2L
+     * Defaults to 2L.
      */
     _TEST_LONG_PROPERTY("http://test.example.org/", "_testLongProperty", 2L),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to Collections.emptyList()
+     * Defaults to Collections.emptyList().
      */
     _TEST_STRING_COLLECTION_PROPERTY("http://test.example.org/", "_testStringCollectionProperty", Collections
             .emptyList()),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to "mySampleOnlyTestString"
+     * Defaults to "mySampleOnlyTestString".
      */
     _TEST_STRING_PROPERTY("http://test.example.org/", "_testStringProperty", "mySampleOnlyTestString"),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
-     * Defaults to Collections.emptyList()
+     * Defaults to Collections.emptyList().
      */
     _TEST_URI_COLLECTION_PROPERTY("http://test.example.org/", "_testUriCollectionProperty", Collections.emptyList()),
     
     /**
-     * DO NOT USE: ONLY FOR TESTING
+     * DO NOT USE: ONLY FOR TESTING.
      * 
      * <br/>
      * 
      * Defaults to
-     * Constants.valueFactory.createURI("http://other.example.org/_testValueForUriProperty")
+     * Constants.valueFactory.createURI("http://other.example.org/_testValueForUriProperty").
      */
-    _TEST_URI_PROPERTY("http://test.example.org/", "_testUriProperty", Constants.valueFactory
+    _TEST_URI_PROPERTY("http://test.example.org/", "_testUriProperty", Constants.VALUE_FACTORY
             .createURI("http://other.example.org/_testValueForUriProperty")),
     
     ACTIVE_PROFILES("activeProfiles", Collections.emptyList()),
@@ -176,7 +175,7 @@ public enum WebappConfig
     HARDCODED_REQUEST_HOSTNAME("hardcodedRequestHostname", "/"),
     
     /**
-     * The hostname to use for queries
+     * The hostname to use for queries.
      * 
      * <br/>
      * Defaults to "bio2rdf.org"
@@ -274,13 +273,13 @@ public enum WebappConfig
     
     /**
      * The HTTP Status code to use when redirecting from a format-agnostic, content negotiated URL
-     * to a URL that explicitly contains the format, as required by some Linked Data applications
+     * to a URL that explicitly contains the format, as required by some Linked Data applications.
      * 
      * <br/>
-     * Defaults to "303"
+     * Defaults to "303".
      * 
      * <br/>
-     * NOTE: This may be set to 301, 302, or 307 for similar redirect behaviour
+     * NOTE: This may also be set to 301, 302, or 307 for similar redirect behaviour.
      */
     REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE("redirectToExplicitFormatHttpCode", 303),
     
@@ -307,13 +306,13 @@ public enum WebappConfig
     URI_PREFIX("uriPrefix", "http://"),
     
     /**
-     * The URI suffix for constructing URIs for this webapp
+     * The URI suffix for constructing URIs for this webapp.
      * 
      * <br/>
-     * Defaults to "/"
+     * Defaults to "/".
      * 
      * <br/>
-     * NOTE: This should be overriden in cases where the webapp is not hosted at the root path
+     * NOTE: This should be overriden in cases where the webapp is not hosted at the root path.
      */
     URI_SUFFIX("uriSuffix", "/"),
     
@@ -324,19 +323,17 @@ public enum WebappConfig
     USE_REQUEST_CACHE("useRequestCache", true),
     
     /**
-     * The user agent to use in the HTTP User-Agent header
+     * The user agent to use in the HTTP User-Agent header.
      * 
      * <br/>
-     * Defaults to "queryall"
+     * Defaults to "queryall".
      * 
      * <br/>
-     * NOTE: This may be overriden to indicate the application using this library
+     * NOTE: This may be overriden to indicate the application using this library.
      */
     USER_AGENT("userAgent", "queryall"),
     
-    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList()),
-    
-    ;
+    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList());
     
     public static WebappConfig valueOf(final URI keyUri)
     {
@@ -365,28 +362,28 @@ public enum WebappConfig
      * Sets up a config key using the default QueryAllNamespaces.WEBAPPCONFIG.getBaseURI() namespace
      * with the given key appended to it
      * 
-     * @param key
-     * @param defaultValue
+     * @param nextKey
+     * @param nextDefaultValue
      */
-    WebappConfig(final String key, final Object defaultValue)
+    WebappConfig(final String nextKey, final Object nextDefaultValue)
     {
         this.namespace = QueryAllNamespaces.WEBAPPCONFIG.getBaseURI();
-        this.defaultValue = defaultValue;
-        this.key = key;
-        this.uriValue = Constants.valueFactory.createURI(this.namespace, key);
+        this.defaultValue = nextDefaultValue;
+        this.key = nextKey;
+        this.uriValue = Constants.VALUE_FACTORY.createURI(this.namespace, nextKey);
     }
     
-    WebappConfig(final String namespace, final String key, final Object defaultValue)
+    WebappConfig(final String nextNamespace, final String nextKey, final Object nextDefaultValue)
     {
-        this.defaultValue = defaultValue;
-        this.key = key;
-        this.namespace = namespace;
-        this.uriValue = Constants.valueFactory.createURI(namespace, key);
+        this.defaultValue = nextDefaultValue;
+        this.key = nextKey;
+        this.namespace = nextNamespace;
+        this.uriValue = Constants.VALUE_FACTORY.createURI(nextNamespace, nextKey);
     }
     
-    WebappConfig(final URI uri, final Object defaultValue)
+    WebappConfig(final URI uri, final Object nextDefaultValue)
     {
-        this.defaultValue = defaultValue;
+        this.defaultValue = nextDefaultValue;
         this.key = uri.getLocalName();
         this.namespace = uri.getNamespace();
         this.uriValue = uri;
@@ -420,13 +417,6 @@ public enum WebappConfig
      */
     public boolean overwrite()
     {
-        if(this.defaultValue instanceof Iterable<?>)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return !(this.defaultValue instanceof Iterable<?>);
     }
 }

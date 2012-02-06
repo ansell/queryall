@@ -22,12 +22,12 @@ import org.slf4j.LoggerFactory;
  */
 public class ProjectEnum extends QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(ProjectEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProjectEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProjectEnum.log.isDebugEnabled();
+    private static final boolean TRACE = ProjectEnum.LOG.isTraceEnabled();
+    private static final boolean DEBUG = ProjectEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProjectEnum.log.isInfoEnabled();
+    private static final boolean INFO = ProjectEnum.LOG.isInfoEnabled();
     
     protected static final Set<ProjectEnum> ALL_PROJECTS = new HashSet<ProjectEnum>();
     
@@ -35,9 +35,9 @@ public class ProjectEnum extends QueryAllEnum
     {
         if(nextTypeUris.size() == 0)
         {
-            if(ProjectEnum._DEBUG)
+            if(ProjectEnum.DEBUG)
             {
-                ProjectEnum.log.debug("found an empty URI set for nextProjectUris=" + nextTypeUris);
+                ProjectEnum.LOG.debug("found an empty URI set for nextProjectUris=" + nextTypeUris);
             }
             return Collections.emptySet();
         }
@@ -48,17 +48,17 @@ public class ProjectEnum extends QueryAllEnum
         {
             if(nextEnum.matchForTypeUris(nextTypeUris))
             {
-                if(ProjectEnum._DEBUG)
+                if(ProjectEnum.DEBUG)
                 {
-                    ProjectEnum.log.debug("found a matching URI set for nextProjectUris=" + nextTypeUris);
+                    ProjectEnum.LOG.debug("found a matching URI set for nextProjectUris=" + nextTypeUris);
                 }
                 results.add(nextEnum);
             }
         }
         
-        if(ProjectEnum._DEBUG)
+        if(ProjectEnum.DEBUG)
         {
-            ProjectEnum.log
+            ProjectEnum.LOG
                     .debug("returning results.size()=" + results.size() + " for nextProjectUris=" + nextTypeUris);
         }
         
@@ -72,9 +72,9 @@ public class ProjectEnum extends QueryAllEnum
     {
         if(ProjectEnum.valueOf(nextProject.getName()) != null)
         {
-            if(ProjectEnum._DEBUG)
+            if(ProjectEnum.DEBUG)
             {
-                ProjectEnum.log.debug("Cannot register this project again name=" + nextProject.getName());
+                ProjectEnum.LOG.debug("Cannot register this project again name=" + nextProject.getName());
             }
         }
         else
@@ -112,7 +112,7 @@ public class ProjectEnum extends QueryAllEnum
     }
     
     /**
-     * Create a new Project enum using the given name, which must be unique
+     * Create a new Project enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs

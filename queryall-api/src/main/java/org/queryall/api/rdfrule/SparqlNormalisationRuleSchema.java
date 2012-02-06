@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 @MetaInfServices(QueryAllSchema.class)
 public class SparqlNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SparqlNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = SparqlNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = SparqlNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = SparqlNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = SparqlNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = SparqlNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI sparqlruleTypeUri;
     
@@ -42,7 +42,7 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -51,6 +51,9 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
         SparqlNormalisationRuleSchema.setSparqlRuleSparqlPrefixes(f.createURI(baseUri, "sparqlPrefixes"));
     }
     
+    /**
+     * A pre-instantiated schema object for SparqlNormalisationRuleSchema.
+     */
     public static final QueryAllSchema SPARQL_NORMALISATION_RULE_SCHEMA = new SparqlNormalisationRuleSchema();
     
     public static URI getSparqlRuleSparqlPrefixes()
@@ -71,27 +74,27 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
         return SparqlNormalisationRuleSchema.sparqlruleTypeUri;
     }
     
-    public static void setSparqlRuleSparqlPrefixes(final URI sparqlruleSparqlPrefixes)
+    public static void setSparqlRuleSparqlPrefixes(final URI nextSparqlruleSparqlPrefixes)
     {
-        SparqlNormalisationRuleSchema.sparqlruleSparqlPrefixes = sparqlruleSparqlPrefixes;
+        SparqlNormalisationRuleSchema.sparqlruleSparqlPrefixes = nextSparqlruleSparqlPrefixes;
     }
     
-    public static void setSparqlRuleSparqlWherePattern(final URI sparqlruleSparqlWherePattern)
+    public static void setSparqlRuleSparqlWherePattern(final URI nextSparqlruleSparqlWherePattern)
     {
-        SparqlNormalisationRuleSchema.sparqlruleSparqlWherePattern = sparqlruleSparqlWherePattern;
+        SparqlNormalisationRuleSchema.sparqlruleSparqlWherePattern = nextSparqlruleSparqlWherePattern;
     }
     
     /**
-     * @param sparqlruleTypeUri
+     * @param nextSparqlruleTypeUri
      *            the sparqlruleTypeUri to set
      */
-    public static void setSparqlRuleTypeUri(final URI sparqlruleTypeUri)
+    public static void setSparqlRuleTypeUri(final URI nextSparqlruleTypeUri)
     {
-        SparqlNormalisationRuleSchema.sparqlruleTypeUri = sparqlruleTypeUri;
+        SparqlNormalisationRuleSchema.sparqlruleTypeUri = nextSparqlruleTypeUri;
     }
     
     /**
-     * Default constructor, uses the name of this class as the name
+     * Default constructor, uses the name of this class as the name.
      */
     public SparqlNormalisationRuleSchema()
     {
@@ -139,7 +142,7 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
                 con.rollback();
             }
             
-            SparqlNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            SparqlNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

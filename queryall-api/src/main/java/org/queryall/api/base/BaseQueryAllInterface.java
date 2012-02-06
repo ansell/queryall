@@ -22,14 +22,14 @@ public interface BaseQueryAllInterface
 {
     /**
      * Adds an unrecognised statement to the internal list for either parsing by a more specific
-     * subclass or for storage to include in the serialised version in future
+     * subclass or for storage to include in the serialised version in future.
      * 
      * @param unrecognisedStatement
      */
     void addUnrecognisedStatement(Statement unrecognisedStatement);
     
     /**
-     * Defaults to ProjectSchema.getProjectNotCuratedUri()
+     * Defaults to ProjectSchema.getProjectNotCuratedUri().
      * 
      * @return A URI indicating the current curation status for this item.
      */
@@ -60,7 +60,7 @@ public interface BaseQueryAllInterface
     
     /**
      * Returns the org.openrdf.model.URI string key for the object, and this can optionally be used
-     * in the toRdf method
+     * in the toRdf method.
      **/
     URI getKey();
     
@@ -80,7 +80,7 @@ public interface BaseQueryAllInterface
     
     /**
      * This method resets the internal unrecognised statements collection to empty, as is necessary
-     * before a subclass starts parsing the remaining unrecognised statements
+     * before a subclass starts parsing the remaining unrecognised statements.
      * 
      * @return The current list of unrecognised statements before the reset
      */

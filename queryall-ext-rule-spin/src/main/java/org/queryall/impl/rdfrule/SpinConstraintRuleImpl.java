@@ -46,10 +46,10 @@ import com.hp.hpl.jena.shared.ReificationStyle;
 public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements SpinConstraintRule, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(SpinConstraintRuleImpl.class);
-    private static final boolean _TRACE = SpinConstraintRuleImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SpinConstraintRuleImpl.log.isDebugEnabled();
+    private static final boolean TRACE = SpinConstraintRuleImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = SpinConstraintRuleImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SpinConstraintRuleImpl.log.isInfoEnabled();
+    private static final boolean INFO = SpinConstraintRuleImpl.log.isInfoEnabled();
     
     private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_TYPES = new HashSet<URI>(8);
     private static final Set<URI> SPIN_CONSTRAINT_RULE_IMPL_VALID_STAGES = new HashSet<URI>(8);
@@ -105,7 +105,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            // if(SparqlNormalisationRuleImpl._DEBUG)
+            // if(SparqlNormalisationRuleImpl.DEBUG)
             // {
             // SparqlNormalisationRuleImpl.log.debug("SparqlNormalisationRuleImpl: nextStatement: "
             // + nextStatement.toString());
@@ -114,7 +114,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri()))
             {
-                if(SpinConstraintRuleImpl._TRACE)
+                if(SpinConstraintRuleImpl.TRACE)
                 {
                     SpinConstraintRuleImpl.log.trace("SpinConstraintRuleImpl: found valid type predicate for URI: "
                             + keyToUse);
@@ -125,7 +125,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             }
             else
             {
-                if(SpinConstraintRuleImpl._DEBUG)
+                if(SpinConstraintRuleImpl.DEBUG)
                 {
                     SpinConstraintRuleImpl.log.debug("SpinConstraintRuleImpl: unrecognisedStatement nextStatement: "
                             + nextStatement.toString());
@@ -134,7 +134,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
             }
         }
         
-        if(SpinConstraintRuleImpl._DEBUG)
+        if(SpinConstraintRuleImpl.DEBUG)
         {
             SpinConstraintRuleImpl.log.debug("SpinConstraintRuleImpl constructor: toString()=" + this.toString());
         }
@@ -461,7 +461,7 @@ public class SpinConstraintRuleImpl extends BaseValidatingRuleImpl implements Sp
         
         try
         {
-            if(SpinConstraintRuleImpl._DEBUG)
+            if(SpinConstraintRuleImpl.DEBUG)
             {
                 SpinConstraintRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }

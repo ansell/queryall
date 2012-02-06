@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(StringRuleTestImpl.class);
-    private static final boolean _TRACE = StringRuleTestImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = StringRuleTestImpl.log.isDebugEnabled();
+    private static final boolean TRACE = StringRuleTestImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = StringRuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = StringRuleTestImpl.log.isInfoEnabled();
+    private static final boolean INFO = StringRuleTestImpl.log.isInfoEnabled();
     
     private static final Set<URI> STRING_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
     
@@ -65,7 +65,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(StringRuleTestImpl._DEBUG)
+            if(StringRuleTestImpl.DEBUG)
             {
                 StringRuleTestImpl.log.debug("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
@@ -73,7 +73,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(StringRuleTestSchema.getStringRuleTestTypeUri()))
             {
-                if(StringRuleTestImpl._TRACE)
+                if(StringRuleTestImpl.TRACE)
                 {
                     StringRuleTestImpl.log.trace("StringRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
@@ -90,7 +90,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             }
             else
             {
-                if(StringRuleTestImpl._DEBUG)
+                if(StringRuleTestImpl.DEBUG)
                 {
                     StringRuleTestImpl.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: "
                             + nextStatement.toString());
@@ -99,7 +99,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             }
         }
         
-        if(StringRuleTestImpl._TRACE)
+        if(StringRuleTestImpl.TRACE)
         {
             StringRuleTestImpl.log
                     .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
@@ -158,7 +158,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

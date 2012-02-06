@@ -38,11 +38,11 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
         SparqlProcessorQueryType, RdfOutputQueryType
 {
     private static final Logger log = LoggerFactory.getLogger(RegexInputQueryTypeImpl.class);
-    private static final boolean _TRACE = RegexInputQueryTypeImpl.log.isTraceEnabled();
+    private static final boolean TRACE = RegexInputQueryTypeImpl.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RegexInputQueryTypeImpl.log.isDebugEnabled();
+    private static final boolean DEBUG = RegexInputQueryTypeImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RegexInputQueryTypeImpl.log.isInfoEnabled();
+    private static final boolean INFO = RegexInputQueryTypeImpl.log.isInfoEnabled();
     
     private static final Set<URI> REGEX_INPUT_QUERY_TYPE_IMPL_TYPES = new HashSet<URI>();
     
@@ -95,7 +95,7 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
                                     SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri()) || nextStatement
                             .getObject().equals(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri())))
             {
-                if(RegexInputQueryTypeImpl._TRACE)
+                if(RegexInputQueryTypeImpl.TRACE)
                 {
                     RegexInputQueryTypeImpl.log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
                 }
@@ -164,7 +164,7 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
                     StringUtils.matchesRegexOnString(this.getInputRegexPattern(), this.inputRegex,
                             nextQueryParameters.get(Constants.QUERY));
             
-            if(RegexInputQueryTypeImpl._TRACE && result)
+            if(RegexInputQueryTypeImpl.TRACE && result)
             {
                 RegexInputQueryTypeImpl.log.trace("Returning true for matchesQueryParameters key="
                         + this.getKey().stringValue());
@@ -205,7 +205,7 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {

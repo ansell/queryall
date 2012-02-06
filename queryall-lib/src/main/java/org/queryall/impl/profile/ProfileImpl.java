@@ -17,6 +17,7 @@ import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
@@ -29,10 +30,10 @@ import org.slf4j.LoggerFactory;
 public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable<Profile>, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
-    private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProfileImpl.log.isDebugEnabled();
+    private static final boolean TRACE = ProfileImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = ProfileImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProfileImpl.log.isInfoEnabled();
+    private static final boolean INFO = ProfileImpl.log.isInfoEnabled();
     
     private static final Set<URI> PROFILE_IMPL_TYPES = new HashSet<URI>();
     
@@ -54,7 +55,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     
     private boolean allowImplicitRdfRuleInclusions = true;
     
-    private URI defaultProfileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude defaultProfileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     private Collection<URI> profileAdministrators = new HashSet<URI>();
     
@@ -85,7 +86,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProfileImpl._DEBUG)
+            if(ProfileImpl.DEBUG)
             {
                 ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
             }
@@ -93,7 +94,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProfileSchema.getProfileTypeUri()))
             {
-                if(ProfileImpl._TRACE)
+                if(ProfileImpl.TRACE)
                 {
                     ProfileImpl.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
                 }
@@ -111,11 +112,14 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri()))
             {
-                this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                final ProfileIncludeExclude profileIncludeExclude =
+                        ProfileIncludeExclude.valueOf((URI)nextStatement.getObject());
                 
-                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileSchema.getProfileIncludeThenExcludeUri())
-                        || this.getDefaultProfileIncludeExcludeOrder().equals(
-                                ProfileSchema.getProfileExcludeThenIncludeUri()))
+                this.setDefaultProfileIncludeExcludeOrder(profileIncludeExclude);
+                
+                // check that one of the valid defaults was chosen, ie, not undefined
+                if(profileIncludeExclude == ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE
+                        || profileIncludeExclude == ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE)
                 {
                     defaultProfileIncludeExcludeOrderValidationFailed = false;
                 }
@@ -166,10 +170,10 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         {
             ProfileImpl.log
                     .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().stringValue());
+                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().getUri().stringValue());
         }
         
-        if(ProfileImpl._TRACE)
+        if(ProfileImpl.TRACE)
         {
             ProfileImpl.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
         }
@@ -414,7 +418,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     }
     
     @Override
-    public URI getDefaultProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getDefaultProfileIncludeExcludeOrder()
     {
         return this.defaultProfileIncludeExcludeOrder;
     }
@@ -658,7 +662,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     }
     
     @Override
-    public void setDefaultProfileIncludeExcludeOrder(final URI defaultProfileIncludeExcludeOrder)
+    public void setDefaultProfileIncludeExcludeOrder(final ProfileIncludeExclude defaultProfileIncludeExcludeOrder)
     {
         this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
     }
@@ -699,7 +703,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -721,7 +725,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             final Literal allowImplicitProviderInclusionsLiteral =
                     f.createLiteral(this.allowImplicitProviderInclusions);
             final Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(this.allowImplicitRdfRuleInclusions);
-            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder;
+            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder.getUri();
             
             // log.info("About to add to the repository");
             
@@ -794,7 +798,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 
                 for(final URI nextIncludeQuery : this.includeQueries)
                 {
-                    if(ProfileImpl._TRACE)
+                    if(ProfileImpl.TRACE)
                     {
                         ProfileImpl.log.trace("Profile.toRdf: nextIncludeQuery=" + nextIncludeQuery);
                     }
@@ -809,7 +813,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 
                 for(final URI nextExcludeQuery : this.excludeQueries)
                 {
-                    if(ProfileImpl._TRACE)
+                    if(ProfileImpl.TRACE)
                     {
                         ProfileImpl.log.trace("Profile.toRdf: nextExcludeQuery=" + nextExcludeQuery);
                     }

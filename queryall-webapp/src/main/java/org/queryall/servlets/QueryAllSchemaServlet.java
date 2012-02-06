@@ -43,9 +43,9 @@ public class QueryAllSchemaServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -4486511923930733168L;
     public static final Logger log = LoggerFactory.getLogger(QueryAllSchemaServlet.class);
-    public static final boolean _TRACE = QueryAllSchemaServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = QueryAllSchemaServlet.log.isDebugEnabled();
-    public static final boolean _INFO = QueryAllSchemaServlet.log.isInfoEnabled();
+    public static final boolean TRACE = QueryAllSchemaServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = QueryAllSchemaServlet.log.isDebugEnabled();
+    public static final boolean INFO = QueryAllSchemaServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -90,7 +90,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         final String characterEncoding = request.getCharacterEncoding();
         
-        if(QueryAllSchemaServlet._INFO)
+        if(QueryAllSchemaServlet.INFO)
         {
             QueryAllSchemaServlet.log.info("QueryAllSchemaServlet: locale=" + locale + " characterEncoding="
                     + characterEncoding);
@@ -188,7 +188,7 @@ public class QueryAllSchemaServlet extends HttpServlet
             
             if(requestedContentType.equals(Constants.TEXT_HTML))
             {
-                if(QueryAllSchemaServlet._DEBUG)
+                if(QueryAllSchemaServlet.DEBUG)
                 {
                     QueryAllSchemaServlet.log.debug("QueryAllSchemaServlet: about to call html rendering method");
                 }
@@ -224,7 +224,7 @@ public class QueryAllSchemaServlet extends HttpServlet
             
             final String actualRdfString = stBuff.toString();
             
-            if(QueryAllSchemaServlet._TRACE)
+            if(QueryAllSchemaServlet.TRACE)
             {
                 QueryAllSchemaServlet.log.trace("QueryAllSchemaServlet: actualRdfString=" + actualRdfString);
             }
@@ -246,7 +246,7 @@ public class QueryAllSchemaServlet extends HttpServlet
             
             final long nextTotalTime = queryEndTime.getTime() - queryStartTime.getTime();
             
-            if(QueryAllSchemaServlet._DEBUG)
+            if(QueryAllSchemaServlet.DEBUG)
             {
                 QueryAllSchemaServlet.log
                         .debug("QueryAllSchemaServlet: finished returning information to client requesterIpAddress="

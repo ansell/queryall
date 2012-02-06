@@ -10,7 +10,7 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.provider.Provider;
 
 /**
- * Abstract unit test for Provider API
+ * Abstract unit test for Provider API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -37,14 +37,14 @@ public abstract class AbstractProviderTest extends AbstractProfilableProviderTes
     
     /**
      * This method must be overridden to return a new instance of the implemented Provider class for
-     * each successive invocation
+     * each successive invocation.
      */
     public abstract Provider getNewTestProvider();
     
     /**
      * This method performs the following actions: - Creates new Providers for the Provider type
      * fields using multiple calls to getNewTestProvider - Create org.openrdf.model.URI instances
-     * for the test URIs - Add testTrue*'s using the relevant methods from the API
+     * for the test URIs - Add testTrue*'s using the relevant methods from the API.
      */
     @Override
     @Before

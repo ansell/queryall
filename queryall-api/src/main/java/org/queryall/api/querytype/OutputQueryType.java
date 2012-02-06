@@ -4,7 +4,7 @@
 package org.queryall.api.querytype;
 
 /**
- * A Query Type that provides output in the form of a string
+ * A Query Type that provides output in the form of a string.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

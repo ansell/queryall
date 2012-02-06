@@ -16,6 +16,9 @@ import org.queryall.api.services.QueryAllEnum;
 @MetaInfServices(QueryAllEnum.class)
 public class HttpSparqlProviderImplEnum extends ProviderEnum
 {
+    /**
+     * A pre-instantiated instance of HttpSparqlProviderImplEnum.
+     */
     public static final ProviderEnum HTTP_SPARQL_PROVIDER_IMPL_ENUM = new HttpSparqlProviderImplEnum();
     
     // static

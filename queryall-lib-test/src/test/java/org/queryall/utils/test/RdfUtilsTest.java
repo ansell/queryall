@@ -65,6 +65,7 @@ import org.queryall.api.ruletest.SparqlRuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.NamespaceMatch;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.utils.RdfUtils;
 
@@ -632,7 +633,7 @@ public class RdfUtilsTest
                             nextNormalisationRule.getDescription());
                     Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
                     Assert.assertEquals("Include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileIncludeThenExcludeUri(),
+                            ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE,
                             nextNormalisationRule.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
@@ -672,7 +673,7 @@ public class RdfUtilsTest
                             nextNormalisationRule.getDescription());
                     Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
                     Assert.assertEquals("Include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextNormalisationRule.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
@@ -728,7 +729,7 @@ public class RdfUtilsTest
                             nextNormalisationRule.getDescription());
                     Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
                     Assert.assertEquals("Include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextNormalisationRule.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
@@ -771,7 +772,7 @@ public class RdfUtilsTest
                             nextNormalisationRule.getDescription());
                     Assert.assertEquals("Order was not parsed correctly", 100, nextNormalisationRule.getOrder());
                     Assert.assertEquals("Include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileIncludeThenExcludeUri(),
+                            ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE,
                             nextNormalisationRule.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
@@ -825,7 +826,7 @@ public class RdfUtilsTest
                             nextNormalisationRule.getDescription());
                     Assert.assertEquals("Order was not parsed correctly", 110, nextNormalisationRule.getOrder());
                     Assert.assertEquals("Include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextNormalisationRule.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Related namespaces were not parsed correctly", 1, nextNormalisationRule
@@ -928,7 +929,7 @@ public class RdfUtilsTest
                     Assert.assertEquals("Order was not parsed correctly", 120, nextProfile.getOrder());
                     
                     Assert.assertEquals("Default profile include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileIncludeThenExcludeUri(),
+                            ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE,
                             nextProfile.getDefaultProfileIncludeExcludeOrder());
                     
                     Assert.assertFalse("Allow implicit provider inclusions was not parsed correctly",
@@ -965,7 +966,7 @@ public class RdfUtilsTest
                     Assert.assertEquals("Order was not parsed correctly", 230, nextProfile.getOrder());
                     
                     Assert.assertEquals("Default profile include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextProfile.getDefaultProfileIncludeExcludeOrder());
                     
                     Assert.assertTrue("Allow implicit provider inclusions was not parsed correctly",
@@ -1073,7 +1074,7 @@ public class RdfUtilsTest
                             nextProvider.getIsDefaultSource());
                     
                     Assert.assertEquals("Profile include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextProvider.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Namespaces were not parsed correctly", 1, nextProvider.getNamespaces().size());
@@ -1193,7 +1194,7 @@ public class RdfUtilsTest
                             nextQueryType.getInRobotsTxt());
                     
                     Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextQueryType.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType
@@ -1296,7 +1297,7 @@ public class RdfUtilsTest
                             nextQueryType.getInRobotsTxt());
                     
                     Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
-                            ProfileSchema.getProfileExcludeThenIncludeUri(),
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
                             nextQueryType.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType

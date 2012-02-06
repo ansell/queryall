@@ -21,9 +21,9 @@ public class ManualRefreshServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -8130327002164154880L;
     public static final Logger log = LoggerFactory.getLogger(ManualRefreshServlet.class);
-    public static final boolean _TRACE = ManualRefreshServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ManualRefreshServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ManualRefreshServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ManualRefreshServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ManualRefreshServlet.log.isDebugEnabled();
+    public static final boolean INFO = ManualRefreshServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
