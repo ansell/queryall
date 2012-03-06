@@ -28,8 +28,8 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
     public int maxRowsParameter = this.getLocalSettings()
             .getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
     
-    public HttpUrlQueryRunnableImpl(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
-            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
+    public HttpUrlQueryRunnableImpl(final String nextHttpOperation, final String nextUrl,
+            final String nextPostInformation, final String nextAcceptHeader, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController)
     {
         super(nextUrl, nextPostInformation, "", nextAcceptHeader, localSettings, localBlacklistController);
@@ -68,7 +68,8 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
                 
                 if(fetcher.getLastWasError())
                 {
-                    HttpUrlQueryRunnableImpl.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
+                    HttpUrlQueryRunnableImpl.log
+                            .error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
                     final Map<String, String> alternateEndpointsAndQueries =
                             this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                     
@@ -77,8 +78,8 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        HttpUrlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
-                                + " originalEndpoint=" + this.getOriginalEndpointUrl());
+                        HttpUrlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint="
+                                + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
                         if(HttpUrlQueryRunnableImpl.DEBUG)
                         {
@@ -113,7 +114,8 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
                 
                 if(fetcher.getLastWasError())
                 {
-                    HttpUrlQueryRunnableImpl.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
+                    HttpUrlQueryRunnableImpl.log
+                            .error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
                     
                     final Map<String, String> alternateEndpointsAndQueries =
                             this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
@@ -123,8 +125,8 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
                     
                     for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                     {
-                        HttpUrlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
-                                + " originalEndpoint=" + this.getOriginalEndpointUrl());
+                        HttpUrlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint="
+                                + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         

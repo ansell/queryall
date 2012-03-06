@@ -238,8 +238,7 @@ public class RdfFetchController
         {
             if(!nextThread.getCompleted())
             {
-                RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: Thread not completed properly");
+                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread not completed properly");
             }
         }
         

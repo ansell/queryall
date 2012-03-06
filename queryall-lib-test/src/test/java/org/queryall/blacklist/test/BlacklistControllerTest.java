@@ -68,8 +68,8 @@ public class BlacklistControllerTest
     public void testAccumulateBlacklist()
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
@@ -261,8 +261,8 @@ public class BlacklistControllerTest
     public void testDoBlacklistExpiryDefaultParameters() throws InterruptedException
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         fetcherQueryRunnable.setLastException(new Exception());
         fetcherQueryRunnable.setCompleted(true);
         
@@ -348,8 +348,8 @@ public class BlacklistControllerTest
     public void testDoBlacklistExpiryWithParameters() throws InterruptedException
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         fetcherQueryRunnable.setLastException(new Exception());
         fetcherQueryRunnable.setCompleted(true);
         
@@ -543,8 +543,8 @@ public class BlacklistControllerTest
     public void testGetAlternativeUrlWithMultipleBlacklistedUrls()
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
@@ -589,8 +589,8 @@ public class BlacklistControllerTest
     public void testGetAlternativeUrlWithSingleBlacklistedUrl()
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
@@ -713,8 +713,8 @@ public class BlacklistControllerTest
     public void testGetEndpointUrlsInBlacklistDefaultParameters()
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
@@ -764,8 +764,8 @@ public class BlacklistControllerTest
     public void testGetEndpointUrlsInBlacklistSpecificParameters()
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
@@ -1047,7 +1047,7 @@ public class BlacklistControllerTest
             final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
                     new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
                             this.testSettings, this.testBlacklistController, null);
-
+            
             fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
             fetcherQueryRunnable.setLastException(new Exception());
             fetcherQueryRunnable.setCompleted(true);
@@ -1106,9 +1106,9 @@ public class BlacklistControllerTest
         final boolean blacklistResetClientBlacklistWithEndpoints = true;
         
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
-
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
+        
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
         fetcherQueryRunnable.setCompleted(true);
@@ -1167,9 +1167,9 @@ public class BlacklistControllerTest
         final boolean blacklistResetClientBlacklistWithEndpoints = true;
         
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
-
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
+        
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());
         fetcherQueryRunnable.setCompleted(true);
@@ -1230,7 +1230,7 @@ public class BlacklistControllerTest
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
                 new RdfFetcherUriQueryRunnableImpl("http://test.example.org", "", "", "", this.testSettings,
                         this.testBlacklistController, null);
-
+        
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org");
         fetcherQueryRunnable.setLastException(new Exception());
         fetcherQueryRunnable.setCompleted(true);
@@ -1299,8 +1299,8 @@ public class BlacklistControllerTest
     public void testRemoveEndpointsFromBlacklist()
     {
         final RdfFetcherQueryRunnableImpl fetcherQueryRunnable =
-                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "", this.testSettings,
-                        this.testBlacklistController, null);
+                new RdfFetcherUriQueryRunnableImpl("http://test.example.org/endpoint/bad/1", "", "", "",
+                        this.testSettings, this.testBlacklistController, null);
         
         fetcherQueryRunnable.setActualEndpointUrl("http://test.example.org/endpoint/bad/1");
         fetcherQueryRunnable.setLastException(new Exception());

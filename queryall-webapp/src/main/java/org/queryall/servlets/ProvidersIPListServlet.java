@@ -23,7 +23,6 @@ import org.queryall.api.provider.SparqlProvider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.RdfFetcherQueryRunnableImpl;
 import org.queryall.query.RdfFetcherSparqlQueryRunnableImpl;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;

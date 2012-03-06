@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.test.DummyProfile;

@@ -426,7 +426,11 @@ public class ServletUtils
                 
                 if(nextIncludeType == null)
                 {
-                    throw new QueryAllException("Could not find query type for static unknown query type nextStaticQueryTypeForUnknown="+nextStaticQueryTypeForUnknown.stringValue()+" fetchController.anyNamespaceNotRecognised()="+fetchController.anyNamespaceNotRecognised());
+                    throw new QueryAllException(
+                            "Could not find query type for static unknown query type nextStaticQueryTypeForUnknown="
+                                    + nextStaticQueryTypeForUnknown.stringValue()
+                                    + " fetchController.anyNamespaceNotRecognised()="
+                                    + fetchController.anyNamespaceNotRecognised());
                 }
                 
                 // If we didn't understand the query

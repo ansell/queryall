@@ -65,7 +65,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.setOriginalQueryBundle(nextOriginalQueryBundle);
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getAcceptHeader()
      */
     @Override
@@ -74,7 +76,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.acceptHeader;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getActualEndpointUrl()
      */
     @Override
@@ -83,7 +87,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.actualEndpointUrl;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getActualQuery()
      */
     @Override
@@ -92,7 +98,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.actualQuery;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getBlacklistController()
      */
     @Override
@@ -101,7 +109,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.localBlacklistController;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getCompleted()
      */
     @Override
@@ -110,7 +120,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.completed;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getDebug()
      */
     @Override
@@ -119,7 +131,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.debug;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getLastException()
      */
     @Override
@@ -128,7 +142,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.lastException;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getLocalSettings()
      */
     @Override
@@ -137,7 +153,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.localSettings;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getNormalisedResult()
      */
     @Override
@@ -159,7 +177,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         }
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getOriginalEndpointUrl()
      */
     @Override
@@ -168,7 +188,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.originalEndpointUrl;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getOriginalQuery()
      */
     @Override
@@ -177,7 +199,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.originalQuery;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getOriginalQueryBundle()
      */
     @Override
@@ -186,7 +210,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.originalQueryBundle;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getQueryEndTime()
      */
     @Override
@@ -195,7 +221,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.queryEndTime;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getQueryStartTime()
      */
     @Override
@@ -204,7 +232,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.queryStartTime;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getRawResult()
      */
     @Override
@@ -213,7 +243,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.rawResult;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getResultDebugString()
      */
     @Override
@@ -222,7 +254,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.resultDebugString;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getReturnedContentEncoding()
      */
     @Override
@@ -231,7 +265,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.returnedContentEncoding;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getReturnedContentType()
      */
     @Override
@@ -240,7 +276,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.returnedContentType;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getReturnedMIMEType()
      */
     @Override
@@ -249,7 +287,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.returnedMIMEType;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#getWasSuccessful()
      */
     @Override
@@ -258,7 +298,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.wasSuccessful;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#notExecuted()
      */
     @Override
@@ -267,7 +309,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return !this.getCompleted();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setAcceptHeader(java.lang.String)
      */
     @Override
@@ -276,7 +320,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.acceptHeader = acceptHeader;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setActualEndpointUrl(java.lang.String)
      */
     @Override
@@ -285,7 +331,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.actualEndpointUrl = actualEndpointUrl;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setActualQuery(java.lang.String)
      */
     @Override
@@ -294,8 +342,12 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.actualQuery = actualQuery;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.query.RdfFetcherQueryRunnable#setBlacklistController(org.queryall.blacklist.BlacklistController)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.query.RdfFetcherQueryRunnable#setBlacklistController(org.queryall.blacklist.
+     * BlacklistController)
      */
     @Override
     public void setBlacklistController(final BlacklistController localBlacklistController)
@@ -303,7 +355,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.localBlacklistController = localBlacklistController;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setCompleted(boolean)
      */
     @Override
@@ -312,7 +366,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.completed = completed;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setDebug(java.lang.String)
      */
     @Override
@@ -321,7 +377,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.debug = debug;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setLastException(java.lang.Exception)
      */
     @Override
@@ -330,7 +388,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.lastException = lastException;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setNormalisedResult(java.lang.String)
      */
     @Override
@@ -339,7 +399,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.normalisedResult = normalisedResult;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setOriginalEndpointUrl(java.lang.String)
      */
     @Override
@@ -348,7 +410,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.originalEndpointUrl = endpointUrl;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setOriginalQuery(java.lang.String)
      */
     @Override
@@ -357,8 +421,12 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.originalQuery = query;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.query.RdfFetcherQueryRunnable#setOriginalQueryBundle(org.queryall.query.QueryBundle)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.queryall.query.RdfFetcherQueryRunnable#setOriginalQueryBundle(org.queryall.query.QueryBundle
+     * )
      */
     @Override
     public void setOriginalQueryBundle(final QueryBundle originalQueryBundle)
@@ -366,7 +434,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.originalQueryBundle = originalQueryBundle;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setQueryEndTime(java.util.Date)
      */
     @Override
@@ -375,7 +445,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.queryEndTime = queryEndTime;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setQueryStartTime(java.util.Date)
      */
     @Override
@@ -384,7 +456,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.queryStartTime = queryStartTime;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setRawResult(java.lang.String)
      */
     @Override
@@ -393,7 +467,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.rawResult = rawResult;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setResultDebugString(java.lang.String)
      */
     @Override
@@ -402,7 +478,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.resultDebugString = resultDebugString;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setReturnedContentEncoding(java.lang.String)
      */
     @Override
@@ -411,7 +489,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.returnedContentEncoding = returnedContentEncoding;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setReturnedContentType(java.lang.String)
      */
     @Override
@@ -420,7 +500,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.returnedContentType = returnedContentType;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setReturnedMIMEType(java.lang.String)
      */
     @Override
@@ -429,8 +511,11 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.returnedMIMEType = returnedMIMEType;
     }
     
-    /* (non-Javadoc)
-     * @see org.queryall.query.RdfFetcherQueryRunnable#setSettings(org.queryall.api.base.QueryAllConfiguration)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.query.RdfFetcherQueryRunnable#setSettings(org.queryall.api.base.
+     * QueryAllConfiguration)
      */
     @Override
     public void setSettings(final QueryAllConfiguration localSettings)
@@ -438,7 +523,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.localSettings = localSettings;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#setWasSuccessful(boolean)
      */
     @Override
@@ -454,7 +541,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
                 + this.getActualEndpointUrl() + " query=" + this.getOriginalQuery();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#wasCompletedSuccessfulQuery()
      */
     @Override
@@ -463,7 +552,9 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         return this.getCompleted() && this.getWasSuccessful();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.query.RdfFetcherQueryRunnable#wasError()
      */
     @Override

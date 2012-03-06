@@ -49,7 +49,8 @@ public class RdfFetcherUriQueryRunnableImpl extends RdfFetcherQueryRunnableImpl
             
             if(fetcher.getLastWasError())
             {
-                RdfFetcherUriQueryRunnableImpl.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
+                RdfFetcherUriQueryRunnableImpl.log.error("Failed to fetch from endpoint="
+                        + this.getOriginalEndpointUrl());
                 
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();

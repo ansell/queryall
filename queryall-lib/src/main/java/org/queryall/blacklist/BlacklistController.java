@@ -18,7 +18,6 @@ import org.queryall.api.utils.WebappConfig;
 import org.queryall.query.HttpUrlQueryRunnableImpl;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.RdfFetcherQueryRunnableImpl;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.SettingsFactory;
