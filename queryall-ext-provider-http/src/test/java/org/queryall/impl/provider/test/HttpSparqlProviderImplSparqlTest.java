@@ -18,13 +18,13 @@ import org.queryall.impl.provider.HttpSparqlProviderImpl;
 public class HttpSparqlProviderImplSparqlTest extends AbstractSparqlProviderTest
 {
     @Override
-    public Profile getNewTestProfile()
+    public final Profile getNewTestProfile()
     {
         return new DummyProfile();
     }
     
     @Override
-    public SparqlProvider getNewTestSparqlProvider()
+    public final SparqlProvider getNewTestSparqlProvider()
     {
         return new HttpSparqlProviderImpl();
     }

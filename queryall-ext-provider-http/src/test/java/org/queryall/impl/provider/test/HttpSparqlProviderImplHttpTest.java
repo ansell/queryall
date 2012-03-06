@@ -5,9 +5,7 @@ package org.queryall.impl.provider.test;
 
 import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
-import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.test.AbstractHttpProviderTest;
-import org.queryall.api.test.AbstractSparqlProviderTest;
 import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.provider.HttpSparqlProviderImpl;
 
@@ -20,14 +18,14 @@ import org.queryall.impl.provider.HttpSparqlProviderImpl;
 public class HttpSparqlProviderImplHttpTest extends AbstractHttpProviderTest
 {
     @Override
-    public Profile getNewTestProfile()
+    public final HttpProvider getNewTestHttpProvider()
     {
-        return new DummyProfile();
+        return new HttpSparqlProviderImpl();
     }
     
     @Override
-    public HttpProvider getNewTestHttpProvider()
+    public final Profile getNewTestProfile()
     {
-        return new HttpSparqlProviderImpl();
+        return new DummyProfile();
     }
 }

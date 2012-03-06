@@ -8,12 +8,14 @@ import org.queryall.api.provider.HttpProvider;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class DummyHttpProviderTest extends AbstractHttpProviderTest
 {
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.test.AbstractHttpProviderTest#getNewTestHttpProvider()
      */
     @Override
@@ -22,7 +24,9 @@ public class DummyHttpProviderTest extends AbstractHttpProviderTest
         return new DummyHttpProvider();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.test.AbstractProfilableTest#getNewTestProfile()
      */
     @Override

@@ -7,29 +7,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-import org.openrdf.OpenRDFException;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.repository.Repository;
-import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
-import org.queryall.api.provider.Provider;
-import org.queryall.api.utils.ProfileIncludeExclude;
-import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
- *
+ * 
  */
 public class DummyHttpProvider extends DummyProvider implements HttpProvider
 {
     
     private final List<String> endpointUrls = new ArrayList<String>();
     private String acceptHeaderString;
-
+    
     /**
      * 
      */
@@ -38,20 +29,24 @@ public class DummyHttpProvider extends DummyProvider implements HttpProvider
         super();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#addEndpointUrl(java.lang.String)
      */
     @Override
-    public void addEndpointUrl(String endpointUrl)
+    public void addEndpointUrl(final String endpointUrl)
     {
         this.endpointUrls.add(endpointUrl);
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#getAcceptHeaderString(java.lang.String)
      */
     @Override
-    public String getAcceptHeaderString(String defaultAcceptHeader)
+    public String getAcceptHeaderString(final String defaultAcceptHeader)
     {
         if(this.acceptHeaderString != null)
         {
@@ -63,7 +58,9 @@ public class DummyHttpProvider extends DummyProvider implements HttpProvider
         }
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#getEndpointUrls()
      */
     @Override
@@ -72,7 +69,9 @@ public class DummyHttpProvider extends DummyProvider implements HttpProvider
         return Collections.unmodifiableList(this.endpointUrls);
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#hasEndpointUrl()
      */
     @Override
@@ -81,7 +80,9 @@ public class DummyHttpProvider extends DummyProvider implements HttpProvider
         return !this.endpointUrls.isEmpty();
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#isHttpGetUrl()
      */
     @Override
@@ -90,7 +91,9 @@ public class DummyHttpProvider extends DummyProvider implements HttpProvider
         return this.getEndpointMethod().equals(HttpProviderSchema.getProviderHttpGetUrl());
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#resetEndpointUrls()
      */
     @Override
@@ -101,11 +104,13 @@ public class DummyHttpProvider extends DummyProvider implements HttpProvider
         return true;
     }
     
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.queryall.api.provider.HttpProvider#setAcceptHeaderString(java.lang.String)
      */
     @Override
-    public void setAcceptHeaderString(String acceptHeaderString)
+    public void setAcceptHeaderString(final String acceptHeaderString)
     {
         this.acceptHeaderString = acceptHeaderString;
     }

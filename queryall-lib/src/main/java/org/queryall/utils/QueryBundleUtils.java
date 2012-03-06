@@ -70,7 +70,7 @@ public class QueryBundleUtils
         
         for(final Provider nextProvider : chosenProviders)
         {
-            QueryBundleUtils.log.info("start of loop body for nextProvider="+nextProvider.getKey().stringValue());
+            QueryBundleUtils.log.info("start of loop body for nextProvider=" + nextProvider.getKey().stringValue());
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
             
@@ -279,7 +279,7 @@ public class QueryBundleUtils
                 results.add(nextProviderQueryBundle);
             }
             
-            QueryBundleUtils.log.info("end of loop body for nextProvider="+nextProvider.getKey().stringValue());
+            QueryBundleUtils.log.info("end of loop body for nextProvider=" + nextProvider.getKey().stringValue());
         } // end for(Provider nextProvider : QueryTypeProviders)
         
         return results;

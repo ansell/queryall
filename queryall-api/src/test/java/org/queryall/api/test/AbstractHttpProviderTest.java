@@ -61,7 +61,7 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     @Test
     public void testAddEndpointUrl()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         testProvider.addEndpointUrl("http://test.example.org/${input_1}:${input_2}");
         
@@ -70,35 +70,6 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
         
         Assert.assertEquals("http://test.example.org/${input_1}:${input_2}", testProvider.getEndpointUrls().iterator()
                 .next());
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.api.provider.HttpProvider#getAcceptHeaderString(java.lang.String)}.
-     */
-    @Test
-    public void testGetAcceptHeaderStringNoSetupDefaultNull()
-    {
-        HttpProvider testProvider = getNewTestHttpProvider();
-        
-        String acceptHeaderString = testProvider.getAcceptHeaderString(null);
-        Assert.assertNull(acceptHeaderString);
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.api.provider.HttpProvider#getAcceptHeaderString(java.lang.String)}.
-     */
-    @Test
-    public void testGetAcceptHeaderStringSetupDefaultNull()
-    {
-        HttpProvider testProvider = getNewTestHttpProvider();
-        
-        testProvider.setAcceptHeaderString("text/nquads, text/turtle, text/plain");
-        
-        String acceptHeaderString = testProvider.getAcceptHeaderString(null);
-        Assert.assertNotNull(acceptHeaderString);
-        Assert.assertEquals("text/nquads, text/turtle, text/plain", acceptHeaderString);
     }
     
     /**
@@ -108,9 +79,9 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     @Test
     public void testGetAcceptHeaderStringNoSetupDefaultNotNull()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
-        String acceptHeaderString = testProvider.getAcceptHeaderString("text/nquads, text/turtle");
+        final String acceptHeaderString = testProvider.getAcceptHeaderString("text/nquads, text/turtle");
         Assert.assertNotNull(acceptHeaderString);
         Assert.assertEquals("text/nquads, text/turtle", acceptHeaderString);
     }
@@ -120,32 +91,44 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
      * {@link org.queryall.api.provider.HttpProvider#getAcceptHeaderString(java.lang.String)}.
      */
     @Test
+    public void testGetAcceptHeaderStringNoSetupDefaultNull()
+    {
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
+        
+        final String acceptHeaderString = testProvider.getAcceptHeaderString(null);
+        Assert.assertNull(acceptHeaderString);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.api.provider.HttpProvider#getAcceptHeaderString(java.lang.String)}.
+     */
+    @Test
     public void testGetAcceptHeaderStringSetupDefaultNotNull()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         testProvider.setAcceptHeaderString("text/nquads");
         
-        String acceptHeaderString = testProvider.getAcceptHeaderString("text/nquads, text/turtle");
+        final String acceptHeaderString = testProvider.getAcceptHeaderString("text/nquads, text/turtle");
         Assert.assertNotNull(acceptHeaderString);
         Assert.assertEquals("text/nquads", acceptHeaderString);
     }
     
     /**
-     * Test method for {@link org.queryall.api.provider.HttpProvider#getEndpointUrls()}.
+     * Test method for
+     * {@link org.queryall.api.provider.HttpProvider#getAcceptHeaderString(java.lang.String)}.
      */
     @Test
-    public void testGetEndpointUrlsSingle()
+    public void testGetAcceptHeaderStringSetupDefaultNull()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
-        testProvider.addEndpointUrl("http://test.example.org/${input_1}:${input_2}");
+        testProvider.setAcceptHeaderString("text/nquads, text/turtle, text/plain");
         
-        Assert.assertNotNull(testProvider.getEndpointUrls());
-        Assert.assertFalse(testProvider.getEndpointUrls().isEmpty());
-        
-        Assert.assertEquals("http://test.example.org/${input_1}:${input_2}", testProvider.getEndpointUrls().iterator()
-                .next());
+        final String acceptHeaderString = testProvider.getAcceptHeaderString(null);
+        Assert.assertNotNull(acceptHeaderString);
+        Assert.assertEquals("text/nquads, text/turtle, text/plain", acceptHeaderString);
     }
     
     /**
@@ -154,7 +137,7 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     @Test
     public void testGetEndpointUrlsMultiple()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         testProvider.addEndpointUrl("http://test.example.org/${input_1}:${input_2}");
         
@@ -173,29 +156,20 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     }
     
     /**
-     * Test method for {@link org.queryall.api.provider.HttpProvider#hasEndpointUrl()}.
+     * Test method for {@link org.queryall.api.provider.HttpProvider#getEndpointUrls()}.
      */
     @Test
-    public void testHasEndpointUrlNoEndpoints()
+    public void testGetEndpointUrlsSingle()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
-        
-        Assert.assertFalse(testProvider.hasEndpointUrl());
-    }
-    
-    /**
-     * Test method for {@link org.queryall.api.provider.HttpProvider#hasEndpointUrl()}.
-     */
-    @Test
-    public void testHasEndpointUrlOneEndpoint()
-    {
-        HttpProvider testProvider = getNewTestHttpProvider();
-        
-        Assert.assertFalse(testProvider.hasEndpointUrl());
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         testProvider.addEndpointUrl("http://test.example.org/${input_1}:${input_2}");
         
-        Assert.assertTrue(testProvider.hasEndpointUrl());
+        Assert.assertNotNull(testProvider.getEndpointUrls());
+        Assert.assertFalse(testProvider.getEndpointUrls().isEmpty());
+        
+        Assert.assertEquals("http://test.example.org/${input_1}:${input_2}", testProvider.getEndpointUrls().iterator()
+                .next());
     }
     
     /**
@@ -204,7 +178,7 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     @Test
     public void testHasEndpointUrlMultipleEndpoints()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         Assert.assertFalse(testProvider.hasEndpointUrl());
         
@@ -215,12 +189,38 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     }
     
     /**
+     * Test method for {@link org.queryall.api.provider.HttpProvider#hasEndpointUrl()}.
+     */
+    @Test
+    public void testHasEndpointUrlNoEndpoints()
+    {
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
+        
+        Assert.assertFalse(testProvider.hasEndpointUrl());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.api.provider.HttpProvider#hasEndpointUrl()}.
+     */
+    @Test
+    public void testHasEndpointUrlOneEndpoint()
+    {
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
+        
+        Assert.assertFalse(testProvider.hasEndpointUrl());
+        
+        testProvider.addEndpointUrl("http://test.example.org/${input_1}:${input_2}");
+        
+        Assert.assertTrue(testProvider.hasEndpointUrl());
+    }
+    
+    /**
      * Test method for {@link org.queryall.api.provider.HttpProvider#isHttpGetUrl()}.
      */
     @Test
     public void testIsHttpGetUrl()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         // verify that the default of no communication is present
         Assert.assertEquals(ProviderSchema.getProviderNoCommunication(), testProvider.getEndpointMethod());
@@ -241,14 +241,14 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     @Test
     public void testResetEndpointUrlsEmpty()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         Assert.assertFalse(testProvider.hasEndpointUrl());
         Assert.assertNotNull(testProvider.getEndpointUrls());
         Assert.assertTrue(testProvider.getEndpointUrls().isEmpty());
         
         Assert.assertTrue(testProvider.resetEndpointUrls());
-
+        
         // Do checks after reset to verify the status quo
         Assert.assertFalse(testProvider.hasEndpointUrl());
         Assert.assertNotNull(testProvider.getEndpointUrls());
@@ -267,7 +267,7 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
     @Test
     public void testResetEndpointUrlsNotEmpty()
     {
-        HttpProvider testProvider = getNewTestHttpProvider();
+        final HttpProvider testProvider = this.getNewTestHttpProvider();
         
         Assert.assertFalse(testProvider.hasEndpointUrl());
         Assert.assertNotNull(testProvider.getEndpointUrls());
@@ -282,7 +282,7 @@ public abstract class AbstractHttpProviderTest extends AbstractProviderTest
         Assert.assertEquals(2, testProvider.getEndpointUrls().size());
         
         Assert.assertTrue(testProvider.resetEndpointUrls());
-
+        
         // Do checks after reset to verify the successful reset
         Assert.assertFalse(testProvider.hasEndpointUrl());
         Assert.assertNotNull(testProvider.getEndpointUrls());
