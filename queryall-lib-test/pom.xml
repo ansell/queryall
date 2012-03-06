@@ -180,13 +180,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-rule-spin</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
 			<artifactId>queryall-ext-rule-regex</artifactId>
 			<version>${queryall.version}</version>
 			<type>jar</type>
