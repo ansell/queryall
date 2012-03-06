@@ -15,20 +15,20 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thread
+public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // extends Thread
 {
-    private static final Logger log = LoggerFactory.getLogger(HttpUrlQueryRunnable.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpUrlQueryRunnableImpl.class);
     @SuppressWarnings("unused")
-    private static final boolean TRACE = HttpUrlQueryRunnable.log.isTraceEnabled();
-    private static final boolean DEBUG = HttpUrlQueryRunnable.log.isDebugEnabled();
+    private static final boolean TRACE = HttpUrlQueryRunnableImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = HttpUrlQueryRunnableImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean INFO = HttpUrlQueryRunnable.log.isInfoEnabled();
+    private static final boolean INFO = HttpUrlQueryRunnableImpl.log.isInfoEnabled();
     
     public String httpOperation = "GET";
     public int maxRowsParameter = this.getLocalSettings()
             .getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
     
-    public HttpUrlQueryRunnable(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
+    public HttpUrlQueryRunnableImpl(final String nextHttpOperation, final String nextUrl, final String nextPostInformation,
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController)
     {
@@ -52,9 +52,9 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
             
             final RdfFetcher fetcher = new RdfFetcher(this.getLocalSettings(), this.getBlacklistController());
             
-            if(HttpUrlQueryRunnable.DEBUG)
+            if(HttpUrlQueryRunnableImpl.DEBUG)
             {
-                HttpUrlQueryRunnable.log.debug("HttpUrlQueryRunnable.run: about to fetch endpoint="
+                HttpUrlQueryRunnableImpl.log.debug("HttpUrlQueryRunnableImpl.run: about to fetch endpoint="
                         + this.getOriginalEndpointUrl());
             }
             
@@ -68,7 +68,7 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 
                 if(fetcher.getLastWasError())
                 {
-                    HttpUrlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
+                    HttpUrlQueryRunnableImpl.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
                     final Map<String, String> alternateEndpointsAndQueries =
                             this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                     
@@ -77,12 +77,12 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
+                        HttpUrlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
                                 + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
-                        if(HttpUrlQueryRunnable.DEBUG)
+                        if(HttpUrlQueryRunnableImpl.DEBUG)
                         {
-                            HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                            HttpUrlQueryRunnableImpl.log.debug("alternateQuery=" + alternateQuery);
                         }
                         
                         tempRawResult =
@@ -113,24 +113,24 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
                 
                 if(fetcher.getLastWasError())
                 {
-                    HttpUrlQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
+                    HttpUrlQueryRunnableImpl.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
                     
                     final Map<String, String> alternateEndpointsAndQueries =
                             this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                     
-                    HttpUrlQueryRunnable.log.error("There are " + alternateEndpointsAndQueries.size()
+                    HttpUrlQueryRunnableImpl.log.error("There are " + alternateEndpointsAndQueries.size()
                             + " alternative endpoints to choose from");
                     
                     for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                     {
-                        HttpUrlQueryRunnable.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
+                        HttpUrlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint=" + alternateEndpoint
                                 + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        if(HttpUrlQueryRunnable.DEBUG)
+                        if(HttpUrlQueryRunnableImpl.DEBUG)
                         {
-                            HttpUrlQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                            HttpUrlQueryRunnableImpl.log.debug("alternateQuery=" + alternateQuery);
                         }
                         
                         tempRawResult =
@@ -183,13 +183,13 @@ public class HttpUrlQueryRunnable extends RdfFetcherQueryRunnable // extends Thr
         }
         catch(final QueryAllException qae)
         {
-            HttpUrlQueryRunnable.log.error("Found QueryAllException", qae);
+            HttpUrlQueryRunnableImpl.log.error("Found QueryAllException", qae);
             this.setWasSuccessful(false);
             this.setLastException(qae);
         }
         catch(final Exception ex)
         {
-            HttpUrlQueryRunnable.log.error("Found unknown exception", ex);
+            HttpUrlQueryRunnableImpl.log.error("Found unknown exception", ex);
             this.setWasSuccessful(false);
             this.setLastException(ex);
         }

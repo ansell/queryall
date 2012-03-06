@@ -5,432 +5,228 @@ import java.util.concurrent.Callable;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * @author Peter Ansell p_ansell@yahoo.com
- */
-public abstract class RdfFetcherQueryRunnable extends Thread implements Callable<String>
+public interface RdfFetcherQueryRunnable extends Runnable, Callable<String>
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfFetcherQueryRunnable.class);
-    @SuppressWarnings("unused")
-    private static final boolean TRACE = RdfFetcherQueryRunnable.log.isTraceEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean DEBUG = RdfFetcherQueryRunnable.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = RdfFetcherQueryRunnable.log.isInfoEnabled();
-    
-    private String originalEndpointUrl = "";
-    private String originalQuery = "";
-    private String actualEndpointUrl;
-    private String actualQuery;
-    private String debug = "";
-    private String acceptHeader = "";
-    private String returnedContentType = null;
-    private String returnedMIMEType = null;
-    private String returnedContentEncoding = null;
-    private QueryBundle originalQueryBundle = null;
-    
-    private boolean wasSuccessful = false;
-    private boolean completed = false;
-    private Exception lastException = null;
-    private String resultDebugString = "";
-    
-    private String rawResult = "";
-    private String normalisedResult = "";
-    
-    private Date queryStartTime = null;
-    private Date queryEndTime = null;
-    private QueryAllConfiguration localSettings;
-    private BlacklistController localBlacklistController;
-    
-    public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
-            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController)
-    {
-        this.setOriginalEndpointUrl(nextEndpointUrl);
-        this.setOriginalQuery(nextQuery);
-        this.setDebug(nextDebug);
-        this.setAcceptHeader(nextAcceptHeader);
-        this.setSettings(localSettings);
-        this.setBlacklistController(localBlacklistController);
-    }
-    
-    public RdfFetcherQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
-            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
-    {
-        this(nextEndpointUrl, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController);
-        this.setOriginalQueryBundle(nextOriginalQueryBundle);
-    }
     
     /**
      * @return the acceptHeader
      */
-    public String getAcceptHeader()
-    {
-        return this.acceptHeader;
-    }
+    String getAcceptHeader();
     
     /**
      * @return the actualEndpointUrl
      */
-    public String getActualEndpointUrl()
-    {
-        return this.actualEndpointUrl;
-    }
+    String getActualEndpointUrl();
     
     /**
      * @return the actualQuery
      */
-    public String getActualQuery()
-    {
-        return this.actualQuery;
-    }
+    String getActualQuery();
     
     /**
      * @return the localBlacklistController
      */
-    public BlacklistController getBlacklistController()
-    {
-        return this.localBlacklistController;
-    }
+    BlacklistController getBlacklistController();
     
     /**
      * @return the completed
      */
-    public boolean getCompleted()
-    {
-        return this.completed;
-    }
+    boolean getCompleted();
     
     /**
      * @return the debug
      */
-    public String getDebug()
-    {
-        return this.debug;
-    }
+    String getDebug();
     
     /**
      * @return the lastException
      */
-    public Exception getLastException()
-    {
-        return this.lastException;
-    }
+    Exception getLastException();
     
     /**
      * @return the localSettings
      */
-    public QueryAllConfiguration getLocalSettings()
-    {
-        return this.localSettings;
-    }
+    QueryAllConfiguration getLocalSettings();
     
     /**
      * @return the normalisedResult
      */
-    public String getNormalisedResult()
-    {
-        if(this.normalisedResult == null || this.normalisedResult.length() == 0)
-        {
-            if(RdfFetcherQueryRunnable.DEBUG)
-            {
-                RdfFetcherQueryRunnable.log
-                        .debug("RdfFetcherQueryRunnable.getNormalisedResult: no normalisation occurred, returning raw result instead");
-            }
-            
-            return this.rawResult;
-        }
-        else
-        {
-            return this.normalisedResult;
-        }
-    }
+    String getNormalisedResult();
     
-    public String getOriginalEndpointUrl()
-    {
-        return this.originalEndpointUrl;
-    }
+    String getOriginalEndpointUrl();
     
-    public String getOriginalQuery()
-    {
-        return this.originalQuery;
-    }
+    String getOriginalQuery();
     
     /**
      * @return the originalQueryBundle
      */
-    public QueryBundle getOriginalQueryBundle()
-    {
-        return this.originalQueryBundle;
-    }
+    QueryBundle getOriginalQueryBundle();
     
     /**
      * @return the queryEndTime
      */
-    public Date getQueryEndTime()
-    {
-        return this.queryEndTime;
-    }
+    Date getQueryEndTime();
     
     /**
      * @return the queryStartTime
      */
-    public Date getQueryStartTime()
-    {
-        return this.queryStartTime;
-    }
+    Date getQueryStartTime();
     
     /**
      * @return the rawResult
      */
-    public String getRawResult()
-    {
-        return this.rawResult;
-    }
+    String getRawResult();
     
     /**
      * @return the resultDebugString
      */
-    public String getResultDebugString()
-    {
-        return this.resultDebugString;
-    }
+    String getResultDebugString();
     
     /**
      * @return the returnedContentEncoding
      */
-    public String getReturnedContentEncoding()
-    {
-        return this.returnedContentEncoding;
-    }
+    String getReturnedContentEncoding();
     
     /**
      * @return the returnedContentType
      */
-    public String getReturnedContentType()
-    {
-        return this.returnedContentType;
-    }
+    String getReturnedContentType();
     
     /**
      * @return the returnedMIMEType
      */
-    public String getReturnedMIMEType()
-    {
-        return this.returnedMIMEType;
-    }
+    String getReturnedMIMEType();
     
     /**
      * @return the wasSuccessful
      */
-    public boolean getWasSuccessful()
-    {
-        return this.wasSuccessful;
-    }
+    boolean getWasSuccessful();
     
-    public boolean notExecuted()
-    {
-        return !this.getCompleted();
-    }
+    boolean notExecuted();
     
     /**
      * @param acceptHeader
      *            the acceptHeader to set
      */
-    public void setAcceptHeader(final String acceptHeader)
-    {
-        this.acceptHeader = acceptHeader;
-    }
+    void setAcceptHeader(final String acceptHeader);
     
     /**
      * @param actualEndpointUrl
      *            the actualEndpointUrl to set
      */
-    public void setActualEndpointUrl(final String actualEndpointUrl)
-    {
-        this.actualEndpointUrl = actualEndpointUrl;
-    }
+    void setActualEndpointUrl(final String actualEndpointUrl);
     
     /**
      * @param actualQuery
      *            the actualQuery to set
      */
-    public void setActualQuery(final String actualQuery)
-    {
-        this.actualQuery = actualQuery;
-    }
+    void setActualQuery(final String actualQuery);
     
     /**
      * @param localBlacklistController
      *            the localBlacklistController to set
      */
-    public void setBlacklistController(final BlacklistController localBlacklistController)
-    {
-        this.localBlacklistController = localBlacklistController;
-    }
+    void setBlacklistController(final BlacklistController localBlacklistController);
     
     /**
      * @param completed
      *            the completed to set
      */
-    public void setCompleted(final boolean completed)
-    {
-        this.completed = completed;
-    }
+    void setCompleted(final boolean completed);
     
     /**
      * @param debug
      *            the debug to set
      */
-    public void setDebug(final String debug)
-    {
-        this.debug = debug;
-    }
+    void setDebug(final String debug);
     
     /**
      * @param lastException
      *            the lastException to set
      */
-    public void setLastException(final Exception lastException)
-    {
-        this.lastException = lastException;
-    }
+    void setLastException(final Exception lastException);
     
     /**
      * @param normalisedResult
      *            the normalisedResult to set
      */
-    public void setNormalisedResult(final String normalisedResult)
-    {
-        this.normalisedResult = normalisedResult;
-    }
+    void setNormalisedResult(final String normalisedResult);
     
     /**
      * @param endpointUrl
      *            the endpointUrl to set
      */
-    public void setOriginalEndpointUrl(final String endpointUrl)
-    {
-        this.originalEndpointUrl = endpointUrl;
-    }
+    void setOriginalEndpointUrl(final String endpointUrl);
     
     /**
      * @param query
      *            the query to set
      */
-    public void setOriginalQuery(final String query)
-    {
-        this.originalQuery = query;
-    }
+    void setOriginalQuery(final String query);
     
     /**
      * @param originalQueryBundle
      *            the originalQueryBundle to set
      */
-    public void setOriginalQueryBundle(final QueryBundle originalQueryBundle)
-    {
-        this.originalQueryBundle = originalQueryBundle;
-    }
+    void setOriginalQueryBundle(final QueryBundle originalQueryBundle);
     
     /**
      * @param queryEndTime
      *            the queryEndTime to set
      */
-    public void setQueryEndTime(final Date queryEndTime)
-    {
-        this.queryEndTime = queryEndTime;
-    }
+    void setQueryEndTime(final Date queryEndTime);
     
     /**
      * @param queryStartTime
      *            the queryStartTime to set
      */
-    public void setQueryStartTime(final Date queryStartTime)
-    {
-        this.queryStartTime = queryStartTime;
-    }
+    void setQueryStartTime(final Date queryStartTime);
     
     /**
      * @param rawResult
      *            the rawResult to set
      */
-    public void setRawResult(final String rawResult)
-    {
-        this.rawResult = rawResult;
-    }
+    void setRawResult(final String rawResult);
     
     /**
      * @param resultDebugString
      *            the resultDebugString to set
      */
-    public void setResultDebugString(final String resultDebugString)
-    {
-        this.resultDebugString = resultDebugString;
-    }
+    void setResultDebugString(final String resultDebugString);
     
     /**
      * @param returnedContentEncoding
      *            the returnedContentEncoding to set
      */
-    public void setReturnedContentEncoding(final String returnedContentEncoding)
-    {
-        this.returnedContentEncoding = returnedContentEncoding;
-    }
+    void setReturnedContentEncoding(final String returnedContentEncoding);
     
     /**
      * @param returnedContentType
      *            the returnedContentType to set
      */
-    public void setReturnedContentType(final String returnedContentType)
-    {
-        this.returnedContentType = returnedContentType;
-    }
+    void setReturnedContentType(final String returnedContentType);
     
     /**
      * @param returnedMIMEType
      *            the returnedMIMEType to set
      */
-    public void setReturnedMIMEType(final String returnedMIMEType)
-    {
-        this.returnedMIMEType = returnedMIMEType;
-    }
+    void setReturnedMIMEType(final String returnedMIMEType);
     
     /**
      * @param localSettings
      *            the localSettings to set
      */
-    public void setSettings(final QueryAllConfiguration localSettings)
-    {
-        this.localSettings = localSettings;
-    }
+    void setSettings(final QueryAllConfiguration localSettings);
     
     /**
      * @param wasSuccessful
      *            the wasSuccessful to set
      */
-    public void setWasSuccessful(final boolean wasSuccessful)
-    {
-        this.wasSuccessful = wasSuccessful;
-    }
+    void setWasSuccessful(final boolean wasSuccessful);
     
-    @Override
-    public String toString()
-    {
-        return "originalendpointUrl=" + this.getOriginalEndpointUrl() + "actualendpointurl="
-                + this.getActualEndpointUrl() + " query=" + this.getOriginalQuery();
-    }
+    boolean wasCompletedSuccessfulQuery();
     
-    public boolean wasCompletedSuccessfulQuery()
-    {
-        return this.getCompleted() && this.getWasSuccessful();
-    }
+    boolean wasError();
     
-    public boolean wasError()
-    {
-        return this.getCompleted() && this.getLastException() != null;
-    }
 }

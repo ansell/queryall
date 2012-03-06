@@ -36,7 +36,6 @@ public class RdfFetchControllerTest
     @Before
     public void setUp() throws Exception
     {
-        this.testController = new RdfFetchController();
         this.testSettings = new Settings();
         this.testBlacklistController = new BlacklistController(this.testSettings);
         
@@ -60,12 +59,71 @@ public class RdfFetchControllerTest
     
     /**
      * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller defaults to false when there is no input.
+     * 
+     */
+    @Test
+    public final void testAnyNamespaceNotRecognisedEmpty()
+    {
+        this.testController = new RdfFetchController();
+        
+        Assert.assertFalse(this.testController.anyNamespaceNotRecognised());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller returns false when there is a single namespace specific
+     * provider and namespace specific query type without a matching namespace in the given inputs.
+     * 
      */
     @Ignore
     @Test
-    public final void testAnyNamespaceNotRecognised()
+    public final void testAnyNamespaceNotRecognisedSingleMatchingNamespace()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testController = new RdfFetchController();
+        
+        // FIXME: Implement this test!
+        
+        Assert.assertFalse(this.testController.anyNamespaceNotRecognised());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller returns true when there is a single namespace specific
+     * provider and namespace specific query type without a matching namespace in the given inputs.
+     * 
+     */
+    @Ignore
+    @Test
+    public final void testAnyNamespaceNotRecognisedSingleNotMatchingNamespace()
+    {
+        this.testController = new RdfFetchController();
+        
+        // FIXME: Implement this test!
+        
+        Assert.assertTrue(this.testController.anyNamespaceNotRecognised());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller returns true if there are two providers and two query types,
+     * and one of the query type and provider combinations would have matched without the namespace
+     * condition.
+     * 
+     */
+    @Ignore
+    @Test
+    public final void testAnyNamespaceNotRecognisedMultipleWithAndWithoutMatchingNamespace()
+    {
+        this.testController = new RdfFetchController();
+        
+        // FIXME: Implement this test!
+        
+        Assert.assertTrue(this.testController.anyNamespaceNotRecognised());
     }
     
     /**
@@ -178,7 +236,7 @@ public class RdfFetchControllerTest
     @Test
     public final void testRdfFetchController()
     {
-        Assert.assertNotNull(this.testController);
+        this.testController = new RdfFetchController();
         
         Assert.assertNull(this.testController.getSettings());
         Assert.assertNull(this.testController.getBlacklistController());

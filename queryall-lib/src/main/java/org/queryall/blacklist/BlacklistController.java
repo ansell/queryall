@@ -15,9 +15,10 @@ import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.utils.WebappConfig;
-import org.queryall.query.HttpUrlQueryRunnable;
+import org.queryall.query.HttpUrlQueryRunnableImpl;
 import org.queryall.query.QueryDebug;
 import org.queryall.query.RdfFetcherQueryRunnable;
+import org.queryall.query.RdfFetcherQueryRunnableImpl;
 import org.queryall.statistics.StatisticsEntry;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.SettingsFactory;
@@ -79,8 +80,8 @@ public class BlacklistController
     
     private volatile Collection<String> currentIPWhitelist = null;
     
-    private volatile Collection<HttpUrlQueryRunnable> internalStatisticsUploadList = Collections
-            .synchronizedSet(new HashSet<HttpUrlQueryRunnable>());
+    private volatile Collection<HttpUrlQueryRunnableImpl> internalStatisticsUploadList = Collections
+            .synchronizedSet(new HashSet<HttpUrlQueryRunnableImpl>());
     
     private volatile Date lastServerStartupDate = new Date();
     
@@ -297,9 +298,9 @@ public class BlacklistController
                                 + this.internalStatisticsUploadList.size());
             }
             
-            final Collection<HttpUrlQueryRunnable> completedThreads = new HashSet<HttpUrlQueryRunnable>();
+            final Collection<HttpUrlQueryRunnableImpl> completedThreads = new HashSet<HttpUrlQueryRunnableImpl>();
             
-            for(final HttpUrlQueryRunnable nextThread : this.internalStatisticsUploadList)
+            for(final HttpUrlQueryRunnableImpl nextThread : this.internalStatisticsUploadList)
             {
                 if(nextThread.getCompleted())
                 {
@@ -307,7 +308,7 @@ public class BlacklistController
                 }
             }
             
-            for(final HttpUrlQueryRunnable nextThread : completedThreads)
+            for(final HttpUrlQueryRunnableImpl nextThread : completedThreads)
             {
                 if(nextThread == null)
                 {
@@ -873,14 +874,14 @@ public class BlacklistController
         
         this.clearStatisticsUploadList();
         
-        final Collection<HttpUrlQueryRunnable> runnableThreads =
-                Collections.synchronizedSet(new HashSet<HttpUrlQueryRunnable>());
+        final Collection<HttpUrlQueryRunnableImpl> runnableThreads =
+                Collections.synchronizedSet(new HashSet<HttpUrlQueryRunnableImpl>());
         
         for(final StatisticsEntry nextStatisticsEntry : nextStatisticsEntries)
         {
             try
             {
-                final HttpUrlQueryRunnable nextThread =
+                final HttpUrlQueryRunnableImpl nextThread =
                         nextStatisticsEntry.generateThread(this.localSettings, this, modelVersion);
                 nextThread.start();
                 runnableThreads.add(nextThread);
@@ -897,7 +898,7 @@ public class BlacklistController
                     + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
         }
         
-        for(final HttpUrlQueryRunnable nextRunnableThread : runnableThreads)
+        for(final HttpUrlQueryRunnableImpl nextRunnableThread : runnableThreads)
         {
             this.internalStatisticsUploadList.add(nextRunnableThread);
         }

@@ -86,11 +86,12 @@ import org.queryall.exception.UnsupportedProjectException;
 import org.queryall.exception.UnsupportedProviderException;
 import org.queryall.exception.UnsupportedQueryTypeException;
 import org.queryall.exception.UnsupportedRuleTestException;
-import org.queryall.query.HttpUrlQueryRunnable;
+import org.queryall.query.HttpUrlQueryRunnableImpl;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.RdfFetcherUriQueryRunnable;
+import org.queryall.query.RdfFetcherQueryRunnableImpl;
+import org.queryall.query.RdfFetcherUriQueryRunnableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -699,7 +700,7 @@ public final class RdfUtils
         }
     }
     
-    public static HttpUrlQueryRunnable generateHttpUrlSparqlDeleteThread(final BaseQueryAllInterface rdfObject,
+    public static HttpUrlQueryRunnableImpl generateHttpUrlSparqlDeleteThread(final BaseQueryAllInterface rdfObject,
             final boolean useSparqlGraph, final String sparqlGraphUri, final String sparqlEndpointMethod,
             final String sparqlEndpointUrl, final String acceptHeader, final String expectedReturnFormat,
             final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController)
@@ -712,7 +713,7 @@ public final class RdfUtils
                 acceptHeader, expectedReturnFormat, localSettings, localBlacklistController);
     }
     
-    public static HttpUrlQueryRunnable generateHttpUrlSparqlInsertThread(final BaseQueryAllInterface rdfObject,
+    public static HttpUrlQueryRunnableImpl generateHttpUrlSparqlInsertThread(final BaseQueryAllInterface rdfObject,
             final boolean isDelete, final boolean useSparqlGraph, final String sparqlGraphUri,
             final String sparqlEndpointMethod, final String sparqlEndpointUrl, final String acceptHeader,
             final String expectedReturnFormat, final QueryAllConfiguration localSettings,
@@ -725,12 +726,12 @@ public final class RdfUtils
                 acceptHeader, expectedReturnFormat, localSettings, localBlacklistController);
     }
     
-    public static HttpUrlQueryRunnable generateHttpUrlSparqlThread(final String sparqlQuery,
+    public static HttpUrlQueryRunnableImpl generateHttpUrlSparqlThread(final String sparqlQuery,
             final String sparqlEndpointMethod, final String sparqlEndpointUrl, final String acceptHeader,
             final String expectedReturnFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController)
     {
-        return new HttpUrlQueryRunnable(sparqlEndpointMethod, sparqlEndpointUrl, sparqlQuery, acceptHeader,
+        return new HttpUrlQueryRunnableImpl(sparqlEndpointMethod, sparqlEndpointUrl, sparqlQuery, acceptHeader,
                 localSettings, localBlacklistController);
     }
     
@@ -2166,7 +2167,7 @@ public final class RdfUtils
                 {
                     RdfUtils.log.error("getQueryTypesForQueryBundles: IOException", ioe);
                 }
-            } // end for(RdfFetcherQueryRunnable nextResult : rdfResults)
+            } // end for(RdfFetcherQueryRunnableImpl nextResult : rdfResults)
         }
         catch(final org.openrdf.repository.RepositoryException re)
         {
@@ -2788,7 +2789,7 @@ public final class RdfUtils
         }
     }
     
-    public static void insertResultsIntoRepository(final Collection<RdfFetcherQueryRunnable> results,
+    public static void insertResultsIntoRepository(final Collection<RdfFetcherQueryRunnableImpl> results,
             final Repository myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
         java.io.IOException
     {
@@ -2877,18 +2878,18 @@ public final class RdfUtils
             final Repository myRepository, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final boolean inParallel) throws InterruptedException
     {
-        final Collection<RdfFetcherQueryRunnable> retrievalThreads = new HashSet<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnableImpl> retrievalThreads = new HashSet<RdfFetcherQueryRunnableImpl>();
         
         for(final String nextLocation : retrievalUrls)
         {
-            final RdfFetcherQueryRunnable nextThread =
-                    new RdfFetcherUriQueryRunnable(nextLocation, "", "", defaultResultFormat, localSettings,
+            final RdfFetcherQueryRunnableImpl nextThread =
+                    new RdfFetcherUriQueryRunnableImpl(nextLocation, "", "", defaultResultFormat, localSettings,
                             localBlacklistController, new QueryBundle());
             
             retrievalThreads.add(nextThread);
         }
         
-        for(final RdfFetcherQueryRunnable nextThread : retrievalThreads)
+        for(final RdfFetcherQueryRunnableImpl nextThread : retrievalThreads)
         {
             nextThread.start();
             
@@ -2909,7 +2910,7 @@ public final class RdfUtils
         
         if(inParallel)
         {
-            for(final RdfFetcherQueryRunnable nextThread : retrievalThreads)
+            for(final RdfFetcherQueryRunnableImpl nextThread : retrievalThreads)
             {
                 try
                 {

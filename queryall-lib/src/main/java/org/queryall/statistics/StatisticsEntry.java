@@ -21,7 +21,7 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.query.HttpUrlQueryRunnable;
+import org.queryall.query.HttpUrlQueryRunnableImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -680,7 +680,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
      * @return
      * @throws OpenRDFException
      */
-    public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
+    public HttpUrlQueryRunnableImpl generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
         // TODO: Convert this to new structure
@@ -720,7 +720,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
          *                             + sparqlInsertQuery); }
          * 
          *                             return new
-         *                             HttpUrlQueryRunnable(localSettings.getStringProperty
+         *                             HttpUrlQueryRunnableImpl(localSettings.getStringProperty
          *                             ("statisticsServerMethod", ""),
          *                             localSettings.getStringProperty("statisticsServerUrl", ""),
          *                             sparqlInsertQuery, "* / *", localSettings,
@@ -735,7 +735,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
          *                             + postInformation); }
          * 
          *                             return new
-         *                             HttpUrlQueryRunnable(localSettings.getStringProperty
+         *                             HttpUrlQueryRunnableImpl(localSettings.getStringProperty
          *                             ("statisticsServerMethod", ""),
          *                             localSettings.getStringProperty("statisticsServerUrl", ""),
          *                             postInformation, "* / *", localSettings,

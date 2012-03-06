@@ -23,7 +23,8 @@ import org.queryall.api.provider.SparqlProvider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.RdfFetcherSparqlQueryRunnable;
+import org.queryall.query.RdfFetcherQueryRunnableImpl;
+import org.queryall.query.RdfFetcherSparqlQueryRunnableImpl;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,8 +104,8 @@ public class ProvidersIPListServlet extends HttpServlet
                             
                             try
                             {
-                                final RdfFetcherSparqlQueryRunnable testQueryRunnable =
-                                        new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri,
+                                final RdfFetcherQueryRunnable testQueryRunnable =
+                                        new RdfFetcherSparqlQueryRunnableImpl(nextEndpoint, sparqlGraphUri,
                                                 "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug",
                                                 "application/rdf+xml", 5, localSettings, localBlacklistController, null);
                                 sparqlThreads.add(testQueryRunnable);
