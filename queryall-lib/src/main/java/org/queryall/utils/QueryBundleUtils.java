@@ -70,7 +70,7 @@ public class QueryBundleUtils
         
         for(final Provider nextProvider : chosenProviders)
         {
-            QueryBundleUtils.log.info("nextProvider="+nextProvider.getKey().stringValue());
+            QueryBundleUtils.log.info("start of loop body for nextProvider="+nextProvider.getKey().stringValue());
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
             

@@ -68,7 +68,7 @@ public class QueryBundleUtilsTest
         // add an instance of DummyProvider which only implements the Provider interface, so should
         // not be recognised as HttpProvider or NoCommunicationProvider, among any others
         this.testProviderTrivial1 = new DummyProvider();
-        this.testProviderTrivial1.setKey("http://test.example.org/querybundleutilstest/provider/trivial/1");
+        this.testProviderTrivial1.setKey("http://test.example.org/querybundleutilstest/trivial/1");
         this.testChosenProvidersSingleTrivial.add(this.testProviderTrivial1);
         
         this.testSortedIncludedProfilesEmpty = new ArrayList<Profile>(0);
