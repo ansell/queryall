@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author Peter Ansell p_ansell@yahoo.com
  * 
  */
-public final class DummyProvider implements Provider
+public class DummyProvider implements Provider
 {
     private static final Logger LOG = LoggerFactory.getLogger(DummyProvider.class);
     @SuppressWarnings("unused")
