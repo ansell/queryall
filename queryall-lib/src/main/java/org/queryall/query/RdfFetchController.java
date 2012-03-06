@@ -707,10 +707,6 @@ public class RdfFetchController
         this.fetchThreadGroup = fetchThreadGroup;
     }
     
-    /**
-     * @param nextPageOffset
-     *            the nextPageOffset to set
-     */
     public void setPageOffset(final int nextPageOffset)
     {
         if(nextPageOffset < 1)

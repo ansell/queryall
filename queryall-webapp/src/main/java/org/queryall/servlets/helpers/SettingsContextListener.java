@@ -24,10 +24,10 @@ import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
  */
 public class SettingsContextListener implements ServletContextListener
 {
-    public static final String QUERYALL_CONTENTNEGOTIATOR = "queryallcontentnegotiator";
-    public static final String QUERYALL_VELOCITY = "queryallvelocity";
-    public static final String QUERYALL_BLACKLIST = "queryallblacklist";
-    public static final String QUERYALL_CONFIG = "queryallconfig";
+    public static final String QUERYALL_CONTENTNEGOTIATOR = "queryall.contentnegotiator";
+    public static final String QUERYALL_VELOCITY = "queryall.velocity";
+    public static final String QUERYALL_BLACKLIST = "queryall.blacklist";
+    public static final String QUERYALL_CONFIG = "queryall.config";
     
     public SettingsContextListener()
     {
