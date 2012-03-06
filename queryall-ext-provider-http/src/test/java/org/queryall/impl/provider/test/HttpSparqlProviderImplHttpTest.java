@@ -4,7 +4,9 @@
 package org.queryall.impl.provider.test;
 
 import org.queryall.api.profile.Profile;
+import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.SparqlProvider;
+import org.queryall.api.test.AbstractHttpProviderTest;
 import org.queryall.api.test.AbstractSparqlProviderTest;
 import org.queryall.api.test.DummyProfile;
 import org.queryall.impl.provider.HttpSparqlProviderImpl;
@@ -15,7 +17,7 @@ import org.queryall.impl.provider.HttpSparqlProviderImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpSparqlProviderImplTest extends AbstractSparqlProviderTest
+public class HttpSparqlProviderImplHttpTest extends AbstractHttpProviderTest
 {
     @Override
     public Profile getNewTestProfile()
@@ -24,7 +26,7 @@ public class HttpSparqlProviderImplTest extends AbstractSparqlProviderTest
     }
     
     @Override
-    public SparqlProvider getNewTestSparqlProvider()
+    public HttpProvider getNewTestHttpProvider()
     {
         return new HttpSparqlProviderImpl();
     }

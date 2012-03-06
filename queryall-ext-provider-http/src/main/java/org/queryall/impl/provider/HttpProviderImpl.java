@@ -122,13 +122,13 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @Override
     public Collection<String> getEndpointUrls()
     {
-        return this.endpointUrls;
+        return Collections.unmodifiableCollection(this.endpointUrls);
     }
     
     @Override
     public boolean hasEndpointUrl()
     {
-        return (this.getEndpointUrls() != null && this.getEndpointUrls().size() > 0);
+        return !this.getEndpointUrls().isEmpty();
     }
     
     @Override
@@ -145,8 +145,9 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @Override
     public boolean resetEndpointUrls()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.endpointUrls.clear();
+        
+        return true;
     }
     
     @Override
