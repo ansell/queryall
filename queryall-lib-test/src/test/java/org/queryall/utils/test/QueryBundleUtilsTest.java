@@ -62,16 +62,19 @@ public class QueryBundleUtilsTest
         this.testBlacklistControllerEmpty = new BlacklistController(this.testSettingsEmpty);
         
         this.testQueryTypeEmpty = new DummyQueryType();
+        this.testQueryTypeEmpty.setKey("http://test.example.org/querybundleutilstest/querytype/empty");
         this.testChosenProvidersEmpty = new ArrayList<Provider>(0);
         this.testChosenProvidersSingleTrivial = new ArrayList<Provider>(1);
         // add an instance of DummyProvider which only implements the Provider interface, so should
         // not be recognised as HttpProvider or NoCommunicationProvider, among any others
         this.testProviderTrivial1 = new DummyProvider();
+        this.testProviderTrivial1.setKey("http://test.example.org/querybundleutilstest/provider/trivial/1");
         this.testChosenProvidersSingleTrivial.add(this.testProviderTrivial1);
         
         this.testSortedIncludedProfilesEmpty = new ArrayList<Profile>(0);
         this.testSortedIncludedProfilesSingleAllInclude = new ArrayList<Profile>(1);
         this.testProfileSingleAllInclude = new DummyProfile();
+        this.testProfileSingleAllInclude.setKey("http://other.example.org/test/profile/singleallinclude");
         // By default this property is undefined to make it easier to layer profiles, but we want it
         // defined here to make sure that all settings are set to include
         this.testProfileSingleAllInclude

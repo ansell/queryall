@@ -70,13 +70,13 @@ public class QueryBundleUtils
         
         for(final Provider nextProvider : chosenProviders)
         {
-            QueryBundleUtils.log.info("a");
+            QueryBundleUtils.log.info("nextProvider="+nextProvider.getKey().stringValue());
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
             
             if(nextProvider instanceof HttpProvider)
             {
-                QueryBundleUtils.log.info("b");
+                QueryBundleUtils.log.info("nextProvider instanceof HttpProvider");
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 Map<String, String> attributeList = new HashMap<String, String>();
                 
@@ -232,7 +232,7 @@ public class QueryBundleUtils
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                QueryBundleUtils.log.info("c");
+                QueryBundleUtils.log.info("noCommunicationProvider == true");
                 String nextStaticRdfXmlString = "";
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
@@ -279,7 +279,7 @@ public class QueryBundleUtils
                 results.add(nextProviderQueryBundle);
             }
             
-            QueryBundleUtils.log.info("e");
+            QueryBundleUtils.log.info("end of loop body for nextProvider="+nextProvider.getKey().stringValue());
         } // end for(Provider nextProvider : QueryTypeProviders)
         
         return results;
