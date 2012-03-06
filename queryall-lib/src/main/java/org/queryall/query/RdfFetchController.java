@@ -720,11 +720,11 @@ public class RdfFetchController
                     .warn("RdfFetchController.setPageOffset: correcting pageoffset to 1, previous pageOffset="
                             + nextPageOffset);
             
-            this.setPageOffset(1);
+            this.pageOffset = 1;
         }
         else
         {
-            this.setPageOffset(nextPageOffset);
+            this.pageOffset = nextPageOffset;
         }
     }
     
