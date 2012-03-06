@@ -268,11 +268,11 @@ public final class ProviderUtils
             else
             {
                 ProviderUtils.log
-                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input tag was invalid nextNamespaceInputTag="
+                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input tag was invalid nextQueryType="+nextQueryType.getKey().stringValue()+" nextNamespaceInputTag="
                                 + nextNamespaceInputTag + " queryStringMatches.size()=" + queryStringMatches.size());
                 
                 throw new RuntimeException(
-                        "Could not match the namespace because the input tag was invalid nextNamespaceInputTag="
+                        "Could not match the namespace because the input tag was invalid nextQueryType="+nextQueryType.getKey().stringValue()+" nextNamespaceInputTag="
                                 + nextNamespaceInputTag + " queryStringMatches.size()=" + queryStringMatches.size());
             }
         }
