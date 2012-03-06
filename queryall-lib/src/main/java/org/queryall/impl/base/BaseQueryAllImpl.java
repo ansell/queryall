@@ -40,7 +40,7 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
     private static final boolean DEBUG = BaseQueryAllImpl.log.isDebugEnabled();
     private static final boolean INFO = BaseQueryAllImpl.log.isInfoEnabled();
     
-    private Collection<Statement> unrecognisedStatements = new ArrayList<Statement>();
+    private Collection<Statement> unrecognisedStatements = new ArrayList<Statement>(20);
     private URI key = null;
     private String title = "";
     private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
