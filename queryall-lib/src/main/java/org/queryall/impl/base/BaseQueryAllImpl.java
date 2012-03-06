@@ -3,6 +3,7 @@
  */
 package org.queryall.impl.base;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
     private static final boolean DEBUG = BaseQueryAllImpl.log.isDebugEnabled();
     private static final boolean INFO = BaseQueryAllImpl.log.isInfoEnabled();
     
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    private Collection<Statement> unrecognisedStatements = new ArrayList<Statement>();
     private URI key = null;
     private String title = "";
     private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
@@ -222,9 +223,9 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
     @Override
     public final Collection<Statement> resetUnrecognisedStatements()
     {
-        final Collection<Statement> result = new HashSet<Statement>(this.unrecognisedStatements);
+        final Collection<Statement> result = new ArrayList<Statement>(this.unrecognisedStatements);
         
-        this.unrecognisedStatements = new HashSet<Statement>();
+        this.unrecognisedStatements.clear();
         
         return result;
     }

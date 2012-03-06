@@ -20,7 +20,7 @@
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
-<!-- Hidden temporarily from reactor <module>queryall-ext-rule-spin</module> -->
+		<!-- Hidden temporarily from reactor <module>queryall-ext-rule-spin</module> -->
 	</modules>
 	<name>Queryall RDF services</name>
 	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>
@@ -240,6 +240,11 @@
 	</build>
 	<reporting>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
