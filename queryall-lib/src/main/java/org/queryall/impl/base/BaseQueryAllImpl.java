@@ -269,9 +269,9 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
         
         try
         {
-            if(BaseQueryAllImpl.DEBUG)
+            if(BaseQueryAllImpl.TRACE)
             {
-                BaseQueryAllImpl.log.debug("toRdf: contextKey=" + contextKey);
+                BaseQueryAllImpl.log.trace("toRdf: contextKey=" + contextKey);
             }
             
             final URI keyUri = this.getKey();

@@ -35,11 +35,6 @@ public class RegexTransformingRuleImplEnum extends NormalisationRuleEnum
     public RegexTransformingRuleImplEnum()
     {
         this(RegexTransformingRuleImpl.class.getName(), RegexTransformingRuleImpl.myTypes());
-        
-        if(RegexTransformingRuleImplEnum.DEBUG)
-        {
-            RegexTransformingRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum() registered");
-        }
     }
     
     /**
@@ -49,11 +44,6 @@ public class RegexTransformingRuleImplEnum extends NormalisationRuleEnum
     public RegexTransformingRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        
-        if(RegexTransformingRuleImplEnum.DEBUG)
-        {
-            RegexTransformingRuleImplEnum.log.debug("RegexNormalisationRuleImplEnum(String, List<URI>) registered");
-        }
     }
     
 }

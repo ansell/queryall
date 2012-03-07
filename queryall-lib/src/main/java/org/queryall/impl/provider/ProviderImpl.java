@@ -126,9 +126,9 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             }
         }
         
-        if(ProviderImpl.DEBUG)
+        if(ProviderImpl.TRACE)
         {
-            ProviderImpl.log.debug("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
+            ProviderImpl.log.trace("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
     }

@@ -84,7 +84,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             {
                 if(BaseRuleImpl.TRACE)
                 {
-                    BaseRuleImpl.log.trace("NormalisationRule: found valid type predicate for URI: " + keyToUse);
+                    BaseRuleImpl.log.trace("BaseRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -439,9 +439,9 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         
         try
         {
-            if(BaseRuleImpl.DEBUG)
+            if(BaseRuleImpl.TRACE)
             {
-                BaseRuleImpl.log.debug("NormalisationRuleImpl.toRdf: keyToUse=" + contextKey);
+                BaseRuleImpl.log.trace("BaseRuleImpl.toRdf: keyToUse=" + contextKey);
             }
             
             final URI keyUri = this.getKey();

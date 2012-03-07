@@ -866,9 +866,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final boolean propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
                     + Boolean.valueOf(propertyValue).toString());
         }
         
@@ -888,9 +888,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final float propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
                     + Float.valueOf(propertyValue).toString());
         }
         
@@ -910,9 +910,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final int propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
                     + Integer.valueOf(propertyValue).toString());
         }
         
@@ -932,9 +932,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final long propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
                     + Long.valueOf(propertyValue).toString());
         }
         
@@ -960,9 +960,9 @@ public class Settings implements QueryAllConfiguration
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
         
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
                     + String.valueOf(propertyValue));
         }
         
@@ -1010,9 +1010,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final Value propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValue + " propertyValue.stringValue()=" + propertyValue.stringValue()
                     + " propertyValue.getClass().getName()=" + propertyValue.getClass().getName());
         }

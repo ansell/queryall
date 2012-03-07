@@ -374,9 +374,9 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
         
         try
         {
-            if(PrefixMappingNormalisationRuleImpl.DEBUG)
+            if(PrefixMappingNormalisationRuleImpl.TRACE)
             {
-                PrefixMappingNormalisationRuleImpl.log.debug("PrefixMappingNormalisationRuleImpl.toRdf: keyToUse="
+                PrefixMappingNormalisationRuleImpl.log.trace("PrefixMappingNormalisationRuleImpl.toRdf: keyToUse="
                         + keyToUse);
             }
             

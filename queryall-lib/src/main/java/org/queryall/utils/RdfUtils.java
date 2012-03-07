@@ -1435,7 +1435,7 @@ public final class RdfUtils
                 
                 if(RdfUtils.DEBUG)
                 {
-                    RdfUtils.log.debug("getQueryTypes: matchingNormalisationRuleEnums="
+                    RdfUtils.log.debug("getNormalisationRules: matchingNormalisationRuleEnums="
                             + matchingNormalisationRuleEnums);
                 }
                 
@@ -2702,9 +2702,9 @@ public final class RdfUtils
         
         final Collection<Value> results = new HashSet<Value>();
         
-        if(RdfUtils.DEBUG)
+        if(RdfUtils.TRACE)
         {
-            RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: entering method");
+            RdfUtils.log.trace("getValuesFromRepositoryByPredicateUrisAndSubject: entering method");
             // RdfUtils.log.debug(nextRepository);
             // RdfUtils.log.debug(predicateUris);
         }
@@ -2724,9 +2724,9 @@ public final class RdfUtils
                     final GraphQuery tupleQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
                     final GraphQueryResult queryResult = tupleQuery.evaluate();
                     
-                    if(RdfUtils.DEBUG)
+                    if(RdfUtils.TRACE)
                     {
-                        RdfUtils.log.debug("queryString=" + queryString);
+                        RdfUtils.log.trace("queryString=" + queryString);
                     }
                     
                     try
@@ -2735,9 +2735,9 @@ public final class RdfUtils
                         {
                             final Statement nextStatement = queryResult.next();
                             
-                            if(RdfUtils.DEBUG)
+                            if(RdfUtils.TRACE)
                             {
-                                RdfUtils.log.debug("getValuesFromRepositoryByPredicateUrisAndSubject: nextStatement="
+                                RdfUtils.log.trace("getValuesFromRepositoryByPredicateUrisAndSubject: nextStatement="
                                         + nextStatement);
                             }
                             
@@ -2821,9 +2821,9 @@ public final class RdfUtils
             final Repository myRepository, final String assumedResponseContentType, final String defaultHostAddress)
         throws RepositoryException, java.io.IOException
     {
-        if(RdfUtils.DEBUG)
+        if(RdfUtils.TRACE)
         {
-            RdfUtils.log.debug("insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
+            RdfUtils.log.trace("insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
         }
         
         RepositoryConnection myRepositoryConnection = null;
@@ -2834,9 +2834,9 @@ public final class RdfUtils
             
             RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
             
-            if(RdfUtils.DEBUG)
+            if(RdfUtils.TRACE)
             {
-                RdfUtils.log.debug("insertResultIntoRepository: nextReaderFormat for returnedContentType="
+                RdfUtils.log.trace("insertResultIntoRepository: nextReaderFormat for returnedContentType="
                         + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
             }
             

@@ -3,6 +3,7 @@ package org.queryall.impl.profile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
@@ -60,17 +61,17 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     
     private Collection<URI> profileAdministrators = new ArrayList<URI>();
     
-    private Collection<URI> includeProviders = new ArrayList<URI>();
+    private Collection<URI> includeProviders = new HashSet<URI>();
     
-    private Collection<URI> excludeProviders = new ArrayList<URI>();
+    private Collection<URI> excludeProviders = new HashSet<URI>();
     
-    private Collection<URI> includeQueries = new ArrayList<URI>();
+    private Collection<URI> includeQueries = new HashSet<URI>();
     
-    private Collection<URI> excludeQueries = new ArrayList<URI>();
+    private Collection<URI> excludeQueries = new HashSet<URI>();
     
-    private Collection<URI> includeRdfRules = new ArrayList<URI>();
+    private Collection<URI> includeRdfRules = new HashSet<URI>();
     
-    private Collection<URI> excludeRdfRules = new ArrayList<URI>();
+    private Collection<URI> excludeRdfRules = new HashSet<URI>();
     
     public ProfileImpl()
     {
@@ -87,9 +88,9 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProfileImpl.DEBUG)
+            if(ProfileImpl.TRACE)
             {
-                ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
+                ProfileImpl.log.trace("Profile.fromRdf: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)

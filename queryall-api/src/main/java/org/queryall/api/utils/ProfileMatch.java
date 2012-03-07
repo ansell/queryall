@@ -171,8 +171,8 @@ public enum ProfileMatch
     
     public static ProfileMatch usedWithProfilable(final Profile profile, final ProfilableInterface profilableObject)
     {
-        Collection<URI> includeList = null;
-        Collection<URI> excludeList = null;
+        Collection<URI> includeList;
+        Collection<URI> excludeList;
         boolean allowImplicitInclusions = false;
         
         if(profilableObject instanceof Provider)

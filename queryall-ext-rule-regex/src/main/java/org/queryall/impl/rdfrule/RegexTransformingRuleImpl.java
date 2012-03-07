@@ -167,18 +167,18 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
                 return inputText;
             }
             
-            if(RegexTransformingRuleImpl.DEBUG)
+            if(RegexTransformingRuleImpl.TRACE)
             {
-                RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
+                RegexTransformingRuleImpl.log.trace("RegexNormalisationRuleImpl.applyRegex: matchRegex=" + matchRegex
                         + ", replaceRegex=" + replaceRegex);
             }
             
             if(matchRegex.trim().equals(""))
             {
-                if(RegexTransformingRuleImpl.DEBUG)
+                if(RegexTransformingRuleImpl.TRACE)
                 {
                     RegexTransformingRuleImpl.log
-                            .debug("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
+                            .trace("RegexNormalisationRuleImpl.applyRegex: matchRegex was empty, returning inputText");
                 }
                 
                 return inputText;
@@ -187,18 +187,18 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
             String debugInputText = "";
             
             // only take a copy of the string if we need it for debugging
-            if(RegexTransformingRuleImpl.DEBUG)
+            if(RegexTransformingRuleImpl.TRACE)
             {
                 debugInputText = inputText;
             }
             
             inputText = inputText.replaceAll(matchRegex, replaceRegex);
             
-            if(RegexTransformingRuleImpl.DEBUG)
+            if(RegexTransformingRuleImpl.TRACE)
             {
-                RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex start input="
+                RegexTransformingRuleImpl.log.trace("RegexNormalisationRuleImpl.applyRegex: regex start input="
                         + debugInputText);
-                RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.applyRegex: regex complete result="
+                RegexTransformingRuleImpl.log.trace("RegexNormalisationRuleImpl.applyRegex: regex complete result="
                         + inputText);
             }
         }
@@ -474,9 +474,9 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
         
         try
         {
-            if(RegexTransformingRuleImpl.DEBUG)
+            if(RegexTransformingRuleImpl.TRACE)
             {
-                RegexTransformingRuleImpl.log.debug("RegexNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                RegexTransformingRuleImpl.log.trace("RegexNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();

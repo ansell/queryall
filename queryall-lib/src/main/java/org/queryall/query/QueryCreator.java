@@ -1266,13 +1266,18 @@ public class QueryCreator
             
             if(isNamespace)
             {
-                QueryCreator.log.debug("isNamespace nextMatchTag=" + nextMatchTag);
+                if(QueryCreator.DEBUG)
+                {
+                    QueryCreator.log.debug("isNamespace nextMatchTag=" + nextMatchTag);
+                }
             }
             
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
-                
-                QueryCreator.log.debug("allMatches.get(nextMatchTag)=" + allMatches.get(nextMatchTag));
+                if(QueryCreator.DEBUG)
+                {
+                    QueryCreator.log.debug("allMatches.get(nextMatchTag)=" + allMatches.get(nextMatchTag));
+                }
                 
                 // FIXME: determine why namespaceInputVariables isn't being sent here properly from
                 // RdfFetchController.generateQueryBundlesForQueryTypeAndProviders
@@ -1280,7 +1285,10 @@ public class QueryCreator
                 // GeneralServlet.doQueryUnknown
                 if(isNamespace && namespaceInputVariables.containsKey(nextMatchTag))
                 {
-                    QueryCreator.log.debug("isNamespace and namespaceInputVariables.containsKey(nextMatchTag)");
+                    if(QueryCreator.DEBUG)
+                    {
+                        QueryCreator.log.debug("isNamespace and namespaceInputVariables.containsKey(nextMatchTag)");
+                    }
                     
                     boolean foundANamespace = false;
                     // FIXME: What happens if there could be more than one match here, as we aren't
@@ -1291,7 +1299,10 @@ public class QueryCreator
                     {
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
                         {
-                            QueryCreator.log.debug("inputReplaceString=" + inputReplaceString);
+                            if(QueryCreator.DEBUG)
+                            {
+                                QueryCreator.log.debug("inputReplaceString={}", inputReplaceString);
+                            }
                             
                             if(convertAlternateToPreferredPrefix
                                     && nextNamespaceEntry.getConvertQueriesToPreferredPrefix())
@@ -1302,7 +1313,10 @@ public class QueryCreator
                             separatorString = nextNamespaceEntry.getSeparator();
                             authorityString = nextNamespaceEntry.getAuthority().stringValue();
                             
-                            QueryCreator.log.debug("inputReplaceString=" + inputReplaceString);
+                            if(QueryCreator.DEBUG)
+                            {
+                                QueryCreator.log.debug("inputReplaceString={}", inputReplaceString);
+                            }
                             
                             foundANamespace = true;
                             

@@ -154,9 +154,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(QueryTypeImpl.DEBUG)
+            if(QueryTypeImpl.TRACE)
             {
-                QueryTypeImpl.log.debug("QueryType: nextStatement: " + nextStatement.toString());
+                QueryTypeImpl.log.trace("QueryType: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
@@ -272,9 +272,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         // this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
-        if(QueryTypeImpl.DEBUG)
+        if(QueryTypeImpl.TRACE)
         {
-            QueryTypeImpl.log.debug("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
+            QueryTypeImpl.log.trace("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
     }
