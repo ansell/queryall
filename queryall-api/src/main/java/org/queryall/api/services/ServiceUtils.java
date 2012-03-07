@@ -212,7 +212,7 @@ public final class ServiceUtils
     
     public static Collection<NamespaceEntryEnum> getNamespaceEntryEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
@@ -249,7 +249,7 @@ public final class ServiceUtils
     
     public static Collection<NormalisationRuleEnum> getNormalisationRuleEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
@@ -286,7 +286,7 @@ public final class ServiceUtils
     
     public static Collection<ProfileEnum> getProfileEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
@@ -323,7 +323,7 @@ public final class ServiceUtils
     
     public static Collection<ProjectEnum> getProjectEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
@@ -360,7 +360,7 @@ public final class ServiceUtils
     
     public static Collection<ProviderEnum> getProviderEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
@@ -397,7 +397,7 @@ public final class ServiceUtils
     
     public static Collection<QueryTypeEnum> getQueryTypeEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
@@ -434,7 +434,7 @@ public final class ServiceUtils
     
     public static Collection<RuleTestEnum> getRuleTestEnumsByTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
+        if(nextTypeUris.isEmpty())
         {
             if(ServiceUtils.DEBUG)
             {
