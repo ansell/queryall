@@ -53,6 +53,9 @@ public class SettingsContextListener implements ServletContextListener
     @Override
     public void contextInitialized(final ServletContextEvent sce)
     {
+        // TODO: Create an EhCache and push it into the settings object so that we can efficiently
+        // perform some things that are being performed often
+        
         // create a new settings object
         final QueryAllConfiguration tempSettings = SettingsFactory.generateSettings();
         
