@@ -1,5 +1,6 @@
 package org.queryall.impl.rdfrule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,7 +45,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     
     private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
-    private Collection<URI> relatedNamespaces = new HashSet<URI>(10);
+    private Collection<URI> relatedNamespaces = new ArrayList<URI>(10);
     
     private Set<URI> stages = new HashSet<URI>(10);
     

@@ -42,6 +42,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
@@ -574,7 +575,7 @@ public final class RdfUtils
         
         // final HttpProviderImpl dummyProvider = new HttpOnlyProviderImpl();
         
-        final Collection<String> endpointUrls = new HashSet<String>();
+        // final Collection<String> endpointUrls = new HashSet<String>();
         
         // if(nextQueryKey.startsWith(localSettings.getDefaultHostAddress()))
         // {
@@ -623,12 +624,8 @@ public final class RdfUtils
         
         nextQueryBundle.setQueryType(dummyQuery);
         
-        final Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
-        
-        queryBundles.add(nextQueryBundle);
-        
-        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings,
-                BlacklistController.getDefaultController());
+        return RdfUtils.getQueryTypesForQueryBundles(Collections.singleton(nextQueryBundle), modelVersion,
+                localSettings, BlacklistController.getDefaultController());
     }
     
     public static Collection<QueryType> fetchQueryTypeByKey(final URI nextQueryKey, final boolean useSparqlGraph,
@@ -664,11 +661,7 @@ public final class RdfUtils
         // nextQueryBundle.setQuery(constructQueryString);
         // nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
-        final Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
-        
-        queryBundles.add(nextQueryBundle);
-        
-        return RdfUtils.getQueryTypesForQueryBundles(queryBundles, modelVersion, localSettings,
+        return RdfUtils.getQueryTypesForQueryBundles(Arrays.asList(nextQueryBundle), modelVersion, localSettings,
                 BlacklistController.getDefaultController());
     }
     
@@ -739,21 +732,29 @@ public final class RdfUtils
     }
     
     /**
+     * Returns a sorted list of all the statements from a repository, in an optional list of
+     * contexts, sorted using a org.queryall.comparators.StatementComparator.
+     * 
      * @param nextRepository
+     * @param contexts
+     *            An optional varargs array of contexts that should be exported.
      * @return
      * @throws OpenRDFException
      */
-    public static List<Statement> getAllStatementsFromRepository(final Repository nextRepository)
-        throws OpenRDFException
+    public static List<Statement> getAllStatementsFromRepository(final Repository nextRepository,
+            final Resource... contexts) throws OpenRDFException
     {
-        List<Statement> results = new ArrayList<Statement>(1);
+        final List<Statement> results = new ArrayList<Statement>();
         
-        final RepositoryConnection con = nextRepository.getConnection();
+        RepositoryConnection con = null;
         
         try
         {
-            results = con.getStatements((Resource)null, (URI)null, (Value)null, true).asList();
+            con = nextRepository.getConnection();
             
+            con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts).addTo(results);
+            
+            // TODO: Make this sorting configurable
             Collections.sort(results, new org.queryall.comparators.StatementComparator());
         }
         catch(final OpenRDFException ordfe)
@@ -764,7 +765,17 @@ public final class RdfUtils
         }
         finally
         {
-            con.close();
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException rex)
+                {
+                    RdfUtils.log.error("Found repository exception while trying to close connection.");
+                }
+            }
         }
         
         return results;
@@ -962,7 +973,7 @@ public final class RdfUtils
         // predicateUris)
         throws OpenRDFException
     {
-        final Collection<String> results = new HashSet<String>();
+        final Collection<String> results = new ArrayList<String>();
         
         if(RdfUtils.DEBUG)
         {
@@ -1064,7 +1075,7 @@ public final class RdfUtils
         // predicateUris)
         throws OpenRDFException
     {
-        final Collection<String> results = new HashSet<String>();
+        final Collection<String> results = new ArrayList<String>();
         
         if(RdfUtils.DEBUG)
         {
@@ -1205,6 +1216,17 @@ public final class RdfUtils
     
     public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
     {
+        return RdfUtils.getNamespaceEntries(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository, final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -1223,17 +1245,18 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredNamespaceEntrySubjects =
-                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            final RepositoryResult<Statement> allDeclaredNamespaceEntrySubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true);
             
             final Map<URI, Collection<NamespaceEntryEnum>> uriToNamespaceEntryEnums =
                     new HashMap<URI, Collection<NamespaceEntryEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredNamespaceEntrySubject : allDeclaredNamespaceEntrySubjects)
+            // for(final Statement nextDeclaredNamespaceEntrySubject :
+            // allDeclaredNamespaceEntrySubjects)
+            while(allDeclaredNamespaceEntrySubjects.hasNext())
             {
+                final Statement nextDeclaredNamespaceEntrySubject = allDeclaredNamespaceEntrySubjects.next();
+                
                 if(!(nextDeclaredNamespaceEntrySubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as namespace entry identifiers");
@@ -1260,7 +1283,7 @@ public final class RdfUtils
                 }
                 
                 final Collection<NamespaceEntryEnum> matchingNamespaceEntryEnums =
-                        NamespaceEntryEnum.byTypeUris(nextNamespaceEntryUris);
+                        ServiceUtils.getNamespaceEntryEnumsByTypeUris(nextNamespaceEntryUris);
                 
                 if(RdfUtils.DEBUG)
                 {
@@ -1268,7 +1291,7 @@ public final class RdfUtils
                             + matchingNamespaceEntryEnums);
                 }
                 
-                if(matchingNamespaceEntryEnums.size() > 0)
+                if(!matchingNamespaceEntryEnums.isEmpty())
                 {
                     uriToNamespaceEntryEnums.put(nextSubjectUri, matchingNamespaceEntryEnums);
                 }
@@ -1292,7 +1315,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedNamespaceEntryException e)
                     {
@@ -1340,6 +1363,18 @@ public final class RdfUtils
     
     public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
     {
+        return RdfUtils.getNormalisationRules(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository,
+            final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -1358,17 +1393,18 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredNormalisationRuleSubjects =
-                    con.getStatements(null, RDF.TYPE, normalisationRuleUri, true).asList();
+            final RepositoryResult<Statement> allDeclaredNormalisationRuleSubjects =
+                    con.getStatements(null, RDF.TYPE, normalisationRuleUri, true);
             
             final Map<URI, Collection<NormalisationRuleEnum>> uriToNormalisationRuleEnums =
                     new HashMap<URI, Collection<NormalisationRuleEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredNormalisationRuleSubject : allDeclaredNormalisationRuleSubjects)
+            // for(final Statement nextDeclaredNormalisationRuleSubject :
+            // allDeclaredNormalisationRuleSubjects)
+            while(allDeclaredNormalisationRuleSubjects.hasNext())
             {
+                final Statement nextDeclaredNormalisationRuleSubject = allDeclaredNormalisationRuleSubjects.next();
+                
                 if(!(nextDeclaredNormalisationRuleSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as normalisation rule identifiers");
@@ -1395,7 +1431,7 @@ public final class RdfUtils
                 }
                 
                 final Collection<NormalisationRuleEnum> matchingNormalisationRuleEnums =
-                        NormalisationRuleEnum.byTypeUris(nextNormalisationRuleUris);
+                        ServiceUtils.getNormalisationRuleEnumsByTypeUris(nextNormalisationRuleUris);
                 
                 if(RdfUtils.DEBUG)
                 {
@@ -1403,7 +1439,7 @@ public final class RdfUtils
                             + matchingNormalisationRuleEnums);
                 }
                 
-                if(matchingNormalisationRuleEnums.size() > 0)
+                if(!matchingNormalisationRuleEnums.isEmpty())
                 {
                     uriToNormalisationRuleEnums.put(nextSubjectUri, matchingNormalisationRuleEnums);
                 }
@@ -1427,7 +1463,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedNormalisationRuleException e)
                     {
@@ -1482,7 +1518,7 @@ public final class RdfUtils
     public static Collection<String> getObjectUrisFromRepositoryByPredicateUris(final Repository nextRepository,
             final Collection<String> predicateUris) throws OpenRDFException
     {
-        final Collection<String> results = new HashSet<String>();
+        final Collection<String> results = new ArrayList<String>();
         
         if(RdfUtils.DEBUG)
         {
@@ -1572,6 +1608,17 @@ public final class RdfUtils
     
     public static Map<URI, Profile> getProfiles(final Repository myRepository)
     {
+        return RdfUtils.getProfiles(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    public static Map<URI, Profile> getProfiles(final Repository myRepository, final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -1590,16 +1637,16 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredProfileSubjects =
-                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            final RepositoryResult<Statement> allDeclaredProfileSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true);
             
             final Map<URI, Collection<ProfileEnum>> uriToProfileEnums = new HashMap<URI, Collection<ProfileEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredProfileSubject : allDeclaredProfileSubjects)
+            // for(final Statement nextDeclaredProfileSubject : allDeclaredProfileSubjects)
+            while(allDeclaredProfileSubjects.hasNext())
             {
+                final Statement nextDeclaredProfileSubject = allDeclaredProfileSubjects.next();
+                
                 if(!(nextDeclaredProfileSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as profile identifiers");
@@ -1625,14 +1672,15 @@ public final class RdfUtils
                     }
                 }
                 
-                final Collection<ProfileEnum> matchingProfileEnums = ProfileEnum.byTypeUris(nextProfileUris);
+                final Collection<ProfileEnum> matchingProfileEnums =
+                        ServiceUtils.getProfileEnumsByTypeUris(nextProfileUris);
                 
                 if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
                 }
                 
-                if(matchingProfileEnums.size() > 0)
+                if(!matchingProfileEnums.isEmpty())
                 {
                     uriToProfileEnums.put(nextSubjectUri, matchingProfileEnums);
                 }
@@ -1655,7 +1703,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProfileParser(nextProfileEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedProfileException e)
                     {
@@ -1702,6 +1750,17 @@ public final class RdfUtils
     
     public static Map<URI, Project> getProjects(final Repository myRepository)
     {
+        return RdfUtils.getProjects(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    public static Map<URI, Project> getProjects(final Repository myRepository, final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -1720,16 +1779,16 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredProjectSubjects =
-                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            final RepositoryResult<Statement> allDeclaredProjectSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true);
             
             final Map<URI, Collection<ProjectEnum>> uriToProjectEnums = new HashMap<URI, Collection<ProjectEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredProjectSubject : allDeclaredProjectSubjects)
+            // for(final Statement nextDeclaredProjectSubject : allDeclaredProjectSubjects)
+            while(allDeclaredProjectSubjects.hasNext())
             {
+                final Statement nextDeclaredProjectSubject = allDeclaredProjectSubjects.next();
+                
                 if(!(nextDeclaredProjectSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as project identifiers");
@@ -1758,14 +1817,15 @@ public final class RdfUtils
                     }
                 }
                 
-                final Collection<ProjectEnum> matchingProjectEnums = ProjectEnum.byTypeUris(nextProjectUris);
+                final Collection<ProjectEnum> matchingProjectEnums =
+                        ServiceUtils.getProjectEnumsByTypeUris(nextProjectUris);
                 
                 if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
                 }
                 
-                if(matchingProjectEnums.size() > 0)
+                if(!matchingProjectEnums.isEmpty())
                 {
                     uriToProjectEnums.put(nextSubjectUri, matchingProjectEnums);
                 }
@@ -1788,7 +1848,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProjectParser(nextProjectEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedProjectException e)
                     {
@@ -1835,6 +1895,17 @@ public final class RdfUtils
     
     public static Map<URI, Provider> getProviders(final Repository myRepository)
     {
+        return RdfUtils.getProviders(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    public static Map<URI, Provider> getProviders(final Repository myRepository, final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -1859,22 +1930,16 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredProviderSubjects =
-                    con.getStatements(null, RDF.TYPE, providerUri, true).asList();
-            
-            if(RdfUtils.DEBUG)
-            {
-                RdfUtils.log.debug("getProviders: allDeclaredProviderSubjects.size()="
-                        + allDeclaredProviderSubjects.size());
-            }
+            final RepositoryResult<Statement> allDeclaredProviderSubjects =
+                    con.getStatements(null, RDF.TYPE, providerUri, true);
             
             final Map<URI, Collection<ProviderEnum>> uriToProviderEnums = new HashMap<URI, Collection<ProviderEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
+            // for(final Statement nextDeclaredProviderSubject : allDeclaredProviderSubjects)
+            while(allDeclaredProviderSubjects.hasNext())
             {
+                final Statement nextDeclaredProviderSubject = allDeclaredProviderSubjects.next();
+                
                 if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProviders: nextDeclaredProviderSubject.getSubject()="
@@ -1906,14 +1971,15 @@ public final class RdfUtils
                     }
                 }
                 
-                final Collection<ProviderEnum> matchingProviderEnums = ProviderEnum.byTypeUris(nextProviderUris);
+                final Collection<ProviderEnum> matchingProviderEnums =
+                        ServiceUtils.getProviderEnumsByTypeUris(nextProviderUris);
                 
                 if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
                 }
                 
-                if(matchingProviderEnums.size() > 0)
+                if(!matchingProviderEnums.isEmpty())
                 {
                     uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
                 }
@@ -1936,7 +2002,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createProviderParser(nextProviderEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedProviderException e)
                     {
@@ -1983,6 +2049,17 @@ public final class RdfUtils
     
     public static Map<URI, QueryType> getQueryTypes(final Repository myRepository)
     {
+        return RdfUtils.getQueryTypes(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    public static Map<URI, QueryType> getQueryTypes(final Repository myRepository, final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -2002,17 +2079,17 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredQueryTypeSubjects =
-                    con.getStatements(null, RDF.TYPE, queryTypeUri, true).asList();
+            final RepositoryResult<Statement> allDeclaredQueryTypeSubjects =
+                    con.getStatements(null, RDF.TYPE, queryTypeUri, true);
             
             final Map<URI, Collection<QueryTypeEnum>> uriToQueryTypeEnums =
                     new HashMap<URI, Collection<QueryTypeEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
+            // for(final Statement nextDeclaredQueryTypeSubject : allDeclaredQueryTypeSubjects)
+            while(allDeclaredQueryTypeSubjects.hasNext())
             {
+                final Statement nextDeclaredQueryTypeSubject = allDeclaredQueryTypeSubjects.next();
+                
                 if(!(nextDeclaredQueryTypeSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as query type identifiers");
@@ -2038,14 +2115,15 @@ public final class RdfUtils
                     }
                 }
                 
-                final Collection<QueryTypeEnum> matchingQueryTypeEnums = QueryTypeEnum.byTypeUris(nextQueryTypeUris);
+                final Collection<QueryTypeEnum> matchingQueryTypeEnums =
+                        ServiceUtils.getQueryTypeEnumsByTypeUris(nextQueryTypeUris);
                 
                 if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
                 }
                 
-                if(matchingQueryTypeEnums.size() > 0)
+                if(!matchingQueryTypeEnums.isEmpty())
                 {
                     uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
                 }
@@ -2068,7 +2146,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedQueryTypeException e)
                     {
@@ -2228,8 +2306,33 @@ public final class RdfUtils
         return results.values();
     }
     
+    /**
+     * Returns rule tests that were parsed based on the current config API version as defined in
+     * SettingsFactory.CONFIG_API_VERSION.
+     * 
+     * @param myRepository
+     * @return
+     */
     public static Map<URI, RuleTest> getRuleTests(final Repository myRepository)
     {
+        return RdfUtils.getRuleTests(myRepository, SettingsFactory.CONFIG_API_VERSION);
+    }
+    
+    /**
+     * Returns rule tests that were parsed based on the given config API version.
+     * 
+     * @param myRepository
+     * @param configApiVersion
+     * @return
+     */
+    public static Map<URI, RuleTest> getRuleTests(final Repository myRepository, final int configApiVersion)
+    {
+        if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
+        {
+            throw new IllegalArgumentException(
+                    "This library cannot be used to parse objects using this config API version.");
+        }
+        
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
@@ -2248,16 +2351,16 @@ public final class RdfUtils
             
             con = myRepository.getConnection();
             
-            final List<Statement> allDeclaredRuleTestSubjects =
-                    con.getStatements(null, RDF.TYPE, providerTypeUri, true).asList();
+            final RepositoryResult<Statement> allDeclaredRuleTestSubjects =
+                    con.getStatements(null, RDF.TYPE, providerTypeUri, true);
             
             final Map<URI, Collection<RuleTestEnum>> uriToRuleTestEnums = new HashMap<URI, Collection<RuleTestEnum>>();
             
-            // TODO: why is this necessary
-            ServiceUtils.getAllEnums();
-            
-            for(final Statement nextDeclaredRuleTestSubject : allDeclaredRuleTestSubjects)
+            // for(final Statement nextDeclaredRuleTestSubject : allDeclaredRuleTestSubjects)
+            while(allDeclaredRuleTestSubjects.hasNext())
             {
+                final Statement nextDeclaredRuleTestSubject = allDeclaredRuleTestSubjects.next();
+                
                 if(!(nextDeclaredRuleTestSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as rule test identifiers");
@@ -2283,14 +2386,15 @@ public final class RdfUtils
                     }
                 }
                 
-                final Collection<RuleTestEnum> matchingRuleTestEnums = RuleTestEnum.byTypeUris(nextRuleTestUris);
+                final Collection<RuleTestEnum> matchingRuleTestEnums =
+                        ServiceUtils.getRuleTestEnumsByTypeUris(nextRuleTestUris);
                 
                 if(RdfUtils.DEBUG)
                 {
                     RdfUtils.log.debug("getRuleTests: matchingRuleTestEnums=" + matchingRuleTestEnums);
                 }
                 
-                if(matchingRuleTestEnums.size() > 0)
+                if(!matchingRuleTestEnums.isEmpty())
                 {
                     uriToRuleTestEnums.put(nextSubjectUri, matchingRuleTestEnums);
                 }
@@ -2313,7 +2417,7 @@ public final class RdfUtils
                                 nextSubjectUri,
                                 ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
                                         con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                        nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedRuleTestException e)
                     {
@@ -2591,6 +2695,11 @@ public final class RdfUtils
     public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(final Repository nextRepository,
             final Collection<URI> predicateUris, final URI subjectUri) throws OpenRDFException
     {
+        if(predicateUris.isEmpty())
+        {
+            return Collections.emptyList();
+        }
+        
         final Collection<Value> results = new HashSet<Value>();
         
         if(RdfUtils.DEBUG)
@@ -2693,11 +2802,8 @@ public final class RdfUtils
     public static Collection<Value> getValuesFromRepositoryByPredicateUrisAndSubject(final Repository nextRepository,
             final URI predicateUri, final URI subjectUri) throws OpenRDFException
     {
-        final Collection<URI> predicateUris = new HashSet<URI>();
-        
-        predicateUris.add(predicateUri);
-        
-        return RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
+        return RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(nextRepository, Arrays.asList(predicateUri),
+                subjectUri);
     }
     
     public static RDFFormat getWriterFormat(final String requestedContentType)
@@ -2917,7 +3023,7 @@ public final class RdfUtils
             final Repository myRepository, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final boolean inParallel) throws InterruptedException
     {
-        final Collection<RdfFetcherQueryRunnableImpl> retrievalThreads = new HashSet<RdfFetcherQueryRunnableImpl>();
+        final Collection<RdfFetcherQueryRunnableImpl> retrievalThreads = new ArrayList<RdfFetcherQueryRunnableImpl>();
         
         for(final String nextLocation : retrievalUrls)
         {
@@ -2969,13 +3075,11 @@ public final class RdfUtils
         }
         catch(final RepositoryException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            RdfUtils.log.error("Repository exception: ", e);
         }
         catch(final IOException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            RdfUtils.log.error("IO exception: ", e);
         }
         
     }
@@ -2985,19 +3089,14 @@ public final class RdfUtils
             final BlacklistController localBlacklistController) throws RepositoryException, java.io.IOException,
         InterruptedException
     {
-        final Collection<String> retrievalList = new ArrayList<String>(1);
-        retrievalList.add(retrievalUrl);
-        
-        RdfUtils.retrieveUrls(retrievalList, defaultResultFormat, myRepository, localSettings,
-                localBlacklistController, true);
+        RdfUtils.retrieveUrls(Collections.singletonList(retrievalUrl), defaultResultFormat, myRepository,
+                localSettings, localBlacklistController, true);
     }
     
-    public static Collection<Statement> retrieveUrlsToStatements(final Collection<String> retrievalUrls,
+    public static List<Statement> retrieveUrlsToStatements(final Collection<String> retrievalUrls,
             final String defaultResultFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController) throws InterruptedException
     {
-        Collection<Statement> results = Collections.emptyList();
-        
         try
         {
             final Repository resultsRepository = new SailRepository(new MemoryStore());
@@ -3006,14 +3105,14 @@ public final class RdfUtils
             RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, localSettings,
                     localBlacklistController, true);
             
-            results = RdfUtils.getAllStatementsFromRepository(resultsRepository);
+            return RdfUtils.getAllStatementsFromRepository(resultsRepository);
         }
         catch(final OpenRDFException e)
         {
             RdfUtils.log.error("retrieveUrlsToStatements: caught OpenRDFException", e);
         }
         
-        return results;
+        return Collections.emptyList();
     }
     
     /**

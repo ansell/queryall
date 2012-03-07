@@ -1,5 +1,6 @@
 package org.queryall.impl.rdfrule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -73,10 +74,10 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     
     private String outputPrefix = "";
     
-    private Collection<URI> subjectMappingPredicates = new HashSet<URI>();
+    private Collection<URI> subjectMappingPredicates = new ArrayList<URI>();
     
-    private Collection<URI> predicateMappingPredicates = new HashSet<URI>();
-    private Collection<URI> objectMappingPredicates = new HashSet<URI>();
+    private Collection<URI> predicateMappingPredicates = new ArrayList<URI>();
+    private Collection<URI> objectMappingPredicates = new ArrayList<URI>();
     
     public PrefixMappingNormalisationRuleImpl()
     {
@@ -238,7 +239,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
         }
         
-        this.objectMappingPredicates = new HashSet<URI>();
+        this.objectMappingPredicates = new ArrayList<URI>();
         
         return true;
     }
@@ -257,7 +258,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
         }
         
-        this.predicateMappingPredicates = new HashSet<URI>();
+        this.predicateMappingPredicates = new ArrayList<URI>();
         
         return true;
     }
@@ -276,7 +277,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             PrefixMappingNormalisationRuleImpl.log.debug("Could not clear collection");
         }
         
-        this.subjectMappingPredicates = new HashSet<URI>();
+        this.subjectMappingPredicates = new ArrayList<URI>();
         
         return true;
     }

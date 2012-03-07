@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -64,7 +63,7 @@ public class BlacklistController
             200);
     
     private volatile Collection<RdfFetcherQueryRunnable> allCurrentBadQueries = Collections
-            .synchronizedSet(new HashSet<RdfFetcherQueryRunnable>(200));
+            .synchronizedList(new ArrayList<RdfFetcherQueryRunnable>(200));
     
     private volatile ConcurrentHashMap<String, Collection<QueryDebug>> currentQueryDebugInformation =
             new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
@@ -72,7 +71,7 @@ public class BlacklistController
     private volatile Collection<String> currentIPBlacklist = null;
     
     private volatile Collection<String> permanentServletLifetimeIPBlacklist = Collections
-            .synchronizedSet(new HashSet<String>(200));
+            .synchronizedList(new ArrayList<String>(200));
     
     private volatile ConcurrentHashMap<String, Collection<QueryDebug>> permanentServletLifetimeIPBlacklistEvidence =
             new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
@@ -80,7 +79,7 @@ public class BlacklistController
     private volatile Collection<String> currentIPWhitelist = null;
     
     private volatile Collection<HttpUrlQueryRunnableImpl> internalStatisticsUploadList = Collections
-            .synchronizedSet(new HashSet<HttpUrlQueryRunnableImpl>());
+            .synchronizedList(new ArrayList<HttpUrlQueryRunnableImpl>());
     
     private volatile Date lastServerStartupDate = new Date();
     
@@ -232,25 +231,15 @@ public class BlacklistController
             
             this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
             
-            // TODO: refactor the following code to use ConcurrentHashMap interface
-            synchronized(this.currentQueryDebugInformation)
+            final Collection<QueryDebug> putIfAbsent =
+                    this.currentQueryDebugInformation.putIfAbsent(nextQueryObject.getClientIPAddress(),
+                            new ArrayList<QueryDebug>(Collections.singletonList(nextQueryObject)));
+            
+            if(putIfAbsent != null)
             {
-                if(this.currentQueryDebugInformation.containsKey(nextQueryObject.getClientIPAddress()))
-                {
-                    final Collection<QueryDebug> previousQueries =
-                            this.currentQueryDebugInformation.get(nextQueryObject.getClientIPAddress());
-                    
-                    previousQueries.add(nextQueryObject);
-                    
-                    this.currentQueryDebugInformation.put(nextQueryObject.getClientIPAddress(), previousQueries);
-                }
-                else
-                {
-                    final Collection<QueryDebug> newQueries = Collections.synchronizedSet(new HashSet<QueryDebug>());
-                    newQueries.add(nextQueryObject);
-                    
-                    this.currentQueryDebugInformation.put(nextQueryObject.getClientIPAddress(), newQueries);
-                }
+                putIfAbsent.add(nextQueryObject);
+                
+                this.currentQueryDebugInformation.put(nextQueryObject.getClientIPAddress(), putIfAbsent);
             }
             
             this.evaluateClientBlacklist(automaticallyBlacklistClients, blacklistMinimumQueriesBeforeBlacklistRules,
@@ -297,7 +286,7 @@ public class BlacklistController
                                 + this.internalStatisticsUploadList.size());
             }
             
-            final Collection<HttpUrlQueryRunnableImpl> completedThreads = new HashSet<HttpUrlQueryRunnableImpl>();
+            final Collection<HttpUrlQueryRunnableImpl> completedThreads = new ArrayList<HttpUrlQueryRunnableImpl>();
             
             for(final HttpUrlQueryRunnableImpl nextThread : this.internalStatisticsUploadList)
             {
@@ -679,9 +668,7 @@ public class BlacklistController
     {
         this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
         
-        final Collection<String> results = new HashSet<String>(this.getAccumulatedBlacklistStatistics().keySet());
-        
-        return results;
+        return Collections.unmodifiableSet(this.getAccumulatedBlacklistStatistics().keySet());
     }
     
     public Date getLastExpiryDate()
@@ -696,17 +683,6 @@ public class BlacklistController
     
     public Collection<String> getPermanentIPBlacklist()
     {
-        if(this.permanentServletLifetimeIPBlacklist == null)
-        {
-            synchronized(this)
-            {
-                if(this.permanentServletLifetimeIPBlacklist == null)
-                {
-                    this.permanentServletLifetimeIPBlacklist = Collections.synchronizedSet(new HashSet<String>());
-                }
-            }
-        }
-        
         return this.permanentServletLifetimeIPBlacklist;
     }
     
@@ -874,7 +850,7 @@ public class BlacklistController
         this.clearStatisticsUploadList();
         
         final Collection<HttpUrlQueryRunnableImpl> runnableThreads =
-                Collections.synchronizedSet(new HashSet<HttpUrlQueryRunnableImpl>());
+                new ArrayList<HttpUrlQueryRunnableImpl>(nextStatisticsEntries.size());
         
         for(final StatisticsEntry nextStatisticsEntry : nextStatisticsEntries)
         {
@@ -897,10 +873,7 @@ public class BlacklistController
                     + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
         }
         
-        for(final HttpUrlQueryRunnableImpl nextRunnableThread : runnableThreads)
-        {
-            this.internalStatisticsUploadList.add(nextRunnableThread);
-        }
+        this.internalStatisticsUploadList.addAll(runnableThreads);
         
         if(BlacklistController.DEBUG)
         {

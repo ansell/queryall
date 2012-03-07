@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +158,7 @@ public class ServletUtils
         nextQueryDebug.setTotalTimeMilliseconds(nextTotalTime);
         nextQueryDebug.setQueryString(queryString);
         
-        final Collection<URI> queryTitles = new HashSet<URI>();
+        final Collection<URI> queryTitles = new ArrayList<URI>();
         
         for(final QueryBundle nextInitialQueryBundle : multiProviderQueryBundles)
         {
@@ -401,9 +400,9 @@ public class ServletUtils
         {
             myRepositoryConnection = myRepository.getConnection();
             
-            final Collection<String> currentStaticStrings = new HashSet<String>();
+            final Collection<String> currentStaticStrings = new ArrayList<String>();
             
-            Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
+            Collection<URI> staticQueryTypesForUnknown;
             
             // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
             if(fetchController.anyNamespaceNotRecognised())

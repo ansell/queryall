@@ -54,7 +54,7 @@ public final class ProviderUtils
         // Check if this query type includes defaults
         if(queryType.getIncludeDefaults())
         {
-            final Collection<Provider> results = new HashSet<Provider>();
+            final Collection<Provider> results = new ArrayList<Provider>();
             
             for(final Provider nextProvider : allProviders.values())
             {

@@ -4,9 +4,9 @@
 package org.queryall.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -69,28 +69,29 @@ public class Settings implements QueryAllConfiguration
     {
         this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
         
-        final Collection<URI> nextPreferredList = new HashSet<URI>();
-        nextPreferredList.add(nextNamespaceEntry.getKey());
-        
         final Collection<URI> ifPreferredAbsent =
-                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(),
+                        Arrays.asList(nextNamespaceEntry.getKey()));
         
         if(ifPreferredAbsent != null)
         {
+            final Collection<URI> nextPreferredList = new ArrayList<URI>();
+            nextPreferredList.add(nextNamespaceEntry.getKey());
+            
             nextPreferredList.addAll(ifPreferredAbsent);
             this.namespacePrefixesToUris.put(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
         }
         
         for(final String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
         {
-            final Collection<URI> nextAlternateList = new HashSet<URI>();
-            nextAlternateList.add(nextNamespaceEntry.getKey());
-            
             final Collection<URI> ifAlternateAbsent =
-                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, nextAlternateList);
+                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, Arrays.asList(nextNamespaceEntry.getKey()));
             
             if(ifAlternateAbsent != null)
             {
+                final Collection<URI> nextAlternateList = new ArrayList<URI>();
+                nextAlternateList.add(nextNamespaceEntry.getKey());
+                
                 nextAlternateList.addAll(ifAlternateAbsent);
                 this.namespacePrefixesToUris.put(nextAlternate, nextAlternateList);
             }

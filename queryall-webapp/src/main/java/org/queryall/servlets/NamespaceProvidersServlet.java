@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -112,11 +111,10 @@ public class NamespaceProvidersServlet extends HttpServlet
             {
                 if(nextNamespace != null && !providersByNamespace.containsKey(nextNamespace))
                 {
-                    final Map<String, Collection<URI>> nextNamespacesList = new HashMap<String, Collection<URI>>();
-                    final Collection<URI> nextNamespaces = new HashSet<URI>(4);
-                    nextNamespaces.add(nextNamespace);
-                    // TODO: FIXME: HACK:
-                    nextNamespacesList.put("input_1", nextNamespaces);
+                    // HACK: FIXME: TODO:
+                    final Collection<URI> singleton = Collections.singleton(nextNamespace);
+                    final Map<String, Collection<URI>> nextNamespacesList =
+                            Collections.singletonMap("input_1", singleton);
                     
                     final Map<URI, Provider> namespaceProviders =
                             ProviderUtils.getProvidersForNamespaceUris(allProviders, nextNamespacesList,
@@ -133,13 +131,6 @@ public class NamespaceProvidersServlet extends HttpServlet
                             if(!allQueryTypesByNamespace.containsKey(nextQueryKey.stringValue() + " "
                                     + nextNamespace.stringValue()))
                             {
-                                final Map<String, Collection<URI>> nextQueryTypesByNamespacesList =
-                                        new HashMap<String, Collection<URI>>();
-                                final Collection<URI> nextQueryTypesByNamespaces = new HashSet<URI>(4);
-                                nextQueryTypesByNamespaces.add(nextNamespace);
-                                // TODO: FIXME: HACK:
-                                nextQueryTypesByNamespacesList.put("input_1", nextQueryTypesByNamespaces);
-                                
                                 final QueryType queryType = localSettings.getQueryType(nextQueryKey);
                                 
                                 if(queryType == null)
@@ -157,7 +148,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 
                                 final Map<URI, Provider> queryTypesByNamespace =
                                         ProviderUtils.getProvidersForQueryTypeForNamespaceUris(allProviders, queryType,
-                                                nextQueryTypesByNamespacesList, NamespaceMatch.ANY_MATCHED);
+                                                nextNamespacesList, NamespaceMatch.ANY_MATCHED);
                                 
                                 allQueryTypesByNamespace.put(
                                         nextQueryKey.stringValue() + " " + nextNamespace.stringValue(),
@@ -249,7 +240,7 @@ public class NamespaceProvidersServlet extends HttpServlet
             }
             else
             {
-                final Collection<URI> implementedQueriesForNextNamespace = new HashSet<URI>();
+                final Collection<URI> implementedQueriesForNextNamespace = new ArrayList<URI>();
                 
                 for(final Provider nextProviderForNextNamespace : providersForNextNamespace)
                 {

@@ -1,8 +1,8 @@
 package org.queryall.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +69,7 @@ public class QueryBundleUtils
             final boolean convertAlternateToPreferred, final boolean recogniseImplicitRdfruleInclusions,
             final boolean includeNonProfileMatchedRdfrules) throws QueryAllException
     {
-        final Collection<QueryBundle> results = new HashSet<QueryBundle>();
+        final Collection<QueryBundle> results = new ArrayList<QueryBundle>();
         
         // Note: We default to converting alternate namespaces to preferred unless it is turned off
         // in the configuration. It can always be turned off for each namespace entry individually

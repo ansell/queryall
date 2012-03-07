@@ -6,7 +6,6 @@ package org.queryall.api.test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
@@ -269,11 +268,7 @@ public class DummyProfile implements Profile
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> result = new HashSet<URI>();
-        
-        result.add(ProfileSchema.getProfileTypeUri());
-        
-        return result;
+        return Collections.singleton(ProfileSchema.getProfileTypeUri());
     }
     
     /*

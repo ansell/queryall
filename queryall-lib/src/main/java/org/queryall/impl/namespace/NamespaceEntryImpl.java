@@ -1,5 +1,6 @@
 package org.queryall.impl.namespace;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     
     private String preferredPrefix = "";
     
-    private Collection<String> alternativePrefixes = new HashSet<String>();
+    private Collection<String> alternativePrefixes = new ArrayList<String>();
     
     private String identifierRegex = "";
     

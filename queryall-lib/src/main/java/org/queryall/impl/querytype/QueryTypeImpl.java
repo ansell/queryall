@@ -300,11 +300,6 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
     @Override
     public void addNamespaceToHandle(final URI namespaceToHandle)
     {
-        if(this.namespacesToHandle == null)
-        {
-            this.namespacesToHandle = new HashSet<URI>();
-        }
-        
         this.namespacesToHandle.add(namespaceToHandle);
     }
     

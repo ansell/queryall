@@ -46,7 +46,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     private String outputString = "";
     private String processingTemplateString = "";
-    private Collection<String> expectedInputParameters = new HashSet<String>();
+    private Collection<String> expectedInputParameters = new ArrayList<String>();
     private boolean handleAllNamespaces = true;
     private boolean includeDefaults = true;
     private boolean inRobotsTxt = false;
@@ -190,11 +190,7 @@ public class DummyQueryType implements QueryType, InputQueryType, ProcessorQuery
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> types = new HashSet<URI>();
-        
-        types.add(QueryTypeSchema.getQueryTypeUri());
-        
-        return types;
+        return Collections.singleton(QueryTypeSchema.getQueryTypeUri());
     }
     
     /*

@@ -2,7 +2,6 @@ package org.queryall.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -50,11 +49,11 @@ public class RdfFetchController
     
     private final ExecutorService executor = Executors.newCachedThreadPool();
     
-    private volatile Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new HashSet<RdfFetcherQueryRunnable>(20);
+    private volatile Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new ArrayList<RdfFetcherQueryRunnable>(20);
     
-    private volatile Collection<RdfFetcherQueryRunnable> errorResults = new HashSet<RdfFetcherQueryRunnable>(10);
-    private volatile Collection<RdfFetcherQueryRunnable> successfulResults = new HashSet<RdfFetcherQueryRunnable>(10);
-    private volatile Collection<RdfFetcherQueryRunnable> uncalledThreads = new HashSet<RdfFetcherQueryRunnable>(4);
+    private volatile Collection<RdfFetcherQueryRunnable> errorResults = new ArrayList<RdfFetcherQueryRunnable>(10);
+    private volatile Collection<RdfFetcherQueryRunnable> successfulResults = new ArrayList<RdfFetcherQueryRunnable>(10);
+    private volatile Collection<RdfFetcherQueryRunnable> uncalledThreads = new ArrayList<RdfFetcherQueryRunnable>(4);
     
     private volatile Collection<QueryBundle> queryBundles = new ArrayList<QueryBundle>();
     
