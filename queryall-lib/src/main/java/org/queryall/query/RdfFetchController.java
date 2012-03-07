@@ -579,17 +579,26 @@ public class RdfFetchController
                                     this.sortedIncludedProfiles, this.getSettings());
                     
                     final Collection<QueryBundle> queryBundlesForQueryType =
-                            QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(
-                                    nextInputQueryType,
-                                    chosenProviders,
-                                    this.queryParameters,
-                                    allCustomQueries.get(nextQueryType),
-                                    this.sortedIncludedProfiles,
-                                    this.getSettings(),
-                                    this.getBlacklistController(),
-                                    this.getRealHostName(),
-                                    this.getSettings().getBooleanProperty(
-                                            WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER), this.getPageOffset());
+                            QueryBundleUtils
+                                    .generateQueryBundlesForQueryTypeAndProviders(
+                                            nextInputQueryType,
+                                            chosenProviders,
+                                            this.queryParameters,
+                                            allCustomQueries.get(nextQueryType),
+                                            this.sortedIncludedProfiles,
+                                            this.localSettings.getAllQueryTypes(),
+                                            this.getSettings(),
+                                            this.getBlacklistController(),
+                                            this.getRealHostName(),
+                                            this.getSettings().getBooleanProperty(
+                                                    WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER),
+                                            this.getPageOffset(),
+                                            this.localSettings
+                                                    .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                                            this.localSettings
+                                                    .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                            this.localSettings
+                                                    .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                     
                     this.queryBundles.addAll(queryBundlesForQueryType);
                     

@@ -1,10 +1,13 @@
 package org.queryall.utils;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1243,11 +1246,16 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredNamespaceEntrySubject.getSubject());
                 final Set<URI> nextNamespaceEntryUris = new HashSet<URI>();
-                for(final Value nextNamespaceEntryValue : nextNamespaceEntryValues)
+                for(final Value nextValue : nextNamespaceEntryValues)
                 {
-                    if(nextNamespaceEntryValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextNamespaceEntryUris.add((URI)nextNamespaceEntryValue);
+                        nextNamespaceEntryUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -1373,11 +1381,16 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredNormalisationRuleSubject.getSubject());
                 final Set<URI> nextNormalisationRuleUris = new HashSet<URI>();
-                for(final Value nextNormalisationRuleValue : nextNormalisationRuleValues)
+                for(final Value nextValue : nextNormalisationRuleValues)
                 {
-                    if(nextNormalisationRuleValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextNormalisationRuleUris.add((URI)nextNormalisationRuleValue);
+                        nextNormalisationRuleUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -1599,11 +1612,16 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredProfileSubject.getSubject());
                 final Set<URI> nextProfileUris = new HashSet<URI>();
-                for(final Value nextProfileValue : nextProfileValues)
+                for(final Value nextValue : nextProfileValues)
                 {
-                    if(nextProfileValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextProfileUris.add((URI)nextProfileValue);
+                        nextProfileUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -1724,11 +1742,19 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredProjectSubject.getSubject());
                 final Set<URI> nextProjectUris = new HashSet<URI>();
-                for(final Value nextProjectValue : nextProjectValues)
+                
+                // Silently filter out any blank nodes or literals that happen to be used as
+                // rdf:type objects
+                for(final Value nextValue : nextProjectValues)
                 {
-                    if(nextProjectValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextProjectUris.add((URI)nextProjectValue);
+                        nextProjectUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -1867,11 +1893,16 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredProviderSubject.getSubject());
                 final Set<URI> nextProviderUris = new HashSet<URI>();
-                for(final Value nextProviderValue : nextProviderValues)
+                for(final Value nextValue : nextProviderValues)
                 {
-                    if(nextProviderValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextProviderUris.add((URI)nextProviderValue);
+                        nextProviderUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -1994,11 +2025,16 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredQueryTypeSubject.getSubject());
                 final Set<URI> nextQueryTypeUris = new HashSet<URI>();
-                for(final Value nextQueryTypeValue : nextQueryTypeValues)
+                for(final Value nextValue : nextQueryTypeValues)
                 {
-                    if(nextQueryTypeValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextQueryTypeUris.add((URI)nextQueryTypeValue);
+                        nextQueryTypeUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -2056,7 +2092,7 @@ public final class RdfUtils
         }
         catch(final OpenRDFException e)
         {
-            // handle exception
+            // log exception
             RdfUtils.log.error("getQueryTypes:", e);
         }
         finally
@@ -2081,7 +2117,6 @@ public final class RdfUtils
             final int modelVersion, final QueryAllConfiguration localSettings,
             final BlacklistController blacklistController) throws QueryAllException
     {
-        // TODO: remove call to BlacklistController.getDefaultController() here
         final RdfFetchController fetchController =
                 new RdfFetchController(localSettings, blacklistController, queryBundles);
         
@@ -2235,11 +2270,16 @@ public final class RdfUtils
                         RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
                                 (URI)nextDeclaredRuleTestSubject.getSubject());
                 final Set<URI> nextRuleTestUris = new HashSet<URI>();
-                for(final Value nextRuleTestValue : nextRuleTestValues)
+                for(final Value nextValue : nextRuleTestValues)
                 {
-                    if(nextRuleTestValue instanceof URI)
+                    if(nextValue instanceof URI)
                     {
-                        nextRuleTestUris.add((URI)nextRuleTestValue);
+                        nextRuleTestUris.add((URI)nextValue);
+                    }
+                    else if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                nextSubjectUri.stringValue(), nextValue.stringValue());
                     }
                 }
                 
@@ -2297,7 +2337,7 @@ public final class RdfUtils
         }
         catch(final OpenRDFException e)
         {
-            // handle exception
+            // log exception
             RdfUtils.log.error("getRuleTests:", e);
         }
         finally
@@ -2345,7 +2385,7 @@ public final class RdfUtils
         
         // text/plain is the accepted MIME format for NTriples because they were too lazy to define
         // one... go figure
-        final RDFFormat writerFormat = Rio.getWriterFormatForMIMEType("text/plain");
+        final RDFFormat writerFormat = RDFFormat.NTRIPLES;
         
         final StringWriter insertTriples = new StringWriter();
         
@@ -2365,7 +2405,7 @@ public final class RdfUtils
         // and empty blocks are mandatory for the MODIFY statement if they are not applicable
         // The define sql:log-enable is a Virtuoso hack to enable SPARUL to work with more than one
         // thread at once
-        // HACK: Specific to Virtuoso!
+        // FIXME: HACK: Specific to Virtuoso!
         String sparqlInsertQuery = "define sql:log-enable 2 MODIFY ";
         
         if(useSparqlGraph)
@@ -2401,7 +2441,8 @@ public final class RdfUtils
     public static Collection<Statement> getStatementsFromRepositoryByPredicateUris(final Repository nextRepository,
             final Collection<URI> predicateUris) throws OpenRDFException
     {
-        final Collection<Statement> results = new HashSet<Statement>();
+        final Collection<Statement> results = new ArrayList<Statement>();
+        
         if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
@@ -2448,7 +2489,7 @@ public final class RdfUtils
             final Repository nextRepository, final Collection<URI> predicateUris, final URI subjectUri)
         throws OpenRDFException
     {
-        final Collection<Statement> results = new HashSet<Statement>();
+        final Collection<Statement> results = new ArrayList<Statement>();
         if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
@@ -2494,10 +2535,8 @@ public final class RdfUtils
     public static Collection<Statement> getStatementsFromRepositoryByPredicateUrisAndSubject(
             final Repository nextRepository, final URI predicateUri, final URI subjectUri) throws OpenRDFException
     {
-        final Collection<URI> predicateUris = new HashSet<URI>();
-        predicateUris.add(predicateUri);
-        
-        return RdfUtils.getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository, predicateUris, subjectUri);
+        return RdfUtils.getStatementsFromRepositoryByPredicateUrisAndSubject(nextRepository,
+                Arrays.asList(predicateUri), subjectUri);
     }
     
     // make sure that we are using UTF-8 to decode to item
@@ -2985,36 +3024,8 @@ public final class RdfUtils
     public static void toOutputStream(final Repository nextRepository, final java.io.OutputStream outputStream,
             final RDFFormat format, final Resource... contexts)
     {
-        RepositoryConnection nextConnection = null;
-        
-        try
-        {
-            nextConnection = nextRepository.getConnection();
-            
-            nextConnection.export(Rio.createWriter(format, outputStream), contexts);
-        }
-        catch(final RepositoryException e)
-        {
-            RdfUtils.log.error("repository exception", e);
-        }
-        catch(final RDFHandlerException e)
-        {
-            RdfUtils.log.error("rdfhandler exception", e);
-        }
-        finally
-        {
-            try
-            {
-                if(nextConnection != null)
-                {
-                    nextConnection.close();
-                }
-            }
-            catch(final RepositoryException rex)
-            {
-                RdfUtils.log.error("toWriter: connection didn't close correctly", rex);
-            }
-        }
+        RdfUtils.toWriter(nextRepository, new OutputStreamWriter(outputStream, Charset.forName("UTF-8")), format,
+                contexts);
     }
     
     /**
@@ -3033,46 +3044,28 @@ public final class RdfUtils
      */
     public static String toString(final Repository nextRepository, final Resource... contexts)
     {
-        final java.io.StringWriter stBuff = new java.io.StringWriter();
+        final StringWriter stBuff = new StringWriter();
         
-        RepositoryConnection nextConnection = null;
-        
-        try
-        {
-            nextConnection = nextRepository.getConnection();
-            
-            nextConnection.export(Rio.createWriter(RDFFormat.RDFXML, stBuff), contexts);
-        }
-        catch(final RepositoryException e)
-        {
-            RdfUtils.log.error("repository exception", e);
-        }
-        catch(final RDFHandlerException e)
-        {
-            RdfUtils.log.error("rdfhandler exception", e);
-        }
-        finally
-        {
-            try
-            {
-                if(nextConnection != null)
-                {
-                    nextConnection.close();
-                }
-            }
-            catch(final RepositoryException rex)
-            {
-                RdfUtils.log.error("toWriter: connection didn't close correctly", rex);
-            }
-        }
+        RdfUtils.toWriter(nextRepository, stBuff, RDFFormat.RDFXML, contexts);
         
         return stBuff.toString();
     }
     
     /**
+     * Writes the contents of the repository, with optional contexts restrictions, to the given
+     * writer.
+     * 
+     * NOTE: This method logs, but does not through any exceptions.
+     * 
      * @param nextRepository
+     *            The repository that contains the data to be exported.
      * @param nextWriter
+     *            The writer to write the results to.
      * @param format
+     *            The format to write the contents of the repository using
+     * @param contexts
+     *            An optional varargs set of Resources identifying contexts in the repository that
+     *            are to be exported
      */
     public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
             final RDFFormat format, final Resource... contexts)
@@ -3110,8 +3103,18 @@ public final class RdfUtils
     }
     
     /**
+     * Writes the contents of the repository, with optional contexts restrictions, to the given
+     * writer using the RDF/XML format.
+     * 
+     * NOTE: This method logs, but does not through any exceptions.
+     * 
      * @param nextRepository
+     *            The repository that contains the data to be exported.
      * @param nextWriter
+     *            The writer to write the results to.
+     * @param contexts
+     *            An optional varargs set of Resources identifying contexts in the repository that
+     *            are to be exported
      */
     public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
             final Resource... contexts)

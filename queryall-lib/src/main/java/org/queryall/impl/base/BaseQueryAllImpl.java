@@ -6,7 +6,6 @@ package org.queryall.impl.base;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;

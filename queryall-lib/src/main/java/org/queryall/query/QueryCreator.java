@@ -1118,17 +1118,24 @@ public class QueryCreator
     }
     
     /**
-     * @param nextQueryType
      * @param nextProvider
      * @param queryParameters
      * @param nextEndpoint
      * @param realHostName
      * @param pageOffset
+     * @param configHostName
+     *            TODO
+     * @param defaultHostAddress
+     *            TODO
+     * @param defaultSeparator
+     *            TODO
+     * @param nextQueryType
      * @return
      */
     public static Map<String, String> getAttributeListFor(final QueryType nextIncludedQueryType,
             final Provider nextProvider, final Map<String, String> queryParameters, final String nextEndpoint,
-            final String realHostName, final int pageOffset, final QueryAllConfiguration localSettings)
+            final String realHostName, final int pageOffset, final String configHostName,
+            final String defaultHostAddress, final String defaultSeparator)
     {
         if(QueryCreator.TRACE)
         {
@@ -1147,11 +1154,10 @@ public class QueryCreator
         }
         
         // TODO: decide on default for hostName
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME,
-                localSettings.getStringProperty(WebappConfig.HOST_NAME));
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_NAME, configHostName);
         
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, localSettings.getDefaultHostAddress());
-        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, localSettings.getSeparator());
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_HOST_ADDRESS, defaultHostAddress);
+        attributeList.put(Constants.TEMPLATE_KEY_DEFAULT_SEPARATOR, defaultSeparator);
         attributeList.put(Constants.TEMPLATE_KEY_REAL_HOST_NAME, realHostName);
         attributeList.put(Constants.TEMPLATE_KEY_QUERY_STRING, queryParameters.get(Constants.QUERY));
         
@@ -1176,33 +1182,33 @@ public class QueryCreator
         attributeList.put(Constants.TEMPLATE_KEY_ENDPOINT_URL, nextEndpoint);
         
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_NAME,
-                StringUtils.percentEncode(localSettings.getStringProperty(WebappConfig.HOST_NAME)));
+                StringUtils.percentEncode(configHostName));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_HOST_ADDRESS,
-                StringUtils.percentEncode(localSettings.getDefaultHostAddress()));
+                StringUtils.percentEncode(defaultHostAddress));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_DEFAULT_SEPARATOR,
-                StringUtils.percentEncode(localSettings.getSeparator()));
+                StringUtils.percentEncode(defaultSeparator));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils.percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils.percentEncode(realHostName));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING,
                 StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME,
-                StringUtils.xmlEncodeString(localSettings.getStringProperty(WebappConfig.HOST_NAME)));
+                StringUtils.xmlEncodeString(configHostName));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_ADDRESS,
-                StringUtils.xmlEncodeString(localSettings.getDefaultHostAddress()));
+                StringUtils.xmlEncodeString(defaultHostAddress));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_SEPARATOR,
-                StringUtils.xmlEncodeString(localSettings.getSeparator()));
+                StringUtils.xmlEncodeString(defaultSeparator));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils.xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils.xmlEncodeString(realHostName));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING,
                 StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
         
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME, StringUtils
-                .xmlEncodeString(StringUtils.percentEncode(localSettings.getStringProperty(WebappConfig.HOST_NAME))));
+        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME,
+                StringUtils.xmlEncodeString(StringUtils.percentEncode(configHostName)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_ADDRESS,
-                StringUtils.xmlEncodeString(localSettings.getDefaultHostAddress()));
+                StringUtils.xmlEncodeString(defaultHostAddress));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_SEPARATOR,
-                StringUtils.xmlEncodeString(StringUtils.percentEncode(localSettings.getSeparator())));
+                StringUtils.xmlEncodeString(StringUtils.percentEncode(defaultSeparator)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_ENDPOINT_URL,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME,

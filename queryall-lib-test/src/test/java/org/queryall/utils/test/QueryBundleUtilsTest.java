@@ -22,6 +22,7 @@ import org.queryall.api.test.DummyProfile;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.test.DummyQueryType;
 import org.queryall.api.utils.ProfileIncludeExclude;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
@@ -127,8 +128,12 @@ public class QueryBundleUtilsTest
                 QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
                         this.testChosenProvidersEmpty, this.testQueryParametersEmpty,
                         this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
-                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
-                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+                        this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                        this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
+                        this.testPageOffset1, this.testSettingsEmpty
+                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(0, results.size());
@@ -151,8 +156,12 @@ public class QueryBundleUtilsTest
                 QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
                         this.testChosenProvidersSingleTrivial, this.testQueryParametersEmpty,
                         this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
-                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
-                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+                        this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                        this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
+                        this.testPageOffset1, this.testSettingsEmpty
+                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(1, results.size());
@@ -194,8 +203,12 @@ public class QueryBundleUtilsTest
                 QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
                         this.testChosenProvidersSingleTrivial, this.testQueryParametersEmpty,
                         this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesSingleAllInclude,
-                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
-                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+                        this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                        this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
+                        this.testPageOffset1, this.testSettingsEmpty
+                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(1, results.size());

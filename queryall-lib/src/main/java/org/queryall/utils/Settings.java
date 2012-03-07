@@ -29,7 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a dummy class used for testing, it does not perform the actual operations needed
+ * This class manages settings, including all of the main API objects, along with configuration
+ * settings based on the WebappConfig enum.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */

@@ -295,7 +295,7 @@ public class QueryCreatorTest
     
     /**
      * Test method for
-     * {@link org.queryall.query.QueryCreator#getAttributeListFor(org.queryall.api.querytype.QueryType, org.queryall.api.provider.Provider, java.util.Map, java.lang.String, java.lang.String, int, org.queryall.api.base.QueryAllConfiguration)}
+     * {@link org.queryall.query.QueryCreator#getAttributeListFor(org.queryall.api.querytype.QueryType, org.queryall.api.provider.Provider, java.util.Map, java.lang.String, java.lang.String, int, String, String, String)}
      * .
      */
     @Test
