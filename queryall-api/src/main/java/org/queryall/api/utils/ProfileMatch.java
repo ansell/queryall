@@ -195,8 +195,9 @@ public enum ProfileMatch
         }
         else
         {
+            // Add new profilable types here with their corresponding include and exclude lists
             throw new RuntimeException("usedWithProfilable: Did not recognise the type for object profilableObject="
-                    + profilableObject.getClass().getName());
+                    + profilableObject.getClass().getName() + " key=" + profilableObject.getKey().stringValue());
         }
         
         final ProfileMatch trueResult =
