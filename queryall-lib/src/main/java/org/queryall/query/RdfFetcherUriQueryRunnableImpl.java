@@ -28,13 +28,13 @@ public class RdfFetcherUriQueryRunnableImpl extends RdfFetcherQueryRunnableImpl
                 nextOriginalQueryBundle);
     }
     
-    @Override
-    public String call() throws Exception
-    {
-        this.doWork();
-        
-        return this.getNormalisedResult();
-    }
+    // @Override
+    // public String call() throws Exception
+    // {
+    // this.doWork();
+    //
+    // return this.getNormalisedResult();
+    // }
     
     private void doWork()
     {
@@ -127,6 +127,7 @@ public class RdfFetcherUriQueryRunnableImpl extends RdfFetcherQueryRunnableImpl
         {
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
+            this.getCountDownLatch().countDown();
         }
     }
     

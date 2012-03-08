@@ -1,12 +1,12 @@
 package org.queryall.query;
 
 import java.util.Date;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
 
-public interface RdfFetcherQueryRunnable extends Runnable, Callable<String>
+public interface RdfFetcherQueryRunnable extends Runnable// , Callable<String>
 {
     
     /**
@@ -33,6 +33,13 @@ public interface RdfFetcherQueryRunnable extends Runnable, Callable<String>
      * @return the completed
      */
     boolean getCompleted();
+    
+    /**
+     * 
+     * @return The CountDownLatch for this thread, or null if there is no latch currently attached
+     *         to this thread.
+     */
+    CountDownLatch getCountDownLatch();
     
     /**
      * @return the debug
@@ -136,6 +143,14 @@ public interface RdfFetcherQueryRunnable extends Runnable, Callable<String>
     void setCompleted(final boolean completed);
     
     /**
+     * Sets up a countDownLatch to easily track when the thread is completed.
+     * 
+     * @param isDone
+     *            The new countDownLatch to use.
+     */
+    void setCountDownLatch(CountDownLatch isDone);
+    
+    /**
      * @param debug
      *            the debug to set
      */
@@ -228,5 +243,4 @@ public interface RdfFetcherQueryRunnable extends Runnable, Callable<String>
     boolean wasCompletedSuccessfulQuery();
     
     boolean wasError();
-    
 }

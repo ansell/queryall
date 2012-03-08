@@ -624,7 +624,7 @@ public final class RdfUtils
         
         nextQueryBundle.setQueryType(dummyQuery);
         
-        return RdfUtils.getQueryTypesForQueryBundles(Collections.singleton(nextQueryBundle), modelVersion,
+        return RdfUtils.fetchQueryTypesForQueryBundles(Collections.singleton(nextQueryBundle), modelVersion,
                 localSettings, BlacklistController.getDefaultController());
     }
     
@@ -661,8 +661,133 @@ public final class RdfUtils
         // nextQueryBundle.setQuery(constructQueryString);
         // nextQueryBundle.setQueryEndpoint(sparqlEndpointUrl);
         
-        return RdfUtils.getQueryTypesForQueryBundles(Arrays.asList(nextQueryBundle), modelVersion, localSettings,
+        return RdfUtils.fetchQueryTypesForQueryBundles(Arrays.asList(nextQueryBundle), modelVersion, localSettings,
                 BlacklistController.getDefaultController());
+    }
+    
+    /**
+     * FIXME: Why does this function fetch?
+     * 
+     * @param queryBundles
+     * @param modelVersion
+     * @param localSettings
+     * @param blacklistController
+     * @return
+     * @throws QueryAllException
+     */
+    public static Collection<QueryType> fetchQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
+            final int modelVersion, final QueryAllConfiguration localSettings,
+            final BlacklistController blacklistController) throws QueryAllException
+    {
+        final RdfFetchController fetchController =
+                new RdfFetchController(localSettings, blacklistController, queryBundles);
+        
+        try
+        {
+            fetchController.fetchRdfForQueries();
+        }
+        catch(final InterruptedException ie)
+        {
+            RdfUtils.log.error("getQueryTypesForQueryBundles: interrupted exception", ie);
+            // throw ie;
+        }
+        
+        final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
+        
+        Repository myRepository = null;
+        RepositoryConnection myRepositoryConnection = null;
+        try
+        {
+            myRepository = new SailRepository(new MemoryStore());
+            myRepository.initialize();
+            myRepositoryConnection = myRepository.getConnection();
+            
+            for(final RdfFetcherQueryRunnable nextResult : rdfResults)
+            {
+                try
+                {
+                    RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
+                    
+                    if(RdfUtils.log.isDebugEnabled())
+                    {
+                        RdfUtils.log.debug("getQueryTypesForQueryBundles: nextReaderFormat for returnedContentType="
+                                + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
+                    }
+                    
+                    if(nextReaderFormat == null)
+                    {
+                        nextReaderFormat =
+                                Rio.getParserFormatForMIMEType(localSettings
+                                        .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                        
+                        if(nextReaderFormat == null)
+                        {
+                            RdfUtils.log
+                                    .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
+                                            + nextResult.getReturnedMIMEType()
+                                            + " localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
+                                            + localSettings
+                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                            continue;
+                        }
+                        else
+                        {
+                            RdfUtils.log
+                                    .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
+                                            + nextResult.getReturnedMIMEType()
+                                            + " using configured assumed response content type as fallback localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
+                                            + localSettings
+                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                        }
+                    }
+                    else if(RdfUtils.log.isDebugEnabled())
+                    {
+                        RdfUtils.log.debug("getQueryTypesForQueryBundles: readerFormat matched for returnedMIMEType="
+                                + nextResult.getReturnedMIMEType());
+                    }
+                    
+                    if(nextResult.getNormalisedResult().length() > 0)
+                    {
+                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
+                                localSettings.getDefaultHostAddress(), nextReaderFormat);
+                    }
+                }
+                catch(final org.openrdf.rio.RDFParseException rdfpe)
+                {
+                    RdfUtils.log.error("getQueryTypesForQueryBundles: RDFParseException", rdfpe);
+                }
+                catch(final org.openrdf.repository.RepositoryException re)
+                {
+                    RdfUtils.log.error("getQueryTypesForQueryBundles: RepositoryException inner", re);
+                }
+                catch(final java.io.IOException ioe)
+                {
+                    RdfUtils.log.error("getQueryTypesForQueryBundles: IOException", ioe);
+                }
+            } // end for(RdfFetcherQueryRunnableImpl nextResult : rdfResults)
+        }
+        catch(final org.openrdf.repository.RepositoryException re)
+        {
+            throw new QueryAllException("RepositoryException found", re);
+        }
+        finally
+        {
+            try
+            {
+                if(myRepositoryConnection != null)
+                {
+                    myRepositoryConnection.close();
+                }
+            }
+            catch(final org.openrdf.repository.RepositoryException re2)
+            {
+                RdfUtils.log.error("getQueryTypesForQueryBundles: failed to close repository connection", re2);
+            }
+        }
+        
+        final Map<URI, QueryType> results = RdfUtils.getQueryTypes(myRepository);
+        
+        return results.values();
     }
     
     public static String findBestContentType(final String requestedContentType,
@@ -1542,51 +1667,51 @@ public final class RdfUtils
                         RdfUtils.log
                                 .debug("getObjectUrisFromRepositoryByPredicateUris: nextInputPredicate was null or empty");
                     }
-                    
-                    continue;
                 }
-                
-                try
+                else
                 {
-                    final URI nextInputPredicateUri = f.createURI(nextInputPredicate);
-                    
-                    final String queryString =
-                            "SELECT DISTINCT ?object WHERE { ?subject <" + nextInputPredicateUri.stringValue()
-                                    + "> ?object . FILTER(isURI(?object)) }";
-                    final TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-                    final TupleQueryResult queryResult = tupleQuery.evaluate();
-                    
                     try
                     {
-                        while(queryResult.hasNext())
+                        final URI nextInputPredicateUri = f.createURI(nextInputPredicate);
+                        
+                        final String queryString =
+                                "SELECT DISTINCT ?object WHERE { ?subject <" + nextInputPredicateUri.stringValue()
+                                        + "> ?object . FILTER(isURI(?object)) }";
+                        final TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+                        final TupleQueryResult queryResult = tupleQuery.evaluate();
+                        
+                        try
                         {
-                            final BindingSet bindingSet = queryResult.next();
-                            final Value valueOfObject = bindingSet.getValue("object");
-                            
-                            if(RdfUtils.DEBUG)
+                            while(queryResult.hasNext())
                             {
-                                RdfUtils.log.debug("Utilities: found object: valueOfObject=" + valueOfObject);
+                                final BindingSet bindingSet = queryResult.next();
+                                final Value valueOfObject = bindingSet.getValue("object");
+                                
+                                if(RdfUtils.DEBUG)
+                                {
+                                    RdfUtils.log.debug("Utilities: found object: valueOfObject=" + valueOfObject);
+                                }
+                                
+                                results.add(RdfUtils.getUTF8StringValueFromSesameValue(valueOfObject));
                             }
-                            
-                            results.add(RdfUtils.getUTF8StringValueFromSesameValue(valueOfObject));
+                        }
+                        finally
+                        {
+                            queryResult.close();
                         }
                     }
-                    finally
+                    catch(final OpenRDFException ordfe)
                     {
-                        queryResult.close();
+                        RdfUtils.log
+                                .error("getObjectUrisFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
+                                        + nextInputPredicate);
                     }
-                }
-                catch(final OpenRDFException ordfe)
-                {
-                    RdfUtils.log
-                            .error("getObjectUrisFromRepositoryByPredicateUris: RDF exception found for nextInputPredicate="
-                                    + nextInputPredicate);
-                }
-                catch(final Exception ex)
-                {
-                    RdfUtils.log
-                            .error("getObjectUrisFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
-                                    + nextInputPredicate);
+                    catch(final Exception ex)
+                    {
+                        RdfUtils.log
+                                .error("getObjectUrisFromRepositoryByPredicateUris: general exception found for nextInputPredicate="
+                                        + nextInputPredicate);
+                    }
                 }
             }
         }
@@ -1650,44 +1775,45 @@ public final class RdfUtils
                 if(!(nextDeclaredProfileSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as profile identifiers");
-                    continue;
-                }
-                
-                final URI nextSubjectUri = (URI)nextDeclaredProfileSubject.getSubject();
-                
-                final Collection<Value> nextProfileValues =
-                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
-                                (URI)nextDeclaredProfileSubject.getSubject());
-                final Set<URI> nextProfileUris = new HashSet<URI>();
-                for(final Value nextValue : nextProfileValues)
-                {
-                    if(nextValue instanceof URI)
-                    {
-                        nextProfileUris.add((URI)nextValue);
-                    }
-                    else if(RdfUtils.DEBUG)
-                    {
-                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
-                                nextSubjectUri.stringValue(), nextValue.stringValue());
-                    }
-                }
-                
-                final Collection<ProfileEnum> matchingProfileEnums =
-                        ServiceUtils.getProfileEnumsByTypeUris(nextProfileUris);
-                
-                if(RdfUtils.DEBUG)
-                {
-                    RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
-                }
-                
-                if(!matchingProfileEnums.isEmpty())
-                {
-                    uriToProfileEnums.put(nextSubjectUri, matchingProfileEnums);
                 }
                 else
                 {
-                    RdfUtils.log.warn("No profile enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
-                            nextProfileUris);
+                    final URI nextSubjectUri = (URI)nextDeclaredProfileSubject.getSubject();
+                    
+                    final Collection<Value> nextProfileValues =
+                            RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                    (URI)nextDeclaredProfileSubject.getSubject());
+                    final Set<URI> nextProfileUris = new HashSet<URI>();
+                    for(final Value nextValue : nextProfileValues)
+                    {
+                        if(nextValue instanceof URI)
+                        {
+                            nextProfileUris.add((URI)nextValue);
+                        }
+                        else if(RdfUtils.DEBUG)
+                        {
+                            RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                    nextSubjectUri.stringValue(), nextValue.stringValue());
+                        }
+                    }
+                    
+                    final Collection<ProfileEnum> matchingProfileEnums =
+                            ServiceUtils.getProfileEnumsByTypeUris(nextProfileUris);
+                    
+                    if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("getProfiles: matchingProfileEnums=" + matchingProfileEnums);
+                    }
+                    
+                    if(!matchingProfileEnums.isEmpty())
+                    {
+                        uriToProfileEnums.put(nextSubjectUri, matchingProfileEnums);
+                    }
+                    else
+                    {
+                        RdfUtils.log.warn("No profile enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                                nextProfileUris);
+                    }
                 }
             }
             
@@ -1792,47 +1918,48 @@ public final class RdfUtils
                 if(!(nextDeclaredProjectSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as project identifiers");
-                    continue;
-                }
-                
-                final URI nextSubjectUri = (URI)nextDeclaredProjectSubject.getSubject();
-                
-                final Collection<Value> nextProjectValues =
-                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
-                                (URI)nextDeclaredProjectSubject.getSubject());
-                final Set<URI> nextProjectUris = new HashSet<URI>();
-                
-                // Silently filter out any blank nodes or literals that happen to be used as
-                // rdf:type objects
-                for(final Value nextValue : nextProjectValues)
-                {
-                    if(nextValue instanceof URI)
-                    {
-                        nextProjectUris.add((URI)nextValue);
-                    }
-                    else if(RdfUtils.DEBUG)
-                    {
-                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
-                                nextSubjectUri.stringValue(), nextValue.stringValue());
-                    }
-                }
-                
-                final Collection<ProjectEnum> matchingProjectEnums =
-                        ServiceUtils.getProjectEnumsByTypeUris(nextProjectUris);
-                
-                if(RdfUtils.DEBUG)
-                {
-                    RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
-                }
-                
-                if(!matchingProjectEnums.isEmpty())
-                {
-                    uriToProjectEnums.put(nextSubjectUri, matchingProjectEnums);
                 }
                 else
                 {
-                    RdfUtils.log.warn("No project enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
-                            nextProjectUris);
+                    final URI nextSubjectUri = (URI)nextDeclaredProjectSubject.getSubject();
+                    
+                    final Collection<Value> nextProjectValues =
+                            RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                    (URI)nextDeclaredProjectSubject.getSubject());
+                    final Set<URI> nextProjectUris = new HashSet<URI>();
+                    
+                    // Silently filter out any blank nodes or literals that happen to be used as
+                    // rdf:type objects
+                    for(final Value nextValue : nextProjectValues)
+                    {
+                        if(nextValue instanceof URI)
+                        {
+                            nextProjectUris.add((URI)nextValue);
+                        }
+                        else if(RdfUtils.DEBUG)
+                        {
+                            RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                    nextSubjectUri.stringValue(), nextValue.stringValue());
+                        }
+                    }
+                    
+                    final Collection<ProjectEnum> matchingProjectEnums =
+                            ServiceUtils.getProjectEnumsByTypeUris(nextProjectUris);
+                    
+                    if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("getProjects: matchingProjectEnums=" + matchingProjectEnums);
+                    }
+                    
+                    if(!matchingProjectEnums.isEmpty())
+                    {
+                        uriToProjectEnums.put(nextSubjectUri, matchingProjectEnums);
+                    }
+                    else
+                    {
+                        RdfUtils.log.warn("No project enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                                nextProjectUris);
+                    }
                 }
             }
             
@@ -1949,44 +2076,45 @@ public final class RdfUtils
                 if(!(nextDeclaredProviderSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as provider identifiers");
-                    continue;
-                }
-                
-                final URI nextSubjectUri = (URI)nextDeclaredProviderSubject.getSubject();
-                
-                final Collection<Value> nextProviderValues =
-                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
-                                (URI)nextDeclaredProviderSubject.getSubject());
-                final Set<URI> nextProviderUris = new HashSet<URI>();
-                for(final Value nextValue : nextProviderValues)
-                {
-                    if(nextValue instanceof URI)
-                    {
-                        nextProviderUris.add((URI)nextValue);
-                    }
-                    else if(RdfUtils.DEBUG)
-                    {
-                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
-                                nextSubjectUri.stringValue(), nextValue.stringValue());
-                    }
-                }
-                
-                final Collection<ProviderEnum> matchingProviderEnums =
-                        ServiceUtils.getProviderEnumsByTypeUris(nextProviderUris);
-                
-                if(RdfUtils.DEBUG)
-                {
-                    RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
-                }
-                
-                if(!matchingProviderEnums.isEmpty())
-                {
-                    uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
                 }
                 else
                 {
-                    RdfUtils.log.warn("No provider enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
-                            nextProviderUris);
+                    final URI nextSubjectUri = (URI)nextDeclaredProviderSubject.getSubject();
+                    
+                    final Collection<Value> nextProviderValues =
+                            RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                    (URI)nextDeclaredProviderSubject.getSubject());
+                    final Set<URI> nextProviderUris = new HashSet<URI>();
+                    for(final Value nextValue : nextProviderValues)
+                    {
+                        if(nextValue instanceof URI)
+                        {
+                            nextProviderUris.add((URI)nextValue);
+                        }
+                        else if(RdfUtils.DEBUG)
+                        {
+                            RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                    nextSubjectUri.stringValue(), nextValue.stringValue());
+                        }
+                    }
+                    
+                    final Collection<ProviderEnum> matchingProviderEnums =
+                            ServiceUtils.getProviderEnumsByTypeUris(nextProviderUris);
+                    
+                    if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("getProviders: matchingProviderEnums=" + matchingProviderEnums);
+                    }
+                    
+                    if(!matchingProviderEnums.isEmpty())
+                    {
+                        uriToProviderEnums.put(nextSubjectUri, matchingProviderEnums);
+                    }
+                    else
+                    {
+                        RdfUtils.log.warn("No provider enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
+                                nextProviderUris);
+                    }
                 }
             }
             
@@ -2093,44 +2221,45 @@ public final class RdfUtils
                 if(!(nextDeclaredQueryTypeSubject.getSubject() instanceof URI))
                 {
                     RdfUtils.log.error("We do not support blank nodes as query type identifiers");
-                    continue;
-                }
-                
-                final URI nextSubjectUri = (URI)nextDeclaredQueryTypeSubject.getSubject();
-                
-                final Collection<Value> nextQueryTypeValues =
-                        RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
-                                (URI)nextDeclaredQueryTypeSubject.getSubject());
-                final Set<URI> nextQueryTypeUris = new HashSet<URI>();
-                for(final Value nextValue : nextQueryTypeValues)
-                {
-                    if(nextValue instanceof URI)
-                    {
-                        nextQueryTypeUris.add((URI)nextValue);
-                    }
-                    else if(RdfUtils.DEBUG)
-                    {
-                        RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
-                                nextSubjectUri.stringValue(), nextValue.stringValue());
-                    }
-                }
-                
-                final Collection<QueryTypeEnum> matchingQueryTypeEnums =
-                        ServiceUtils.getQueryTypeEnumsByTypeUris(nextQueryTypeUris);
-                
-                if(RdfUtils.DEBUG)
-                {
-                    RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
-                }
-                
-                if(!matchingQueryTypeEnums.isEmpty())
-                {
-                    uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
                 }
                 else
                 {
-                    RdfUtils.log.warn("No query type enums found for {} URIs were: {}", nextSubjectUri.stringValue(),
-                            nextQueryTypeUris);
+                    final URI nextSubjectUri = (URI)nextDeclaredQueryTypeSubject.getSubject();
+                    
+                    final Collection<Value> nextQueryTypeValues =
+                            RdfUtils.getValuesFromRepositoryByPredicateUrisAndSubject(myRepository, RDF.TYPE,
+                                    (URI)nextDeclaredQueryTypeSubject.getSubject());
+                    final Set<URI> nextQueryTypeUris = new HashSet<URI>();
+                    for(final Value nextValue : nextQueryTypeValues)
+                    {
+                        if(nextValue instanceof URI)
+                        {
+                            nextQueryTypeUris.add((URI)nextValue);
+                        }
+                        else if(RdfUtils.DEBUG)
+                        {
+                            RdfUtils.log.debug("Found non-URI as rdf:type nextSubjectUri={} rdf:type value={}",
+                                    nextSubjectUri.stringValue(), nextValue.stringValue());
+                        }
+                    }
+                    
+                    final Collection<QueryTypeEnum> matchingQueryTypeEnums =
+                            ServiceUtils.getQueryTypeEnumsByTypeUris(nextQueryTypeUris);
+                    
+                    if(RdfUtils.DEBUG)
+                    {
+                        RdfUtils.log.debug("getQueryTypes: matchingQueryTypeEnums=" + matchingQueryTypeEnums);
+                    }
+                    
+                    if(!matchingQueryTypeEnums.isEmpty())
+                    {
+                        uriToQueryTypeEnums.put(nextSubjectUri, matchingQueryTypeEnums);
+                    }
+                    else
+                    {
+                        RdfUtils.log.warn("No query type enums found for {} URIs were: {}",
+                                nextSubjectUri.stringValue(), nextQueryTypeUris);
+                    }
                 }
             }
             
@@ -2189,121 +2318,6 @@ public final class RdfUtils
         }
         
         return Collections.emptyMap();
-    }
-    
-    public static Collection<QueryType> getQueryTypesForQueryBundles(final Collection<QueryBundle> queryBundles,
-            final int modelVersion, final QueryAllConfiguration localSettings,
-            final BlacklistController blacklistController) throws QueryAllException
-    {
-        final RdfFetchController fetchController =
-                new RdfFetchController(localSettings, blacklistController, queryBundles);
-        
-        try
-        {
-            fetchController.fetchRdfForQueries();
-        }
-        catch(final InterruptedException ie)
-        {
-            RdfUtils.log.error("getQueryTypesForQueryBundles: interrupted exception", ie);
-            // throw ie;
-        }
-        
-        final Collection<RdfFetcherQueryRunnable> rdfResults = fetchController.getSuccessfulResults();
-        
-        Repository myRepository = null;
-        RepositoryConnection myRepositoryConnection = null;
-        try
-        {
-            myRepository = new SailRepository(new MemoryStore());
-            myRepository.initialize();
-            myRepositoryConnection = myRepository.getConnection();
-            
-            for(final RdfFetcherQueryRunnable nextResult : rdfResults)
-            {
-                try
-                {
-                    RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
-                    
-                    if(RdfUtils.log.isDebugEnabled())
-                    {
-                        RdfUtils.log.debug("getQueryTypesForQueryBundles: nextReaderFormat for returnedContentType="
-                                + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
-                    }
-                    
-                    if(nextReaderFormat == null)
-                    {
-                        nextReaderFormat =
-                                Rio.getParserFormatForMIMEType(localSettings
-                                        .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
-                        
-                        if(nextReaderFormat == null)
-                        {
-                            RdfUtils.log
-                                    .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
-                                            + nextResult.getReturnedMIMEType()
-                                            + " localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
-                                            + localSettings
-                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
-                            continue;
-                        }
-                        else
-                        {
-                            RdfUtils.log
-                                    .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
-                                            + nextResult.getReturnedMIMEType()
-                                            + " using configured preferred content type as fallback localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
-                                            + localSettings
-                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
-                        }
-                    }
-                    else if(RdfUtils.log.isDebugEnabled())
-                    {
-                        RdfUtils.log.debug("getQueryTypesForQueryBundles: readerFormat matched for returnedMIMEType="
-                                + nextResult.getReturnedMIMEType());
-                    }
-                    
-                    if(nextResult.getNormalisedResult().length() > 0)
-                    {
-                        myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
-                                localSettings.getDefaultHostAddress(), nextReaderFormat);
-                    }
-                }
-                catch(final org.openrdf.rio.RDFParseException rdfpe)
-                {
-                    RdfUtils.log.error("getQueryTypesForQueryBundles: RDFParseException", rdfpe);
-                }
-                catch(final org.openrdf.repository.RepositoryException re)
-                {
-                    RdfUtils.log.error("getQueryTypesForQueryBundles: RepositoryException inner", re);
-                }
-                catch(final java.io.IOException ioe)
-                {
-                    RdfUtils.log.error("getQueryTypesForQueryBundles: IOException", ioe);
-                }
-            } // end for(RdfFetcherQueryRunnableImpl nextResult : rdfResults)
-        }
-        catch(final org.openrdf.repository.RepositoryException re)
-        {
-            throw new QueryAllException("RepositoryException found", re);
-        }
-        finally
-        {
-            try
-            {
-                if(myRepositoryConnection != null)
-                {
-                    myRepositoryConnection.close();
-                }
-            }
-            catch(final org.openrdf.repository.RepositoryException re2)
-            {
-                RdfUtils.log.error("getQueryTypesForQueryBundles: failed to close repository connection", re2);
-            }
-        }
-        
-        final Map<URI, QueryType> results = RdfUtils.getQueryTypes(myRepository);
-        
-        return results.values();
     }
     
     /**

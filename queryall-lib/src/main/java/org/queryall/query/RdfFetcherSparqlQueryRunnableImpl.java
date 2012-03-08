@@ -37,13 +37,13 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
         this.maxRowsParameter = nextMaxRowsParameter;
     }
     
-    @Override
-    public String call() throws Exception
-    {
-        this.doWork();
-        
-        return this.getNormalisedResult();
-    }
+    // @Override
+    // public String call() throws Exception
+    // {
+    // this.doWork();
+    //
+    // return this.getNormalisedResult();
+    // }
     
     private void doWork()
     {
@@ -139,6 +139,7 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
         {
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
+            this.getCountDownLatch().countDown();
         }
     }
     

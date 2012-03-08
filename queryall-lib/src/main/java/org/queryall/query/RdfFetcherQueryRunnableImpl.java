@@ -1,7 +1,7 @@
 package org.queryall.query;
 
 import java.util.Date;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.blacklist.BlacklistController;
@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Callable<String>, RdfFetcherQueryRunnable
+public abstract class RdfFetcherQueryRunnableImpl extends Thread implements RdfFetcherQueryRunnable // ,
+// Callable<String>
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherQueryRunnableImpl.class);
     @SuppressWarnings("unused")
@@ -44,6 +45,7 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
     private Date queryEndTime = null;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
+    private CountDownLatch countDownLatch;
     
     public RdfFetcherQueryRunnableImpl(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
             final String nextAcceptHeader, final QueryAllConfiguration localSettings,
@@ -118,6 +120,12 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
     public boolean getCompleted()
     {
         return this.completed;
+    }
+    
+    @Override
+    public CountDownLatch getCountDownLatch()
+    {
+        return this.countDownLatch;
     }
     
     /*
@@ -366,6 +374,12 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
         this.completed = completed;
     }
     
+    @Override
+    public void setCountDownLatch(final CountDownLatch isDone)
+    {
+        this.countDownLatch = isDone;
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -562,4 +576,5 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements Call
     {
         return this.getCompleted() && this.getLastException() != null;
     }
+    
 }

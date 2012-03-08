@@ -1387,6 +1387,10 @@ public class QueryCreator
                     }
                 }
                 
+                // FIXME: If separator was not set at this point, set it using defaultSeparator
+                
+                // FIXME: If authority was not set at this point, set it using defaultHostName
+                
                 if(replacedString.contains(Constants.TEMPLATE_SEPARATOR))
                 {
                     replacedString = replacedString.replace(Constants.TEMPLATE_SEPARATOR, separatorString);

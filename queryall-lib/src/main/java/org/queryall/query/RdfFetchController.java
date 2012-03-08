@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.openrdf.model.URI;
@@ -229,33 +229,49 @@ public class RdfFetchController
     {
         final long start = System.currentTimeMillis();
         
-        final List<Future<String>> futures = this.executor.invokeAll(fetchThreads, 30, TimeUnit.SECONDS);
+        final CountDownLatch isDone = new CountDownLatch(fetchThreads.size());
         
-        // This loop is a safety check, although it doesn't actually fallover if something is wrong
-        // it will happen if the executor returns before the thread is completed
         for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
         {
-            if(!nextThread.getCompleted())
-            {
-                RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread not completed properly");
-            }
+            nextThread.setCountDownLatch(isDone);
+            this.executor.submit(nextThread);
         }
         
-        for(final Future<String> nextFuture : futures)
+        try
         {
-            if(nextFuture.isCancelled())
+            isDone.await();
+            this.executor.shutdown();
+            for(int count = 0; !this.executor.isTerminated() && count < 30; count++)
+            {
+                if(RdfFetchController.DEBUG)
+                {
+                    RdfFetchController.log.debug("awaiting executor termination count={}", count);
+                }
+                
+                this.executor.awaitTermination(1, TimeUnit.SECONDS);
+            }
+            
+            if(!this.executor.isTerminated())
             {
                 RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: Future was cancelled, thread not completed properly");
+                        .error("Fetch executor was not terminated, attempting to force shutdown with shutdownNow");
+                this.executor.shutdownNow();
+                RdfFetchController.log.error("Force shutdownNow returned");
             }
         }
-        
-        if(RdfFetchController.INFO)
+        catch(final InterruptedException ex)
         {
-            final long end = System.currentTimeMillis();
-            
-            RdfFetchController.log.info(String.format("%s: timing=%10d", "RdfFetchController.fetchRdfForQueries",
-                    (end - start)));
+            Thread.currentThread().interrupt();
+        }
+        finally
+        {
+            if(RdfFetchController.INFO)
+            {
+                final long end = System.currentTimeMillis();
+                
+                RdfFetchController.log.info(String.format("%s: timing=%10d", "RdfFetchController.fetchRdfForQueries",
+                        (end - start)));
+            }
         }
     }
     

@@ -36,13 +36,13 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
         this.httpOperation = nextHttpOperation;
     }
     
-    @Override
-    public String call() throws Exception
-    {
-        this.doWork();
-        
-        return this.getNormalisedResult();
-    }
+    // @Override
+    // public String call() throws Exception
+    // {
+    // this.doWork();
+    //
+    // return this.getNormalisedResult();
+    // }
     
     private void doWork()
     {
@@ -199,6 +199,7 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
         {
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
+            this.getCountDownLatch().countDown();
         }
     }
     
