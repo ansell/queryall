@@ -14,6 +14,10 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 
 /**
+ * Provides a reference implementation of the profile matching code, including enums to be reused
+ * where possible, and reference helper methods that may be reused or used as references to
+ * reimplement the profile matching functionality.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public enum ProfileMatch
@@ -46,12 +50,9 @@ public enum ProfileMatch
         {
             final ProfileMatch trueResult = ProfileMatch.usedWithProfilable(nextProfile, profilableObject);
             
-            if(trueResult == IMPLICIT_INCLUDE)
+            if(recogniseImplicitInclusions && trueResult == IMPLICIT_INCLUDE)
             {
-                if(recogniseImplicitInclusions)
-                {
-                    return true;
-                }
+                return true;
             }
             else if(trueResult == SPECIFIC_INCLUDE)
             {
@@ -63,6 +64,11 @@ public enum ProfileMatch
             }
         }
         
+        // If the true result after going through the profiles was not found, then attempt to find
+        // it if we can accept non-profile matched objects
+        
+        // NOTE: ProfileIncludeExclude.UNDEFINED is specially allowed here, although its behaviour
+        // is not specified, and should not be relied on
         final boolean returnValue =
                 includeNonProfileMatched
                         && (ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == profilableObject
@@ -117,6 +123,8 @@ public enum ProfileMatch
             throw new IllegalArgumentException("usedWithIncludeExcludeList: includeList or excludeList was null");
         }
         
+        // NOTE: The given collection should have a fast implementation of .contains for this method
+        // to be efficient
         final boolean includeFound = includeList.contains(nextUri);
         final boolean excludeFound = excludeList.contains(nextUri);
         
