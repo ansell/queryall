@@ -1,5 +1,6 @@
 package org.queryall.impl.namespace;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     
     private String preferredPrefix = "";
     
-    private Collection<String> alternativePrefixes = new HashSet<String>();
+    private Collection<String> alternativePrefixes = new ArrayList<String>();
     
     private String identifierRegex = "";
     
@@ -93,9 +94,9 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(NamespaceEntryImpl.DEBUG)
+            if(NamespaceEntryImpl.TRACE)
             {
-                NamespaceEntryImpl.log.debug("NamespaceEntry: nextStatement: " + nextStatement.toString());
+                NamespaceEntryImpl.log.trace("NamespaceEntry: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
@@ -492,13 +493,6 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         {
             final URI namespaceInstanceUri = this.getKey();
             
-            if(NamespaceEntryImpl.DEBUG)
-            {
-                NamespaceEntryImpl.log.debug("NamespaceEntry.toRdf: about create instance URI");
-                // log.debug("NamespaceEntry.toRdf: keyToUse="+keyToUse);
-                // log.debug("NamespaceEntry.toRdf: preferredPrefix="+getPreferredPrefix());
-            }
-            
             final Literal preferredPrefixLiteral = f.createLiteral(this.getPreferredPrefix());
             
             URI authorityLiteral = null;
@@ -515,11 +509,6 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             final Literal validationPossibleLiteral = f.createLiteral(this.getValidationPossible());
             final Literal uriTemplateLiteral = f.createLiteral(this.getUriTemplate());
             final Literal separatorLiteral = f.createLiteral(this.getSeparator());
-            
-            if(NamespaceEntryImpl.TRACE)
-            {
-                NamespaceEntryImpl.log.trace("NamespaceEntry.toRdf: about to add URI's to connection");
-            }
             
             con.setAutoCommit(false);
             

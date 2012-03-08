@@ -35,7 +35,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @SuppressWarnings("unused")
     private static final boolean INFO = HttpProviderImpl.LOG.isInfoEnabled();
     
-    private Collection<String> endpointUrls = new HashSet<String>();
+    private Collection<String> endpointUrls = Collections.synchronizedSet(new HashSet<String>());
     
     // Use these to include information based on whether or not the provider was actually used to
     // provide information for particular user queries
@@ -98,11 +98,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @Override
     public void addEndpointUrl(final String endpointUrl)
     {
-        if(this.endpointUrls == null)
-        {
-            this.endpointUrls = Collections.synchronizedSet(new HashSet<String>());
-        }
-        
         this.endpointUrls.add(endpointUrl);
     }
     
@@ -122,13 +117,13 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @Override
     public Collection<String> getEndpointUrls()
     {
-        return this.endpointUrls;
+        return Collections.unmodifiableCollection(this.endpointUrls);
     }
     
     @Override
     public boolean hasEndpointUrl()
     {
-        return (this.getEndpointUrls() != null && this.getEndpointUrls().size() > 0);
+        return !this.getEndpointUrls().isEmpty();
     }
     
     @Override
@@ -145,8 +140,9 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
     @Override
     public boolean resetEndpointUrls()
     {
-        // TODO Auto-generated method stub
-        return false;
+        this.endpointUrls.clear();
+        
+        return true;
     }
     
     @Override

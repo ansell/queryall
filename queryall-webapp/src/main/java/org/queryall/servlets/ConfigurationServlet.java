@@ -2,8 +2,8 @@ package org.queryall.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -174,7 +174,7 @@ public class ConfigurationServlet extends HttpServlet
             return;
         }
         
-        final Collection<String> debugStrings = new HashSet<String>();
+        final Collection<String> debugStrings = new ArrayList<String>();
         
         final String writerFormatString =
                 RdfUtils.findBestContentType(requestedContentType,

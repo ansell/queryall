@@ -7,7 +7,7 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.test.AbstractHttpProviderTest;
 import org.queryall.api.test.DummyProfile;
-import org.queryall.impl.provider.HttpOnlyProviderImpl;
+import org.queryall.impl.provider.HttpSparqlProviderImpl;
 
 /**
  * Provides the implementation of the Provider class for the Abstract test class provided with
@@ -15,12 +15,12 @@ import org.queryall.impl.provider.HttpOnlyProviderImpl;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class HttpOnlyProviderImplTest extends AbstractHttpProviderTest
+public class HttpSparqlProviderImplHttpTest extends AbstractHttpProviderTest
 {
     @Override
     public final HttpProvider getNewTestHttpProvider()
     {
-        return new HttpOnlyProviderImpl();
+        return new HttpSparqlProviderImpl();
     }
     
     @Override

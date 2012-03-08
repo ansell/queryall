@@ -36,11 +36,6 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
     public PrefixMappingNormalisationRuleImplEnum()
     {
         this(PrefixMappingNormalisationRuleImpl.class.getName(), PrefixMappingNormalisationRuleImpl.myTypes());
-        
-        if(PrefixMappingNormalisationRuleImplEnum.DEBUG)
-        {
-            PrefixMappingNormalisationRuleImplEnum.log.debug("PrefixMappingNormalisationRuleImplEnum() registered");
-        }
     }
     
     /**
@@ -50,12 +45,6 @@ public class PrefixMappingNormalisationRuleImplEnum extends NormalisationRuleEnu
     public PrefixMappingNormalisationRuleImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        
-        if(PrefixMappingNormalisationRuleImplEnum.DEBUG)
-        {
-            PrefixMappingNormalisationRuleImplEnum.log
-                    .debug("PrefixMappingNormalisationRuleImplEnum(String, List<URI>) registered");
-        }
     }
     
 }

@@ -3,8 +3,13 @@
  */
 package org.queryall.api.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
+import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntryEnum;
 import org.queryall.api.namespace.NamespaceEntryFactory;
@@ -41,6 +46,8 @@ import org.queryall.exception.UnsupportedProjectException;
 import org.queryall.exception.UnsupportedProviderException;
 import org.queryall.exception.UnsupportedQueryTypeException;
 import org.queryall.exception.UnsupportedRuleTestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides helper methods to interact with the various dynamic services in QueryAll.
@@ -49,6 +56,13 @@ import org.queryall.exception.UnsupportedRuleTestException;
  */
 public final class ServiceUtils
 {
+    private static final Logger LOG = LoggerFactory.getLogger(ServiceUtils.class);
+    @SuppressWarnings("unused")
+    private static final boolean TRACE = ServiceUtils.LOG.isTraceEnabled();
+    private static final boolean DEBUG = ServiceUtils.LOG.isDebugEnabled();
+    @SuppressWarnings("unused")
+    private static final boolean INFO = ServiceUtils.LOG.isInfoEnabled();
+    
     /**
      * Creates a namespace entry parser for the given namespace entry enum.
      * 
@@ -129,22 +143,22 @@ public final class ServiceUtils
     }
     
     /**
-     * Creates a provider parser for the given provider enum.
+     * Creates a Provider parser for the given Provider enum.
      * 
-     * @param provider
+     * @param Provider
      * @return
      * @throws UnsupportedProviderException
      */
-    public static ProviderParser createProviderParser(final ProviderEnum provider) throws UnsupportedProviderException
+    public static ProviderParser createProviderParser(final ProviderEnum Provider) throws UnsupportedProviderException
     {
-        final ProviderFactory factory = ProviderRegistry.getInstance().get(provider);
+        final ProviderFactory factory = ProviderRegistry.getInstance().get(Provider);
         
         if(factory != null)
         {
             return factory.getParser();
         }
         
-        throw new UnsupportedProviderException("No factory available for provider", provider);
+        throw new UnsupportedProviderException("No factory available for Provider", Provider);
     }
     
     /**
@@ -194,6 +208,265 @@ public final class ServiceUtils
     public static Collection<QueryAllSchema> getAllSchemas()
     {
         return SchemaServiceLoader.getInstance().getAll();
+    }
+    
+    public static Collection<NamespaceEntryEnum> getNamespaceEntryEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<NamespaceEntryEnum> results = new ArrayList<NamespaceEntryEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof NamespaceEntryEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((NamespaceEntryEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
+    }
+    
+    public static Collection<NormalisationRuleEnum> getNormalisationRuleEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<NormalisationRuleEnum> results = new ArrayList<NormalisationRuleEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof NormalisationRuleEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((NormalisationRuleEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
+    }
+    
+    public static Collection<ProfileEnum> getProfileEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<ProfileEnum> results = new ArrayList<ProfileEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof ProfileEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((ProfileEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
+    }
+    
+    public static Collection<ProjectEnum> getProjectEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<ProjectEnum> results = new ArrayList<ProjectEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof ProjectEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((ProjectEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
+    }
+    
+    public static Collection<ProviderEnum> getProviderEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<ProviderEnum> results = new ArrayList<ProviderEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof ProviderEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((ProviderEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
+    }
+    
+    public static Collection<QueryTypeEnum> getQueryTypeEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<QueryTypeEnum> results = new ArrayList<QueryTypeEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof QueryTypeEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((QueryTypeEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
+    }
+    
+    public static Collection<RuleTestEnum> getRuleTestEnumsByTypeUris(final Set<URI> nextTypeUris)
+    {
+        if(nextTypeUris.isEmpty())
+        {
+            if(ServiceUtils.DEBUG)
+            {
+                ServiceUtils.LOG.debug("found an empty URI set for nextTypeUris=" + nextTypeUris);
+            }
+            
+            return Collections.emptyList();
+        }
+        
+        final Collection<QueryAllEnum> all = EnumServiceLoader.getInstance().getAll();
+        
+        final List<RuleTestEnum> results = new ArrayList<RuleTestEnum>();
+        
+        for(final QueryAllEnum nextEnum : all)
+        {
+            if(nextEnum instanceof RuleTestEnum && nextEnum.matchForTypeUris(nextTypeUris))
+            {
+                if(ServiceUtils.DEBUG)
+                {
+                    ServiceUtils.LOG.debug("found a matching URI set for nextTypeUris=" + nextTypeUris);
+                }
+                
+                results.add((RuleTestEnum)nextEnum);
+            }
+        }
+        
+        if(ServiceUtils.DEBUG)
+        {
+            ServiceUtils.LOG.debug("returning results.size()=" + results.size() + " for nextTypeUris=" + nextTypeUris);
+        }
+        
+        return results;
     }
     
     /**

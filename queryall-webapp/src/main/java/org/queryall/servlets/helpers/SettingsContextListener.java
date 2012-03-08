@@ -24,10 +24,10 @@ import de.fuberlin.wiwiss.pubby.negotiation.ContentTypeNegotiator;
  */
 public class SettingsContextListener implements ServletContextListener
 {
-    public static final String QUERYALL_CONTENTNEGOTIATOR = "queryallcontentnegotiator";
-    public static final String QUERYALL_VELOCITY = "queryallvelocity";
-    public static final String QUERYALL_BLACKLIST = "queryallblacklist";
-    public static final String QUERYALL_CONFIG = "queryallconfig";
+    public static final String QUERYALL_CONTENTNEGOTIATOR = "queryall.contentnegotiator";
+    public static final String QUERYALL_VELOCITY = "queryall.velocity";
+    public static final String QUERYALL_BLACKLIST = "queryall.blacklist";
+    public static final String QUERYALL_CONFIG = "queryall.config";
     
     public SettingsContextListener()
     {
@@ -53,6 +53,9 @@ public class SettingsContextListener implements ServletContextListener
     @Override
     public void contextInitialized(final ServletContextEvent sce)
     {
+        // TODO: Create an EhCache and push it into the settings object so that we can efficiently
+        // perform some things that are being performed often
+        
         // create a new settings object
         final QueryAllConfiguration tempSettings = SettingsFactory.generateSettings();
         

@@ -1,7 +1,7 @@
 package org.queryall.impl.project;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
@@ -35,11 +35,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
     
     public static Set<URI> myTypes()
     {
-        final Set<URI> results = new HashSet<URI>(1);
-        
-        results.add(ProjectSchema.getProjectTypeUri());
-        
-        return results;
+        return Collections.singleton(ProjectSchema.getProjectTypeUri());
     }
     
     private URI authority = null;

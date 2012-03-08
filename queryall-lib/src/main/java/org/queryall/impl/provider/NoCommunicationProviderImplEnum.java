@@ -27,19 +27,9 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     
     public static final ProviderEnum NO_COMMUNICATION_PROVIDER_IMPL_ENUM = new NoCommunicationProviderImplEnum();
     
-    // static
-    // {
-    // NormalisationRuleEnum.register(REGEX_NORMALISATION_RULE_IMPL_ENUM);
-    // }
-    
     public NoCommunicationProviderImplEnum()
     {
         this(NoCommunicationProviderImpl.class.getName(), NoCommunicationProviderImpl.noCommunicationTypes());
-        
-        if(NoCommunicationProviderImplEnum.DEBUG)
-        {
-            NoCommunicationProviderImplEnum.log.debug("NoCommunicationProviderImplEnum() registered");
-        }
     }
     
     /**
@@ -49,11 +39,6 @@ public class NoCommunicationProviderImplEnum extends ProviderEnum
     public NoCommunicationProviderImplEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        
-        if(NoCommunicationProviderImplEnum.DEBUG)
-        {
-            NoCommunicationProviderImplEnum.log.debug("NoCommunicationProviderImplEnum(String, List<URI>) registered");
-        }
     }
     
 }

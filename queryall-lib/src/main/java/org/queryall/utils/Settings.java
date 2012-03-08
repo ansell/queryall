@@ -4,9 +4,9 @@
 package org.queryall.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -29,7 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a dummy class used for testing, it does not perform the actual operations needed
+ * This class manages settings, including all of the main API objects, along with configuration
+ * settings based on the WebappConfig enum.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
@@ -68,28 +69,29 @@ public class Settings implements QueryAllConfiguration
     {
         this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
         
-        final Collection<URI> nextPreferredList = new HashSet<URI>();
-        nextPreferredList.add(nextNamespaceEntry.getKey());
-        
         final Collection<URI> ifPreferredAbsent =
-                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(),
+                        Arrays.asList(nextNamespaceEntry.getKey()));
         
         if(ifPreferredAbsent != null)
         {
+            final Collection<URI> nextPreferredList = new ArrayList<URI>();
+            nextPreferredList.add(nextNamespaceEntry.getKey());
+            
             nextPreferredList.addAll(ifPreferredAbsent);
             this.namespacePrefixesToUris.put(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
         }
         
         for(final String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
         {
-            final Collection<URI> nextAlternateList = new HashSet<URI>();
-            nextAlternateList.add(nextNamespaceEntry.getKey());
-            
             final Collection<URI> ifAlternateAbsent =
-                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, nextAlternateList);
+                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, Arrays.asList(nextNamespaceEntry.getKey()));
             
             if(ifAlternateAbsent != null)
             {
+                final Collection<URI> nextAlternateList = new ArrayList<URI>();
+                nextAlternateList.add(nextNamespaceEntry.getKey());
+                
                 nextAlternateList.addAll(ifAlternateAbsent);
                 this.namespacePrefixesToUris.put(nextAlternate, nextAlternateList);
             }
@@ -864,9 +866,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final boolean propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,boolean) propertyKey=" + propertyKey + " propertyValue="
                     + Boolean.valueOf(propertyValue).toString());
         }
         
@@ -886,9 +888,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final float propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,float) propertyKey=" + propertyKey + " propertyValue="
                     + Float.valueOf(propertyValue).toString());
         }
         
@@ -908,9 +910,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final int propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,int) propertyKey=" + propertyKey + " propertyValue="
                     + Integer.valueOf(propertyValue).toString());
         }
         
@@ -930,9 +932,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final long propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,long) propertyKey=" + propertyKey + " propertyValue="
                     + Long.valueOf(propertyValue).toString());
         }
         
@@ -958,9 +960,9 @@ public class Settings implements QueryAllConfiguration
             throw new NullPointerException("property value cannot be null propertyKey=" + propertyKey);
         }
         
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,String) propertyKey=" + propertyKey + " propertyValue="
                     + String.valueOf(propertyValue));
         }
         
@@ -1008,9 +1010,9 @@ public class Settings implements QueryAllConfiguration
     @Override
     public void setProperty(final WebappConfig propertyKey, final Value propertyValue)
     {
-        if(Settings.DEBUG)
+        if(Settings.TRACE)
         {
-            Settings.log.debug("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue="
+            Settings.log.trace("setProperty(String,Value) propertyKey=" + propertyKey + " propertyValue="
                     + propertyValue + " propertyValue.stringValue()=" + propertyValue.stringValue()
                     + " propertyValue.getClass().getName()=" + propertyValue.getClass().getName());
         }

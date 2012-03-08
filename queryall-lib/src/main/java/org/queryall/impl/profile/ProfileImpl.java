@@ -1,6 +1,8 @@
 package org.queryall.impl.profile;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,11 +37,11 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     @SuppressWarnings("unused")
     private static final boolean INFO = ProfileImpl.log.isInfoEnabled();
     
-    private static final Set<URI> PROFILE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> PROFILE_IMPL_TYPES;
     
     static
     {
-        ProfileImpl.PROFILE_IMPL_TYPES.add(ProfileSchema.getProfileTypeUri());
+        PROFILE_IMPL_TYPES = Collections.singleton(ProfileSchema.getProfileTypeUri());
     }
     
     public static Set<URI> myTypes()
@@ -57,7 +59,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
     
     private ProfileIncludeExclude defaultProfileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
-    private Collection<URI> profileAdministrators = new HashSet<URI>();
+    private Collection<URI> profileAdministrators = new ArrayList<URI>();
     
     private Collection<URI> includeProviders = new HashSet<URI>();
     
@@ -86,9 +88,9 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProfileImpl.DEBUG)
+            if(ProfileImpl.TRACE)
             {
-                ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
+                ProfileImpl.log.trace("Profile.fromRdf: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
@@ -524,7 +526,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.excludeProviders = new HashSet<URI>();
+        this.excludeProviders = new ArrayList<URI>();
         
         return true;
     }
@@ -543,7 +545,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.excludeQueries = new HashSet<URI>();
+        this.excludeQueries = new ArrayList<URI>();
         
         return true;
     }
@@ -562,7 +564,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.excludeRdfRules = new HashSet<URI>();
+        this.excludeRdfRules = new ArrayList<URI>();
         
         return true;
     }
@@ -581,7 +583,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.includeProviders = new HashSet<URI>();
+        this.includeProviders = new ArrayList<URI>();
         
         return true;
     }
@@ -600,7 +602,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.includeQueries = new HashSet<URI>();
+        this.includeQueries = new ArrayList<URI>();
         
         return true;
     }
@@ -619,7 +621,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.includeRdfRules = new HashSet<URI>();
+        this.includeRdfRules = new ArrayList<URI>();
         
         return true;
     }
@@ -638,7 +640,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             ProfileImpl.log.debug("Could not clear collection");
         }
         
-        this.profileAdministrators = new HashSet<URI>();
+        this.profileAdministrators = new ArrayList<URI>();
         
         return true;
     }

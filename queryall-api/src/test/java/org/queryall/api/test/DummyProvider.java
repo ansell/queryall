@@ -5,6 +5,7 @@ package org.queryall.api.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Peter Ansell p_ansell@yahoo.com
  * 
  */
-public final class DummyProvider implements Provider
+public class DummyProvider implements Provider
 {
     private static final Logger LOG = LoggerFactory.getLogger(DummyProvider.class);
     @SuppressWarnings("unused")
@@ -292,11 +293,7 @@ public final class DummyProvider implements Provider
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> types = new HashSet<URI>();
-        
-        types.add(ProviderSchema.getProviderTypeUri());
-        
-        return types;
+        return Collections.singleton(ProviderSchema.getProviderTypeUri());
     }
     
     @Override

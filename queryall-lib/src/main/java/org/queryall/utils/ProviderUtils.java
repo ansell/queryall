@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -20,7 +19,6 @@ import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.utils.NamespaceMatch;
 import org.queryall.api.utils.WebappConfig;
-import org.queryall.comparators.ValueComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +52,7 @@ public final class ProviderUtils
         // Check if this query type includes defaults
         if(queryType.getIncludeDefaults())
         {
-            final Collection<Provider> results = new HashSet<Provider>();
+            final Collection<Provider> results = new ArrayList<Provider>();
             
             for(final Provider nextProvider : allProviders.values())
             {
@@ -253,7 +251,7 @@ public final class ProviderUtils
                     final Collection<URI> nextUriFromTitleNamespaceList =
                             NamespaceUtils.getNamespaceUrisForPrefix(namespacePrefixToUriMap, nextInputNamespace);
                     
-                    if(nextUriFromTitleNamespaceList.size() > 0)
+                    if(!nextUriFromTitleNamespaceList.isEmpty())
                     {
                         nextQueryNamespaceUris.put(nextInputNamespace, nextUriFromTitleNamespaceList);
                     }
@@ -268,11 +266,14 @@ public final class ProviderUtils
             else
             {
                 ProviderUtils.log
-                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input tag was invalid nextNamespaceInputTag="
+                        .error("getProvidersForQueryNamespaceSpecific: Could not match the namespace because the input tag was invalid nextQueryType="
+                                + nextQueryType.getKey().stringValue()
+                                + " nextNamespaceInputTag="
                                 + nextNamespaceInputTag + " queryStringMatches.size()=" + queryStringMatches.size());
                 
                 throw new RuntimeException(
-                        "Could not match the namespace because the input tag was invalid nextNamespaceInputTag="
+                        "Could not match the namespace because the input tag was invalid nextQueryType="
+                                + nextQueryType.getKey().stringValue() + " nextNamespaceInputTag="
                                 + nextNamespaceInputTag + " queryStringMatches.size()=" + queryStringMatches.size());
             }
         }
@@ -332,10 +333,10 @@ public final class ProviderUtils
             if(nextAllProvider.isUsedWithProfileList(sortedIncludedProfiles, recogniseImplicitProviderInclusions,
                     includeNonProfileMatchedProviders))
             {
-                if(ProviderUtils.DEBUG)
+                if(ProviderUtils.TRACE)
                 {
                     ProviderUtils.log
-                            .debug("getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
+                            .trace("getProvidersForQueryNonNamespaceSpecific: profileList suitable for nextAllProvider.getKey()="
                                     + nextAllProvider.getKey());
                 }
                 
@@ -355,7 +356,7 @@ public final class ProviderUtils
     public static Map<URI, Provider> getProvidersForQueryType(final Map<URI, Provider> allProviders,
             final URI nextQueryType)
     {
-        final Map<URI, Provider> results = new TreeMap<URI, Provider>(new ValueComparator());
+        final Map<URI, Provider> results = new HashMap<URI, Provider>();
         
         for(final Provider nextProvider : allProviders.values())
         {
